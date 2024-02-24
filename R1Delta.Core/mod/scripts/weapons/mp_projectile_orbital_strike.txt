@@ -1,0 +1,83 @@
+WeaponData
+{
+	// General
+	"printname"   									"#WPN_ROCKET_LAUNCHER"
+	"description" 									"#WPN_ROCKET_LAUNCHER_DESC"
+	"weaponClass" 									"human"
+	"server_vscript"  								"weapons/mp_projectile_orbital_strike"
+	"client_vscript"  								"weapons/mp_projectile_orbital_strike"
+	"projectile_vscript"							"weapons/mp_projectile_orbital_strike"
+	"projectile_vortex_vscript"						"weapons/mp_projectile_orbital_strike"
+
+	"projectilemodel" 								"models/weapons/bullets/projectile_rocket_large.mdl"
+
+	// Effects
+	"impact_effect_table" 						"exp_rocket_archer"
+	//"impact_effect_table"							"exp_xlarge"
+	"projectile_trail_effect_0" 						"Rocket_Smoke_Large"
+	"projectile_trail_attachment" 					"exhaust"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_rocket_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_rocket"
+	"vortex_absorb_sound"							"Vortex_Shield_AbsorbRocket"
+	"vortex_drain"									".2"
+	"vortex_refire_behavior"  						"rocket"
+
+	// Damage - When Used by Players
+	"damage_type" 									"burn"
+	"damage_near_distance"							"1200"
+	"damage_far_distance" 							"3000"
+	"damage_near_value"   							"200"
+	"damage_far_value"								"200"
+	"damage_near_value_titanarmor"					"400"
+	"damage_far_value_titanarmor" 					"400"
+	"explosion_damage"								"200"
+	"explosion_damage_heavy_armor"					"400"
+
+	"explosion_inner_radius"  						"64"
+	"explosionradius" 								"300"
+	"impulse_force"   								"10000"
+
+	// Damage - When Used by NPCs
+	"npc_damage_near_distance"						"0"
+	"npc_damage_far_distance" 						"0"
+	"npc_damage_near_value"   						"0"
+	"npc_damage_far_value"							"0"
+	"npc_explosion_damage"							"0"
+	"npc_explosion_damage_heavy_armor"				"0"
+
+	"npc_min_burst"   								"1"
+	"npc_max_burst"   								"1"
+
+	// Crosshair
+
+
+	CrosshairData
+	{
+		BaseWeapon
+		{
+			"hit_indicator_stationary"	"1"
+
+			DefaultElementBehavior
+			{
+			}
+		}
+	}
+
+	TextureData
+	{
+		"crosshair"
+		{
+		}
+		"crosshair_zoom"
+		{
+		}
+		"autoaim"
+		{
+			"file"									"sprites/crosshairs"
+			"x"   									"0"
+			"y"   									"48"
+			"width"   								"24"
+			"height"  								"24"
+		}
+	}
+}

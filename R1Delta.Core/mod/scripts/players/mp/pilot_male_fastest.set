@@ -1,0 +1,109 @@
+"pilot_male_fastest"
+{
+	"global"
+	{
+		wallrun			1
+		automantle		1
+		healthpacks		0
+		jump			1
+		doublejump		1
+		fov				70
+		viewmodelfov	54
+		jumpheight		80
+		health			200
+		stepheight		18
+		hardFallDist	20
+		viewkickFallDistMin			10
+		viewkickFallDistMax			70
+		viewkickFallDistMaxScale	12
+		ziplineSpeed				600
+
+		impactSpeed					380
+
+		viewPunchSpring		punch_pilot
+
+		model				"models/Humans/imc_pilot/male_br/imc_pilot_male_br.mdl"
+		bodymodel_imc		"models/Humans/imc_pilot/male_br/imc_pilot_male_br.mdl"
+		bodymodel_militia	"models/Humans/mcor_pilot/male_br/mcor_pilot_male_br.mdl"
+		armsmodel_imc		"models/weapons/arms/pov_imc_pilot_male_dm.mdl"
+		armsmodel_militia	"models/weapons/arms/pov_mcor_pilot_male_dm.mdl"
+		cockpitmodel		"models/weapons/arms/human_pov_cockpit.mdl"
+		weaponClass			"human"
+		class				"wallrun"
+		ArmorType		normal
+		context_action_can_melee	1
+		leech_range					64
+		context_action_can_use		1
+
+		aimAngleBackwardEnd		-120
+		aimAngleForwardStart	-60
+		aimAngleForwardEnd		60
+		aimAngleBackwardStart	120
+
+		cockpitSwayTurnAngleFactor		-0.6
+		cockpitSwayTurnAngleRollFactor	0.2
+		cockpitSwayTurnOriginFactor		-0.15
+		cockpitSwayMoveAngleFactor		-0.4
+		cockpitSwayMoveAngleRollFactor	-0.2
+		cockpitSwayMoveOriginFactor		-0.15
+		cockpitSwayGain					5.0
+
+		meleeLungeSpeed		200
+
+		sound_superJump			"Player.SuperJump"
+		sound_superJumpFail		"Player.SuperJumpFail"
+		sound_dodge				""
+		sound_dodgeFail			""
+		sound_groundImpact		"Pilot.GroundImpact"
+		sound_wallrunImpact		"wallrun_impact"
+
+		aiEnemy_priority		10
+
+		footstep_type           "human"
+
+		sprinttiltMaxRoll		2
+	}
+	"crouch"
+	{
+		footstepWalkSoundRadius	32
+		footstepRunSoundRadius	64
+		footstepMinSpeed		100
+		footstepInterval 		450
+
+		viewheight "0 0 38"
+		firstpersonproxyoffset "0 0 -60"
+		hull_min "-16 -16 0"
+		hull_max "16 16 47"
+
+		speed					89.25
+	}
+
+	"dead"
+	{
+		viewheight "0 0 14"
+	}
+
+	"observe"
+	{
+		hull_min "-10 -10 -10"
+		hull_max "10 10 10"
+	}
+
+	"stand"
+	{
+		footstepWalkSoundRadius	32
+		footstepRunSoundRadius	256
+		footstepMinSpeed		80
+		footstepInterval		400
+		footstepIntervalSprint	275
+
+		viewheight "0 0 60"
+		firstpersonproxyoffset "0 0 -60"
+		hull_min "-16 -16 0"
+		hull_max "16 16 72"
+
+		speed			180.6
+		sprintspeed		269.85
+	}
+}
+
