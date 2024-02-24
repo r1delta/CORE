@@ -20,8 +20,9 @@ function Initialize( player )
 	player.SetTitanRespawnTime( -1 )
 }
 
-function ResetTitanBuildTime( player, forceBuild )
+function ResetTitanBuildTime( player )
 {
+	local forceBuild = false
 	local buildTime
 	local reBuildTime
 	if( forceBuild == true )

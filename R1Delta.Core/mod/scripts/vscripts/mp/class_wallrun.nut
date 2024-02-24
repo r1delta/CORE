@@ -118,12 +118,12 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 	}
 
 	if ( table.secondaryWeapon )
-		player.GiveWeapon( table.secondaryWeapon, table.secondaryMods )
+		player.GiveWeapon( table.secondaryWeapon )
 	
 
 	if ( table.sidearmWeapon )
 	{
-		player.GiveWeapon( table.sidearmWeapon, table.sidearmMods )
+		player.GiveWeapon( table.sidearmWeapon )
 
 		if ( !activeWeapon )
 			activeWeapon = table.sidearmWeapon
@@ -208,8 +208,8 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 	local head = player.GetPlayerHeadIndex()
 	SelectHead(player, head)
 
-	if (level.onChangeLoadout)
-		level.onChangeLoadout.func.acall([level.onChangeLoadout.scope, player])
+	// if (level.onChangeLoadout)
+	// 	level.onChangeLoadout.func.acall([level.onChangeLoadout.scope, player])
 }
 
 function AddLethalityMod( lethality, weaponName, modName )

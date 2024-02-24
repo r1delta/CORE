@@ -1822,8 +1822,8 @@ function TimeLimit_Complete()
 	if ( !timeLimit )
 		return false
 
-	if (level.onCheckGameResult)
-		return level.onCheckGameResult.func.acall([level.onCheckGameResult.scope])
+	// if (level.onCheckGameResult)
+	// 	return level.onCheckGameResult.func.acall([level.onCheckGameResult.scope])
 
 	if ( !GetCinematicMode() )
 	{

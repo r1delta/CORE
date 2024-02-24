@@ -39,7 +39,7 @@ function InitTitanBuildRule( player )
 	player.SetTitanBuildStarted( false )
 	player.SetTitanReady( false )
 
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.INIT]
 
@@ -59,7 +59,7 @@ function TitanDeployed( player )
 
 function ResetTitanBuildCompleteCondition( player, forceBuild = false )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.RESET_COMPLETE_CONDITION]
 
@@ -95,7 +95,7 @@ function StartTitanBuildProgress( player, forceBuild = false )
 	if( player.IsTitanDeployed() == true )
 		return
 
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.START]
 
@@ -117,7 +117,7 @@ function StartTitanBuildProgress( player, forceBuild = false )
 
 function Update( player )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	for(;;)
 	{
@@ -155,7 +155,7 @@ function Update( player )
 
 function IsTitanBuildComplete( player )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.END_CHECK]
 
@@ -172,7 +172,7 @@ function GetRemain( player )
 	if( player.IsTitanBuildStarted() == false )
 		return -1
 
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.REMAIN]
 
@@ -186,7 +186,7 @@ function GetRemain( player )
 
 function GetCompleteCondition( player )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.GET_COMPLETE_CONDITION]
 
@@ -217,7 +217,7 @@ function GiveTitanBuildAdvantage( player, ent, saveDamage = 0, shieldDamage = 0)
 	if( ShouldGiveTimerCredit( player, ent) == false )
 		return
 
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.ADD_BUILD_ADVENTAGE]
 
@@ -231,7 +231,7 @@ function GiveTitanBuildAdvantage( player, ent, saveDamage = 0, shieldDamage = 0)
 
 function DecrementBuild( player, amount )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.DECREMENT_BUILD_CONDITION]
 
@@ -252,7 +252,7 @@ function ForceTitanBuildComplete( player )
 
 function AddTitanBuildPoint( player, event )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildRule = 0/*GameRules.GetTitanBuildRule()*/
 
 	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.ADD_BUILD_POINT]
 

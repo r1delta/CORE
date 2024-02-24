@@ -971,7 +971,7 @@ function PostDeathThread( player, damageInfo )
 	local beforeTime = GetKillReplayBeforeTime( player, methodOfDeath )
 
 	// killreplay kill replay / 빅브라더패널 폭파로 인한 사망시 리플레이 안함.
-	if ( !player.s.wantsRespawn && damageSource != eDamageSourceId.bbpanel_explosion )
+	if ( !player.s.wantsRespawn )
 	{
 		if ( Replay_IsEnabled() && shouldDoReplay )
 		{
@@ -2195,10 +2195,10 @@ function CodeCallback_OnPlayerRespawned( player )
 	player.s.respawnTime = Time()
 	player.s.lastAttacker = null
 
-	if (level.onTryGameModeAnnouncement)
-		thread level.onTryGameModeAnnouncement.func.acall([level.onTryGameModeAnnouncement.scope, player])
-	else 
-		thread TryGameModeAnnouncement( player )
+	// if (level.onTryGameModeAnnouncement)
+	// 	thread level.onTryGameModeAnnouncement.func.acall([level.onTryGameModeAnnouncement.scope, player])
+	// else 
+	// 	thread TryGameModeAnnouncement( player )
 
 	if ( GameRules.GetGameMode()  == CAPTURE_POINT )
 	{
@@ -2557,10 +2557,10 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	if (!player.IsBot() && (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial"))
 	{
 		// LoadOut Setting
-		UpdateLoadouts( player )
+		// UpdateLoadouts( player )
 		
-		SetPilotLoadout( player, 0 )
-		SetTitanLoadout( player, 0 )
+		SetPilotLoadout( player, false, 0 )
+		SetTitanLoadout( player, false, 0 )
 	}
 	else
 	{

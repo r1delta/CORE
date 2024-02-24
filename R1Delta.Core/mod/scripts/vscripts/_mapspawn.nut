@@ -72,7 +72,7 @@
 	function CodeCallback_ClientCommand( player, args )
 	{
 		PerfStart( PerfIndexServer.CB_ClientCommand )
-
+		/*
 		printl( "############################" )
 		printl( "CodeCallback_ClientCommand()" )
 		printl( "player = " + player )
@@ -80,7 +80,7 @@
 		foreach( key, value in args )
 			printl( key + " : " + value )
 		printl( "############################" )
-
+		*/
 		local commandString = args.remove( 0 )
 		local result = false
 
@@ -303,7 +303,7 @@
 	IncludeFile( "mp/_challenges" )
 	CreateChallenges()
 	IncludeFile( "mp/_stats" )
-	InitChallenges()
+	// InitChallenges()
 	IncludeFile( "_menu_callbacks" )
 
 	IncludeScript( "mp/_global_entities" )

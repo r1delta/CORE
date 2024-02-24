@@ -45,6 +45,17 @@ function CBasePlayer::constructor()
 	clientCommandCallbacks = {}
 }
 
+function CBasePlayer::GetPersistentVar( key )
+{
+	printt( "GetPersistentVar " + key )
+	return 0
+}
+
+function CBasePlayer::SetPersistentVar( key, value )
+{
+	printt( "SetPersistentVar " + key + " " + value )
+}
+
 __RespawnPlayer <- CBasePlayer.RespawnPlayer
 function CBasePlayer::RespawnPlayer( ent )
 {
