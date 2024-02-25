@@ -1678,6 +1678,84 @@ function ForceWaveSpawn( team )
 	level.waveSpawnTime[ team ] = Time()
 }
 
+function RespawnTitanPilot( player, rematchOrigin = null )
+{
+	Assert( PlayerCanSpawn( player ), player + " cant spawn now" )
+	SetupPostLoaderPlayer( player )
+
+	//if ( IsLobby() )
+	//	return false
+
+	if ( ShouldSpawnAsTitan( player ) )
+	{
+		// clear respawn countdown message
+		if ( GetWaveSpawnType() != eWaveSpawnType.DISABLED && level.waveSpawnByDropship == true )
+			MessageToPlayer( player, eEventNotifications.Clear )
+
+		thread TitanPlayerHotDropsIntoLevel( player )
+
+		TitanDeployed( player )
+
+		return true
+	}
+
+	local spawnPoint
+
+	if ( !player.IsBot() )
+	{
+		// start recording the spawn data for this player
+		RecordSpawnData( player )
+
+		PerfStart( PerfIndexServer.RespawnTitanPilot )
+
+		if ( ShouldStartSpawn( player ) )
+			spawnPoint = FindStartSpawnPoint( player )
+		else
+			spawnPoint = FindSpawnPoint( player )
+
+		PerfEnd( PerfIndexServer.RespawnTitanPilot )
+
+		foreach ( team, _ in level.forcedToSpawnTogether )
+		{
+			if ( team != player.GetTeam() )
+				continue
+
+			if ( level.forcePilotSpawnPointForTeam[ team ] )
+			{
+				spawnPoint = level.forcePilotSpawnPointForTeam[ team ]
+			}
+			else
+			{
+				if ( team == TEAM_MILITIA )
+				{
+					thread ForcePilotSpawnPointForTeam( team, spawnPoint )
+				}
+			}
+		}
+
+		// stop recording spawn data
+		StoreSpawnData( spawnPoint )
+	}
+
+	if ( IsAlive( player ) )
+	{
+		printt( "This happened one time, in retail." )
+		return
+	}
+
+	local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
+	local pilotSettings = pilotDataTable.playerSetFile
+	player.SetPlayerSettings( pilotSettings )
+	player.SetPlayerPilotSettings( pilotSettings )
+
+	player.RespawnPlayer( spawnPoint ) // This will kill the thread
+	
+
+	// make sure this hasn't changed without being updated
+	Assert( VectorCompare( player.GetBoundingMins(), level.traceMins[ "pilot" ] ) )
+	Assert( VectorCompare( player.GetBoundingMaxs(), level.traceMaxs[ "pilot" ] ) )
+}
+
 function DecideRespawnPlayer( player, rematchOrigin = null )
 {
 	Assert( IsValid( player ), player + " is invalid!!" )
@@ -1691,6 +1769,7 @@ function DecideRespawnPlayer( player, rematchOrigin = null )
 
 	if ( PlayerShouldObserve( player ) )
 	{
+		printt( "are we observing?" )
 		if ( IsPlayerEliminated( player ) && GetGameState() == eGameState.Playing )
 		{
 			SendHudMessage( player, "#GAMEMODE_RESPAWN_NEXT_ROUND", -1, 0.4, 255, 255, 255, 255, 1.0, 6.0, 1.0 )
@@ -1730,11 +1809,14 @@ function DecideRespawnPlayer( player, rematchOrigin = null )
 
 	RespawnTitanPilot( player, rematchOrigin )
 
-	if ( GetGameState() <= eGameState.Prematch ) // Once we've gotten to here, any special spawning logic like cinematic spawn and classic MP spawn have already completed if applicable. Freeze controls if in prematch because we don't want players running around in prematch. Controls will be unfrozen when gamestate switches to playing
-	{
-		player.FreezeControlsOnServer( true )
-	}
+	// if ( GetGameState() <= eGameState.Prematch ) // Once we've gotten to here, any special spawning logic like cinematic spawn and classic MP spawn have already completed if applicable. Freeze controls if in prematch because we don't want players running around in prematch. Controls will be unfrozen when gamestate switches to playing
+	// {
+	// 	printt( "freezing controls!" )
+	// 	player.FreezeControlsOnServer( true )
+	// }
 
+	player.UnfreezeControlsOnServer()
+	player.UnfreezeFireControlsOnServer()
 }
 
 
@@ -1814,7 +1896,7 @@ function SetupPostLoaderPlayer( player )
 	FlagSet( "APlayerHasSpawned" )
 }
 
-function RespawnTitanPilot( player, rematchOrigin = null )
+function RespawniTtanPilot( player, rematchOrigin = null )
 {
 	Assert( PlayerCanSpawn( player ), player + " cant spawn now" )
 	SetupPostLoaderPlayer( player )

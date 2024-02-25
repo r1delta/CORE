@@ -145,8 +145,8 @@ function Update( player )
 				player.SetTitanBuildStarted( false )
 				player.SetTitanReady( true )
 
-				if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial" && ShouldSpawnAsTitan(player) == false)
-					SetPlayerActiveObjective( player, "Titan_Status_Ready" )
+				// if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial" && ShouldSpawnAsTitan(player) == false)
+				// 	SetPlayerActiveObjective( player, "Titan_Status_Ready" )
 			}
 			 
 		//}

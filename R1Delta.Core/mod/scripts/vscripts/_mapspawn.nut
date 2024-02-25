@@ -3,7 +3,6 @@
 //  Called on newgame or transitions, BEFORE entities have been created and initialized
 //=========================================================
 	printl( "Code Script: _mapspawn" )
-
 	IncludeScript( "_settings" )
 	IncludeScript( "_utility_shared" )
 	IncludeScript( "_utility_shared_all" )
