@@ -199,7 +199,7 @@ function OnTitanStartSpawn( spawn )
 
 function InitSpawnpoints( spawnpoint )
 {
-	printt( "InitSpawnPoints" )
+	// printt( "InitSpawnPoints" )
 
 	if ( GameModeRemove( spawnpoint ) )
 		return
