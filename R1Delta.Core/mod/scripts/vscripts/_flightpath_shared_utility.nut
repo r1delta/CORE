@@ -1243,7 +1243,7 @@ function GetSpawnPointForStyle( analysis, drop )
 {
 	if ( GetAINScriptVersion() != AIN_REV )
     {
-        printt( "AIN out of date" )
+        printt( "AIN out of date: " + GetAINScriptVersion() + " vs " + AIN_REV )
         return
     }
 
