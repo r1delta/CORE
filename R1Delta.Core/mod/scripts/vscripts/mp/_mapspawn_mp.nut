@@ -110,9 +110,9 @@ function IncludeGameModeServerScripts()
 			IncludeFile( "mp/titan_tag" )
 			break
 
-		case TITAN_RUSH:
-			IncludeFile( "mp/_gamemode_tr" )
-			break
+		// case TITAN_RUSH:
+		// 	IncludeFile( "mp/_gamemode_tr" )
+		// 	break
 
 		default:
 			GameMode_RunSharedScripts( GAMETYPE )

@@ -500,7 +500,7 @@ function SpawnTitan( self )
 
 	if ( !SpawnWithoutSoul( self ) )
 	{
-		CreateTitanSoul( self )
+		// CreateTitanSoul( self )
 	}
 
 	self.GiveOffhandWeapon( "mp_titanweapon_vortex_shield", 1 )

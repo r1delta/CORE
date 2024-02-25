@@ -1678,84 +1678,6 @@ function ForceWaveSpawn( team )
 	level.waveSpawnTime[ team ] = Time()
 }
 
-function RespawnTitanPilot( player, rematchOrigin = null )
-{
-	Assert( PlayerCanSpawn( player ), player + " cant spawn now" )
-	SetupPostLoaderPlayer( player )
-
-	//if ( IsLobby() )
-	//	return false
-
-	if ( ShouldSpawnAsTitan( player ) )
-	{
-		// clear respawn countdown message
-		if ( GetWaveSpawnType() != eWaveSpawnType.DISABLED && level.waveSpawnByDropship == true )
-			MessageToPlayer( player, eEventNotifications.Clear )
-
-		thread TitanPlayerHotDropsIntoLevel( player )
-
-		TitanDeployed( player )
-
-		return true
-	}
-
-	local spawnPoint
-
-	if ( !player.IsBot() )
-	{
-		// start recording the spawn data for this player
-		RecordSpawnData( player )
-
-		PerfStart( PerfIndexServer.RespawnTitanPilot )
-
-		if ( ShouldStartSpawn( player ) )
-			spawnPoint = FindStartSpawnPoint( player )
-		else
-			spawnPoint = FindSpawnPoint( player )
-
-		PerfEnd( PerfIndexServer.RespawnTitanPilot )
-
-		foreach ( team, _ in level.forcedToSpawnTogether )
-		{
-			if ( team != player.GetTeam() )
-				continue
-
-			if ( level.forcePilotSpawnPointForTeam[ team ] )
-			{
-				spawnPoint = level.forcePilotSpawnPointForTeam[ team ]
-			}
-			else
-			{
-				if ( team == TEAM_MILITIA )
-				{
-					thread ForcePilotSpawnPointForTeam( team, spawnPoint )
-				}
-			}
-		}
-
-		// stop recording spawn data
-		StoreSpawnData( spawnPoint )
-	}
-
-	if ( IsAlive( player ) )
-	{
-		printt( "This happened one time, in retail." )
-		return
-	}
-
-	local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
-	local pilotSettings = pilotDataTable.playerSetFile
-	player.SetPlayerSettings( pilotSettings )
-	player.SetPlayerPilotSettings( pilotSettings )
-
-	player.RespawnPlayer( spawnPoint ) // This will kill the thread
-	
-
-	// make sure this hasn't changed without being updated
-	Assert( VectorCompare( player.GetBoundingMins(), level.traceMins[ "pilot" ] ) )
-	Assert( VectorCompare( player.GetBoundingMaxs(), level.traceMaxs[ "pilot" ] ) )
-}
-
 function DecideRespawnPlayer( player, rematchOrigin = null )
 {
 	Assert( IsValid( player ), player + " is invalid!!" )
@@ -1787,6 +1709,7 @@ function DecideRespawnPlayer( player, rematchOrigin = null )
 
 	if ( GetClassicMPMode() )
 	{
+		printt( "DecideRespawnPlayer using GetClassicMPMode() " )
 		// if we're in the intro, spawn the player in a special way
 		if ( ClassicMP_TryPlayerIntroSpawn( player ) )
 		{
@@ -1797,6 +1720,7 @@ function DecideRespawnPlayer( player, rematchOrigin = null )
 
 	if ( GAMETYPE == COOPERATIVE && CanSpawnIntoWaveSpawnDropship( player ) )
 	{
+		printt( "DecideRespawnPlayer CanSpawnIntoWaveSpawnDropship stuff was true")
 		thread DoWaveSpawnByDropship( player )
 		return
 	}
@@ -1815,8 +1739,6 @@ function DecideRespawnPlayer( player, rematchOrigin = null )
 	// 	player.FreezeControlsOnServer( true )
 	// }
 
-	player.UnfreezeControlsOnServer()
-	player.UnfreezeFireControlsOnServer()
 }
 
 
@@ -1896,16 +1818,19 @@ function SetupPostLoaderPlayer( player )
 	FlagSet( "APlayerHasSpawned" )
 }
 
-function RespawniTtanPilot( player, rematchOrigin = null )
+function RespawnTitanPilot( player, rematchOrigin = null )
 {
 	Assert( PlayerCanSpawn( player ), player + " cant spawn now" )
 	SetupPostLoaderPlayer( player )
+
+	printt( "AAAAAAAAAAAAA" )
 
 	//if ( IsLobby() )
 	//	return false
 
 	if ( ShouldSpawnAsTitan( player ) )
 	{
+		printt( "ShouldSpawnAsTitan" )
 		// clear respawn countdown message
 		if ( GetWaveSpawnType() != eWaveSpawnType.DISABLED && level.waveSpawnByDropship == true )
 			MessageToPlayer( player, eEventNotifications.Clear )
@@ -1921,15 +1846,22 @@ function RespawniTtanPilot( player, rematchOrigin = null )
 
 	if ( !player.IsBot() )
 	{
+		printt( "!player.IsBot()" )
+
 		// start recording the spawn data for this player
 		RecordSpawnData( player )
 
 		PerfStart( PerfIndexServer.RespawnTitanPilot )
 
 		if ( ShouldStartSpawn( player ) )
+		{
+			printt( "ShouldStartSpawn( player )" )
 			spawnPoint = FindStartSpawnPoint( player )
+		}
 		else
+		{
 			spawnPoint = FindSpawnPoint( player )
+		}
 
 		PerfEnd( PerfIndexServer.RespawnTitanPilot )
 
@@ -1947,6 +1879,10 @@ function RespawniTtanPilot( player, rematchOrigin = null )
 				if ( team == TEAM_MILITIA )
 				{
 					thread ForcePilotSpawnPointForTeam( team, spawnPoint )
+				} 
+				else 
+				{
+					printt( "Possible issue?" )
 				}
 			}
 		}
@@ -1954,6 +1890,8 @@ function RespawniTtanPilot( player, rematchOrigin = null )
 		// stop recording spawn data
 		StoreSpawnData( spawnPoint )
 	}
+
+	printt( "Losing my mind!" )
 
 	if ( IsAlive( player ) )
 	{
@@ -1967,7 +1905,8 @@ function RespawniTtanPilot( player, rematchOrigin = null )
 	player.SetPlayerPilotSettings( pilotSettings )
 
 	player.RespawnPlayer( spawnPoint ) // This will kill the thread
-	
+	printt( player.GetPlayerSettings() )
+	printt( player.GetPlayerPilotSettings() )
 
 	// make sure this hasn't changed without being updated
 	Assert( VectorCompare( player.GetBoundingMins(), level.traceMins[ "pilot" ] ) )
@@ -1977,6 +1916,8 @@ function RespawniTtanPilot( player, rematchOrigin = null )
 function SpawnPlayerForCinematic( player )
 {
 	player.SetPlayerSettings( "pilot_male_fastest" )
+
+	printt( "Are we hitting this instead?" )
 
 	player.DisableWeaponViewModel() //Want to disable player's gun but not hide it in 3rd person
 

@@ -3512,3 +3512,14 @@ function GetOtherTeams( guy )
 
 	return (1 << TEAM_UNASSIGNED)
 }
+
+function IsWinningTeam(team)
+{
+	if (!level.nv.winningTeam)
+		return false
+
+	if (level.nv.winningTeam & (1 << team))
+		return true
+
+	return false
+}

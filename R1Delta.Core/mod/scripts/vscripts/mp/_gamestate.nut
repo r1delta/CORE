@@ -293,6 +293,8 @@ function Prematch_PlayerScreenFade( player )
 function GameStateEnter_Playing()
 {
 	FlagClear( "APlayerHasSpawned" )
+	
+	printt( "Enter Gamestate playing" )
 
 	level.ui.showGameSummary = false
 
@@ -588,7 +590,7 @@ function GameStateEnter_Postmatch()
 	else
 		playersOnDropship = {}
 
-	ReportDevStat_RoundEnd()
+	ReportDevStat_RoundEnd( GetWinningTeam() )
 
 	local xpToLevel2 = GetXPForLevel(2)
 	local players = GetPlayerArray()
@@ -2828,17 +2830,25 @@ function PerfInitLabels()
 
 function GameStartSpawnPlayers()
 {
+	printt( "GameStartSpawnPlayers" )
 	// cinematic is responsible for start spawn
 	if ( Flag( "CinematicIntro" ) )
+	{
+		printt( "hitting cinematic ret ")
 		return
+	}
 
 	local players = GetPlayerArray()
 
 	if ( GetClassicMPMode() && ClassicMP_CanUseIntroStartSpawn() && level.classicMP_prematchSpawnPlayersFunc )
+	{
+		printt( "ClassicMP_CallPrematchSpawnPlayersFunc" )
 		ClassicMP_CallPrematchSpawnPlayersFunc( players )
+	}
 
 	if ( ShouldIntroSpawnAsTitan() )
 		{
+			printt( "ShouldIntroSpawnAsTitan == true" )
 			foreach ( player in players )
 			{
 				if ( IsAlive( player ) )
@@ -2857,13 +2867,22 @@ function GameStartSpawnPlayers()
 	foreach ( player in players )
 	{
 		if ( !IsValid( player ) )
-			continue
+		{
+				printt( "Player is not valid" )
+				continue
+		}
 
 		if ( IsAlive( player ) )
+		{
+			printt( "Player " + player.name + " is already alive" )
 			continue
+		}
 
 		if ( IsValid( player.isSpawning ) )
+		{
+			printt( "Player " + player.name + " is already spawning" )
 			continue
+		}
 
 		DecideRespawnPlayer( player )
 	}

@@ -152,9 +152,9 @@ function GameModeRemove( spawnpoint )
 			break
 
 		// these modes have custom spawnpoints designated with "gamemode_xxx" keys
-		case TITAN_RUSH:
-			gameMode = TITAN_RUSH
-			break
+		// case TITAN_RUSH:
+		// 	gameMode = TITAN_RUSH
+		// 	break
 		
 		case HEIST:
 			// may rename, prototyping entities
@@ -199,7 +199,7 @@ function OnTitanStartSpawn( spawn )
 
 function InitSpawnpoints( spawnpoint )
 {
-	//printl( "InitSpawnPoints" )
+	printt( "InitSpawnPoints" )
 
 	if ( GameModeRemove( spawnpoint ) )
 		return
@@ -629,10 +629,10 @@ function FindSpawnPoint( player, isTitan = false )
 
 function FindStartSpawnPoint( player, isTitan = false )
 {
-	//printl( "***************************************************************************" )
-	//printl( "***************************************************************************" )
-	//printl( "***************************************************************************\n" )
-	//printt( "FindStartSpawnPoint( " + player + ")" )
+	printl( "***************************************************************************" )
+	printl( "***************************************************************************" )
+	printl( "***************************************************************************\n" )
+	printt( "FindStartSpawnPoint( " + player + ")" )
 	local spawnpointType
 	if ( isTitan )
  		spawnpointType = "info_spawnpoint_titan_start"
@@ -644,9 +644,9 @@ function FindStartSpawnPoint( player, isTitan = false )
 	local team = player.GetTeam()
 
 	local spawnpoints = isTitan ? SpawnPoints_GetTitanStart( team ) : SpawnPoints_GetPilotStart( team )
-	//printt( "spawnpoints.len()" + spawnpoints.len() )
+	printt( "spawnpoints.len()" + spawnpoints.len() )
 
-	//printt( "team # " + team )
+	printt( "team # " + team )
 
 	if ( !spawnpoints.len() )
 	{

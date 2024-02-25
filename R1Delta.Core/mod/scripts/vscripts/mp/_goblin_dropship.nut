@@ -560,7 +560,9 @@ function RunDropshipDropoff( table )
 	foreach ( anim in anims )
 	{
 		animation = anim
+		printt( "Using model " + DROPSHIP_MODEL + " with animation " + anim )
 		analysis = GetAnalysisForModel( DROPSHIP_MODEL, anim )
+		printt(analysis)
 
 		if ( style == null )
 		{
