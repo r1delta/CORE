@@ -1897,13 +1897,7 @@ function TimeLimit_Complete()
 
 		local winningTeam = TEAM_UNASSIGNED
 
-		// 타이탄 러쉬는 게임 시간 끝나면 방어팀 승리
-		if( GameRules.GetGameMode() == TITAN_RUSH )
-		{
-			winningTeam = GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))
-		}
-		else
-		{
+
 			local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
 			local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
@@ -1911,7 +1905,7 @@ function TimeLimit_Complete()
 				winningTeam = TEAM_IMC
 			else if ( imcScore < militiaScore )
 				winningTeam = TEAM_MILITIA
-		}
+		
 
 		SetWinLossReasons( "#GAMEMODE_TIME_LIMIT_REACHED", "#GAMEMODE_TIME_LIMIT_REACHED" )
 		SetWinner( winningTeam )
