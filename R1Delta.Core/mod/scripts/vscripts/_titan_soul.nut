@@ -134,9 +134,7 @@ function AddSoulInitFunc( func )
 function CreateTitanSoul( titan )
 {
 	local soul = CreateEntity( "titan_soul" )
-    printt("guhhh " + soul)
 	DispatchSpawn( soul )
-    printt("killing myself " + soul)
 
 	soul.InitSoul( titan )
 	soul.ConnectOutput( "OnDestroy", SoulDestroyOutput )

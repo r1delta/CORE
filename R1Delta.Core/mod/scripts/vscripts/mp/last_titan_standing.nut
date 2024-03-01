@@ -6,6 +6,7 @@ function main()
 		level.nv.eliminationMode = eEliminationMode.PilotsTitans
 
 	//FlagSet( "PilotBot" )
+	SetServerVar( "spawnAsTitan", 1 )
 	SetRoundBased( true )
 	SetSwitchSidesBased( true )
 	FlagSet( "ForceStartSpawn" )
