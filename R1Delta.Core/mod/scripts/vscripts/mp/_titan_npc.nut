@@ -598,8 +598,8 @@ function CreateNPCTitanFromSettings( settings, team, origin, angles, noSoul = fa
 function SetModelSkinFromSettings( table, settings, team )
 {
 	if ( settings )
-		//FIXME: AAAAAAAAA
-		table.model  = ATLAS_MODEL//GetPlayerSettingsFieldForClassName( settings, "bodymodel" )
+		// TODO(mrsteyk): leave IMC as default or do something else?
+		table.model  = GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 	else
 		table.model = ATLAS_MODEL
 
