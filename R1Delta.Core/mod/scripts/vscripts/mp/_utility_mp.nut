@@ -1421,7 +1421,7 @@ function MoveEntity( targetName, origin, angles )
 	ent.SetAngles( angles )
 }
 
-function UpdatePlayerStat( player, category, stat, value)
+function UpdatePlayerStat( player, category, stat, value = null )
 {
 	printt( "UpdatePlayerStat: " + player + " " + category + " " + stat + " " + value )
 }
@@ -1429,4 +1429,9 @@ function UpdatePlayerStat( player, category, stat, value)
 function SetPlayerActiveObjectiveWithTime( player, objective, time )
 {
 	printt( "SetPlayerActiveObjectiveWithTime: " + player + " " + objective + " " + time )
+}
+
+function GetPlayerActiveBurnCard( player )
+{
+	return null
 }

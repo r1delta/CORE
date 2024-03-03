@@ -321,8 +321,8 @@ function TitanBecomesPilot( player, titan )
 
 	StopSoundOnEntity( player, "titan_engine_loop" )
 
-	if (GameRules.GetGameMode() != TUTORIAL && GameRules.GetGameMode() != TITAN_TUTORIAL)
-		thread SetPlayerActiveObjectiveWithTime( player, "Titan_Status_Auto", 5.0 )
+	// if (GameRules.GetGameMode() != TUTORIAL && GameRules.GetGameMode() != TITAN_TUTORIAL)
+	// 	thread SetPlayerActiveObjectiveWithTime( player, "Titan_Status_Auto", 5.0 )
 
 	SetUpNPCTitanCurrentMode( player, eNPCTitanMode.FOLLOW )
 
