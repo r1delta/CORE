@@ -599,7 +599,8 @@ function SetModelSkinFromSettings( table, settings, team )
 {
 	if ( settings )
 		// TODO(mrsteyk): leave IMC as default or do something else?
-		table.model  = GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
+		// TODO(mrsteyk): only bodymodel_imc is parsed, probably r1o messing with this...
+		table.model  = GetPlayerSettingsFieldForClassName( settings, "bodymodel_imc" ) //GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 	else
 		table.model = ATLAS_MODEL
 
