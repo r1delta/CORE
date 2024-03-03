@@ -273,7 +273,7 @@ function SuperHotDropReplacementTitan( titan, origin, angles, player, animation 
 
 	delaythread( impactTime ) CreateBubbleShield( titan, origin, angles )
 
-	//DrawArrow( origin, angles, 10, 150 )
+	DrawArrow( origin, angles, 10, 150 )
 	titan.EnableRenderAlways()
 	EmitDifferentSoundsAtPositionForPlayerAndWorld( sfxFirstPerson, sfxThirdPerson, origin, player )
 

@@ -506,11 +506,11 @@ function SpawnTitan( self )
 	self.GiveOffhandWeapon( "mp_titanweapon_vortex_shield", 1 )
 	self.SetTacticalAbility( self.GetOffhandWeapon( 1 ), TTA_VORTEX )
 
-	//self.GiveOffhandWeapon( "mp_titanability_bubble_shield", 1 )
-	//self.SetTacticalAbility( self.GetOffhandWeapon( 1 ), TTA_WALL )
+	// self.GiveOffhandWeapon( "mp_titanability_bubble_shield", 1 )
+	// self.SetTacticalAbility( self.GetOffhandWeapon( 1 ), TTA_WALL )
 
-	//self.GiveOffhandWeapon( "mp_titanability_smoke", 1 )
-	//self.SetTacticalAbility( self.GetOffhandWeapon( 1 ), TTA_SMOKE )
+	// self.GiveOffhandWeapon( "mp_titanability_smoke", 1 )
+	// self.SetTacticalAbility( self.GetOffhandWeapon( 1 ), TTA_SMOKE )
 
 	UpdateTitanMinimapStatusToOtherPlayers( self )
 }

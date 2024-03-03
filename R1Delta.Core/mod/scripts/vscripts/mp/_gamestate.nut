@@ -2675,7 +2675,7 @@ function AnnounceWinner( winningTeam )
 		if ( subString )
 			subStringIndex = GetStringID( subString )
 
-		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", subStringIndex, GetWinnerDeterminedWait() )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", GetWinningTeam(), subStringIndex, GetWinnerDeterminedWait()  )
 	}
 }
 
