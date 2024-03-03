@@ -627,7 +627,8 @@ function CreateNPCTitanFromSettings( settings, team, origin, angles, noSoul = fa
 function SetModelSkinFromSettings( table, settings, team )
 {
 	if ( settings )
-		table.model  = GetPlayerSettingsFieldForClassName( settings, "bodymodel" )
+		//FIXME: AAAAAAAAA
+		table.model  = ATLAS_MODEL//GetPlayerSettingsFieldForClassName( settings, "bodymodel" )
 	else
 		table.model = ATLAS_MODEL
 
@@ -660,7 +661,7 @@ function SpawnNPCTitan( table )
 	local weapon 	= table.weapon
 
 	if ( !settings )
-		settings = "titan_atlas_tier0"
+		settings = "titan_atlas"
 
 	local npcTitan
 

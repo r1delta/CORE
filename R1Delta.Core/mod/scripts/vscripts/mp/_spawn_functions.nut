@@ -495,12 +495,12 @@ function SpawnTitan( self )
 
 	if ( !( "titanSettings" in self.s ) )
 	{
-		self.s.titanSettings <- "titan_atlas_tier0"
+		self.s.titanSettings <- "titan_atlas"
 	}
 
 	if ( !SpawnWithoutSoul( self ) )
 	{
-		// CreateTitanSoul( self )
+		CreateTitanSoul( self )
 	}
 
 	self.GiveOffhandWeapon( "mp_titanweapon_vortex_shield", 1 )
