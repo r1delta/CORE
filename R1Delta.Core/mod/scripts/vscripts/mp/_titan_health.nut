@@ -787,12 +787,7 @@ function GetShieldRegenTime( soul )
 function GetShieldRegenDelay( soul )
 {
 	local delay
-	local shieldRegenDelay = soul.shieldRegenDelay
-
-	if( shieldRegenDelay == null )
-	{
-		shieldRegenDelay = TITAN_SHIELD_REGEN_DELAY
-	}
+	local shieldRegenDelay = TITAN_SHIELD_REGEN_DELAY
 
 	if ( SoulHasPassive( soul, PAS_SHIELD_REGEN ) )
 		delay = shieldRegenDelay - 1.0
@@ -998,12 +993,12 @@ function ShieldModifyDamage( titan, damageInfo )
 
 	local damage = damageInfo.GetDamage()
 
-	local permanentDamageFrac = soul.shieldPermamentDamageFrac
+	// local permanentDamageFrac = soul.shieldPermamentDamageFrac
 
-	if( permanentDamageFrac == null )
-	{
-		permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC
-	}
+	// if( permanentDamageFrac == null )
+	// {
+	// 	permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC
+	// }
 
 	local normalizeShieldDamage = false
 
@@ -1022,12 +1017,12 @@ function ShieldModifyDamage( titan, damageInfo )
 		case eDamageSourceId.mp_weapon_mgl:
 		case eDamageSourceId.mp_weapon_rocket_launcher:
 			damage *= 1.5
-			permanentDamageFrac = soul.shieldPermamentDamageFracPilot
+			// permanentDamageFrac = soul.shieldPermamentDamageFracPilot
 
-			if( permanentDamageFrac == null )
-			{
-				permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC_PILOT
-			}
+			// if( permanentDamageFrac == null )
+			// {
+			// 	permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC_PILOT
+			// }
 
 			normalizeShieldDamage = true
 			break
@@ -1050,7 +1045,7 @@ function ShieldModifyDamage( titan, damageInfo )
 
 	local healthFrac = GetHealthFrac( titan )
 
-	local permanentDamage = (damage * permanentDamageFrac * healthFrac)
+	// local permanentDamage = (damage * permanentDamageFrac * healthFrac)
 
 	local shieldDamage
 
@@ -1063,7 +1058,7 @@ function ShieldModifyDamage( titan, damageInfo )
 		if ( normalizeShieldDamage )
 			shieldDamage = damage * 0.5
 		else
-			shieldDamage = damage - permanentDamage
+			shieldDamage = damage
 
 		if ( SoulHasPassive( soul, PAS_SHIELD_BOOST ) )
 			shieldDamage *= SHIELD_BOOST_DAMAGE_DAMPEN
@@ -1079,9 +1074,9 @@ function ShieldModifyDamage( titan, damageInfo )
 	}
 
 	if ( newShieldHealth < 0 )
-		damageInfo.SetDamage( abs( newShieldHealth ) + permanentDamage )
+		damageInfo.SetDamage( abs( newShieldHealth ) )
 	else
-		damageInfo.SetDamage( permanentDamage )
+		damageInfo.SetDamage( damage )
 
 	return min( shieldHealth, shieldDamage )
 }

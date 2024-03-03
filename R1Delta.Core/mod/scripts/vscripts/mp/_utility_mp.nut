@@ -1420,3 +1420,13 @@ function MoveEntity( targetName, origin, angles )
 	ent.SetOrigin( origin )
 	ent.SetAngles( angles )
 }
+
+function UpdatePlayerStat( player, category, stat, value)
+{
+	printt( "UpdatePlayerStat: " + player + " " + category + " " + stat + " " + value )
+}
+
+function SetPlayerActiveObjectiveWithTime( player, objective, time )
+{
+	printt( "SetPlayerActiveObjectiveWithTime: " + player + " " + objective + " " + time )
+}
