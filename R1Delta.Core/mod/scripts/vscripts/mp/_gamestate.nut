@@ -632,6 +632,7 @@ function SetGameState( newState )
 
 	level.nv.gameStateChangeTime = Time()
 	level.nv.gameState = newState
+	SetServerVar( "gameState", newState )
 
 	// Epilogue or later?  Don't let ranks be late enabled
 	
@@ -2868,13 +2869,13 @@ function GameStartSpawnPlayers()
 
 		if ( IsAlive( player ) )
 		{
-			printt( "Player " + player.name + " is already alive" )
+			// printt( "Player " + player.name + " is already alive" )
 			continue
 		}
 
 		if ( IsValid( player.isSpawning ) )
 		{
-			printt( "Player " + player.name + " is already spawning" )
+			// printt( "Player " + player.name + " is already spawning" )
 			continue
 		}
 

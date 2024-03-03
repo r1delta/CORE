@@ -1247,6 +1247,8 @@ function GetSpawnPointForStyle( analysis, drop )
         return
     }
 
+	printt( "AIN not out of date (wowzers): " + GetAINScriptVersion() )
+
 	PerfStart( PerfIndexServer.GetSpawnPointForStyle )
 
 	local style = drop.style
