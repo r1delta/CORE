@@ -10,7 +10,7 @@ function SpawnMortarTitan( origin, angles, team )
 	table.origin 	= origin
 	table.angles 	= angles
 	table.model 	= ATLAS_MODEL
-	table.settings  = "titan_atlas_tier0"
+	table.settings  = "titan_atlas"
 	table.weapon	= "mp_titanweapon_rocket_launcher"
 	table.weaponMod = [ "rapid_fire_missiles" ]
 

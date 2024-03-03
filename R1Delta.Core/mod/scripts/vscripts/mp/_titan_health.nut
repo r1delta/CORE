@@ -769,7 +769,7 @@ function TitanShieldRegenThink_Internal( soul, titan )
 function GetShieldRegenTime( soul )
 {
 	local time
-	local shieldRegenTime = soul.shieldRegenTime
+	local shieldRegenTime = null
 
 	if( shieldRegenTime == null )
 	{

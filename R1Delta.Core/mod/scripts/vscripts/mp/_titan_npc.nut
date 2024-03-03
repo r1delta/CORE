@@ -544,34 +544,6 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 	local npcTitan = SpawnNPCTitan( table )
 	local soul = npcTitan.GetTitanSoul()
 
-	if( soul )
-	{
-		local PlayerTable = player.playerClassData[ "titan" ]
-		
-		if( PlayerTable.liverycode )
-			soul.SetLiveryCode( PlayerTable.liverycode )
-		else
-			soul.SetLiveryCode(0)
-
-		if( PlayerTable.liverycolor0 )
-		{
-			local liverycolor0 = Vector( PlayerTable.liverycolor0[0], PlayerTable.liverycolor0[1], PlayerTable.liverycolor0[2] )
-			soul.SetLiveryColor0( liverycolor0 )
-		}
-
-		if( PlayerTable.liverycolor1 )
-		{
-			local liverycolor1 = Vector( PlayerTable.liverycolor1[0], PlayerTable.liverycolor1[1], PlayerTable.liverycolor1[2] )
-			soul.SetLiveryColor1( liverycolor1 )
-		}
-
-		if( PlayerTable.liverycolor2 )
-		{
-			local liverycolor2 = Vector( PlayerTable.liverycolor2[0], PlayerTable.liverycolor2[1], PlayerTable.liverycolor2[2] )
-			soul.SetLiveryColor2( liverycolor2 )
-		}
-	}
-
 
 	//soul.SetSoulOwner( npcTitan )
 	soul.lastOwner = player
@@ -660,7 +632,7 @@ function SpawnNPCTitan( table )
 	local weapon 	= table.weapon
 
 	if ( !settings )
-		settings = "titan_atlas_tier0"
+		settings = "titan_atlas"
 
 	local npcTitan
 
@@ -686,7 +658,7 @@ function SpawnNPCTitan( table )
 	npcTitan.SetTeam( team )
 	SetTitanAccuracyAndProficiency( npcTitan, Riff_AILethality() )
 
-	npcTitan.SetModel( model )
+	npcTitan.SetModel( ATLAS_MODEL )
 	npcTitan.SetSkin( skin )
 
 	if ( hidden	)
@@ -703,8 +675,7 @@ function SpawnNPCTitan( table )
 	npcTitan.SetOrigin( origin )
 	npcTitan.SetAngles( angles )
 
-	if ( noSoul )
-		npcTitan.s.spawnWithoutSoul <- true
+	npcTitan.s.spawnWithoutSoul <- false
 
 	npcTitan.s.titanSettings <- settings
 	npcTitan.s.guardModePoint <- null

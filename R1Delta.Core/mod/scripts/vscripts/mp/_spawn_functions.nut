@@ -495,12 +495,12 @@ function SpawnTitan( self )
 
 	if ( !( "titanSettings" in self.s ) )
 	{
-		self.s.titanSettings <- "titan_atlas_tier0"
+		self.s.titanSettings <- "titan_atlas"
 	}
 
 	if ( !SpawnWithoutSoul( self ) )
 	{
-		// CreateTitanSoul( self )
+		CreateTitanSoul( self )
 	}
 
 	self.GiveOffhandWeapon( "mp_titanweapon_vortex_shield", 1 )
@@ -564,12 +564,7 @@ function SpawnPathTrack( node )
 
 function SpawnWithoutSoul( ent )
 {
-	if ( ent.HasKey( "noSoul" ) )
-	{
-		return ent.kv.noSoul
-	}
-
-	return "spawnWithoutSoul" in ent.s
+	return false
 }
 
 function SpawnScriptMover( ent )

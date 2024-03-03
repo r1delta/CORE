@@ -24,7 +24,7 @@ function SpawnEMPTitan( origin, angles, team )
 	table.origin 	= origin
 	table.angles 	= angles
 	table.model 	= STRYDER_MODEL
-	table.settings  = "titan_stryder_tier0"
+	table.settings  = "titan_stryder"
 
 	table.weapon	= "mp_titanweapon_arc_cannon"
 	//disable burn_mode by iskyfish.2016.10.17
