@@ -2354,3 +2354,6 @@ enum eTitanBuildRule
 
 	_count_
 }
+
+const TITAN_DOOMED_EFFECT = "xo_exp_doomed"
+//const TITAN_DOOMED_EFFECT = "xo_exp_death_doom"

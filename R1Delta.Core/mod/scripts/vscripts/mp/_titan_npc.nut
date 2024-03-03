@@ -658,7 +658,7 @@ function SpawnNPCTitan( table )
 	npcTitan.SetTeam( team )
 	SetTitanAccuracyAndProficiency( npcTitan, Riff_AILethality() )
 
-	npcTitan.SetModel( ATLAS_MODEL )
+	npcTitan.SetModel( model )
 	npcTitan.SetSkin( skin )
 
 	if ( hidden	)
