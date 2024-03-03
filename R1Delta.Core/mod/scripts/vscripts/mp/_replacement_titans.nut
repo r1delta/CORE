@@ -645,8 +645,8 @@ function DropReplacementTitan( player, spawnPoint )
 		player.HotDropImpactDelay( impactTime )
 		Remote.CallFunction_Replay( player, "ServerCallback_ReplacementTitanSpawnpoint", origin.x, origin.y, origin.z, Time() + impactTime )
 
-		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
-			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
+//		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
+//			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
 
 		EmitDifferentSoundsAtPositionForPlayerAndWorld( "Titan_1P_Warpfall_CallIn", "Titan_3P_Warpfall_CallIn", origin, player )
 
@@ -674,8 +674,8 @@ function DropReplacementTitan( player, spawnPoint )
 		player.HotDropImpactDelay( impactTime )
 		Remote.CallFunction_Replay( player, "ServerCallback_ReplacementTitanSpawnpoint", origin.x, origin.y, origin.z, Time() + impactTime )
 
-		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
-			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
+//		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
+//			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
 	}
 
 	if ( player in file.warpFallDebounce )
@@ -765,8 +765,8 @@ function ForceReplacementTitan( player, spawnPoint )
 		player.HotDropImpactDelay( impactTime )
 		Remote.CallFunction_Replay( player, "ServerCallback_ReplacementTitanSpawnpoint", origin.x, origin.y, origin.z, Time() + impactTime )
 
-		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
-			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
+//		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
+//			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
 
 		EmitDifferentSoundsAtPositionForPlayerAndWorld( "Titan_1P_Warpfall_CallIn", "Titan_3P_Warpfall_CallIn", origin, player )
 
@@ -794,8 +794,8 @@ function ForceReplacementTitan( player, spawnPoint )
 		player.HotDropImpactDelay( impactTime )
 		Remote.CallFunction_Replay( player, "ServerCallback_ReplacementTitanSpawnpoint", origin.x, origin.y, origin.z, Time() + impactTime )
 
-		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
-			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
+//		if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial")
+//			SetPlayerActiveObjective( player, "Titan_Status_Drop", Time() + impactTime + 1.0 )
 	}
 
 	if ( player in file.warpFallDebounce )

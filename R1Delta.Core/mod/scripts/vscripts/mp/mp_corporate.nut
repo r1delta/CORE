@@ -1782,7 +1782,7 @@ function IntroTitanSwarm()
 	//----------------------
 	// Militia Titan/spectres hero spawn/idle
 	//----------------------
-	local titan = CreateNPCTitanFromSettings( "titan_atlas_tier0", TEAM_MILITIA, animPos, animAng )
+	local titan = CreateNPCTitanFromSettings( "titan_atlas", TEAM_MILITIA, animPos, animAng )
 	titan.GetTitanSoul().SetInvalidHealthBarEnt( true ) // disable critical hit locations
 
 	titan.EndSignal( "OnDeath" )

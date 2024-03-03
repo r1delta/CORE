@@ -20,7 +20,7 @@ function AddIntroTitan( time, style, weapon, healthFraction, team, origin, yaw, 
 function SpawnIntroTitan( debugNum, style, weapon, healthFraction, team, origin, yaw, destOrigin = null )
 {
 	local angles = Vector(0,yaw,0)
-	local titan = CreateNPCTitanFromSettings( "titan_atlas_tier0", team, origin, angles )
+	local titan = CreateNPCTitanFromSettings( "titan_atlas", team, origin, angles )
 	titan.GiveWeapon( weapon )
 	titan.EndSignal( "OnDeath" )
 	local maxHealth = titan.GetMaxHealth()

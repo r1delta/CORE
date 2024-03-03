@@ -96,10 +96,10 @@ function Atdm_AITitan() //AI 타이탄 관련 스크립트 // 이하의 타이�
 	if( IsToolMode_Native() )
 		return
 	
-	delaythread (1.3) CallAITitan( TEAM_IMC, "#NPC_CUSTOM_ATDM_PILOT_1", "titan_stryder_tier0", "mp_titanweapon_xo16", false, 0)
-	delaythread (2.7) CallAITitan( TEAM_IMC, "#NPC_CUSTOM_ATDM_PILOT_2", "titan_stryder_tier0", "mp_titanweapon_rocket_launcher", false, 1 )
-	delaythread (1.5) CallAITitan( TEAM_MILITIA, "#NPC_CUSTOM_ATDM_PILOT_3", "titan_stryder_tier0", "mp_titanweapon_rocket_launcher", false, 0 )
-	delaythread (2.4) CallAITitan( TEAM_MILITIA, "#NPC_CUSTOM_ATDM_PILOT_4", "titan_stryder_tier0", "mp_titanweapon_xo16", false, 1 )
+	delaythread (1.3) CallAITitan( TEAM_IMC, "#NPC_CUSTOM_ATDM_PILOT_1", "titan_stryder", "mp_titanweapon_xo16", false, 0)
+	delaythread (2.7) CallAITitan( TEAM_IMC, "#NPC_CUSTOM_ATDM_PILOT_2", "titan_stryder", "mp_titanweapon_rocket_launcher", false, 1 )
+	delaythread (1.5) CallAITitan( TEAM_MILITIA, "#NPC_CUSTOM_ATDM_PILOT_3", "titan_stryder", "mp_titanweapon_rocket_launcher", false, 0 )
+	delaythread (2.4) CallAITitan( TEAM_MILITIA, "#NPC_CUSTOM_ATDM_PILOT_4", "titan_stryder", "mp_titanweapon_xo16", false, 1 )
 
 	//thread Atdm_GiveFreeTitanForAll () // 중립 타이탄 소환!
 }

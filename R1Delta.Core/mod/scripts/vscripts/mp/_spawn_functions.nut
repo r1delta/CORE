@@ -564,12 +564,7 @@ function SpawnPathTrack( node )
 
 function SpawnWithoutSoul( ent )
 {
-	if ( ent.HasKey( "noSoul" ) )
-	{
-		return ent.kv.noSoul
-	}
-
-	return "spawnWithoutSoul" in ent.s
+	return false
 }
 
 function SpawnScriptMover( ent )

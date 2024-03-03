@@ -149,7 +149,7 @@ function TitanMaker() // for testing
 	local angles = Vector(0,0,0)
 	local team = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
 	local weapon = "mp_titanweapon_xo16"
-	local titan = CreateNPCTitanFromSettings( "titan_atlas_tier0", team, origin, angles )
+	local titan = CreateNPCTitanFromSettings( "titan_atlas", team, origin, angles )
 	titan.GiveWeapon( weapon )
 	titan.SetTitle( "Joe" )
 }
