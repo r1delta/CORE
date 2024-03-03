@@ -11,8 +11,8 @@ function main()
 	level.bubbleShieldEnabled <- true
 }
 
-//const SHIELD_FADE_ARBITRARY_DELAY = 3.0
-//const SHIELD_FADE_ENDCAP_DELAY = 1.0
+const SHIELD_FADE_ARBITRARY_DELAY = 3.0
+const SHIELD_FADE_ENDCAP_DELAY = 1.0
 
 function CreateBubbleShield( titan, origin, angles )
 {
@@ -85,9 +85,6 @@ function CreateBubbleShield( titan, origin, angles )
 
 	local bubTime = GetBubbleShieldDuration( player ) + SHIELD_FADE_ARBITRARY_DELAY + SHIELD_FADE_ENDCAP_DELAY
 	player.SetTitanBubbleShieldTime( Time() + bubTime  ) //This sets the time to display "Titan Shielded" on the HUD
-
-	if (GAMETYPE != TUTORIAL && GAMETYPE != TITAN_TUTORIAL)
-		SetPlayerActiveObjective( player, "Titan_Status_Waiting", Time() + bubTime + 1 )
 
 	titan.SetNPCPriorityOverride( 1 )
 

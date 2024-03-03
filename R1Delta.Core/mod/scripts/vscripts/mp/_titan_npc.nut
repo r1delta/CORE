@@ -557,7 +557,6 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 
 	// start a new titan building when the current titan dies
 	AddSoulDeathFunc( UpdateSoulDeath )
-	SetTitanTierLevel(player, npcTitan)
 
 	return npcTitan
 }
