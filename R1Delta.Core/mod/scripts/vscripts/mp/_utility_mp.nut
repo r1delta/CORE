@@ -1435,3 +1435,20 @@ function GetPlayerActiveBurnCard( player )
 {
 	return null
 }
+
+function DecrementBuildTimer( player, amount )
+{
+	if( !player.IsTitan() )
+		return
+
+	// core ability in use
+	if ( TitanCoreInUse( player ) )
+		return
+
+	if ( !IsAlive( player ) )
+		return
+
+	SetTitanCoreTimer( player, GetTitanCoreTimer( player ) - amount )
+
+	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
+}

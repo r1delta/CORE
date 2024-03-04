@@ -65,7 +65,7 @@ function GetTitanBuildTime( player )
 
 function IsComplete( player )
 {
-	//printt( "[BuildRule_Time] call IsComplete" )
+	printt( "[BuildRule_Time] call IsComplete" )
 	return ( player.GetTitanRespawnTime() <= Time() )
 }
 

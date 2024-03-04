@@ -12,6 +12,9 @@ function main()
 
 	FlagInit( "CinematicEnding" )
 
+	// TODO: this doesnt really work, also isnt this that thing bob mentioned as a security risk.
+	SetPlaylistVarOverride( "titan_build_rule", "" + eTitanBuildRule.RULE_TIME )
+
 	if ( !reloadingScripts )
 	{
 		level.gameTypeText <- null
@@ -75,6 +78,8 @@ function main()
 		level.waveSpawnCustomSpawnPoints <- {}
 		level.waveSpawnCustomSpawnPoints[ TEAM_MILITIA ] <- []
 		level.waveSpawnCustomSpawnPoints[ TEAM_IMC ] <- []
+
+		level.burnCardWeaponModList <- null
 	}
 
 	RegisterSignal( "TitanAvailable" )
@@ -1823,8 +1828,6 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 	Assert( PlayerCanSpawn( player ), player + " cant spawn now" )
 	SetupPostLoaderPlayer( player )
 
-	printt( "AAAAAAAAAAAAA" )
-
 	//if ( IsLobby() )
 	//	return false
 
@@ -2034,7 +2037,7 @@ function TitanPlayerHotDropsIntoLevel( player )
 
 	local animation = "at_hotdrop_01" //  "at_hotdrop_drop_2knee_turbo" // at_hotdrop_01"
 
-	local model = GetPlayerSettingsFieldForClassName( titanSettings, "bodymodel" )
+	local model = GetPlayerSettingsFieldForClassName( titanSettings, "bodymodel_imc" )
 	local warpAttach = GetAttachmentAtTimeFromModel( model, animation, "offset", origin, angles, 0 )
 	PlayFX( TURBO_WARP_FX, warpAttach.position, warpAttach.angle )
 

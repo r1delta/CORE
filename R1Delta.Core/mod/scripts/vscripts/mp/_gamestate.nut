@@ -2675,10 +2675,9 @@ function AnnounceWinner( winningTeam )
 		if ( subString )
 			subStringIndex = GetStringID( subString )
 
-		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", GetWinningTeam(), subStringIndex, GetWinnerDeterminedWait()  )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", player.GetTeam(), subStringIndex, GetWinnerDeterminedWait()  )
 	}
 }
-
 
 function AnnounceRoundWinner()
 {
@@ -2699,7 +2698,7 @@ function AnnounceRoundWinner()
 		local imcTeamScore2 = GameRules.GetTeamScore2( TEAM_IMC )
 		local militiaTeamScore2 = GameRules.GetTeamScore2( TEAM_MILITIA )
 
-		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceRoundWinner", subStringIndex, GetWinnerDeterminedWait(), imcTeamScore2, militiaTeamScore2 )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceRoundWinner", player.GetTeam(), subStringIndex, GetWinnerDeterminedWait(), imcTeamScore2, militiaTeamScore2 )
 	}
 
 	GameRules.AnnounceRoundWinner(level.nv.winningTeam)
