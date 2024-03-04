@@ -1097,7 +1097,7 @@ function SetWinner( winningTeam )
 	}
 
 	if (winningTeam != null)
-		level.nv.winningTeam = (1 << winningTeam)
+		level.nv.winningTeam = winningTeam // ?: Why did they shift this beforehand?
 	else 
 		level.nv.winningTeam = null
 
@@ -2611,7 +2611,9 @@ function AnnounceWinner( winningTeam )
 	if ( winningTeam ) //No announcement if draw
 	{
 		// 랭크 설정
-		local losingTeam = GetTeamIndex(GetOtherTeams(1 << winningTeam))
+		//local losingTeam = GetTeamIndex(GetOtherTeams(1 << winningTeam))
+
+		local losingTeam = GetOtherTeam( GetWinningTeam() ) 
 
 		local teamPlayers = {}
 		teamPlayers[winningTeam] <- []
@@ -2630,7 +2632,6 @@ function AnnounceWinner( winningTeam )
 		{
 			player.SetRank( rank+1 );
 		}
-		//
 
 		GameRules.MarkGameStateWinnerDetermined(winningTeam)
 
@@ -2649,6 +2650,8 @@ function AnnounceWinner( winningTeam )
 			else
 				SetGameLostAnnouncement( "LostAnnouncement" )
 		}
+
+		printt( "Winners " + winningTeam + " " + TEAM_IMC + " " + TEAM_MILITIA )
 
 		PlayConversationToTeam( GetGameWonAnnouncement(), winningTeam )
 		PlayConversationToTeam( GetGameLostAnnouncement(), losingTeam )
@@ -2675,7 +2678,7 @@ function AnnounceWinner( winningTeam )
 		if ( subString )
 			subStringIndex = GetStringID( subString )
 
-		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", player.GetTeam(), subStringIndex, GetWinnerDeterminedWait()  )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", 0, subStringIndex, GetWinnerDeterminedWait()  )
 	}
 }
 
