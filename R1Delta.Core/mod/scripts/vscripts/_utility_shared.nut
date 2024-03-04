@@ -3192,7 +3192,7 @@ function UpdateBadRepPresent()
 function GenerateTitanOSAlias( player, aliasPrefix, aliasSuffix )
 {
 	local titanOSVoiceIndex = player.GetVoicePackIndex()
-	local titanOSEnumItemName = PersistenceGetEnumItemNameForIndex( "titanOS", titanOSVoiceIndex )
+	local titanOSEnumItemName = "titanos_betty"//PersistenceGetEnumItemNameForIndex( "titanOS", titanOSVoiceIndex )
 	local modifiedAlias = aliasPrefix + TITAN_OS_VOICE_PACK[ titanOSEnumItemName ] + aliasSuffix
 	return modifiedAlias
 }
