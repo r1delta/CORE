@@ -250,11 +250,8 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 		return false
 
 	player.SetTitanKillCount( player.GetTitanKillCount() + 1 )
+	AddTitanBuildPoint( player, "TitanKilled" )
 
-	if( GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/ == eTitanBuildRule.RULE_POINT )
-	{
-		AddTitanBuildPoint( player, "TitanKilled" )
-	}
 
 	titan.GetTitanSoul()
 
@@ -269,7 +266,7 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 			return
 
 		scoreEvent = "Kill" + scriptName
-/*
+
 		switch ( footstepType )
 		{
 			case "stryder":
@@ -288,7 +285,6 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 				scoreEvent = "KillOgre"
 				break
 		}
-*/
 		if ( GAMETYPE == COOPERATIVE )
 		{
 			if ( IsNukeTitan( titan ) )
