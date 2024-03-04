@@ -423,7 +423,8 @@ function GameStateEnter_WinnerDetermined()
 				}
 				else
 				{
-					if (IsWinningTeam(player.GetTeam()))
+					// HACK: flip this expression because nexon is weird
+					if (!IsWinningTeam(player.GetTeam()))
 						AddPlayerScore( player, "RoundVictory" )
 
 					AddPlayerScore( player, "RoundComplete" )
@@ -2689,10 +2690,11 @@ function AnnounceRoundWinner()
 	{
 		local subString
 
+		// HACK: swap the loss/win strings due to how nexon handles teams
 		if (IsWinningTeam(player.GetTeam()))
-			subString = level.winString
-		else
 			subString = level.lossString
+		else
+			subString = level.winString
 
 		local subStringIndex
 		if ( subString )
