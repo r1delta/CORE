@@ -203,7 +203,7 @@ function HumanRodeoViewCone( human, titanType )
 		human.PlayerCone_SetMinPitch( GetPlayerSettingsFieldForClassName(titanName, "RodeoViewCone_MinPitch") )
 		human.PlayerCone_SetMaxPitch( GetPlayerSettingsFieldForClassName(titanName, "RodeoViewCone_MaxPitch") )
 	}
-/*
+	
 	switch ( titanType )
 	{
 		case "atlas":
@@ -234,7 +234,6 @@ function HumanRodeoViewCone( human, titanType )
 			human.PlayerCone_SetMaxPitch( 35 )
 			break
 	}
-*/	
 }
 
 function MoveToLegalSolidFromTitan( mover, titan )

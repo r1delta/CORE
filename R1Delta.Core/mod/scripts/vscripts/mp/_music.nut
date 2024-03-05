@@ -58,8 +58,8 @@ function CreateLevelWinnerDeterminedMusicEvent()
 	if (GetTeamIndex(winningTeam))
 	{
 		local losingTeam = GetOtherTeams(winningTeam)
-		CreateTeamMusicEvent( GetTeamIndex(winningTeam), eMusicPieceID.LEVEL_WIN, Time() )
-		CreateTeamMusicEvent( GetTeamIndex(losingTeam), eMusicPieceID.LEVEL_LOSS, Time() )
+		CreateTeamMusicEvent( GetTeamIndex(winningTeam) + 1, eMusicPieceID.LEVEL_WIN, Time() )
+		CreateTeamMusicEvent( GetTeamIndex(losingTeam) + 1, eMusicPieceID.LEVEL_LOSS, Time() )
 	}
 	else
 	{
