@@ -1894,8 +1894,6 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 		StoreSpawnData( spawnPoint )
 	}
 
-	printt( "Losing my mind!" )
-
 	if ( IsAlive( player ) )
 	{
 		printt( "This happened one time, in retail." )
