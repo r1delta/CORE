@@ -75,10 +75,10 @@ function MeleeThread_TitanVsTitan_Internal( actions, action, attacker, target )
 	else
 	{
 		local targetType = GetSoulTitanType(target.GetTitanSoul())
-		local titanName = Native_GetTitanNameByType(titanType)
-		local baseTitanType = GetPlayerSettingsFieldForClassName(titanName, "baseTitanType")
+		// local titanName = Native_GetTitanNameByType(titanType)
+		// local baseTitanType = GetPlayerSettingsFieldForClassName(titanName, "baseTitanType")
 
-		switch ( baseTitanType )
+		switch ( targetType )
 		{
 			case "atlas":
 				func = MeleeThread_AtlasVsTitan
@@ -491,12 +491,15 @@ function TitanSyncedMeleeAnimationsPlay( attackerBodySequence, attackerViewBody,
 
 	local timer
 	local titanType = GetSoulTitanType(attacker.GetTitanSoul())
-	local titanName = Native_GetTitanNameByType(titanType)
 
-	if ( titanName != null )
+	if ( titanType != null )
 	{
-		timer = GetPlayerSettingsFieldForClassName(titanName, "MeleeAnimationsTimer")
+		local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
+		local titanSettings = titanDataTable.playerSetFile
+		timer = GetPlayerSettingsFieldForClassName(titanSettings, "MeleeAnimationsTimer")
 	}
+
+	timer = 3.0
 
 	wait timer
 
@@ -513,15 +516,15 @@ function MeleePinkMist( _, e ) //first parameter isn't used, but function signat
 
 	if ( !IsAlive( target ) )
 		return
-	//local gibModel = GetGibModel( target )
-	//local vec = attackerViewBody.GetOrigin() - attacker.GetOrigin()
-	//vec.Norm()
-	//attackerViewBody.Gib( gibModel, vec, false )
+	local gibModel = GetGibModel( target )
+	local vec = e.attackerViewBody.GetOrigin() - e.attacker.GetOrigin()
+	vec.Norm()
+	e.attackerViewBody.Gib( gibModel, vec, false )
 	
 	// [LJS]원래 코드. 스트라이더가 타이탄 gib 시 파일럿 혈흔.
 	//e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_PINKMIST, Vector( 0, 0, 0 ), 0 )
 	// 워게임 형식으로 변경.
-	e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_CHAR, Vector( 0, 0, 0 ), 0 )
+	// e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_NORMAL, Vector( 0, 0, 0 ), 0 )
 
 	if ( IsValid( e.attacker ) )
 	{

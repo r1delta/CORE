@@ -419,11 +419,11 @@ function Wallrun_CreateCopyOfPilotModel( player )
 
 	if ( player.IsTitan() )
 	{
-		modelName =   GetPlayerSettingsFieldForClassName( player.s.storedPlayerSettings, "bodymodel" )
+		modelName =   GetPlayerSettingsFieldForClassName( player.s.storedPlayerSettings, "bodymodel_imc" )
 	}
 	else
 	{
-		modelName =   player.GetPlayerSettingsField( "bodymodel" )
+		modelName =   player.GetPlayerSettingsField( "bodymodel_imc" )
 	}
 
 	local model = CreatePropDynamic( modelName )

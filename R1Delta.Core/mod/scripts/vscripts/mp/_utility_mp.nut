@@ -1447,7 +1447,6 @@ function GetTitanCoreTimer( titan )
 
 function DecrementBuildTimer( player, amount )
 {
-	printt("We are in fact hitting this")
 	if( !player.IsTitan() )
 	{
 		printt( "DecrementBuildTimer: " + player.GetTitanRespawnTime() + " " + amount )
