@@ -2222,7 +2222,7 @@ function CodeCallback_OnPlayerRespawned( player )
 	// if (level.onTryGameModeAnnouncement)
 	// 	thread level.onTryGameModeAnnouncement.func.acall([level.onTryGameModeAnnouncement.scope, player])
 	// else 
-	// 	thread TryGameModeAnnouncement( player )
+	thread TryGameModeAnnouncement( player )
 
 	if ( GameRules.GetGameMode()  == CAPTURE_POINT )
 	{
