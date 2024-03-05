@@ -1073,10 +1073,8 @@ function ShieldModifyDamage( titan, damageInfo )
 		EmitSoundOnEntity( titan, "titan_energyshield_down" )
 	}
 
-	if ( newShieldHealth < 0 )
-		damageInfo.SetDamage( abs( newShieldHealth ) )
-	else
-		damageInfo.SetDamage( 0 )
+	//?: I have no fucking idea why this helps at all
+	damageInfo.SetDamage( 0 )
 
 	return min( shieldHealth, shieldDamage )
 }
