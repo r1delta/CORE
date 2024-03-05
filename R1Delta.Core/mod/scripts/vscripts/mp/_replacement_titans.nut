@@ -825,7 +825,6 @@ Globalize( GetTitanForPlayer )
 
 function GetAttachmentAtTimeFromModel( model, animation, attachment, origin, angles, time )
 {
-	printt("KILL " + model + " " + animation + " " + attachment + " " + origin + " " + angles + " " + time)
 	local dummy = CreatePropDynamic( model, origin, angles )
 	local start = dummy.Anim_GetAttachmentAtTime( animation, attachment, time )
 	dummy.Destroy()
