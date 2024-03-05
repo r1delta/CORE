@@ -108,6 +108,8 @@ function StartTitanBuildProgress( player, forceBuild = false )
 
 	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
 
+	printt( "StartTitanBuildProgress: " + player.GetName() + " " + buildRule )
+
 	player.SetTitanBuildStarted( true )
 	player.SetTitanReady( false	)
 
@@ -177,11 +179,6 @@ function ShouldGiveTimerCredit( player, victim )
 
 	if ( player.IsTitan() && player.GetDoomedState() )
 		return false
-
-	if( player.IsTitanBuildStarted() == false || player.IsTitanReady() == true || player.IsTitanDeployed() == true )
-	{
-		return false
-	}
 
 	return true
 }

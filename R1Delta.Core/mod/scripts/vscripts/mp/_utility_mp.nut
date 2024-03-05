@@ -1436,6 +1436,15 @@ function GetPlayerActiveBurnCard( player )
 	return null
 }
 
+function GetTitanCoreTimer( titan )
+{
+	Assert( titan.IsTitan() )
+	local soul = titan.GetTitanSoul()
+	Assert( soul )
+
+	return soul.GetNextCoreChargeAvailable() - Time()
+}
+
 function DecrementBuildTimer( player, amount )
 {
 	printt("We are in fact hitting this")
