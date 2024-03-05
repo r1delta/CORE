@@ -1438,8 +1438,13 @@ function GetPlayerActiveBurnCard( player )
 
 function DecrementBuildTimer( player, amount )
 {
+	printt("We are in fact hitting this")
 	if( !player.IsTitan() )
+	{
+		printt( "DecrementBuildTimer: " + player.GetTitanRespawnTime() + " " + amount )
+		player.SetTitanRespawnTime( player.GetTitanRespawnTime() - amount )
 		return
+	}
 
 	// core ability in use
 	if ( TitanCoreInUse( player ) )

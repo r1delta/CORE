@@ -3526,10 +3526,5 @@ function IsWinningTeam(team)
 
 function GetTitanBuildRule()
 {
-	return GameMode_GetTitanBuildRule()
-}
-
-function GameMode_GetTitanBuildRule()
-{
-	return GetCurrentPlaylistVarInt( "titan_build_rule", eTitanBuildRule.RULE_TIME );
+	return 0
 }

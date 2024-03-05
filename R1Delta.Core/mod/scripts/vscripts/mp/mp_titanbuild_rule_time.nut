@@ -2,6 +2,9 @@
 
 function TitanBuildRule_Time_Main()
 {
+	printt("hitting init for TitanBuildRule_Time_Main")
+	Globalize( GiveTitanBuildTimeAdvantage )
+
 	AddCallback_TitanBuildRuleFunc( eTitanBuildRule.RULE_TIME, eTitanBuildEvent.INIT, Initialize )
 	AddCallback_TitanBuildRuleFunc( eTitanBuildRule.RULE_TIME, eTitanBuildEvent.RESET_COMPLETE_CONDITION, ResetTitanBuildTime )
 	AddCallback_TitanBuildRuleFunc( eTitanBuildRule.RULE_TIME, eTitanBuildEvent.START, StartTitanBuild )
@@ -74,6 +77,8 @@ function GiveTitanBuildTimeAdvantage( player, ent, savedDamage, shieldDamage )
 {
 	local timerCredit = 0
 
+	printt( "GiveTitanBuildTimeAdvantage: " + player.GetName() + " " + ent.GetName() + " " + savedDamage + " " + shieldDamage )
+
 	if ( IsAlive( ent ) )
 	{
 		if ( ent.IsTitan() )
@@ -136,6 +141,7 @@ function GiveTitanBuildTimeAdvantage( player, ent, savedDamage, shieldDamage )
 
 function DecrementBuildTime( player, credit )
 {
+	printt( "Decrementing titan build by: " + credit + " for player: " + player.GetName() )
 	player.SetTitanRespawnTime( player.GetTitanRespawnTime() - credit )
 }
 

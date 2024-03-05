@@ -1,52 +1,48 @@
+// I fucking hate nexon
+
 function TitanBuildRuleMain()
 {
-	printt( "[TitanBuildRule] call TitanBuildRuleMain" )
+	// printt( "[TitanBuildRule] call TitanBuildRuleMain" )
 
-	level.titanBuildRuleFunctions <- []
-	level.titanBuildRuleFunctions.resize( eTitanBuildRule._count_ )
+	// level.titanBuildRuleFunctions <- []
+	// level.titanBuildRuleFunctions.resize( eTitanBuildRule._count_ )
 
-	for ( local index = 0; index < level.titanBuildRuleFunctions.len(); index++ )
-	{
-		level.titanBuildRuleFunctions[index] = []
-		level.titanBuildRuleFunctions[index].resize( eTitanBuildEvent._count_ )
+	// for ( local index = 0; index < level.titanBuildRuleFunctions.len(); index++ )
+	// {
+	// 	level.titanBuildRuleFunctions[index] = []
+	// 	level.titanBuildRuleFunctions[index].resize( eTitanBuildEvent._count_ )
 
-	}
+	// }
 
-	IncludeScript( "mp/mp_titanBuild_rule_time" )
-	IncludeScript( "mp/mp_titanBuild_rule_time_atdm" )
-	IncludeScript( "mp/mp_titanBuild_rule_point" )
+	// IncludeScript( "mp/mp_titanBuild_rule_time" )
+	// IncludeScript( "mp/mp_titanBuild_rule_time_atdm" )
+	// IncludeScript( "mp/mp_titanBuild_rule_point" )
 
 }
 
 
-function AddCallback_TitanBuildRuleFunc( buildRule, event, callbackFunc )
-{
-	//Assert(  ( event in level.titanBuildEventString ), "invalid event : " + event )
-	Assert( event > eTitanBuildEvent.invalid && event < eTitanBuildEvent._count_ )
+// function AddCallback_TitanBuildRuleFunc( buildRule, event, callbackFunc )
+// {
+// 	//Assert(  ( event in level.titanBuildEventString ), "invalid event : " + event )
+// 	Assert( event > eTitanBuildEvent.invalid && event < eTitanBuildEvent._count_ )
 
-	local name = FunctionToString( callbackFunc )
+// 	local name = FunctionToString( callbackFunc )
 
-	local callbackInfo = {}
-	callbackInfo.name <- name
-	callbackInfo.func <- callbackFunc
-	callbackInfo.scope <- this
+// 	local callbackInfo = {}
+// 	callbackInfo.name <- name
+// 	callbackInfo.func <- callbackFunc
+// 	callbackInfo.scope <- this
 
-	level.titanBuildRuleFunctions[buildRule][event] = callbackInfo
-}
+// 	level.titanBuildRuleFunctions[buildRule][event] = callbackInfo
+// }
 
 function InitTitanBuildRule( player )
 {
 	player.SetTitanBuildStarted( false )
 	player.SetTitanReady( false )
-
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
-
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.INIT]
-
-	if( callbackInfo == null )
-		return
-
-	callbackInfo.func.acall( [callbackInfo.scope, player] )
+	player.titansBuilt = 0
+	player.SetTitanBuildTime( 0 )
+	player.SetTitanRespawnTime( -1 )
 }
 
 function TitanDeployed( player )
@@ -59,14 +55,29 @@ function TitanDeployed( player )
 
 function ResetTitanBuildCompleteCondition( player, forceBuild = false )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local buildTime
+	local reBuildTime
+	if( forceBuild == true )
+	{
+		buildTime = 0
+		reBuildTime = 0
+	}
+	else
+	{
+		buildTime = GetCurrentPlaylistVarInt( "titan_build_time", 240 )
+		reBuildTime = GetCurrentPlaylistVarInt( "titan_rebuild_time", 150 )
+	}
 
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.RESET_COMPLETE_CONDITION]
-
-	if( callbackInfo == null )
-		return
-
-	callbackInfo.func.acall( [callbackInfo.scope, player, forceBuild ] )
+	if( player.titansBuilt > 0 )
+	{
+		// 리빌드인 경우
+		player.SetTitanBuildTime( reBuildTime )
+	}
+	else
+	{
+		//최초 빌드
+		player.SetTitanBuildTime( buildTime )
+	}
 }
 
 function StartTitanBuildProgress( player, forceBuild = false )
@@ -97,75 +108,53 @@ function StartTitanBuildProgress( player, forceBuild = false )
 
 	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
 
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.START]
-
-	printt( callbackInfo )
-	if( callbackInfo == null )
-		return
-
 	player.SetTitanBuildStarted( true )
 	player.SetTitanReady( false	)
 
 	ResetTitanBuildCompleteCondition( player, forceBuild )	
 
-	callbackInfo.func.acall( [callbackInfo.scope, player] )
+	StartTitanBuild( player )
 
 	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
 
 	thread Update( player )
 }
 
+function StartTitanBuild( player )
+{
+	player.SetTitanRespawnTime( Time() + player.GetTitanBuildTime() )
+}
+
 function Update( player )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
-
 	for(;;)
 	{
 		wait 0
 
-		//local playerArray = GetPlayerArray()
-
-		//foeeach( player in playerArray )
-		//{
-			if( !IsValid( player ) )
-				return
+		if( !IsValid( player ) )
+			return
 				
-			if( player.IsTitanBuildStarted() == false )
-				return
+		if( player.IsTitanBuildStarted() == false )
+			return
 
-			if( player.IsTitanReady() == true )
-				return
+		if( player.IsTitanReady() == true )
+			return
 
-			if( player.IsTitanDeployed() == true )
-				return
+		if( player.IsTitanDeployed() == true )
+			return
 
-			// 빌드 완성.
-			if( IsTitanBuildComplete(player )  )
-			{
-				printt("Titan Ready!")
-				player.SetTitanBuildStarted( false )
-				player.SetTitanReady( true )
-
-				// if (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial" && ShouldSpawnAsTitan(player) == false)
-				// 	SetPlayerActiveObjective( player, "Titan_Status_Ready" )
-			}
-			 
-		//}
+		if( IsTitanBuildComplete(player )  )
+		{
+			printt("Titan Ready!")
+			player.SetTitanBuildStarted( false )
+			player.SetTitanReady( true )
+		} 
 	}
 }
 
 function IsTitanBuildComplete( player )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
-
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.END_CHECK]
-
-	if( callbackInfo != null )
-	{
-		return callbackInfo.func.acall( [callbackInfo.scope, player] )
-	}
-
-	return false
+	return ( player.GetTitanRespawnTime() <= Time() )
 }
 
 function GetRemain( player )
@@ -173,28 +162,12 @@ function GetRemain( player )
 	if( player.IsTitanBuildStarted() == false )
 		return -1
 
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
-
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.REMAIN]
-
-	if( callbackInfo == null )
-		return -1
-
-	local remain = callbackInfo.func.acall( [callbackInfo.scope, player] )
-
-	return remain
+	return player.GetTitanRespawnTime() - Time()
 }
 
 function GetCompleteCondition( player )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
-
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.GET_COMPLETE_CONDITION]
-
-	if( callbackInfo == null )
-		return -1
-
-	return ( callbackInfo.func.acall( [callbackInfo.scope, player] ) )
+	return player.GetTitanBuildTime()
 }
 
 function ShouldGiveTimerCredit( player, victim )
@@ -218,28 +191,73 @@ function GiveTitanBuildAdvantage( player, ent, saveDamage = 0, shieldDamage = 0)
 	if( ShouldGiveTimerCredit( player, ent) == false )
 		return
 
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	local timerCredit = 0
 
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.ADD_BUILD_ADVENTAGE]
+	printt( "GiveTitanBuildTimeAdvantage: " + player.GetName() + " " + ent.GetName() + " " + savedDamage + " " + shieldDamage )
 
-	if( callbackInfo == null )
-		return
+	if ( IsAlive( ent ) )
+	{
+		if ( ent.IsTitan() )
+		{
+			timerCredit = GetCurrentPlaylistVarFloat( "titan_kill_credit", 0.5 )
+			if ( PlayerHasServerFlag( player, SFLAG_HUNTER_TITAN ) )
+				timerCredit *= 2.0
+		}
+		else
+		{
+			if ( ent.IsPlayer() )
+			{
+				timerCredit = GetCurrentPlaylistVarFloat( "player_kill_credit", 0.5 )
+				if ( PlayerHasServerFlag( player, SFLAG_HUNTER_PILOT ) )
+					timerCredit *= 2.5
+			}
+			else
+			{
+				if ( ent.IsSoldier() )
+				{
+					timerCredit = GetCurrentPlaylistVarFloat( "ai_kill_credit", 0.5 )
+					if ( PlayerHasServerFlag( player, SFLAG_HUNTER_GRUNT ) )
+						timerCredit *= 2.5
+				}
+				else
+				if ( ent.IsSpectre() )
+				{
+					timerCredit = GetCurrentPlaylistVarFloat( "spectre_kill_credit", 0.5 )
+					if ( PlayerHasServerFlag( player, SFLAG_HUNTER_SPECTRE ) )
+						timerCredit *= 2.5
+				}
+				else
+				if ( ent.IsTurret() && ent.GetTeam() != TEAM_UNASSIGNED)
+				{
 
-	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
+					timerCredit = GetCurrentPlaylistVarFloat( "megaturret_kill_credit", 0.5 )
+					//No 2x burn card for shooting mega turret
+				}
+				else
+				if ( IsEvacDropship( ent ) )
+				{
+					timerCredit = GetCurrentPlaylistVarFloat( "evac_dropship_kill_credit", 0.5 )
+				}
+			}
+		}
 
-	callbackInfo.func.acall( [callbackInfo.scope, player, ent, saveDamage, shieldDamage] )
+		if ( player.IsTitan() && PlayerHasPassive( player, PAS_HYPER_CORE ) )
+			timerCredit *= 2.0
+
+		local dealtDamage = min( ent.GetHealth(), savedDamage + shieldDamage )
+		timerCredit = timerCredit * (dealtDamage / ent.GetMaxHealth().tofloat())
+		//printt("[digm][GiveTitanBuildTimeAdvantage] dealtDamage = " + dealtDamage + " savedDamage = " + savedDamage + " shieldDamage = " + shieldDamage + " timerCredit = " + timerCredit)
+	}
+
+	if ( timerCredit )
+	{
+		DecrementBuild( player, timerCredit )
+	}
 }
 
 function DecrementBuild( player, amount )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
-
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.DECREMENT_BUILD_CONDITION]
-
-	if( callbackInfo == null )
-		return
-
-	callbackInfo.func.acall( [callbackInfo.scope, player, amount] )
+	player.SetTitanRespawnTime( player.GetTitanRespawnTime() - amount )
 }
 
 function ForceTitanBuildComplete( player )
@@ -253,17 +271,77 @@ function ForceTitanBuildComplete( player )
 
 function AddTitanBuildPoint( player, event )
 {
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
+	printt( "AddTitanBuildPoint: " + player.GetName() + " " + event )
+	local point = 0
+	switch ( event )
+	{
+		case "EliminatePilot":
+			point = 2
+			break;
 
-	local callbackInfo = level.titanBuildRuleFunctions[buildRule][eTitanBuildEvent.ADD_BUILD_POINT]
+		case "KillPilot":
+		case "MeleeHumanExecutionVsPilot":	// 처형
+		case "MeleeHumanAttackVsPilot": // 점프킥
+			point = 2
+			break;
 
-	if( callbackInfo == null )
-		return
+		case "TitanAssist":
+			point = 3
+			break;
 
-	callbackInfo.func.acall( [callbackInfo.scope, player, event] )
+		case "PilotAssist":
+		case "evac":
+		case "DefenderHacksPanel":
+			point = 1
+			break;
+
+		case "TitanKilled":
+			point = 6
+			break
+
+		//case "RoundVictory":
+		//	UpdateBuildPoint( player, 1, "RoundVictory" ) 승패 관계 없이 3포인트 지급으로 해달라고 해서 주석 처리 - iskyfish. 151020
+		//	break;
+
+		//case "RoundComplete":
+		//	UpdateBuildPoint( player, 3, "RoundComplete" ) !ky 주석처리
+		//	break;
+
+		// 플레이어 폭탄설치
+		case "AttackRushPanel":
+			point = 6
+			break
+
+		// 플레이어 폭탄해제
+		case "DefenceRushPanel":
+			point = 6
+			break
+
+		// 플레이어 rushPanel 파괴
+		case "PlayerRushPanelDestroy":
+			point = 6
+			break
+
+		// 공격 팀 rushPanel 파괴
+		//case "TeamRushPanelDestroy":
+		//	point = 2
+		//	break
+
+	}
+
+	if( point != 0)
+	{
+		UpdateBuildPoint( player, point, event )
+	}
+}
+
+function UpdateBuildPoint( player, point, event )
+{
+	player.SetCurTitanBuildPoint( player.GetCurTitanBuildPoint() + point )
 
 	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
 }
+
 TitanBuildRuleMain()
 
 

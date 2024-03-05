@@ -1076,7 +1076,7 @@ function ShieldModifyDamage( titan, damageInfo )
 	if ( newShieldHealth < 0 )
 		damageInfo.SetDamage( abs( newShieldHealth ) )
 	else
-		damageInfo.SetDamage( damage )
+		damageInfo.SetDamage( 0 )
 
 	return min( shieldHealth, shieldDamage )
 }
