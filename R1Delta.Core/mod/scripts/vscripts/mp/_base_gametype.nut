@@ -2200,13 +2200,14 @@ function TryGameModeAnnouncement( player )
 		{
 			PlayConversationToPlayer( GetGameModeAnnouncement(), player ) //Symmetric game mode announcement
 		}
-
 	}
 
 	if( GAMETYPE != BIG_BROTHER )
 	{
 		Remote.CallFunction_NonReplay( player, "ServerCallback_GameModeAnnouncement" )
 	}
+
+	player.s.hasDoneTryGameModeAnnouncement = true
 }
 
 
@@ -2219,10 +2220,8 @@ function CodeCallback_OnPlayerRespawned( player )
 	player.s.respawnTime = Time()
 	player.s.lastAttacker = null
 
-	// if (level.onTryGameModeAnnouncement)
-	// 	thread level.onTryGameModeAnnouncement.func.acall([level.onTryGameModeAnnouncement.scope, player])
-	// else 
-	thread TryGameModeAnnouncement( player )
+	if (!player.s.hasDoneTryGameModeAnnouncement)
+		thread TryGameModeAnnouncement( player )
 
 	if ( GameRules.GetGameMode()  == CAPTURE_POINT )
 	{
@@ -2448,6 +2447,10 @@ function CodeCallback_OnClientConnectionStarted( player )
 
 	player.s.timeBeforeKill <- 0
 	player.s.addTimeBeforeKill <- 0
+
+	player.s.hasDoneTryGameModeAnnouncement <- false
+
+	player.s.lastNagTime <- 0
 
 	Assert( !player._entityVars )
 	InitEntityVars( player )

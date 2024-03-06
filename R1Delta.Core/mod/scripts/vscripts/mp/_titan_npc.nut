@@ -83,7 +83,7 @@ function SetupNPC_TitanTitle( npcTitan, player )
 	{
 		case eNPCTitanMode.FOLLOW:
 			npcTitan.Minimap_SetBossPlayerMaterial( "vgui/HUD/threathud_titan_friendlyself" )
-			npcTitan.SetTitle("#NPC_TITAN_FOLLOW_MODE")
+			npcTitan.SetTitle("#NPC_AUTO_TITAN")
 			break;
 
 		//case eNPCTitanMode.ROAM:
@@ -91,7 +91,7 @@ function SetupNPC_TitanTitle( npcTitan, player )
 
 		case eNPCTitanMode.STAY:
 			npcTitan.Minimap_SetBossPlayerMaterial( "vgui/HUD/threathud_titan_friendlyself_guard" )
-			npcTitan.SetTitle("#NPC_TITAN_GUARD_MODE")
+			npcTitan.SetTitle("#NPC_AUTO_TITAN")
 			break;
 	}
 }

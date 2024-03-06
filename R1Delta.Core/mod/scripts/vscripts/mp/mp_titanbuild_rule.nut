@@ -17,7 +17,6 @@ function TitanBuildRuleMain()
 	// IncludeScript( "mp/mp_titanBuild_rule_time" )
 	// IncludeScript( "mp/mp_titanBuild_rule_time_atdm" )
 	// IncludeScript( "mp/mp_titanBuild_rule_point" )
-
 }
 
 
@@ -127,6 +126,82 @@ function StartTitanBuild( player )
 	player.SetTitanRespawnTime( Time() + player.GetTitanBuildTime() )
 }
 
+function ETACanNagPlayer( player )
+{
+	ETAAnnouncementAllowanceTime <- 10.0
+
+	return player.s.replacementTitanETA_lastNagTime == 0 || Time() - player.s.replacementTitanETA_lastNagTime >= ETAAnnouncementAllowanceTime
+}
+
+function TryHandleTitanETA( player )
+{
+	ETA2MinUpperBound <- 123
+	ETA2MinLowerBound <- 115
+	ETA60sUpperBound <- 63
+	ETA60sLowerBound <- 55
+	ETA30sUpperBound <- 33
+	ETA30sLowerBound <- 25
+	ETA15sUpperBound <- 18
+	ETA15sLowerBound <- 12
+
+	if( GetRemain( player ) <= 0)
+		return
+
+	if( ( GetRemain( player ) < ETA2MinUpperBound && GetRemain( player ) > ETA2MinLowerBound ) && ETACanNagPlayer( player ) )
+	{
+		if ( player.titansBuilt )
+			PlayConversationToPlayer( "TitanReplacementETA120s" , player )
+		else
+			PlayConversationToPlayer( "FirstTitanETA120s", player )
+
+		player.s.replacementTitanETA_lastNagTime = Time()
+	}
+	else if( ( GetRemain( player ) < ETA60sUpperBound && GetRemain( player ) > ETA60sLowerBound  ) && ETACanNagPlayer( player ) )
+	{
+		if ( player.titansBuilt )
+			PlayConversationToPlayer( "TitanReplacementETA60s" , player )
+		else
+			PlayConversationToPlayer( "FirstTitanETA60s", player )
+		
+		player.s.replacementTitanETA_lastNagTime = Time()
+	}
+	else if( ( GetRemain( player ) < ETA30sUpperBound && GetRemain( player ) > ETA30sLowerBound ) && ETACanNagPlayer( player ) )
+	{
+		if ( player.titansBuilt )
+			PlayConversationToPlayer( "TitanReplacementETA30s" , player )
+		else
+			PlayConversationToPlayer( "FirstTitanETA30s", player )
+
+		player.s.replacementTitanETA_lastNagTime = Time()
+
+	}
+	else if( ( GetRemain( player ) < ETA15sUpperBound && GetRemain( player ) > ETA15sLowerBound ) && ETACanNagPlayer( player ) )
+	{
+		if ( player.titansBuilt )
+			PlayConversationToPlayer( "TitanReplacementETA15s" , player )
+		else
+			PlayConversationToPlayer( "FirstTitanETA15s", player )
+		
+		player.s.replacementTitanETA_lastNagTime = Time()
+	}
+}
+
+function NagPlayerTitan( player )
+{
+	for(;;)
+	{
+		wait 0;
+
+		if( !IsValid( player ) )
+			return
+
+		if(player.IsTitanDeployed())
+			return
+
+		TryReplacementTitanReadyAnnouncement( player )
+	}
+}
+
 function Update( player )
 {
 	for(;;)
@@ -150,7 +225,10 @@ function Update( player )
 			printt("Titan Ready!")
 			player.SetTitanBuildStarted( false )
 			player.SetTitanReady( true )
-		} 
+			thread NagPlayerTitan( player )
+		} else {
+			TryHandleTitanETA( player )
+		}
 	}
 }
 

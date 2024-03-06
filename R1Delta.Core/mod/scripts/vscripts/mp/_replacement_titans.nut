@@ -13,6 +13,7 @@ function main()
 	Globalize( DropReplacementTitan)
 	Globalize( ForceReplacementTitan )
 	Globalize( IsReplacementTitanAvailable )
+	Globalize( GetTimeTillNextETAAnnouncement )
 
 	RegisterSignal( "SetTitanRespawnTimer" )
 	RegisterSignal( "CalledInReplacementTitan" )
@@ -59,8 +60,33 @@ function ReplacementTitan_InitPlayer( player )
 {
 	player.s.replacementTitanETATimer <- GetTimeLimit_ForGameMode() * 60.0
 	player.s.replacementTitanReady_lastNagTime <- 0
+	player.s.replacementTitanETA_lastNagTime <- 0
+
+	//thread SetTitanRespawnContition( player )
 }
 
+// I cannot figure out what respawn/nexon was cooking
+function SetTitanRespawnContition( player )
+{
+	for(;;)
+	{
+		wait 0
+		if(GetGameState() > eGameState.SuddenDeath || GetGameState() < eGameState.Playing)
+			continue
+
+		if( !IsValid( player ) )
+			continue
+
+		if(GetRemain( player ) <= 0)
+		{
+			TryReplacementTitanReadyAnnouncement( player )
+		} 
+		else 
+		{
+			SetTitanRespawnContition_Internal( player, GetRemain( player ) )
+		}
+	}
+}
 
 function IsReplacementTitanAvailable( player, timeBuffer = 0 )
 {
@@ -330,10 +356,12 @@ function SetTitanRespawnContition_Internal( player, titanBuildCondition )
 	player.EndSignal( "CalledInReplacementTitan" )
 	player.EndSignal( "ChoseToSpawnAsTitan" )
 
-
 	if ( titanBuildCondition > 0 )
 	{
-		wait GetTimeTillNextETAAnnouncement( player, titanBuildCondition )
+		local timeToWait = GetTimeTillNextETAAnnouncement( player, titanBuildCondition )
+		if( timeToWait > 15.0 )
+			return
+		wait timeToWait
 	}
 
 	TryETATitanReadyAnnouncement( player )
@@ -343,59 +371,59 @@ function GetTimeTillNextETAAnnouncement( player, titanBuildCondition )
 {
 	if ( titanBuildCondition <= 0 )
 	{
-		//printt( "Waiting 0, Titan Ready" )
+		printt( "Waiting 0, Titan Ready" )
 		return 0
 	}
 
 	if ( titanBuildCondition >= file.ETA2MinUpperBound && player.s.replacementTitanETATimer > 120 )  //Give some leadup time to conversation starting
 	{
-		//printt( "Waiting " + ( timeTillNextTitan - file.ETA2MinUpperBound ) + " till 2 min announcement" )
+		printt( "Waiting " + ( titanBuildCondition - file.ETA2MinUpperBound ) + " till 2 min announcement" )
 		return titanBuildCondition - file.ETA2MinUpperBound
 	}
 
 	if ( titanBuildCondition >= file.ETA2MinLowerBound && player.s.replacementTitanETATimer > 120 )
 	{
-		//printt( "Waiting 0 till 2 min announcement" )
+		printt( "Waiting 0 till 2 min announcement" )
 		return 0 //Play 2 min ETA announcement immediately
 	}
 
 	if ( titanBuildCondition >= file.ETA60sUpperBound && player.s.replacementTitanETATimer > 60 )
 	{
-		//printt( "Waiting " + ( timeTillNextTitan - file.ETA60sUpperBound ) + " till 60s announcement" )
+		printt( "Waiting " + ( titanBuildCondition - file.ETA60sUpperBound ) + " till 60s announcement" )
 		return titanBuildCondition - file.ETA60sUpperBound
 	}
 
 	if ( titanBuildCondition >= file.ETA60sLowerBound && player.s.replacementTitanETATimer > 60 )
 	{
-		//printt( "Waiting 0 till 60s announcement" )
+		printt( "Waiting 0 till 60s announcement" )
 		return 0
 	}
 
 	if ( titanBuildCondition >= file.ETA30sUpperBound && player.s.replacementTitanETATimer > 30 )
 	{
-		//printt( "Waiting " + ( timeTillNextTitan - file.ETA30sUpperBound ) + " till 30s announcement" )
+		printt( "Waiting " + ( titanBuildCondition - file.ETA30sUpperBound ) + " till 30s announcement" )
 		return titanBuildCondition - file.ETA30sUpperBound
 	}
 
 	if ( titanBuildCondition >= file.ETA30sLowerBound && player.s.replacementTitanETATimer > 30 )
 	{
-		//printt( "Waiting 0 till 30 announcement" )
+		printt( "Waiting 0 till 30 announcement" )
 		return 0
 	}
 
 	if ( titanBuildCondition >= file.ETA15sUpperBound && player.s.replacementTitanETATimer > 15 )
 	{
-		//printt( "Waiting " + ( timeTillNextTitan - file.ETA15sUpperBound ) + " till 15s announcement" )
+		printt( "Waiting " + ( titanBuildCondition - file.ETA15sUpperBound ) + " till 15s announcement" )
 		return titanBuildCondition - file.ETA15sUpperBound
 	}
 
 	if ( titanBuildCondition >= file.ETA15sLowerBound  && player.s.replacementTitanETATimer > 15 )
 	{
-		//printt( "Waiting 0 till 15s announcement" )
+		printt( "Waiting 0 till 15s announcement" )
 		return 0
 	}
 
-	//printt( "Waiting " + timeTillNextTitan + " till next Titan" )
+	printt( "Waiting " + titanBuildCondition + " till next Titan" )
 	return titanBuildCondition
 
 
@@ -403,7 +431,7 @@ function GetTimeTillNextETAAnnouncement( player, titanBuildCondition )
 
 function TryETATitanReadyAnnouncement( player )
 {
-	//printt( "TryETATitanReadyAnnouncement" )
+	printt( "TryETATitanReadyAnnouncement" )
 	if ( !IsAlive( player ) )
 		return
 
