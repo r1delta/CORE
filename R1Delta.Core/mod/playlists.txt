@@ -31,7 +31,7 @@
 			"target_health_bar"	"1"
 			"cinematic_mode"	"0"
 			"AT_scorelimit"	"300"
-			"run_evac"	"0"
+			"run_evac"	"1"
 			"riff_spawn_as_titan"	"0"
 			"riff_titan_availability"	"0"
 			"riff_allow_npcs"	"0"
