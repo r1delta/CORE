@@ -130,7 +130,6 @@ function ExfilPanelThink( panel )
 
 function ExfilPlayingThink()
 {
-	/*
 	if ( Time() >= level.nv.secondsTitanCheckTime && !level.nv.exfilState )
 	{
 		level.nv.exfilState = true
@@ -138,7 +137,6 @@ function ExfilPlayingThink()
 
 		thread ExfiltrationEvacMain( TEAM_MILITIA )
 	}
-	*/
 }
 
 

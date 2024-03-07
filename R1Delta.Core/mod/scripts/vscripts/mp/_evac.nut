@@ -128,6 +128,7 @@ function Evac_SetCustomDropshipFunc( func )
 
 function Evac_SetEvacTeam( team )
 {
+	printt( "The team is: " + team )
 	Assert( 
 		team == TEAM_IMC || 
 		team == TEAM_MILITIA
@@ -390,6 +391,7 @@ Globalize( EvacOnDemand )
 
 function EvacMain( chaseTeam ) //TODO: After doing some work on One Flag CTF and EvacOnDemand, it's apparent there's some subtle bugs with EvacMain that are hidden by the 10s grace respawn period given by regular Evac. Should look at this again and make sure it can be interrupted gracefully.
 {
+	printt( "EvacMain" )
 	/*
 	if ( level.isTestmap )
 	{
@@ -409,15 +411,18 @@ function EvacMain( chaseTeam ) //TODO: After doing some work on One Flag CTF and
 	*/
 
 	if ( level.evacTeamOverride )
-		chaseTeam = GetOtherTeams(1 << level.evacTeamOverride)
+		chaseTeam = GetOtherTeam( level.evacTeamOverride )
 
-	if (GetTeamIndex(chaseTeam) == TEAM_UNASSIGNED )
+	if (chaseTeam == TEAM_UNASSIGNED )
 		return
 
-	local evacTeam = GetTeamIndex(GetOtherTeams(chaseTeam))
+	local evacTeam = GetOtherTeam(chaseTeam)
 
 	if ( level.evacTeam == null )
+	{
+		printt( "EvacMain: evacTeam is null" )
 		Evac_SetEvacTeam( evacTeam )
+	}
 
 	if ( !GetCurrentPlaylistVarInt( "run_evac", 0 ) ) //For dev use: don't end out of evac early
 	{
@@ -438,6 +443,8 @@ function EvacMain( chaseTeam ) //TODO: After doing some work on One Flag CTF and
 
 	local scriptRef = CreateEvacShipIcon( evacNode )
 	level.evacShipIcon = scriptRef
+
+	printt( "Later on in the call" )
 
 	DisableTitanfallForLifetimeOfEntityNearOrigin( evacNode, evacNode.GetOrigin(), EVAC_PREVENT_TITANFALL_RADIUS  )
 
@@ -1502,8 +1509,10 @@ function WaitUntilPlayerHasDiedOrDisconnected()
 function EvacModeShouldEnd()
 {
 	//First check to see if any other players are still connected
+	printt(level.evacTeam)
+	printt(GetOtherTeam(level.evacTeam))
 	local evacPlayers = GetPlayerArrayOfTeam( level.evacTeam )
-	local pursuitPlayers = GetPlayerArrayOfTeam(GetTeamIndex(GetOtherTeams(1 << level.evacTeam)))
+	local pursuitPlayers = GetPlayerArrayOfTeam( GetOtherTeam(level.evacTeam) )
 
 	if ( evacPlayers.len() == 0 )
 		return true
