@@ -3518,7 +3518,7 @@ function IsWinningTeam(team)
 	if (!level.nv.winningTeam)
 		return false
 
-	if (level.nv.winningTeam & (1 << team))
+	if (level.nv.winningTeam == team)
 		return true
 
 	return false

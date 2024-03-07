@@ -35,7 +35,7 @@ function LTS_OnPlayerRespawned( player )
 
 	if ( Riff_TitanAvailability() == eTitanAvailability.Once )
 	{
-		//player.SetNextTitanRespawnAvailable( 0 )
+		player.SetNextTitanRespawnAvailable( 0 )
 	}
 }
 
