@@ -18,15 +18,15 @@ const RPG_USE_ALWAYS = 2
 
 const STANDARDGOALRADIUS = 100
 
-const AI_SPECTRE_ACCURACY = 5
-const AI_SOLDIER_ACCURACY = 5
-const AI_SPECTRE_PROFICIENCY = 10
-const AI_SOLDIER_PROFICIENCY = 10
+const AI_SPECTRE_ACCURACY = 1.0
+const AI_SOLDIER_ACCURACY = 0.6
+const AI_SPECTRE_PROFICIENCY = 2
+const AI_SOLDIER_PROFICIENCY = 2
 
 const CAPTAIN_NAME_FREQUENCY = 0.35
 
 COOP_AT_WEAPON_RATES <- {}
-COOP_AT_WEAPON_RATES[ "mp_weapon_rocket_launcher" ] <- 0.7
+COOP_AT_WEAPON_RATES[ "mp_weapon_rocket_launcher" ] <- 0.5
 COOP_AT_WEAPON_RATES[ "mp_weapon_smr" ] <- 0.4
 COOP_AT_WEAPON_RATES[ "mp_weapon_mgl" ] <- 0.1
 
@@ -71,7 +71,6 @@ function main()
 	Globalize( EnemyChanged_Standard )
 	Globalize( EnemyChanged_Rocket )
 	Globalize( ResetNPCs )
-	Globalize( GetCaptainName )
 
 	Globalize( Spawn_GruntSquad )
 	Globalize( Spawn_SpectreSquad )
@@ -359,7 +358,7 @@ function CreateGrunt( team, model, weapon, alert = true, captain = false )
 	npc_soldier.kv.NumGrenades = 0
 	npc_soldier.kv.teamnumber = team
 	npc_soldier.kv.additionalequipment = weapon
-	npc_soldier.kv.tacticalvariant = 1
+
 	//npc_soldier.SetNameVisibleToEnemy( false )
 
 	npc_soldier.SetModel( model )
@@ -808,7 +807,7 @@ function EnemyChanged_Rocket( soldier )
 function EnemyChangedSwitchWeapon( soldier )
 {
 	local atWeapon
-	if ( true )
+	if ( GameRules.GetGameMode() == COOPERATIVE )
 	{
 		if ( "atWeapon" in soldier.s )
 		{

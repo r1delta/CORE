@@ -4,6 +4,7 @@
 //=========================================================
 
 RegisterSignal( "spotted_by_ai" )
+
 const FRONTLINE_MIN_DIST_SQR		= 262144	// 512
 const FRONTLINE_MAX_DIST_SQR		= 16777216	// 4096
 const FRONTLINE_NPC_SPAWN_OFFSET	= 0			// min distance away from the frontline that a droppod will spawn.
@@ -199,7 +200,7 @@ function GetMaxAICount( team )
 		}
 	}
 
-	return AICount * 3.5
+	return AICount
 }
 
 function SetGameModeAICount( count, team )
@@ -671,7 +672,7 @@ function TeamDeathmatchSpawnNPCs( team )
 		thread SpawnFrontlineSquad( team, numFreeSlots )
 
 		// add a little wait so that we don't spawn squads at the exact same time.
-		wait RandomFloat( 0.3, 0.7 )
+		wait RandomFloat( 0.8, 2.0 )
 
 		// the function above will have used up some free slots, lets see how many remain
 		numFreeSlots = GetFreeAISlots( team )
@@ -683,82 +684,28 @@ function SpawnFrontlineSquad( team, numFreeSlots )
 {
 	if ( !IsNPCSpawningEnabled() )
 		return
-	if ( !( "lastTitanSpawnTime" in this ) )
-		this.lastTitanSpawnTime <- -5
 
-	// 1/2 chance of spawning a Titan instead of a Grunt/Spectre squad
-	if ( (Time() - this.lastTitanSpawnTime >= 5) && (RandomInt( 2 ) == 0) ) 
-	{
-		local squadIndex = TryGetSmallestValidSquad( team, false )
-		if ( squadIndex == null )
-			return
-		local inGracePeriod = GameTime.PlayingTime() < START_SPAWN_GRACE_PERIOD
-		local inGameState = GetGameState() <= eGameState.Prematch || GetGameState() ==  eGameState.SwitchingSides
-		local useStartSpawn = inGameState || inGracePeriod
-		local spawnPointArray
-		
-		if ( useStartSpawn )
-		{
-			spawnPointArray = SpawnPoints_GetDropPodStart( team )
-		
-			if ( !spawnPointArray.len() )
-			{
-				spawnPointArray = SpawnPoints_GetDropPod()
-				useStartSpawn = false
-			}
-		}
-		else
-		{
-			spawnPointArray = SpawnPoints_GetDropPod()
-		}
-		local spawnPoint = GetFrontlineSpawnPoint( spawnPointArray, team, squadIndex, false, useStartSpawn )
-		if ( !spawnPoint )
-			return
-	
-		local loadoutIndex = RandomInt( 3 )
-		local loadouts = [ "titan_atlas", "titan_ogre", "titan_stryder" ]
-		local titanDataTable = GetPresetTitanLoadout( RandomInt( 3 ) )
-
-		titanDataTable.setFile = loadouts[ loadoutIndex ]
-		local settings = titanDataTable.setFile
-
-		local angles = spawnPoint.GetAngles()
-		local origin = spawnPoint.GetOrigin()
-
-		local titan = CreateNPCTitanFromSettings( settings, team, origin, angles )
-		titan.SetTitle( GetCaptainName() )
-		ReserveAISlots( team )
-		FreeAISlotOnDeath( titan )
-
-
-		GiveTitanWeaponsForLoadoutData( titan, titanDataTable )
-		this.lastTitanSpawnTime = Time() // Update the last spawn time
-
-
-		waitthread ScriptedHotDrop( titan, origin, angles, "at_hotdrop_drop_2knee_turbo" )
-		++level.aiSpawnCounter[ team ]
-		return // Don't spawn a Grunt/Spectre squad if we spawned a Titan
-	}
-	
 	local shouldSpawnSpectre = ShouldSpawnSpectre( team )
-	
+
 	local squadIndex = TryGetSmallestValidSquad( team, shouldSpawnSpectre )
 	if ( squadIndex == null )
 		return
-	
+
 	local squadName = MakeSquadName( team, squadIndex )
 	local squadSize = min( numFreeSlots, GetSpawnSquadSize( team ) )
 	Assert( squadSize <= GetFreeAISlots( team ), "Squadsize " + squadSize + " is greater than remaining ai slots " + GetFreeAISlots( team ) )
-	
+
 	local inGracePeriod = GameTime.PlayingTime() < START_SPAWN_GRACE_PERIOD
 	local inGameState = GetGameState() <= eGameState.Prematch || GetGameState() ==  eGameState.SwitchingSides
 	local useStartSpawn = inGameState || inGracePeriod
 	local spawnPointArray
-	
+
 	if ( useStartSpawn )
 	{
 		spawnPointArray = SpawnPoints_GetDropPodStart( team )
-	
+
+		//Assert( /*level.isTestmap ||*/ spawnPointArray.len(), "level didn't have any info_spawnpoint_droppod_start for team " + team )
+
 		if ( !spawnPointArray.len() )
 		{
 			spawnPointArray = SpawnPoints_GetDropPod()
@@ -769,21 +716,44 @@ function SpawnFrontlineSquad( team, numFreeSlots )
 	{
 		spawnPointArray = SpawnPoints_GetDropPod()
 	}
-	
+
+	//! 스폰포인트가 없으면 스킵
 	if(spawnPointArray.len() < 1)
+	{
+		//printl("_ai_game_modes.nut : 스폰 포인트가 없음")
 		return
-	
+	}
+	// if something got this far and we don't have any spawnpoints then something is wrong.
+	Assert( spawnPointArray.len() )
+
 	local spawnPoint = GetFrontlineSpawnPoint( spawnPointArray, team, squadIndex, shouldSpawnSpectre, useStartSpawn )
 	Assert( spawnPoint )
 	++level.aiSpawnCounter[ team ]
-	
+
 	local npcArray
-	
+
 	if ( shouldSpawnSpectre )
+	{
 		npcArray = Spawn_TrackedDropPodSpectreSquad( team, squadSize, spawnPoint, squadName )
+	}
 	else
-		npcArray = Spawn_TrackedDropPodGruntSquad( team, squadSize, spawnPoint, squadName ) 
-	
+	{
+		if ( Flag( "DisableDropships" ) || GameRules.GetGameMode() == EXFILTRATION )
+		{
+			Assert( squadSize <= GetFreeAISlots(team) )
+			npcArray = Spawn_TrackedDropPodGruntSquad( team, squadSize, spawnPoint, squadName )
+		}
+		else
+		{
+			Assert( squadSize <= GetFreeAISlots(team) )
+			if ( level.aiSpawnCounter[ team ] % 3 == 0 ) // 1 in every 3 grunt squad comes in via ship
+				npcArray = Spawn_TrackedZipLineGruntSquad( team, squadSize, spawnPoint, squadName )
+			else
+				npcArray = Spawn_TrackedDropPodGruntSquad( team, squadSize, spawnPoint, squadName )
+		}
+	}
+
+	// make the squad assault the correct frontline
 	SquadAssaultFrontline( npcArray, squadIndex )
 }
 

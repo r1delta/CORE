@@ -868,7 +868,7 @@ function IsAnyPlayerMMDebug()
 			return true
 	}
 
-	return true
+	return false
 }
 
 function DoneWaitingForPlayers()
@@ -889,7 +889,7 @@ function DoneWaitingForPlayers()
 
 	// start failsafe timer
 	if ( level.doneWaitingForPlayersTimeout == 0 )
-		level.doneWaitingForPlayersTimeout = Time() + GetCurrentPlaylistVarInt( "waiting_for_players_timeout_seconds", 1 )
+		level.doneWaitingForPlayersTimeout = Time() + GetCurrentPlaylistVarInt( "waiting_for_players_timeout_seconds", 120 )
 
 	local minPlayers = GetCurrentPlaylistVarInt( "min_players", 0 )
 	local knownPlayersCount = GetConnectingAndConnectedPlayerArray().len() + GetPendingClientsCount()
