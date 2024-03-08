@@ -3691,7 +3691,7 @@ function DecloakSnipersNearWaveEnd()
 
 function OnlySnipersAreLeft( threshold )
 {
-	local enemies = GetNPCArrayEx( "any", GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam), Vector(0,0,0), -1 )
+	local enemies = GetNPCArrayEx( "any", GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam), Vector(0,0,0), -1 ))
 
 	local count = 0
 	foreach ( guy in enemies )
