@@ -299,9 +299,9 @@
 	IncludeFile( "_stats_shared" )
 	InitStatsTables()
 	IncludeFile( "_challenges_content" )
-	IncludeFile( "mp/_challenges" )
+
 	CreateChallenges()
-	IncludeFile( "mp/_stats" )
+//	IncludeFile( "mp/_stats" )
 	// InitChallenges()
 	IncludeFile( "_menu_callbacks" )
 

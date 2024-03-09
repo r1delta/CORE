@@ -13,7 +13,7 @@ function main()
 	FlagInit( "CinematicEnding" )
 
 	// TODO: this doesnt really work, also isnt this that thing bob mentioned as a security risk.
-	SetPlaylistVarOverride( "titan_build_rule", "" + eTitanBuildRule.RULE_TIME )
+	//SetPlaylistVarOverride( "titan_build_rule", "" + eTitanBuildRule.RULE_TIME )
 
 	if ( !reloadingScripts )
 	{

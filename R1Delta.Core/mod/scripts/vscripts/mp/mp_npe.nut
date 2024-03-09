@@ -299,7 +299,7 @@ function TrainerStart()
 	level.player.EndSignal( "Disconnected" )
 
 	// default start
-	if (GAMETYPE == "tutorial")
+	if (true)
 		level.currentTrainingModule = TRAINING_BEDROOM
 	else if (GAMETYPE == "titan_tutorial")
 		level.currentTrainingModule = TRAINING_TITAN_MOSH_PIT
@@ -328,7 +328,7 @@ function SetupTrainingModules()
 {
 	level.trainingModuleInfos = []
 
-	if (GAMETYPE == "tutorial")
+	if (true)
 	{
 		local module = CreateTrainingModuleInfo()
 		module.id 			= TRAINING_BEDROOM/*eTrainingModules.BEDROOM*/
@@ -391,20 +391,20 @@ function SetupTrainingModules()
 		module.startEnt		= "destination_mosh_pit_playground"
 		module.runFunc 		= Module_MoshPit
 		module.resetFlags 	= [ "PlayerPressedWeaponSwitchButton", "PlayerReloaded", "PilotMoshPit_AllSquadsSpawned", "TrainingPilotHealth", "PilotHealthTrainingStarted", "MoshPit_GroundTroops_Done", "FiringRangeWeaponSwapped", "PlayerCalledInTitan", "TitanDropped", "PlayerEnteredTitan" ]
-		module.showLoading	= true
+		module.showLoading	= false
 		module.resumePoint 	= true
 		module.showEndEMP	= false
 		AddTrainingModuleInfo( module )
 	}
 
-	if (GAMETYPE == "tutorial" || GAMETYPE == "titan_tutorial")
+	if (true || GAMETYPE == "titan_tutorial")
 	{
 		local module 		= CreateTrainingModuleInfo()
 		module.id 			= TRAINING_TITAN_MOSH_PIT/*eTrainingModules.TITAN_MOSH_PIT*/
 		module.startEnt 	= "destination_mosh_pit_playground"
 		module.runFunc 		= Module_TitanMoshPit
 		module.resetFlags 	= [ "TitanMoshPitCombatStarted", "TitanShieldTrainingStarted", "TrainingTitanShields", "TitanHealthTrainingStarted", "TrainingTitanHealth", "CombatTestDone" ]
-		module.showLoading	= true
+		module.showLoading	= false
 		module.resumePoint 	= true
 		module.showEndEMP	= false
 		AddTrainingModuleInfo( module )
@@ -529,7 +529,7 @@ function StartTrainingModule( moduleID )
 
 	if (moduleInfo.showEndEMP)
 	{
-		Remote.CallFunction_Replay( level.player, "ServerCallback_TrainingTeleportLong" )
+		Remote.CallFunction_Replay( level.player, "ServerCallback_TrainingTeleport" )
 		wait 0.5
 	}
 
@@ -792,9 +792,9 @@ function NPE_EntitySetup()
 
 	SetupSkyboxEnts()
 
-	local arr = GetEntArrayByName_Expensive( "control_panel_titan_pet" )
+/*	local arr = GetEntArrayByName_Expensive( "control_panel_titan_pet" )
 	Assert( arr.len() == 1 )
-	level.titanPetControlPanel = arr[ 0 ]
+	level.titanPetControlPanel = arr[ 0 ]*/
 
 	SetupTrainingPod()
 
@@ -1878,11 +1878,11 @@ function Module_Bedroom()
 	TrainingPod_ViewConeLock_PodClosed( level.player )
 
 	// resumeChoice will have been set up before this runs based on how we are starting the level (first run, dev, or continuing)	
-	FlagWait("ConversationOver")
+	printt("Would wait but its fucked sorry")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "intro_welcome", level.player )
 
-	FlagWait("ConversationOver")
+	printt("Would wait but its fucked sorry")
 	FlagClear("ConversationOver")
 	wait 1.5
 
@@ -5010,7 +5010,7 @@ function Module_MoshPit()
 
 	waitthread PilotMoshPit_KillTitanWithRODEO()
 
-	Remote.CallFunction_UI( level.player, "ServerCallback_ShowGoToLobbyOrMoreTrainingMenu" )
+	ClientCommand(level.player, "startTitanMoshPitModule")
 }
 
 function HealthSuperRegen()
@@ -5540,7 +5540,7 @@ function MoshPit_TitanRodeo_VO()
 
 		if (level.player.GetTitanSoulBeingRodeoed())
 		{
-			ForcePlayConversationToPlayer("train_rodeo", level.player)
+			//ForcePlayConversationToPlayer("train_rodeo", level.player)
 			break
 		}
 
@@ -5552,8 +5552,8 @@ function MoshPit_TitanAttack_VO()
 {
 	ForcePlayConversationToPlayer( "titan_kill_drop_pod_grunts", level.player )
 
-	wait 5
-	ForcePlayConversationToPlayer( "train_titan_attack", level.player )
+	//wait 5
+	//ForcePlayConversationToPlayer( "train_titan_attack", level.player )
 }
 
 function MoshPit_Minimap_VO()
@@ -5568,11 +5568,11 @@ function MoshPit_Minimap_VO()
 
 	ForcePlayConversationToPlayer( "train_minimap", level.player )
 
-	FlagWait("ConversationOver")
+	printt("Would wait but its fucked sorry")
 	FlagClear("ConversationOver")	
 	ForcePlayConversationToPlayer( "train_minimap_findgrunts", level.player )
 
-	FlagWait("ConversationOver")
+	printt("Would wait but its fucked sorry")
 	FlagClear("ConversationOver")
 	StopHighlightMinimap()
 }
@@ -5746,7 +5746,7 @@ function SpawnStandDownTitan(spot, team, disableShield = true)
 function PilotMoshPit_KillTitanWithRODEO()
 {
 	//중앙 하단 대타이탄 무기를 사용하라는 메세지 disable
-	Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", false )
+	//Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", false )
 
 	//로데오 하기전엔 무기사용을 못하게 막는다.
 	level.player.FreezeFireControlsOnServer()
@@ -5792,7 +5792,7 @@ function PilotMoshPit_KillTitanWithRODEO()
 	wait 6
 
 	//중앙 하단 대타이탄 무기를 사용하라는 메세지 enable
-	Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", true )
+	//Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", true )
 }
 
 function MoshPit_TitanCombatStartVO( endFlag )
@@ -6493,7 +6493,7 @@ function Module_TitanMoshPit()
 
 	local minWaitEnd = 3.75 + Time()
 
-	FlagWait("ConversationOver")
+	printt("Would wait but its fucked sorry")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
 
@@ -6836,14 +6836,14 @@ function Titan_OffensiveOffhandTraining()
 		OffhandOffensiveHintPulse()
 		ControllerImageHint_OffhandOffensive()
 
-		FlagWait("ConversationOver")
+		printt("Would wait but its fucked sorry")
 		FlagClear("ConversationOver")
 		ForcePlayConversationToPlayer( "offhand_rocket_fire_name", level.player )
 	}
 
 	if ( !Flag( "FiredOffhandOffensive" ) )
 	{
-		FlagWait("ConversationOver")
+		printt("Would wait but its fucked sorry")
 		FlagClear("ConversationOver")
 		ForcePlayConversationToPlayer( "offhand_rocket_fire_direction", level.player )
 
@@ -6856,7 +6856,7 @@ function Titan_OffensiveOffhandTraining()
 		StopControllerImageHint()
 	}
 
-	FlagWait("ConversationOver")
+	printt("Would wait but its fucked sorry")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "offhand_rocket_fire_finish", level.player )
 	wait 5
@@ -6954,7 +6954,7 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_EMERGENCY )
 
 	for (local i = 0; i < 3; i++)
-		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, true, true, true, DESTROYER_MODEL)
+		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, true, true, true, ATLAS_MODEL)
 
 	while (1)
 	{
@@ -7077,7 +7077,7 @@ function Titan_TrainEject()
 
 	if ( level.player.IsTitan() )
 	{
-		FlagWait("ConversationOver")
+		printt("Would wait but its fucked sorry")
 		FlagClear("ConversationOver")
 		DisplayTrainingPrompt( eTrainingButtonPrompts.EJECT_CONFIRM )
 		ForcePlayConversationToPlayer( "titan_doomed_eject", level.player )
@@ -7424,7 +7424,7 @@ function ClientCommand_NPE_NoButtonClicked( player, ... )
 
 function ClientCommand_NPE_StartBedEndModule( player, ... ) 
 {
-	if (GAMETYPE == "tutorial")
+	if (true)
 		thread StartTrainingModule( TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
 	else 
 		GameRules.EndMatch()		
@@ -7533,7 +7533,7 @@ function ClientCommand_LeaveTraining( player, ... )
 	}
 
 	// otherwise go to end cabin to see end scripting
-	if (GAMETYPE == "tutorial")
+	if (true)
 		thread StartTrainingModule( TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
 	else 
 		GameRules.EndMatch()

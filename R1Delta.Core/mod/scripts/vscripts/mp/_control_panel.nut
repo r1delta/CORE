@@ -45,18 +45,6 @@ function GameModeRemovePanel( ent )
 
 	switch ( gameMode )
 	{
-		// if we are in this game mode, then don't keep undefined panels
-		case BIG_BROTHER:
-		
-		case HEIST:
-			gameMode = BIG_BROTHER
-			keepUndefined = true
-			break
-
-		case TITAN_RUSH:
-			gameMode = TITAN_RUSH
-			keepUndefined = true
-			break
 
 		default:
 			keepUndefined = true
