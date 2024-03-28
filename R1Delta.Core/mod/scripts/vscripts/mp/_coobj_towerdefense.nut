@@ -464,8 +464,8 @@ function HighestDamageSort(a, b) {
 
 function CoopTD_Postmatch() {
 	level.ent.Signal("GameEnd")
-
 	// ReportDevStat_RoundEnd()
+
 
 	level.ui.showGameSummary = true
 
@@ -3360,1581 +3360,1588 @@ function DecloakSnipersNearWaveEnd() {
 	}
 }
 
+<<
+<< << < HEAD
+
 function OnlySnipersAreLeft(threshold) {
-	local enemies = GetNPCArrayEx("any", GetOtherTeam(level.nv.attackingTeam), Vector(0, 0, 0), -1)
+	local enemies = GetNPCArrayEx("any", GetOtherTeam(level.nv.attackingTeam), Vector(0, 0, 0), -1) ===
+		=== =
+		function OnlySnipersAreLeft(threshold) {
+			local enemies = GetNPCArrayEx("any", GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam), Vector(0, 0, 0), -1)) >>>
+				>>> > ca59a8760e1baa4190db0b6d465b98ec8a02d27b
 
-	local count = 0
-	foreach(guy in enemies) {
-		if (!IsAlive(guy))
-			continue
+			local count = 0
+			foreach(guy in enemies) {
+				if (!IsAlive(guy))
+					continue
 
-		if (!(guy.IsTitan() || guy.IsSpectre() || guy.IsSoldier()))
-			continue
+				if (!(guy.IsTitan() || guy.IsSpectre() || guy.IsSoldier()))
+					continue
 
-		count++
+				count++
+			}
+
+			count -= threshold
+
+			return (count <= level.nv.TD_numSnipers)
+		}
+
+	function PermanentlyDecloakAllSnipers() {
+		local spectres = GetNPCArrayByClass("npc_spectre")
+		local snipers = []
+		foreach(npc in spectres) {
+			if (!IsSniperSpectre(npc))
+				continue
+
+			npc.SetCanCloak(false)
+			SniperDeCloak(npc)
+			npc.Signal("SniperAssaultGenerator")
+		}
 	}
 
-	count -= threshold
+	/************************************************************************************************\
+	CLOAKED DRONE
+	\************************************************************************************************/
 
-	return (count <= level.nv.TD_numSnipers)
-}
+	function TD_SpawnCloakedDrone(route) {
+		local team = GetOtherTeam(level.nv.attackingTeam)
+		local origin = route[0]
+		local cloakedDrone = SpawnCloakDrone(team, origin, Vector(0, 0, 0))
 
-function PermanentlyDecloakAllSnipers() {
-	local spectres = GetNPCArrayByClass("npc_spectre")
-	local snipers = []
-	foreach(npc in spectres) {
-		if (!IsSniperSpectre(npc))
-			continue
+		IncrementWaveNumCloakedDrones()
 
-		npc.SetCanCloak(false)
-		SniperDeCloak(npc)
-		npc.Signal("SniperAssaultGenerator")
-	}
-}
-
-/************************************************************************************************\
-CLOAKED DRONE
-\************************************************************************************************/
-
-function TD_SpawnCloakedDrone(route) {
-	local team = GetOtherTeam(level.nv.attackingTeam)
-	local origin = route[0]
-	local cloakedDrone = SpawnCloakDrone(team, origin, Vector(0, 0, 0))
-
-	IncrementWaveNumCloakedDrones()
-
-	return [cloakedDrone]
-}
-
-/************************************************************************************************\
-
- ######  ##     ## ####  ######  #### ########  ########
-##    ## ##     ##  ##  ##    ##  ##  ##     ## ##
-##       ##     ##  ##  ##        ##  ##     ## ##
- ######  ##     ##  ##  ##        ##  ##     ## ######
-      ## ##     ##  ##  ##        ##  ##     ## ##
-##    ## ##     ##  ##  ##    ##  ##  ##     ## ##
- ######   #######  ####  ######  #### ########  ########
-
-\************************************************************************************************/
-function TowerDefenseSuicideSpectreCustomize(spectre) {
-	if (Riff_AILethality() > eAILethality.TD_Low)
-		SetSuicideSpectreExplosionData(spectre, null, TD_MED_SUICIDE_TITANDMG, TD_MED_SUICIDE_PILOTDMG)
-	else
-		SetSuicideSpectreExplosionData(spectre, null, TD_LOW_SUICIDE_TITANDMG, TD_LOW_SUICIDE_PILOTDMG)
-
-	DisableNeutralize(spectre)
-	SetFastSpectre(spectre)
-}
-
-function SuicideSquadThink(squad, route, goal = null) {
-	foreach(npc in squad) {
-		npc.kv.squadname = ""
-		npc.StayCloseToSquad(true)
+		return [cloakedDrone]
 	}
 
-	if (goal == null)
-		goal = route[1]
+	/************************************************************************************************\
 
-	while (1) {
-		ArrayRemoveDead(squad)
-		if (!squad.len())
-			return
+	 ######  ##     ## ####  ######  #### ########  ########
+	##    ## ##     ##  ##  ##    ##  ##  ##     ## ##
+	##       ##     ##  ##  ##        ##  ##     ## ##
+	 ######  ##     ##  ##  ##        ##  ##     ## ######
+	      ## ##     ##  ##  ##        ##  ##     ## ##
+	##    ## ##     ##  ##  ##    ##  ##  ##     ## ##
+	 ######   #######  ####  ######  #### ########  ########
 
-		foreach(spectre in squad)
-		spectre.DisableArrivalOnce(true)
-
-		if (IsFinalDestination(route, goal))
-			waitthread TD_SquadAssaultPoint(squad, goal, AssaultPointSuicideFinal)
+	\************************************************************************************************/
+	function TowerDefenseSuicideSpectreCustomize(spectre) {
+		if (Riff_AILethality() > eAILethality.TD_Low)
+			SetSuicideSpectreExplosionData(spectre, null, TD_MED_SUICIDE_TITANDMG, TD_MED_SUICIDE_PILOTDMG)
 		else
-			waitthread TD_SquadAssaultPoint(squad, goal, AssaultPointSuicideBabyStep)
+			SetSuicideSpectreExplosionData(spectre, null, TD_LOW_SUICIDE_TITANDMG, TD_LOW_SUICIDE_PILOTDMG)
 
-		goal = GetNextGoal(route, goal)
+		DisableNeutralize(spectre)
+		SetFastSpectre(spectre)
+	}
+
+	function SuicideSquadThink(squad, route, goal = null) {
+		foreach(npc in squad) {
+			npc.kv.squadname = ""
+			npc.StayCloseToSquad(true)
+		}
+
 		if (goal == null)
-			break
-	}
+			goal = route[1]
 
-	//we're near the generator
-	local generator = level.TowerDefenseGenerator
-	foreach(spectre in squad) {
-		if (IsAlive(spectre)) {
-			SetSuicideSpectreExplosionData(spectre, 280)
-			spectre.SetEnemy(generator)
+		while (1) {
+			ArrayRemoveDead(squad)
+			if (!squad.len())
+				return
+
+			foreach(spectre in squad)
+			spectre.DisableArrivalOnce(true)
+
+			if (IsFinalDestination(route, goal))
+				waitthread TD_SquadAssaultPoint(squad, goal, AssaultPointSuicideFinal)
+			else
+				waitthread TD_SquadAssaultPoint(squad, goal, AssaultPointSuicideBabyStep)
+
+			goal = GetNextGoal(route, goal)
+			if (goal == null)
+				break
+		}
+
+		//we're near the generator
+		local generator = level.TowerDefenseGenerator
+		foreach(spectre in squad) {
+			if (IsAlive(spectre)) {
+				SetSuicideSpectreExplosionData(spectre, 280)
+				spectre.SetEnemy(generator)
+			}
 		}
 	}
-}
 
-function AssaultPointSuicideBabyStep(point) {
-	point.kv.finalDestination = 0
-	point.kv.nevertimeout = 1
-	__SuicideAssaultPointSetup(point)
-}
-
-function AssaultPointSuicideFinal(point) {
-	point.kv.finalDestination = 1
-	point.kv.nevertimeout = 0
-	__SuicideAssaultPointSetup(point)
-}
-
-function __SuicideAssaultPointSetup(point) {
-	point.kv.stopToFightEnemyRadius = SPECTRE_MAX_SIGHT_DIST //will stop moving and fight if enemy within this radius
-	point.kv.allowdiversionradius = SPECTRE_MAX_SIGHT_DIST
-	point.kv.allowdiversion = 1 //0 = do not divert from path to engage
-	point.kv.faceAssaultPointAngles = 0
-	point.kv.assaulttolerance = 64 //once at the assault point will move around within this radius to engage
-	point.kv.strict = 1
-	point.kv.forcecrouch = 0
-	point.kv.spawnflags = 0
-	point.kv.clearoncontact = 0 //clear this assault point on enemy contact ( not physical contact )
-	point.kv.assaulttimeout = 0
-	point.kv.arrivaltolerance = DEFAULT_ARRIVAL_TOLERANCE //the radius from the point at which we have arrived
-}
-
-/************************************************************************************************\
-
- ######   ######## ##    ## ######## ########     ###    ########  #######  ########
-##    ##  ##       ###   ## ##       ##     ##   ## ##      ##    ##     ## ##     ##
-##        ##       ####  ## ##       ##     ##  ##   ##     ##    ##     ## ##     ##
-##   #### ######   ## ## ## ######   ########  ##     ##    ##    ##     ## ########
-##    ##  ##       ##  #### ##       ##   ##   #########    ##    ##     ## ##   ##
-##    ##  ##       ##   ### ##       ##    ##  ##     ##    ##    ##     ## ##    ##
- ######   ######## ##    ## ######## ##     ## ##     ##    ##     #######  ##     ##
-
-\************************************************************************************************/
-function TowerDefenseCreateGenerator() {
-	level.nv.TDGeneratorHealth = TD_GENERATOR_HEALTH
-	level.nv.TDGeneratorShieldHealth = TD_GENERATOR_SHIELD_HEALTH
-	ClearMarker(MARKER_TOWERDEFENSEGENERATOR)
-
-	if (level.TowerDefenseGenerator == null) {
-		local origin = level.TowerDefenseGenLocation.origin
-		local angles = level.TowerDefenseGenLocation.angles
-		local team = level.nv.attackingTeam
-		local angleOffset = Vector(0, 90, 0)
-		local solidType = 6 // 0 = no collision, 2 = bounding box, 6 = use vPhysics, 8 = hitboxes only
-
-		local generator = CreatePropDynamic(MODEL_GEN_TOWER, Vector(0, 0, 0), Vector(0, -90, 0) + angleOffset, solidType)
-		generator.EnableAttackableByAI()
-		generator.s.isGeneratorModel <- true
-		generator.SetTeam(team)
-		SetVisibleEntitiesInConeQueriableEnabled(generator, true) //for arc cannon and emp titan
-
-		DisableTitanfallForLifetimeOfEntityNearOrigin(generator, origin, 192)
-
-		generator.SetOrigin(origin)
-		generator.SetAngles(angles)
-
-		// spawn rings model at the attach point and hide until it's time to start up
-		local attachID = generator.LookupAttachment("ATTACH")
-		local attachOrg = generator.GetAttachmentOrigin(attachID)
-		local attachAng = generator.GetAttachmentAngles(attachID)
-		local ringSolidity = 0 // no collision
-		local generatorRings = CreatePropDynamic(MODEL_GEN_TOWER_RINGS, attachOrg, attachAng, ringSolidity)
-		generatorRings.Hide()
-		generatorRings.s.currAnim <- null
-		generator.s.rings <- generatorRings
-
-		generator.s.healthStage <- null
-		generator.s.damageFX <- null
-		generator.s.damageSFX <- null
-		generator.s.ambientSFX <- null
-
-		// give generator some health so that nuke titans and suicide spectres will do damage to it.
-		// this health doesn't actually go down when it takes damage
-		generator.SetMaxHealth(999999)
-		generator.SetHealth(999999)
-
-		local cpoint = CreateEntity("info_placement_helper")
-		cpoint.SetName(UniqueString("generator_fx_colors"))
-		DispatchSpawn(cpoint, false)
-		generator.s.fxColorControlPoint <- cpoint
-
-		generator.Minimap_AlwaysShow(TEAM_IMC, null)
-		generator.Minimap_AlwaysShow(TEAM_MILITIA, null)
-		generator.Minimap_SetDefaultMaterial("vgui/HUD/coop/coop_harvester")
-		generator.Minimap_SetAlignUpright(true)
-		generator.Minimap_SetObjectScale(MINIMAP_GENERATOR_SCALE)
-		generator.Minimap_SetAlignUpright(true)
-		generator.Minimap_SetZOrder(10)
-
-		thread ClearMarker_OnEntDeath(generator, MARKER_TOWERDEFENSEGENERATOR)
-
-		generator.s.shieldsDownTime <- null
-
-		thread GeneratorShieldRegenThink(generator)
-		thread Generator_StatusVOThink(generator)
-
-		level.TowerDefenseGenerator = generator
+	function AssaultPointSuicideBabyStep(point) {
+		point.kv.finalDestination = 0
+		point.kv.nevertimeout = 1
+		__SuicideAssaultPointSetup(point)
 	}
 
-	level.TowerDefenseGenerator.s.healthStage = eGeneratorHealthStage.PERFECT
-
-	Generator_KillDmgFX() // kills off damage FX on prematch, under black screen
-}
-
-function GeneratorRingsPlayAnim(animAlias) {
-	local rings = level.TowerDefenseGenerator.s.rings
-
-	if (rings.s.currAnim != null && rings.s.currAnim != animAlias) {
-		rings.Anim_Stop()
-		rings.s.currAnim = null
+	function AssaultPointSuicideFinal(point) {
+		point.kv.finalDestination = 1
+		point.kv.nevertimeout = 0
+		__SuicideAssaultPointSetup(point)
 	}
 
-	rings.s.currAnim = animAlias
-	PlayAnim(rings, animAlias)
-}
+	function __SuicideAssaultPointSetup(point) {
+		point.kv.stopToFightEnemyRadius = SPECTRE_MAX_SIGHT_DIST //will stop moving and fight if enemy within this radius
+		point.kv.allowdiversionradius = SPECTRE_MAX_SIGHT_DIST
+		point.kv.allowdiversion = 1 //0 = do not divert from path to engage
+		point.kv.faceAssaultPointAngles = 0
+		point.kv.assaulttolerance = 64 //once at the assault point will move around within this radius to engage
+		point.kv.strict = 1
+		point.kv.forcecrouch = 0
+		point.kv.spawnflags = 0
+		point.kv.clearoncontact = 0 //clear this assault point on enemy contact ( not physical contact )
+		point.kv.assaulttimeout = 0
+		point.kv.arrivaltolerance = DEFAULT_ARRIVAL_TOLERANCE //the radius from the point at which we have arrived
+	}
 
-function ClearMarker_OnEntDeath(ent, markeralias) {
-	WaitSignal(ent, "OnDeath", "OnDestroy")
+	/************************************************************************************************\
 
-	ClearMarker(markeralias)
-}
+	 ######   ######## ##    ## ######## ########     ###    ########  #######  ########
+	##    ##  ##       ###   ## ##       ##     ##   ## ##      ##    ##     ## ##     ##
+	##        ##       ####  ## ##       ##     ##  ##   ##     ##    ##     ## ##     ##
+	##   #### ######   ## ## ## ######   ########  ##     ##    ##    ##     ## ########
+	##    ##  ##       ##  #### ##       ##   ##   #########    ##    ##     ## ##   ##
+	##    ##  ##       ##   ### ##       ##    ##  ##     ##    ##    ##     ## ##    ##
+	 ######   ######## ##    ## ######## ##     ## ##     ##    ##     #######  ##     ##
 
-function GeneratorBeamStop() {
-	local generator = level.TowerDefenseGenerator
+	\************************************************************************************************/
+	function TowerDefenseCreateGenerator() {
+		level.nv.TDGeneratorHealth = TD_GENERATOR_HEALTH
+		level.nv.TDGeneratorShieldHealth = TD_GENERATOR_SHIELD_HEALTH
+		ClearMarker(MARKER_TOWERDEFENSEGENERATOR)
 
-	generator.Signal("StopGeneratorBeam")
-}
-Globalize(GeneratorBeamStop)
+		if (level.TowerDefenseGenerator == null) {
+			local origin = level.TowerDefenseGenLocation.origin
+			local angles = level.TowerDefenseGenLocation.angles
+			local team = level.nv.attackingTeam
+			local angleOffset = Vector(0, 90, 0)
+			local solidType = 6 // 0 = no collision, 2 = bounding box, 6 = use vPhysics, 8 = hitboxes only
+
+			local generator = CreatePropDynamic(MODEL_GEN_TOWER, Vector(0, 0, 0), Vector(0, -90, 0) + angleOffset, solidType)
+			generator.EnableAttackableByAI()
+			generator.s.isGeneratorModel <- true
+			generator.SetTeam(team)
+			SetVisibleEntitiesInConeQueriableEnabled(generator, true) //for arc cannon and emp titan
+
+			DisableTitanfallForLifetimeOfEntityNearOrigin(generator, origin, 192)
+
+			generator.SetOrigin(origin)
+			generator.SetAngles(angles)
+
+			// spawn rings model at the attach point and hide until it's time to start up
+			local attachID = generator.LookupAttachment("ATTACH")
+			local attachOrg = generator.GetAttachmentOrigin(attachID)
+			local attachAng = generator.GetAttachmentAngles(attachID)
+			local ringSolidity = 0 // no collision
+			local generatorRings = CreatePropDynamic(MODEL_GEN_TOWER_RINGS, attachOrg, attachAng, ringSolidity)
+			generatorRings.Hide()
+			generatorRings.s.currAnim <- null
+			generator.s.rings <- generatorRings
+
+			generator.s.healthStage <- null
+			generator.s.damageFX <- null
+			generator.s.damageSFX <- null
+			generator.s.ambientSFX <- null
+
+			// give generator some health so that nuke titans and suicide spectres will do damage to it.
+			// this health doesn't actually go down when it takes damage
+			generator.SetMaxHealth(999999)
+			generator.SetHealth(999999)
+
+			local cpoint = CreateEntity("info_placement_helper")
+			cpoint.SetName(UniqueString("generator_fx_colors"))
+			DispatchSpawn(cpoint, false)
+			generator.s.fxColorControlPoint <- cpoint
+
+			generator.Minimap_AlwaysShow(TEAM_IMC, null)
+			generator.Minimap_AlwaysShow(TEAM_MILITIA, null)
+			generator.Minimap_SetDefaultMaterial("vgui/HUD/coop/coop_harvester")
+			generator.Minimap_SetAlignUpright(true)
+			generator.Minimap_SetObjectScale(MINIMAP_GENERATOR_SCALE)
+			generator.Minimap_SetAlignUpright(true)
+			generator.Minimap_SetZOrder(10)
+
+			thread ClearMarker_OnEntDeath(generator, MARKER_TOWERDEFENSEGENERATOR)
+
+			generator.s.shieldsDownTime <- null
+
+			thread GeneratorShieldRegenThink(generator)
+			thread Generator_StatusVOThink(generator)
+
+			level.TowerDefenseGenerator = generator
+		}
+
+		level.TowerDefenseGenerator.s.healthStage = eGeneratorHealthStage.PERFECT
+
+		Generator_KillDmgFX() // kills off damage FX on prematch, under black screen
+	}
+
+	function GeneratorRingsPlayAnim(animAlias) {
+		local rings = level.TowerDefenseGenerator.s.rings
+
+		if (rings.s.currAnim != null && rings.s.currAnim != animAlias) {
+			rings.Anim_Stop()
+			rings.s.currAnim = null
+		}
+
+		rings.s.currAnim = animAlias
+		PlayAnim(rings, animAlias)
+	}
+
+	function ClearMarker_OnEntDeath(ent, markeralias) {
+		WaitSignal(ent, "OnDeath", "OnDestroy")
+
+		ClearMarker(markeralias)
+	}
+
+	function GeneratorBeamStop() {
+		local generator = level.TowerDefenseGenerator
+
+		generator.Signal("StopGeneratorBeam")
+	}
+	Globalize(GeneratorBeamStop)
 
 
-function GeneratorStart_AndThink(startDelay = 0.0) {
-	local generator = level.TowerDefenseGenerator
-	Assert(IsValid(generator))
-	local rings = generator.s.rings
-	Assert(IsValid(rings))
+	function GeneratorStart_AndThink(startDelay = 0.0) {
+		local generator = level.TowerDefenseGenerator
+		Assert(IsValid(generator))
+		local rings = generator.s.rings
+		Assert(IsValid(rings))
 
-	FlagSet("GeneratorBeam_On")
+		FlagSet("GeneratorBeam_On")
 
-	generator.Signal("StopGeneratorBeam")
-	generator.EndSignal("StopGeneratorBeam")
+		generator.Signal("StopGeneratorBeam")
+		generator.EndSignal("StopGeneratorBeam")
 
-	generator.EndSignal("OnDestroy")
-	rings.EndSignal("OnDestroy")
+		generator.EndSignal("OnDestroy")
+		rings.EndSignal("OnDestroy")
 
-	if (startDelay > 0)
-		wait startDelay
+		if (startDelay > 0)
+			wait startDelay
 
-	EmitSoundOnEntity(generator, "Coop_Generator_Startup")
-	Generator_StartAmbientSFX("Coop_Generator_Ambient_Healthy")
-	delaythread(2) SetMarker(MARKER_TOWERDEFENSEGENERATOR, generator)
+		EmitSoundOnEntity(generator, "Coop_Generator_Startup")
+		Generator_StartAmbientSFX("Coop_Generator_Ambient_Healthy")
+		delaythread(2) SetMarker(MARKER_TOWERDEFENSEGENERATOR, generator)
 
-	local harvesterBeamFX = PlayFXWithControlPoint(FX_GEN_HARVESTER_BEAM, generator.GetOrigin(), generator.s.fxColorControlPoint, null, null, null, C_PLAYFX_LOOP)
+		local harvesterBeamFX = PlayFXWithControlPoint(FX_GEN_HARVESTER_BEAM, generator.GetOrigin(), generator.s.fxColorControlPoint, null, null, null, C_PLAYFX_LOOP)
 
-	OnThreadEnd(
-		function(): (generator, harvesterBeamFX, rings) {
-			if (IsValid(harvesterBeamFX)) {
-				local beamEndcapWait = 8.0
-				if (GetGameState() == eGameState.WinnerDetermined)
-					beamEndcapWait = GetWinnerDeterminedWait() // we want the endcap to play until WinnerDetermined ends and the screen fades
+		OnThreadEnd(
+			function(): (generator, harvesterBeamFX, rings) {
+				if (IsValid(harvesterBeamFX)) {
+					local beamEndcapWait = 8.0
+					if (GetGameState() == eGameState.WinnerDetermined)
+						beamEndcapWait = GetWinnerDeterminedWait() // we want the endcap to play until WinnerDetermined ends and the screen fades
 
-				thread KillFXWithEndcap(harvesterBeamFX, beamEndcapWait)
-			}
-
-			if (IsValid(rings))
-				thread GeneratorRings_DeathSequence()
-
-			if (IsValid(generator)) {
-				Generator_FadeAmbientSFX()
-				// damage FX will get stopped in TowerDefenseCreateGenerator (we want those to linger until after retry screen fade)
-
-				// HACK if it took a ton of damage all at once, it might skip updating color and starting the low health FX (like when we kill the generator with a 1-shot command for testing)
-				if (!IsValid(generator.s.damageFX)) {
-					Generator_UpdateFXColorControlPoint()
-					Generator_StartDmgFX(FX_GEN_HEALTH_LOW)
+					thread KillFXWithEndcap(harvesterBeamFX, beamEndcapWait)
 				}
+
+				if (IsValid(rings))
+					thread GeneratorRings_DeathSequence()
+
+				if (IsValid(generator)) {
+					Generator_FadeAmbientSFX()
+					// damage FX will get stopped in TowerDefenseCreateGenerator (we want those to linger until after retry screen fade)
+
+					// HACK if it took a ton of damage all at once, it might skip updating color and starting the low health FX (like when we kill the generator with a 1-shot command for testing)
+					if (!IsValid(generator.s.damageFX)) {
+						Generator_UpdateFXColorControlPoint()
+						Generator_StartDmgFX(FX_GEN_HEALTH_LOW)
+					}
+				}
+
+				FlagClear("GeneratorBeam_On")
+			}
+		)
+
+		Generator_UpdateFXColorControlPoint()
+
+		// rings rise up and then idle
+		rings.Show()
+		GeneratorRingsPlayAnim("generator_rise")
+		thread GeneratorRingsPlayAnim("generator_cycle_fast")
+
+		local maxHealth = TD_GENERATOR_HEALTH
+		local oldHealthRatio = 0
+		local oldShieldRatio = 0
+
+		while (true) {
+			local healthRatio = Generator_GetHealthRatio()
+			local shieldRatio = Generator_GetShieldRatio()
+
+			// Hack since NPC can get inside the generator on some maps when mantling.
+			DestoyNPCInsideGenerator(generator.GetOrigin())
+
+			if (healthRatio != oldHealthRatio || shieldRatio != oldShieldRatio) {
+				Generator_UpdateFXColorControlPoint()
+
+				oldHealthRatio = healthRatio
+				oldShieldRatio = shieldRatio
 			}
 
-			FlagClear("GeneratorBeam_On")
-		}
-	)
+			local healthFrac_DAMAGED = 0.7
+			local healthFrac_CRITICAL = 0.45
 
-	Generator_UpdateFXColorControlPoint()
+			// update generator SFX and damage FX
+			if (healthRatio < 1.0) {
+				if (healthRatio >= healthFrac_DAMAGED && generator.s.healthStage != eGeneratorHealthStage.HEALTHY) {
+					generator.s.healthStage = eGeneratorHealthStage.HEALTHY
 
-	// rings rise up and then idle
-	rings.Show()
-	GeneratorRingsPlayAnim("generator_rise")
-	thread GeneratorRingsPlayAnim("generator_cycle_fast")
+					Generator_StartAmbientSFX("Coop_Generator_Ambient_Healthy")
+					thread GeneratorRingsPlayAnim("generator_cycle_fast")
+				} else if ((healthRatio < healthFrac_DAMAGED && healthRatio >= healthFrac_CRITICAL) && generator.s.healthStage != eGeneratorHealthStage.DAMAGED) {
+					generator.s.healthStage = eGeneratorHealthStage.DAMAGED
 
-	local maxHealth = TD_GENERATOR_HEALTH
-	local oldHealthRatio = 0
-	local oldShieldRatio = 0
+					Generator_StartAmbientSFX("Coop_Generator_Ambient_Damaged")
+					thread GeneratorRingsPlayAnim("generator_cycle_fast")
+				} else if (healthRatio < healthFrac_CRITICAL && generator.s.healthStage != eGeneratorHealthStage.CRITICAL) {
+					generator.s.healthStage = eGeneratorHealthStage.CRITICAL
 
-	while (true) {
-		local healthRatio = Generator_GetHealthRatio()
-		local shieldRatio = Generator_GetShieldRatio()
-
-		// Hack since NPC can get inside the generator on some maps when mantling.
-		DestoyNPCInsideGenerator(generator.GetOrigin())
-
-		if (healthRatio != oldHealthRatio || shieldRatio != oldShieldRatio) {
-			Generator_UpdateFXColorControlPoint()
-
-			oldHealthRatio = healthRatio
-			oldShieldRatio = shieldRatio
-		}
-
-		local healthFrac_DAMAGED = 0.7
-		local healthFrac_CRITICAL = 0.45
-
-		// update generator SFX and damage FX
-		if (healthRatio < 1.0) {
-			if (healthRatio >= healthFrac_DAMAGED && generator.s.healthStage != eGeneratorHealthStage.HEALTHY) {
-				generator.s.healthStage = eGeneratorHealthStage.HEALTHY
+					Generator_StartAmbientSFX("Coop_Generator_Ambient_Critical")
+					Generator_StartDmgFX(FX_GEN_HEALTH_LOW)
+					thread GeneratorRingsPlayAnim("generator_cycle_slow")
+				}
+			} else if (generator.s.healthStage != eGeneratorHealthStage.PERFECT) {
+				generator.s.healthStage = eGeneratorHealthStage.PERFECT
 
 				Generator_StartAmbientSFX("Coop_Generator_Ambient_Healthy")
-				thread GeneratorRingsPlayAnim("generator_cycle_fast")
-			} else if ((healthRatio < healthFrac_DAMAGED && healthRatio >= healthFrac_CRITICAL) && generator.s.healthStage != eGeneratorHealthStage.DAMAGED) {
-				generator.s.healthStage = eGeneratorHealthStage.DAMAGED
-
-				Generator_StartAmbientSFX("Coop_Generator_Ambient_Damaged")
-				thread GeneratorRingsPlayAnim("generator_cycle_fast")
-			} else if (healthRatio < healthFrac_CRITICAL && generator.s.healthStage != eGeneratorHealthStage.CRITICAL) {
-				generator.s.healthStage = eGeneratorHealthStage.CRITICAL
-
-				Generator_StartAmbientSFX("Coop_Generator_Ambient_Critical")
-				Generator_StartDmgFX(FX_GEN_HEALTH_LOW)
-				thread GeneratorRingsPlayAnim("generator_cycle_slow")
 			}
-		} else if (generator.s.healthStage != eGeneratorHealthStage.PERFECT) {
-			generator.s.healthStage = eGeneratorHealthStage.PERFECT
 
-			Generator_StartAmbientSFX("Coop_Generator_Ambient_Healthy")
+			wait HARVESTER_BEAM_TICK_TIME
 		}
-
-		wait HARVESTER_BEAM_TICK_TIME
 	}
-}
-Globalize(GeneratorStart_AndThink)
+	Globalize(GeneratorStart_AndThink)
 
-function DestoyNPCInsideGenerator(generatorOrigin) {
-	local npcArray = GetNPCArrayEx("npc_soldier", TEAM_IMC, generatorOrigin, 80)
-	npcArray.extend(GetNPCArrayEx("npc_spectre", TEAM_IMC, generatorOrigin, 80))
-	npcArray.extend(GetNPCArrayEx("npc_titan", TEAM_IMC, generatorOrigin, 80))
+	function DestoyNPCInsideGenerator(generatorOrigin) {
+		local npcArray = GetNPCArrayEx("npc_soldier", TEAM_IMC, generatorOrigin, 80)
+		npcArray.extend(GetNPCArrayEx("npc_spectre", TEAM_IMC, generatorOrigin, 80))
+		npcArray.extend(GetNPCArrayEx("npc_titan", TEAM_IMC, generatorOrigin, 80))
 
-	//	DebugDrawCircle( generatorOrigin, Vector( 0, 0, 0 ), 80, 255, 0, 0, 1 )
-	foreach(npc in npcArray) {
-		local scoreVal = GetCoopScoreValue(npc)
-		level.nv.TDCurrentTeamScore += scoreVal
-		level.nv.TDStoredTeamScore += scoreVal
-		UpdatePlayerKillHistory(null, npc)
-		npc.Die(level.worldspawn, level.worldspawn, {
-			scriptType = DF_INSTANT,
-			damageSourceId = eDamageSourceId.stuck
-		})
-	}
-}
-
-function Generator_StartDmgFX(fxID) {
-	local generator = level.TowerDefenseGenerator
-
-	if (IsValid(generator.s.damageFX))
-		StopFX(generator.s.damageFX)
-
-	if (generator.s.damageSFX != null)
-		StopSoundOnEntity(generator, generator.s.damageSFX)
-
-	generator.s.damageFX = PlayFXWithControlPoint(fxID, generator.GetOrigin(), generator.s.fxColorControlPoint, null, null, null, C_PLAYFX_LOOP)
-
-	generator.s.damageSFX = "Coop_Generator_Electrical_Arcs"
-	EmitSoundOnEntity(generator, generator.s.damageSFX)
-}
-
-function Generator_KillDmgFX() {
-	local generator = level.TowerDefenseGenerator
-
-	if (IsValid(generator.s.damageFX))
-		StopFX_DestroyImmediately(generator.s.damageFX)
-
-	if (generator.s.damageSFX != null)
-		StopSoundOnEntity(generator, generator.s.damageSFX)
-}
-
-function Generator_StartAmbientSFX(soundAlias) {
-	local generator = level.TowerDefenseGenerator
-
-	if (generator.s.ambientSFX != null && generator.s.ambientSFX == soundAlias)
-		return
-
-	Generator_FadeAmbientSFX()
-
-	EmitSoundOnEntity(generator, soundAlias)
-	generator.s.ambientSFX = soundAlias
-}
-
-function Generator_FadeAmbientSFX() {
-	Generator_StopAmbientSFX(true)
-}
-
-function Generator_StopAmbientSFX(doFade = false) {
-	local generator = level.TowerDefenseGenerator
-
-	if (generator.s.ambientSFX != null) {
-		if (doFade)
-			FadeOutSoundOnEntity(generator, generator.s.ambientSFX, 1.0)
-		else
-			StopSoundOnEntity(generator, generator.s.ambientSFX)
-
-		generator.s.ambientSFX = null
-	}
-}
-
-function GeneratorRings_DeathSequence() {
-	local rings = level.TowerDefenseGenerator.s.rings
-	rings.EndSignal("OnDestroy")
-
-	GeneratorRingsPlayAnim("generator_fall")
-
-	rings.Hide()
-	thread GeneratorRingsPlayAnim("generator_idle")
-}
-
-
-function Generator_UpdateFXColorControlPoint() {
-	local generator = level.TowerDefenseGenerator
-
-	local colors = Generator_GetHealthStatusColorTable()
-	local colorVec = Vector(colors.r, colors.g, colors.b)
-
-	generator.s.fxColorControlPoint.SetOrigin(colorVec)
-}
-
-function GeneratorShieldRegenThink(generator) {
-	generator.EndSignal("OnDestroy")
-
-	generator.s.nextRegenTime <- 0
-
-	local alarmSoundAlias = "Coop_Generator_UnderAttack_Alarm"
-	local alarmFadeTime = 1.0
-
-	OnThreadEnd(
-		function(): (generator, alarmSoundAlias) {
-			if (IsValid(generator))
-				StopSoundOnEntity(generator, alarmSoundAlias)
+		//	DebugDrawCircle( generatorOrigin, Vector( 0, 0, 0 ), 80, 255, 0, 0, 1 )
+		foreach(npc in npcArray) {
+			local scoreVal = GetCoopScoreValue(npc)
+			level.nv.TDCurrentTeamScore += scoreVal
+			level.nv.TDStoredTeamScore += scoreVal
+			UpdatePlayerKillHistory(null, npc)
+			npc.Die(level.worldspawn, level.worldspawn, {
+				scriptType = DF_INSTANT,
+				damageSourceId = eDamageSourceId.stuck
+			})
 		}
-	)
-
-	local lastShieldHealth = level.nv.TDGeneratorShieldHealth
-	local shieldHealthSound = false
-	local soundAlarm = false
-	local shieldRegenStarted = false
-	local maxShield = TD_GENERATOR_SHIELD_HEALTH
-	local shieldRegenRate = maxShield / (GENERATOR_SHIELD_REGEN_TIME / SHIELD_REGEN_TICK_TIME)
-	local lastTime = Time()
-
-	while (true) {
-		local shieldHealth = level.nv.TDGeneratorShieldHealth
-
-		if (Flag("TDGeneratorDestroyed")) {
-			FadeOutSoundOnEntity(generator, alarmSoundAlias, alarmFadeTime)
-			soundAlarm = false
-		} else if (shieldHealth == 0 && soundAlarm == false) {
-			generator.s.shieldsDownTime = Time()
-
-			EmitSoundOnEntity(generator, alarmSoundAlias)
-			soundAlarm = true
-		}
-		if (ShouldRegenShield(generator, shieldHealth, maxShield)) {
-			local frameTime = max(0.0, Time() - lastTime)
-			local adjustedShieldRegenRate = shieldRegenRate * frameTime / SHIELD_REGEN_TICK_TIME
-			shieldHealth = min(TD_GENERATOR_SHIELD_HEALTH, shieldHealth + adjustedShieldRegenRate)
-			if (lastShieldHealth != TD_GENERATOR_SHIELD_HEALTH && shieldHealth == TD_GENERATOR_SHIELD_HEALTH)
-				EmitSoundOnEntity(generator, "Coop_Generator_ShieldRecharge_End") //EmitSoundToTeamPlayers( "Coop_Generator_ShieldRecharge_End", level.nv.attackingTeam )
-			else if (!shieldRegenStarted) {
-				local seekTime = GENERATOR_SHIELD_REGEN_TIME * lastShieldHealth / TD_GENERATOR_SHIELD_HEALTH
-				PlayGeneratorShieldResumeSFX(generator, seekTime)
-				if (lastShieldHealth == 0)
-					EmitSoundOnEntity(generator, "Coop_Generator_ShieldRecharge_Start") //EmitSoundToTeamPlayers( "Coop_Generator_ShieldRecharge_Start", level.nv.attackingTeam )
-				EmitSoundOnEntity(generator, "Coop_Generator_ShieldRecharge_ResumeClick")
-			}
-			FadeOutSoundOnEntity(generator, alarmSoundAlias, alarmFadeTime)
-			soundAlarm = false
-			shieldRegenStarted = true
-		} else {
-			shieldRegenStarted = false
-		}
-
-		level.nv.TDGeneratorShieldHealth = shieldHealth
-		lastShieldHealth = shieldHealth
-		lastTime = Time()
-		wait 0
-	}
-}
-
-function PlayGeneratorShieldResumeSFX(generator, seekTime) {
-	//We generally don't seek on the server, so we don't have a general function.
-	local playerArray = GetPlayerArray()
-	foreach(player in playerArray) {
-		EmitSoundOnEntityOnlyToPlayerWithSeek(generator, player, "Coop_Generator_ShieldRecharge_Resume", seekTime)
-	}
-}
-
-function ShouldRegenShield(generator, shieldHealth, maxShield) {
-	if (GetGameState() < eGameState.Playing)
-		return false
-
-	if (GetGameState() > eGameState.Playing && !Flag("ObjectiveComplete"))
-		return false
-
-	if (generator.s.nextRegenTime > Time())
-		return false
-
-	if (shieldHealth == maxShield)
-		return false
-
-	return true
-}
-
-const TITAN_GENERATOR_MELEE_DMG = 1000
-
-function GeneratorTookDamage(generator, damageInfo) {
-	if (!("isGeneratorModel" in generator.s))
-		return
-
-	if (!Flag("COOBJ_TowerDefense"))
-		return
-
-	if (Flag("GeneratorGodMode")) {
-		damageInfo.SetDamage(0)
-		return
 	}
 
-	local damageAmount = damageInfo.GetDamage()
-	local attacker = damageInfo.GetAttacker()
-	local inflictor = damageInfo.GetInflictor()
-	local playerTeam = level.nv.attackingTeam
+	function Generator_StartDmgFX(fxID) {
+		local generator = level.TowerDefenseGenerator
 
-	// ADJUST DAMAGE SCALE IF NECESSARY
-	local damageSourceID = damageInfo.GetDamageSourceIdentifier()
-	switch (damageSourceID) {
-		case eDamageSourceId.nuclear_core:
-			damageAmount *= GENERATOR_DAMAGE_NUKE_CORE_MULTIPLIER
-		case eDamageSourceId.mp_titanweapon_rocket_launcher:
-			if (IsValid(inflictor) && "mortar" in inflictor.s)
-				damageAmount *= GENERATOR_DAMAGE_MORTAR_ROCKET_MULTIPLIER
-			break
+		if (IsValid(generator.s.damageFX))
+			StopFX(generator.s.damageFX)
 
-		case eDamageSourceId.titanEmpField:
-			damageInfo.SetDamage(0)
-			damageAmount = 0
-			level.nv.TDGeneratorShieldHealth = 0
-			break
+		if (generator.s.damageSFX != null)
+			StopSoundOnEntity(generator, generator.s.damageSFX)
 
-		case eDamageSourceId.titan_melee:
-			damageAmount = min(damageAmount, TITAN_GENERATOR_MELEE_DMG)
-			damageInfo.SetDamage(damageAmount)
-			break
+		generator.s.damageFX = PlayFXWithControlPoint(fxID, generator.GetOrigin(), generator.s.fxColorControlPoint, null, null, null, C_PLAYFX_LOOP)
 
-		case eDamageSourceId.titan_step:
-		case eDamageSourceId.invalid:
-			if (damageInfo.GetDamageType() == DMG_CLUB) {
-				damageAmount = min(damageAmount, TITAN_GENERATOR_MELEE_DMG)
-				damageInfo.SetDamage(damageAmount)
-			} else {
-				damageInfo.SetDamage(0)
-				return
-			}
-			break
-		case eDamageSourceId.titan_fall:
-			damageInfo.SetDamage(0)
+		generator.s.damageSFX = "Coop_Generator_Electrical_Arcs"
+		EmitSoundOnEntity(generator, generator.s.damageSFX)
+	}
+
+	function Generator_KillDmgFX() {
+		local generator = level.TowerDefenseGenerator
+
+		if (IsValid(generator.s.damageFX))
+			StopFX_DestroyImmediately(generator.s.damageFX)
+
+		if (generator.s.damageSFX != null)
+			StopSoundOnEntity(generator, generator.s.damageSFX)
+	}
+
+	function Generator_StartAmbientSFX(soundAlias) {
+		local generator = level.TowerDefenseGenerator
+
+		if (generator.s.ambientSFX != null && generator.s.ambientSFX == soundAlias)
 			return
-			break
+
+		Generator_FadeAmbientSFX()
+
+		EmitSoundOnEntity(generator, soundAlias)
+		generator.s.ambientSFX = soundAlias
 	}
 
-	if (Riff_AILethality() < eAILethality.TD_Medium)
-		damageInfo.SetDamage(damageInfo.GetDamage() * TD_LOW_SCALAR_GENERATOR_DMG)
-
-	local preShieldDamage = damageAmount
-	// NOW AFFECT SHIELDS/HEALTH BASED ON HOW MUCH DMG SHIELDS ABSORBED
-	if (level.nv.TDGeneratorShieldHealth > 0) {
-		local shieldHealth = level.nv.TDGeneratorShieldHealth
-		local newShieldHealth = max(0, level.nv.TDGeneratorShieldHealth - damageAmount)
-		level.nv.TDGeneratorShieldHealth = newShieldHealth
-
-		if (shieldHealth > 0 && newShieldHealth == 0)
-			EmitSoundOnEntity(generator, "Coop_Generator_ShieldDown") //EmitSoundToTeamPlayers( "Coop_Generator_ShieldDown", playerTeam )
-
-		damageAmount = max(0, damageAmount - shieldHealth)
-	}
-	// if you kill/destroy a guy while his missile is in the air, the attacker will be the missile instead of the dead guy.
-	if (attacker.IsNPC() && attacker.GetTeam() != playerTeam) {
-		local attackerClass = attacker.GetClassname()
-		local attackerSubclass = attacker.GetSubclass()
-
-		local aiTypeID = Coop_GetAITypeID_ByClassAndSubclass(attackerClass, attackerSubclass)
-		UpdateGeneratorAttackHistory(aiTypeID, preShieldDamage, damageAmount)
+	function Generator_FadeAmbientSFX() {
+		Generator_StopAmbientSFX(true)
 	}
 
-	generator.s.nextRegenTime = Time() + GENERATOR_SHIELD_REGEN_DELAY
-
-	// RETURN IF NO DAMAGE WAS DEALT
-	if (damageAmount <= 0) {
-		Play3PHarvesterImpactSounds(generator, damageInfo)
-		return
-	}
-
-	level.nv.TDGeneratorHealth -= damageAmount
-
-	if (level.nv.TDGeneratorHealth < 0) {
-		EmitSoundOnEntity(generator, "Coop_Generator_Destroyed") //EmitSoundToTeamPlayers( "Coop_Generator_Destroyed", level.nv.attackingTeam )
-		FlagSet("TDGeneratorDestroyed")
-		//Catch the last wave state during defeat.
-		if (Coop_GetNumRestartsLeft() == 0) {
-			Add_TimeInterval_HarvesterStatus()
-		}
-	}
-}
-
-function InitGeneratorAttackHistory() {
-	local defaultTable = {
-		totalDamage = 0,
-		currentDamageStreak = 0,
-		lastDamageTime = -1,
-		actualDamage = 0
-	}
-
-	level.generatorAttackHistory.global <- clone defaultTable
-
-	foreach(nameKey, aiTypeID in getconsttable().eCoopAIType)
-	level.generatorAttackHistory[aiTypeID] <- clone defaultTable
-}
-
-function InitEOGKillHistory() {
-	level.killHistory <- {}
-	//Index 0 = Militia Team Stats
-	for (local i = 0; i <= COOP_MAX_PLAYER_COUNT; i++) {
-		level.killHistory[i] <- {}
-		local playerKillCount = 0
-		local turretKillCount = 0
-		foreach(nameKey, aiTypeID in getconsttable().eCoopAIType)
-		level.killHistory[i][aiTypeID] <- [playerKillCount, turretKillCount]
-	}
-}
-
-function ResetPlayerKillHistory(player) {
-	local index = player.GetEntIndex()
-	foreach(nameKey, aiTypeID in getconsttable().eCoopAIType)
-	level.killHistory[index][aiTypeID] <- [0, 0]
-}
-
-function UpdatePlayerKillHistory(player, npc, attackerIsTurret = false) {
-	//This adds to the team record and player record. There are cases where the team can get credit without any players getting credit.
-	local indexArray = [0]
-	if (player != null)
-		indexArray.append(player.GetEntIndex())
-
-	local npcClass = npc.GetClassname()
-	local npcSubclass = null
-	if (npcClass != "prop_dynamic")
-		npcSubclass = npc.GetSubclass()
-
-	local aiTypeID = Coop_GetAITypeID_ByClassAndSubclass(npcClass, npcSubclass)
-	for (local i = 0; i < indexArray.len(); i++) {
-		if (attackerIsTurret)
-			level.killHistory[indexArray[i]][aiTypeID][1]++
-		else
-			level.killHistory[indexArray[i]][aiTypeID][0]++
-	}
-}
-Globalize(UpdatePlayerKillHistory)
-
-function ResetGeneratorAttackStreakHistory() {
-	foreach(aiTypeID, attackInfo in level.generatorAttackHistory) {
-		// Only reset streak stuff, not total damage
-		attackInfo.currentDamageStreak = 0
-		attackInfo.lastDamageTime = -1
-	}
-
-	level.generatorAttackHistory.global.currentDamageStreak = 0
-	level.generatorAttackHistory.global.lastDamageTime = -1
-}
-
-function UpdateGeneratorAttackHistory(aiTypeID, preShieldDamageAmount, postShieldDamageAmount) {
-	// GLOBAL attack history update
-	local globalInfo = level.generatorAttackHistory.global
-	globalInfo.totalDamage += preShieldDamageAmount
-	globalInfo.actualDamage += postShieldDamageAmount
-
-	if (globalInfo.lastDamageTime != -1 && Time() - globalInfo.lastDamageTime >= GENERATOR_DAMAGE_STREAK_TIMEOUT)
-		globalInfo.currentDamageStreak = 0
-
-	globalInfo.currentDamageStreak += preShieldDamageAmount
-	globalInfo.lastDamageTime = Time()
-
-	// AIType specific attack history update
-	local attackInfo = level.generatorAttackHistory[aiTypeID]
-
-	attackInfo.totalDamage += preShieldDamageAmount
-	attackInfo.actualDamage += postShieldDamageAmount
-
-	if (attackInfo.lastDamageTime != -1 && Time() - attackInfo.lastDamageTime >= GENERATOR_DAMAGE_STREAK_TIMEOUT)
-		attackInfo.currentDamageStreak = 0
-
-	attackInfo.currentDamageStreak += preShieldDamageAmount
-	attackInfo.lastDamageTime = Time()
-
-	//printt( "Attack history update:", GetCoopAITypeString_ByID( aiTypeID ), "dmg / dmgstreak:", attackInfo.totalDamage, "/", attackInfo.currentDamageStreak )
-}
-
-function Generator_CheckDamageStreak(aiTypeID, reqStreakDmg) {
-	local idx = "global"
-	if (aiTypeID != idx) {
-		ValidateCoopAITypeIdx(aiTypeID)
-		idx = aiTypeID
-	}
-
-	local attackInfo = level.generatorAttackHistory[aiTypeID]
-
-	// hasn't attacked the generator yet this wave
-	if (attackInfo.lastDamageTime == -1)
-		return false
-
-	// no active damage streak
-	if (Time() - attackInfo.lastDamageTime >= GENERATOR_DAMAGE_STREAK_TIMEOUT)
-		return false
-
-	// damage streak hasn't hit threshold
-	if (attackInfo.currentDamageStreak < reqStreakDmg)
-		return false
-
-	return true
-}
-
-function Generator_StatusVOThink(generator) {
-	FlagEnd("ObjectiveComplete")
-	FlagEnd("ObjectiveFailed")
-
-	generator.EndSignal("OnDestroy")
-
-	local lastShieldHealth = level.nv.TDGeneratorShieldHealth
-	local lastGeneratorHealth = level.nv.TDGeneratorHealth
-
-	// these switches get flipped on and off so we're not spamming VO requests against a timer
-	local canAnnounceShieldRecharging = true
-	local canAnnounceShieldDown = true
-	local canAnnounceShieldFull = false // don't want the announce to happen at game start
-	local canAnnounceHealthStatus = true
-	local resetCanAnnounceHealth_aboveFrac = 0.0
-	local resetCanAnnounceHealth_belowFrac = 1.0
-
-	local shieldHealth
-	local maxShield
-	local shieldRatio
-
-	local generatorHealth
-	local maxHealth
-	local healthRatio
-
-	local playedVO = false
-	local longWait = 4.5
-
-	local lastThreatCheck = Time()
-	local threatCheckRate = 5.0
-
-	while (1) {
-		if (playedVO) {
-			TimerReset("Nag_GeneratorStatus_Global")
-			wait longWait
-		} else
-			wait SHIELD_REGEN_TICK_TIME
-
-		if (!Flag("CoopTD_WaveCombatInProgress") || Flag("TDGeneratorDestroyed")) {
-			wait longWait
-			continue
-		}
-
-		// Specific threat announcement will supercede generic status announcement
-		if (Time() - lastThreatCheck >= threatCheckRate) {
-			lastThreatCheck = Time()
-
-			waitthread Generator_TryAnnounceThreats(generator)
-			continue
-		}
-
-		shieldHealth = level.nv.TDGeneratorShieldHealth
-		maxShield = TD_GENERATOR_SHIELD_HEALTH
-		shieldRatio = shieldHealth.tofloat() / maxShield.tofloat()
-
-		generatorHealth = level.nv.TDGeneratorHealth
-		maxHealth = TD_GENERATOR_HEALTH
-		healthRatio = generatorHealth.tofloat() / maxHealth.tofloat()
-
-		playedVO = false
-
-		if (!TimerCheck("Nag_GeneratorStatus_Global"))
-			continue
-
-		// protects us against announcing that the shields are down long after they've actually gone down
-		local shieldsDownTime = generator.s.shieldsDownTime
-		if (canAnnounceShieldDown && shieldsDownTime != null && (Time() - shieldsDownTime) > SHIELD_DOWN_ANNOUNCE_TIMEOUT)
-			canAnnounceShieldDown = false
-
-		// Shields down: initial announce
-		if (shieldRatio <= 0.0 && canAnnounceShieldDown) {
-			PlayConversationToCoopTeam("CoopTD_GeneratorShield_Down")
-			canAnnounceShieldDown = false
-			playedVO = true
-		}
-		// Shields down: Low health announce
-		else if (shieldRatio <= 0.0 && canAnnounceHealthStatus && TimerCheck("Nag_GeneratorHealth")) {
-			local healthVO = null
-
-			local fracs = {}
-			fracs[75] <- {
-				max = 0.8,
-				min = 0.7
-			}
-			fracs[50] <- {
-				max = 0.6,
-				min = 0.4
-			}
-			fracs[25] <- {
-				max = 0.3,
-				min = 0.2
-			}
-
-			if (healthRatio <= fracs[75].max && healthRatio >= fracs[75].min) {
-				healthVO = "CoopTD_GeneratorHealth_75"
-				resetCanAnnounceHealth_aboveFrac = fracs[75].max
-				resetCanAnnounceHealth_belowFrac = fracs[75].min
-			} else if (healthRatio <= fracs[50].max && healthRatio >= fracs[50].min) {
-				healthVO = "CoopTD_GeneratorHealth_50"
-				if (CoinFlip())
-					healthVO = "CoopTD_GeneratorHealth_50_Nag"
-
-				resetCanAnnounceHealth_aboveFrac = fracs[50].max
-				resetCanAnnounceHealth_belowFrac = fracs[50].min
-			} else if (healthRatio <= fracs[25].max && healthRatio >= fracs[25].min) {
-				healthVO = "CoopTD_GeneratorHealth_25"
-				if (CoinFlip())
-					healthVO = "CoopTD_GeneratorHealth_25_Nag"
-
-				resetCanAnnounceHealth_aboveFrac = fracs[25].max
-				resetCanAnnounceHealth_belowFrac = fracs[25].min
-			} else if (healthRatio < fracs[25].min) {
-				healthVO = "CoopTD_GeneratorHealth_Low"
-				resetCanAnnounceHealth_aboveFrac = 0.2
-				resetCanAnnounceHealth_belowFrac = 0.0
-			}
-
-			if (healthVO != null) {
-				TimerReset("Nag_GeneratorHealth")
-				PlayConversationToCoopTeam(healthVO)
-				canAnnounceHealthStatus = false
-				playedVO = true
-			}
-		}
-		// Shields down: HOLD THE LINE!!
-		else if (shieldRatio <= 0.0 && !canAnnounceHealthStatus && TimerCheck("Nag_HoldTheLine")) {
-			// This should trigger when the coop team is fighting hard to keep it together.
-			if (GeneratorStatus_PlayersFightingDesperately(shieldRatio, healthRatio)) {
-				TimerReset("Nag_HoldTheLine")
-				PlayConversationToCoopTeam("CoopTD_HoldTheLine")
-				playedVO = true
-			}
-		}
-		// shields up
-		else if (shieldRatio > 0.0) {
-			if (!canAnnounceShieldDown)
-				canAnnounceShieldDown = true
-
-			// Full shields announce
-			if (shieldRatio == 1.0 && canAnnounceShieldFull) {
-				PlayConversationToCoopTeam("CoopTD_GeneratorShield_Full")
-				canAnnounceShieldFull = false
-				playedVO = true
-			} else if (shieldRatio < 0.9 && shieldHealth < lastShieldHealth && TimerCheck("Nag_GeneratorStatus_ShieldDamage")) {
-				TimerReset("Nag_GeneratorStatus_ShieldDamage")
-
-				local alias = "CoopTD_GeneratorShield_Damage_Light"
-				if (shieldRatio < 0.5)
-					alias = "CoopTD_GeneratorShield_Damage_Heavy"
-
-				PlayConversationToCoopTeam(alias)
-				playedVO = true
-			}
-			// Recharging announce
-			else if (shieldRatio < 1.0 && shieldHealth > lastShieldHealth && canAnnounceShieldRecharging) {
-				PlayConversationToCoopTeam("CoopTD_GeneratorShield_Recharging")
-				canAnnounceShieldRecharging = false
-				playedVO = true
-			}
-		}
-
-		if (!canAnnounceHealthStatus && generatorHealth < lastGeneratorHealth && (healthRatio > resetCanAnnounceHealth_aboveFrac || healthRatio < resetCanAnnounceHealth_belowFrac)) {
-			printt("Resetting health announce", healthRatio, resetCanAnnounceHealth_aboveFrac, resetCanAnnounceHealth_belowFrac)
-			canAnnounceHealthStatus = true
-		}
-
-		if (shieldRatio < 1.0 && shieldHealth < lastShieldHealth && !canAnnounceShieldRecharging)
-			canAnnounceShieldRecharging = true
-
-		if (shieldRatio < 0.0 && !canAnnounceShieldFull)
-			canAnnounceShieldFull = true
-
-		lastShieldHealth = shieldHealth
-		lastGeneratorHealth = generatorHealth
-	}
-}
-
-function GeneratorStatus_PlayersFightingDesperately(shieldRatio, healthRatio) {
-	if (shieldRatio > 0.0)
-		return false
-
-	if (healthRatio > 0.65)
-		return false
-
-	// check if there's an active damage streak
-	if (!Generator_CheckDamageStreak("global", GENERATOR_THREAT_WARN_STREAKDMG_GLOBAL))
-		return false
-
-	local reqNumPlayers = 2
-	local reqPlayerDist = 3000
-	local reqNumTitans = 5
-	local reqNonMortarFrac = 0.6
-
-	local playerTeam = level.nv.attackingTeam
-	local nonPlayerTeam = GetOtherTeam(level.nv.attackingTeam)
-
-	local generator = level.TowerDefenseGenerator
-	local generatorOrg = generator.GetOrigin()
-
-	local players = GetPlayerArrayEx("any", playerTeam, generatorOrg, reqPlayerDist)
-
-	// respawning players don't get counted as active defenders
-	local temp = []
-	foreach(player in players) {
-		if (HasCinematicFlag(player, CE_FLAG_WAVE_SPAWNING) || HasCinematicFlag(player, CE_FLAG_CLASSIC_MP_SPAWNING))
-			continue
-
-		temp.append(player)
-	}
-	players = temp
-
-	local numPlayers = players.len()
-
-	// make sure enough players are defending near the generator
-	if (numPlayers < reqNumPlayers)
-		return false
-
-	local titans = GetNPCArrayEx("npc_titan", nonPlayerTeam, Vector(0, 0, 0), -1)
-	local numTitans = titans.len()
-
-	if (numTitans < reqNumTitans)
-		return false
-
-	local mortarTitans = []
-	foreach(titan in titans)
-	if (titan.GetSubclass() == eSubClass.mortarTitan)
-		mortarTitans.append(titan)
-
-	local numMortarTitans = mortarTitans.len()
-	local numNonMortarTitans = numTitans - numMortarTitans
-
-	// too many of the titans are mortar titans
-	if ((numNonMortarTitans.tofloat() / numTitans.tofloat()) < reqNonMortarFrac)
-		return false
-
-	return true
-}
-
-// ----------------------------------
-// ----- GENERATOR AI THREAT VO -----
-// ----------------------------------
-function GeneratorThreat_Register(aiTypeIdx, callbackFunc, soundAlias, debounceTime = 60.0, classname = null, subclass = null) {
-	Assert(!(aiTypeIdx in level.generatorThreats), "AItype already set up for generator threats")
-
-	local aiTypeStr = GetCoopAITypeString_ByID(aiTypeIdx)
-
-	local timerName = "Nag_GeneratorThreat_" + aiTypeStr
-	TimerInit(timerName, debounceTime)
-
-	local threatInfo = ClassicMP_CreateCallbackTable(callbackFunc)
-	threatInfo.aiTypeIdx <- aiTypeIdx
-	threatInfo.aiTypeStr <- aiTypeStr
-	threatInfo.classname <- classname
-	threatInfo.subclass <- subclass
-	threatInfo.timer <- timerName
-	threatInfo.soundAlias <- soundAlias
-	threatInfo.priority <- level.generatorThreats.len() + 1 // assume first one registered = highest priority
-
-	level.generatorThreats[aiTypeIdx] <- threatInfo
-}
-
-function Generator_TryAnnounceThreats(generator) {
-	FlagEnd("ObjectiveComplete")
-	FlagEnd("ObjectiveFailed")
-
-	generator.EndSignal("OnDestroy")
-
-	OnThreadEnd(
-		function(): () {
-			if (Flag("GeneratorThreatAnnounce_InProgress"))
-				FlagClear("GeneratorThreatAnnounce_InProgress")
-		}
-	)
-
-	if (GetGameState() != eGameState.Playing)
-		return
-
-	// if there's not a wave active don't do any thinking
-	if (level.nv.TDCurrWave == null)
-		return
-
-	if (!TimerCheck("Nag_GeneratorThreat"))
-		return
-
-	if (Flag("HighPopulationAnnounce_InProgress"))
-		return
-
-	local announceThreatInfo = null
-	foreach(aiTypeIdx, threatInfo in level.generatorThreats) {
-		if (!TimerCheck(threatInfo.timer))
-			continue
-
-		// do we already have a more important threat to talk about?
-		// (low # = high priority, #1 is the first priority)
-		if (announceThreatInfo && announceThreatInfo.priority < threatInfo.priority)
-			continue
-
-		// callback function figures out if we are threatened by this aiType
-		if (!threatInfo.func.acall([threatInfo.scope, generator, threatInfo]))
-			continue
-
-		announceThreatInfo = threatInfo
-
-		// maybe earlyout if we know no aiType is more important than this one
-		if (announceThreatInfo && announceThreatInfo.priority == 1)
-			break
-	}
-
-	if (announceThreatInfo) {
-		// reset global and aitype specific timers
-		TimerReset("Nag_GeneratorThreat")
-		TimerReset(announceThreatInfo.timer)
-
-		FlagSet("GeneratorThreatAnnounce_InProgress")
-
-		PlayConversationToCoopTeam(announceThreatInfo.soundAlias)
-
-		wait 4.5
-		FlagClear("GeneratorThreatAnnounce_InProgress")
-	}
-}
-
-function AreEnoughNPCsWithinRange(classname, testOrg, maxRange, minThreatsRequired = 1, subclassArray = null) {
-	local nonPlayerTeam = GetOtherTeam(level.nv.attackingTeam)
-
-	local npcs = GetNPCArrayWithSubclassEx(classname, nonPlayerTeam, testOrg, maxRange, subclassArray)
-
-	return npcs.len() >= minThreatsRequired
-}
-
-function GeneratorThreatCallback_TitanDistanceCheck(generator, threatInfo) {
-	local maxDist = GENERATOR_THREAT_WARN_DIST_TITAN
-	local numRequired = 1
-
-	return AreEnoughNPCsWithinRange(threatInfo.classname, generator.GetOrigin(), maxDist, numRequired, [threatInfo.subclass])
-}
-
-function GeneratorThreatCallback_ArcTitans(generator, threatInfo) {
-	local maxDist = ARC_TITAN_EMP_FIELD_RADIUS
-	local numRequired = 1
-
-	return AreEnoughNPCsWithinRange(threatInfo.classname, generator.GetOrigin(), maxDist, numRequired, [threatInfo.subclass])
-}
-
-function GeneratorThreatCallback_SuicideSpectres(generator, threatInfo) {
-	return Generator_CheckDamageStreak(eCoopAIType.suicideSpectre, GENERATOR_THREAT_WARN_STREAKDMG_SUICIDE_SPECTRES)
-}
-
-function GeneratorThreatCallback_MortarTitans(generator, threatInfo) {
-	return Generator_CheckDamageStreak(eCoopAIType.mortarTitan, GENERATOR_THREAT_WARN_STREAKDMG_MORTAR_TITANS)
-}
-
-// this will work for regular spectres as well as grunts
-function GeneratorThreatCallback_Infantry(generator, threatInfo) {
-	local maxDist = GENERATOR_THREAT_WARN_DIST_INFANTRY
-	local numRequired = GENERATOR_THREAT_WARN_NUM_REQ_INFANTRY
-
-	local nonPlayerTeam = GetOtherTeam(level.nv.attackingTeam)
-	local testOrg = generator.GetOrigin()
-
-	local infantry = GetNPCArrayEx("npc_soldier", nonPlayerTeam, testOrg, maxDist)
-	infantry.extend(GetNPCArrayWithSubclassEx("npc_spectre", nonPlayerTeam, testOrg, maxDist, [eSubClass.NONE]))
-
-	return infantry.len() >= numRequired
-}
-
-
-/************************************************************************************************\
-
-##     ## ####  ######   ######
-###   ###  ##  ##    ## ##    ##
-#### ####  ##  ##       ##
-## ### ##  ##   ######  ##
-##     ##  ##        ## ##
-##     ##  ##  ##    ## ##    ##
-##     ## ####  ######   ######
-
-\************************************************************************************************/
-function SetCoopAIPriority(aiTypeID) {
-	// highest = 1
-	local priority = level.coopAIPriorities.len() + 1
-
-	level.coopAIPriorities[aiTypeID] <- priority
-}
-
-function AITypeArray_SortByPriority(waveAITypeIDs) {
-	local prioritySorted = []
-	local workingList = clone waveAITypeIDs
-
-	while (workingList.len() > 0) {
-		local bestPriorityVal = null
-		local highestPriorityAITypeID = null
-		foreach(id in workingList) {
-			Assert(id in level.coopAIPriorities, "No priority set up for coop aiType: " + GetCoopAITypeString_ByID(id))
-
-			if (bestPriorityVal == null || level.coopAIPriorities[id] < bestPriorityVal) {
-				bestPriorityVal = level.coopAIPriorities[id]
-				highestPriorityAITypeID = id
-			}
-		}
-		Assert(highestPriorityAITypeID != null)
-
-		prioritySorted.append(highestPriorityAITypeID)
-
-		// make a new working list without the one we just grabbed
-		local temp = []
-		foreach(index, aiTypeID in workingList) {
-			// if we didn't use it up, add to the new working list
-			if (aiTypeID != highestPriorityAITypeID)
-				temp.append(aiTypeID)
-		}
-		workingList = temp
-	}
-
-	Assert(prioritySorted.len() == waveAITypeIDs.len())
-
-	printt("AI IN WAVE BY PRIORITY:")
-	foreach(aiTypeID in prioritySorted)
-	printt(level.coopAIPriorities[aiTypeID] + ". " + GetCoopAITypeString_ByID(aiTypeID))
-
-	return prioritySorted
-}
-
-function KillFXWithEndcap(fxHandle, killDelay = 1.0) {
-	if (!IsValid_ThisFrame(fxHandle))
-		return
-
-	fxHandle.Fire("StopPlayEndCap")
-	wait killDelay
-
-	if (!IsValid_ThisFrame(fxHandle))
-		return
-
-	fxHandle.ClearParent()
-	fxHandle.Destroy()
-}
-
-function CoopTD_PlayerDeathCallback(deadPlayer, damageInfo) {
-	if (GetGameState() != eGameState.Playing)
-		return
-
-	printt("CoopTD player died!", deadPlayer)
-
-	CoopTD_TryPlayerDeathVO()
-}
-
-function CoopTD_TryPlayerDeathVO() {
-	if (!TimerCheck("Announce_PlayerDied"))
-		return
-
-	printt("Playing player death VO")
-
-	TimerReset("Announce_PlayerDied")
-
-	local players = GetPlayerArray()
-
-	local alivePlayers = []
-	local deadPlayers = []
-	foreach(player in players) {
-		// coming in on the dropship
-		//if ( HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) )
-
-		if (IsAlive(player)) {
-			alivePlayers.append(player)
-		} else {
-			deadPlayers.append(player)
-		}
-	}
-
-	local soundAlias = "CoopTD_PilotDown_Single"
-	if (alivePlayers.len() == 1)
-		soundAlias = "CoopTD_LastPilotAlive"
-	else if (deadPlayers.len() > 1)
-		soundAlias = "CoopTD_PilotDown_Multi"
-
-	PlayConversationToAliveCoopPlayers(soundAlias)
-}
-
-function CoopTD_OnSoldierOrSpectreSpawn(npc) {
-	if (RandomInt(100) < 20)
-		thread SimulateGrenadeThink(npc)
-}
-
-//HACK! -> DO NOT SHIP - this should be in code
-function SimulateRodeo(spectre) {
-	thread SimulateRodeoThread(spectre)
-}
-
-function SimulateRodeoThread(spectre) {
-	spectre.EndSignal("OnDestroy")
-	spectre.EndSignal("OnDeath")
-	spectre.EndSignal("OnLeeched")
-
-	wait 1.0
-	if (IsSuicideSpectre(spectre))
-		return
-	if (IsSniperSpectre(spectre))
-		return
-	if (IsBubbleShieldMinion(spectre))
-		return
-
-	while (1) {
-		wait 1.0
-
-		local enemy = spectre.GetEnemy()
-		if (!IsAlive(enemy))
-			continue
-
-		if (!enemy.IsTitan())
-			continue
-
-		local titan = spectre.GetEnemy()
-		Assert(titan.IsTitan())
-		Assert(IsAlive(titan))
-
-		if (!CanSpectreRodeo(spectre, titan))
-			continue
-
-		thread SpectreRodeo(spectre, titan)
-		return
-	}
-}
-
-// Somewhat hacky way to get AI to throw grenades. Good enough for now.
-function SimulateGrenadeThink(npc) {
-	npc.EndSignal("OnDestroy")
-	npc.EndSignal("OnDeath")
-	npc.EndSignal("Stop_SimulateGrenadeThink")
-
-	OnThreadEnd(
-		function(): (npc) {
-			if (IsAlive(npc))
-				DeleteAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
-		}
-	)
-
-	AddAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
-
-	if (RandomInt(100) < 50)
-		npc.GiveOffhandWeapon("mp_weapon_frag_grenade", 0)
-	else
-		npc.GiveOffhandWeapon("mp_weapon_grenade_emp", 0)
-
-	local npcRadius = 2000
-	local npcRadiusSqr = npcRadius * npcRadius
-
-	for (;;) {
-		wait RandomFloat(4.5, 5.5)
-
-		local npcPos = npc.GetWorldSpaceCenter()
-		local grenadeTargets = GetPlayerArray()
-		grenadeTargets.extend(GetNPCArrayEx("npc_turret_sentry", level.nv.attackingTeam, npcPos, npcRadius))
-		foreach(target in grenadeTargets) {
-			if (!IsAlive(target))
-				continue
-
-			local targetPosition
-			if (target.IsPlayer())
-				targetPosition = target.EyePosition()
+	function Generator_StopAmbientSFX(doFade = false) {
+		local generator = level.TowerDefenseGenerator
+
+		if (generator.s.ambientSFX != null) {
+			if (doFade)
+				FadeOutSoundOnEntity(generator, generator.s.ambientSFX, 1.0)
 			else
-				targetPosition = target.GetWorldSpaceCenter()
+				StopSoundOnEntity(generator, generator.s.ambientSFX)
 
-			if (DistanceSqr(targetPosition, npcPos) > npcRadiusSqr)
-				continue
-			//Intent is to use this as a rooftop deterent, not normal combat.
-			if (targetPosition.z - npcPos.z < 75)
-				continue
+			generator.s.ambientSFX = null
+		}
+	}
 
-			if (npc.IsInterruptable() == false)
-				continue
+	function GeneratorRings_DeathSequence() {
+		local rings = level.TowerDefenseGenerator.s.rings
+		rings.EndSignal("OnDestroy")
 
-			if (npc.CanSee(target) && npc.GetEnemy() == target) {
-				npc.Anim_ScriptedAllowPain(true)
-				npc.Anim_ScriptedPlay("coop_grenade_throw")
-				npc.WaittillAnimDone()
-				npc.Anim_ScriptedAllowPain(false)
-				npc.AssaultPointEnt(npc.s.assaultPoint)
-				npc.Signal("Stop_SimulateGrenadeThink")
+		GeneratorRingsPlayAnim("generator_fall")
+
+		rings.Hide()
+		thread GeneratorRingsPlayAnim("generator_idle")
+	}
+
+
+	function Generator_UpdateFXColorControlPoint() {
+		local generator = level.TowerDefenseGenerator
+
+		local colors = Generator_GetHealthStatusColorTable()
+		local colorVec = Vector(colors.r, colors.g, colors.b)
+
+		generator.s.fxColorControlPoint.SetOrigin(colorVec)
+	}
+
+	function GeneratorShieldRegenThink(generator) {
+		generator.EndSignal("OnDestroy")
+
+		generator.s.nextRegenTime <- 0
+
+		local alarmSoundAlias = "Coop_Generator_UnderAttack_Alarm"
+		local alarmFadeTime = 1.0
+
+		OnThreadEnd(
+			function(): (generator, alarmSoundAlias) {
+				if (IsValid(generator))
+					StopSoundOnEntity(generator, alarmSoundAlias)
 			}
+		)
+
+		local lastShieldHealth = level.nv.TDGeneratorShieldHealth
+		local shieldHealthSound = false
+		local soundAlarm = false
+		local shieldRegenStarted = false
+		local maxShield = TD_GENERATOR_SHIELD_HEALTH
+		local shieldRegenRate = maxShield / (GENERATOR_SHIELD_REGEN_TIME / SHIELD_REGEN_TICK_TIME)
+		local lastTime = Time()
+
+		while (true) {
+			local shieldHealth = level.nv.TDGeneratorShieldHealth
+
+			if (Flag("TDGeneratorDestroyed")) {
+				FadeOutSoundOnEntity(generator, alarmSoundAlias, alarmFadeTime)
+				soundAlarm = false
+			} else if (shieldHealth == 0 && soundAlarm == false) {
+				generator.s.shieldsDownTime = Time()
+
+				EmitSoundOnEntity(generator, alarmSoundAlias)
+				soundAlarm = true
+			}
+			if (ShouldRegenShield(generator, shieldHealth, maxShield)) {
+				local frameTime = max(0.0, Time() - lastTime)
+				local adjustedShieldRegenRate = shieldRegenRate * frameTime / SHIELD_REGEN_TICK_TIME
+				shieldHealth = min(TD_GENERATOR_SHIELD_HEALTH, shieldHealth + adjustedShieldRegenRate)
+				if (lastShieldHealth != TD_GENERATOR_SHIELD_HEALTH && shieldHealth == TD_GENERATOR_SHIELD_HEALTH)
+					EmitSoundOnEntity(generator, "Coop_Generator_ShieldRecharge_End") //EmitSoundToTeamPlayers( "Coop_Generator_ShieldRecharge_End", level.nv.attackingTeam )
+				else if (!shieldRegenStarted) {
+					local seekTime = GENERATOR_SHIELD_REGEN_TIME * lastShieldHealth / TD_GENERATOR_SHIELD_HEALTH
+					PlayGeneratorShieldResumeSFX(generator, seekTime)
+					if (lastShieldHealth == 0)
+						EmitSoundOnEntity(generator, "Coop_Generator_ShieldRecharge_Start") //EmitSoundToTeamPlayers( "Coop_Generator_ShieldRecharge_Start", level.nv.attackingTeam )
+					EmitSoundOnEntity(generator, "Coop_Generator_ShieldRecharge_ResumeClick")
+				}
+				FadeOutSoundOnEntity(generator, alarmSoundAlias, alarmFadeTime)
+				soundAlarm = false
+				shieldRegenStarted = true
+			} else {
+				shieldRegenStarted = false
+			}
+
+			level.nv.TDGeneratorShieldHealth = shieldHealth
+			lastShieldHealth = shieldHealth
+			lastTime = Time()
 			wait 0
 		}
 	}
-}
 
-function NPCGrenadeThrow(npc) {
-	Assert(IsValid(npc))
-
-	local id = npc.LookupAttachment("R_HAND")
-	local npcPos = npc.GetAttachmentOrigin(id)
-	local weapon = npc.GetOffhandWeapon(0)
-
-	local enemy = npc.GetEnemy()
-
-	if (!IsValid(weapon) || !IsValid(enemy))
-		return
-
-	local throwPosition
-	if (enemy.IsPlayer())
-		throwPosition = enemy.EyePosition()
-	else
-		throwPosition = enemy.GetWorldSpaceCenter()
-
-	throwPosition += Vector(RandomFloat(-64, 64), RandomFloat(-64, 64), RandomFloat(-32, 32))
-
-	local vel = GetVelocityForDestOverTime(npcPos, throwPosition, 2.0)
-
-	if (weapon.GetClassname() == "mp_weapon_grenade_emp") {
-		// magic multipliers to get the EMP grenade to travel the same distance as the frag.
-		vel.x *= 2.0
-		vel.y *= 2.0
-		vel.z *= 1.25
-	}
-	local frag = weapon.FireWeaponGrenade(npcPos, vel, Vector(0, 0, 0), 3.0, damageTypes.GibBullet | DF_IMPACT | DF_EXPLOSION | DF_SPECTRE_GIB, DF_EXPLOSION | DF_RAGDOLL | DF_SPECTRE_GIB, PROJECTILE_NOT_PREDICTED, false, false)
-
-	frag.SetOwner(npc)
-	Grenade_Init(frag, weapon)
-	thread TrapExplodeOnDamage(frag, 20, 0.0, 0.0)
-
-	if (npc.IsSpectre())
-		EmitSoundOnEntity(npc, SPECTRE_GRENADE_OUT)
-	else
-		EmitSoundOnEntity(npc, GRUNT_GRENADE_OUT)
-}
-
-
-/************************************************************************************************\
-
-########  #######   #######  ##        ######
-   ##    ##     ## ##     ## ##       ##    ##
-   ##    ##     ## ##     ## ##       ##
-   ##    ##     ## ##     ## ##        ######
-   ##    ##     ## ##     ## ##             ##
-   ##    ##     ## ##     ## ##       ##    ##
-   ##     #######   #######  ########  ######
-
-\************************************************************************************************/
-function TriggerOff(value) {
-	local triggers
-	if (IsArray(value))
-		triggers = value
-	else
-		triggers = [value]
-
-	foreach(trigger in triggers) {
-		local origin = trigger.GetOrigin()
-		if (!("originalOrigin" in trigger.s))
-			trigger.s.originalOrigin <- origin
-		trigger.SetOrigin(Vector(origin.x, origin.y, -16000))
-	}
-}
-
-function TriggerOn(value) {
-	local triggers
-	if (IsArray(value))
-		triggers = value
-	else
-		triggers = [value]
-
-	foreach(trigger in triggers) {
-		if (!("originalOrigin" in trigger.s))
-			continue
-		trigger.SetOrigin(trigger.s.originalOrigin)
-	}
-}
-
-function SetSignalDelayed(ent, signal, delay) {
-	ent.EndSignal(signal) // so that if we call this again with the same signal on the same ent we won't get multiple signal events.
-
-	wait delay
-	if (IsValid(ent))
-		Signal(ent, signal)
-}
-
-function DevSpectreRodeo() {
-	local player = GetPlayerArray()[0]
-	local vec = player.GetAngles().AnglesToForward()
-
-	local origin = player.GetOrigin() + (vec * 500)
-	local angles = player.GetAngles() + Vector(0, 90, 0)
-	local spectre = SpawnSpectre(TEAM_IMC, "SOMEWTF", origin, angles)
-	GiveMinionWeapon(spectre, "mp_weapon_r97")
-
-	local vec = angles.AnglesToForward()
-	local origin = origin + (vec * 400)
-	local yaw = angles.y + 180
-	if (yaw > 360)
-		yaw -= 360
-
-	local titan = SpawnCoopTitan(origin, Vector(0, yaw, 0), TEAM_MILITIA)
-
-	thread SpectreRodeo(spectre, titan)
-}
-Globalize(DevSpectreRodeo)
-
-
-/************************************************************************************************\
-
-##      ##    ###    ##     ## ########        ######  ########     ###    ##      ## ##    ##
-##  ##  ##   ## ##   ##     ## ##             ##    ## ##     ##   ## ##   ##  ##  ## ###   ##
-##  ##  ##  ##   ##  ##     ## ##             ##       ##     ##  ##   ##  ##  ##  ## ####  ##
-##  ##  ## ##     ## ##     ## ######          ######  ########  ##     ## ##  ##  ## ## ## ##
-##  ##  ## #########  ##   ##  ##                   ## ##        ######### ##  ##  ## ##  ####
-##  ##  ## ##     ##   ## ##   ##             ##    ## ##        ##     ## ##  ##  ## ##   ###
- ###  ###  ##     ##    ###    ########        ######  ##        ##     ##  ###  ###  ##    ##
-
-\************************************************************************************************/
-
-function SetCustomWaveSpawn_SideView(origin = null, angles = null, shipAnim = "dropship_coop_respawn") {
-	thread __SetCustomWaveSpawn_SideView(origin, angles, shipAnim)
-}
-Globalize(SetCustomWaveSpawn_SideView)
-
-
-function __SetCustomWaveSpawn_SideView(origin, angles, shipAnim) {
-	WaitEndFrame() //make sure the generator location has been set, because unless specificed that is the origin and angle of our new spawnpoint
-	if (origin != null)
-		Assert(angles != null, "if you're going to set an origin for SetCustomWaveSpawn_SideView, then you MUST also set an angles")
-	else {
-		origin = level.TowerDefenseGenLocation.origin
-		angles = level.TowerDefenseGenLocation.angles
-	}
-
-	local team = level.nv.attackingTeam
-	AddWaveSpawnCustomSpawnPoint(team, origin, angles)
-
-	SetWaveSpawnCustomDropshipAnim(shipAnim)
-
-	local idleAnims = []
-	AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_B", "ptpov_ds_side_intro_gen_idle_B", null, "ORIGIN", ViewConeSideRightStandFront)
-	AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_A", "ptpov_ds_side_intro_gen_idle_A", null, "ORIGIN", ViewConeSideRightStandBack)
-	AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_C", "ptpov_ds_side_intro_gen_idle_C", null, "ORIGIN", ViewConeSideRightSitBack)
-	AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_D", "ptpov_ds_side_intro_gen_idle_D", null, "ORIGIN", ViewConeSideRightSitFront)
-	foreach(anim in idleAnims)
-	AddWaveSpawnCustomPlayerRideAnimIdle(anim)
-
-	local jumpAnims = []
-	AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_B", "ptpov_ds_side_intro_gen_exit_B", null, "ORIGIN", ViewConeRampFree)
-	AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_A", "ptpov_ds_side_intro_gen_exit_A", null, "ORIGIN", ViewConeRampFree)
-	AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_C", "ptpov_ds_side_intro_gen_exit_C", null, "ORIGIN", ViewConeRampFree)
-	AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_D", "ptpov_ds_side_intro_gen_exit_D", null, "ORIGIN", ViewConeRampFree)
-	foreach(anim in jumpAnims)
-	AddWaveSpawnCustomPlayerRideAnimJump(anim)
-}
-
-// remember - this gets called for every dropship spawn
-function CoopTD_WaveSpawnDropship_SpawnCallback(dropship, anim) {
-	dropship.NotSolid()
-	thread WaveSpawnDropship_AddBish(dropship, anim)
-
-	local duration = dropship.GetSequenceDuration(anim)
-
-	// LEVEL INTRO FLY-IN
-	if (GetGameState() == eGameState.Prematch) {
-		if (!Flag("GeneratorBeam_On")) {
-			// We know that the anim we're using in Prematch is the short "classic" dropship intro
-			local beamStartDelay = duration * 0.225 // timed to "pop" beam as players exit the dropships
-			thread GeneratorStart_AndThink(beamStartDelay)
+	function PlayGeneratorShieldResumeSFX(generator, seekTime) {
+		//We generally don't seek on the server, so we don't have a general function.
+		local playerArray = GetPlayerArray()
+		foreach(player in playerArray) {
+			EmitSoundOnEntityOnlyToPlayerWithSeek(generator, player, "Coop_Generator_ShieldRecharge_Resume", seekTime)
 		}
 	}
-	// PLAYER WAVE SPAWN
-	else {
-		// want the announce to happen when the dropship gets close to dropping guys off
-		local announceDelay = duration * 0.8
-		thread CoopTD_PlayerReinforcementsAnnounce(announceDelay)
+
+	function ShouldRegenShield(generator, shieldHealth, maxShield) {
+		if (GetGameState() < eGameState.Playing)
+			return false
+
+		if (GetGameState() > eGameState.Playing && !Flag("ObjectiveComplete"))
+			return false
+
+		if (generator.s.nextRegenTime > Time())
+			return false
+
+		if (shieldHealth == maxShield)
+			return false
+
+		return true
 	}
-}
 
+	const TITAN_GENERATOR_MELEE_DMG = 1000
 
-function CoopTD_PlayerReinforcementsAnnounce(announceDelay = 0.0) {
-	if (Flag("TDGeneratorDestroyed") || Flag("ObjectiveComplete") || Flag("ObjectiveFailed"))
-		return
+	function GeneratorTookDamage(generator, damageInfo) {
+		if (!("isGeneratorModel" in generator.s))
+			return
 
-	FlagEnd("TDGeneratorDestroyed")
-	FlagEnd("ObjectiveComplete")
-	FlagEnd("ObjectiveFailed")
+		if (!Flag("COOBJ_TowerDefense"))
+			return
 
-	if (Flag("CoopTD_WaitingToAnnouncePlayerReinforcements"))
-		return
-
-	FlagSet("CoopTD_WaitingToAnnouncePlayerReinforcements")
-
-	OnThreadEnd(
-		function(): () {
-			FlagClear("CoopTD_WaitingToAnnouncePlayerReinforcements")
+		if (Flag("GeneratorGodMode")) {
+			damageInfo.SetDamage(0)
+			return
 		}
-	)
 
-	if (announceDelay > 0)
-		wait announceDelay
+		local damageAmount = damageInfo.GetDamage()
+		local attacker = damageInfo.GetAttacker()
+		local inflictor = damageInfo.GetInflictor()
+		local playerTeam = level.nv.attackingTeam
 
-	if (!TimerCheck("Announce_PlayerRespawned"))
-		return
+		// ADJUST DAMAGE SCALE IF NECESSARY
+		local damageSourceID = damageInfo.GetDamageSourceIdentifier()
+		switch (damageSourceID) {
+			case eDamageSourceId.nuclear_core:
+				damageAmount *= GENERATOR_DAMAGE_NUKE_CORE_MULTIPLIER
+			case eDamageSourceId.mp_titanweapon_rocket_launcher:
+				if (IsValid(inflictor) && "mortar" in inflictor.s)
+					damageAmount *= GENERATOR_DAMAGE_MORTAR_ROCKET_MULTIPLIER
+				break
 
-	local numReinforcements = 0
+			case eDamageSourceId.titanEmpField:
+				damageInfo.SetDamage(0)
+				damageAmount = 0
+				level.nv.TDGeneratorShieldHealth = 0
+				break
 
-	// count up players on the dropship(s)
-	local playerArray = level.dropshipSpawnPlayerList[level.nv.attackingTeam]
-	numReinforcements += playerArray.len()
+			case eDamageSourceId.titan_melee:
+				damageAmount = min(damageAmount, TITAN_GENERATOR_MELEE_DMG)
+				damageInfo.SetDamage(damageAmount)
+				break
 
-	// TODO add players spawning as titans to the count
-	if (numReinforcements <= 0) {
-		printt("WARNING: wanted to do reinforce announce but couldn't:", playerArray.len())
-		return
+			case eDamageSourceId.titan_step:
+			case eDamageSourceId.invalid:
+				if (damageInfo.GetDamageType() == DMG_CLUB) {
+					damageAmount = min(damageAmount, TITAN_GENERATOR_MELEE_DMG)
+					damageInfo.SetDamage(damageAmount)
+				} else {
+					damageInfo.SetDamage(0)
+					return
+				}
+				break
+			case eDamageSourceId.titan_fall:
+				damageInfo.SetDamage(0)
+				return
+				break
+		}
+
+		if (Riff_AILethality() < eAILethality.TD_Medium)
+			damageInfo.SetDamage(damageInfo.GetDamage() * TD_LOW_SCALAR_GENERATOR_DMG)
+
+		local preShieldDamage = damageAmount
+		// NOW AFFECT SHIELDS/HEALTH BASED ON HOW MUCH DMG SHIELDS ABSORBED
+		if (level.nv.TDGeneratorShieldHealth > 0) {
+			local shieldHealth = level.nv.TDGeneratorShieldHealth
+			local newShieldHealth = max(0, level.nv.TDGeneratorShieldHealth - damageAmount)
+			level.nv.TDGeneratorShieldHealth = newShieldHealth
+
+			if (shieldHealth > 0 && newShieldHealth == 0)
+				EmitSoundOnEntity(generator, "Coop_Generator_ShieldDown") //EmitSoundToTeamPlayers( "Coop_Generator_ShieldDown", playerTeam )
+
+			damageAmount = max(0, damageAmount - shieldHealth)
+		}
+		// if you kill/destroy a guy while his missile is in the air, the attacker will be the missile instead of the dead guy.
+		if (attacker.IsNPC() && attacker.GetTeam() != playerTeam) {
+			local attackerClass = attacker.GetClassname()
+			local attackerSubclass = attacker.GetSubclass()
+
+			local aiTypeID = Coop_GetAITypeID_ByClassAndSubclass(attackerClass, attackerSubclass)
+			UpdateGeneratorAttackHistory(aiTypeID, preShieldDamage, damageAmount)
+		}
+
+		generator.s.nextRegenTime = Time() + GENERATOR_SHIELD_REGEN_DELAY
+
+		// RETURN IF NO DAMAGE WAS DEALT
+		if (damageAmount <= 0) {
+			Play3PHarvesterImpactSounds(generator, damageInfo)
+			return
+		}
+
+		level.nv.TDGeneratorHealth -= damageAmount
+
+		if (level.nv.TDGeneratorHealth < 0) {
+			EmitSoundOnEntity(generator, "Coop_Generator_Destroyed") //EmitSoundToTeamPlayers( "Coop_Generator_Destroyed", level.nv.attackingTeam )
+			FlagSet("TDGeneratorDestroyed")
+			//Catch the last wave state during defeat.
+			if (Coop_GetNumRestartsLeft() == 0) {
+				Add_TimeInterval_HarvesterStatus()
+			}
+		}
 	}
 
-	local alias = "CoopTD_RespawningPlayer"
-	if (numReinforcements > 1)
-		alias = "CoopTD_RespawningPlayers"
+	function InitGeneratorAttackHistory() {
+		local defaultTable = {
+			totalDamage = 0,
+			currentDamageStreak = 0,
+			lastDamageTime = -1,
+			actualDamage = 0
+		}
 
-	PlayConversationToCoopTeam(alias)
-	TimerReset("Announce_PlayerRespawned")
-}
-Globalize(CoopTD_PlayerReinforcementsAnnounce)
+		level.generatorAttackHistory.global <- clone defaultTable
 
-function Coop_IsHardmode() {
-	return true
-}
+		foreach(nameKey, aiTypeID in getconsttable().eCoopAIType)
+		level.generatorAttackHistory[aiTypeID] <- clone defaultTable
+	}
 
-function Play3PHarvesterImpactSounds(generator, damageInfo) {
-	local soundAlias = null
-	local damageType = damageInfo.GetCustomDamageType()
-	local damageSource = damageInfo.GetDamageSourceIdentifier()
-	if (damageType & DF_MELEE)
-		soundAlias = "HarvesterShield.MeleeImpact_3P_vs_3P"
-	else if (damageSource == eDamageSourceId.mp_titanweapon_arc_cannon || damageSource == eDamageSourceId.mp_weapon_defender)
-		soundAlias = "HarvesterShield.Energy.BulletImpact_3P_vs_3P"
-	else if (damageSource = eDamageSourceId.mp_titanweapon_xo16 && damageType & DF_ELECTRICAL)
-		soundAlias = "HarvesterShield.AmpedXO16.BulletImpact_3P_vs_3P"
-	else if (damageType & DF_EXPLOSION)
-		soundAlias = "HarvesterShield.Explosive.BulletImpact_3P_vs_3P"
-	else if (damageType & damageTypes.Bullet || damageType & damageTypes.SmallArms || damageType & DF_SHOTGUN)
-		soundAlias = "HarvesterShield.Light.BulletImpact_3P_vs_3P"
-	else if (damageType & damageTypes.LargeCaliber || damageType & DF_GIB)
-		soundAlias = "HarvesterShield.Heavy.BulletImpact_3P_vs_3P"
+	function InitEOGKillHistory() {
+		level.killHistory <- {}
+		//Index 0 = Militia Team Stats
+		for (local i = 0; i <= COOP_MAX_PLAYER_COUNT; i++) {
+			level.killHistory[i] <- {}
+			local playerKillCount = 0
+			local turretKillCount = 0
+			foreach(nameKey, aiTypeID in getconsttable().eCoopAIType)
+			level.killHistory[i][aiTypeID] <- [playerKillCount, turretKillCount]
+		}
+	}
 
-	if (soundAlias != null)
-		EmitSoundOnEntity(generator, soundAlias)
-}
+	function ResetPlayerKillHistory(player) {
+		local index = player.GetEntIndex()
+		foreach(nameKey, aiTypeID in getconsttable().eCoopAIType)
+		level.killHistory[index][aiTypeID] <- [0, 0]
+	}
+
+	function UpdatePlayerKillHistory(player, npc, attackerIsTurret = false) {
+		//This adds to the team record and player record. There are cases where the team can get credit without any players getting credit.
+		local indexArray = [0]
+		if (player != null)
+			indexArray.append(player.GetEntIndex())
+
+		local npcClass = npc.GetClassname()
+		local npcSubclass = null
+		if (npcClass != "prop_dynamic")
+			npcSubclass = npc.GetSubclass()
+
+		local aiTypeID = Coop_GetAITypeID_ByClassAndSubclass(npcClass, npcSubclass)
+		for (local i = 0; i < indexArray.len(); i++) {
+			if (attackerIsTurret)
+				level.killHistory[indexArray[i]][aiTypeID][1]++
+			else
+				level.killHistory[indexArray[i]][aiTypeID][0]++
+		}
+	}
+	Globalize(UpdatePlayerKillHistory)
+
+	function ResetGeneratorAttackStreakHistory() {
+		foreach(aiTypeID, attackInfo in level.generatorAttackHistory) {
+			// Only reset streak stuff, not total damage
+			attackInfo.currentDamageStreak = 0
+			attackInfo.lastDamageTime = -1
+		}
+
+		level.generatorAttackHistory.global.currentDamageStreak = 0
+		level.generatorAttackHistory.global.lastDamageTime = -1
+	}
+
+	function UpdateGeneratorAttackHistory(aiTypeID, preShieldDamageAmount, postShieldDamageAmount) {
+		// GLOBAL attack history update
+		local globalInfo = level.generatorAttackHistory.global
+		globalInfo.totalDamage += preShieldDamageAmount
+		globalInfo.actualDamage += postShieldDamageAmount
+
+		if (globalInfo.lastDamageTime != -1 && Time() - globalInfo.lastDamageTime >= GENERATOR_DAMAGE_STREAK_TIMEOUT)
+			globalInfo.currentDamageStreak = 0
+
+		globalInfo.currentDamageStreak += preShieldDamageAmount
+		globalInfo.lastDamageTime = Time()
+
+		// AIType specific attack history update
+		local attackInfo = level.generatorAttackHistory[aiTypeID]
+
+		attackInfo.totalDamage += preShieldDamageAmount
+		attackInfo.actualDamage += postShieldDamageAmount
+
+		if (attackInfo.lastDamageTime != -1 && Time() - attackInfo.lastDamageTime >= GENERATOR_DAMAGE_STREAK_TIMEOUT)
+			attackInfo.currentDamageStreak = 0
+
+		attackInfo.currentDamageStreak += preShieldDamageAmount
+		attackInfo.lastDamageTime = Time()
+
+		//printt( "Attack history update:", GetCoopAITypeString_ByID( aiTypeID ), "dmg / dmgstreak:", attackInfo.totalDamage, "/", attackInfo.currentDamageStreak )
+	}
+
+	function Generator_CheckDamageStreak(aiTypeID, reqStreakDmg) {
+		local idx = "global"
+		if (aiTypeID != idx) {
+			ValidateCoopAITypeIdx(aiTypeID)
+			idx = aiTypeID
+		}
+
+		local attackInfo = level.generatorAttackHistory[aiTypeID]
+
+		// hasn't attacked the generator yet this wave
+		if (attackInfo.lastDamageTime == -1)
+			return false
+
+		// no active damage streak
+		if (Time() - attackInfo.lastDamageTime >= GENERATOR_DAMAGE_STREAK_TIMEOUT)
+			return false
+
+		// damage streak hasn't hit threshold
+		if (attackInfo.currentDamageStreak < reqStreakDmg)
+			return false
+
+		return true
+	}
+
+	function Generator_StatusVOThink(generator) {
+		FlagEnd("ObjectiveComplete")
+		FlagEnd("ObjectiveFailed")
+
+		generator.EndSignal("OnDestroy")
+
+		local lastShieldHealth = level.nv.TDGeneratorShieldHealth
+		local lastGeneratorHealth = level.nv.TDGeneratorHealth
+
+		// these switches get flipped on and off so we're not spamming VO requests against a timer
+		local canAnnounceShieldRecharging = true
+		local canAnnounceShieldDown = true
+		local canAnnounceShieldFull = false // don't want the announce to happen at game start
+		local canAnnounceHealthStatus = true
+		local resetCanAnnounceHealth_aboveFrac = 0.0
+		local resetCanAnnounceHealth_belowFrac = 1.0
+
+		local shieldHealth
+		local maxShield
+		local shieldRatio
+
+		local generatorHealth
+		local maxHealth
+		local healthRatio
+
+		local playedVO = false
+		local longWait = 4.5
+
+		local lastThreatCheck = Time()
+		local threatCheckRate = 5.0
+
+		while (1) {
+			if (playedVO) {
+				TimerReset("Nag_GeneratorStatus_Global")
+				wait longWait
+			} else
+				wait SHIELD_REGEN_TICK_TIME
+
+			if (!Flag("CoopTD_WaveCombatInProgress") || Flag("TDGeneratorDestroyed")) {
+				wait longWait
+				continue
+			}
+
+			// Specific threat announcement will supercede generic status announcement
+			if (Time() - lastThreatCheck >= threatCheckRate) {
+				lastThreatCheck = Time()
+
+				waitthread Generator_TryAnnounceThreats(generator)
+				continue
+			}
+
+			shieldHealth = level.nv.TDGeneratorShieldHealth
+			maxShield = TD_GENERATOR_SHIELD_HEALTH
+			shieldRatio = shieldHealth.tofloat() / maxShield.tofloat()
+
+			generatorHealth = level.nv.TDGeneratorHealth
+			maxHealth = TD_GENERATOR_HEALTH
+			healthRatio = generatorHealth.tofloat() / maxHealth.tofloat()
+
+			playedVO = false
+
+			if (!TimerCheck("Nag_GeneratorStatus_Global"))
+				continue
+
+			// protects us against announcing that the shields are down long after they've actually gone down
+			local shieldsDownTime = generator.s.shieldsDownTime
+			if (canAnnounceShieldDown && shieldsDownTime != null && (Time() - shieldsDownTime) > SHIELD_DOWN_ANNOUNCE_TIMEOUT)
+				canAnnounceShieldDown = false
+
+			// Shields down: initial announce
+			if (shieldRatio <= 0.0 && canAnnounceShieldDown) {
+				PlayConversationToCoopTeam("CoopTD_GeneratorShield_Down")
+				canAnnounceShieldDown = false
+				playedVO = true
+			}
+			// Shields down: Low health announce
+			else if (shieldRatio <= 0.0 && canAnnounceHealthStatus && TimerCheck("Nag_GeneratorHealth")) {
+				local healthVO = null
+
+				local fracs = {}
+				fracs[75] <- {
+					max = 0.8,
+					min = 0.7
+				}
+				fracs[50] <- {
+					max = 0.6,
+					min = 0.4
+				}
+				fracs[25] <- {
+					max = 0.3,
+					min = 0.2
+				}
+
+				if (healthRatio <= fracs[75].max && healthRatio >= fracs[75].min) {
+					healthVO = "CoopTD_GeneratorHealth_75"
+					resetCanAnnounceHealth_aboveFrac = fracs[75].max
+					resetCanAnnounceHealth_belowFrac = fracs[75].min
+				} else if (healthRatio <= fracs[50].max && healthRatio >= fracs[50].min) {
+					healthVO = "CoopTD_GeneratorHealth_50"
+					if (CoinFlip())
+						healthVO = "CoopTD_GeneratorHealth_50_Nag"
+
+					resetCanAnnounceHealth_aboveFrac = fracs[50].max
+					resetCanAnnounceHealth_belowFrac = fracs[50].min
+				} else if (healthRatio <= fracs[25].max && healthRatio >= fracs[25].min) {
+					healthVO = "CoopTD_GeneratorHealth_25"
+					if (CoinFlip())
+						healthVO = "CoopTD_GeneratorHealth_25_Nag"
+
+					resetCanAnnounceHealth_aboveFrac = fracs[25].max
+					resetCanAnnounceHealth_belowFrac = fracs[25].min
+				} else if (healthRatio < fracs[25].min) {
+					healthVO = "CoopTD_GeneratorHealth_Low"
+					resetCanAnnounceHealth_aboveFrac = 0.2
+					resetCanAnnounceHealth_belowFrac = 0.0
+				}
+
+				if (healthVO != null) {
+					TimerReset("Nag_GeneratorHealth")
+					PlayConversationToCoopTeam(healthVO)
+					canAnnounceHealthStatus = false
+					playedVO = true
+				}
+			}
+			// Shields down: HOLD THE LINE!!
+			else if (shieldRatio <= 0.0 && !canAnnounceHealthStatus && TimerCheck("Nag_HoldTheLine")) {
+				// This should trigger when the coop team is fighting hard to keep it together.
+				if (GeneratorStatus_PlayersFightingDesperately(shieldRatio, healthRatio)) {
+					TimerReset("Nag_HoldTheLine")
+					PlayConversationToCoopTeam("CoopTD_HoldTheLine")
+					playedVO = true
+				}
+			}
+			// shields up
+			else if (shieldRatio > 0.0) {
+				if (!canAnnounceShieldDown)
+					canAnnounceShieldDown = true
+
+				// Full shields announce
+				if (shieldRatio == 1.0 && canAnnounceShieldFull) {
+					PlayConversationToCoopTeam("CoopTD_GeneratorShield_Full")
+					canAnnounceShieldFull = false
+					playedVO = true
+				} else if (shieldRatio < 0.9 && shieldHealth < lastShieldHealth && TimerCheck("Nag_GeneratorStatus_ShieldDamage")) {
+					TimerReset("Nag_GeneratorStatus_ShieldDamage")
+
+					local alias = "CoopTD_GeneratorShield_Damage_Light"
+					if (shieldRatio < 0.5)
+						alias = "CoopTD_GeneratorShield_Damage_Heavy"
+
+					PlayConversationToCoopTeam(alias)
+					playedVO = true
+				}
+				// Recharging announce
+				else if (shieldRatio < 1.0 && shieldHealth > lastShieldHealth && canAnnounceShieldRecharging) {
+					PlayConversationToCoopTeam("CoopTD_GeneratorShield_Recharging")
+					canAnnounceShieldRecharging = false
+					playedVO = true
+				}
+			}
+
+			if (!canAnnounceHealthStatus && generatorHealth < lastGeneratorHealth && (healthRatio > resetCanAnnounceHealth_aboveFrac || healthRatio < resetCanAnnounceHealth_belowFrac)) {
+				printt("Resetting health announce", healthRatio, resetCanAnnounceHealth_aboveFrac, resetCanAnnounceHealth_belowFrac)
+				canAnnounceHealthStatus = true
+			}
+
+			if (shieldRatio < 1.0 && shieldHealth < lastShieldHealth && !canAnnounceShieldRecharging)
+				canAnnounceShieldRecharging = true
+
+			if (shieldRatio < 0.0 && !canAnnounceShieldFull)
+				canAnnounceShieldFull = true
+
+			lastShieldHealth = shieldHealth
+			lastGeneratorHealth = generatorHealth
+		}
+	}
+
+	function GeneratorStatus_PlayersFightingDesperately(shieldRatio, healthRatio) {
+		if (shieldRatio > 0.0)
+			return false
+
+		if (healthRatio > 0.65)
+			return false
+
+		// check if there's an active damage streak
+		if (!Generator_CheckDamageStreak("global", GENERATOR_THREAT_WARN_STREAKDMG_GLOBAL))
+			return false
+
+		local reqNumPlayers = 2
+		local reqPlayerDist = 3000
+		local reqNumTitans = 5
+		local reqNonMortarFrac = 0.6
+
+		local playerTeam = level.nv.attackingTeam
+		local nonPlayerTeam = GetOtherTeam(level.nv.attackingTeam)
+
+		local generator = level.TowerDefenseGenerator
+		local generatorOrg = generator.GetOrigin()
+
+		local players = GetPlayerArrayEx("any", playerTeam, generatorOrg, reqPlayerDist)
+
+		// respawning players don't get counted as active defenders
+		local temp = []
+		foreach(player in players) {
+			if (HasCinematicFlag(player, CE_FLAG_WAVE_SPAWNING) || HasCinematicFlag(player, CE_FLAG_CLASSIC_MP_SPAWNING))
+				continue
+
+			temp.append(player)
+		}
+		players = temp
+
+		local numPlayers = players.len()
+
+		// make sure enough players are defending near the generator
+		if (numPlayers < reqNumPlayers)
+			return false
+
+		local titans = GetNPCArrayEx("npc_titan", nonPlayerTeam, Vector(0, 0, 0), -1)
+		local numTitans = titans.len()
+
+		if (numTitans < reqNumTitans)
+			return false
+
+		local mortarTitans = []
+		foreach(titan in titans)
+		if (titan.GetSubclass() == eSubClass.mortarTitan)
+			mortarTitans.append(titan)
+
+		local numMortarTitans = mortarTitans.len()
+		local numNonMortarTitans = numTitans - numMortarTitans
+
+		// too many of the titans are mortar titans
+		if ((numNonMortarTitans.tofloat() / numTitans.tofloat()) < reqNonMortarFrac)
+			return false
+
+		return true
+	}
+
+	// ----------------------------------
+	// ----- GENERATOR AI THREAT VO -----
+	// ----------------------------------
+	function GeneratorThreat_Register(aiTypeIdx, callbackFunc, soundAlias, debounceTime = 60.0, classname = null, subclass = null) {
+		Assert(!(aiTypeIdx in level.generatorThreats), "AItype already set up for generator threats")
+
+		local aiTypeStr = GetCoopAITypeString_ByID(aiTypeIdx)
+
+		local timerName = "Nag_GeneratorThreat_" + aiTypeStr
+		TimerInit(timerName, debounceTime)
+
+		local threatInfo = ClassicMP_CreateCallbackTable(callbackFunc)
+		threatInfo.aiTypeIdx <- aiTypeIdx
+		threatInfo.aiTypeStr <- aiTypeStr
+		threatInfo.classname <- classname
+		threatInfo.subclass <- subclass
+		threatInfo.timer <- timerName
+		threatInfo.soundAlias <- soundAlias
+		threatInfo.priority <- level.generatorThreats.len() + 1 // assume first one registered = highest priority
+
+		level.generatorThreats[aiTypeIdx] <- threatInfo
+	}
+
+	function Generator_TryAnnounceThreats(generator) {
+		FlagEnd("ObjectiveComplete")
+		FlagEnd("ObjectiveFailed")
+
+		generator.EndSignal("OnDestroy")
+
+		OnThreadEnd(
+			function(): () {
+				if (Flag("GeneratorThreatAnnounce_InProgress"))
+					FlagClear("GeneratorThreatAnnounce_InProgress")
+			}
+		)
+
+		if (GetGameState() != eGameState.Playing)
+			return
+
+		// if there's not a wave active don't do any thinking
+		if (level.nv.TDCurrWave == null)
+			return
+
+		if (!TimerCheck("Nag_GeneratorThreat"))
+			return
+
+		if (Flag("HighPopulationAnnounce_InProgress"))
+			return
+
+		local announceThreatInfo = null
+		foreach(aiTypeIdx, threatInfo in level.generatorThreats) {
+			if (!TimerCheck(threatInfo.timer))
+				continue
+
+			// do we already have a more important threat to talk about?
+			// (low # = high priority, #1 is the first priority)
+			if (announceThreatInfo && announceThreatInfo.priority < threatInfo.priority)
+				continue
+
+			// callback function figures out if we are threatened by this aiType
+			if (!threatInfo.func.acall([threatInfo.scope, generator, threatInfo]))
+				continue
+
+			announceThreatInfo = threatInfo
+
+			// maybe earlyout if we know no aiType is more important than this one
+			if (announceThreatInfo && announceThreatInfo.priority == 1)
+				break
+		}
+
+		if (announceThreatInfo) {
+			// reset global and aitype specific timers
+			TimerReset("Nag_GeneratorThreat")
+			TimerReset(announceThreatInfo.timer)
+
+			FlagSet("GeneratorThreatAnnounce_InProgress")
+
+			PlayConversationToCoopTeam(announceThreatInfo.soundAlias)
+
+			wait 4.5
+			FlagClear("GeneratorThreatAnnounce_InProgress")
+		}
+	}
+
+	function AreEnoughNPCsWithinRange(classname, testOrg, maxRange, minThreatsRequired = 1, subclassArray = null) {
+		local nonPlayerTeam = GetOtherTeam(level.nv.attackingTeam)
+
+		local npcs = GetNPCArrayWithSubclassEx(classname, nonPlayerTeam, testOrg, maxRange, subclassArray)
+
+		return npcs.len() >= minThreatsRequired
+	}
+
+	function GeneratorThreatCallback_TitanDistanceCheck(generator, threatInfo) {
+		local maxDist = GENERATOR_THREAT_WARN_DIST_TITAN
+		local numRequired = 1
+
+		return AreEnoughNPCsWithinRange(threatInfo.classname, generator.GetOrigin(), maxDist, numRequired, [threatInfo.subclass])
+	}
+
+	function GeneratorThreatCallback_ArcTitans(generator, threatInfo) {
+		local maxDist = ARC_TITAN_EMP_FIELD_RADIUS
+		local numRequired = 1
+
+		return AreEnoughNPCsWithinRange(threatInfo.classname, generator.GetOrigin(), maxDist, numRequired, [threatInfo.subclass])
+	}
+
+	function GeneratorThreatCallback_SuicideSpectres(generator, threatInfo) {
+		return Generator_CheckDamageStreak(eCoopAIType.suicideSpectre, GENERATOR_THREAT_WARN_STREAKDMG_SUICIDE_SPECTRES)
+	}
+
+	function GeneratorThreatCallback_MortarTitans(generator, threatInfo) {
+		return Generator_CheckDamageStreak(eCoopAIType.mortarTitan, GENERATOR_THREAT_WARN_STREAKDMG_MORTAR_TITANS)
+	}
+
+	// this will work for regular spectres as well as grunts
+	function GeneratorThreatCallback_Infantry(generator, threatInfo) {
+		local maxDist = GENERATOR_THREAT_WARN_DIST_INFANTRY
+		local numRequired = GENERATOR_THREAT_WARN_NUM_REQ_INFANTRY
+
+		local nonPlayerTeam = GetOtherTeam(level.nv.attackingTeam)
+		local testOrg = generator.GetOrigin()
+
+		local infantry = GetNPCArrayEx("npc_soldier", nonPlayerTeam, testOrg, maxDist)
+		infantry.extend(GetNPCArrayWithSubclassEx("npc_spectre", nonPlayerTeam, testOrg, maxDist, [eSubClass.NONE]))
+
+		return infantry.len() >= numRequired
+	}
+
+
+	/************************************************************************************************\
+
+	##     ## ####  ######   ######
+	###   ###  ##  ##    ## ##    ##
+	#### ####  ##  ##       ##
+	## ### ##  ##   ######  ##
+	##     ##  ##        ## ##
+	##     ##  ##  ##    ## ##    ##
+	##     ## ####  ######   ######
+
+	\************************************************************************************************/
+	function SetCoopAIPriority(aiTypeID) {
+		// highest = 1
+		local priority = level.coopAIPriorities.len() + 1
+
+		level.coopAIPriorities[aiTypeID] <- priority
+	}
+
+	function AITypeArray_SortByPriority(waveAITypeIDs) {
+		local prioritySorted = []
+		local workingList = clone waveAITypeIDs
+
+		while (workingList.len() > 0) {
+			local bestPriorityVal = null
+			local highestPriorityAITypeID = null
+			foreach(id in workingList) {
+				Assert(id in level.coopAIPriorities, "No priority set up for coop aiType: " + GetCoopAITypeString_ByID(id))
+
+				if (bestPriorityVal == null || level.coopAIPriorities[id] < bestPriorityVal) {
+					bestPriorityVal = level.coopAIPriorities[id]
+					highestPriorityAITypeID = id
+				}
+			}
+			Assert(highestPriorityAITypeID != null)
+
+			prioritySorted.append(highestPriorityAITypeID)
+
+			// make a new working list without the one we just grabbed
+			local temp = []
+			foreach(index, aiTypeID in workingList) {
+				// if we didn't use it up, add to the new working list
+				if (aiTypeID != highestPriorityAITypeID)
+					temp.append(aiTypeID)
+			}
+			workingList = temp
+		}
+
+		Assert(prioritySorted.len() == waveAITypeIDs.len())
+
+		printt("AI IN WAVE BY PRIORITY:")
+		foreach(aiTypeID in prioritySorted)
+		printt(level.coopAIPriorities[aiTypeID] + ". " + GetCoopAITypeString_ByID(aiTypeID))
+
+		return prioritySorted
+	}
+
+	function KillFXWithEndcap(fxHandle, killDelay = 1.0) {
+		if (!IsValid_ThisFrame(fxHandle))
+			return
+
+		fxHandle.Fire("StopPlayEndCap")
+		wait killDelay
+
+		if (!IsValid_ThisFrame(fxHandle))
+			return
+
+		fxHandle.ClearParent()
+		fxHandle.Destroy()
+	}
+
+	function CoopTD_PlayerDeathCallback(deadPlayer, damageInfo) {
+		if (GetGameState() != eGameState.Playing)
+			return
+
+		printt("CoopTD player died!", deadPlayer)
+
+		CoopTD_TryPlayerDeathVO()
+	}
+
+	function CoopTD_TryPlayerDeathVO() {
+		if (!TimerCheck("Announce_PlayerDied"))
+			return
+
+		printt("Playing player death VO")
+
+		TimerReset("Announce_PlayerDied")
+
+		local players = GetPlayerArray()
+
+		local alivePlayers = []
+		local deadPlayers = []
+		foreach(player in players) {
+			// coming in on the dropship
+			//if ( HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) )
+
+			if (IsAlive(player)) {
+				alivePlayers.append(player)
+			} else {
+				deadPlayers.append(player)
+			}
+		}
+
+		local soundAlias = "CoopTD_PilotDown_Single"
+		if (alivePlayers.len() == 1)
+			soundAlias = "CoopTD_LastPilotAlive"
+		else if (deadPlayers.len() > 1)
+			soundAlias = "CoopTD_PilotDown_Multi"
+
+		PlayConversationToAliveCoopPlayers(soundAlias)
+	}
+
+	function CoopTD_OnSoldierOrSpectreSpawn(npc) {
+		if (RandomInt(100) < 20)
+			thread SimulateGrenadeThink(npc)
+	}
+
+	//HACK! -> DO NOT SHIP - this should be in code
+	function SimulateRodeo(spectre) {
+		thread SimulateRodeoThread(spectre)
+	}
+
+	function SimulateRodeoThread(spectre) {
+		spectre.EndSignal("OnDestroy")
+		spectre.EndSignal("OnDeath")
+		spectre.EndSignal("OnLeeched")
+
+		wait 1.0
+		if (IsSuicideSpectre(spectre))
+			return
+		if (IsSniperSpectre(spectre))
+			return
+		if (IsBubbleShieldMinion(spectre))
+			return
+
+		while (1) {
+			wait 1.0
+
+			local enemy = spectre.GetEnemy()
+			if (!IsAlive(enemy))
+				continue
+
+			if (!enemy.IsTitan())
+				continue
+
+			local titan = spectre.GetEnemy()
+			Assert(titan.IsTitan())
+			Assert(IsAlive(titan))
+
+			if (!CanSpectreRodeo(spectre, titan))
+				continue
+
+			thread SpectreRodeo(spectre, titan)
+			return
+		}
+	}
+
+	// Somewhat hacky way to get AI to throw grenades. Good enough for now.
+	function SimulateGrenadeThink(npc) {
+		npc.EndSignal("OnDestroy")
+		npc.EndSignal("OnDeath")
+		npc.EndSignal("Stop_SimulateGrenadeThink")
+
+		OnThreadEnd(
+			function(): (npc) {
+				if (IsAlive(npc))
+					DeleteAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
+			}
+		)
+
+		AddAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
+
+		if (RandomInt(100) < 50)
+			npc.GiveOffhandWeapon("mp_weapon_frag_grenade", 0)
+		else
+			npc.GiveOffhandWeapon("mp_weapon_grenade_emp", 0)
+
+		local npcRadius = 2000
+		local npcRadiusSqr = npcRadius * npcRadius
+
+		for (;;) {
+			wait RandomFloat(4.5, 5.5)
+
+			local npcPos = npc.GetWorldSpaceCenter()
+			local grenadeTargets = GetPlayerArray()
+			grenadeTargets.extend(GetNPCArrayEx("npc_turret_sentry", level.nv.attackingTeam, npcPos, npcRadius))
+			foreach(target in grenadeTargets) {
+				if (!IsAlive(target))
+					continue
+
+				local targetPosition
+				if (target.IsPlayer())
+					targetPosition = target.EyePosition()
+				else
+					targetPosition = target.GetWorldSpaceCenter()
+
+				if (DistanceSqr(targetPosition, npcPos) > npcRadiusSqr)
+					continue
+				//Intent is to use this as a rooftop deterent, not normal combat.
+				if (targetPosition.z - npcPos.z < 75)
+					continue
+
+				if (npc.IsInterruptable() == false)
+					continue
+
+				if (npc.CanSee(target) && npc.GetEnemy() == target) {
+					npc.Anim_ScriptedAllowPain(true)
+					npc.Anim_ScriptedPlay("coop_grenade_throw")
+					npc.WaittillAnimDone()
+					npc.Anim_ScriptedAllowPain(false)
+					npc.AssaultPointEnt(npc.s.assaultPoint)
+					npc.Signal("Stop_SimulateGrenadeThink")
+				}
+				wait 0
+			}
+		}
+	}
+
+	function NPCGrenadeThrow(npc) {
+		Assert(IsValid(npc))
+
+		local id = npc.LookupAttachment("R_HAND")
+		local npcPos = npc.GetAttachmentOrigin(id)
+		local weapon = npc.GetOffhandWeapon(0)
+
+		local enemy = npc.GetEnemy()
+
+		if (!IsValid(weapon) || !IsValid(enemy))
+			return
+
+		local throwPosition
+		if (enemy.IsPlayer())
+			throwPosition = enemy.EyePosition()
+		else
+			throwPosition = enemy.GetWorldSpaceCenter()
+
+		throwPosition += Vector(RandomFloat(-64, 64), RandomFloat(-64, 64), RandomFloat(-32, 32))
+
+		local vel = GetVelocityForDestOverTime(npcPos, throwPosition, 2.0)
+
+		if (weapon.GetClassname() == "mp_weapon_grenade_emp") {
+			// magic multipliers to get the EMP grenade to travel the same distance as the frag.
+			vel.x *= 2.0
+			vel.y *= 2.0
+			vel.z *= 1.25
+		}
+		local frag = weapon.FireWeaponGrenade(npcPos, vel, Vector(0, 0, 0), 3.0, damageTypes.GibBullet | DF_IMPACT | DF_EXPLOSION | DF_SPECTRE_GIB, DF_EXPLOSION | DF_RAGDOLL | DF_SPECTRE_GIB, PROJECTILE_NOT_PREDICTED, false, false)
+
+		frag.SetOwner(npc)
+		Grenade_Init(frag, weapon)
+		thread TrapExplodeOnDamage(frag, 20, 0.0, 0.0)
+
+		if (npc.IsSpectre())
+			EmitSoundOnEntity(npc, SPECTRE_GRENADE_OUT)
+		else
+			EmitSoundOnEntity(npc, GRUNT_GRENADE_OUT)
+	}
+
+
+	/************************************************************************************************\
+
+	########  #######   #######  ##        ######
+	   ##    ##     ## ##     ## ##       ##    ##
+	   ##    ##     ## ##     ## ##       ##
+	   ##    ##     ## ##     ## ##        ######
+	   ##    ##     ## ##     ## ##             ##
+	   ##    ##     ## ##     ## ##       ##    ##
+	   ##     #######   #######  ########  ######
+
+	\************************************************************************************************/
+	function TriggerOff(value) {
+		local triggers
+		if (IsArray(value))
+			triggers = value
+		else
+			triggers = [value]
+
+		foreach(trigger in triggers) {
+			local origin = trigger.GetOrigin()
+			if (!("originalOrigin" in trigger.s))
+				trigger.s.originalOrigin <- origin
+			trigger.SetOrigin(Vector(origin.x, origin.y, -16000))
+		}
+	}
+
+	function TriggerOn(value) {
+		local triggers
+		if (IsArray(value))
+			triggers = value
+		else
+			triggers = [value]
+
+		foreach(trigger in triggers) {
+			if (!("originalOrigin" in trigger.s))
+				continue
+			trigger.SetOrigin(trigger.s.originalOrigin)
+		}
+	}
+
+	function SetSignalDelayed(ent, signal, delay) {
+		ent.EndSignal(signal) // so that if we call this again with the same signal on the same ent we won't get multiple signal events.
+
+		wait delay
+		if (IsValid(ent))
+			Signal(ent, signal)
+	}
+
+	function DevSpectreRodeo() {
+		local player = GetPlayerArray()[0]
+		local vec = player.GetAngles().AnglesToForward()
+
+		local origin = player.GetOrigin() + (vec * 500)
+		local angles = player.GetAngles() + Vector(0, 90, 0)
+		local spectre = SpawnSpectre(TEAM_IMC, "SOMEWTF", origin, angles)
+		GiveMinionWeapon(spectre, "mp_weapon_r97")
+
+		local vec = angles.AnglesToForward()
+		local origin = origin + (vec * 400)
+		local yaw = angles.y + 180
+		if (yaw > 360)
+			yaw -= 360
+
+		local titan = SpawnCoopTitan(origin, Vector(0, yaw, 0), TEAM_MILITIA)
+
+		thread SpectreRodeo(spectre, titan)
+	}
+	Globalize(DevSpectreRodeo)
+
+
+	/************************************************************************************************\
+
+	##      ##    ###    ##     ## ########        ######  ########     ###    ##      ## ##    ##
+	##  ##  ##   ## ##   ##     ## ##             ##    ## ##     ##   ## ##   ##  ##  ## ###   ##
+	##  ##  ##  ##   ##  ##     ## ##             ##       ##     ##  ##   ##  ##  ##  ## ####  ##
+	##  ##  ## ##     ## ##     ## ######          ######  ########  ##     ## ##  ##  ## ## ## ##
+	##  ##  ## #########  ##   ##  ##                   ## ##        ######### ##  ##  ## ##  ####
+	##  ##  ## ##     ##   ## ##   ##             ##    ## ##        ##     ## ##  ##  ## ##   ###
+	 ###  ###  ##     ##    ###    ########        ######  ##        ##     ##  ###  ###  ##    ##
+
+	\************************************************************************************************/
+
+	function SetCustomWaveSpawn_SideView(origin = null, angles = null, shipAnim = "dropship_coop_respawn") {
+		thread __SetCustomWaveSpawn_SideView(origin, angles, shipAnim)
+	}
+	Globalize(SetCustomWaveSpawn_SideView)
+
+
+	function __SetCustomWaveSpawn_SideView(origin, angles, shipAnim) {
+		WaitEndFrame() //make sure the generator location has been set, because unless specificed that is the origin and angle of our new spawnpoint
+		if (origin != null)
+			Assert(angles != null, "if you're going to set an origin for SetCustomWaveSpawn_SideView, then you MUST also set an angles")
+		else {
+			origin = level.TowerDefenseGenLocation.origin
+			angles = level.TowerDefenseGenLocation.angles
+		}
+
+		local team = level.nv.attackingTeam
+		AddWaveSpawnCustomSpawnPoint(team, origin, angles)
+
+		SetWaveSpawnCustomDropshipAnim(shipAnim)
+
+		local idleAnims = []
+		AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_B", "ptpov_ds_side_intro_gen_idle_B", null, "ORIGIN", ViewConeSideRightStandFront)
+		AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_A", "ptpov_ds_side_intro_gen_idle_A", null, "ORIGIN", ViewConeSideRightStandBack)
+		AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_C", "ptpov_ds_side_intro_gen_idle_C", null, "ORIGIN", ViewConeSideRightSitBack)
+		AddRideAnims(idleAnims, 0, "pt_ds_side_intro_gen_idle_D", "ptpov_ds_side_intro_gen_idle_D", null, "ORIGIN", ViewConeSideRightSitFront)
+		foreach(anim in idleAnims)
+		AddWaveSpawnCustomPlayerRideAnimIdle(anim)
+
+		local jumpAnims = []
+		AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_B", "ptpov_ds_side_intro_gen_exit_B", null, "ORIGIN", ViewConeRampFree)
+		AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_A", "ptpov_ds_side_intro_gen_exit_A", null, "ORIGIN", ViewConeRampFree)
+		AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_C", "ptpov_ds_side_intro_gen_exit_C", null, "ORIGIN", ViewConeRampFree)
+		AddRideAnims(jumpAnims, 0, "pt_ds_side_intro_gen_exit_D", "ptpov_ds_side_intro_gen_exit_D", null, "ORIGIN", ViewConeRampFree)
+		foreach(anim in jumpAnims)
+		AddWaveSpawnCustomPlayerRideAnimJump(anim)
+	}
+
+	// remember - this gets called for every dropship spawn
+	function CoopTD_WaveSpawnDropship_SpawnCallback(dropship, anim) {
+		dropship.NotSolid()
+		thread WaveSpawnDropship_AddBish(dropship, anim)
+
+		local duration = dropship.GetSequenceDuration(anim)
+
+		// LEVEL INTRO FLY-IN
+		if (GetGameState() == eGameState.Prematch) {
+			if (!Flag("GeneratorBeam_On")) {
+				// We know that the anim we're using in Prematch is the short "classic" dropship intro
+				local beamStartDelay = duration * 0.225 // timed to "pop" beam as players exit the dropships
+				thread GeneratorStart_AndThink(beamStartDelay)
+			}
+		}
+		// PLAYER WAVE SPAWN
+		else {
+			// want the announce to happen when the dropship gets close to dropping guys off
+			local announceDelay = duration * 0.8
+			thread CoopTD_PlayerReinforcementsAnnounce(announceDelay)
+		}
+	}
+
+
+	function CoopTD_PlayerReinforcementsAnnounce(announceDelay = 0.0) {
+		if (Flag("TDGeneratorDestroyed") || Flag("ObjectiveComplete") || Flag("ObjectiveFailed"))
+			return
+
+		FlagEnd("TDGeneratorDestroyed")
+		FlagEnd("ObjectiveComplete")
+		FlagEnd("ObjectiveFailed")
+
+		if (Flag("CoopTD_WaitingToAnnouncePlayerReinforcements"))
+			return
+
+		FlagSet("CoopTD_WaitingToAnnouncePlayerReinforcements")
+
+		OnThreadEnd(
+			function(): () {
+				FlagClear("CoopTD_WaitingToAnnouncePlayerReinforcements")
+			}
+		)
+
+		if (announceDelay > 0)
+			wait announceDelay
+
+		if (!TimerCheck("Announce_PlayerRespawned"))
+			return
+
+		local numReinforcements = 0
+
+		// count up players on the dropship(s)
+		local playerArray = level.dropshipSpawnPlayerList[level.nv.attackingTeam]
+		numReinforcements += playerArray.len()
+
+		// TODO add players spawning as titans to the count
+		if (numReinforcements <= 0) {
+			printt("WARNING: wanted to do reinforce announce but couldn't:", playerArray.len())
+			return
+		}
+
+		local alias = "CoopTD_RespawningPlayer"
+		if (numReinforcements > 1)
+			alias = "CoopTD_RespawningPlayers"
+
+		PlayConversationToCoopTeam(alias)
+		TimerReset("Announce_PlayerRespawned")
+	}
+	Globalize(CoopTD_PlayerReinforcementsAnnounce)
+
+	function Coop_IsHardmode() {
+		return true
+	}
+
+	function Play3PHarvesterImpactSounds(generator, damageInfo) {
+		local soundAlias = null
+		local damageType = damageInfo.GetCustomDamageType()
+		local damageSource = damageInfo.GetDamageSourceIdentifier()
+		if (damageType & DF_MELEE)
+			soundAlias = "HarvesterShield.MeleeImpact_3P_vs_3P"
+		else if (damageSource == eDamageSourceId.mp_titanweapon_arc_cannon || damageSource == eDamageSourceId.mp_weapon_defender)
+			soundAlias = "HarvesterShield.Energy.BulletImpact_3P_vs_3P"
+		else if (damageSource = eDamageSourceId.mp_titanweapon_xo16 && damageType & DF_ELECTRICAL)
+			soundAlias = "HarvesterShield.AmpedXO16.BulletImpact_3P_vs_3P"
+		else if (damageType & DF_EXPLOSION)
+			soundAlias = "HarvesterShield.Explosive.BulletImpact_3P_vs_3P"
+		else if (damageType & damageTypes.Bullet || damageType & damageTypes.SmallArms || damageType & DF_SHOTGUN)
+			soundAlias = "HarvesterShield.Light.BulletImpact_3P_vs_3P"
+		else if (damageType & damageTypes.LargeCaliber || damageType & DF_GIB)
+			soundAlias = "HarvesterShield.Heavy.BulletImpact_3P_vs_3P"
+
+		if (soundAlias != null)
+			EmitSoundOnEntity(generator, soundAlias)
+	}

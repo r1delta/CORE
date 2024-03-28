@@ -1676,12 +1676,18 @@ function IsItemLocked( ref, childRef = null, player = null )
 	//###############################################
 
 	local gameModesPlayed = {}
-	// local numModes = PersistenceGetEnumCount( "gameModesWithLoadouts" )
-    local numModes = 0
+	local numModes = 0	
+	if ( !IsServer() ) {
+		numModes = PersistenceGetEnumCount( "gameModesWithLoadouts" )
+	}
+
 	for( local i = 0 ; i < numModes ; i++ )
 	{
-		// local mode = PersistenceGetEnumItemNameForIndex( "gameModesWithLoadouts", i )
-        local mode = 0
+		local mode = ""
+	if ( !IsServer() ) {
+		mode = PersistenceGetEnumItemNameForIndex( "gameModesWithLoadouts", i )
+	}
+
 		if ( IsUI() )
 			gameModesPlayed[ mode ] <- GetPersistentVar( "gameStats.modesPlayed[" + mode + "]" )
 		else
