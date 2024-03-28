@@ -2,6 +2,8 @@ function main()
 {
 	Assert( !GetCinematicMode(), "Cannot play lts in cinematic mode" )
 
+	Riff_TitanAvailability( eTitanAvailability.Never )
+
 	if ( Riff_EliminationMode() == eEliminationMode.Default )
 		level.nv.eliminationMode = eEliminationMode.PilotsTitans
 
