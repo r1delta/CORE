@@ -494,7 +494,7 @@ function SetMarkedForTeam( team, marked )
 	thread ReapplyMinimapPassive( marked )
 
 	if ( level.nv.mfdOverheadPingDelay )
-		thread PingEnemyMark( marked, GetTeamIndex(GetOtherTeams(1 << team)))
+		thread PingEnemyMark( marked, GetOtherTeam(team))
 }
 
 // This is necessary because when players change their loadout during the grace period, all of their passives are removed
@@ -551,7 +551,7 @@ function SetMinimapMaterialsForMarked( marked )
 {
 	local playerTeam = marked.GetTeam()
 	if ( !level.nv.mfdOverheadPingDelay )
-		marked.Minimap_AlwaysShow(GetTeamIndex(GetOtherTeams(1 << playerTeam)), null)
+		marked.Minimap_AlwaysShow(GetOtherTeam( playerTeam ), null)
 
 	marked.Minimap_SetFriendlyMaterial( MFD_MINIMAP_FRIENDLY_MATERIAL )
 	marked.Minimap_SetEnemyMaterial( MFD_MINIMAP_ENEMY_MATERIAL )
@@ -579,7 +579,7 @@ function MarkedUpdateAssault( marked )
 	marked.EndSignal( "OnDestroy" )
 	marked.EndSignal( "Disconnected" )
 	local team = marked.GetTeam()
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << team))
+	local enemyTeam = GetOtherTeam(team)
 
 	for ( ;; )
 	{
@@ -650,7 +650,7 @@ function MFD_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		return
 
 	local victimTeam = victim.GetTeam()
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << victimTeam))
+	local otherTeam = GetOtherTeam(victimTeam)
 
 	local victimWasMarked = victim == GetMarked( victimTeam )
 
@@ -747,7 +747,7 @@ function MFD_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		SetRoundWinningKillReplayEntities( replayViewEntity, victim )
 
 		SetWinLossReasons( "#GAMEMODE_MARKED_FOR_DEATH_PRO_WIN_ANNOUNCEMENT", "#GAMEMODE_MARKED_FOR_DEATH_PRO_LOSS_ANNOUNCEMENT")
-		local scoringTeam = GetTeamIndex(GetOtherTeams(victim))
+		local scoringTeam = GetOtherTeam(victim)
 		SetWinner( scoringTeam )
 
 	}

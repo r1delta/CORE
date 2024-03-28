@@ -7,7 +7,7 @@ function main()
 
 	// things that need to get set up before the included files try to reference them
 	level.nv.attackingTeam = TEAM_MILITIA
-	local defenders = GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))
+	local defenders = GetOtherTeam(level.nv.attackingTeam)
 
 	level.maxAllowedRestarts <- null
 

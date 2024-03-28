@@ -129,8 +129,8 @@ function Evac_SetCustomDropshipFunc( func )
 function Evac_SetEvacTeam( team )
 {
 	printt( "The team is: " + team )
-	Assert( 
-		team == TEAM_IMC || 
+	Assert(
+		team == TEAM_IMC ||
 		team == TEAM_MILITIA
 	)
 
@@ -269,7 +269,7 @@ function ExfiltrationEvacMain( chaseTeam, escapeNode )
 	if ( escapeNode )
 		level.evacNode = escapeNode
 
-	local evacTeam = GetTeamIndex(GetOtherTeams(1 << chaseTeam))
+	local evacTeam = GetOtherTeam( chaseTeam )
 
 	Evac_SetEvacTeam( evacTeam )
 
@@ -339,7 +339,7 @@ function EvacOnDemand( chaseTeam, dropshipHealth = null, shieldHealth = null )
 
 	FlagEnd( "EvacFinished" )
 
-	local evacTeam = GetTeamIndex(GetOtherTeams(1 << chaseTeam))
+	local evacTeam = GetOtherTeam(chaseTeam)
 	printt( "evacTeam is " + evacTeam + " attacking team is " + level.nv.attackingTeam )
 
 	Evac_SetEvacTeam( evacTeam )
@@ -470,7 +470,7 @@ function EvacMain( chaseTeam ) //TODO: After doing some work on One Flag CTF and
 
 function EvacObjective( evacTeam )
 {
-	local pursuitTeam = GetTeamIndex(GetOtherTeams(1 << evacTeam))
+	local pursuitTeam = GetOtherTeam( evacTeam )
 
 	FlagEnd( "EvacFinished" )
 
@@ -520,8 +520,8 @@ function EvacVDU( evacTeam, winningTeam )
 {
 	FlagEnd( "EvacFinished" )
 
-	local losingTeam = GetTeamIndex(GetOtherTeams(1 << winningTeam))
-	local pursuitTeam = GetTeamIndex(GetOtherTeams(1 << evacTeam))
+	local losingTeam = GetOtherTeam( winningTeam )
+	local pursuitTeam = GetOtherTeam( evacTeam )
 
 	local evacTeamVDUTable = level.evacVDU[ evacTeam ]
 	local pursuitTeamVDUTable = level.evacVDU[ pursuitTeam ]
@@ -969,14 +969,14 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 						else
 						{
 							SetWinLossReasons( "#HEIST_SUCCEED_INTERRUPT_ESCAPE_DEFTEAM", "#HEIST_FAILED_ESCAPE_TO_SHIP_EVACTEAM" )
-							SetWinner(GetTeamIndex(GetOtherTeams(1 << level.evacTeam))) //수송선 탑승 중 파괴 시 승리 조건 추가
+							SetWinner( GetOtherTeam( level.evacTeam ) )
 						}
 
 					}
 					else
 					{
 						SetWinLossReasons( "#HEIST_SUCCEED_INTERRUPT_ESCAPE_DEFTEAM", "#HEIST_FAILED_ESCAPE_TO_SHIP_EVACTEAM" ) //CTF PRo only. Make this more generic later
-						SetWinner(GetTeamIndex(GetOtherTeams(1 << level.evacTeam)))
+						SetWinner( GetOtherTeam( level.evacTeam ) )
 					}
 				}
 
@@ -1460,7 +1460,7 @@ function UpdateObjectives()
 		return
 
 	local evacTeam = level.evacTeam
-	local pursuitTeam = GetTeamIndex(GetOtherTeams(1 << evacTeam))
+	local pursuitTeam = GetOtherTeam( evacTeam )
 
 	if ( GetNumberOfEvacPlayersAlive() == 0 )
 	{
@@ -1547,7 +1547,7 @@ function UpdateObjectiveDropshipLeaving( dropship, ref, table ) //Don't need any
 		return
 
 	local evacTeam = level.evacTeam
-	local pursuitTeam = GetTeamIndex(GetOtherTeams(1 << level.evacTeam))
+	local pursuitTeam = GetOtherTeam(level.evacTeam)
 
 	SetTeamActiveObjective( evacTeam, "EG_DropshipExtractDropshipFlyingAway" )
 	SetTeamActiveObjective( pursuitTeam, "EG_StopExtractDropshipFlyingAway", Time() + 2.5, level.dropship )
@@ -1584,7 +1584,7 @@ function DecideDepartureAnnouncement()
 function UpdateObjectiveDropshipGotAway( dropship, ref, table ) //Don't need any of these parameters, but they are passed in...
 {
 	local evacTeam = level.evacTeam
-	local pursuitTeam = GetTeamIndex(GetOtherTeams(1 << level.evacTeam))
+	local pursuitTeam = GetOtherTeam(level.evacTeam)
 
 	if ( GetNumberOfPursuitPlayersAlive() != 0 )
 		SetTeamActiveObjective( evacTeam, "EG_DropshipExtractFailedEscape" )

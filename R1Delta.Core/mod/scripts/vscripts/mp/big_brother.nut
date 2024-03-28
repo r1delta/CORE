@@ -100,7 +100,7 @@ function UpdateMinimap()  //!ky 평소에도 플레이어 위치 보여주기
 	{
 		guy.Minimap_SetDefaultMaterial( "vgui/hud/cloak_drone_minimap_orange" )
 		//guy.Minimap_SetAlignUpright( true )
-		guy.Minimap_AlwaysShow(GetTeamIndex(GetOtherTeams(guy)), null ) //상대팀만
+		guy.Minimap_AlwaysShow(GetOtherTeam(guy.GetTeam()), null ) //상대팀만
 		//guy.Minimap_AlwaysShow( TEAM_MILITIA, null )
 		//guy.Minimap_SetObjectScale( MINIMAP_CLOAKED_DRONE_SCALE )
 		guy.Minimap_SetZOrder( 10 )
@@ -114,7 +114,7 @@ function DeleteMinimap()  //!ky 플레이어 위치 숨기기
 	local players = GetPlayerArray()
 	foreach ( guy in players )
 	{
-		guy.Minimap_Hide(GetTeamIndex(GetOtherTeams(guy)), null ) //상대팀만
+		guy.Minimap_Hide(GetOtherTeam(guy), null ) //상대팀만
 		//guy.Minimap_Hide( TEAM_MILITIA, null )
 	}
 	wait 8.0
@@ -151,11 +151,12 @@ function BBPrematchStart()
 		player.s.respawnCount = 0
 		if ( Riff_TitanAvailability() == eTitanAvailability.Once )
 		{
+			callOnce = true
 		}
 
 		if(callOnce == false)
 		{
-			player.OnBBPrematchStart(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+			player.OnBBPrematchStart(GetOtherTeam(level.nv.attackingTeam))
 			callOnce = true
 		}
 	}
@@ -177,7 +178,7 @@ function BBPrematchStart()
 
 	foreach ( panel in file.panels )
 	{
-		panel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+		panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		panel.SetUsable()
 		panel.SetUsableByGroup( "enemies pilot" )
 		panel.Minimap_AlwaysShow( TEAM_IMC, null )
@@ -213,7 +214,7 @@ function BBPrematchStart()
 	{
 		local newturret
 		newturret = ReplaceDeadBBTurret( turret )
-		thread CaptureBBTurret( newturret, GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+		thread CaptureBBTurret( newturret, GetOtherTeam(level.nv.attackingTeam))
 		//thread CaptureBBTurret( turret, GetOtherTeam( level.nv.attackingTeam ) )
 	}
 
@@ -320,7 +321,7 @@ function BigBrother_UseSuccessPanel( panel, player )
 		return
 	}
 
-	if ( panelTeam == GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	if ( panelTeam == GetOtherTeam(level.nv.attackingTeam))
 	{
 		AttackerHacksPanel( panel, player )
 		return
@@ -330,26 +331,26 @@ function BigBrother_UseSuccessPanel( panel, player )
 // 패널 다시 활성 화
 function BigBrother_UseFailPanel( panel, player )
 {
-	if( player.GetTeam() == GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	if( player.GetTeam() == level.nv.attackingTeam)
 		return;
-		
+
 	// disable the other panelㄴ
 	foreach ( other in file.panels )
 	{
 		if ( other == panel )
 			continue
 
-		other.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+		other.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		other.SetUsable()
 		//other.Minimap_Hide( TEAM_IMC, null )
 		//other.Minimap_Hide( TEAM_MILITIA, null )
-	} 
+	}
 }
 
 // 패널 해킹 시작 시 다른 패널 무효화.
 function BigBrother_UseStartPanel( panel, player )
 {
-	if( player.GetTeam() == GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	if( player.GetTeam() == GetOtherTeam(level.nv.attackingTeam))
 		return;
 
 	// disable the other panel
@@ -444,7 +445,7 @@ function AttackerHacksPanel( panel, player )
 
 		ReleaseBBTurret( otherTurret )
 	}
-	
+
 
 	thread ExplosionProgress( panel, EXPLO_TIME )
 
@@ -475,7 +476,7 @@ Globalize( JumpTimeLimit )
 function DefenderHacksPanel( panel, player )
 {
 	Assert( player.GetTeam() != level.nv.attackingTeam, "Player of team " + player.GetTeam() + " used panel when it was on his team!" )
-	panel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 
 	local players = GetPlayerArray()
 	foreach ( guy in players )
@@ -486,7 +487,7 @@ function DefenderHacksPanel( panel, player )
 	}
 
 	SetWinLossReasons( "#BIG_BROTHER_PANEL_HACKED", "#BIG_BROTHER_PANEL_HACKED" )
-	SetWinner(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	SetWinner(GetOtherTeam(level.nv.attackingTeam))
 
 	panel.SetBBPanelEstimatedHackingTime( 0 )
 	panel.SetBBPanelStartHackingTime( 0 )
@@ -545,9 +546,9 @@ function BBPanelHackStartFunc( panel, player )
 function BBPanelHackEndFunc( panel, player )
 {
 	// 판넬의 팀이 방어 팀일 경우에는 수정 하지 않는다.
-	if(panel.GetTeam() == GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	if(panel.GetTeam() == GetOtherTeam(level.nv.attackingTeam))
 	{
-		panel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))) //공격팀을 다른 팀으로 바꾼다
+		panel.SetTeam(GetOtherTeam(level.nv.attackingTeam)) //공격팀을 다른 팀으로 바꾼다
 		panel.SetUsable() //해킹 가능
 		panel.SetUsableByGroup( "enemies pilot" ) //공격팀이 바뀌었으므로, 적 파일럿만 해킹 가능
 		panel.Minimap_AlwaysShow( TEAM_IMC, null ) //해킹한 패널을 미니맵에 보여준다
@@ -700,7 +701,7 @@ function NuclearCoreExplosion( origin, panel )
 	{
 		fxEnt = GetEnt( "out_B" )
 	}
-	
+
 	if( fxEnt )
 	{
 		fxOrigin = fxEnt.GetOrigin()
@@ -790,7 +791,7 @@ function ExplosionProgress( panel, waitTime )
 	}
 
 	// 방어팀이 엘리라면 정지.
-	if( IsTeamElimination(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))))
+	if( IsTeamElimination(GetOtherTeam(level.nv.attackingTeam)))
 	{
 		return
 	}

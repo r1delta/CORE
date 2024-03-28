@@ -259,7 +259,7 @@ function CodeCallback_OnTouchHealthKit( player, flag )
 		return false
 
 	local flagTeam = flag.GetTeam()
-	local otherFlagTeam = GetTeamIndex(GetOtherTeams(1 << flagTeam))
+	local otherFlagTeam = GetOtherTeam(flagTeam)
 	local playerTeam = player.GetTeam()
 
 	if ( playerTeam != flagTeam )
@@ -358,7 +358,7 @@ function GiveFlagToPlayer( flag, player )
 
 function TakeFlagFromPlayer( player )
 {
-	local flag = GetFlagForTeam(GetTeamIndex(GetOtherTeams(1 << player.GetTeam())))
+	local flag = GetFlagForTeam(GetOtherTeam(player.GetTeam()))
 
 	Assert( flag.GetParent() == player )
 	Assert( flag.GetTeam() != player.GetTeam() )
@@ -377,9 +377,9 @@ function TakeFlagFromPlayer( player )
 
 function ReturnFlagFromPlayer( player, returner )
 {
-	local flag = GetFlagForTeam(GetTeamIndex(GetOtherTeams(1 << player.GetTeam())))
+	local flag = GetFlagForTeam(GetOtherTeam(player.GetTeam()))
 	local flagTeam = flag.GetTeam()
-	local otherFlagTeam = GetTeamIndex(GetOtherTeams(1 << flagTeam))
+	local otherFlagTeam = GetOtherTeam(flagTeam)
 
 	Assert( flag.GetParent() == player )
 	Assert( flag.GetTeam() != player.GetTeam() )
@@ -500,7 +500,7 @@ function DropFlag( player, damageInfo = null )
 	flag.SetVelocity( Vector( 0, 0, 1 ) )
 
 	local flagTeam = flag.GetTeam()
-	local otherFlagTeam = GetTeamIndex(GetOtherTeams(1 << flagTeam))
+	local otherFlagTeam = GetOtherTeam(flagTeam)
 
 	MessageToTeam( flagTeam, eEventNotifications.PlayerDroppedFriendlyFlag, null, player )
 	EmitSoundOnEntityToTeamExceptPlayer( flag, "UI_CTF_Team_FlagUpdate", flagTeam, player )
@@ -528,7 +528,7 @@ function DropTimeoutThink( flag, dropTimeout )
 	flag.EndSignal( "DropTimeoutThink" )
 
 	local flagTeam = flag.GetTeam()
-	local otherFlagTeam = GetTeamIndex(GetOtherTeams(1 << flagTeam))
+	local otherFlagTeam = GetOtherTeam(flagTeam)
 
 	wait dropTimeout
 
@@ -566,7 +566,7 @@ function SandtrapFlagOutOfBoundsThink( flag )
 
 function CTF_Pro_Evac()
 {
-	local defendingTeam = GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))
+	local defendingTeam = GetOtherTeam(level.nv.attackingTeam)
 	SetEvacShipArrivalTimeAndDistanceFromFlagPoint()
 	thread EvacOnDemand( defendingTeam, 7000, 5000 )
 	local dropship = level.ent.WaitSignal( "EvacDropship" ).dropship
@@ -631,7 +631,7 @@ function ReselectEvacNode( distanceSqrThreshold )
 	if ( map == "mp_angel_city" || map == "mp_outpost_207" ) //Those 2 maps didn't use Evac_AddLocation. Go ahead and make them use Evac_AddLocation if we move ahead with the mode
 		return
 
-	local defendingTeam = GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))
+	local defendingTeam = GetOtherTeam(level.nv.attackingTeam)
 	local defendingFlagPointOrigin = level.flagSpawnPoints[ defendingTeam ].GetOrigin()
 
 	local resultArray = []

@@ -513,7 +513,7 @@ function HardpointThink( hardpoint )
 			//-----------------------------------------------------------------------
 			// CAPPED - Neutralize all live enemy Spectres and spawn racks for new team
 			//---------------------------------------------------------------------
-			SpectresNeutralizeInTrigger( hardpoint.s.spectreTrigger, GetTeamIndex(GetOtherTeams(1 << newTeam)))
+			SpectresNeutralizeInTrigger( hardpoint.s.spectreTrigger, GetOtherTeam(newTeam))
 			wait 0.3																																							//try to spawn 4, but will accept less
 			spectres = Spawn_TrackedSpectreRackSquad( hardpoint, newTeam, 4, UniqueString( spectreSquadName ), false )
 			AssaultNearestAvailableHardpoint( spectres, hardpoint )
@@ -530,7 +530,7 @@ function HardpointThink( hardpoint )
 			//--------------------------------------
 			// NEUTRALIZED - deactivate any enemy Spectres in trigger
 			//--------------------------------------
-			thread ForcePlayConversationToTeam( "CorpHardpointNeutralized", GetTeamIndex(GetOtherTeams(1 << oldTeam))) //Want to make sure we play neutralized dialogue to show why Spectres are deactivating
+			thread ForcePlayConversationToTeam( "CorpHardpointNeutralized", GetOtherTeam(oldTeam)) //Want to make sure we play neutralized dialogue to show why Spectres are deactivating
 			SpectresNeutralizeInTrigger( hardpoint.s.spectreTrigger, oldTeam )
 		}
 	}
@@ -745,7 +745,7 @@ function SpectreSuicideBehavior( spectre, spawnerTable = null )
 	local targetEnt
 	local node
 	local nodePos
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << spectre.GetTeam()))
+	local enemyTeam = GetOtherTeam(spectre.GetTeam())
 	local evacPos = level.evacNode.GetOrigin()
 
 	while ( true )
@@ -1272,7 +1272,7 @@ function SpectreWaitToExplode( spectre )
 	spectre.EndSignal( "OnDeath" )
 
 	local spectreTeam = spectre.GetTeam()
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << spectreTeam))
+	local enemyTeam = GetOtherTeam(spectreTeam)
 	local enemyPlayers
 	local distSq
 	local canExplode = false
@@ -2617,7 +2617,7 @@ function DropshipRodeoPilotDialogue()
 	}
 	else
 	{
-		//(RADIO) Mayday! Mayday! Bail out! Repeat….
+		//(RADIO) Mayday! Mayday! Bail out! Repeatï¿½.
 		alias = "diag_hp_matchIntro_CR180_01_01_mcor_grunt1"
 	}
 	EmitSoundOnEntityToTeam( level.dropshipRodeo, alias, TEAM_MILITIA )
@@ -2892,7 +2892,7 @@ function EvacSetupRoundEnd()
 
 		if ( level.winners )
 		{
-			thread SpectresNeutralizeAllOnTeam( GetTeamIndex(GetOtherTeams( level.winners )) )
+			thread SpectresNeutralizeAllOnTeam( GetOtherTeam( level.winners ) )
 		}
 		else
 		{
@@ -3125,7 +3125,7 @@ function EvacGetSwarmPatrolLocations()
 /////////////////////////////////////////////////////////////
 function SpectreSwarmAI( team )
 {
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << team))
+	local enemyTeam = GetOtherTeam(team)
 	local players
 	local spawnerTable
 	local spectre

@@ -33,14 +33,14 @@ function TryAssignOffhand( player, targetEnt, offhands, index, unlockType )
 	if ( !( index in offhands ) )
 		return false
 
-	
+
 	if ( offhands[index] != null )
 	{
 		local mods = offhands[index].mods
-		if ( offhands[index].weapon != null ) 
+		if ( offhands[index].weapon != null )
 		{
-			targetEnt.GiveOffhandWeapon( offhands[index].weapon, index, mods )	
-			
+			targetEnt.GiveOffhandWeapon( offhands[index].weapon, index, mods )
+
 		}
 	}
 	return true
@@ -147,7 +147,7 @@ function TitanMaker() // for testing
 
 	local origin = Vector(0,0,0)
 	local angles = Vector(0,0,0)
-	local team = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
+	local team = GetOtherTeam(player.GetTeam())
 	local weapon = "mp_titanweapon_xo16"
 	local titan = CreateNPCTitanFromSettings( "titan_atlas", team, origin, angles )
 	titan.GiveWeapon( weapon )
@@ -201,7 +201,7 @@ function GetAllTitans()
 
 function CompareTitanTeamCount( myTeam )
 {
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << myTeam))
+	local enemyTeam = GetOtherTeam(myTeam)
 	local titans = GetAllTitans()
 
 	local myTitans = []
@@ -378,7 +378,7 @@ function ReloadScriptsInternal()
 
 
 	IncludeScript( "_codecallbacks_shared", root )
-	
+
 	//if ( !IsMenuLevel() )
 	if ( !IsLobby() )
 		IncludeScript( "_codecallbacks_mp", getroottable() )
@@ -750,7 +750,7 @@ class CGameScore
 		if ( GetScoreLimit() )
 			newScore = min( newScore, GetScoreLimit() )
 
-		local otherTeamIndex = GetTeamIndex(GetOtherTeams(1 << teamIndex))
+		local otherTeamIndex = GetOtherTeam(teamIndex)
 		local otherTeamScore = GameRules.GetTeamScore( otherTeamIndex )
 
 		SetTeamScore( teamIndex, newScore )
@@ -798,7 +798,7 @@ class CGameScore
 			return 1.0
 
 		local winningTeamScore = GetTeamScore( winningTeam )
-		local losingTeamScore = GetTeamScore(GetTeamIndex(GetOtherTeams(1 << winningTeam)))
+		local losingTeamScore = GetTeamScore(GetOtherTeam(winningTeam))
 		//print( "winningScore: " + winningTeamScore + ", losingScore: " + losingTeamScore + ", ratio: " + ( losingTeamScore.tofloat() / winningTeamScore ) )
 		return losingTeamScore.tofloat() / winningTeamScore
 
@@ -817,7 +817,7 @@ class CGameScore
 			return
 
 		local winningTeamScore = GetTeamScore( winningTeam )
-		local losingTeamScore = GetTeamScore(GetTeamIndex(GetOtherTeams(1 << winningTeam)))
+		local losingTeamScore = GetTeamScore(GetOtherTeam(winningTeam))
 
 		local winningTeamLeftToScore = scoreLimit - winningTeamScore
 		local losingTeamLeftToScore = scoreLimit - losingTeamScore

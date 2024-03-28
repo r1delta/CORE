@@ -18,7 +18,7 @@ function main()
 function EntitiesDidLoad()
 {
 	level.evacEnabled = false
-	
+
 	//printl("running EntitiesDidLoad() in team_deathmatch.nut" )
 	SetupAssaultPointKeyValues()
 
@@ -46,7 +46,7 @@ function Atdm_OnTitanDoomed( victim, damageInfo )
 	if ( !IsValid( attacker ) )
 		return
 
-	if ( attacker.GetTeam() != GetTeamIndex(GetOtherTeams(victim)))
+	if ( attacker.GetTeam() != GetOtherTeam(victim))
 		return
 
 	if ( victim.IsTitan() && !victim.IsPlayer() )
@@ -59,7 +59,7 @@ function Atdm_OnTitanDoomed( victim, damageInfo )
 		scoreVal = ATDM_SCORE_AITITAN
 	}
 */
-	
+
 	ShowPlayerAtdmScoreEvent( attacker, scoreVal )
 
 	GameScore.AddTeamScore( attacker.GetTeam(), scoreVal )
@@ -95,7 +95,7 @@ function Atdm_AITitan() //AI 타이탄 관련 스크립트 // 이하의 타이�
 {
 	if( IsToolMode_Native() )
 		return
-	
+
 	delaythread (1.3) CallAITitan( TEAM_IMC, "#NPC_CUSTOM_ATDM_PILOT_1", "titan_stryder", "mp_titanweapon_xo16", false, 0)
 	delaythread (2.7) CallAITitan( TEAM_IMC, "#NPC_CUSTOM_ATDM_PILOT_2", "titan_stryder", "mp_titanweapon_rocket_launcher", false, 1 )
 	delaythread (1.5) CallAITitan( TEAM_MILITIA, "#NPC_CUSTOM_ATDM_PILOT_3", "titan_stryder", "mp_titanweapon_rocket_launcher", false, 0 )
@@ -139,7 +139,7 @@ function CallAITitan( team, title, titanSettings, titanWeapon, isRespawn, spawnp
 	else
 	{
 		local respawnPoints = SpawnPoints_GetTitan()
-		
+
 		spawnpoint = respawnPoints[ RandomInt( respawnPoints.len() ) ]
 	}
 
@@ -149,13 +149,13 @@ function CallAITitan( team, title, titanSettings, titanWeapon, isRespawn, spawnp
 	table.title 	= title
 	table.model 	= titanModel
 	table.weapon	= titanWeapon
-	
+
 	table.origin 	= spawnpoint.GetOrigin()
 	table.angles 	= spawnpoint.GetAngles()
-	
+
 	table.health 	= 2250 //160607 버전으로 픽스
 	table.maxHealth	= table.health
-	
+
 	local titan = SpawnNPCTitan( table )
 */
 	local titan  = CreateNPCTitanFromSettings( titanSettings, team, spawnpoint.GetOrigin(), spawnpoint.GetAngles() )
@@ -180,12 +180,12 @@ function CallAITitan( team, title, titanSettings, titanWeapon, isRespawn, spawnp
 
 	waitthread ScriptedHotDrop( titan, spawnpoint.GetOrigin(), spawnpoint.GetAngles(), "at_hotdrop_drop_2knee_turbo" )
 	//waitthread ScriptedO2HotDrop( titan, spawnpoint.GetOrigin(), spawnpoint.GetAngles(), "at_hotdrop_drop_2knee_turbo" )
-	
+
 	thread RespawnCheck( titan, team, title, titanSettings, titanWeapon );
-	
+
 	titan.SetEfficientMode( false )
 	titan.SetTouchTriggers( true )
-	
+
 	titan.SetDefaultSchedule( "SCHED_PATROL_PATH" )
 }
 
@@ -211,7 +211,7 @@ function ScriptedO2HotDrop( titan, origin, angles, animation )
 	titan.EnableRenderAlways()
 	EmitSoundAtPosition( origin, "titan_hot_drop_turbo_begin_3P" )
 
-	waitthread PlayAnimTeleport( titan, animation, origin, angles )	
+	waitthread PlayAnimTeleport( titan, animation, origin, angles )
 }
 */
 
@@ -239,7 +239,7 @@ function OnDropImpactO2( titan, e = null )
 
 /************************************************************************************************\
 
-ATDM SCRIPTS ORIGIN 
+ATDM SCRIPTS ORIGIN
 
 \************************************************************************************************/
 

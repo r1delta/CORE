@@ -55,12 +55,12 @@ function CreateLevelWinnerDeterminedMusicEvent()
 
 	local winningTeam = GetWinningTeam()
 
-	if (GetTeamIndex(winningTeam))
+	if (winningTeam)
 	{
-		local losingTeam = GetOtherTeams(winningTeam)
-		printt( "Winning team: " + GetTeamIndex(winningTeam) + ", losing team: " + GetTeamIndex(losingTeam) )
-		// CreateTeamMusicEvent( GetTeamIndex(winningTeam) + 1, eMusicPieceID.LEVEL_WIN, Time() )
-		// CreateTeamMusicEvent( GetTeamIndex(losingTeam) + 1, eMusicPieceID.LEVEL_LOSS, Time() )
+		local losingTeam = GetOtherTeam(winningTeam)
+		printt( "Winning team: " + winningTeam + ", losing team: " + losingTeam )
+		CreateTeamMusicEvent( winningTeam, eMusicPieceID.LEVEL_WIN, Time() )
+		CreateTeamMusicEvent( losingTeam, eMusicPieceID.LEVEL_LOSS, Time() )
 	}
 	else
 	{

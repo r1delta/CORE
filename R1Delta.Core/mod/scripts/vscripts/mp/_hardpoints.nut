@@ -886,7 +886,7 @@ function UpdateHardpointCount( point )
 
 	if ( lastCappingTeam == TEAM_IMC || lastCappingTeam == TEAM_MILITIA )
 	{
-		local otherTeam = GetTeamIndex(GetOtherTeams(1 << lastCappingTeam))
+		local otherTeam = GetOtherTeam( lastCappingTeam )
 
 		local wasContested = GetCapPowerFromTables( point, lastPlayerCounts, lastTitanCounts, lastAICounts ).contested
 		local isContested = GetCapPowerFromTables( point, teamPlayerCount, teamTitanCount, teamAICount ).contested

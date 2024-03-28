@@ -387,7 +387,7 @@ function GetMaxNumberOfLeechedEnts( player )
 
 function LeechSurroundingSpectres( origin, player )
 {
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
+	local enemyTeam = GetOtherTeam( player.GetTeam() )
 
 	local enemySpectreArray = GetNPCArrayEx( "npc_spectre", enemyTeam, player.GetOrigin(), level.leechRange  )
 

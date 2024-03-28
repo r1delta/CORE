@@ -1303,7 +1303,7 @@ function IsNPCSpawningEnabled( team = null )
 {
 	if( GAMETYPE ==  DEVTEST)
 		return false
-		
+
 	if ( Riff_AllowNPCs() != eAllowNPCs.Default )
 	{
 		if ( Riff_AllowNPCs() == eAllowNPCs.None )
@@ -1351,7 +1351,7 @@ function ShouldSpawnSpectre( team )
 	switch ( level.spectreSpawnStyle )
 	{
 		case eSpectreSpawnStyle.MORE_FOR_ENEMY_TITANS:
-			local enemyTeam = GetTeamIndex(GetOtherTeams(1 << team))
+			local enemyTeam = GetOtherTeam(team)
 			local titanCount = GetTitanCount( enemyTeam )
 			local spectreCount = GetSpectreCount( team )
 

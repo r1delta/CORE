@@ -56,7 +56,7 @@ function AICalloutCloak( player )
 
 	wait CLOAK_FADE_IN //Give it a beat after cloak has finishing cloaking in
 
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
+	local enemyTeam = GetOtherTeam(player.GetTeam())
 
 	local nearbySoldiers = GetNPCArrayEx( "npc_soldier", enemyTeam, player.GetOrigin(), 1000  )  //-1 for distance parameter means all spectres in map
 

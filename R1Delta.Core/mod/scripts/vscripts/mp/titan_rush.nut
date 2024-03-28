@@ -45,7 +45,7 @@ function main()
 
 	//RegisterSignal( "ChangeSpawnPoint" )
 	RegisterSignal( "StopRushPanelProgress" )
-	
+
 	SetGameModeAnnouncement( "GameModeAnnounce_AT" )
 
 	AddCallback_GameStateEnter( eGameState.Prematch, TRPrematchStart )
@@ -66,7 +66,7 @@ function main()
 	for( local i = 0; i < RUSH_POINT_CNT; i++ )
 	{
 		file.HackedRushPanels.append( null );
-		file.HackedPlayers.append( null ); 
+		file.HackedPlayers.append( null );
 	}
 }
 
@@ -94,7 +94,7 @@ function TRPrematchStart()
 
 	foreach ( rushpanel in file.rushpanels )
 	{
-		rushpanel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+		rushpanel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		//rushpanel.SetTeam( TEAM_UNASSIGNED )
 		rushpanel.SetUsable()
 		rushpanel.SetUsableByGroup( "enemies pilot" )
@@ -106,7 +106,7 @@ function TRPrematchStart()
 	for( local i = 0; i < RUSH_POINT_CNT; i++ )
 	{
 		file.HackedRushPanels[i]	= null
-		file.HackedPlayers[i]		= null; 
+		file.HackedPlayers[i]		= null;
 	}
 
 	printl("TRPrematchStart")
@@ -151,7 +151,7 @@ function TitanRush_UsePanel( rushpanel, player )
 	}
 
 	//if ( panelTeam == TEAM_UNASSIGNED )
-	if ( panelTeam == GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	if ( panelTeam == GetOtherTeam(level.nv.attackingTeam))
 	{
 		AttackerHacksPanel( rushpanel, panelIndex, player )
 		return
@@ -235,14 +235,14 @@ function DefenderHacksPanel( rushpanel, panelIndex, player )
 	Assert( player.GetTeam() != level.nv.attackingTeam, "Player of team " + player.GetTeam() + " used panel when it was on his team!" )
 	//SetWinLossReasons( "#BIG_BROTHER_PANEL_HACKED", "#BIG_BROTHER_PANEL_HACKED" )
 	//SetWinner( GetOtherTeam( level.nv.attackingTeam ) )
-	
+
 	rushpanel.SetTeam( player.GetTeam() )
 	//rushpanel.SetTeam( TEAM_UNASSIGNED )
 
 
 	//! 판넬 초기화
 	file.HackedRushPanels[panelIndex]	= null
-	file.HackedPlayers[panelIndex]		= null; 
+	file.HackedPlayers[panelIndex]		= null;
 
 	local players = GetPlayerArray()
 	foreach ( guy in players )
@@ -317,7 +317,7 @@ function RushWait( rushPanel, rushTime )
 
 	// 폭발
 	// 만약 해제된 패널이면 pass
-	if(  rushPanel.GetTeam() == GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	if(  rushPanel.GetTeam() == GetOtherTeam(level.nv.attackingTeam))
 	{
 		return
 	}
@@ -357,7 +357,7 @@ function RushWait( rushPanel, rushTime )
 							DecrementBuildCondition( guy, 2 )
 						}
 					}
-					
+
 					Remote.CallFunction_Replay( guy, "SCB_TRUpdate", file.HackedPlayers[index].GetEncodedEHandle(), eRushPanelState.DESTROY )
 				}
 
@@ -373,7 +373,7 @@ function RushWait( rushPanel, rushTime )
 					// 기본 빌드룰일 경우 5초깎기
 					DecrementBuildCondition( file.HackedPlayers[index], 5 )
 				}
-				
+
 				file.HackedRushPanels[index] = null
 				file.HackedPlayers[index] = null
 
@@ -392,11 +392,11 @@ function RushWait( rushPanel, rushTime )
 						// A 파괴 B 해킹
 						if( hackedCount != 0 )
 						{
-							result.spawnCase = eTitanRushSpawnCase.HACKED_B	
+							result.spawnCase = eTitanRushSpawnCase.HACKED_B
 						}
 						else // A 파괴
 						{
-							result.spawnCase = eTitanRushSpawnCase.DESTROY_A	
+							result.spawnCase = eTitanRushSpawnCase.DESTROY_A
 						}
 					}
 					else // B 패널 파괴
@@ -404,7 +404,7 @@ function RushWait( rushPanel, rushTime )
 						// B 파괴 A 해킹
 						if( hackedCount != 0 )
 						{
-							result.spawnCase = eTitanRushSpawnCase.HACKED_A	
+							result.spawnCase = eTitanRushSpawnCase.HACKED_A
 						}
 						else // B 파괴
 						{
@@ -415,7 +415,7 @@ function RushWait( rushPanel, rushTime )
 					printt(" Signal ChangeSpawnPoint")
 					Signal( level.ent, "ChangeSpawnPoint", result )
 				}
-				
+
 				break
 			}
 		}
@@ -432,9 +432,9 @@ function TRPanelHackEndFunc( rushpanel, player )
 {
 	// 패널의 팀이 방어팀 일 경우 Time 리셋
 	//if(rushpanel.GetTeam() == TEAM_UNASSIGNED )
-	if(rushpanel.GetTeam() == GetTeamIndex(GetOtherTeams(1 <<level.nv.attackingTeam)))
+	if(rushpanel.GetTeam() == GetOtherTeam(level.nv.attackingTeam))
 	{
-		rushpanel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+		rushpanel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		//rushpanel.SetTeam( TEAM_UNASSIGNED )
 		rushpanel.SetUsable() //해킹 가능
 		rushpanel.SetUsableByGroup( "enemies pilot" ) //공격팀이 바뀌었으므로, 적 파일럿만 해킹 가능
@@ -513,7 +513,7 @@ function OnRushPanelSpawn( rushpanel )
 	rushpanel.s.panelHackEndFunc 	= TRPanelHackEndFunc
 	rushpanel.s.panelHackScope 		= this
 
-	rushpanel.s.leechTimeNormal = 5.0 ///패널 해킹 시간 
+	rushpanel.s.leechTimeNormal = 5.0 ///패널 해킹 시간
 	//panel.s.leechTimeFast = 4.5
 	rushpanel.s.leechTimeFast = 3.5
 

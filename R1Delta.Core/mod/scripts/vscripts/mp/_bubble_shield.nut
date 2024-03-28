@@ -311,7 +311,7 @@ function DamageTitansWithinBubbleShield( bubbleShield, bubbleShieldPlayer, soulT
 function DamagePilotsWithinBubbleShield( bubbleShield, bubbleShieldPlayer, pilotTable )
 {
 	local ownerTeam = IsValid( bubbleShieldPlayer ) ?  bubbleShieldPlayer.GetTeam() : bubbleShield.GetTeam()
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << ownerTeam))
+	local enemyTeam = GetOtherTeam( ownerTeam )
 	local enemyPilots = GetAllPilots( enemyTeam )
 
 	foreach ( pilot in enemyPilots )
@@ -327,7 +327,7 @@ function DamagePilotsWithinBubbleShield( bubbleShield, bubbleShieldPlayer, pilot
 function DamageMinionsWithinBubbleShield( bubbleShield, bubbleShieldPlayer, npcTable )
 {
 	local ownerTeam = IsValid( bubbleShieldPlayer ) ?  bubbleShieldPlayer.GetTeam() : bubbleShield.GetTeam()
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << ownerTeam))
+	local enemyTeam = GetOtherTeam( ownerTeam )
 	local enemyMinions = GetNPCArrayEx( "any", enemyTeam, Vector(0,0,0), -1 )
 
 	foreach ( npc in enemyMinions )

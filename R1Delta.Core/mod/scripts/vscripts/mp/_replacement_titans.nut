@@ -80,8 +80,8 @@ function SetTitanRespawnContition( player )
 		if(GetRemain( player ) <= 0)
 		{
 			TryReplacementTitanReadyAnnouncement( player )
-		} 
-		else 
+		}
+		else
 		{
 			SetTitanRespawnContition_Internal( player, GetRemain( player ) )
 		}
@@ -650,7 +650,7 @@ function DropReplacementTitan( player, spawnPoint )
 
 	player.Signal( "CalledInReplacementTitan" )
 
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
+	local otherTeam = GetOtherTeam(player.GetTeam())
 	TryAnnounceTitanfallWarningToTeam( origin, otherTeam )
 
 	local titan
@@ -770,7 +770,7 @@ function ForceReplacementTitan( player, spawnPoint )
 
 	printt( "Dropping replacement titan at " + origin + " with angles " + angles )
 
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
+	local otherTeam = GetOtherTeam(player.GetTeam())
 	TryAnnounceTitanfallWarningToTeam( origin, otherTeam )
 
 	local titan

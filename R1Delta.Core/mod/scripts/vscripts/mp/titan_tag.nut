@@ -74,7 +74,7 @@ function AwardTheTitanToPlayer( player )
 	level.theTitanSoul = true
 
 	local titanTeam = player.GetTeam()
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << titanTeam))
+	local otherTeam = GetOtherTeam(titanTeam)
 
 	MessageToTeam( titanTeam, eEventNotifications.FriendlyPlayerHasTheTitan, null, player )
 	MessageToTeam( otherTeam, eEventNotifications.EnemyPlayerHasTheTitan, player, player )

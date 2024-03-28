@@ -16,7 +16,7 @@ function main()
 
 	file.usedRushpointIDs <- {}
 	file.rushpointUpdateFunc <- null
-	
+
 }
 
 // pass the hardpoints that should be used in the gamemode
@@ -51,7 +51,7 @@ function InitializeRushpoint( rushpoint )
 
 	rushpoint.s.teamSwitchCallbacks <- []
 
-	rushpoint.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	rushpoint.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 }
 
 
@@ -142,9 +142,9 @@ function RushPointThink( rushpoint )
 		{
 			case "HACKING":
 				break
-				
+
 			case "NOT_HACKING":
-				
+
 				break
 
 			default:

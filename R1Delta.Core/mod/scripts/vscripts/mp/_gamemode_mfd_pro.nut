@@ -131,7 +131,7 @@ function MFD_Pro_PlayerDisconnected( player )
 			ClearMarkedPlayers()
 			TellClientsMarkedChanged()
 			SetWinLossReasons( "#GAMEMODE_MARKED_FOR_DEATH_PRO_DISCONNECT_WIN_ANNOUNCEMENT", "#GAMEMODE_MARKED_FOR_DEATH_PRO_DISCONNECT_LOSS_ANNOUNCEMENT" )
-			local otherTeam = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
+			local otherTeam = GetOtherTeam( player.GetTeam() )
 			SetWinner( otherTeam )
 		}
 

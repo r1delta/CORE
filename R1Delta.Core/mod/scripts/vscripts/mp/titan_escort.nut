@@ -68,7 +68,7 @@ function EntitiesDidLoad()
 			continue
 
 		if ( spawnpoint.GetTeam() == level.defenseTeam )
-			spawnpoint.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+			spawnpoint.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		else
 			spawnpoint.SetTeam( level.nv.attackingTeam )
 	}
@@ -119,7 +119,7 @@ function CTTRoundStart()
 		FlagSet( "Disable_IMC" )
 	}
 
-	thread FlagTrackerThink(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	thread FlagTrackerThink(GetOtherTeam(level.nv.attackingTeam))
 	thread CreateFlagReturnBase( level.nv.attackingTeam )
 }
 
@@ -194,7 +194,7 @@ function CreateFlagReturnBase( team )
 
 function FlagTrackerThink( team )
 {
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << team))
+	local otherTeam = GetOtherTeam(team)
 	local spawnpoint = SpawnPoints_GetTitanStart( team )[0]
 
 	local spawnOrigin = spawnpoint.GetOrigin()
@@ -323,7 +323,7 @@ function FlagCaptureThink( soul )
 {
 	soul.EndSignal( "OnDestroy" )
 	level.flagReturnPoint.EndSignal( "OnDestroy" )
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << soul.GetTeam()))
+	local otherTeam = GetOtherTeam(soul.GetTeam())
 
 	local beganAssault = false
 
@@ -333,7 +333,7 @@ function FlagCaptureThink( soul )
 
 		if ( !IsAlive( titan ) )
 		{
-			SetWinner(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+			SetWinner(GetOtherTeam(level.nv.attackingTeam))
 			return
 		}
 
@@ -382,7 +382,7 @@ function AwardCaptureToPlayer( player )
 	MessageToTeam( TEAM_IMC, eEventNotifications.PlayerCapturedTheTitan, null, player )
 	MessageToTeam( TEAM_MILITIA, eEventNotifications.PlayerCapturedTheTitan, null, player )
 
-	EmitSoundOnEntityToTeam( player, "UI_CTF_Enemy_Score", GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	EmitSoundOnEntityToTeam( player, "UI_CTF_Enemy_Score", GetOtherTeam(level.nv.attackingTeam))
 	EmitSoundOnEntityToTeam( player, "UI_CTF_1P_Score", level.nv.attackingTeam )
 
 	SetWinner( level.nv.attackingTeam )

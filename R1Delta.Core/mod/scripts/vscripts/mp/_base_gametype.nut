@@ -24,8 +24,8 @@ function main()
 		level.publicMessage <- null
 
 		// player wave spawning
-		level.waveSpawnTime <- { 
-			[TEAM_IMC] = 0, 
+		level.waveSpawnTime <- {
+			[TEAM_IMC] = 0,
 			[TEAM_MILITIA] = 0
 		}
 
@@ -934,7 +934,7 @@ function PostDeathThread( player, damageInfo )
 	player.s.wantsRespawn = false
 
 	local damageSource = damageInfo.GetDamageSourceIdentifier()
-	
+
 	if ( damageSource == eDamageSourceId.fall || ( damageSource == eDamageSourceId.submerged && GetMapName() == "mp_sandtrap" ) ) //HACK special casing mp_sandtrap here, different functionality was desired
 	{
 		local viewOrigin
@@ -1335,7 +1335,7 @@ function ClientCommand_RespawnPlayer( player, opParm )
 	{
 		player.SetSpawnAsTitan( false )
 	}
-		
+
 	local deathTime = GetRespawnButtonCamTime( player ) - 0.1
 	if ( Time() > player.s.postDeathThreadStartTime + deathTime )
 	{
@@ -1375,7 +1375,7 @@ function CodeCallback_OnPlayerKilled( player, damageInfo )
 	else
 	{
 		if ( damageSourceId != eDamageSourceId.round_end )
-			CreateNoSpawnArea(GetTeamIndex(GetOtherTeams(player)), player.GetOrigin(), DEATHCAM_TIME + 0.5, 256 )
+			CreateNoSpawnArea(GetOtherTeam(player.GetTeam()), player.GetOrigin(), DEATHCAM_TIME + 0.5, 256 )
 	}
 
 	if ( ShouldPlayerBeEliminated( player ) )
@@ -1882,8 +1882,8 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 				if ( team == TEAM_MILITIA )
 				{
 					thread ForcePilotSpawnPointForTeam( team, spawnPoint )
-				} 
-				else 
+				}
+				else
 				{
 					printt( "Possible issue?" )
 				}
@@ -2004,7 +2004,7 @@ function TitanPlayerHotDropsIntoLevel( player )
 	OnThreadEnd(
 		function() : ( spawnPoint, player )
 		{
-			
+
 			Assert( IsValid( spawnPoint ) )
 			spawnPoint.s.inUse = false
 
@@ -2020,10 +2020,10 @@ function TitanPlayerHotDropsIntoLevel( player )
 		//dropPod = Titan_HotDrop( player )
 	local origin
 	local angles
-	
+
 	origin = spawnPoint.GetOrigin()
 	angles = spawnPoint.GetAngles()
-	
+
 	if ( angles == null )
 	{
 		// defensive fix for super rare phone home bug
@@ -2047,7 +2047,7 @@ function TitanPlayerHotDropsIntoLevel( player )
 
 	spawnPoint.s.inUse = true
 	player.ReserveSpawnPoint( spawnPoint )
-	
+
 
 	local delayedCreation = true
 
@@ -2118,7 +2118,7 @@ function TitanPlayerHotDropsIntoLevel( player )
 
 		player.SetOrigin( origin )
 		player.SetAngles( angles )
-			
+
 	}
 
 }
@@ -2179,7 +2179,7 @@ function TryGameModeAnnouncement( player )
 		while ( HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) )
 			player.WaitSignal( "CE_FLAGS_CHANGED" )
 	}
-	
+
 
 	if ( GetGameState() <= eGameState.Playing )
 	{
@@ -2585,7 +2585,7 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	{
 		// LoadOut Setting
 		// UpdateLoadouts( player )
-		
+
 		SetPilotLoadout( player, false, 0 )
 		SetTitanLoadout( player, false, 0 )
 	}
@@ -2638,10 +2638,10 @@ function CodeCallback_OnClientConnectionCompleted( player )
 					else if ( rInt == 1 )
 						player.playerClassData["titan"].playerSetFile = "titan_atlas"
 					else if ( rInt == 2 )
-						player.playerClassData["titan"].playerSetFile = "titan_stryder"						
+						player.playerClassData["titan"].playerSetFile = "titan_stryder"
 					else
 						player.playerClassData["titan"].playerSetFile = "titan_slammer"
-*/						
+*/
 				}
 			}
 
@@ -2655,7 +2655,7 @@ function CodeCallback_OnClientConnectionCompleted( player )
 			MinimapPlayerConnected( player )
 
 			DecideRespawnPlayer( player )
-			
+
 			local botCaller = GetPlayerArray()[0]
 			local spot = GetTitanReplacementPoint(botCaller)
 			local origin = spot.origin
@@ -2718,7 +2718,7 @@ function ShouldPlayerHaveLossProtection( player )
 		return false
 
 	local team = player.GetTeam()
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << team))
+	local otherTeam = GetOtherTeam( team )
 	local teamScore = IsRoundBased() ? GameRules.GetTeamScore2( team ) : GameRules.GetTeamScore( team )
 	local otherTeamScore = IsRoundBased() ? GameRules.GetTeamScore2( otherTeam ) : GameRules.GetTeamScore( otherTeam )
 
@@ -2813,7 +2813,7 @@ function FinalPlayerUpdate( player )
 		return
 	player.s.ranFinalPlayerUpdate <- true
 
-	
+
 
 	SaveScoreForMapStars( player )
 

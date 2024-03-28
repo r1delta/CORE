@@ -479,7 +479,7 @@ function CaptureTurret( turret, team, player )
 		return
 
 	//ToDo: Get duration of disable animation associated with turret, wait that amount + a bit, then reneable
-	if ( turret.GetTeam() == GetTeamIndex(GetOtherTeams(player)))
+	if ( turret.GetTeam() == GetOtherTeam(player.GetTeam()))
 	{
 		turret.DisableTurret()
 		//Don't let turret die while playing animation

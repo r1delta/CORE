@@ -60,7 +60,7 @@ function EntitiesDidLoad()
 
 			panel.SetOrigin( hardpoint.GetOrigin() )
 
-			panel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+			panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 			panel.UnsetUsable()
 
 			thread ExfilPanelThink( panel )
@@ -89,7 +89,7 @@ function EntitiesDidLoad()
 			panel.SetAngles( levelPanel.GetAngles() )
 			levelPanel.Destroy()
 
-			panel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+			panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 			panel.UnsetUsable()
 
 			thread ExfilPanelThink( panel )
@@ -123,7 +123,7 @@ function ExfilPanelThink( panel )
 		}
 
 		Evac_SetDropshipArrivalWaitTime( 30.0 )
-		thread ExfiltrationEvacMain(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)), panel.s.escapeNode )
+		thread ExfiltrationEvacMain(GetOtherTeam(level.nv.attackingTeam), panel.s.escapeNode )
 	}
 }
 
@@ -150,7 +150,7 @@ function ExfilRoundStart()
 	foreach ( exfilPanel in level.exfilPanels )
 	{
 		exfilPanel.SetUsableByGroup( "enemies pilot" )
-		exfilPanel.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+		exfilPanel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 	}
 
 	if ( IsValid( level.dropship ) )

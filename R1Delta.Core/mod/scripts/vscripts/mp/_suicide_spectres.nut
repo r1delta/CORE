@@ -280,7 +280,7 @@ function SpectreWaitToExplode( spectre )
 	spectre.EndSignal( "OnDeath" )
 
 	local canExplode = false
-	local enemyTeam = GetTeamIndex(GetOtherTeams(1 << spectre.GetTeam()))
+	local enemyTeam = GetOtherTeam(spectre.GetTeam())
 
 	spectre.s.state = eSuicideState.SPECTRE_STATE_SEARCHING
 

@@ -92,7 +92,7 @@ function TellPlayerHeIsAloneAfterAWhile( player )
 	if ( !IsAlive( player ) )
 		return
 
-	local enemyTeam = GetTeamIndex(GetOtherTeams(player))
+	local enemyTeam = GetOtherTeam(player.GetTeam())
 	local enemyPlayersAlive = GameTeams.GetNumLivingPlayers( enemyTeam )
 
 	if ( enemyPlayersAlive == 2 )

@@ -120,7 +120,7 @@ function EntitiesDidLoad()
 			continue
 
 		if ( spawnpoint.GetTeam() == level.defenseTeam )
-			spawnpoint.SetTeam(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+			spawnpoint.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		else
 			spawnpoint.SetTeam( level.nv.attackingTeam )
 	}
@@ -160,7 +160,7 @@ function GetSpawnpointTeamOverride( spawnpointTeam, spawningTeam )
 
 function CTTRoundStart()
 {
-	thread FlagTrackerThink(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	thread FlagTrackerThink(GetOtherTeam(level.nv.attackingTeam))
 	thread CreateFlagReturnBase( level.nv.attackingTeam )
 }
 
@@ -186,7 +186,7 @@ function CTTRoundEnd()
 
 function CreateFlagReturnBase( team )
 {
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << team))
+	local otherTeam = GetOtherTeam(team)
 	local spawnpoint = SpawnPoints_GetTitanStart( otherTeam )[0]
 
 	local spawnOrigin = spawnpoint.GetOrigin()
@@ -242,7 +242,7 @@ function CreateFlagReturnBase( team )
 
 function FlagTrackerThink( team )
 {
-	local otherTeam = GetTeamIndex(GetOtherTeams(1 << team))
+	local otherTeam = GetOtherTeam(team)
 	local spawnpoint = SpawnPoints_GetTitanStart( otherTeam )[0]
 
 	local spawnOrigin = spawnpoint.GetOrigin()
@@ -403,7 +403,7 @@ function TrackDistanceToFlagReturn( soul ) //Assume one point for now, shouldn't
 		local proportionalDistance = distance / level.distanceBetweenTitanSpawnAndFlagReturn
 
 		local titanTeam = titan.GetTeam()
-		local defendingTeam = GetTeamIndex(GetOtherTeams(1 << titanTeam))
+		local defendingTeam = GetOtherTeam(titanTeam)
 
 		if ( proportionalDistance <= firstThreshold && previousProportionalthreshold > firstThreshold )  //Just do this the simple way. If we need to add a lot more distance thresholds update we can do the fancier way later
 		{
@@ -459,7 +459,7 @@ function TrackTitanHealth( soul ) //Could do this on a OnTookDamage callback too
 		local proportionalHealth = currentHealth / titan.GetMaxHealth()
 
 		local titanTeam = titan.GetTeam()
-		local defendingTeam = GetTeamIndex(GetOtherTeams(1 << titanTeam))
+		local defendingTeam = GetOtherTeam(titanTeam)
 
 		if ( proportionalHealth <= firstThreshold && previousProportionalthreshold > firstThreshold )  //Just do this the simple way. If we need to add a lot more distance thresholds update we can do the fancier way later
 		{
@@ -496,7 +496,7 @@ function CTTTriggerEnter( trigger, player )
 		local playerTeam = player.GetTeam()
 		PlayConversationToPlayer( "CTT_TitanAtPoint_TitanPilotUpdate", player )
 		PlayConversationToTeamExceptPlayer( "CTT_TitanHalfway_AttackTeamUpdate", playerTeam, player )
-		PlayConversationToTeam( "CTT_TitanAtPoint_DefendTeamUpdate", GetTeamIndex(GetOtherTeams(1 << playerTeam)))
+		PlayConversationToTeam( "CTT_TitanAtPoint_DefendTeamUpdate", GetOtherTeam(playerTeam))
 		level.timeAnnouncedTriggerEnter = currentTime
 	}
 
@@ -572,7 +572,7 @@ function AwardCaptureToPlayer( player )
 	MessageToTeam( TEAM_IMC, eEventNotifications.PlayerCapturedTheTitan, null, player )
 	MessageToTeam( TEAM_MILITIA, eEventNotifications.PlayerCapturedTheTitan, null, player )
 
-	EmitSoundOnEntityToTeam( player, "UI_CTF_Enemy_Score", GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	EmitSoundOnEntityToTeam( player, "UI_CTF_Enemy_Score", GetOtherTeam(level.nv.attackingTeam) )
 	EmitSoundOnEntityToTeam( player, "UI_CTF_1P_Score", level.nv.attackingTeam )
 
 	if ( IsRoundBased() )
@@ -638,17 +638,17 @@ function CTT_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 	MessageToTeam( TEAM_IMC, eEventNotifications.PlayerDestroyedTheTitan, null, attacker )
 	MessageToTeam( TEAM_MILITIA, eEventNotifications.PlayerDestroyedTheTitan, null, attacker )
 
-	EmitSoundOnEntityToTeam( victim, "UI_CTF_1P_Score", GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+	EmitSoundOnEntityToTeam( victim, "UI_CTF_1P_Score", GetOtherTeam(level.nv.attackingTeam))
 	EmitSoundOnEntityToTeam( victim, "UI_CTF_Team_FlagUpdate", level.nv.attackingTeam )
 
 	if ( IsRoundBased() )
 	{
-		// SetWinLossReasons( winReason, lossReason )
-		SetWinner(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)))
+		SetWinLossReasons( winReason, lossReason )
+		SetWinner(GetOtherTeam(level.nv.attackingTeam))
 	}
 	else
 	{
-		GameScore.AddTeamScore(GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam)), 1 )
+		GameScore.AddTeamScore(GetOtherTeam(level.nv.attackingTeam), 1 )
 	}
 
 	local attackerTeam = attacker.GetTeam()

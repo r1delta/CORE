@@ -507,7 +507,7 @@ function SpawnThrownOreNugget( deadEntity, damageInfo ) //TODO: Make this worth 
 		if ( IsValid( deadEntity.s.collectedOreEffect ) )
 			deadEntity.s.collectedOreEffect.Kill()
 
-		deadEntity.Minimap_DisplayDefault(GetTeamIndex(GetOtherTeams(deadEntity), null ) //Take away always being on map once dead
+		deadEntity.Minimap_DisplayDefault(GetOtherTeam(deadEntity), null ) //Take away always being on map once dead
 	}
 
 	if (  IsSuicide( damageInfo.GetAttacker(), deadEntity, damageInfo.GetDamageSourceIdentifier() ) )
@@ -623,7 +623,7 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 				//printt( "Dumping collected Ore for team: " + player.GetTeam() )
 				EmitSoundOnEntityOnlyToPlayer( player, player, "Menu_GameSummary_LevelUp" )
 				GameScore.AddTeamScore( player.GetTeam(), collectedOre )
-				
+
 				for ( local i = 0; i < collectedOre; ++ i ) //Make
 					AddPlayerScore( player, "DepositOre" )
 
@@ -631,7 +631,7 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 				Remote.CallFunction_Replay( player, "SCB_DeliveredOre", collectedOre )
 			}
 
-			player.Minimap_DisplayDefault(GetTeamIndex(GetOtherTeams(player)), null ) //Take away always being on map once ore deposited
+			player.Minimap_DisplayDefault(GetOtherTeam(player), null ) //Take away always being on map once ore deposited
 
 			player.SetDefenseScore( 0 )
 
@@ -659,7 +659,7 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 		}
 
 		player.SetDefenseScore( 10 )
-		player.Minimap_AlwaysShow(GetTeamIndex(GetOtherTeams(player)), null )
+		player.Minimap_AlwaysShow(GetOtherTeam(player), null )
 
 		DecrementBuildCondition( player, 45 )
 		EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_SpiderSense_CloseWarn" ) //Temp, need another sound
@@ -684,7 +684,7 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 	if ( player.GetDefenseScore() >= oreEffectThreshold && !( IsValid( player.s.collectedOreEffect ) ) ) //TODO: Depending on .s variable here is fragile...
 	//if ( player.GetDefenseScore() > oreEffectThreshold  ) //TODO: Depending on .s variable here is fragile...
 	{
-		player.Minimap_AlwaysShow(GetTeamIndex(GetOtherTeams(player)), null )
+		player.Minimap_AlwaysShow(GetOtherTeam(player.GetTeam()), null )
 		player.s.collectedOreEffect = PlayLoopFXOnEntity( EMP_BLAST_CHARGE_EFFECT, player, "chestFocus", null, null, 6, player ) //6: visible to everyone but owner
 	}
 

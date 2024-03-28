@@ -99,7 +99,7 @@ function TitanVO_DelayedTitanDown( entity )
 
 function TitanVO_AlertTitansIfTargetWasKilled( victim, attacker )
 {
-	local team = GetTeamIndex(GetOtherTeams(1 << victim.GetTeam()))
+	local team = GetOtherTeam( victim.GetTeam() )
 	local players = GetPlayerArrayOfTeam( team )
 
 	if ( victim.IsTitan() )

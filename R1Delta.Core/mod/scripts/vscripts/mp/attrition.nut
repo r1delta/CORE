@@ -45,7 +45,7 @@ function Attrition_OnTitanDoomed( victim, damageInfo )
 	if ( !IsValid( attacker ) )
 		return
 
-	if ( attacker.GetTeam() != GetTeamIndex(GetOtherTeams(victim)))
+	if ( attacker.GetTeam() != GetOtherTeam(victim))
 		return
 
 	local scoreVal = ATTRITION_SCORE_TITAN

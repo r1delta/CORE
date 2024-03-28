@@ -240,7 +240,7 @@ function GameStateEnter_Prematch()
 
 	local players = GetPlayerArray()
 	foreach ( player in players )
-	{	
+	{
 		if ( !IsPlayerInCinematic( player ) )
 			player.FreezeControlsOnServer( false )
 
@@ -293,7 +293,7 @@ function Prematch_PlayerScreenFade( player )
 function GameStateEnter_Playing()
 {
 	FlagClear( "APlayerHasSpawned" )
-	
+
 	printt( "Enter Gamestate playing" )
 
 	level.ui.showGameSummary = false
@@ -306,11 +306,11 @@ function GameStateEnter_Playing()
 	//2. Reset Titan timers at the very start of match start, in case of late connects, intros, etc
 	local players = GetPlayerArray()
 	foreach ( player in players )
-	{	
+	{
 		player.UnfreezeControlsOnServer()
-		
+
 		StartTitanBuildProgress( player )
-		
+
 
 		UnMuteSFX( player )
 	}
@@ -545,7 +545,7 @@ function GameStateEnter_SwitchingSides()
 		level.nv.switchedSides = 1
 
 	if ( level.nv.attackingTeam )
-		level.nv.attackingTeam = GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))
+		level.nv.attackingTeam = GetOtherTeam( level.nv.attackingTeam )
 
 	local players = GetPlayerArray()
 	foreach ( player in players )
@@ -635,7 +635,7 @@ function SetGameState( newState )
 	SetServerVar( "gameState", newState )
 
 	// Epilogue or later?  Don't let ranks be late enabled
-	
+
 	level.ent.Signal( "GameStateChange" )
 
 	foreach ( callbackInfo in level.gameStateFunctions[newState] )
@@ -991,18 +991,18 @@ function ClearPlayers()
 		if ( !IsAlive( player ) )
 		{
 			local petTitan = player.GetPetTitan()
-			if ( IsAlive( petTitan ) ) 
+			if ( IsAlive( petTitan ) )
 			{
 				InitTitanBuildRule( player )
 				//TitanCustomRule_Update(player, 0) // 타이탄만 살아있을 수도.
 			}
-			
+
 			continue
 		}
 
 		// kill off the living players
 		if ( player.IsTitan() )
-		{	
+		{
 			//TitanCustomRule_Update(player, 0)
 			InitTitanBuildRule( player )
 
@@ -1010,13 +1010,13 @@ function ClearPlayers()
 			Assert( !IsAlive( player ), player.GetHealth() + " " + player.IsInvulnerable() + " " + player.IsBuddhaMode() + " " + player.IsGodMode() )
 		}
 		else
-		{	
+		{
 			local petTitan = player.GetPetTitan()
 			if ( IsAlive( petTitan ) )
 			{
 				//TitanCustomRule_Update(player, 0)
 				InitTitanBuildRule( player )
-				
+
 				petTitan.Die( level.worldspawn, level.worldspawn, { damageSourceId = eDamageSourceId.round_end } )
 			}
 
@@ -1083,7 +1083,7 @@ function SetWinner( winningTeam )
 			GameRules.SetTeamScore2( winningTeam, newRoundWins )
 			GameRules.SetTeamScore( winningTeam, newRoundWins ) // HACK; client scorebars don't know how to display TeamScore2
 
-			local losingTeam = GetTeamIndex(GetOtherTeams(1 << winningTeam))
+			local losingTeam = GetOtherTeam(winningTeam)
 			local losingTeamScore = GameRules.GetTeamScore2( losingTeam )
 			if ( ShouldDoScoreSwapVO( roundWins, newRoundWins, losingTeamScore ) )
 				thread ScoreSwapVO( winningTeam, losingTeam )
@@ -1097,9 +1097,7 @@ function SetWinner( winningTeam )
 	}
 
 	if (winningTeam != null)
-		level.nv.winningTeam = winningTeam // ?: Why did they shift this beforehand?
-	else 
-		level.nv.winningTeam = null
+		level.nv.winningTeam = winningTeam
 
 	SetGameState( eGameState.WinnerDetermined )
 }
@@ -1171,7 +1169,7 @@ function CheckEliminationModeWinner()
 
 function CheckEliminationPilotWinner( setWinner = false )
 {
-	// 빅브라더 모드 폭탄 설치 시 방어팀이 살아있으면 엘리 체크 안함. 
+	// 빅브라더 모드 폭탄 설치 시 방어팀이 살아있으면 엘리 체크 안함.
 	// 방어팀이 전멸인 경우 폭탄 설치와 상관없이 엘리 처리.
 	if( GAMETYPE == BIG_BROTHER && IsBigBrotherPanelExplosion() )
 	{
@@ -1226,11 +1224,11 @@ function CheckEliminationPilotWinner( setWinner = false )
 			{
 				winReason = "#GAMEMODE_DEFENDERS_WIN"
 				lossReason = "#GAMEMODE_DEFENDERS_WIN"
-				winningTeam = GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))
+				winningTeam = GetOtherTeam(level.nv.attackingTeam)
 			}
 			else
 			{
-				
+
 				winReason = "#GAMEMODE_ATTACKERS_WIN"
 				lossReason = "#GAMEMODE_ATTACKERS_WIN"
 				winningTeam = level.nv.attackingTeam
@@ -1251,7 +1249,7 @@ function CheckEliminationPilotWinner( setWinner = false )
 			{
 				winReason = "#GAMEMODE_DEFENDERS_WIN"
 				lossReason = "#GAMEMODE_DEFENDERS_WIN"
-				winningTeam = GetTeamIndex(GetOtherTeams(1 << level.nv.attackingTeam))
+				winningTeam = GetOtherTeam(level.nv.attackingTeam)
 			}
 			else
 			{
@@ -1859,7 +1857,7 @@ function TimeLimit_Complete()
 
 					if ( timeLeftSeconds < 30 && timeLeftSeconds >= 15 )
 						EmitSoundOnEntityAfterDelay( player, "Menu_Match_Countdown", 0.5 )
-					
+
 					else if ( timeLeftSeconds < 15 && timeLeftSeconds >= 0 )
 					{
 						EmitSoundOnEntityAfterDelay( player, "Menu_Match_Countdown", 0.2 )
@@ -1906,7 +1904,7 @@ function TimeLimit_Complete()
 				winningTeam = TEAM_IMC
 			else if ( imcScore < militiaScore )
 				winningTeam = TEAM_MILITIA
-		
+
 
 		SetWinLossReasons( "#GAMEMODE_TIME_LIMIT_REACHED", "#GAMEMODE_TIME_LIMIT_REACHED" )
 		SetWinner( winningTeam )
@@ -2550,7 +2548,7 @@ function DefaultMatchProgressionAnnouncement( progression )
 	Assert( announcements.losingAnnouncement!= null )
 
 	PlayConversationToTeam( announcements.winningAnnouncement, GetTeamIndex(winningTeam) )
-	local losingTeam = GetTeamIndex(GetOtherTeams(1 << winningTeam))
+	local losingTeam = GetOtherTeam(winningTeam)
 	PlayConversationToTeam( announcements.losingAnnouncement, GetTeamIndex(losingTeam) )
 
 
@@ -2610,10 +2608,7 @@ function AnnounceWinner( winningTeam )
 {
 	if ( winningTeam ) //No announcement if draw
 	{
-		// 랭크 설정
-		//local losingTeam = GetTeamIndex(GetOtherTeams(1 << winningTeam))
-
-		local losingTeam = GetOtherTeam( GetWinningTeam() ) 
+		local losingTeam = GetOtherTeam( GetWinningTeam() )
 
 		local teamPlayers = {}
 		teamPlayers[winningTeam] <- []
