@@ -143,7 +143,7 @@ function ShowMainMenu()
 		file.buttonData.append( { name = "#DLC_STORE", activateFunc = Bind( OnStoreButton_Activate ), updateFunc = Bind( ThreadUpdateStoreButton ), isNew = true } )
 
 	if ( IsIntroViewed() )
-		file.buttonData.append( { name = "#INTRO", activateFunc = Bind( ThreadOnIntroButton_Activate ) } )
+		file.buttonData.append( { name = "HOST", activateFunc = Bind( ThreadOnIntroButton_Activate ) } )
 	file.buttonData.append( { name = "#OPTIONS", activateFunc = Bind( OnOptionsButton_Activate ) } )
 	file.buttonData.append( { name = "#CREDITS", activateFunc = Bind( ThreadOnCreditsButton_Activate ) } )
 	if ( !Durango_IsDurango() )
@@ -489,7 +489,9 @@ function ThreadOnIntroButton_Activate()
 
 function OnIntroButton_Activate()
 {
-	PlayIntroVideo( true )
+	wait 0.2; // just so the sound plays
+
+	ClientCommand("launchplaylist private_match; map mp_lobby")
 }
 
 function OnOptionsButton_Activate()
