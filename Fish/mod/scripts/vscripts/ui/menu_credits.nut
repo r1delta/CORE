@@ -152,9 +152,9 @@ function RollCredits()
 
 	ClearCredits( 0 )
 
-	ScrollRespawnLogo()
     ScrollSingleColumnCenteredNames( "deltateam" )
     ScrollSingleColumnCenteredNames( "deltacontrib" )
+	ScrollRespawnLogo()
 	ScrollSingleColumnCenteredNames( "gamedir" )
 	ScrollSingleColumnCenteredNames( "techdir" )
 	ScrollSingleColumnCenteredNames( "ceo" )
@@ -547,6 +547,7 @@ function ScrollRespawnLogo()
 
 function __ShowRespawnLogoThread( delay )
 {
+    wait 4.0
 	local menu = GetMenu( "CreditsMenu" )
 	local logo = GetElem( menu, "Credits_logo_respawn" )
 
