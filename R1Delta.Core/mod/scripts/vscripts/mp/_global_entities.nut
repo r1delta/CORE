@@ -63,6 +63,7 @@ function main()
 		IncludeFile( "mp/_titan_hotdrop" )
 
 		IncludeFile( "mp/_zipline" )
+		IncludeFile( "_riff_settings" )
 		IncludeFile( "_passives" )
 		IncludeFileAllowMultipleLoads( "mp/_dogfighter" )
 

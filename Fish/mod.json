@@ -1,0 +1,6 @@
+{
+  "Name": "Fish",
+  "Description": "Client features for R1Delta",
+  "Version": "0.0.1-beta",
+  "LoadPriority": 1
+}

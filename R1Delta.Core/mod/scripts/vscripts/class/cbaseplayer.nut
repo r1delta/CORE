@@ -161,8 +161,11 @@ function CBasePlayer::InitMPClasses()
 {
 	playerClassData = {}
 
-	Titan_AddPlayer( this )
-	Wallrun_AddPlayer( this )
+	if(!IsLobby())
+	{
+		Titan_AddPlayer( this )
+		Wallrun_AddPlayer( this )
+	}
 
 	Loader_InitAllLoadoutTables( this )
 }

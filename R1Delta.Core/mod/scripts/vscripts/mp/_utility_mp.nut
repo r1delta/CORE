@@ -304,6 +304,7 @@ function ReloadScriptsInternal()
 
 	IncludeFile( "mp/_ai_soldiers" )
 
+	IncludeFile( "_riff_settings" )
 	IncludeFile( "_passives" )
 
 	IncludeGameModeServerScripts()
@@ -1464,4 +1465,78 @@ function DecrementBuildTimer( player, amount )
 	SetTitanCoreTimer( player, GetTitanCoreTimer( player ) - amount )
 
 	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
+}
+
+function InitBurnCardPersistence( player )
+{
+	printt("InitBurnCardPersistence: " + player )
+}
+
+function PersistenceGetEnumCount( val )
+{
+	printt("PersistenceGetEnumCount: " + val )
+	return 0
+}
+
+function PersistenceGetArrayCount( val )
+{
+	printt("PersistenceGetArrayCount: " + val )
+	return 0
+}
+
+function PersistenceEnumValueIsValid( val, index )
+{
+	printt("PersistenceEnumValueIsValid: " + val + " " + index )
+	return false
+}
+
+function ResetRankSkillHistory( player )
+{
+	printt("ResetRankSkillHistory: " + player )
+}
+
+function InitPlayerStats( player )
+{
+	RegisterSignal( "RefreshDice" )
+	printt("InitPlayerStats: " + player )
+}
+
+function FillBurnCardDeckFromArray( player, array )
+{
+	printt("FillBurnCardDeckFromArray: " + player + " " + array )
+}
+
+function Ranked_PlayerConnected( player )
+{
+	printt("Ranked_PlayerConnected: " + player )
+}
+
+function BurnCard_RefreshPlayer( player )
+{
+	printt( "BurnCard_RefreshPlayer: " + player )
+}
+
+function BurnCard_PlayerConnected( player )
+{
+	printt( "BurnCard_PlayerConnected: " + player )
+}
+
+function BlackMarket_PlayerConnected( player )
+{
+	printt( "BlackMarket_PlayerConnected: " + player )
+}
+
+function GetTrainingHasEverBeenStarted( player )
+{
+	return true
+}
+
+function BurnCardOnDeath( target, attacker, idx )
+{
+	printt( "BurnCardOnDeath: " + target + " " + attacker + " " + idx )
+}
+
+function ChangeMap( mapName, mode )
+{
+	ServerCommand( "launchplaylist " + mode + "; changelevel " + mapName )
 }

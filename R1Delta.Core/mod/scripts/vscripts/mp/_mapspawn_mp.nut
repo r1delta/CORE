@@ -8,14 +8,13 @@ function main()
 
 	IncludeScript( "mp/_utility_mp" )
 
-
 	IncludeFile( "_xp" )
 
 
 
 	IncludeFile( "mp/_serverflags" )
 	IncludeFile( "_passives_shared" )
-	
+
 
 	IncludeFile( "mp/_npc_taclight" )
 
@@ -54,7 +53,7 @@ function main()
 	IncludeFile( "_sonar_shared" )
 
 	IncludeScript( "mp/mp_titanbuild_rule" )
-	
+
 	IncludeScript( "mp/_base_gametype" )
 	IncludeFile( "mp/_player_revive" )
 	IncludeFile( "mp/player_cloak" )

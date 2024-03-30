@@ -4,7 +4,11 @@ const CHATTER_TIME_LAPSE = 30.0
 //const CHATTER_TIME_LAPSE = 15.0 //For testing
 function main()
 {
-	thread RandomAIChatter()
+	if(!IsLobby())
+	{
+		thread RandomAIChatter()
+	}
+
 	file.lastCanSeeChatterForSquad <- {}
 	file.lastLevelSpecificChatterForSquad <- {}
 	file.lastGlobalChatterForSquad <- {}

@@ -54,6 +54,7 @@
 		IncludeFile( "mp/_stats" )
 
 		IncludeFile( "_playlist" )
+		IncludeFile( "_ranked_shared" )
 		IncludeFile( "_persistentdata" )
 		IncludeFile( "_xp" )
 		IncludeFile( "mp/_changemap" )
@@ -338,6 +339,7 @@
 	{
 		if ( IsLobby() )
 		{
+			IncludeFile( "_ranked_shared" )
 			IncludeFile( "_persistentdata" )
 			IncludeFile( "_xp" )
 			IncludeFile( "mp/_changemap" )
