@@ -2382,7 +2382,7 @@ function CodeCallback_OnClientConnectionStarted( player )
 	// 이미 종료되는 매치인 경우 다시 연결 끊는다.
 	if( GetGameState() >= eGameState.Postmatch)
 	{
-		player.ForceLeaveMatch_Native()
+		//player.ForceLeaveMatch_Native()
 		return
 	}
 
@@ -2563,7 +2563,7 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	// 이미 종료되는 매치인 경우 다시 연결 끊는다.
 	if( GetGameState() >= eGameState.Postmatch)
 	{
-		player.ForceLeaveMatch_Native()
+		//player.ForceLeaveMatch_Native()
 		return
 	}
 
