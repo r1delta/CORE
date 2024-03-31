@@ -610,9 +610,6 @@ function GameStateEnter_Postmatch()
 
 	local delay = GAME_POSTMATCH_LENGTH - 1.0 - MUTEALLFADEIN
 	delaythread( delay ) AllPlayersMuteAll()
-
-	//HACK: holy shit this is so real
-	//ServerCommand( "changelevel mp_lobby" )
 }
 
 function DelayedTakeAllWeapons( player )
@@ -2170,6 +2167,8 @@ function GameRulesThink_Postmatch()
 		return
 
 	GameRules.EndMatch()
+	//FIXME: GameRules fucked
+	ServerCommand( "map mp_lobby" )
 }
 
 enum eGameCloseness
