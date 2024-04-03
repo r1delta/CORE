@@ -846,7 +846,8 @@ function UpdateTeamReadyStatus()
 				if ( IsAnyPlayerMMDebug() )
 					file.teamReady[team] = true
 				else if ( (playerCount > file.maxTeamSize) || (playerCount < 1) || ((GetTeamPlayerCount( TEAM_IMC ) + GetTeamPlayerCount( TEAM_MILITIA )) < minPlayers) )
-					file.teamReady[team] = false
+					// Be able to start the private match solo for now (probably forever)
+					file.teamReady[team] = true
 				else
 					file.teamReady[team] = true
 			}
