@@ -2168,7 +2168,13 @@ function GameRulesThink_Postmatch()
 
 	GameRules.EndMatch()
 	//FIXME: GameRules fucked
-	ServerCommand( "map mp_lobby" )
+	if(IsPrivateMatch())
+	{
+		ChangeMap( "mp_lobby", "private_match" )
+	} else
+	{
+		ServerCommand( "changelevel mp_lobby" )
+	}
 }
 
 enum eGameCloseness

@@ -1538,5 +1538,5 @@ function BurnCardOnDeath( target, attacker, idx )
 
 function ChangeMap( mapName, mode )
 {
-	ServerCommand( "launchplaylist " + mode + "; map " + mapName )
+	ServerCommand( "launchplaylist " + mode + "; changelevel " + mapName )
 }

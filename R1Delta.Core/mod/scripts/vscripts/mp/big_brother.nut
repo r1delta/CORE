@@ -151,7 +151,6 @@ function BBPrematchStart()
 		player.s.respawnCount = 0
 		if ( Riff_TitanAvailability() == eTitanAvailability.Once )
 		{
-			callOnce = true
 		}
 
 		if(callOnce == false)

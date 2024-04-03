@@ -1,28 +1,34 @@
 function main()
 {
 	Assert( !GetCinematicMode(), "Cannot play lts in cinematic mode" )
-
-	Riff_ForceTitanAvailability( eTitanAvailability.Never )
-
-	if ( Riff_EliminationMode() == eEliminationMode.Default )
-		level.nv.eliminationMode = eEliminationMode.PilotsTitans
+	//if ( Riff_EliminationMode() == eEliminationMode.Default )
+	level.nv.eliminationMode = eEliminationMode.PilotsTitans
 
 	//FlagSet( "PilotBot" )
-	SetServerVar( "spawnAsTitan", 1 )
+	Riff_ForceTitanAvailability( eTitanAvailability.Never )
+	Riff_ForceSetSpawnAsTitan( eSpawnAsTitan.Never )
+	thread FUCKINGHATETHISAGHHH()
+
 	SetRoundBased( true )
 	SetSwitchSidesBased( true )
 	FlagSet( "ForceStartSpawn" )
 
 	AddCallback_PlayerOrNPCKilled( SecondsPlayerOrNPCKilled )
-
 	AddCallback_OnPlayerRespawned( LTS_OnPlayerRespawned )
 
 	AddCallback_GameStateEnter( eGameState.Prematch, LTSPrematchStart )
 	AddCallback_GameStateEnter( eGameState.Playing, LTSPlayingStart )
 	AddCallback_GameStateEnter( eGameState.Epilogue, LTSEpilogueStart )
-
 }
 
+function FUCKINGHATETHISAGHHH()
+{
+	while(1)
+	{
+		wait 0.2
+		SetServerVar( "spawnAsTitan", 2 )
+	}
+}
 
 function EntitiesDidLoad()
 {

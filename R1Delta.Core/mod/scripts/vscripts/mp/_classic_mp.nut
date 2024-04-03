@@ -110,12 +110,12 @@ Globalize( ClassicMP_TryDefaultIntroSetup )
 
 function ClassicMP_Dropship_IntroLevelSetupFunc()
 {
-	// move spawnpoint to custom locations if they have been changed
-	CustomPlayerDropshipSpawn()
-
 	// If riffs are set to be a Titan immediately, just drop in as a titan
 	if ( ShouldIntroSpawnAsTitan() )
 		return false
+
+	// move spawnpoint to custom locations if they have been changed
+	CustomPlayerDropshipSpawn()
 
 	// these are pruned by GameModeRemove()
 	local imcSpawns = GetDropshipStartSpawnsForTeam( TEAM_IMC )
@@ -369,9 +369,9 @@ function TryStartSpawnPlayersIntoDropship( players )
 
 		SpawnTeamPlayersIntoDropships( TEAM_MILITIA, militiaSpawns )
 		SpawnTeamPlayersIntoDropships( TEAM_IMC, imcSpawns )
-		
+
 	}
-	
+
 	foreach ( player in players )
 	{
 		player.UnfreezeControlsOnServer()
