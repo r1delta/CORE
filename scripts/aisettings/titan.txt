@@ -1,0 +1,63 @@
+titan
+{
+	DefaultModelName		"models/titans/atlas/atlas_titan.mdl"
+	DefaultWeapon			"mp_titanweapon_xo16"
+
+	FOV_Vert_Offset			-20
+    FOV_Near_Dist			180		// use near values up to this distance
+	FOV_Far_Dist			1000	// use far values after this distance, interpolate horizontal in between, use far for vertical
+
+	FOV_Idle_Near_Horz		140
+	FOV_Idle_Near_Vert		120
+	FOV_Idle_Far_Horz		90
+	FOV_Idle_Far_Vert		70
+
+	FOV_Alert_Near_Horz		180
+	FOV_Alert_Near_Vert		90
+	FOV_Alert_Far_Horz		150
+	FOV_Alert_Far_Vert		70
+
+	FOV_Combat_Near_Horz		180
+	FOV_Combat_Near_Vert		90
+	FOV_Combat_Far_Horz		150
+	FOV_Combat_Far_Vert		70
+
+	YawSpeed				15
+	MoveYawSpeed			15
+	AimAngularSpeed			10
+
+	MeleeDamageMin			1500
+	MeleeDamageMax			2000
+	MeleeDamageRadius		100
+	meleeImpactEffectTable		"melee_titan"
+
+	HeavyDamageThresholdAmt		2200
+	PainOnRepeatDamageThreshold	0.9
+	PainOnSurpriseHit		0
+
+	MinStartMoveDist		300
+	MaxArrivalDist			200
+
+	showFriendlyIcon		1
+
+	AimAngleBackwardEnd		-120
+	AimAngleForwardStart	-60
+	AimAngleForwardEnd		60
+	AimAngleBackwardStart	120
+
+	AIClass					titan
+	BodyType				titan
+	ArmorType				heavy
+
+	aiEnemy_usePriorityDist	2200
+	aiEnemy_priority		50
+
+	titan_footstep_damage_height_check_ratio 0.15
+
+	chasecamDistanceMax		320
+	chasecamMaxOrbitDepth	90
+	chasecamOffsetUp		170
+	chasecamOffsetRight		110
+
+	magneticRange			190
+}

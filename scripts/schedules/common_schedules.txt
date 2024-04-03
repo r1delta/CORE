@@ -1,0 +1,2385 @@
+//=========================================================
+// > Fail
+// This schedule itself can fail because the NPC may
+// be unable to finish the stop moving. If so, fall back
+// the a fail schedule that has no stop moving in it.
+//=========================================================
+Schedule
+
+	SCHED_FAIL
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE	SCHEDULE:SCHED_FAIL_NOSTOP
+			TASK_STOP_MOVING		0
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_WAIT				1
+			TASK_WAIT_PVS			0
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1 
+			COND_CAN_RANGE_ATTACK2 
+			COND_CAN_MELEE_ATTACK1 
+			COND_CAN_MELEE_ATTACK2
+			COND_GIVE_WAY
+End_Schedule
+
+//=========================================================
+// > Fail without stop moving, which can fail.
+//=========================================================
+Schedule
+
+	SCHED_FAIL_NOSTOP
+
+		Tasks
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_WAIT				1
+			TASK_WAIT_PVS			0
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1 
+			COND_CAN_RANGE_ATTACK2 
+			COND_CAN_MELEE_ATTACK1 
+			COND_CAN_MELEE_ATTACK2
+			COND_GIVE_WAY
+ End_Schedule
+
+//===============================================
+//	> Idle_Stand
+//===============================================
+Schedule
+
+	SCHED_IDLE_STAND
+
+		Tasks
+			TASK_STOP_MOVING		1
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_WAIT				5
+			TASK_WAIT_PVS			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_SMELL
+			COND_PROVOKED
+			COND_GIVE_WAY
+			COND_HEAR_PLAYER
+			COND_HEAR_DANGER
+			COND_HEAR_COMBAT
+			COND_HEAR_BULLET_IMPACT
+			COND_IDLE_INTERRUPT
+			COND_REACT_FRIENDLY_PLAYER
+End_Schedule
+
+//===============================================
+//	> Wait_For_Script
+//===============================================
+Schedule
+
+	SCHED_WAIT_FOR_SCRIPT
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_WAIT_INDEFINITE	0
+	
+		Interrupts
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+//===============================================
+//	> IdleWalk
+//===============================================
+Schedule
+
+	SCHED_IDLE_WALK
+
+		Tasks
+			TASK_WALK_PATH			9999
+			TASK_WAIT_FOR_MOVEMENT	0
+			TASK_WAIT_PVS			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY	// in deference to scripted schedule where the enemy was slammed, thus no COND_NEW_ENEMY
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_SMELL
+			COND_PROVOKED
+			COND_HEAR_COMBAT
+			COND_HEAR_BULLET_IMPACT
+End_Schedule
+
+//===============================================
+//	> NewWeapon
+//===============================================
+Schedule
+
+	SCHED_NEW_WEAPON
+
+		Tasks
+			TASK_STOP_MOVING				0
+			TASK_SET_TOLERANCE_DISTANCE		5
+			TASK_GET_PATH_TO_TARGET_WEAPON	0
+//			TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_NEW_WEAPON_CHEAT
+			TASK_WEAPON_RUN_PATH			0
+			TASK_STOP_MOVING				0
+			TASK_FACE_TARGET				0
+			TASK_WEAPON_PICKUP				0
+			TASK_WAIT						1 // Don't move before done standing up
+	
+		Interrupts
+			COND_HEAR_DANGER
+End_Schedule
+
+//===============================================
+//	Heavy-handed temporary fail case for SCHED_NEW_WEAPON
+// Just manufacture a weapon of the desired type.
+//===============================================
+Schedule
+
+	SCHED_NEW_WEAPON_CHEAT
+
+		Tasks
+			TASK_WEAPON_CREATE		0
+	
+		Interrupts
+End_Schedule
+
+//===============================================
+//  > SCHED_SWITCH_TO_PENDING_WEAPON
+//===============================================
+Schedule
+
+	SCHED_SWITCH_TO_PENDING_WEAPON
+
+		Tasks
+			TASK_STOP_MOVING						0
+			//TASK_PLAY_SEQUENCE						ACTIVITY:ACT_SWITCH_WEAPON
+			TASK_CREATE_PENDING_WEAPON				0
+		
+		Interrupts
+End_Schedule
+
+//===============================================
+//===============================================
+Schedule
+
+	SCHED_GET_HEALTHKIT
+
+		Tasks
+			TASK_STOP_MOVING				0
+			TASK_SET_TOLERANCE_DISTANCE		5
+			TASK_GET_PATH_TO_TARGET_WEAPON	0
+			TASK_ITEM_RUN_PATH				0
+			TASK_STOP_MOVING				0
+			TASK_FACE_TARGET				0
+			TASK_ITEM_PICKUP				0
+	
+		Interrupts
+End_Schedule
+
+//===============================================
+//	> RangeAttack1
+//===============================================
+Schedule
+
+	SCHED_RANGE_ATTACK1
+
+		Tasks
+			TASK_STOP_MOVING			2
+			TASK_AIM_AT_ENEMY			0
+			TASK_ANNOUNCE_ATTACK		1	// 1 = primary attack
+			TASK_RANGE_ATTACK1			0
+			TASK_WAIT_BETWEEN_BURSTS	0
+			TASK_SQUAD_ATTACK_DELAY		0.5
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_HEAVY_DAMAGE
+			COND_NO_PRIMARY_AMMO
+			COND_WEAPON_BLOCKED_BY_FRIEND
+			COND_TOO_CLOSE_TO_ATTACK
+			COND_GIVE_WAY
+			COND_HEAR_DANGER
+			COND_HEAR_MOVE_AWAY
+			COND_SWITCH_WEAPON_REQUEST
+End_Schedule
+
+
+//===============================================
+//	> RangeAttack2
+//===============================================
+Schedule
+
+	SCHED_RANGE_ATTACK2
+
+		Tasks
+			TASK_STOP_MOVING			2
+			TASK_FACE_ENEMY				0
+			TASK_ANNOUNCE_ATTACK		2	// 2 = secondary attack
+			TASK_RANGE_ATTACK2			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_HEAVY_DAMAGE
+			COND_ENEMY_OCCLUDED
+			COND_HEAR_DANGER
+End_Schedule
+
+//===============================================
+Schedule
+
+	SCHED_RODEO_ATTACK
+
+		Tasks
+			TASK_RANGE_ATTACK1			0
+			TASK_WAIT_BETWEEN_BURSTS	0
+		Interrupts
+End_Schedule
+
+
+//=========================================================
+//  > Ambush -  monster stands in place and waits for a new
+//				enemy or chance to attack an existing enemy.
+//=========================================================
+Schedule
+
+	SCHED_AMBUSH
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_SET_IDLE_ACTIVITY		0
+			TASK_WAIT_INDEFINITE		0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_HEAVY_DAMAGE
+			COND_PROVOKED
+End_Schedule
+
+//=========================================================
+//  > Idle_Stand schedule - !!!BUGBUG - if this schedule doesn't
+// complete on its own the monster's HintNode will not be
+// cleared and the rest of the monster's group will avoid
+// that node because they think the group member that was
+// previously interrupted is still using that node to active
+// idle.
+///=========================================================
+//Schedule
+//	Idle_Stand
+//
+//Tasks
+//	 TASK_FIND_HINTNODE				0
+//	 TASK_GET_PATH_TO_HINTNODE		0
+//	 TASK_STORE_LASTPOSITION		0
+//	 TASK_WALK_PATH					0
+//	 TASK_WAIT_FOR_MOVEMENT			0
+//	 TASK_FACE_HINTNODE				0
+//	 TASK_PLAY_ACTIVE_IDLE			0
+//	 TASK_GET_PATH_TO_LASTPOSITION	0
+//	 TASK_WALK_PATH					0
+//	 TASK_WAIT_FOR_MOVEMENT			0
+//	 TASK_CLEAR_LASTPOSITION		0
+//	 TASK_CLEAR_HINTNODE			0
+
+
+//Interrupts
+//		New_Enemy
+//		Light_Damage
+//		Heavy_Damage
+//		Provoked
+//		HEAR_COMBAT
+//		HEAR_WORLD
+//		HEAR_PLAYER
+//		HEAR_DANGER
+//		HEAR_BULLET_IMPACT
+
+
+//=========================================================
+//	> WakeAngry
+//=========================================================
+Schedule
+
+	SCHED_WAKE_ANGRY
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_SOUND_WAKE			0
+			TASK_FACE_IDEAL			0
+			TASK_SET_IDLE_ACTIVITY	0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+//  > AlertFace
+//=========================================================
+Schedule
+
+	SCHED_ALERT_FACE
+
+		Tasks
+			TASK_STOP_MOVING			2
+			TASK_FACE_IDEAL				0
+			TASK_SET_IDLE_ACTIVITY		0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_PROVOKED
+End_Schedule
+
+//=========================================================
+//  > AlertFace	best sound
+//=========================================================
+Schedule
+
+	SCHED_ALERT_FACE_BESTSOUND
+
+		Tasks
+			TASK_STORE_BESTSOUND_REACTORIGIN_IN_SAVEPOSITION		0
+			TASK_STOP_MOVING			2
+			TASK_FACE_SAVEPOSITION		0
+			TASK_SET_IDLE_ACTIVITY		0
+			TASK_WAIT					1.5
+			TASK_FACE_REASONABLE		0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_PROVOKED
+End_Schedule
+
+
+//=========================================================
+//  > Alert_Scan
+//=========================================================
+Schedule
+
+	SCHED_ALERT_SCAN
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_PLAY_SEQUENCE		ACTIVITY:ACT_SEARCH_AREA_CLEAR
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_SQUAD_SEARCH
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_HEAR_COMBAT		// sound flags
+			COND_HEAR_WORLD
+			COND_HEAR_PLAYER
+			COND_HEAR_DANGER
+			COND_HEAR_BULLET_IMPACT
+
+End_Schedule
+
+//=========================================================
+//  > Alert_Area_Clear
+//=========================================================
+Schedule
+
+	SCHED_ALERT_AREA_CLEAR
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_NOTIFY_ENEMY_ELUDED	0
+			TASK_RESERVE_NEXT_SEARCH_POINT	0
+			TASK_PLAY_SEQUENCE		ACTIVITY:ACT_SEARCH_AREA_CLEAR
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_SQUAD_SEARCH
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_HEAR_COMBAT		// sound flags
+			COND_HEAR_WORLD
+			COND_HEAR_PLAYER
+			COND_HEAR_DANGER
+			COND_HEAR_BULLET_IMPACT
+
+End_Schedule
+
+
+//=========================================================
+//  > AlertStand
+//=========================================================
+Schedule
+
+	SCHED_ALERT_STAND
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_FACE_REASONABLE		0
+			TASK_SET_IDLE_ACTIVITY		0
+			TASK_WAIT					20
+			TASK_SUGGEST_STATE			STATE:IDLE
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_PROVOKED
+			COND_SMELL
+			COND_HEAR_COMBAT		// sound flags
+			COND_HEAR_WORLD
+			COND_HEAR_PLAYER
+			COND_HEAR_DANGER
+			COND_HEAR_BULLET_IMPACT
+			COND_IDLE_INTERRUPT
+			COND_GIVE_WAY	
+			COND_REACT_FRIENDLY_PLAYER
+End_Schedule
+
+
+
+//=========================================================
+// > AlertWAlk
+//=========================================================
+Schedule
+
+	SCHED_ALERT_WALK
+
+		Tasks
+			TASK_WALK_PATH			0
+			TASK_WAIT_FOR_MOVEMENT	0
+			TASK_WAIT_PVS			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_ENEMY_DEAD
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_HEAR_DANGER
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+End_Schedule
+
+//=========================================================
+// > InvestigateSound
+//
+//	sends a monster to the location of the
+//	sound that was just heard to check things out.
+//=========================================================
+Schedule
+
+	SCHED_INVESTIGATE_SOUND
+
+		Tasks
+			TASK_STOP_MOVING			0
+//			TASK_SET_TOLERANCE_DISTANCE		32
+			TASK_STORE_BESTSOUND_IN_SAVEPOSITION	0
+			TASK_GET_PATH_TO_SAVEPOSITION_LOS	0
+			TASK_RUN_PATH				0
+			TASK_WAIT_FOR_MOVEMENT_FACE_TARGET_AT_END		0
+			TASK_STOP_MOVING			0
+			TASK_FACE_SAVEPOSITION			0
+			TASK_LOOKAT_SAVEPOSITION	1.5
+			TASK_SET_ACTIVITY			ACTIVITY:ACT_SEARCH_LOOK_AROUND
+			TASK_WAIT					0.3
+			TASK_NOTIFY_ENEMY_ELUDED	0
+			TASK_WAIT					1.7
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_FEAR
+			COND_SEE_ENEMY
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_REACT_CORPSE
+			COND_NEW_INVESTIGATE_SOUND
+End_Schedule
+
+//=========================================================
+// > InvestigateCorpse
+//=========================================================
+Schedule
+
+	SCHED_INVESTIGATE_CORPSE
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_SCRIPTED_DIALOGUE		0		// eCodeDialogType.MAN_DOWN
+			TASK_PLAY_SEQUENCE			ACTIVITY:ACT_SIGNAL_GROUP
+			TASK_SET_TOLERANCE_DISTANCE		100
+			TASK_STORE_CORPSE_POSITION_IN_SAVEPOSITION	0
+			TASK_GET_PATH_TO_SAVEPOSITION	0
+			TASK_NOTIFY_ENEMY_ELUDED	0
+			TASK_RESERVE_NEXT_SEARCH_POINT	0	// must be done after path find or will be cleared
+			TASK_DISABLE_ARRIVAL_ONCE	0
+			TASK_RUN_PATH_WITHIN_DIST	50
+			TASK_STOP_MOVING			0
+			TASK_PLAY_SEQUENCE			ACTIVITY:ACT_SEARCH_CORPSE
+			TASK_PLAY_SEQUENCE			ACTIVITY:ACT_SIGNAL_GROUP
+			TASK_INIT_SEARCH_PATH		0
+			TASK_SET_SCHEDULE			SCHEDULE:SCHED_PATROL_PATH
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_FEAR
+			COND_SEE_ENEMY
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_HEAR_DANGER
+			COND_HEAR_COMBAT
+End_Schedule
+
+
+//=========================================================
+// > Stand up
+//=========================================================
+Schedule
+
+	SCHED_STAND_UP
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_PLAY_SEQUENCE			ACTIVITY:ACT_STAND
+	
+		Interrupts
+End_Schedule
+
+
+//=========================================================
+// > Crouch down
+//=========================================================
+Schedule
+
+	SCHED_CROUCH_DOWN
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_PLAY_SEQUENCE			ACTIVITY:ACT_CROUCH
+	
+		Interrupts
+End_Schedule
+
+
+//=========================================================
+// > CombatStand
+//=========================================================
+Schedule
+
+	SCHED_COMBAT_STAND
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_SET_IDLE_ACTIVITY		0
+			TASK_WAIT_INDEFINITE		0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_SEE_ENEMY
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_IDLE_INTERRUPT
+End_Schedule
+
+//=========================================================
+// > CombatWalk
+//=========================================================
+Schedule
+
+	SCHED_COMBAT_WALK
+
+		Tasks
+			TASK_WALK_PATH			0
+			TASK_WAIT_FOR_MOVEMENT	0
+			TASK_WAIT_PVS			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_HEAR_DANGER
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+End_Schedule
+
+//=========================================================
+// > CombatFace
+//=========================================================
+Schedule
+
+	SCHED_COMBAT_FACE
+
+		Tasks
+			TASK_STOP_MOVING		2
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_FACE_ENEMY			0
+			TASK_WAIT        		0.5
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_SQUAD_SEARCH
+End_Schedule
+
+//=========================================================
+// 	COMBAT_SWEEP
+//
+// Do a small sweep of the area
+//=========================================================
+Schedule
+
+	SCHED_COMBAT_SWEEP
+
+		Tasks
+			TASK_STOP_MOVING		2
+			TASK_PLAY_SEQUENCE		ACTIVITY:ACT_SEARCH_LOOK_AROUND
+	
+		Interrupts
+			COND_SQUAD_SEARCH
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_PROVOKED
+			COND_SMELL
+			COND_HEAR_COMBAT		// sound flags
+			COND_HEAR_WORLD
+			COND_HEAR_PLAYER
+			COND_HEAR_DANGER
+			COND_HEAR_BULLET_IMPACT
+			COND_GIVE_WAY	
+
+End_Schedule
+
+
+//=========================================================
+// > Combat Wait facing current, reload if necessary
+//=========================================================
+Schedule
+
+	SCHED_COMBAT_WAIT
+
+		Tasks
+			TASK_STOP_MOVING				0
+			TASK_RELOAD						0.5
+			TASK_SCRIPTED_DIALOGUE			4		// script enum eCodeDialogType.RELOADING
+			TASK_SET_IDLE_ACTIVITY			0
+			TASK_FACE_ENEMY_IF_HAS_LOS		0
+			TASK_WAIT						2
+			TASK_WAIT_RANDOM				1
+
+		Interrupts
+			COND_IN_DANGER
+			COND_SEE_ENEMY
+			COND_LOS_TO_ENEMY_LKP
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_HEAR_DANGER
+			COND_HEAR_MOVE_AWAY
+End_Schedule
+
+
+ //=========================================================
+// > Combat Wait facing enemy
+//=========================================================
+Schedule
+
+	SCHED_WAIT_FACING_ENEMY
+
+		Tasks
+			TASK_STOP_MOVING				0
+			TASK_RELOAD						0.5
+			TASK_SCRIPTED_DIALOGUE			4		// script enum eCodeDialogType.RELOADING
+			TASK_SET_STANCE					0
+			TASK_SET_IDLE_ACTIVITY			0
+			TASK_WAIT_FACE_ENEMY			3 
+			TASK_WAIT_FACE_ENEMY_RANDOM		1 
+		
+		Interrupts
+			COND_IN_DANGER
+			COND_ENEMY_DEAD
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_HEAR_DANGER
+			COND_HEAR_MOVE_AWAY
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+ End_Schedule
+
+
+
+//=========================================================
+// > Standoff
+//
+// Used in combat when a monster is
+// hiding in cover or the enemy has moved out of sight.
+// Should we look around in this schedule?
+//=========================================================
+Schedule
+
+	SCHED_STANDOFF
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_SET_IDLE_ACTIVITY		0
+			TASK_WAIT_FACE_ENEMY		2
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_ENEMY_DEAD
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_HEAR_DANGER
+End_Schedule
+
+//=========================================================
+// > Arm weapon (draw gun)
+//=========================================================
+Schedule
+
+	SCHED_ARM_WEAPON
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_FACE_IDEAL				0
+			TASK_PLAY_SEQUENCE			ACTIVITY:ACT_ARM
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > Disarm weapon (holster gun)
+//=========================================================
+Schedule
+
+	SCHED_DISARM_WEAPON
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_FACE_IDEAL			0
+			TASK_PLAY_SEQUENCE		ACTIVITY:ACT_DISARM
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// 	SCHED_HIDE_AND_RELOAD
+//=========================================================
+Schedule
+
+	SCHED_HIDE_AND_RELOAD
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_SET_FAIL_SCHEDULE		SCHEDULE:SCHED_RELOAD
+			TASK_FIND_COVER_FROM_ENEMY_WITHIN_RANGE	150
+			TASK_SPRINT_PATH			0
+			TASK_WAIT_FOR_MOVEMENT		0
+			TASK_REMEMBER				MEMORY:INCOVER
+			TASK_FACE_ENEMY				0
+			TASK_RELOAD					0
+			TASK_SCRIPTED_DIALOGUE			4		// script enum eCodeDialogType.RELOADING
+	
+		Interrupts
+			COND_IN_DANGER
+			COND_CAN_MELEE_ATTACK1
+			COND_HEAVY_DAMAGE
+			COND_HEAR_DANGER
+			COND_HEAR_MOVE_AWAY
+End_Schedule
+
+//=========================================================
+// > Reload
+//=========================================================
+Schedule
+
+	SCHED_RELOAD
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_LOOKAT_ENEMY		1.0
+			TASK_RELOAD				0
+			TASK_SCRIPTED_DIALOGUE			4		// script enum eCodeDialogType.RELOADING
+	
+		Interrupts
+			COND_IN_DANGER
+			COND_HEAR_DANGER
+			COND_CAN_MELEE_ATTACK1
+			COND_HEAR_MOVE_AWAY
+End_Schedule
+
+//=========================================================
+// > Directional melee
+//=========================================================
+Schedule
+
+	SCHED_DIRECTIONAL_MELEE
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_MELEE_DIRECTIONAL_ATTACK	0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_HEAVY_DAMAGE
+			COND_ENEMY_OCCLUDED
+End_Schedule
+
+
+//=========================================================
+// > Melee_Attack1
+//=========================================================
+Schedule
+
+	SCHED_MELEE_ATTACK1
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_FACE_ENEMY_STRICT		0
+			TASK_ANNOUNCE_ATTACK	1	// 1 = primary attack
+			TASK_MELEE_ATTACK1		0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_HEAVY_DAMAGE
+			COND_ENEMY_OCCLUDED
+End_Schedule
+
+//=========================================================
+// > Melee_Attack2
+//=========================================================
+Schedule
+
+	SCHED_MELEE_ATTACK2
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_FACE_ENEMY_STRICT	0
+			TASK_ANNOUNCE_ATTACK	2	// 2 = secondary attack
+			TASK_MELEE_ATTACK2		0
+	
+		Interrupts
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+
+//=========================================================
+// > SuppressLKP
+//=========================================================
+Schedule
+
+	SCHED_SUPPRESS_LKP
+
+		Tasks
+			TASK_STOP_MOVING				0
+ 			TASK_AIM_AT_ENEMY				0
+// 			TASK_COMBINE_SET_STANDING		0
+ 			TASK_RANGE_ATTACK_REPEATEDLY	0
+ 
+ 		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_LOST_ENEMY
+			COND_LOS_TO_ENEMY_LKP
+ 			COND_ENEMY_DEAD
+ 			COND_LIGHT_DAMAGE
+ 			COND_HEAVY_DAMAGE
+ 			COND_NO_PRIMARY_AMMO
+ 			COND_HEAR_DANGER
+ 			COND_HEAR_MOVE_AWAY
+// 			COND_COMBINE_NO_FIRE
+ 			COND_WEAPON_BLOCKED_BY_FRIEND
+			COND_SQUAD_SEARCH
+ End_Schedule
+
+
+//=========================================================
+// > ChaseEnemy
+//=========================================================
+Schedule
+
+	SCHED_CHASE_ENEMY
+
+		Tasks
+			TASK_STOP_MOVING				0
+//			TASK_SET_TOLERANCE_DISTANCE		24
+			TASK_GET_CHASE_PATH_TO_ENEMY	300
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+			TASK_FACE_ENEMY			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_ENEMY_UNREACHABLE
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_TOO_CLOSE_TO_ATTACK
+			COND_TASK_FAILED
+			COND_LOST_ENEMY
+			COND_BETTER_WEAPON_AVAILABLE
+			COND_HEAR_DANGER
+End_Schedule
+
+//=========================================================
+// > CombatFace
+//=========================================================
+Schedule
+
+	SCHED_TARGET_FACE
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_FACE_TARGET		0
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+End_Schedule
+
+//=========================================================
+// > ChaseEnemy
+//=========================================================
+Schedule
+
+	SCHED_TARGET_CHASE
+
+		Tasks
+			TASK_STOP_MOVING				0
+//			TASK_SET_TOLERANCE_DISTANCE		24
+			TASK_GET_PATH_TO_TARGET			0
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_ENEMY_UNREACHABLE
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_TOO_CLOSE_TO_ATTACK
+			COND_TASK_FAILED
+			COND_LOST_ENEMY
+			COND_BETTER_WEAPON_AVAILABLE
+			COND_HEAR_DANGER
+End_Schedule
+
+//=========================================================
+// > ChaseEnemyFailed
+//=========================================================
+Schedule
+
+	SCHED_CHASE_ENEMY_FAILED
+
+		Tasks
+			 TASK_STOP_MOVING					0
+			 TASK_WAIT							0.2
+			 TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_STANDOFF
+//			 TASK_SET_TOLERANCE_DISTANCE		24
+			 TASK_FIND_COVER_FROM_ENEMY			0
+			 TASK_RUN_PATH						0
+			 TASK_WAIT_FOR_MOVEMENT				0
+			 TASK_REMEMBER						MEMORY:INCOVER
+			 TASK_FACE_ENEMY					0
+			 TASK_SET_IDLE_ACTIVITY				0
+			 TASK_WAIT							1
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_HEAR_DANGER
+			COND_BETTER_WEAPON_AVAILABLE
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+//=========================================================
+// > SCHED_BACK_AWAY_FROM_SAVE_POSITION
+//=========================================================
+Schedule
+
+	SCHED_BACK_AWAY_FROM_SAVE_POSITION
+
+		Tasks
+			TASK_STOP_MOVING							0
+//			TASK_SET_TOLERANCE_DISTANCE					24
+			TASK_FIND_BACKAWAY_FROM_SAVEPOSITION		0
+			TASK_RUN_PATH								0
+			TASK_WAIT_FOR_MOVEMENT						0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > BackAwayFromEnemy
+//=========================================================
+Schedule
+
+	SCHED_BACK_AWAY_FROM_ENEMY
+
+		Tasks
+			// If I can't back away from the enemy try to get behind him
+			TASK_STOP_MOVING							0
+//			TASK_SET_TOLERANCE_DISTANCE					24
+			TASK_STORE_ENEMY_POSITION_IN_SAVEPOSITION	0
+			TASK_FIND_BACKAWAY_FROM_SAVEPOSITION		0
+			TASK_RUN_PATH								0
+			TASK_WAIT_FOR_MOVEMENT						0
+	
+		Interrupts
+			COND_IN_DANGER
+			COND_NEW_ENEMY
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+End_Schedule
+
+//=========================================================
+// > SmallFlinch
+//	played when heavy damage is taken recently after taking damage
+//=========================================================
+Schedule
+
+	SCHED_SMALL_FLINCH
+
+		Tasks
+			 TASK_REMEMBER				MEMORY:FLINCHED  
+			 TASK_STOP_MOVING			0
+			 TASK_SMALL_FLINCH			0
+			 TASK_REFRESH_REACT_TO_SOUND 0.5
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > BigFlinch
+//	played when heavy damage is taken for the first time in a while
+//=========================================================
+Schedule
+
+	SCHED_BIG_FLINCH
+
+		Tasks
+			 TASK_REMEMBER				MEMORY:FLINCHED  
+			 TASK_STOP_MOVING			0
+			 TASK_BIG_FLINCH			0
+			 TASK_REFRESH_REACT_TO_SOUND 0.5
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > Freeze
+//
+//=========================================================
+Schedule
+
+	SCHED_NPC_FREEZE
+
+		Tasks
+			 TASK_FREEZE				0
+
+		Interrupts
+			COND_NPC_UNFREEZE
+End_Schedule
+
+//=========================================================
+// > Die
+//=========================================================
+Schedule
+
+	SCHED_DIE
+
+		Tasks
+			 TASK_STOP_MOVING		0				 
+			 TASK_SOUND_DIE			0			 
+			 TASK_DIE				0			 
+	
+		Interrupts
+			COND_NO_CUSTOM_INTERRUPTS
+End_Schedule
+
+//=========================================================
+// > Die
+//=========================================================
+Schedule
+
+	SCHED_DIE_RAGDOLL
+
+		Tasks
+			 TASK_STOP_MOVING		0			 
+			 TASK_SOUND_DIE			0			 
+	
+		Interrupts
+			COND_NO_CUSTOM_INTERRUPTS
+End_Schedule
+
+
+//=========================================================
+// > VictoryDance
+//=========================================================
+Schedule
+
+	SCHED_VICTORY_DANCE
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_PLAY_SEQUENCE		ACTIVITY:ACT_VICTORY_DANCE
+			TASK_WAIT				0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > Error
+//=========================================================
+//Schedule
+//	Error
+//
+//Tasks
+//	TASK_STOP_MOVING			0
+//	TASK_WAIT_INDEFINITE		0
+//
+//Interrupts
+
+
+//=========================================================
+// > Wait for Anim
+//=========================================================
+Schedule
+
+	SCHED_WAIT_FOR_SCRIPT_ANIM_END
+
+		Tasks
+			 TASK_WAIT_FOR_SCRIPT_ANIM_END			0
+	
+		Interrupts
+			COND_LIGHT_DAMAGE 
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+
+//=========================================================
+// > ScriptedWalk
+//=========================================================
+Schedule
+
+	SCHED_SCRIPTED_WALK
+
+		Tasks
+			 TASK_PRE_SCRIPT					0
+			 TASK_SET_TOLERANCE_DISTANCE		2
+			 TASK_PUSH_SCRIPT_ARRIVAL_ACTIVITY	0
+
+			 TASK_SCRIPT_WALK_TO_TARGET			0
+			 TASK_WAIT_FOR_MOVEMENT				0
+			 TASK_PLANT_ON_SCRIPT				0
+			 TASK_FACE_SCRIPT					0
+			 TASK_ENABLE_SCRIPT					0
+			 TASK_WAIT_FOR_SCRIPT				0
+			 TASK_PLAY_SCRIPT					0
+			 TASK_PLAY_SCRIPT_POST_IDLE			0
+	
+		Interrupts
+			COND_LIGHT_DAMAGE 
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+//=========================================================
+// > ScriptedRun
+//=========================================================
+Schedule
+
+	SCHED_SCRIPTED_RUN
+
+		Tasks
+			 TASK_PRE_SCRIPT					0
+			 TASK_SET_TOLERANCE_DISTANCE		2
+			 TASK_PUSH_SCRIPT_ARRIVAL_ACTIVITY	0
+			 TASK_SCRIPT_RUN_TO_TARGET			0
+			 TASK_WAIT_FOR_MOVEMENT				0
+			 TASK_PLANT_ON_SCRIPT				0
+			 TASK_FACE_SCRIPT					0
+			 TASK_ENABLE_SCRIPT					0
+			 TASK_WAIT_FOR_SCRIPT				0
+			 TASK_PLAY_SCRIPT					0
+			 TASK_PLAY_SCRIPT_POST_IDLE			0
+	
+		Interrupts
+			COND_LIGHT_DAMAGE 
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+//=========================================================
+// > ScriptedMoveCustom
+//=========================================================
+Schedule
+
+	SCHED_SCRIPTED_CUSTOM_MOVE
+
+		Tasks
+			 TASK_PRE_SCRIPT					0
+			 TASK_SET_TOLERANCE_DISTANCE		2
+			 TASK_PUSH_SCRIPT_ARRIVAL_ACTIVITY	0
+			 TASK_SCRIPT_CUSTOM_MOVE_TO_TARGET	0
+			 TASK_WAIT_FOR_MOVEMENT				0
+			 TASK_PLANT_ON_SCRIPT				0
+			 TASK_FACE_SCRIPT					0
+			 TASK_ENABLE_SCRIPT					0
+			 TASK_WAIT_FOR_SCRIPT				0
+			 TASK_PLAY_SCRIPT					0
+			 TASK_PLAY_SCRIPT_POST_IDLE			0
+	
+		Interrupts
+			COND_LIGHT_DAMAGE 
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+//=========================================================
+// > ScriptedWait
+//=========================================================
+Schedule
+
+	SCHED_SCRIPTED_WAIT
+
+		Tasks
+			 TASK_PRE_SCRIPT				0
+			 TASK_STOP_MOVING				0
+			 TASK_ENABLE_SCRIPT				0
+			 TASK_WAIT_FOR_SCRIPT			0
+			 TASK_PLAY_SCRIPT				0
+			 TASK_PLAY_SCRIPT_POST_IDLE		0
+	
+		Interrupts
+			COND_LIGHT_DAMAGE 
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+//=========================================================
+// > ScriptedFace
+//=========================================================
+Schedule
+
+	SCHED_SCRIPTED_FACE
+
+		Tasks
+			 TASK_PRE_SCRIPT				0
+			 TASK_STOP_MOVING				0
+			 TASK_FACE_SCRIPT				0
+			 TASK_ENABLE_SCRIPT				0
+			 TASK_WAIT_FOR_SCRIPT			0
+			 TASK_PLAY_SCRIPT				0
+			 TASK_PLAY_SCRIPT_POST_IDLE		0
+	
+		Interrupts
+			COND_LIGHT_DAMAGE 
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+
+
+//=========================================================
+// > SCENE_FACE_TARGET
+//=========================================================
+Schedule
+
+	SCHED_SCENE_GENERIC
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE	SCHEDULE:SCHED_SCENE_GENERIC
+			TASK_STOP_MOVING		0
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_PLAY_SCENE			0
+			TASK_WAIT_FOR_MOVEMENT	0
+			TASK_STOP_MOVING		0
+			TASK_SET_SCHEDULE		SCHEDULE:SCHED_SCENE_GENERIC
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > Cower
+//
+//		This is what is usually done when attempts
+//		to escape danger fail.
+//=========================================================
+Schedule
+
+	SCHED_COWER
+
+		Tasks
+			TASK_STOP_MOVING				2
+			TASK_FACE_ENEMY					0
+			TASK_SET_NPC_FLAG				FLAG:NPC_DIE_ON_ANY_DAMAGE
+			TASK_SET_NPC_FLAG				FLAG:NPC_RAGDOLL_IMMEDIATE
+			TASK_PLAY_SEQUENCE				ACTIVITY:ACT_COWER
+			TASK_CLEAR_NPC_FLAG				FLAG:NPC_ALLOW_FLEE
+			TASK_CLEAR_NPC_FLAG				FLAG:NPC_DIE_ON_ANY_DAMAGE
+			TASK_CLEAR_NPC_FLAG				FLAG:NPC_RAGDOLL_IMMEDIATE
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > TakeCoverFromOrigin
+//
+//			move away from where you're currently standing.
+//=========================================================
+Schedule
+
+	SCHED_TAKE_COVER_FROM_ORIGIN
+
+		Tasks
+			 TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_FAIL_TAKE_COVER
+			 TASK_STOP_MOVING					0
+//			 TASK_SET_TOLERANCE_DISTANCE		24
+			 TASK_FIND_COVER_FROM_ORIGIN		0
+			 TASK_RUN_PATH						0
+			 TASK_WAIT_FOR_MOVEMENT				0
+			 TASK_REMEMBER						MEMORY:INCOVER
+			 TASK_TURN_LEFT						179
+			 TASK_SET_IDLE_ACTIVITY				0
+	
+		Interrupts
+			COND_NEW_ENEMY
+End_Schedule
+
+//=========================================================
+// > TakeCoverFromBestSound
+//
+//			hide from the loudest sound source
+//=========================================================
+Schedule
+
+	SCHED_TAKE_COVER_FROM_BEST_SOUND
+
+		Tasks
+			 TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_FLEE_FROM_BEST_SOUND
+			 TASK_STOP_MOVING					0
+			 TASK_STORE_BESTSOUND_REACTORIGIN_IN_SAVEPOSITION	0
+			 TASK_FIND_COVER_FROM_BEST_SOUND	0
+			 TASK_RUN_PATH						0
+			 TASK_WAIT_FOR_MOVEMENT				0
+			 TASK_REMEMBER						MEMORY:INCOVER
+			 TASK_FACE_SAVEPOSITION				0
+			 TASK_SET_IDLE_ACTIVITY				0
+	
+		Interrupts
+			COND_NEW_ENEMY
+End_Schedule
+
+
+//=========================================================
+//
+//=========================================================
+Schedule
+
+	SCHED_FLEE_FROM_BEST_SOUND
+
+		Tasks
+			 TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_COWER
+			 TASK_STORE_BESTSOUND_REACTORIGIN_IN_SAVEPOSITION	0
+			 TASK_GET_PATH_AWAY_FROM_BEST_SOUND	600
+			 TASK_RUN_PATH_FLEE					100
+			 TASK_STOP_MOVING					0
+			 TASK_FACE_SAVEPOSITION				0
+	
+		Interrupts
+			COND_NEW_ENEMY
+End_Schedule
+
+
+//=========================================================
+// > TakeCoverFromEnemy
+//
+//		Take cover from enemy!
+//=========================================================
+Schedule
+
+	SCHED_TAKE_COVER_FROM_ENEMY
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_FAIL_TAKE_COVER
+			TASK_STOP_MOVING				0
+			TASK_WAIT						0.2
+//			TASK_SET_TOLERANCE_DISTANCE		24
+			TASK_FIND_COVER_FROM_ENEMY		0
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+			TASK_REMEMBER					MEMORY:INCOVER
+			TASK_FACE_ENEMY					0
+			TASK_SET_IDLE_ACTIVITY			0
+			TASK_WAIT						1
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_HEAR_DANGER
+End_Schedule
+
+//=========================================================
+// FAIL_TAKE_COVER
+//
+//  Default case.  Overridden by subclasses for behavior
+//=========================================================
+Schedule
+
+	SCHED_FAIL_TAKE_COVER
+
+		Tasks 
+			TASK_SET_IDLE_ACTIVITY			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+End_Schedule
+
+//=========================================================
+// > RunFromEnemy
+//
+//	Run to cover, but don't turn to face enemy and upon
+//  fail run around randomly
+//=========================================================
+Schedule
+
+	SCHED_RUN_FROM_ENEMY
+
+		Tasks
+			TASK_SCRIPTED_DIALOGUE			3		// script enum eCodeDialogType.RUN_FROM_ENEMY
+			TASK_SET_RUNNING_FROM_ENEMY		0
+			TASK_STOP_MOVING				0
+			TASK_FIND_SAFE_HINT_FROM_ENEMY	1500
+			TASK_FIND_FAR_NODE_COVER_FROM_ENEMY		500
+			TASK_SPRINT_RUNAWAY_PATH		0
+			TASK_WAIT_FOR_MOVEMENT			0
+			TASK_SET_SCHEDULE				SCHEDULE:SCHED_RUN_FROM_ENEMY_FALLBACK_COMPLETE
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+End_Schedule
+
+
+//=========================================================
+Schedule
+
+	SCHED_RUN_FROM_ENEMY_FALLBACK
+
+		Tasks
+			TASK_SET_RUNNING_FROM_ENEMY					0
+			TASK_STOP_MOVING							0
+			TASK_STORE_ENEMY_POSITION_IN_SAVEPOSITION	0
+			TASK_FIND_BACKAWAY_FROM_SAVEPOSITION		0
+			TASK_SPRINT_RUNAWAY_PATH					0
+			TASK_WAIT_FOR_MOVEMENT						0
+			TASK_SET_SCHEDULE							SCHEDULE:SCHED_RUN_FROM_ENEMY_FALLBACK_COMPLETE
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+End_Schedule
+
+//=========================================================
+Schedule
+
+	SCHED_RUN_FROM_ENEMY_FALLBACK_COMPLETE
+
+ 		Tasks
+			TASK_WAIT_RANDOM				1
+ 			TASK_STOP_MOVING				0
+ 			TASK_PLAY_SEQUENCE				ACTIVITY:ACT_SIGNAL_ACKNOWLEDGE
+			TASK_RELOAD						0.5
+			TASK_SCRIPTED_DIALOGUE			4		// script enum eCodeDialogType.RELOADING
+			TASK_SET_IDLE_ACTIVITY			0
+			TASK_FACE_ENEMY_IF_HAS_LOS		0
+ 			TASK_PLAY_SEQUENCE				ACTIVITY:ACT_SIGNAL_ACKNOWLEDGE
+			TASK_WAIT_RANDOM				1
+ 
+ 		Interrupts
+			COND_LOS_TO_ENEMY_LKP
+			COND_SEE_ENEMY
+ 			COND_LIGHT_DAMAGE
+ 			COND_HEAVY_DAMAGE
+ 			COND_HEAR_DANGER
+ 			COND_HEAR_MOVE_AWAY
+End_Schedule
+
+//=========================================================
+// > Fear_Face
+//
+// Face an enemy that I'm scared of, until I see it.  Used
+// after I run to cover from a feared enemy
+// UNDONE: Add a special ACT_IDLE_FEAR
+//=========================================================
+Schedule
+
+	SCHED_FEAR_FACE
+
+		Tasks
+			 TASK_STOP_MOVING			0
+			 TASK_SET_IDLE_ACTIVITY		0
+			 TASK_FACE_ENEMY			0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_SEE_ENEMY
+End_Schedule
+
+//=========================================================
+// > Forced_Go (Used for debug only)
+//=========================================================
+Schedule
+
+	SCHED_FORCED_GO
+
+		Tasks
+			TASK_SET_TOLERANCE_DISTANCE		48
+			TASK_SET_ROUTE_SEARCH_TIME		3	// Spend 3 seconds trying to build a path if stuck
+			TASK_GET_PATH_TO_LASTPOSITION	0
+			TASK_WALK_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > Forced_Go (Used for debug only)
+//=========================================================
+Schedule
+
+	SCHED_FORCED_GO_RUN
+
+		Tasks
+			TASK_SET_TOLERANCE_DISTANCE		48
+			TASK_SET_ROUTE_SEARCH_TIME		3	// Spend 3 seconds trying to build a path if stuck
+			TASK_GET_PATH_TO_LASTPOSITION	0
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+	
+		Interrupts
+End_Schedule
+
+
+//=========================================================
+// SCHED_MOVE_TO_ENEMY
+// different from SCHED_CHASE_ENEMY, uses LKP
+//=========================================================
+Schedule
+
+	SCHED_MOVE_TO_ENEMY
+
+		Tasks 
+			TASK_SET_TOLERANCE_DISTANCE		72
+			TASK_GET_PATH_TO_ENEMY_LKP		0
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT_FACE_TARGET_AT_END	0
+	
+		Interrupts 
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_SQUAD_SEARCH
+			COND_ENEMY_DEAD
+			COND_LOST_ENEMY
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_HEAR_DANGER
+End_Schedule
+
+
+//=========================================================
+// SCHED_MOVE_TO_ENGAGEMENT_RANGE
+//
+//=========================================================
+Schedule
+
+	SCHED_MOVE_TO_ENGAGEMENT_RANGE
+
+		Tasks 
+			TASK_GET_PATH_TO_ENEMY_LKP_LOS	0
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT_FACE_TARGET_AT_END		0
+	
+		Interrupts 
+			COND_IN_DANGER
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_SQUAD_SEARCH
+			COND_ENEMY_DEAD
+			COND_LOST_ENEMY
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_HEAR_DANGER
+End_Schedule
+
+
+//=========================================================
+// SCHED_MOVE_TO_WEAPON_RANGE
+//
+//=========================================================
+Schedule
+
+	SCHED_MOVE_TO_WEAPON_RANGE
+
+		Tasks 
+			TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_CHASE_ENEMY
+			TASK_GET_PATH_TO_RANGE_ENEMY_LKP_LOS		0
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+			TASK_SET_SCHEDULE				SCHEDULE:SCHED_COMBAT_FACE
+	
+		Interrupts 
+			COND_IN_DANGER
+			COND_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_LOST_ENEMY
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_HEAR_DANGER
+End_Schedule
+
+//=========================================================
+// SCHED_MOVE_TO_SQUAD_RANGE
+//
+//=========================================================
+Schedule
+
+	SCHED_MOVE_TO_SQUAD_RANGE
+
+		Tasks 
+			TASK_GET_PATH_TO_ENEMY_LKP		0
+			TASK_RUN_PATH_WITHIN_DIST		0	// runtime assigned distance
+			TASK_STOP_MOVING				0
+	
+		Interrupts 
+			COND_IN_DANGER
+			COND_NEW_ENEMY
+			COND_SQUAD_SEARCH
+			COND_ENEMY_DEAD
+			COND_LOST_ENEMY
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_HEAR_DANGER
+End_Schedule
+
+
+//=========================================================
+Schedule
+
+	SCHED_MOVE_TO_SQUAD_LEADER_GOAL
+
+		Tasks 
+			TASK_GET_PATH_TO_SQUAD_LEADER_GOAL		0
+			TASK_SCRIPTED_DIALOGUE					6	// script enum eCodeDialogType.MOVE_TO_SQUAD_LEADER
+			TASK_RUN_PATH							0
+			TASK_WAIT_FOR_MOVEMENT					0
+			TASK_STOP_MOVING						0
+	
+		Interrupts
+			COND_IN_DANGER
+			COND_SQUAD_SEARCH
+			COND_SQUAD_TAKING_POSITION
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_SEE_ENEMY_VERY_CLOSE 
+End_Schedule
+
+//=========================================================
+Schedule
+
+	SCHED_MOVE_TO_SQUAD_ASSIGNED_NODE
+
+		Tasks 
+			TASK_GET_PATH_TO_SQUAD_ASSIGNED_NODE	0
+			TASK_SCRIPTED_DIALOGUE					7	// script enum eCodeDialogType.FAN_OUT
+			TASK_RUN_PATH							0
+			TASK_WAIT_FOR_MOVEMENT					0
+			TASK_STOP_MOVING						0
+	
+		Interrupts
+			COND_IN_DANGER 
+			COND_SQUAD_SEARCH
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_SEE_ENEMY_VERY_CLOSE 
+End_Schedule
+
+
+//=========================================================
+// SCHED_MOVE_OFF_OF_NPC
+//
+//=========================================================
+Schedule
+
+ SCHED_MOVE_OFF_OF_NPC
+
+ 	Tasks 
+ 		TASK_GET_PATH_OFF_OF_NPC				0
+ 		TASK_RUN_PATH							0
+ 		TASK_WAIT_FOR_MOVEMENT					0
+ 
+ 	Interrupts 
+ 
+ End_Schedule
+
+//=========================================================
+// ESTABLISH_LINE_OF_FIRE
+//
+//  Go to a location from which I can shoot my enemy
+//=========================================================
+Schedule
+
+	SCHED_ESTABLISH_LINE_OF_FIRE
+
+		Tasks
+			TASK_SET_TOLERANCE_DISTANCE		48
+			TASK_GET_PATH_TO_ENEMY_LKP_LOS		0
+			TASK_SPEAK_SENTENCE				1
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT_FACE_TARGET_AT_END			0
+			TASK_FINISH_ESTABLISH_LINE_OF_FIRE 	0
+			TASK_SET_SCHEDULE				SCHEDULE:SCHED_COMBAT_FACE
+	
+		Interrupts 
+			COND_IN_DANGER
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_SQUAD_SEARCH
+			COND_ENEMY_DEAD
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_HEAR_DANGER
+			COND_HEAR_MOVE_AWAY
+End_Schedule
+
+
+//-----------------------------------------------------------------------------
+// Shoot at my enemy in order to destroy the breakable cover object
+// that they are hiding behind. This will naturally destroy the cover object.
+//-----------------------------------------------------------------------------
+Schedule	
+
+	SCHED_SHOOT_ENEMY_COVER
+	  
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_AIM_AT_ENEMY		0
+			TASK_WAIT				0.5
+			TASK_RANGE_ATTACK1		0
+	
+		Interrupts
+			COND_ENEMY_DEAD
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_NO_PRIMARY_AMMO
+			COND_HEAR_DANGER
+			COND_WEAPON_BLOCKED_BY_FRIEND
+End_Schedule
+
+//=========================================================
+// > PATROL_PATH
+//
+// patrol a path, with option running scripts at each patrol point
+//=========================================================
+
+Schedule	
+	
+	SCHED_PATROL_PATH
+
+ 		Tasks
+			TASK_GET_PATH_TO_NEXT_SEARCH_POINT	1500
+ 			TASK_WALK_PATH					0
+ 			TASK_WAIT_FOR_MOVEMENT			0
+ 			TASK_STOP_MOVING				0
+ 			TASK_RUN_VSCRIPT				0
+			TASK_RESERVE_NEXT_SEARCH_POINT	0
+ 			TASK_SET_SCHEDULE				SCHEDULE:SCHED_PATROL_PATH // keep doing it
+ 
+ 		Interrupts
+ 			COND_ENEMY_DEAD
+			COND_LOST_ENEMY
+ 			COND_LIGHT_DAMAGE
+ 			COND_HEAVY_DAMAGE
+			COND_HEAR_COMBAT
+ 			COND_HEAR_DANGER
+ 			COND_HEAR_BULLET_IMPACT
+ 			COND_HEAR_MOVE_AWAY
+ 			COND_NEW_ENEMY
+ 			COND_SEE_ENEMY
+ 			COND_CAN_RANGE_ATTACK1
+ 			COND_CAN_RANGE_ATTACK2
+			COND_REACT_SURPRISED
+			COND_REACT_BULLET
+			COND_REACT_CORPSE
+			COND_REACT_FRIENDLY_PLAYER
+			COND_SQUAD_ENGAGE
+ 
+ End_Schedule
+
+
+//=========================================================
+// > PATROL_RUN
+//
+// Run around randomly until we detect an enemy
+//=========================================================
+Schedule
+
+	SCHED_PATROL_RUN
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_COMBAT_FACE
+//			TASK_SET_TOLERANCE_DISTANCE		48
+			TASK_SET_ROUTE_SEARCH_TIME		5	// Spend 5 seconds trying to build a path if stuck
+			TASK_GET_PATH_TO_RANDOM_NODE	200
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1 
+			COND_CAN_RANGE_ATTACK2 
+			COND_CAN_MELEE_ATTACK1 
+			COND_CAN_MELEE_ATTACK2
+			COND_GIVE_WAY
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_HEAR_COMBAT
+			COND_HEAR_DANGER
+			COND_HEAR_PLAYER
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_SMELL
+			COND_PROVOKED
+End_Schedule
+
+//=========================================================
+// > IDLE_WANDER
+//
+// Walk around randomly
+//=========================================================
+Schedule
+
+	SCHED_IDLE_WANDER
+
+		Tasks
+//			TASK_SET_TOLERANCE_DISTANCE		48
+			TASK_SET_ROUTE_SEARCH_TIME		5	// Spend 5 seconds trying to build a path if stuck
+			TASK_GET_PATH_TO_RANDOM_NODE	200
+			TASK_WALK_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+			TASK_WAIT_PVS					0
+	
+		Interrupts
+			COND_GIVE_WAY
+			COND_HEAR_COMBAT
+			COND_HEAR_DANGER
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_IDLE_INTERRUPT
+End_Schedule
+
+//=========================================================
+// > PATROL_WALK
+//
+// Walk around randomly until we detect an enemy
+//=========================================================
+Schedule
+
+	SCHED_PATROL_WALK
+
+		Tasks
+//			TASK_SET_TOLERANCE_DISTANCE		48
+			TASK_SET_ROUTE_SEARCH_TIME		5	// Spend 5 seconds trying to build a path if stuck
+			TASK_GET_PATH_TO_RANDOM_NODE	200
+			TASK_WALK_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1 
+			COND_CAN_RANGE_ATTACK2 
+			COND_CAN_MELEE_ATTACK1 
+			COND_CAN_MELEE_ATTACK2
+			COND_GIVE_WAY
+			COND_HEAR_COMBAT
+			COND_HEAR_DANGER
+			COND_HEAR_PLAYER
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_SMELL
+			COND_PROVOKED
+End_Schedule
+
+//=========================================================
+// > COMBAT_PATROL
+//=========================================================
+Schedule
+
+	SCHED_COMBAT_PATROL
+
+		Tasks
+			TASK_SET_ROUTE_SEARCH_TIME		5	// Spend 5 seconds trying to build a path if stuck
+			TASK_GET_PATH_TO_RANDOM_NODE	200
+			TASK_WALK_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1 
+			COND_CAN_RANGE_ATTACK2 
+			COND_CAN_MELEE_ATTACK1 
+			COND_CAN_MELEE_ATTACK2
+			COND_GIVE_WAY
+			COND_HEAR_DANGER
+			COND_NEW_ENEMY
+End_Schedule
+
+//=========================================================
+// > RUN_RANDOM
+//=========================================================
+Schedule
+
+	SCHED_RUN_RANDOM
+
+		Tasks
+//			TASK_SET_TOLERANCE_DISTANCE		48
+			TASK_SET_ROUTE_SEARCH_TIME		1	// Spend 1 seconds trying to build a path if stuck
+			TASK_GET_PATH_TO_RANDOM_NODE	500
+			TASK_RUN_PATH					0
+			TASK_WAIT_FOR_MOVEMENT			0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > FALL_TO_GROUND
+//=========================================================
+Schedule
+
+	SCHED_FALL_TO_GROUND
+
+		Tasks
+			TASK_FALL_TO_GROUND				0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > SCHED_DROPSHIP_DUSTOFF
+//		After leaving the dropship, dustoff to your specified point
+//=========================================================
+Schedule
+
+	SCHED_DROPSHIP_DUSTOFF
+
+		Tasks
+			TASK_WALK_PATH			0
+			TASK_WAIT_FOR_MOVEMENT	0
+			TASK_WAIT_PVS			0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// Flinch to protect self from incoming physics object
+//=========================================================
+Schedule
+
+	SCHED_FLINCH_PHYSICS
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_PLAY_SEQUENCE			ACTIVITY:ACT_FLINCH_PHYSICS
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > SCHED_MOVE_AWAY_FROM_ENEMY
+//=========================================================
+Schedule
+
+	SCHED_MOVE_AWAY_FROM_ENEMY
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE					SCHEDULE:SCHED_MOVE_AWAY_FAIL
+			TASK_FACE_ENEMY							0
+			TASK_MOVE_AWAY_PATH						120
+			TASK_RUN_PATH							0
+			TASK_WAIT_FOR_MOVEMENT					0
+			TASK_SET_SCHEDULE						SCHEDULE:SCHED_MOVE_AWAY_END
+	
+		Interrupts
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+End_Schedule
+
+//=========================================================
+// > SCHED_MOVE_AWAY
+//=========================================================
+Schedule
+
+	SCHED_MOVE_AWAY
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE					SCHEDULE:SCHED_MOVE_AWAY_FAIL
+			TASK_MOVE_AWAY_PATH						120
+			TASK_RUN_PATH							0
+			TASK_WAIT_FOR_MOVEMENT					0
+			TASK_SET_SCHEDULE						SCHEDULE:SCHED_MOVE_AWAY_END
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > SCHED_MOVE_AWAY_FAIL
+//=========================================================
+Schedule
+
+	SCHED_MOVE_AWAY_FAIL
+
+		Tasks
+			 TASK_STOP_MOVING						0
+	
+		Interrupts
+End_Schedule
+
+//=========================================================
+// > SCHED_MOVE_AWAY_END (allows derived class to translate to appropriate behavior)
+//=========================================================
+Schedule 
+
+	SCHED_MOVE_AWAY_END
+
+		Tasks
+			 TASK_STOP_MOVING						0
+			 TASK_FACE_REASONABLE					0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_PROVOKED
+			COND_SMELL
+			COND_HEAR_COMBAT		// sound flags
+			COND_HEAR_WORLD
+			COND_HEAR_PLAYER
+			COND_HEAR_DANGER
+			COND_HEAR_BULLET_IMPACT
+			COND_IDLE_INTERRUPT
+End_Schedule
+
+
+//=========================================================
+// > SCHED_WAIT_FOR_SPEAK_FINISH
+//=========================================================
+Schedule  
+
+	SCHED_WAIT_FOR_SPEAK_FINISH
+
+		Tasks
+			TASK_WAIT_FOR_SPEAK_FINISH		0
+	
+		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_FEAR
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_SMELL
+			COND_PROVOKED
+			COND_GIVE_WAY
+			COND_HEAR_DANGER
+			COND_HEAR_COMBAT
+			COND_HEAR_BULLET_IMPACT
+	
+End_Schedule
+
+//=========================================================
+// > SCHED_DODGE_TOWARD_ENEMY
+//=========================================================
+Schedule  
+
+	SCHED_DODGE_TOWARD_ENEMY
+
+		Tasks
+			TASK_GET_PATH_TO_ENEMY	0
+			TASK_SPRINT_PATH_TIMED	2
+			TASK_STOP_MOVING		0
+ 
+	
+		Interrupts
+		 	COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+	
+End_Schedule
+
+//=========================================================
+// > SCHED_DODGE
+//=========================================================
+Schedule
+
+	SCHED_DODGE
+
+		Tasks
+			TASK_STOP_MOVING	0
+			TASK_DODGE			0
+			TASK_DEFER_DODGE	20
+		
+		Interrupts
+			COND_HEAVY_DAMAGE
+End_Schedule
+
+
+//=========================================================
+// > SCHED_STRAFE_DODGE
+//=========================================================
+Schedule
+
+	SCHED_STRAFE_DODGE
+
+		Tasks
+			TASK_STOP_MOVING	0
+			TASK_STRAFE_DODGE	0
+
+		Interrupts
+		
+End_Schedule
+
+
+//=========================================================
+// > SCHED_INTERACTION_MOVE_TO_PARTNER
+//=========================================================
+Schedule  
+
+ SCHED_INTERACTION_MOVE_TO_PARTNER
+
+ 	Tasks
+ 		TASK_GET_PATH_TO_INTERACTION_PARTNER	0
+ 		TASK_FACE_TARGET						0
+ 		TASK_WAIT								1
+ 
+ 	Interrupts
+ 		COND_NO_CUSTOM_INTERRUPTS
+End_Schedule
+
+//=========================================================
+// > SCHED_INTERACTION_WAIT_FOR_PARTNER
+//=========================================================
+Schedule  
+
+ SCHED_INTERACTION_WAIT_FOR_PARTNER
+
+ 	Tasks
+ 		TASK_FACE_TARGET	0
+ 		TASK_WAIT			1
+ 
+ 	Interrupts
+ 		COND_NO_CUSTOM_INTERRUPTS
+End_Schedule
+
+//=========================================================
+// > SCHED_SLEEP
+//=========================================================
+Schedule  
+
+ SCHED_SLEEP
+
+ 	Tasks
+ 		TASK_STOP_MOVING	0
+ 		TASK_WAIT			0.2
+ 
+ 	Interrupts
+ 
+ End_Schedule
+
+
+//=========================================================
+// > SCHED_REACT_SURPRISED
+//=========================================================
+Schedule
+
+	SCHED_REACT_SURPRISED
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_FACE_ENEMY			0
+			TASK_PLAY_SEQUENCE_CHECK_ANIM_PATH		ACTIVITY:ACT_REACT_SURPRISED
+	
+		Interrupts
+			COND_IN_DANGER
+	End_Schedule
+
+//=========================================================
+// > SCHED_REACT_BULLET
+//=========================================================
+Schedule
+
+	SCHED_REACT_BULLET
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_PLAY_SEQUENCE_CHECK_ANIM_PATH		ACTIVITY:ACT_REACT_BULLET
+			TASK_REFRESH_REACT_TO_SOUND				0.5
+	
+		Interrupts
+End_Schedule
+
+
+//=========================================================
+// > SCHED_SIGNAL_ACKNOWLEDGE
+//=========================================================
+ Schedule
+ 
+	SCHED_SIGNAL_ACKNOWLEDGE
+
+ 		Tasks
+			TASK_WAIT_RANDOM				0.7
+ 			TASK_STOP_MOVING				0
+ 			TASK_PLAY_SEQUENCE				ACTIVITY:ACT_SIGNAL_ACKNOWLEDGE
+ 
+ 		Interrupts
+			COND_NEW_ENEMY
+			COND_SEE_ENEMY
+ 			COND_LIGHT_DAMAGE
+ 			COND_HEAVY_DAMAGE
+ 			COND_HEAR_DANGER
+ 			COND_HEAR_MOVE_AWAY
+ End_Schedule
+
+//=========================================================
+// > SCHED_SIGNAL_SALUTE
+//=========================================================
+ Schedule
+ 
+	SCHED_SIGNAL_SALUTE
+
+ 		Tasks
+ 			TASK_STOP_MOVING				2
+			TASK_FACE_PLAYER				0.5
+			TASK_SCRIPTED_DIALOGUE			1	// script enum eCodeDialogType.SALUTE
+ 			TASK_PLAY_SEQUENCE				ACTIVITY:ACT_SIGNAL_SALUTE
+ 
+ 		Interrupts
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_SEE_ENEMY
+ 			COND_LIGHT_DAMAGE
+ 			COND_HEAVY_DAMAGE
+ End_Schedule
+
+
+//=========================================================
+// > SCHED_SIGNAL_FORWARD
+//=========================================================
+ Schedule
+ 
+	SCHED_SIGNAL_FORWARD
+
+ 		Tasks
+ 			TASK_STOP_MOVING				2
+			TASK_FACE_IDEAL					0
+			TASK_SCRIPTED_DIALOGUE			2	// script enum eCodeDialogType.ENEMY_CONTACT
+			TASK_PLAY_SEQUENCE_FACE_ENEMY	ACTIVITY:ACT_SIGNAL_FORWARD
+ 
+ 		Interrupts
+			COND_IN_DANGER
+			COND_VERY_DIFFERENT_NEW_ENEMY
+ 			COND_LIGHT_DAMAGE
+ 			COND_HEAVY_DAMAGE
+ End_Schedule
+
+
+//=========================================================
+// > SCHED_KNOCK_AWAY_PHYS_ENTS
+//=========================================================
+Schedule  
+
+	SCHED_KNOCK_AWAY_PHYS_ENTS
+
+		Tasks
+			TASK_STOP_MOVING			0
+			TASK_FACE_BLOCKING_PHYS_ENT	0
+			TASK_KNOCK_AWAY_PHYS_ENTS	0
+	
+		Interrupts
+	
+End_Schedule
+
+//=========================================================
+// > SCHED_DANGEROUS_CLUSTER_STANDOFF
+//=========================================================
+Schedule
+
+	SCHED_DANGEROUS_CLUSTER_STANDOFF
+
+		Tasks
+			TASK_STOP_MOVING		0
+			TASK_FACE_ENEMY			0
+			TASK_SET_IDLE_ACTIVITY	0
+			TASK_WAIT        		7.5
+	
+		Interrupts
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_MELEE_ATTACK2
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_SEE_ENEMY
+			
+End_Schedule
+

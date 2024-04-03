@@ -1,0 +1,44 @@
+turret_mega
+{
+	DefaultModelName		"models/turrets/turret_imc_lrg.mdl"
+	DefaultWeapon			"mp_weapon_mega_turret"
+
+	FOV_Vert_Offset			-20
+    FOV_Near_Dist			180		// use near values up to this distance
+	FOV_Far_Dist			1000	// use far values after this distance, interpolate horizontal in between, use far for vertical
+
+	FOV_Idle_Near_Horz		180
+	FOV_Idle_Near_Vert		180
+	FOV_Idle_Far_Horz		180
+	FOV_Idle_Far_Vert		180
+
+	FOV_Alert_Near_Horz		180
+	FOV_Alert_Near_Vert		180
+	FOV_Alert_Far_Horz		180
+	FOV_Alert_Far_Vert		180
+
+	FOV_Combat_Near_Horz	180
+	FOV_Combat_Near_Vert	180
+	FOV_Combat_Far_Horz		180
+	FOV_Combat_Far_Vert		180
+
+	YawSpeed				25
+	AimAngularSpeed			25
+
+	meleeable				0
+
+	AIClass					turret
+	BodyType				other
+	ArmorType				heavy
+
+	chasecamDistanceMax		500
+	chasecamMaxOrbitDepth	90
+	chasecamOffsetUp		420
+	chasecamOffsetRight		0
+
+	magneticRange			190
+
+	StartSound				"MegaTurret_Servos_Clunk"
+	PitchSound				"MegaTurret_Servos_Tilt_LP"
+	YawSound				"MegaTurret_Servos_Rotate_LP"
+}

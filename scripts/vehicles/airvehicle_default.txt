@@ -1,0 +1,24 @@
+"airvehicle"
+{
+	"lookaheadTime"			"2.0f"
+
+	"pitchMin"				"-45.0"
+	"pitchMax"				"60.0"
+	"rollMax"				"45.0"
+
+	// Goal tilt
+	"pitchAccelScale"		"0.05"	// How far to pitch (degrees) per unit of acceleration (inches/sec^2)
+	"rollAccelScale"		"0.3"	// How far to roll (degrees) per unit of acceleration (inches/sec^2)
+	"pitchVelScale"			"0.02"	// How far to pitch (degrees) per unit of velocity (inches/sec)
+	"rollVelScale"			"0.02"	// How far to roll (degrees) per unit of velocity (inches/sec)
+
+	// How fast to rotate
+	"tiltSpringForce"		"4.0"
+	"tiltDamping"			"1.0"
+	"yawDamping"			"0.8"
+
+	"rotorSound"			"goblin_hover"
+	"rotorGroundWashSound"	"workerbase_fighter_idle"
+	"gunFiringSound"		"NPC_CombineDropship.FireLoop"
+	"explodeSound"			"NPC_CombineGunship.Explode"
+}

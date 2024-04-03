@@ -1,0 +1,59 @@
+suicidespectre
+{
+	DefaultModelName		"models/robots/spectre/imc_spectre.mdl"
+	DefaultWeapon			"mp_weapon_hemlok"
+
+	FOV_Vert_Offset			0
+    FOV_Near_Dist			150		// distance at which we transition between near and far FOV values
+	FOV_Far_Dist			1000	// use far values after this distance, interpolate horizontal in between, use far for vertical
+
+	FOV_Idle_Near_Horz		220		// 170
+	FOV_Idle_Near_Vert		220		// 60
+	FOV_Idle_Far_Horz		220		// 90
+	FOV_Idle_Far_Vert		220		// 10
+
+	FOV_Alert_Near_Horz		220		// 160
+	FOV_Alert_Near_Vert		220		// 80
+	FOV_Alert_Far_Horz		220		// 100
+	FOV_Alert_Far_Vert		220		// 10
+
+	FOV_Combat_Near_Horz	220		// 160
+	FOV_Combat_Near_Vert	220		// 80
+	FOV_Combat_Far_Horz		220		// 110
+	FOV_Combat_Far_Vert		220		// 15
+
+	YawSpeed				30
+	MoveYawSpeed			15
+	AimAngularSpeed			20
+
+	MeleeDamageMin			120
+	MeleeDamageMax			120
+	MeleeDamageRadius		32
+	meleeImpactEffectTable		"melee_spectre"
+
+	HeavyDamageThresholdAmt		300
+	PainOnRepeatDamageThreshold	1
+	PainOnSurpriseHit		0
+	PainWhileRunning		0
+
+	MinStartMoveDist		100
+	MaxArrivalDist			150
+	MinForceWalkDist		0
+
+	leechable				1
+	showFriendlyIcon		1
+
+	AimAngleBackwardEnd		-120
+	AimAngleForwardStart	-60
+	AimAngleForwardEnd		60
+	AimAngleBackwardStart	120
+
+	AIClass					spectre
+	BodyType				human
+	ArmorType				normal
+
+	aiEnemy_usePriorityDist	1300
+	aiEnemy_priority		10
+
+	magneticRange			125
+}

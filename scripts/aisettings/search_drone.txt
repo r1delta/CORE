@@ -1,0 +1,35 @@
+search_drone
+{
+	DefaultModelName		"models/robots/agp/agp_hemlok.mdl"
+	DefaultWeapon			""
+	
+	// TEMP for now, make them basically blind unless you're right in front of them
+	
+	FOV_Vert_Offset			0
+    FOV_Near_Dist			1500	// use near values up to this distance
+	FOV_Far_Dist			2000	// use far values after this distance, interpolate horizontal in between, use far for vertical
+    
+	FOV_Idle_Near_Horz		50
+	FOV_Idle_Near_Vert		30
+	FOV_Idle_Far_Horz		20
+	FOV_Idle_Far_Vert		10
+	
+	FOV_Alert_Near_Horz		50
+	FOV_Alert_Near_Vert		30
+	FOV_Alert_Far_Horz		20
+	FOV_Alert_Far_Vert		10
+	
+	FOV_Combat_Near_Horz	50
+	FOV_Combat_Near_Vert	30
+	FOV_Combat_Far_Horz		20
+	FOV_Combat_Far_Vert		10
+	
+	YawSpeed				45
+	MoveYawSpeed			15
+	AimAngularSpeed			20
+
+	magneticRange			90
+
+	AIClass					flyingdrone
+	BodyType				flyingdrone
+}

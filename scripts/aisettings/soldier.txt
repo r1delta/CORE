@@ -1,0 +1,54 @@
+soldier
+{
+	DefaultModelName		"models/humans/imc_grunt/battle_rifle/imc_grunt_battle_rifle.mdl"
+	DefaultWeapon			"mp_weapon_rspn101"
+
+	FOV_Vert_Offset			0
+    FOV_Near_Dist			150		// distance at which we transition between near and far FOV values
+	FOV_Far_Dist			1000	// use far values after this distance, interpolate horizontal in between, use far for vertical
+
+	FOV_Idle_Near_Horz		170
+	FOV_Idle_Near_Vert		60
+	FOV_Idle_Far_Horz		90
+	FOV_Idle_Far_Vert		10
+
+	FOV_Alert_Near_Horz		160
+	FOV_Alert_Near_Vert		80
+	FOV_Alert_Far_Horz		100
+	FOV_Alert_Far_Vert		10
+
+	FOV_Combat_Near_Horz	160
+	FOV_Combat_Near_Vert	80
+	FOV_Combat_Far_Horz		110
+	FOV_Combat_Far_Vert		15
+
+	YawSpeed				35
+	MoveYawSpeed			30
+	AimAngularSpeed			20
+
+	MeleeDamageMin			100
+	MeleeDamageMax			100
+	MeleeDamageRadius		32
+
+	HeavyDamageThresholdAmt		60
+	PainOnRepeatDamageThreshold	0.7
+	PainOnSurpriseHit		1
+
+	MinStartMoveDist		100
+	MaxArrivalDist			150
+	MinForceWalkDist		150
+
+	showFriendlyIcon		1
+
+	AimAngleBackwardEnd		-120
+	AimAngleForwardStart	-60
+	AimAngleForwardEnd		60
+	AimAngleBackwardStart	120
+
+	AIClass					human
+	BodyType				human
+	ArmorType				normal
+
+	aiEnemy_usePriorityDist	1000
+	aiEnemy_priority		10
+}

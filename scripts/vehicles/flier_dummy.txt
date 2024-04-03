@@ -1,0 +1,18 @@
+"airvehicle"
+{
+	"lookaheadTime"			"1.0f"
+
+	"pitchMin"				"-30.0"
+	"pitchMax"				"30.0"
+	"rollMax"				"65.0"
+
+	"pitchAccelScale"		"0.5"
+	"rollAccelScale"		"0.5"
+	"pitchVelScale"			"0.1"
+	"rollVelScale"			"0.1"
+
+	"rotorSound"			"Default.Null"
+	"rotorGroundWashSound"	"Default.Null"
+	"gunFiringSound"		"Default.Null"
+	"explodeSound"			"Default.Null"
+}

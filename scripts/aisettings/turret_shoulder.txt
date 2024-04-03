@@ -1,0 +1,33 @@
+turret_shoulder
+{
+	DefaultModelName		"models/weapons/sentry_turret.mdl"
+	DefaultWeapon			"mp_weapon_yh803_bullet"
+
+	FOV_Vert_Offset			-20
+    FOV_Near_Dist			180		// use near values up to this distance
+	FOV_Far_Dist			1000	// use far values after this distance, interpolate horizontal in between, use far for vertical
+
+	FOV_Idle_Near_Horz		180
+	FOV_Idle_Near_Vert		180
+	FOV_Idle_Far_Horz		180
+	FOV_Idle_Far_Vert		180
+
+	FOV_Alert_Near_Horz		180
+	FOV_Alert_Near_Vert		180
+	FOV_Alert_Far_Horz		180
+	FOV_Alert_Far_Vert		180
+
+	FOV_Combat_Near_Horz	180
+	FOV_Combat_Near_Vert	180
+	FOV_Combat_Far_Horz		180
+	FOV_Combat_Far_Vert		180
+
+	YawSpeed				360
+	AimAngularSpeed			360
+
+	meleeable				0
+
+	AIClass					turret
+	BodyType				other
+	ArmorType				heavy
+}

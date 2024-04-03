@@ -1,0 +1,20 @@
+classes
+{
+	import	soldier.txt
+	import	soldier_daytime.txt
+	import	fireteam_soldier.txt
+	import 	training_sentry_soldier.txt
+	import	marvin.txt
+	import	titan.txt
+	import	titan_sp.txt
+	import	big_turret.txt
+	import	big_turret2.txt
+	import	turret_sentry.txt
+	import	turret_mega.txt
+	import	turret_mega_bb.txt
+	import	search_drone.txt
+	import	spectre.txt
+	import	suicidespectre.txt
+	import	vehicle.txt
+	import	turret_shoulder.txt
+}

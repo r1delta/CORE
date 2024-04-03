@@ -1,0 +1,207 @@
+
+Schedule 
+
+	SCHED_MOVE_TO_RALLY_POINT
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE					SCHEDULE:SCHED_ASSAULT_FAILED_TO_MOVE
+			TASK_GET_PATH_TO_RALLY_POINT			0
+			TASK_RUN_PATH							0
+			TASK_WAIT_FOR_MOVEMENT					0
+			TASK_STOP_MOVING						0
+			TASK_FACE_RALLY_POINT					0
+			TASK_HIT_RALLY_POINT					0
+			TASK_SET_SCHEDULE						SCHEDULE:SCHED_HOLD_RALLY_POINT
+		
+		Interrupts
+			COND_HEAR_DANGER
+			COND_PROVOKED
+			COND_NO_PRIMARY_AMMO
+			COND_PLAYER_PUSHING
+			COND_CAN_MELEE_ATTACK1
+			COND_PATH_INVOLVES_DANGEROUS_CLUSTER
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule
+
+	SCHED_ASSAULT_FAILED_TO_MOVE
+
+		Tasks
+			TASK_ASSAULT_DEFER_SCHEDULE_SELECTION	1
+		
+		Interrupts
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule
+
+	SCHED_FAIL_MOVE_TO_RALLY_POINT
+
+		Tasks
+			TASK_WAIT			1
+		
+		Interrupts
+			COND_HEAR_DANGER
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+End_Schedule
+
+
+
+//=========================================================
+//=========================================================
+Schedule 
+
+SCHED_HOLD_RALLY_POINT
+
+	Tasks
+		TASK_FACE_RALLY_POINT					0
+		TASK_AWAIT_CUE							0
+		TASK_WAIT_ASSAULT_DELAY					0
+	
+	Interrupts
+		COND_VERY_DIFFERENT_NEW_ENEMY
+		COND_CAN_RANGE_ATTACK1
+		COND_CAN_MELEE_ATTACK1
+		COND_LIGHT_DAMAGE
+		COND_HEAVY_DAMAGE
+		COND_PLAYER_PUSHING
+		COND_IN_DANGER
+		COND_HEAR_DANGER
+		COND_HEAR_BULLET_IMPACT
+		COND_NO_PRIMARY_AMMO
+		COND_TOO_CLOSE_TO_ATTACK
+End_Schedule
+
+
+//=========================================================
+//=========================================================
+Schedule 
+
+	SCHED_HOLD_ASSAULT_POINT
+
+		Tasks
+			TASK_HIT_ASSAULT_POINT		0
+			TASK_FACE_ASSAULT_POINT		0
+			TASK_SET_IDLE_ACTIVITY		0
+			TASK_WAIT					3
+	
+		Interrupts
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_ENEMY_DEAD
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_TOO_CLOSE_TO_ATTACK
+			COND_LOST_ENEMY
+			COND_HEAR_DANGER
+			COND_IN_DANGER
+			COND_HEAR_BULLET_IMPACT
+			COND_NO_PRIMARY_AMMO
+			COND_REACT_FRIENDLY_PLAYER
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule 
+
+	SCHED_MOVE_TO_ASSAULT_POINT
+
+		Tasks
+			TASK_SET_FAIL_SCHEDULE					SCHEDULE:SCHED_ASSAULT_FAILED_TO_MOVE
+			TASK_GATHER_CONDITIONS					0
+			TASK_GET_PATH_TO_ASSAULT_POINT			0
+			TASK_SET_ADJUST_MOVE_SPEED_TO_SQUAD		1
+			TASK_SCRIPTED_DIALOGUE					5 // eCodeDialogueID.MOVE_TO_ASSAULT
+			TASK_RUN_PATH							0
+			TASK_WAIT_FOR_MOVEMENT					0
+			TASK_FACE_ASSAULT_POINT					0
+			TASK_HIT_ASSAULT_POINT					0
+		
+		Interrupts
+			COND_SQUAD_TAKING_POSITION
+			COND_NO_PRIMARY_AMMO
+			COND_HEAR_DANGER
+			COND_IN_DANGER
+			COND_REACT_FRIENDLY_PLAYER
+			COND_CAN_MELEE_ATTACK1
+			COND_PATH_INVOLVES_DANGEROUS_CLUSTER
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule 
+
+SCHED_AT_ASSAULT_POINT
+
+	Tasks
+		TASK_FACE_ASSAULT_POINT					0
+		TASK_HIT_ASSAULT_POINT					0
+	
+	Interrupts
+		COND_NO_PRIMARY_AMMO
+		COND_HEAR_DANGER
+		COND_IN_DANGER
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule 
+
+	SCHED_WAIT_AND_CLEAR
+
+		Tasks
+			TASK_FACE_ASSAULT_POINT		0
+			TASK_RELOAD					0.4
+			TASK_SET_IDLE_SCAN_ACTIVITY	0
+			TASK_AWAIT_ASSAULT_TIMEOUT	0
+			TASK_ANNOUNCE_CLEAR			0
+		
+		Interrupts
+			COND_VERY_DIFFERENT_NEW_ENEMY
+			COND_LIGHT_DAMAGE
+			COND_HEAVY_DAMAGE
+			COND_CAN_RANGE_ATTACK1
+			COND_CAN_MELEE_ATTACK1
+			COND_CAN_RANGE_ATTACK2
+			COND_CAN_MELEE_ATTACK2
+			COND_IN_DANGER
+			COND_HEAR_DANGER
+			COND_HEAR_BULLET_IMPACT
+			COND_LOS_TO_ENEMY_LKP
+			COND_TOO_CLOSE_TO_ATTACK
+			COND_NOT_FACING_ATTACK
+			COND_PLAYER_PUSHING
+			COND_REACT_FRIENDLY_PLAYER
+			COND_SQUAD_TAKING_POSITION
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule 
+
+	SCHED_CLEAR_ASSAULT_POINT
+
+		Tasks
+			TASK_ANNOUNCE_CLEAR			0
+		
+		Interrupts
+End_Schedule
+
+//=========================================================
+//=========================================================
+Schedule 
+
+	SCHED_ASSAULT_MOVE_AWAY
+
+		Tasks
+			TASK_MOVE_AWAY_PATH						120
+			TASK_RUN_PATH							0
+			TASK_WAIT_FOR_MOVEMENT					0
+		
+		Interrupts
+End_Schedule
