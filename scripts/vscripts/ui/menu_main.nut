@@ -448,14 +448,14 @@ function UpdateDatacenterInfo()
 
 function UpdateMOTD()
 {
-	OnThreadEnd(
-		function() : ()
-		{
-			HideMOTD()
-		}
-	)
+	// OnThreadEnd(
+	// 	function() : ()
+	// 	{
+	// 		HideMOTD()
+	// 	}
+	// )
 
-	file.motdMessage.SetText( "R1Delta release just a week away!" )
+	file.motdMessage.SetText( "Put some insightful patch notes here \n\nSuch as: \n* wanderer stinks" )
 	ShowMOTD()
 }
 

@@ -217,7 +217,7 @@ resource/ui/menus/main.menu
 			ypos					-10
 			wide					307
 			tall 					20
-			labelText				"#MOTD_TITLE"
+			labelText				"Patch Notes"
 			font					MOTDTitleFont
 			allcaps					1
 			visible					0
