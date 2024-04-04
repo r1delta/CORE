@@ -1,2 +1,3 @@
 !/addons/*/.gitkeep
 /addons/*/
+net_stats_per_frame.txt
