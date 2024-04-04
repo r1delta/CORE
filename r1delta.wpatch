@@ -201,3 +201,5 @@ engine_r1o.dll,text,0x28E4D0,48,C3
 ; don't reload materials in FileSystem_UpdateAddonSearchPaths
 ; (it's broken in resource :( )
 engine.dll,text,0x127F37,48 8B,EB 0E
+; matsystem KeyValues::LoadFromFile: patch special case on cache read failure for vmts
+materialsystem_dx11.dll,text,0x111DFF,74,EB
