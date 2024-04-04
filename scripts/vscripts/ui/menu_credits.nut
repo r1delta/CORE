@@ -878,6 +878,7 @@ function InitPeople()
 
     AddDepartment( "deltacontrib", "R1Delta Contributors" )
     AddNameOnly( "deltacontrib", "MrSteyk" )
+	AddNameOnly( "deltacontrib", "PANCHO7532" )
 
 //============================
 //	EXECUTIVE

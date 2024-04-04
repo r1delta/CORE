@@ -27,6 +27,7 @@
 		DispatchSpawn( level.ent, true )
     	IncludeFile( "_flag" )
 		IncludeFile( "_flags_shared" ) // flags shared by sp and mp
+		IncludeFile( "addon/_addonapi.nut" )
 		FlagInit( "EntitiesDidLoad" )
 		FlagInit( "PlayerDidSpawn" )
 		IncludeFile( "mp/_anim" )

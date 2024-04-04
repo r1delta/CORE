@@ -4,6 +4,8 @@ function main()
 	Globalize( InitMainMenu )
 	Globalize( OnOpenMainMenu )
 	Globalize( DataCenterDialog )
+
+	PrecacheHUDMaterial( "../ui/menu/r1delta/icon" )
 }
 
 function InitMainMenu( menu )
@@ -31,6 +33,8 @@ function InitMainMenu( menu )
 	AddEventHandlerToButton( menu, "DatacenterPC", UIE_CLICK, Bind( DataCenterDialog ) )
 	file.datacenterPC <- menu.GetChild( "DatacenterPC" )
 	file.datacenterPC.EnableKeyBindingIcons()
+
+	AddEventHandlerToButton( menu, "AddonsMenuButton", UIE_CLICK, Bind( OnAddonButton_Activate ))
 
 	file.motdMessage <- menu.GetChild( "MOTDMessage" )
 	file.motdTitle <- menu.GetChild( "MOTDTitle" )
@@ -143,7 +147,8 @@ function ShowMainMenu()
 		file.buttonData.append( { name = "#DLC_STORE", activateFunc = Bind( OnStoreButton_Activate ), updateFunc = Bind( ThreadUpdateStoreButton ), isNew = true } )
 
 	if ( IsIntroViewed() )
-		file.buttonData.append( { name = "HOST", activateFunc = Bind( ThreadOnIntroButton_Activate ) } )
+		file.buttonData.append( { name = "HOST", activateFunc = Bind( OnHostButtonActivate ) } )
+	file.buttonData.append( { name = "#FIND_MATCH", activateFunc = Bind( OnFindMatchButton_Activate ) } )
 	file.buttonData.append( { name = "#OPTIONS", activateFunc = Bind( OnOptionsButton_Activate ) } )
 	file.buttonData.append( { name = "#CREDITS", activateFunc = Bind( ThreadOnCreditsButton_Activate ) } )
 	if ( !Durango_IsDurango() )
@@ -445,14 +450,14 @@ function UpdateDatacenterInfo()
 
 function UpdateMOTD()
 {
-	OnThreadEnd(
-		function() : ()
-		{
-			HideMOTD()
-		}
-	)
+	// OnThreadEnd(
+	// 	function() : ()
+	// 	{
+	// 		HideMOTD()
+	// 	}
+	// )
 
-	file.motdMessage.SetText( "R1Delta release just a week away!" )
+	file.motdMessage.SetText( "Put some insightful patch notes here \n\nSuch as: \n* wanderer stinks" )
 	ShowMOTD()
 }
 
@@ -482,21 +487,36 @@ function OnPlayButton_Activate()
 		thread StartMatchmakingIntoEmptyServer( "" )
 }
 
-function ThreadOnIntroButton_Activate()
+function OnHostButtonActivate()
 {
-	thread OnIntroButton_Activate()
+	local desc 			= "Are you sure?"
+	local confirmText 	= "#YES"
+
+	local buttonData = []
+	buttonData.append( { name = confirmText, func = OnHostButtonDialogActivate } )
+	buttonData.append( { name = "#NO", func = null } )
+
+	local dialogData = {}
+	dialogData.header <- "Create Lobby"
+	dialogData.detailsMessage <- desc
+	dialogData.buttonData <- buttonData
+
+	OpenChoiceDialog( dialogData )
 }
 
-function OnIntroButton_Activate()
+function OnHostButtonDialogActivate()
 {
-	wait 0.2; // just so the sound plays
-
 	ClientCommand("launchplaylist private_match; map mp_lobby")
 }
 
 function OnOptionsButton_Activate()
 {
 	AdvanceMenu( GetMenu( "OptionsMenu" ) )
+}
+
+function OnFindMatchButton_Activate()
+{
+	AdvanceMenu( GetMenu( "ServerBrowserMenu" ) )
 }
 
 function ThreadOnCreditsButton_Activate()
@@ -621,4 +641,9 @@ function EULA_Decline()
 {
 	Durango_GoToSplashScreen()
 	uiGlobal.showingEULA = false
+}
+
+function OnAddonButton_Activate( button )
+{
+	AdvanceMenu( GetMenu( "AddonsMenu" ) )
 }
