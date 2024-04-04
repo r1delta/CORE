@@ -34,6 +34,8 @@ function InitMainMenu( menu )
 	file.datacenterPC <- menu.GetChild( "DatacenterPC" )
 	file.datacenterPC.EnableKeyBindingIcons()
 
+	AddEventHandlerToButton( menu, "AddonsMenuButton", UIE_CLICK, Bind( OnAddonButton_Activate ))
+
 	file.motdMessage <- menu.GetChild( "MOTDMessage" )
 	file.motdTitle <- menu.GetChild( "MOTDTitle" )
 	file.motdBox <- menu.GetChild( "MOTDBox" )
@@ -639,4 +641,9 @@ function EULA_Decline()
 {
 	Durango_GoToSplashScreen()
 	uiGlobal.showingEULA = false
+}
+
+function OnAddonButton_Activate( button )
+{
+	AdvanceMenu( GetMenu( "AddonsMenu" ) )
 }

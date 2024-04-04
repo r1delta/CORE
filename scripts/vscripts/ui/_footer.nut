@@ -290,6 +290,17 @@ function UpdateFooterButtons( menuName = null )
             footerData.pc.append( { label = "Direct Connect", func = OpenDirectConnectDialog_Activate } )
             break
 
+		case "AddonsMenu":
+			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
+			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
+
+            footerData.gamepad.append( { label = "#%[A_BUTTON]% ^798B9800Reload Paths" } )
+            footerData.pc.append( { label = "Reload Paths", func = UpdateAddonPaths } )
+
+			footerData.gamepad.append( { label = "%[X_BUTTON]% ^798B9800Reset UI" } )
+            footerData.pc.append( { label = "Reset UI", func = ResetUIScript } )
+			break
+
 		case "OptionsMenu":
 		case "GamepadControlsMenu":
 		case "GamepadLayoutMenu":

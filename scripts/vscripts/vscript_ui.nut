@@ -41,6 +41,7 @@ IncludeScript( "ui/_loadout_shared" )
 IncludeFile( "ui/menu_image_walk_through" )
 IncludeFile( "ui/menu_main" )
 IncludeFile( "ui/menu_serverbrowser" )
+IncludeFile( "ui/menu_addons")
 IncludeFile( "ui/menu_options" )
 IncludeFile( "ui/menu_black_market_main" )
 IncludeFile( "ui/menu_black_market" )
@@ -982,6 +983,7 @@ function InitMenus()
 	AddMenu( "ModesMenu", "resource/ui/menus/mode_select.menu" )
 	AddMenu( "MatchSettingsMenu", "resource/ui/menus/match_settings.menu" )
 	AddMenu( "ServerBrowserMenu", "resource/ui/menus/server_browser.menu", "#FIND_MATCH" )
+	AddMenu( "AddonsMenu", "resource/ui/menus/addons.menu", "ADDONS" )
 
 
 	AddMenu( "BlackMarketMenu", "resource/ui/menus/blackMarket.menu", "#SHOP_TITLE" )
@@ -1061,6 +1063,8 @@ function InitMenus()
 	InitMainMenu( GetMenu( "MainMenu" ) )
 
 	InitServerBrowserMenu( GetMenu( "ServerBrowserMenu" ) )
+
+	InitAddonsMenu( GetMenu( "AddonsMenu" ) )
 
 	// Intro
 	InitIntroMenu( GetMenu( "IntroMenu" ) )
