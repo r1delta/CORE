@@ -235,7 +235,7 @@ function ClientCommand_LeaveMatchWithParty( player, ... )
 	foreach ( player in players )
 		printt( "=== Party member:", player.GetPlayerName() )
 
-	SendPlayersToPartyScreen( players )
+	//SendPlayersToPartyScreen( players )
 
 	return true
 }
@@ -245,7 +245,7 @@ function ClientCommand_LeaveMatchSolo( player, ... )
 	printt( "=== SendPlayersToPartyScreen() initiated by:", player.GetPlayerName() )
 	printt( "=== Solo player:", player.GetPlayerName() )
 
-	SendPlayersToPartyScreen( [ player ] )
+	//SendPlayersToPartyScreen( [ player ] )
 
 	return true
 }
