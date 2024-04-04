@@ -1,0 +1,260 @@
+resource/ui/menus/server_browser.menu
+{
+	ServerBrowserMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		NextMapImage
+		{
+			ControlName				ImagePanel
+			xpos 					r532
+			ypos					74
+			wide					493
+			tall					186
+			visible					1
+			scaleImage				1
+			image					""
+		}
+		NextMapImageFrame
+		{
+			ControlName				ImagePanel
+			pin_to_sibling			NextMapImage
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			wide					493
+			tall					186
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_image_frame"
+		}
+
+		NextMapName
+		{
+			ControlName				Label
+			pin_to_sibling			NextMapImage
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-11
+			ypos					-9
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			font					NextMapFont
+			allcaps					1
+			fgcolor_override		"204 234 255 255"
+		}
+
+		NextMapDesc
+		{
+			ControlName				Label
+			pin_to_sibling			NextMapName
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					0
+			ypos					0
+			wide					471
+			wrap					1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			textalignment			north-west
+			font					NextGameModeFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+		}
+
+		StarsLabel
+		{
+			ControlName				Label
+			classname 				StarsLabelKeyboard
+			xpos					-11
+			ypos					60
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					0
+			labelText				"#MAP_STARS_HEADER_KEYBOARD"
+			font					WinStreakHeaderFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+			pin_to_sibling			NextMapImage
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+
+		MapStar2
+		{
+			ControlName				ImagePanel
+			classname 				MapStar2
+			xpos					-11
+			ypos					76
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+			pin_to_sibling			NextMapImage
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+
+		MapStar1
+		{
+			ControlName				ImagePanel
+			classname 				MapStar1
+			xpos 					0
+			ypos					0
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+			pin_to_sibling			MapStar2
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	7
+		}
+
+		MapStar0
+		{
+			ControlName				ImagePanel
+			classname 				MapStar0
+			xpos 					0
+			ypos					0
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+			pin_to_sibling			MapStar1
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	7
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			classname 				LobbyTitleClass
+			labelText				"#FIND_MATCH"
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		MapButtonsPanel
+		{
+			ControlName				CNestedPanel
+			xpos					30
+			ypos					94
+			zpos					200
+			wide					300
+			tall					306
+			visible					1
+			controlSettingsFile		"resource/UI/menus/map_buttons.res"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		PCScrollUpButton
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonUp
+			classname					MapListScrollUpClass
+
+			pin_to_sibling				MapButtonsPanel
+			pin_corner_to_sibling		6
+			pin_to_sibling_corner		4
+
+			ypos						-2
+
+			navUp						MapButton23
+			navDown						MapButton0
+		}
+
+		PCScrollDownButton
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonDown
+			classname 					MapListScrollDownClass
+
+			pin_to_sibling				MapButtonsPanel
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+
+			ypos						-18
+
+			navUp						MapButton23
+			navDown						MapButton0
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ButtonTooltip
+		{
+			ControlName				CNestedPanel
+			InheritProperties		ButtonTooltip
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}
