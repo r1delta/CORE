@@ -4,6 +4,8 @@ function main()
 	Globalize( InitMainMenu )
 	Globalize( OnOpenMainMenu )
 	Globalize( DataCenterDialog )
+
+	PrecacheHUDMaterial( "../ui/menu/r1delta/icon" )
 }
 
 function InitMainMenu( menu )
