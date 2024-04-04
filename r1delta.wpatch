@@ -203,3 +203,5 @@ engine_r1o.dll,text,0x28E4D0,48,C3
 engine.dll,text,0x127F37,48 8B,EB 0E
 ; matsystem KeyValues::LoadFromFile: patch special case on cache read failure for vmts
 materialsystem_dx11.dll,text,0x111DFF,74,EB
+; patch out "Can't send client command; not connected to a server" sq error
+client.dll,text,0x2DB33B,75,EB
