@@ -208,3 +208,10 @@ client.dll,text,0x2DB33B,75,EB
 ; remove CVEngineServer::SendPlayersToPartyScreen
 engine.dll,text,0xFDD60,48,C3
 engine.dll,text,0xFDE20,48,C3
+; remove "too many cmds for player" kick
+server.dll,text,0x14A1B4,0F,66 0F 1F 44 00 00
+; remove clc_move clamp (it's better to throw an error if it overflows)
+engine.dll,text,0x59D04,41 3B C7,90 90 90 90 90 90 90
+; change tickinterval to 30 to fix vphys
+;server.dll,rdata,0x9E9EC0,89 88 88 3C,80 88 08 3d
+vphysics.dll,rdata,0x1A0D90,10 3E 78 3C,89 88 88 3C
