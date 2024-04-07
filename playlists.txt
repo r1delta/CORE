@@ -1,7 +1,7 @@
 "playlists"
 {
 	"version"	"stable"
-	"versionNum"	"1922"
+	"versionNum"	"1923" // Never forget to bump this for every playlist update.
 	"at"
 	{
 		"vars"
@@ -1159,8 +1159,8 @@
 			"cinematic_mode"	"0"
 			"AT_scorelimit"	"300"
 			"run_evac"	"0"
-			"riff_spawn_as_titan"	"0"
-			"riff_titan_availability"	"0"
+			"riff_spawn_as_titan"	"2" // eSpawnAsTitan.Once
+			"riff_titan_availability"	"3" // eTitanAvailability.Never
 			"riff_allow_npcs"	"0"
 			"campaign_matchmaking"	"0"
 			"spectre_kill_credit"	"9"
@@ -1176,7 +1176,7 @@
 			"riff_minimap_state"	"0"
 			"riff_osp"	"0"
 			"riff_ammo_limit"	"0"
-			"riff_elimination"	"0"
+			"riff_elimination"	"3" // eEliminationMode.PilotsTitans
 			"xp_modifier"	"1"
 			"force_quick_play"	"0"
 			"campaign_search_expand_enabled"	"1"
@@ -1312,8 +1312,8 @@
 			"cinematic_mode"	"0"
 			"AT_scorelimit"	"300"
 			"run_evac"	"0"
-			"riff_spawn_as_titan"	"0"
-			"riff_titan_availability"	"0"
+			"riff_spawn_as_titan"	"2" // eSpawnAsTitan.Once
+			"riff_titan_availability"	"3" // eTitanAvailability.Never
 			"riff_allow_npcs"	"0"
 			"campaign_matchmaking"	"0"
 			"spectre_kill_credit"	"9"
@@ -1329,7 +1329,7 @@
 			"riff_minimap_state"	"0"
 			"riff_osp"	"0"
 			"riff_ammo_limit"	"0"
-			"riff_elimination"	"0"
+			"riff_elimination"	"3" // eEliminationMode.PilotsTitans
 			"xp_modifier"	"1"
 			"force_quick_play"	"0"
 			"campaign_search_expand_enabled"	"1"

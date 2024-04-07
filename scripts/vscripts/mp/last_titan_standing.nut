@@ -24,9 +24,10 @@ function EntitiesDidLoad()
 {
 	// HACK: Somewhere, for some reason, these specific server vars can't be overridden, this will force them in a nasty way.
 	//       It should do the job until eventually we find why it behaves like this.
-	ServerCommand("script (level.nv.spawnAsTitan = eSpawnAsTitan.Once)") // Spawn with a titan only once. If we force this too late, we wont spawn with a titan for the first round.
-	ServerCommand("script (level.nv.titanAvailability = eTitanAvailability.Never)") // No new titans
-	ServerCommand("script (level.nv.eliminationMode = eEliminationMode.PilotsTitans)") // Can eliminate both Pilots and Titans?
+	// EDIT: Now should be properly overriden on playlists.txt... for now
+	//ServerCommand("script (level.nv.spawnAsTitan = eSpawnAsTitan.Once)") // Spawn with a titan only once. If we force this too late, we wont spawn with a titan for the first round.
+	//ServerCommand("script (level.nv.titanAvailability = eTitanAvailability.Never)") // No new titans
+	//ServerCommand("script (level.nv.eliminationMode = eEliminationMode.PilotsTitans)") // Can eliminate both Pilots and Titans?
 	SetupAssaultPointKeyValues()
 	thread SetupTeamDeathmatchNPCs()
 }
