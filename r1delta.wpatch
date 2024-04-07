@@ -214,7 +214,5 @@ server.dll,text,0x14A1B4,0F,66 0F 1F 44 00 00
 engine.dll,text,0x59D04,41 3B C7,90 90 90 90 90 90 90
 ; change tickinterval to 30 to fix vphys
 ;server.dll,rdata,0x9E9EC0,89 88 88 3C,80 88 08 3d
-; fix grenades by forcing BVH TriCol to be applied even if distance is greater than 120 (hardcoded constant for lower tickrate)
-vphysics.dll,text,0xEF904,7E,EB
-; ok you caught me I have no idea what this does
-vphysics.dll,text,0xEF911,74 12,90 90
+; prevent mindist deletion
+vphysics.dll,text,0xCF141,74 2A,90 90
