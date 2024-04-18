@@ -230,3 +230,10 @@ server.dll,text,0x368527,C1 E8 1C A8 01 74,C1 E8 1C A8 01 90 90
 server.dll,text,0x368578,C1 E8 1C A8 01 74,C1 E8 1C A8 01 90 90
 ; remove weird CVarBitVec stuff, this table is unused in later tfo builds
 ; server.dll,text,0x36AA58,45 09 04 12,EB 20 90 90
+; patch out CCvar::UnregisterConCommands, we don't need it and it causes a crash on exit
+vstdlib.dll,text,0xA960,48,C3
+; imply -listenServer
+engine.dll,text,0x1A00F4,74 1E,90 90
+engine.dll,text,0x198D23,0F 84 E3 00 00 00,90 90 90 90 90 90
+; don't set gameconsole parent to gameui panel
+engine.dll,text,0x220203,FF 53 30,90 90 90

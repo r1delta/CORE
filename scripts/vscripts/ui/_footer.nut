@@ -429,7 +429,8 @@ function UpdateFooters( footerData )
 		local activeGamepadFooterButtons = GetElementsByClassname( uiGlobal.activeMenu, "GamepadFooterButtonClass" )
 		foreach ( button in activeGamepadFooterButtons )
 		{
-			local index = button.GetScriptID().tointeger()
+                        if (typeof(button) == "string") { continue; }
+ 			local index = button.GetScriptID().tointeger()
 
 			if ( index < footerData.gamepad.len() )
 			{
@@ -453,6 +454,7 @@ function UpdateFooters( footerData )
 		local activePCFooterButtons = GetElementsByClassname( uiGlobal.activeMenu, "PCFooterButtonClass" )
 		foreach ( button in activePCFooterButtons )
 		{
+                        if (typeof(button) == "string") { continue; }
 			local index = button.GetScriptID().tointeger()
 
 			if ( index < footerData.pc.len() )
@@ -575,10 +577,9 @@ function UpdateXboxCanInvite()
 
 		if ( uiGlobal.canXBoxInvite != lastResult )
 		{
-			if ( uiGlobal.canXBoxInvite )
-				RegisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, XboxInviteFriends )
-			else
-				DeregisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, XboxInviteFriends )
+			if ( uiGlobal.canXBoxInvite ) { } //RegisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, XboxInviteFriends )
+			else {}
+				//DeregisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, XboxInviteFriends )
 
 			UpdateFooterButtons()
 		}
@@ -604,10 +605,9 @@ function UpdateXboxCanOpenPartyApp()
 
 		if ( uiGlobal.canXBoxOpenPartyApp != lastResult )
 		{
-			if ( uiGlobal.canXBoxOpenPartyApp )
-				RegisterButtonPressedCallback( BUTTON_TRIGGER_LEFT, XboxOpenPartyApp )
-			else
-				DeregisterButtonPressedCallback( BUTTON_TRIGGER_LEFT, XboxOpenPartyApp )
+			if ( uiGlobal.canXBoxOpenPartyApp ) { } //RegisterButtonPressedCallback( BUTTON_TRIGGER_LEFT, XboxOpenPartyApp )
+			else {}
+				//DeregisterButtonPressedCallback( BUTTON_TRIGGER_LEFT, XboxOpenPartyApp )
 
 			UpdateFooterButtons()
 		}
@@ -635,11 +635,11 @@ function UpdateOriginInvite()
 		{
 			if ( uiGlobal.canOriginInvite )
 			{
-				RegisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, OriginInviteFriends )
+		//		RegisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, OriginInviteFriends )
 			}
 			else
 			{
-				DeregisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, OriginInviteFriends )
+				//DeregisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, OriginInviteFriends )
 			}
 
 			UpdateFooterButtons()
@@ -666,11 +666,11 @@ function UpdatePrivateMatchSwitchTeams()
 		{
 			if ( IsPrivateMatch() )
 			{
-				RegisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
+				//RegisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
 			}
 			else
 			{
-				DeregisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
+				//DeregisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
 			}
 
 			UpdateFooterButtons()
@@ -697,10 +697,9 @@ function UpdateCanSetDataCenter()
 
 		if ( uiGlobal.canSetDataCenter != lastResult )
 		{
-			if ( uiGlobal.canSetDataCenter )
-				RegisterButtonPressedCallback( BUTTON_X, DataCenterDialog )
-			else
-				DeregisterButtonPressedCallback( BUTTON_X, DataCenterDialog )
+			if ( uiGlobal.canSetDataCenter ) { } // RegisterButtonPressedCallback( BUTTON_X, DataCenterDialog ) }
+			else {} 
+				//DeregisterButtonPressedCallback( BUTTON_X, DataCenterDialog )
 		}
 
 		lastResult = uiGlobal.canSetDataCenter
