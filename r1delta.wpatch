@@ -237,3 +237,5 @@ engine.dll,text,0x1A00F4,74 1E,90 90
 engine.dll,text,0x198D23,0F 84 E3 00 00 00,90 90 90 90 90 90
 ; don't set gameconsole parent to gameui panel
 engine.dll,text,0x220203,FF 53 30,90 90 90
+; don't shutdown vgui
+server.dll,text,0x1445fe,FF 50 58,90 90 90
