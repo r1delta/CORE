@@ -457,7 +457,7 @@ function UpdateMOTD()
 	// 	}
 	// )
 
-	file.motdMessage.SetText( "Put some insightful patch notes here \n\nSuch as: \n* wanderer stinks" )
+	file.motdMessage.SetText( "R1Delta is out, woohoo" )
 	ShowMOTD()
 }
 

@@ -200,7 +200,7 @@ resource/ui/menus/server_browser.menu
 			zpos					200
 			wide					300
 			tall					306
-			visible					1
+			visible					0
 			controlSettingsFile		"resource/UI/menus/map_buttons.res"
 		}
 
