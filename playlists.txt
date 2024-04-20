@@ -1,7 +1,7 @@
 "playlists"
 {
 	"version"	"stable"
-	"versionNum"	"1923" // Never forget to bump this for every playlist update.
+	"versionNum"	"1924" // Never forget to bump this for every playlist update.
 	"at"
 	{
 		"vars"
@@ -2411,6 +2411,10 @@
 			"Language" "russian"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"На окраине Деметры между IMC и Ополчением разгорелась масштабная битва."
+				"MP_NEST2"	"Гнездо"
+				"MP_NEST2_CLASSIC_DESC"	"IMC проникает на базу противника, чтобы уничтожить критически важные объекты."
 				"dlc_promo_text"	"Нажмите здесь, чтобы скачать этот набор карт бесплатно!"
 				"dlc_popup_header1"	"Все наборы карт отныне бесплатны"
 				"dlc_popup_header2"	"Загрузите сейчас"
@@ -2464,6 +2468,10 @@
 			"Language" "tchinese"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"IMC與民兵在德墨忒爾郊外爆發了大規模戰鬥。"
+				"MP_NEST2"	"巢"
+				"MP_NEST2_CLASSIC_DESC"	"IMC 滲透到敵方基地摧毀關鍵設施。"
 				"dlc_promo_text"	"按這裡免費下載此地圖包！"
 				"dlc_popup_header1"	"全部地圖包永久免費"
 				"dlc_popup_header2"	"立刻下載"
@@ -2517,6 +2525,10 @@
 			"Language" "japanese"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"デメテル郊外でIMCと民兵の間で大規模な戦闘が勃発した。"
+				"MP_NEST2"	"ネスト"
+				"MP_NEST2_CLASSIC_DESC"	"IMCは重要施設を破壊するため敵基地に潜入する。"
 				"dlc_promo_text"	"ここを押してマップパックを無料ダウンロード！"
 				"dlc_popup_header1"	"全マップパックを完全無料公開"
 				"dlc_popup_header2"	"今すぐダウンロード"
@@ -2570,6 +2582,10 @@
 			"Language" "spanish"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"Una batalla a larga escala se ha desatado entre la IMC y la Milicia en las afueras de Demeter."
+				"MP_NEST2"	"Nido"
+				"MP_NEST2_CLASSIC_DESC"	"La IMC se infiltra en la base enemiga para destruir las instalaciones criticas."
 				"dlc_promo_text"	"¡Pulsa aquí para descargar este pack de mapas gratis!"
 				"dlc_popup_header1"	"Todos los packs de mapas son gratuitos"
 				"dlc_popup_header2"	"Descargar ahora"
@@ -2623,6 +2639,10 @@
 			"Language" "polish"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"Na obrzeżach Demeter wybuchła bitwa na dużą skalę pomiędzy IMC a milicją."
+				"MP_NEST2"	"Gniazdo"
+				"MP_NEST2_CLASSIC_DESC"	"IMC infiltruje bazę wroga, aby zniszczyć krytyczne obiekty."
 				"dlc_promo_text"	"Kliknij, aby pobrać ten pakiet map za darmo!"
 				"dlc_popup_header1"	"Wszystkie paczki map są wolne"
 				"dlc_popup_header2"	"Pobierz teraz"
@@ -2676,6 +2696,10 @@
 			"Language" "italian"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"Una battaglia su larga scala scoppiò tra l'IMC e la Milizia alla periferia di Demetra."
+				"MP_NEST2"	"Nido"
+				"MP_NEST2_CLASSIC_DESC"	"L'IMC si infiltra nella base nemica per distruggere le strutture critiche."
 				"dlc_promo_text"	"Premi qui per scaricare questo pacchetto mappe gratis!"
 				"dlc_popup_header1"	"Tutti i pacchetti mappe sono gratis"
 				"dlc_popup_header2"	"Scarica ora"
@@ -2729,6 +2753,10 @@
 			"Language" "portuguese"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC	"Uma batalha em grande escala eclodiu entre o IMC e a Milícia nos arredores de Deméter."
+				"MP_NEST2"	"Ninho"
+				"MP_NEST2_CLASSIC_DESC"	"O IMC se infiltra na base inimiga para destruir as instalações críticas."
 				"dlc_promo_text"	"Aperte aqui para baixar de graça este pacote de mapas!"
 				"dlc_popup_header1"	"Todos os pacotes de mapas são grátis"
 				"dlc_popup_header2"	"Faça o download agora"
@@ -2782,6 +2810,10 @@
 			"Language" "korean"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"데메테르 외곽에서 IMC와 저항군간의 대규모 함대전이 벌어졌습니다."
+				"MP_NEST2"	"네스트"
+				"MP_NEST2_CLASSIC_DESC "적에게 넘어가서는 안될 중요 시설을 파괴하기 위해 빼앗긴 기지에 IMC가 다시 침투합니다."
 				"dlc_promo_text"	"여기를 눌러 이 맵 팩을 무료로 다운로드하세요!"
 				"dlc_popup_header1"	"모든 맵 팩 무료"
 				"dlc_popup_header2"	"지금 다운로드하세요"
@@ -2835,6 +2867,10 @@
 			"Language" "french"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"Une bataille à grande échelle a éclaté entre l'IMC et la milice à la périphérie de Déméter."
+				"MP_NEST2"	"Nid"
+				"MP_NEST2_CLASSIC_DESC"	"IMC s'infiltre dans la base ennemie pour détruire les installations critiques."
 				"dlc_promo_text"	"Cliquez ici pour télécharger ce pack de cartes gratuitement !"
 				"dlc_popup_header1"	"Tous les packs de carte sont gratuits"
 				"dlc_popup_header2"	"Télécharger"
@@ -2888,6 +2924,10 @@
 			"Language" "english"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"A large-scale battle broke out between the IMC and the Militia on the outskirts of Demeter."
+				"MP_NEST2"	"Nest"
+				"MP_NEST2_CLASSIC_DESC"	"IMC infiltrates into enemy base to destroy the critical facilities."
 				"dlc_promo_text"	"Press here to download this map pack for free!"
 				"dlc_popup_header1"	"All Map Packs are Free Forever"
 				"dlc_popup_header2"	"Download Now"
@@ -2942,6 +2982,10 @@
 			"Language" "german"
 			"Tokens"
 			{
+				"MP_MIA"	"M.I.A"
+				"MP_MIA_CLASSIC_DESC"	"Am Stadtrand von Demeter kam es zu einer groß angelegten Schlacht zwischen dem IMC und der Miliz."
+				"MP_NEST2"	"Nest"
+				"MP_NEST2_CLASSIC_DESC"	"IMC dringt in die feindliche Basis ein, um die kritischen Einrichtungen zu zerstören."
 				"dlc_promo_text"	"Drücke hier, um diesen Kartenpack kostenlos herunterzuladen!"
 				"dlc_popup_header1"	"Alle Kartenpacks sind frei"
 				"dlc_popup_header2"	"Jetzt herunterladen"
