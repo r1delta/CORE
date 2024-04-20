@@ -1008,7 +1008,7 @@
 			"run_evac"	"0"
 			"riff_spawn_as_titan"	"0"
 			"riff_titan_availability"	"0"
-			"riff_allow_npcs"	"0"
+			"riff_allow_npcs"	"1" // eAllowNPCs.None
 			"campaign_matchmaking"	"0"
 			"spectre_kill_credit"	"9"
 			"CTF_scorelimit"	"6"
