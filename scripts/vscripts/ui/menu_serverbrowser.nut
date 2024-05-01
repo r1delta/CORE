@@ -54,6 +54,8 @@ function OnDirectConnectDialogButtonConnect_Activate( button )
 		return
 
     ClientCommand( "connect " + str )
+
+	CloseDialog( true )
 }
 
 function OnDirectConnectDialogButtonCancel_Activate( button )
