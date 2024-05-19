@@ -288,3 +288,8 @@ server.dll,text,0x67A80,4C,C3
 ; in the weapon script but this forces it good enough:tm:
 server.dll,text,0x40F652,40 38 B7 45 11 00,C6 87 45 11 00 00 01
 server.dll,text,0x40F659,75,EB
+
+; steal fov patches from bme 
+engine.dll,rdata,0x6C6D34,66 66 A6 3F,66 66 67 40
+client.dll,rdata,0x9CDB74,66 66 A6 3F,66 66 67 40
+materialsystem_dx11.dll,rdata,0x191734,66 66 A6 3F,66 66 67 40
