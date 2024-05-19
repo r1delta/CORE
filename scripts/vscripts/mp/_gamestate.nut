@@ -935,6 +935,9 @@ function GameRulesThink_WaitingForCustomStart()
 
 function GameRulesThink_WaitingForPlayers()
 {
+	if ( GetDeveloperLevel() == 1 )
+		SetGameState( eGameState.Prematch )
+
 	if ( !DoneWaitingForPlayers() )
 		return
 
