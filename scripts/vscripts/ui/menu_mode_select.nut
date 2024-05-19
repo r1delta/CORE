@@ -147,7 +147,7 @@ function ModeButton_Click( button )
 
         local dialogData = {}
         dialogData.header <- "Create Campaign Lobby?"
-        dialogData.detailsMessage <- "This will create a campaign lobby, this will leave the current private match lobby.\nAre you sure?"
+        dialogData.detailsMessage <- "You will leave the current Private Match."
         dialogData.buttonData <- buttonData
 
         OpenChoiceDialog( dialogData )
