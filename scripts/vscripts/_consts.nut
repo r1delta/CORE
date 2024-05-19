@@ -1594,7 +1594,6 @@ enum ePrivateMatchModes
 	tdm,
 	mfd,
 	ps,
-	ctfp,
 	coop,
 	mfdp,
 	wlts,
