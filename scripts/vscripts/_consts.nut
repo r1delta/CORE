@@ -1593,7 +1593,14 @@ enum ePrivateMatchModes
 	ctf,
 	tdm,
 	mfd,
+	ps,
+	ctfp,
+	coop,
+	mfdp,
+	wlts,
 }
+
+
 
 enum eEventNotifications
 {
