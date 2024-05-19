@@ -879,13 +879,13 @@ function DoneWaitingForPlayers()
 	local connectedPlayers = GetConnectedPlayers()
 	local connectedPlayersCount = connectedPlayers.len()
 
-	// wait for one player to connect
-	if ( connectedPlayersCount < 1 )
-			return false
-
 	// developer 1 skips the remaining script, we can test the rest in developer mode with developer > 1
 	if ( GetDeveloperLevel() == 1 || ( IsPrivateMatch() && IsAnyPlayerMMDebug() ) )
 		return true
+
+	// wait for one player to connect
+	if ( connectedPlayersCount < 1 )
+			return false
 
 	// start failsafe timer
 	if ( level.doneWaitingForPlayersTimeout == 0 )
@@ -935,9 +935,6 @@ function GameRulesThink_WaitingForCustomStart()
 
 function GameRulesThink_WaitingForPlayers()
 {
-	if ( GetDeveloperLevel() == 1 )
-		SetGameState( eGameState.Prematch )
-
 	if ( !DoneWaitingForPlayers() )
 		return
 
