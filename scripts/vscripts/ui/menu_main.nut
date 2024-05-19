@@ -4,6 +4,7 @@ function main()
 	Globalize( InitMainMenu )
 	Globalize( OnOpenMainMenu )
 	Globalize( DataCenterDialog )
+	Globalize( Threaded_CreateLocalServer )
 
 	PrecacheHUDMaterial( "../ui/menu/r1delta/icon" )
 }
@@ -506,6 +507,57 @@ function OnHostButtonActivate()
 
 function OnHostButtonDialogActivate()
 {
+	thread Threaded_CreateLocalServer()
+}
+
+function Threaded_CreateLocalServer()
+{
+	// IMPORTANT: As a safety measure leave any party view we are in at this point.
+	// Otherwise, if you are unlucky enough to get stuck in a party view, you will
+	// trash its state by pointing it to your private lobby.
+	if ( Durango_IsDurango() )
+		Durango_LeaveParty()
+
+	// IMPORTANT: It's possible that you have permission to play multiplayer
+	// because your friend is signed in with his gold account on your machine,
+	// but once that guy signs out, you shouldn't be able to play like you have
+	// xboxlive gold anymore. To fix this, we need to check permissions periodically.
+	// One of the places where we do this periodic check is when you press "PLAY"
+	if ( Durango_IsDurango() )
+		Durango_CheckPermissions()
+
+	Signal( uiGlobal.signalDummy, "OnCancelConnect" )
+	EndSignal( uiGlobal.signalDummy, "OnCancelConnect" )
+
+	uiGlobal.dialogCloseCallback =
+		function( canceled )
+		{
+			Signal( uiGlobal.signalDummy, "OnCancelConnect" )
+
+			uiGlobal.matchmaking = false
+		}
+
+	OpenDialog( GetMenu( "ConfirmDialog" ), "#MATCHMAKING_TITLE_CONNECTING" )
+
+	uiGlobal.ConfirmMenuDetails.SetText( "" )
+	uiGlobal.ConfirmMenuErrorCode.SetText( "" )
+
+	uiGlobal.ConfirmMenuDetails.Show()
+	uiGlobal.ConfirmMenuErrorCode.Show()
+
+	if ( Origin_IsEnabled() )
+	{
+		Origin_RequestTicket()
+		uiGlobal.ConfirmMenuDetails.SetText( "#WAITING_FOR_ORIGIN" )
+
+		while ( !Origin_IsReady() )
+			wait 0
+	}
+
+	uiGlobal.matchmaking = true
+
+	uiGlobal.ConfirmMenuDetails.SetText( "Connecting to local server" )
+	
 	ClientCommand("launchplaylist private_match; map mp_lobby")
 }
 

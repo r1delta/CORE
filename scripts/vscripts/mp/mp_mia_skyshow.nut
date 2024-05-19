@@ -12,6 +12,8 @@ const SFX_CARRIER_WARPOUT				= "O2_Scr_MegaCarrier_Warpout"
 const SFX_REDEYE_WARPOUT				= "O2_Scr_Redeye_Warpout"
 const SFX_REDEYE_CRIT_DAMAGE			= "O2_Redeye_CriticalDamage"
 
+const MIA_DEV_DISABLE_SKYSHOW			= false
+
 PrecacheParticleSystem( FX_REDEYE_CRITICAL_HIT_EXPLOSION )
 PrecacheParticleSystem( FX_REDEYE_WARPIN )
 PrecacheParticleSystem( FX_REDEYE_WARPOUT )
