@@ -52,6 +52,8 @@ function InitModesMenu( menu )
 
 function OnOpenModesMenu()
 {
+    ClientCommand( "loadPlaylists" )
+
 	local modesArray = []
 	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
 	foreach ( k, v in getconsttable().ePrivateMatchModes )
