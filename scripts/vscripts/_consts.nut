@@ -487,15 +487,27 @@ enum eRankEnabledModes
 // we can change the order of this list around to change the order in which we train stuff
 enum eTrainingModules
 {
+	TEST 		= -3,
 	BEDROOM_END = -2,
 	BEDROOM 	= -1,
 
+	// PILOT
 	JUMP,
 	WALLRUN,
+	WALLRUN_PLAYGROUND,
 	DOUBLEJUMP,
+	DOUBLEJUMP_PLAYGROUND,
+	CLOAK,
+	BASIC_COMBAT,
+	FIRINGRANGE,
+	FIRINGRANGE_GRENADES,
 	MOSH_PIT,
-	TITAN_MOSH_PIT,
-	BATTLE_PRACTICE
+
+	// TITAN
+	TITAN_DASH,
+	TITAN_VORTEX,
+	TITAN_PET,
+	TITAN_MOSH_PIT
 }
 
 // mp_npe dev variables, here so we can share between server and client script
