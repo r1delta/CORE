@@ -144,11 +144,10 @@ function ShowMainMenu()
 	file.buttonData = []
 	file.buttonData.append( { name = "#PLAY", activateFunc = Bind( ThreadOnPlayButton_Activate ), updateFunc = Bind( ThreadUpdatePlayButton ) } )
 
-	if ( !AllDLCIsInstalled() )
-		file.buttonData.append( { name = "#DLC_STORE", activateFunc = Bind( OnStoreButton_Activate ), updateFunc = Bind( ThreadUpdateStoreButton ), isNew = true } )
+	// if ( !AllDLCIsInstalled() )
+	// 	file.buttonData.append( { name = "#DLC_STORE", activateFunc = Bind( OnStoreButton_Activate ), updateFunc = Bind( ThreadUpdateStoreButton ), isNew = true } )
 
-	if ( IsIntroViewed() )
-		file.buttonData.append( { name = "HOST", activateFunc = Bind( OnHostButtonActivate ) } )
+	file.buttonData.append( { name = "HOST", activateFunc = Bind( OnHostButtonActivate ) } )
 	file.buttonData.append( { name = "#FIND_MATCH", activateFunc = Bind( OnFindMatchButton_Activate ) } )
 	file.buttonData.append( { name = "#OPTIONS", activateFunc = Bind( OnOptionsButton_Activate ) } )
 	file.buttonData.append( { name = "#CREDITS", activateFunc = Bind( ThreadOnCreditsButton_Activate ) } )
