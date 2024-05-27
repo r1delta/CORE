@@ -2191,6 +2191,17 @@ pmSettingsMap["pm_score_limit"]["mfd"] <- [
 	50,
 ]
 
+pmSettingsMap["pm_score_limit"]["coop"] <- [
+        150,
+        200,
+        250,
+        300,
+        350,
+        400,
+        500,
+        750,
+]
+
 pmSettingsMap["pm_pilot_health"] <- [
 	0,
 	100,
