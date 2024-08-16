@@ -87,7 +87,6 @@ function main()
 
 	GameRules.EnableGlobalChat( true )
 
-    // HACK: Private match only works on matchmaking style logic
 	if ( !IsMatchmakingServer() )
 	{
 		printt( "============================================" )
@@ -843,11 +842,11 @@ function UpdateTeamReadyStatus()
 
 			if ( IsPrivateMatch() )
 			{
-				if ( IsAnyPlayerMMDebug() )
+				if ( IsAnyPlayerMMDebug() || GetConVarBool( "developer" ) )
 					file.teamReady[team] = true
 				else if ( (playerCount > file.maxTeamSize) || (playerCount < 1) || ((GetTeamPlayerCount( TEAM_IMC ) + GetTeamPlayerCount( TEAM_MILITIA )) < minPlayers) )
 					// Be able to start the private match solo for now (probably forever)
-					file.teamReady[team] = true
+					file.teamReady[team] = false
 				else
 					file.teamReady[team] = true
 			}
@@ -953,6 +952,9 @@ Globalize( ready )
 function StartCountDown()
 {
 	local countdownDefault = GetCurrentPlaylistVarInt( "lobby_countdown", 60 )
+
+	if( GetConVarBool( "developer" ) )
+		countdownDefault = 5
 
 	if ( IsPrivateMatch() || IsCoopMatch() )
 	{
