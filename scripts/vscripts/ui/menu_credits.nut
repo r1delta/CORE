@@ -155,7 +155,7 @@ function RollCredits()
     ScrollSingleColumnCenteredNames( "deltateam" )
     ScrollSingleColumnCenteredNames( "deltacontrib" )
 	ScrollRespawnLogo()
-	wait 4.0
+	wait 4.5 // badass way to do it obviously
 	ScrollSingleColumnCenteredNames( "gamedir" )
 	ScrollSingleColumnCenteredNames( "techdir" )
 	ScrollSingleColumnCenteredNames( "ceo" )
@@ -879,6 +879,10 @@ function InitPeople()
     AddDepartment( "deltacontrib", "R1Delta Contributors" )
     AddNameOnly( "deltacontrib", "MrSteyk" )
 	AddNameOnly( "deltacontrib", "PANCHO7532" )
+	AddNameOnly( "deltacontrib", "dogecore" )
+	AddNameOnly( "deltacontrib", "mv (jerry)" )
+	AddNameOnly( "deltacontrib", "bt" )
+	AddNameOnly( "deltacontrib", "quadruple" )
 
 //============================
 //	EXECUTIVE
