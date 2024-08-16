@@ -457,7 +457,9 @@ function UpdateMOTD()
 	// 	}
 	// )
 
-	file.motdMessage.SetText( "R1Delta: 1\nTFOR: 0\n\nDiscord: https://discord.gg/zbFCcSM5t7" )
+	local messages = [ "It's just like lua!", "That's nuts!", "R1Delta: 1\nTFOR: 0", "More games than the PS5" ]
+
+	file.motdMessage.SetText( "* Fixed Titanfall\n\n" + messages[ RandomInt(0, messages.len() ) ] + "\n\nDiscord: https://discord.gg/zbFCcSM5t7" )
 	ShowMOTD()
 }
 
