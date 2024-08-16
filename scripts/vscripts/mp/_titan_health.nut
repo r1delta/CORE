@@ -993,14 +993,10 @@ function ShieldModifyDamage( titan, damageInfo )
 
 	local damage = damageInfo.GetDamage()
 
-	local permanentDamageFrac = soul.shieldPermamentDamageFrac
-
-	if( permanentDamageFrac == null )
-	{
-		permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC
-	}
+	local permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC
 
 	local normalizeShieldDamage = false
+	local dampenDamage = false
 
 	local damageSourceIdentifier = damageInfo.GetDamageSourceIdentifier()
 
@@ -1017,17 +1013,13 @@ function ShieldModifyDamage( titan, damageInfo )
 		case eDamageSourceId.mp_weapon_mgl:
 		case eDamageSourceId.mp_weapon_rocket_launcher:
 			damage *= 1.5
-			permanentDamageFrac = soul.shieldPermamentDamageFracPilot
-
-			if( permanentDamageFrac == null )
-			{
-				permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC_PILOT
-			}
-
+			permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC_PILOT
 			normalizeShieldDamage = true
 			break
 		case eDamageSourceId.mp_weapon_defender:
 			damage *= 1.7
+		default:
+			dampenDamage = true
 			break
 	}
 
@@ -1066,6 +1058,8 @@ function ShieldModifyDamage( titan, damageInfo )
 
 	local newShieldHealth = shieldHealth - shieldDamage
 
+	printt( max( 0, newShieldHealth ) )
+
 	soul.SetShieldHealth( max( 0, newShieldHealth ) )
 
 	if ( shieldHealth && newShieldHealth <= 0 )
@@ -1075,8 +1069,10 @@ function ShieldModifyDamage( titan, damageInfo )
 
 	if ( newShieldHealth < 0 )
 		damageInfo.SetDamage( abs( newShieldHealth ) )
+	else if( dampenDamage )
+		damageInfo.SetDamage( 0 )
 	else
-		damageInfo.SetDamage( damage )
+		damageInfo.SetDamage( permanentDamage )
 
 	return min( shieldHealth, shieldDamage )
 }

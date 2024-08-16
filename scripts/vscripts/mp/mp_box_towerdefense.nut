@@ -197,7 +197,7 @@ function main()
         
 	Box_SetupWaveSpawns()
 	//TestWaves()
-        SetCustomIntroLength(0)
+    SetCustomIntroLength(0)
 	  //if ( IsServer() )
     //SetCustomWaveSpawn_SideView( Vector( -178, -493, 60 ), Vector( 0, 180, 0 ), "dropship_coop_respawn_box" )
 
