@@ -1540,3 +1540,8 @@ function ChangeMap( mapName, mode )
 {
 	ServerCommand( "launchplaylist " + mode + "; changelevel " + mapName )
 }
+
+function IsPrivateMatch()
+{
+    return GetCurrentPlaylistName() == "private_match" && GetConVarInt("sv_lobbyType") == 1
+}
