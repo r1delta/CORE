@@ -328,23 +328,19 @@ function UpdatePCPlayButton( button )
 	{
 		if ( Origin_IsEnabled() )
 			playEnabled = Origin_IsOnline()
-		else
-			playEnabled = true
+		else 
+			playEnabled = false
 
-		if ( playEnabled != lastResult )
+		button.SetEnabled( playEnabled )
+		if ( playEnabled )
 		{
-			button.SetEnabled( playEnabled )
-
-			if ( playEnabled )
-			{
-				buttonMessage.SetText( "" )
-				file.menu.RunAnimationScript( "HidePlayButtonMessage" )
-			}
-			else
-			{
-				buttonMessage.SetText( "#ORIGIN_IS_OFFLINE" )
-				file.menu.RunAnimationScript( "ShowPlayButtonMessage" )
-			}
+			buttonMessage.SetText( "" )
+			file.menu.RunAnimationScript( "HidePlayButtonMessage" )
+		}
+		else
+		{
+			buttonMessage.SetText( "#ORIGIN_IS_OFFLINE" )
+			file.menu.RunAnimationScript( "ShowPlayButtonMessage" )
 		}
 
 		lastResult = playEnabled
