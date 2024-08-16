@@ -993,12 +993,12 @@ function ShieldModifyDamage( titan, damageInfo )
 
 	local damage = damageInfo.GetDamage()
 
-	// local permanentDamageFrac = soul.shieldPermamentDamageFrac
+	local permanentDamageFrac = soul.shieldPermamentDamageFrac
 
-	// if( permanentDamageFrac == null )
-	// {
-	// 	permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC
-	// }
+	if( permanentDamageFrac == null )
+	{
+		permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC
+	}
 
 	local normalizeShieldDamage = false
 
@@ -1017,12 +1017,12 @@ function ShieldModifyDamage( titan, damageInfo )
 		case eDamageSourceId.mp_weapon_mgl:
 		case eDamageSourceId.mp_weapon_rocket_launcher:
 			damage *= 1.5
-			// permanentDamageFrac = soul.shieldPermamentDamageFracPilot
+			permanentDamageFrac = soul.shieldPermamentDamageFracPilot
 
-			// if( permanentDamageFrac == null )
-			// {
-			// 	permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC_PILOT
-			// }
+			if( permanentDamageFrac == null )
+			{
+				permanentDamageFrac = TITAN_SHIELD_PERMAMENT_DAMAGE_FRAC_PILOT
+			}
 
 			normalizeShieldDamage = true
 			break
@@ -1045,7 +1045,7 @@ function ShieldModifyDamage( titan, damageInfo )
 
 	local healthFrac = GetHealthFrac( titan )
 
-	// local permanentDamage = (damage * permanentDamageFrac * healthFrac)
+	local permanentDamage = (damage * permanentDamageFrac * healthFrac)
 
 	local shieldDamage
 
@@ -1073,8 +1073,10 @@ function ShieldModifyDamage( titan, damageInfo )
 		EmitSoundOnEntity( titan, "titan_energyshield_down" )
 	}
 
-	//?: I have no fucking idea why this helps at all
-	damageInfo.SetDamage( 0 )
+	if ( newShieldHealth < 0 )
+		damageInfo.SetDamage( abs( newShieldHealth ) )
+	else
+		damageInfo.SetDamage( damage )
 
 	return min( shieldHealth, shieldDamage )
 }
