@@ -457,7 +457,7 @@ function UpdateMOTD()
 	// 	}
 	// )
 
-	file.motdMessage.SetText( "R1Delta is out, woohoo" )
+	file.motdMessage.SetText( "R1Delta: 1\nTFOR: 0\n\nDiscord: https://discord.gg/zbFCcSM5t7" )
 	ShowMOTD()
 }
 
