@@ -2374,3 +2374,11 @@ enum eTitanBuildRule
 
 const TITAN_DOOMED_EFFECT = "xo_exp_doomed"
 //const TITAN_DOOMED_EFFECT = "xo_exp_death_doom"
+
+// TODO: move to a const from code
+const R1DELTA_PATCH_NOTES = @"* Various UI improvements
+* Gamemode fixes
+* Initial support for offline play without Origin
+* Improved lobby functionality
+* Minor QOL adjustments
+* Many miscellaneous patches and fixes"
