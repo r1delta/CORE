@@ -255,7 +255,11 @@ function ShowMainMenu()
 
 	uiGlobal.mainMenuFocus = focus
 
-	
+	if ( !GetConVarString( "platform_user_id" ).len() )
+	{
+		local randomID = RandomInt( 0, 999999999 ).tostring()
+		ClientCommand( "platform_user_id " + randomID )
+	}
 }
 
 function ShowMOTD()
