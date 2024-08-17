@@ -1547,13 +1547,3 @@ function ChangeMap( mapName, mode )
 	ServerCommand( "launchplaylist " + mode )
 	ServerCommand( "changelevel " + mapName )
 }
-
-function IsPrivateMatch()
-{
-	if( IsLobby() )
-		return GetCurrentPlaylistName() == "private_match" && GetConVarInt("sv_lobbyType") == 1
-	else 
-	{
-		return ( GetCurrentPlaylistVarInt( "private_match", 0 ) == 1 ) && ( GetConVarInt("sv_lobbyType") == 1 )
-	}
-}
