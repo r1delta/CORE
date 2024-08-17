@@ -1,0 +1,11 @@
+; disable origin
+engine.dll,text,0x15BDA1,01,00
+; fix platform user id
+engine.dll,text,0x5F2E00,"fs_report_sync_opens","platform_user_id\x00"
+engine.dll,text,221A03,7E,48
+engine.dll,text,221A04,0C,8D
+engine.dll,text,221A06,8D,30
+engine.dll,text,221A07,48,31
+engine.dll,text,221A08,30,D2
+engine.dll,text,221A09,33,FF
+engine.dll,text,221A0A,D2,C2
