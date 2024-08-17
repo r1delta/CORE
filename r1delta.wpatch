@@ -8,6 +8,8 @@ engine_r1o.dll,rdata,0x558629,"\x00\x00\x00\x00","_imc"
 ; filesystem_stdio.dll,text,0x1b448,74 65 4C 8D 05 1F 53 0B,90 90 4C 8D 05 1F 53 0B
 ; fix typo causing shared client VPK to not work properly
 filesystem_stdio.dll,rdata,0xd0774,"client_%s.bsp.pak000%s\x00\x00\x00\x00\x00\x00-s","englishclient_%s.bsp.pak000%s\x00"
+; unhide fatal_script_errors
+launcher.dll,text,0xd550b,02,00
 ; unhide ai_ainRebuildOnMapStart
 server.dll,text,0x2ea44,02,00
 ; unhide mp_dev_wait_for_other_player (lmao)
