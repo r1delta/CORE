@@ -96,7 +96,7 @@ function UpdateFooterButtons( menuName = null )
             footerData.pc.append( { label = "Addons", func = OnAddonButton_Activate } )
 			footerData.gamepad.append( { label = "%[B_BUTTON]%Addons", func = OnAddonButton_Activate } )
 
-			//if ( !Origin_IsEnabled() && !Origin_IsOnline() )
+			if ( !Origin_IsEnabled() && !Origin_IsOnline() )
 			{
 				footerData.pc.append( { label = "#GAMEUI_DATACENTERNAME", func = OpenOfflineNameDialogButton_Activate } )
 				footerData.gamepad.append( { label = "%[A_BUTTON]%Name", func = OpenOfflineNameDialogButton_Activate } )
