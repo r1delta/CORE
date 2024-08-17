@@ -37,5 +37,5 @@ function TeamDeathmatch_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 
 function ClientCommand_LeaveDevTest( player )
 {
-	GameRules.EndMatch()
+	GameRules_EndMatch()
 }

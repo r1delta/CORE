@@ -20,8 +20,8 @@ function main()
 
 	IncludeFile( "_hardpoints_shared" )
 
-	IncludeFile( "mp/_changemap" )
 	IncludeFile( "mp/_gamestate" )
+	IncludeFile( "mp/_gamerules")
 
 	IncludeFile( "mp/_music" )
 

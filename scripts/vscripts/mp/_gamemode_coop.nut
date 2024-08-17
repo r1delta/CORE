@@ -81,7 +81,7 @@ function COOP_PlayerConnecting( player )
 function Coop_TryReturnToLobby()
 {
 	printt( "Coop: Returning to lobby" )
-	ChangeMap( "mp_lobby", COOPERATIVE )
+	GameRules_ChangeMap( "mp_lobby", COOPERATIVE )
 }
 Globalize( Coop_TryReturnToLobby )
 

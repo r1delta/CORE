@@ -548,7 +548,7 @@ function PrivateMatchLobbyLogic()
 	}
 
 	printt( "Launch it!" )
-	ChangeMap( mapName, modeName )
+	GameRules_ChangeMap( mapName, modeName )
 }
 
 
@@ -649,7 +649,7 @@ function MatchmakingServerLobbyLogic()
 	}
 
 	NoteLobbyState( 0, "" )
-	ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
+	GameRules_ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
 }
 
 function ChooseCoopMap()
@@ -779,7 +779,7 @@ function CoopMatchLobbyLogic()
 	Assert( level.ui.coopLobbyMap != null )
 	local mapName = GetMapNameForEnum( level.ui.coopLobbyMap )
 	NoteLobbyState( 0, "" )
-	ChangeMap( mapName, "coop" )
+	GameRules_ChangeMap( mapName, "coop" )
 }
 
 function UpdatePrivateMatchReadyStatus( cancelStart = false )
@@ -1074,7 +1074,7 @@ function LocalServerLobbyLogic()
 	}
 
 	if ( GetCurrentPlaylistVarInt( "local_autostart", 1 ) )
-		ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
+		GameRules_ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
 }
 
 function PrintServerGameHistory()

@@ -6255,7 +6255,7 @@ function Module_BattlePractice()
 		waitthread BattlePractice_Step_E()
 	}
 
-	GameRules.EndMatch()
+	GameRules_EndMatch()
 }
 
 function BattlePractice_Step_B()
@@ -6567,7 +6567,7 @@ function Module_TitanMoshPit()
 
 	if (GAMETYPE == "titan_tutorial")
 	{
-		GameRules.EndMatch()
+		GameRules_EndMatch()
 	}
 	else
 	{
@@ -7427,7 +7427,7 @@ function ClientCommand_NPE_StartBedEndModule( player, ... )
 	if (true)
 		thread StartTrainingModule( TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
 	else 
-		GameRules.EndMatch()		
+		GameRules_EndMatch()		
 }
 
 function ClientCommand_NPE_StartTitanMoshPitModule( player, ... )
@@ -7536,7 +7536,7 @@ function ClientCommand_LeaveTraining( player, ... )
 	if (true)
 		thread StartTrainingModule( TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
 	else 
-		GameRules.EndMatch()
+		GameRules_EndMatch()
 
 	return true
 }

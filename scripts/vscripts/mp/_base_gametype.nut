@@ -3319,7 +3319,7 @@ function ClientCommand_PrivateMatchEndMatch( player, ... )
 
 	if ( !GamePlayingOrSuddenDeath() )
 	{
-		GameRules.EndMatch()
+		GameRules_EndMatch()
 		return
 	}
 

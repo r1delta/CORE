@@ -386,6 +386,7 @@ function ReloadScriptsInternal()
 
 
 	IncludeFile( "mp/_gamestate" )
+	IncludeFile( "mp/_gamerules")
 	IncludeScript( "_utility_shared", root )
 	IncludeScript( "_utility_shared_all", root )
 	IncludeScript( "mp/mp_titanbuild_rule" )
@@ -1534,16 +1535,4 @@ function GetTrainingHasEverBeenStarted( player )
 function BurnCardOnDeath( target, attacker, idx )
 {
 	//printt( "BurnCardOnDeath: " + target + " " + attacker + " " + idx )
-}
-
-function ChangeMap( mapName, mode )
-{
-	if( ';' in mode || ' ' in mode)
-		return
-
-	if( ';' in mapName || ' ' in mapName)
-		return
-
-	ServerCommand( "launchplaylist " + mode )
-	ServerCommand( "changelevel " + mapName )
 }
