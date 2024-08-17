@@ -5,6 +5,8 @@ function main()
 	Globalize( OnOpenMainMenu )
 	Globalize( DataCenterDialog )
 	Globalize( Threaded_CreateLocalServer )
+	Globalize( OpenOfflineNameDialogButton_Activate )
+	Globalize( OnAddonButton_Activate )
 
 	PrecacheHUDMaterial( "../ui/menu/r1delta/icon" )
 }
@@ -12,6 +14,8 @@ function main()
 function InitMainMenu( menu )
 {
 	file.menu <- menu
+    file.dialog <- GetMenu( "UsernameDialog" )
+    file.lblTextIn <- file.dialog.GetChild( "LblSetName" )
 
 	file.errorMessage <- menu.GetChild( "ErrorMessage" )
 	file.continueMessage <- menu.GetChild( "ContinueMessage" )
@@ -35,11 +39,12 @@ function InitMainMenu( menu )
 	file.datacenterPC <- menu.GetChild( "DatacenterPC" )
 	file.datacenterPC.EnableKeyBindingIcons()
 
-	AddEventHandlerToButton( menu, "AddonsMenuButton", UIE_CLICK, Bind( OnAddonButton_Activate ))
-
 	file.motdMessage <- menu.GetChild( "MOTDMessage" )
 	file.motdTitle <- menu.GetChild( "MOTDTitle" )
 	file.motdBox <- menu.GetChild( "MOTDBox" )
+
+	AddEventHandlerToButton( GetMenu( "UsernameDialog" ), "BtnAccept", UIE_CLICK, OpenOfflineNameDialogButtonOk_Activate )
+    AddEventHandlerToButton( GetMenu( "UsernameDialog" ), "BtnCancel", UIE_CLICK, OpenOfflineNameDialogButtonCancel_Activate )
 }
 
 function OnOpenMainMenu()
@@ -139,6 +144,36 @@ function AllDLCIsInstalled()
 	return true;
 }
 
+function OpenOfflineNameDialogButton_Activate( button )
+{
+	if ( uiGlobal.activeDialog )
+		return
+
+	local dialogData = {}
+	dialogData.header <- "Enter Username"
+    dialogData.detailsMessage <- "Create a username to use on R1Delta."
+
+	OpenChoiceDialog( dialogData, GetMenu( "UsernameDialog" ) )
+}
+
+
+function OpenOfflineNameDialogButtonOk_Activate( button )
+{
+    local str = button.GetParent().GetChild( "LblSetName" ).GetTextEntryUTF8Text()
+
+	if(str == "")
+		return
+
+    ClientCommand( "name " + str )
+
+	CloseDialog( true )
+}
+
+function OpenOfflineNameDialogButtonCancel_Activate( button )
+{
+    CloseDialog( true )
+}
+
 function ShowMainMenu()
 {
 	file.buttonData = []
@@ -219,6 +254,8 @@ function ShowMainMenu()
 	}
 
 	uiGlobal.mainMenuFocus = focus
+
+	
 }
 
 function ShowMOTD()
