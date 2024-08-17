@@ -1538,10 +1538,23 @@ function BurnCardOnDeath( target, attacker, idx )
 
 function ChangeMap( mapName, mode )
 {
-	ServerCommand( "launchplaylist " + mode + "; changelevel " + mapName )
+	if( ';' in mode || ' ' in mode)
+		return
+
+	if( ';' in mapName || ' ' in mapName)
+		return
+
+	ServerCommand( "launchplaylist " + mode )
+	ServerCommand( "changelevel " + mapName )
 }
 
 function IsPrivateMatch()
 {
-    return GetCurrentPlaylistName() == "private_match" && GetConVarInt("sv_lobbyType") == 1
+	if( IsLobby() )
+		return GetCurrentPlaylistName() == "private_match" && GetConVarInt("sv_lobbyType") == 1
+	else 
+	{
+		printt( "IsPrivateMatch: " + GetCurrentPlaylistVarInt( "private_match", 0 ) + " " + GetConVarInt("sv_lobbyType") )
+		return ( GetCurrentPlaylistVarInt( "private_match", 0 ) == 1 ) && ( GetConVarInt("sv_lobbyType") == 1 )
+	}
 }

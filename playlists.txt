@@ -1,7 +1,7 @@
 "playlists"
 {
 	"version"	"stable"
-	"versionNum"	"1924" // Never forget to bump this for every playlist update.
+	"versionNum"	"1925" // Never forget to bump this for every playlist update.
 	"at"
 	{
 		"vars"
@@ -102,6 +102,7 @@
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
 			"dlc_promo"	"1"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -253,6 +254,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -406,6 +408,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -529,6 +532,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -922,6 +926,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -1075,6 +1080,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -1228,6 +1234,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -1381,6 +1388,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -1534,6 +1542,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -1693,6 +1702,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -1846,6 +1856,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -1999,6 +2010,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -2136,6 +2148,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"
@@ -2296,6 +2309,7 @@
 			"hud_score_enabled" "0"
 			"riff_titan_exit_enabled" "3"
 			"titan_health_bar_display" "default"
+			"private_match" "0"
 		}
 		"maps"
 		{
@@ -2402,6 +2416,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "1"
 		}
 
 		"maps"
@@ -2509,6 +2524,7 @@
 			"ranked_wlpct_def" "0.10"
 			"RankInviteMode"	"none"
 			"ranked_decay_days" "2.0"
+			"private_match" "0"
 		}
 
 		"maps"

@@ -104,6 +104,17 @@ function main()
 		thread LocalServerLobbyLogic()
 	}
 
+	if ( IsPrivateMatch() )
+	{
+		printt( "============================================" )
+		printt( "Private match" )
+		printt( "============================================" )
+		SetPlaylistVarOverride( "private_match", "1" )
+	} else
+	{
+		SetPlaylistVarOverride( "private_match", "0" )
+	}
+
 	thread WatchTeamStates()
 }
 
@@ -228,7 +239,9 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	UpdateBadRepPresent()
 
 	if ( IsPrivateMatch() )
+	{
 		UpdatePrivateMatchMapIfUnavailable()
+	} 
 
 	if ( GetLobbyType() == "party" )
 		UpdateCustomMatchMapIfUnavailable()
