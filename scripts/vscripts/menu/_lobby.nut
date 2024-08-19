@@ -104,17 +104,6 @@ function main()
 		thread LocalServerLobbyLogic()
 	}
 
-	if ( IsPrivateMatch() )
-	{
-		printt( "============================================" )
-		printt( "Private match" )
-		printt( "============================================" )
-		SetPlaylistVarOverride( "private_match", "1" )
-	} else
-	{
-		SetPlaylistVarOverride( "private_match", "0" )
-	}
-
 	thread WatchTeamStates()
 }
 
@@ -473,6 +462,8 @@ function PrivateMatchLobbyLogic()
 
 	level.ent.EndSignal( "end_lobby_logic" )
 
+	SetPlaylistVarOverride( "private_match", "1" )
+
 	printl( "!!! Privatematch lobby logic started" )
 
 	file.teamReady[TEAM_IMC] = false
@@ -569,6 +560,8 @@ function MatchmakingServerLobbyLogic()
 	level.ent.EndSignal( "end_lobby_logic" )
 
 	printl( "!!! Matchmaking server lobby logic started" )
+
+	SetPlaylistVarOverride( "private_match", "0" )
 
 	file.teamReady[TEAM_IMC] = false
 	file.teamReady[TEAM_MILITIA] = false
@@ -694,6 +687,8 @@ function CoopMatchLobbyLogic()
 	level.ent.EndSignal( "end_lobby_logic" )
 	printl( "!!! Coop lobby logic started" )
 	///////////////////
+
+	SetPlaylistVarOverride( "private_match", "0" )
 
 	file.teamReady[TEAM_IMC] = false
 	file.teamReady[TEAM_MILITIA] = false
@@ -1755,7 +1750,6 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
 		level.ui.privatematch_starting = ePrivateMatchStartState.STARTING
 
 	printt( player.GetPlayerName(), "launched private match:", mapName, modeName )
-	//ChangeMap( mapName, modeName )
 	return true
 }
 
