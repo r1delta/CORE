@@ -110,7 +110,7 @@ resource/ui/menus/usernamedialog.menu
 			enabled					1
 			textHidden				0
 			editable				1
-			maxchars				50
+			maxchars				260
 			NumericInputOnly		0
             ypos                    20
             xpos                    -20
@@ -119,7 +119,7 @@ resource/ui/menus/usernamedialog.menu
 			keyboardTitle			"#NAME_YOUR_LOADOUT"
 			keyboardDescription		"#CHOOSE_A_NAME"
 			allowRightClickMenu		0
-			allowSpecialCharacters	0
+			allowSpecialCharacters	1
 			unicode					1
 		}
 
