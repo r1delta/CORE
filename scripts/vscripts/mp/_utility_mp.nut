@@ -1473,24 +1473,6 @@ function InitBurnCardPersistence( player )
 	//printt("InitBurnCardPersistence: " + player )
 }
 
-function PersistenceGetEnumCount( val )
-{
-	//printt("PersistenceGetEnumCount: " + val )
-	return 0
-}
-
-function PersistenceGetArrayCount( val )
-{
-	//printt("PersistenceGetArrayCount: " + val )
-	return 0
-}
-
-function PersistenceEnumValueIsValid( val, index )
-{
-	//printt("PersistenceEnumValueIsValid: " + val + " " + index )
-	return false
-}
-
 function ResetRankSkillHistory( player )
 {
 	//printt("ResetRankSkillHistory: " + player )

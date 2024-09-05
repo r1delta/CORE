@@ -778,6 +778,920 @@ function InitPersistence()
     AddPersistenceKey("nextBurnCard", "int")
 
     AddPersistenceKey("gen", "int")
+
+    AddPersistenceKey("campaignTeam", "int")
+    AddPersistenceKey("campaignStarted", "bool")
+    AddPersistenceKey("campaignLevelsFinishedIMC", "int")
+    AddPersistenceKey("campaignLevelsFinishedMCOR", "int")
+    AddPersistenceKey("campaignFinishedIMCjustNow", "int")
+    AddPersistenceKey("campaignFinishedMCORjustNow", "int")
+    AddPersistenceArray("campaignMapFinishedIMC", 9)
+    AddPersistenceKey("campaignMapFinishedIMC", "bool")
+    AddPersistenceArray("campaignMapFinishedMCOR", 9)
+    AddPersistenceKey("campaignMapFinishedMCOR", "bool")
+    AddPersistenceArray("campaignMapWonIMC", 9)
+    AddPersistenceKey("campaignMapWonIMC", "bool")
+    AddPersistenceArray("campaignMapWonMCOR", 9)
+    AddPersistenceKey("campaignMapWonMCOR", "bool")
+    AddPersistenceKey("desiredCampaignMapIndex", "int")
+
+    AddPersistenceArray("gameStats.modesPlayed", "gameModes")
+    AddPersistenceKey("gameStats.modesPlayed", "int")
+    AddPersistenceArray("gameStats.previousModesPlayed", "gameModes")
+    AddPersistenceKey("gameStats.previousModesPlayed", "int")
+    AddPersistenceArray("gameStats.modesWon", "gameModes")
+    AddPersistenceKey("gameStats.modesWon", "int")
+    AddPersistenceKey("gameStats.mvp_total", "int")
+    AddPersistenceKey("gameStats.gamesCompletedTotal", "int")
+    AddPersistenceKey("gameStats.gamesCompletedTotalCampaign", "int")
+    AddPersistenceKey("gameStats.gamesWonAsIMC", "int")
+    AddPersistenceKey("gameStats.gamesWonAsMilitia", "int")
+    AddPersistenceKey("gameStats.gamesCompletedAsIMC", "int")
+    AddPersistenceKey("gameStats.gamesCompletedAsMilitia", "int")
+    AddPersistenceArray("gameStats.pvpKills", "gameModes")
+    AddPersistenceKey("gameStats.pvpKills", "int")
+    AddPersistenceArray("gameStats.timesKillDeathRatio2to1", "gameModes")
+    AddPersistenceKey("gameStats.timesKillDeathRatio2to1", "int")
+    AddPersistenceArray("gameStats.timesKillDeathRatio2to1_pvp", "gameModes")
+    AddPersistenceKey("gameStats.timesKillDeathRatio2to1_pvp", "int")
+    AddPersistenceKey("gameStats.timesScored100AttritionPoints_total", "int")
+    AddPersistenceKey("gameStats.mode_played_at", "int")
+    AddPersistenceKey("gameStats.mode_played_ctf", "int")
+    AddPersistenceKey("gameStats.mode_played_lts", "int")
+    AddPersistenceKey("gameStats.mode_played_cp", "int")
+    AddPersistenceKey("gameStats.mode_played_tdm", "int")
+    AddPersistenceKey("gameStats.mode_played_wlts", "int")
+    AddPersistenceKey("gameStats.mode_played_mfd", "int")
+    AddPersistenceKey("gameStats.mode_played_coop", "int")
+    AddPersistenceKey("gameStats.mode_won_at", "int")
+    AddPersistenceKey("gameStats.mode_won_ctf", "int")
+    AddPersistenceKey("gameStats.mode_won_lts", "int")
+    AddPersistenceKey("gameStats.mode_won_cp", "int")
+    AddPersistenceKey("gameStats.mode_won_tdm", "int")
+    AddPersistenceKey("gameStats.mode_won_wlts", "int")
+    AddPersistenceKey("gameStats.mode_won_mfd", "int")
+    AddPersistenceKey("gameStats.mode_won_coop", "int")
+    AddPersistenceKey("gameStats.coop_perfect_waves", "int")
+
+    AddPersistenceArray("mapStats", "maps")
+    AddPersistenceArray("mapStats.gamesJoined", "gameModes")
+    AddPersistenceKey("mapStats.gamesJoined", "int")
+    AddPersistenceArray("mapStats.gamesCompleted", "gameModes")
+    AddPersistenceKey("mapStats.gamesCompleted", "int")
+    AddPersistenceArray("mapStats.gamesWon", "gameModes")
+    AddPersistenceKey("mapStats.gamesWon", "int")
+    AddPersistenceArray("mapStats.gamesLost", "gameModes")
+    AddPersistenceKey("mapStats.gamesLost", "int")
+    AddPersistenceArray("mapStats.topPlayerOnTeam", "gameModes")
+    AddPersistenceKey("mapStats.topPlayerOnTeam", "int")
+    AddPersistenceArray("mapStats.top3OnTeam", "gameModes")
+    AddPersistenceKey("mapStats.top3OnTeam", "int")
+    AddPersistenceArray("mapStats.hoursPlayed", "gameModes")
+    AddPersistenceKey("mapStats.hoursPlayed", "float")
+    AddPersistenceKey("mapStats.timesScored100AttritionPoints_byMap", "int")
+
+    AddPersistanceKey("timeStats.total", "float")
+    AddPersistenceArray("timeStats.asTitan", "titanSetFile")
+    AddPersistanceKey("timeStats.asTitan", "float")
+    AddPersistanceKey("timeStats.asPilot", "float")
+    AddPersistanceKey("timeStats.asTitanTotal", "float")
+    AddPersistanceKey("timeStats.dead", "float")
+    AddPersistanceKey("timeStats.wallhanging", "float")
+    AddPersistanceKey("timeStats.wallrunning", "float")
+    AddPersistanceKey("timeStats.inAir", "float")
+
+    AddPersistanceKey("distanceStats.total", "float")
+    AddPersistenceArray("distanceStats.asTitan", "titanSetFile")
+    AddPersistanceKey("distanceStats.asTitan", "float")
+    AddPersistanceKey("distanceStats.asPilot", "float")
+    AddPersistanceKey("distanceStats.asTitanTotal", "float")
+    AddPersistanceKey("distanceStats.wallrunning", "float")
+    AddPersistanceKey("distanceStats.inAir", "float")
+    AddPersistanceKey("distanceStats.onFriendlyTitan", "float")
+    AddPersistanceKey("distanceStats.onEnemyTitan", "float")
+
+    AddPersistenceArray("weaponStats", "loadoutItems")
+    AddPersistanceKey("weaponStats.hoursUsed", "float")
+    AddPersistanceKey("weaponStats.hoursEquipped", "float")
+    AddPersistanceKey("weaponStats.shotsFired", "int")
+    AddPersistanceKey("weaponStats.shotsHit", "int")
+    AddPersistanceKey("weaponStats.headshots", "int")
+    AddPersistanceKey("weaponStats.critHits", "int")
+
+    AddPersistenceArray("weaponKillStats", "loadoutItems")
+    AddPersistanceKey("weaponKillStats.total", "int")
+    AddPersistanceKey("weaponKillStats.pilots", "int")
+    AddPersistanceKey("weaponKillStats.ejecting_pilots", "int")
+    AddPersistanceKey("weaponKillStats.spectres", "int")
+    AddPersistanceKey("weaponKillStats.marvins", "int")
+    AddPersistanceKey("weaponKillStats.grunts", "int")
+    AddPersistanceKey("weaponKillStats.titansTotal", "int")
+    AddPersistenceArray("weaponKillStats.titans", "titanSetFile")
+    AddPersistanceKey("weaponKillStats.titans", "int")
+    AddPersistenceArray("weaponKillStats.npcTitans", "titanSetFile")
+    AddPersistanceKey("weaponKillStats.npcTitans", "int")
+
+    AddPersistanceKey("killStats.total", "int")
+    AddPersistanceKey("killStats.totalWhileUsingBurnCard", "int")
+    AddPersistanceKey("killStats.titansWhileTitanBCActive", "int")
+    AddPersistanceKey("killStats.totalPVP", "int")
+    AddPersistanceKey("killStats.pilots", "int")
+    AddPersistanceKey("killStats.spectres", "int")
+    AddPersistanceKey("killStats.marvins", "int")
+    AddPersistanceKey("killStats.grunts", "int")
+    AddPersistanceKey("killStats.totalTitans", "int")
+    AddPersistanceKey("killStats.totalTitansWhileDoomed", "int")
+    AddPersistanceKey("killStats.totalPilots", "int")
+    AddPersistanceKey("killStats.totalNPC", "int")
+    AddPersistanceKey("killStats.asPilot", "int")
+    AddPersistenceArray("killStats.asTitan", "titanSetFile")
+    AddPersistanceKey("killStats.asTitan", "int")
+    AddPersistanceKey("killStats.firstStrikes", "int")
+    AddPersistanceKey("killStats.ejectingPilots", "int")
+    AddPersistanceKey("killStats.whileEjecting", "int")
+    AddPersistanceKey("killStats.cloakedPilots", "int")
+    AddPersistanceKey("killStats.whileCloaked", "int")
+    AddPersistanceKey("killStats.wallrunningPilots", "int")
+    AddPersistanceKey("killStats.whileWallrunning", "int")
+    AddPersistanceKey("killStats.wallhangingPilots", "int")
+    AddPersistanceKey("killStats.whileWallhanging", "int")
+    AddPersistanceKey("killStats.pilotExecution", "int")
+    AddPersistanceKey("killStats.pilotExecutePilot", "int")
+    AddPersistanceKey("killStats.pilotKickMelee", "int")
+    AddPersistanceKey("killStats.pilotKickMeleePilot", "int")
+    AddPersistanceKey("killStats.titanMelee", "int")
+    AddPersistanceKey("killStats.titanMeleePilot", "int")
+    AddPersistanceKey("killStats.titanStepCrush", "int")
+    AddPersistanceKey("killStats.titanStepCrushPilot", "int")
+    AddPersistanceKey("killStats.titanExocutionStryder", "int")
+    AddPersistanceKey("killStats.titanExocutionAtlas", "int")
+    AddPersistanceKey("killStats.titanExocutionOgre", "int")
+    AddPersistanceKey("killStats.titanFallKill", "int")
+    AddPersistanceKey("killStats.petTitanKillsFollowMode", "int")
+    AddPersistanceKey("killStats.petTitanKillsGuardMode", "int")
+    AddPersistanceKey("killStats.rodeo_total", "int")
+    AddPersistanceKey("killStats.rodeo_stryder", "int")
+    AddPersistanceKey("killStats.rodeo_atlas", "int")
+    AddPersistanceKey("killStats.rodeo_ogre", "int")
+    AddPersistanceKey("killStats.pilot_headshots_total", "int")
+    AddPersistanceKey("killStats.evacShips", "int")
+    AddPersistanceKey("killStats.flyers", "int")
+    AddPersistanceKey("killStats.nuclearCore", "int")
+    AddPersistanceKey("killStats.evacuatingEnemies", "int")
+    AddPersistanceKey("killStats.exportTrapKills", "int")
+    AddPersistanceKey("killStats.coopChallenge_NukeTitan_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_MortarTitan_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_EmpTitan_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_BubbleShieldGrunt_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_CloakDrone_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_Dropship_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_SuicideSpectre_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_Turret_Kills", "int")
+    AddPersistanceKey("killStats.coopChallenge_Sniper_Kills", "int")
+    AddPersistanceKey("killStats.ampedVortexKills", "int")
+    AddPersistanceKey("killStats.meleeWhileCloaked", "int")
+    AddPersistanceKey("killStats.pilotKillsWhileUsingActiveRadarPulse", "int")
+    AddPersistanceKey("killStats.titanKillsAsPilot", "int")
+    AddPersistanceKey("killStats.pilotKillsWhileStimActive", "int")
+    AddPersistanceKey("killStats.pilotKillsAsTitan", "int")
+
+    AddPersistanceKey("deathStats.total", "int")
+    AddPersistanceKey("deathStats.totalPVP", "int")
+    AddPersistanceKey("deathStats.asPilot", "int")
+    AddPersistenceArray("deathStats.asTitan", "titanSetFile")
+    AddPersistanceKey("deathStats.asTitan", "int")
+    AddPersistanceKey("deathStats.byPilots", "int")
+    AddPersistanceKey("deathStats.bySpectres", "int")
+    AddPersistanceKey("deathStats.byGrunts", "int")
+    AddPersistenceArray("deathStats.byTitans", "titanSetFile")
+    AddPersistanceKey("deathStats.byTitans", "int")
+    AddPersistenceArray("deathStats.byNPCTitans", "titanSetFile")
+    AddPersistanceKey("deathStats.byNPCTitans", "int")
+    AddPersistanceKey("deathStats.suicides", "int")
+    AddPersistanceKey("deathStats.whileEjecting", "int")
+
+    AddPersistanceKey("miscStats.titanFalls", "int")
+    AddPersistanceKey("miscStats.titanFallsFirst", "int")
+    AddPersistanceKey("miscStats.titanEmbarks", "int")
+    AddPersistanceKey("miscStats.rodeos", "int")
+    AddPersistanceKey("miscStats.rodeosFromEject", "int")
+    AddPersistanceKey("miscStats.timesEjected", "int")
+    AddPersistanceKey("miscStats.timesEjectedNuclear", "int")
+    AddPersistanceKey("miscStats.burnCardsEarned", "int")
+    AddPersistanceKey("miscStats.burnCardsSpent", "int")
+    AddPersistanceKey("miscStats.spectreLeeches", "int")
+    AddPersistenceArray("miscStats.spectreLeechesByMap", "maps")
+    AddPersistanceKey("miscStats.spectreLeechesByMap", "int")
+    AddPersistanceKey("miscStats.evacsAttempted", "int")
+    AddPersistanceKey("miscStats.evacsSurvived", "int")
+    AddPersistanceKey("miscStats.flagsCaptured", "int")
+    AddPersistanceKey("miscStats.flagsReturned", "int")
+    AddPersistanceKey("miscStats.arcCannonMultiKills", "int")
+    AddPersistanceKey("miscStats.gruntsConscripted", "int")
+    AddPersistanceKey("miscStats.hardpointsCaptured", "int")
+    AddPersistanceKey("miscStats.challengeTiersCompleted", "int")
+    AddPersistanceKey("miscStats.challengesCompleted", "int")
+    AddPersistanceKey("miscStats.dailyChallengesCompleted", "int")
+    AddPersistanceKey("miscStats.timesLastTitanRemaining", "int")
+    AddPersistanceKey("miscStats.killingSprees", "int")
+    AddPersistanceKey("miscStats.coopChallengesCompleted", "int")
+    AddPersistanceKey("miscStats.forgedCertificationsUsed", "int")
+    AddPersistanceKey("miscStats.regenForgedCertificationsUsed", "int")
+
+    AddPersistanceKey("kdratio_lifetime", "float")
+    AddPersistanceKey("kdratio_lifetime_pvp", "float")
+    AddPersistenceArray("kdratio_match", 10)
+    AddPersistanceKey("kdratio_match", "float")
+    AddPersistenceArray("kdratiopvp_match", 10)
+    AddPersistanceKey("kdratiopvp_match", "float")
+
+    AddPersistanceKey("winStreak", "int")
+    AddPersistanceKey("highestWinStreakEver", "int")
+    AddPersistanceKey("winStreakIsDraws", "bool")
+    AddPersistenceArray("winLossHistory", 10)
+    AddPersistanceKey("winLossHistory", "int")
+    AddPersistanceKey("winLossHistorySize", "int")
+
+    AddPersistanceKey("mostProjectilesCollectedInVortex", "int")
+    AddPersistanceKey("blackMarketItemsBought", "int")
+
+    AddPersistanceKey("respawnKillInfected", "bool")
+
+    ::eGemState <- {
+        gem_undefeated = 0
+	    gem_damaged = 1
+	    gem_captured = 2
+	    gem_lost = 3
+    }
+
+    AddPersistenceEnum("eGemState", eGemState)
+
+    ::eMatchValid <- {
+     	["true"] = 0,
+	    low_player_count = 1,
+	    low_time_played = 2,
+	    quit_early = 3
+    }
+
+    AddPersistenceArray("ranked.gems", 135)
+    AddPersistanceKey("ranked.gems.gemScore", "float")
+    AddPersistanceKey("ranked.gems.gemState", "eGemState")
+    AddPersistanceKey("ranked.previousGemCount", "int")
+    AddPersistenceArray("ranked.previousGems", 6)
+    AddPersistanceKey("ranked.currentRank", "int")
+    AddPersistanceKey("ranked.isPlayingRanked", "bool")
+    AddPersistenceArray("ranked.sponsorHash", 15)
+    AddPersistanceKey("ranked.sponsorHash", "int")
+    AddPersistenceKey("ranked.sponsorName", "string")
+    AddPersistenceArray("ranked.historyHash", 120)
+    AddPersistanceKey("ranked.historyHash", "int")
+    AddPersistenceArray("ranked.historyWon", 120)
+    AddPersistanceKey("ranked.historyWon", "bool")
+    AddPersistanceKey("ranked.recordedSkill", "float")
+    AddPersistanceKey("ranked.matchValid", "eMatchValid")
+    AddPersistenceArray("ranked.contributionPoints", 8)
+    AddPersistanceKey("ranked.contributionPoints", "int")
+    AddPersistanceKey("ranked.lastSponsorshipDate", "int")
+    AddPersistanceKey("ranked.sponsorshipsRemaining", "int")
+    AddPersistanceKey("ranked.mySponsorXuid", "string")
+    AddPersistanceKey("ranked.mySponsorName", "string")
+    AddPersistanceKey("ranked.viewRankedPlayIntro", "bool")
+    AddPersistanceKey("ranked.joinedRankedPlay", "bool")
+    AddPersistanceKey("ranked.debugMM", "bool")
+    AddPersistanceKey("ranked.nextGemDecayTime", "int")
+    AddPersistanceKey("ranked.nextInviteTime", "int")
+    AddPersistanceKey("ranked.currentSeason.season", "int")
+    AddPersistanceKey("ranked.currentSeason.seasonStartTime", "int")
+    AddPersistanceKey("ranked.currentSeason.seasonEndTime", "int")
+    AddPersistanceKey("ranked.currentSeason.rank", "int")
+    AddPersistanceKey("ranked.currentSeason.gamesPlayed", "int")
+    AddPersistanceKey("ranked.currentSeason.bestRating", "float")
+    AddPersistanceKey("ranked.currentSeason.bestRank", "int")
+    AddPersistenceArray("ranked.currentSeason.rankGraph", 28)
+    AddPersistanceKey("ranked.currentSeason.rankGraph", "int")
+    AddPersistenceArray("ranked.seasonHistory", 24)
+    AddPersistanceKey("ranked.seasonHistory.season", "int")
+    AddPersistanceKey("ranked.seasonHistory.seasonStartTime", "int")
+    AddPersistanceKey("ranked.seasonHistory.seasonEndTime", "int")
+    AddPersistanceKey("ranked.seasonHistory.rank", "int")
+    AddPersistanceKey("ranked.seasonHistory.gamesPlayed", "int")
+    AddPersistanceKey("ranked.seasonHistory.bestRating", "float")
+    AddPersistanceKey("ranked.seasonHistory.bestRank", "int")
+    AddPersistenceArray("ranked.seasonHistory.rankGraph", 28)
+    AddPersistanceKey("ranked.seasonHistory.rankGraph", "int")
+    AddPersistanceKey("ranked.showSeasonEndDialog", "bool")
+
+    ::challenge <- {
+        NULL = 0,
+	    // General
+
+	    ch_games_played = 1,
+	    ch_games_won = 2,
+	    ch_games_mvp = 3,
+	    ch_titan_falls = 4,
+	    ch_rodeos = 5,
+	    ch_times_ejected = 6,
+	    ch_spectres_leeched = 7,
+
+	    // Time
+
+	    ch_hours_played = 8,
+	    ch_hours_played_pilot = 9,
+	    ch_hours_played_titan = 10,
+	    ch_hours_wallhang = 11,
+
+	    // Distance
+
+	    ch_dist_total = 12,
+	    ch_dist_pilot = 13,
+	    ch_dist_titan = 14,
+	    ch_dist_wallrun = 15,
+	    ch_dist_inair = 16,
+	    ch_dist_zipline = 17,
+	    ch_dist_on_friendly_titan = 18,
+	    ch_dist_on_enemy_titan = 19,
+
+	    // Kills
+
+	    ch_grunt_kills = 20,
+	    ch_spectre_kills = 21,
+	    ch_marvin_kills = 22,
+	    ch_first_strikes = 23,
+	    ch_ejecting_pilot_kills = 24,
+	    ch_kills_while_ejecting = 25,
+	    ch_cloaked_pilot_kills = 26,
+	    ch_kills_while_cloaked = 27,
+	    ch_wallrunning_pilot_kills = 28,
+	    ch_wallhanging_pilot_kills = 29,
+	    ch_kills_while_wallrunning = 30,
+	    ch_kills_while_wallhanging = 31,
+	    ch_pilotExecutePilot = 32,
+	    ch_pilotKickMelee = 33,
+	    ch_pilotKickMeleePilot = 34,
+	    ch_titanMelee = 35,
+	    ch_titanMeleePilot = 36,
+	    ch_titanStepCrush = 37
+	    ch_titanStepCrushPilot = 38
+	    ch_titanExocutionStryder = 39
+	    ch_titanExocutionAtlas = 40
+	    ch_titanExocutionOgre = 41
+	    ch_titanFallKill = 42
+	    ch_petTitanKillsFollowMode = 43
+	    ch_petTitanKillsGuardMode = 44
+	    ch_rodeo_kills = 45,
+
+	    // Titan Primary
+
+	    ["ch_40mm_kills"] = 46,
+	    ["ch_40mm_pilot_kills"] = 47,
+	    ["ch_40mm_titan_kills"] = 48,
+	    ["ch_40mm_spectre_kills"] = 49,
+	    ["ch_40mm_grunt_kills"] = 50,
+	    ["ch_40mm_hours_used"] = 51,
+	    ["ch_40mm_crits"] = 52,
+
+	    ["ch_xo16_kills"] = 53,
+	    ["ch_xo16_pilot_kills"] = 54,
+	    ["ch_xo16_titan_kills"] = 55,
+	    ["ch_xo16_spectre_kills"] = 56,
+	    ["ch_xo16_grunt_kills"] = 57,
+	    ["ch_xo16_hours_used"] = 58,
+	    ["ch_xo16_headshots"] = 59,
+	    ["ch_xo16_crits"] = 60,
+
+	    ch_titan_sniper_kills = 61,
+	    ch_titan_sniper_pilot_kills = 62,
+	    ch_titan_sniper_titan_kills = 63,
+	    ch_titan_sniper_spectre_kills = 64,
+	    ch_titan_sniper_grunt_kills = 65,
+	    ch_titan_sniper_hours_used = 66,
+	    ch_titan_sniper_crits = 67,
+
+	    ch_arc_cannon_kills = 68,
+	    ch_arc_cannon_pilot_kills = 69,
+	    ch_arc_cannon_titan_kills = 70,
+	    ch_arc_cannon_spectre_kills = 71,
+	    ch_arc_cannon_grunt_kills = 72,
+	    ch_arc_cannon_hours_used = 73,
+
+	    ch_rocket_launcher_kills = 74,
+	    ch_rocket_launcher_pilot_kills = 75,
+	    ch_rocket_launcher_titan_kills = 76,
+	    ch_rocket_launcher_spectre_kills = 77,
+	    ch_rocket_launcher_grunt_kills = 78,
+	    ch_rocket_launcher_hours_used = 79,
+
+	    ch_triple_threat_kills = 80,
+	    ch_triple_threat_pilot_kills = 81,
+	    ch_triple_threat_titan_kills = 82,
+	    ch_triple_threat_spectre_kills = 83,
+	    ch_triple_threat_grunt_kills = 84,
+	    ch_triple_threat_hours_used = 85,
+
+	    // Titan Ordnance
+
+	    ch_salvo_rockets_kills = 86,
+	    ch_salvo_rockets_pilot_kills = 87,
+	    ch_salvo_rockets_titan_kills = 88,
+	    ch_salvo_rockets_spectre_kills = 89,
+	    ch_salvo_rockets_grunt_kills = 90,
+	    ch_salvo_rockets_hours_used = 91,
+
+	    ch_homing_rockets_titan_kills = 92,
+	    ch_homing_rockets_hours_used = 93,
+
+	    ch_dumbfire_rockets_kills = 94,
+	    ch_dumbfire_rockets_pilot_kills = 95,
+	    ch_dumbfire_rockets_titan_kills = 96,
+	    ch_dumbfire_rockets_spectre_kills = 97,
+	    ch_dumbfire_rockets_grunt_kills = 98,
+	    ch_dumbfire_rockets_hours_used = 99,
+
+	    ch_shoulder_rockets_titan_kills = 100,
+	    ch_shoulder_rockets_hours_used = 101,
+
+	    // Pilot Primary
+
+	    ch_smart_pistol_kills = 102,
+	    ch_smart_pistol_pilot_kills = 103,
+	    ch_smart_pistol_spectre_kills = 104,
+	    ch_smart_pistol_grunt_kills = 105,
+	    ch_smart_pistol_hours_used = 106,
+
+	    ch_shotgun_kills = 107,
+	    ch_shotgun_pilot_kills = 108,
+	    ch_shotgun_spectre_kills = 109,
+	    ch_shotgun_grunt_kills = 110,
+	    ch_shotgun_hours_used = 111,
+
+	    ["ch_r97_kills"] = 112,
+	    ["ch_r97_pilot_kills"] = 113,
+	    ["ch_r97_spectre_kills"] = 114,
+	    ["ch_r97_grunt_kills"] = 115,
+	    ["ch_r97_hours_used"] = 116,
+	    ["ch_r97_headshots"] = 117,
+
+	    ch_car_kills = 118,
+	    ch_car_pilot_kills = 119,
+	    ch_car_spectre_kills = 120,
+	    ch_car_grunt_kills = 121,
+	    ch_car_hours_used = 122,
+	    ch_car_headshots = 123,
+
+	    ch_lmg_kills = 124,
+	    ch_lmg_pilot_kills = 125,
+	    ch_lmg_spectre_kills = 126,
+	    ch_lmg_grunt_kills = 127,
+	    ch_lmg_hours_used = 128,
+	    ch_lmg_headshots = 129,   
+
+	    ["ch_rspn101_kills"] = 130,
+	    ["ch_rspn101_pilot_kills"] = 131,
+	    ["ch_rspn101_spectre_kills"] = 132,
+	    ["ch_rspn101_grunt_kills"] = 133,
+	    ["ch_rspn101_hours_used"] = 134,
+	    ["ch_rspn101_headshots"] = 135,
+
+	    ch_hemlok_kills = 136,
+	    ch_hemlok_pilot_kills = 137,
+	    ch_hemlok_spectre_kills = 138,
+	    ch_hemlok_grunt_kills = 139,
+	    ch_hemlok_hours_used = 140,
+	    ch_hemlok_headshots = 141,
+
+	    ["ch_g2_kills"] = 142,
+	    ["ch_g2_pilot_kills"] = 143,
+	    ["ch_g2_spectre_kills"] = 144,
+	    ["ch_g2_grunt_kills"] = 145,
+	    ["ch_g2_hours_used"] = 146,
+	    ["ch_g2_headshots"] = 147,
+
+	    ch_dmr_kills = 148,
+	    ch_dmr_pilot_kills = 149,
+	    ch_dmr_spectre_kills = 150,
+	    ch_dmr_grunt_kills = 151,
+	    ch_dmr_hours_used = 152,   
+	    ch_dmr_headshots = 153,
+
+	    ch_sniper_kills = 154,
+	    ch_sniper_pilot_kills = 155,
+	    ch_sniper_spectre_kills = 156,
+	    ch_sniper_grunt_kills = 157,
+	    ch_sniper_hours_used = 158,
+
+	    // Pilot Secondary
+
+	    ch_smr_titan_kills = 159,
+	    ch_smr_crits = 160,
+
+	    ch_mgl_titan_kills = 161,
+
+	    ch_archer_titan_kills = 162,
+
+	    ch_defender_titan_kills = 163,
+	    ch_defender_crits = 164,
+
+	    // Pilot Sidearm
+
+	    ch_autopistol_kills = 165,
+	    ch_autopistol_pilot_kills = 166,
+	    ch_autopistol_spectre_kills = 167,
+	    ch_autopistol_marvin_kills = 168,
+	    ch_autopistol_grunt_kills = 169,
+	    ch_autopistol_headshots = 170,    
+
+	    ch_semipistol_kills = 171,
+	    ch_semipistol_pilot_kills = 172,
+	    ch_semipistol_spectre_kills = 173,
+	    ch_semipistol_marvin_kills = 174,
+	    ch_semipistol_grunt_kills = 175,
+	    ch_semipistol_headshots = 176,
+
+	    ch_wingman_kills = 177,
+	    ch_wingman_pilot_kills = 178,
+	    ch_wingman_spectre_kills = 179,
+	    ch_wingman_marvin_kills = 180,
+	    ch_wingman_grunt_kills = 181,
+	    ch_wingman_headshots = 182,
+
+	    // Pilot Ordnance
+
+	    ch_frag_grenade_throws = 183,
+	    ch_frag_grenade_kills = 184,
+	    ch_frag_grenade_pilot_kills = 185,
+	    ch_frag_grenade_grunt_kills = 186,
+
+	    ch_emp_grenade_throws = 187,
+	    ch_emp_grenade_kills = 188,
+	    ch_emp_grenade_pilot_kills = 189,
+	    ch_emp_grenade_grunt_kills = 190,
+	    ch_emp_grenade_spectre_kills = 191,
+
+	    ch_proximity_mine_throws = 192,
+	    ch_proximity_mine_kills = 193,
+	    ch_proximity_mine_pilot_kills = 194,
+	    ch_proximity_mine_grunt_kills = 195,
+
+	    ch_satchel_throws = 196,
+	    ch_satchel_kills = 197,
+	    ch_satchel_pilot_kills = 198,
+	    ch_satchel_grunt_kills = 199,
+
+	    //Fireteam Defense
+	    ch_coop_wins = 200,
+	    ch_coop_perfect_waves = 201,
+	    ch_coop_nuke_titans = 202,
+	    ch_coop_suicide_spectres = 203,
+	    ch_coop_mortar_titans = 204,
+	    ch_coop_turrets = 205,
+	    ch_coop_emp_titans = 206,
+	    ch_coop_bubble_shield_grunts = 207,
+	    ch_coop_cloak_drones = 208,
+	    ch_coop_dropships = 209,
+	    ch_coop_snipers = 210
+    }
+
+    AddPersistenceEnum("challenge", challenge)
+
+    ::dailychallenge <- {
+        NULL = 0,
+	    // Dailies
+
+	    ch_daily_games_played = 1,
+	    ch_daily_games_won = 2,
+	    ch_daily_games_mvp = 3,
+	    ch_daily_titan_falls = 4,
+	    ch_daily_rodeos = 5,
+	    ch_daily_times_ejected = 6,
+	    ch_daily_spectres_leeched = 7,
+
+	    ch_daily_grunt_kills = 8,
+	    ch_daily_marvin_kills = 9,
+	    ch_daily_pilot_kills = 10,
+	    ch_daily_titan_kills = 11,
+	    ch_daily_spectre_kills = 12,
+	    ch_daily_rodeo_kills = 13,
+
+	    ch_daily_kills_while_using_burncard = 14,
+	    ch_daily_kill_npcs = 15,
+	    ch_daily_kills_while_doomed = 16,
+	    ch_daily_kills_as_stryder = 17,
+	    ch_daily_kills_as_atlas = 18
+	    ch_daily_kills_as_ogre = 19,
+	    ch_daily_headshots = 20,
+	    ch_daily_kills_evac_ships = 21,
+	    ch_daily_kills_flyers = 22,
+	    ch_daily_kills_nuclear_core = 23,
+	    ch_daily_kills_evacuating_enemies = 24,
+
+	    ch_daily_first_strikes = 25,
+	    ch_daily_cloaked_pilot_kills = 26,
+	    ch_daily_kills_while_cloaked = 27,
+	    ch_daily_titanFallKill = 28, 
+	    ch_daily_petTitanKillsFollowMode = 29,
+	    ch_daily_petTitanKillsGuardMode = 30,
+
+	    ch_daily_ejecting_pilot_kills = 31,
+	    ch_daily_kills_while_ejecting = 32,
+	    ch_daily_kills_while_wallrunning = 33,
+	    ch_daily_kills_while_wallhanging = 34,
+	    ch_daily_titanStepCrush = 35,
+	    ch_daily_titanStepCrushPilot = 36,
+
+	    ch_daily_pilotExecutePilot = 37,
+	    ch_daily_pilotKickMelee = 38,
+	    ch_daily_pilotKickMeleePilot = 39,
+	    ch_daily_titanMelee = 40,
+	    ch_daily_titanMeleePilot = 41,
+	    ch_daily_titanExocutionStryder = 42,
+	    ch_daily_titanExocutionAtlas = 43,
+	    ch_daily_titanExocutionOgre = 44,
+
+	    ["ch_daily_40mm_kills"] = 45,
+	    ["ch_daily_40mm_pilot_kills"] = 46,
+	    ["ch_daily_40mm_titan_kills"] = 47,
+	    ["ch_daily_40mm_grunt_kills"] = 48,
+	    ["ch_daily_40mm_crits"] = 49,
+
+	    ["ch_daily_xo16_kills"] = 50,
+	    ["ch_daily_xo16_pilot_kills"] = 51,
+	    ["ch_daily_xo16_titan_kills"] = 52,
+	    ["ch_daily_xo16_grunt_kills"] = 53, 
+	    ["ch_daily_xo16_crits"] = 54,
+
+	    ch_daily_titan_sniper_kills = 55,
+	    ch_daily_titan_sniper_pilot_kills = 56,
+	    ch_daily_titan_sniper_titan_kills = 57,
+	    ch_daily_titan_sniper_grunt_kills = 58,
+	    ch_daily_titan_sniper_crits = 59,
+
+	    ch_daily_arc_cannon_kills = 60,
+	    ch_daily_arc_cannon_pilot_kills = 61,
+	    ch_daily_arc_cannon_titan_kills = 62,
+	    ch_daily_arc_cannon_grunt_kills = 63,
+	    ch_daily_arc_cannon_multi_kills = 64,
+
+	    ch_daily_rocket_launcher_kills = 65,
+	    ch_daily_rocket_launcher_pilot_kills = 66,
+	    ch_daily_rocket_launcher_titan_kills = 67,
+	    ch_daily_rocket_launcher_grunt_kills = 68,
+
+	    ch_daily_triple_threat_kills = 69,
+	    ch_daily_triple_threat_pilot_kills = 70,
+	    ch_daily_triple_threat_titan_kills = 71,
+	    ch_daily_triple_threat_grunt_kills = 72,
+
+	    ch_daily_salvo_rockets_kills = 73,
+	    ch_daily_salvo_rockets_pilot_kills = 74,
+	    ch_daily_salvo_rockets_titan_kills = 75,
+	    ch_daily_salvo_rockets_grunt_kills = 76,
+
+	    ch_daily_homing_rockets_titan_kills = 77,
+
+	    ch_daily_dumbfire_rockets_kills = 78,
+	    ch_daily_dumbfire_rockets_pilot_kills = 79,
+	    ch_daily_dumbfire_rockets_titan_kills = 80,
+	    ch_daily_dumbfire_rockets_grunt_kills = 81,
+
+	    ch_daily_shoulder_rockets_titan_kills = 82,
+
+	    ch_daily_smart_pistol_kills = 83,
+	    ch_daily_smart_pistol_pilot_kills = 84,
+	    ch_daily_smart_pistol_spectre_kills = 85,
+	    ch_daily_smart_pistol_grunt_kills = 86,
+
+	    ch_daily_shotgun_kills = 87,
+	    ch_daily_shotgun_pilot_kills = 88,
+	    ch_daily_shotgun_spectre_kills = 89,
+	    ch_daily_shotgun_grunt_kills = 90,
+
+	    ["ch_daily_r97_kills"] = 91,
+	    ["ch_daily_r97_pilot_kills"] = 92,
+	    ["ch_daily_r97_spectre_kills"] = 93,
+	    ["ch_daily_r97_grunt_kills"] = 94,
+	    ["ch_daily_r97_headshots"] = 95,
+
+	    ch_daily_car_kills = 96,
+	    ch_daily_car_pilot_kills = 97,
+	    ch_daily_car_spectre_kills = 98,
+	    ch_daily_car_grunt_kills = 99,
+	    ch_daily_car_headshots = 100,
+
+	    ch_daily_lmg_kills = 101,
+	    ch_daily_lmg_pilot_kills = 102,
+	    ch_daily_lmg_spectre_kills = 103,
+	    ch_daily_lmg_grunt_kills = 104,
+	    ch_daily_lmg_headshots = 105,
+
+	    ["ch_daily_rspn101_kills"] = 106,
+	    ["ch_daily_rspn101_pilot_kills"] = 107,
+	    ["ch_daily_rspn101_spectre_kills"] = 108,
+	    ["ch_daily_rspn101_grunt_kills"] = 109,
+	    ["ch_daily_rspn101_headshots"] = 110,
+
+	    ch_daily_hemlok_kills = 111, 
+	    ch_daily_hemlok_pilot_kills = 112,
+	    ch_daily_hemlok_spectre_kills = 113,
+	    ch_daily_hemlok_grunt_kills = 114,
+	    ch_daily_hemlok_headshots = 115,
+
+	    ["ch_daily_g2_kills"] = 116,
+	    ["ch_daily_g2_pilot_kills"] = 117,
+	    ["ch_daily_g2_spectre_kills"] = 118,
+	    ["ch_daily_g2_grunt_kills"] = 119,
+	    ["ch_daily_g2_headshots"] = 120,
+
+	    ch_daily_dmr_kills = 121,
+	    ch_daily_dmr_pilot_kills = 122,
+	    ch_daily_dmr_spectre_kills = 123,
+	    ch_daily_dmr_grunt_kills = 124,
+	    ch_daily_dmr_headshots = 125,
+
+	    ch_daily_sniper_kills = 126,
+	    ch_daily_sniper_pilot_kills = 127,
+	    ch_daily_sniper_spectre_kills = 128,
+	    ch_daily_sniper_grunt_kills = 129,
+
+	    ch_daily_smr_titan_kills = 130,
+	    ch_daily_smr_crits = 131,
+	    ch_daily_mgl_titan_kills = 132,
+	    ch_daily_archer_titan_kills = 133,
+	    ch_daily_defender_titan_kills = 134,
+	    ch_daily_defender_crits = 135,
+
+	    ch_daily_autopistol_kills = 136,
+	    ch_daily_autopistol_pilot_kills = 137,
+	    ch_daily_autopistol_spectre_kills = 138,
+	    ch_daily_autopistol_grunt_kills = 139,
+	    ch_daily_autopistol_headshots = 140,
+
+	    ch_daily_semipistol_kills = 141,
+	    ch_daily_semipistol_pilot_kills = 142,
+	    ch_daily_semipistol_spectre_kills = 143,
+	    ch_daily_semipistol_grunt_kills = 144,
+	    ch_daily_semipistol_headshots = 145,
+
+	    ch_daily_wingman_kills = 146,
+	    ch_daily_wingman_pilot_kills = 147,
+	    ch_daily_wingman_spectre_kills = 148,
+	    ch_daily_wingman_grunt_kills = 149,
+	    ch_daily_wingman_headshots = 150,
+
+	    ch_daily_frag_grenade_kills = 151, 
+	    ch_daily_frag_grenade_pilot_kills = 152,
+	    ch_daily_frag_grenade_grunt_kills = 153,
+
+	    ch_daily_emp_grenade_kills = 154,
+	    ch_daily_emp_grenade_pilot_kills = 155,
+	    ch_daily_emp_grenade_grunt_kills = 156,
+	    ch_daily_emp_grenade_spectre_kills = 157,
+
+	    ch_daily_proximity_mine_kills = 158,
+	    ch_daily_proximity_mine_pilot_kills = 159,
+	    ch_daily_proximity_mine_grunt_kills = 160,
+
+	    ch_daily_satchel_kills = 161,
+	    ch_daily_satchel_pilot_kills = 162,
+	    ch_daily_satchel_grunt_kills = 163,
+
+	    ch_daily_burncards_used = 164,
+	    ch_daily_flag_captures = 165,
+	    ch_daily_evacs_survived = 166,
+	    ch_daily_hardpoints_captured = 167,
+	    ch_daily_killing_sprees = 168,
+
+	    ch_daily_play_at = 169,
+	    ch_daily_play_ctf = 170,
+	    ch_daily_play_lts = 171,
+	    ch_daily_play_cp = 172,
+	    ch_daily_play_tdm = 173,
+	    ch_daily_play_wlts = 174,
+	    ch_daily_play_mfd = 175,
+	    ch_daily_play_coop = 176,
+
+	    ch_daily_win_at = 177,
+	    ch_daily_win_ctf = 178,
+	    ch_daily_win_lts = 179,
+	    ch_daily_win_cp = 180,
+	    ch_daily_win_tdm = 181,
+	    ch_daily_win_wlts = 182,
+	    ch_daily_win_mfd = 183,
+	    ch_daily_win_coop = 184,
+    }
+
+    AddPersistenceEnum("dailychallenge", dailychallenge)
+
+    AddPersistanceArray("challenges", "challenge")
+    AddPersistanceKey("challenges.progress", "float")
+    AddPersistanceKey("challenges.previousProgress", "float")
+    AddPersistanceArray("dailychallenges", "dailychallenge")
+    AddPersistanceKey("dailychallenges.progress", "float")
+    AddPersistanceKey("dailychallenges.previousProgress", "float")
+
+    AddPersistanceArray("activeDailyChallenges", 9)
+    AddPersistanceKey("activeDailyChallenges.ref", "dailychallenge")
+    AddPersistanceKey("activeDailyChallenges.day", "int")
+
+    AddPersistanceArray("trackedChallenges", 3)
+    AddPersistanceKey("trackedChallenges", "int")
+    AddPersistanceArray("EOGTrackedChallenges", 3)
+    AddPersistanceKey("EOGTrackedChallenges", "int")
+    AddPersistanceArray("trackedChallengeRefs", 3)
+    AddPersistanceKey("trackedChallengeRefs", "string")
+    AddPersistanceArray("EOGTrackedChallengeRefs", 3)
+    AddPersistanceKey("EOGTrackedChallengeRefs", "string")
+    AddPersistanceKey("newRegenChallenges", "bool")
+    AddPersistanceKey("dailyChallengeDayIndex", "int")
+    AddPersistanceKey("newDailyChallenges", "bool")
+
+    AddPersistanceKey("ach_campaignWonAllLevelsIMC", "int")
+    AddPersistanceKey("ach_campaignWonAllLevelsMCOR", "int")
+    AddPersistanceKey("ach_createPilotLoadout", "bool")
+    AddPersistanceKey("ach_createTitanLoadout", "bool")
+    AddPersistanceKey("ach_allModesAllMaps", "bool")
+    AddPersistanceKey("ach_multikillArcRifle", "bool")
+    AddPersistanceKey("ach_completedTraining", "bool")
+    AddPersistanceKey("ach_unlockEverything", "bool")
+    AddPersistanceKey("ach_allChallengesForSingleWeapon", "bool")
+    AddPersistanceKey("ach_vortexVolley", "bool")
+    AddPersistanceKey("ach_killedAllEvacPlayersSolo", "bool")
+    AddPersistanceKey("ach_reachedMaxLevel", "bool")
+
+    AddPersistanceKey("ach_swamplandWon", "bool")
+    AddPersistenceKey("ach_swamplandAllModes", "int")
+    AddPersistanceKey("ach_swamplandDontTouchGround", "bool")
+    AddPersistanceKey("ach_swamplandAirborne", "float")
+    AddPersistanceKey("ach_runoffWon", "bool")
+    AddPersistenceKey("ach_runoffAllModes", "int")
+    AddPersistanceKey("ach_runoffEnemiesKilledWallrunning", "int")
+    AddPersistanceKey("ach_runoffEnemiesKilled", "int")
+    AddPersistanceKey("ach_wargamesWon", "bool")
+    AddPersistenceKey("ach_wargamesAllModes", "int")
+    AddPersistanceKey("ach_wargamesPilotKillsSingleMatch", "int")
+    AddPersistanceKey("ach_wargamesPilotsKilled", "int")
+
+    AddPersistanceKey("dlc2achievement.ach_havenWon", "bool")
+    AddPersistenceKey("dlc2achievement.ach_havenAllModes", "int")
+    AddPersistanceKey("dlc2achievement.ach_havenTitansExecuted", "bool")
+    AddPersistanceKey("dlc2achievement.ach_havenTitansKilledWhileBCActive", "int")
+    AddPersistanceKey("dlc2achievement.ach_exportWon", "bool")
+    AddPersistenceKey("dlc2achievement.ach_exportAllModes", "int")
+    AddPersistanceKey("dlc2achievement.ach_exportTrapKill", "bool")
+    AddPersistanceKey("dlc2achievement.ach_exportKillsWhileCloaked", "int")
+    AddPersistanceKey("dlc2achievement.ach_digsiteWon", "bool")
+    AddPersistenceKey("dlc2achievement.ach_digsiteAllModes", "int")
+    AddPersistanceKey("dlc2achievement.ach_digsitePilotKillsSingleMatch", "bool")
+    AddPersistanceKey("dlc2achievement.ach_digsitePilotKills", "int")
+
+    AddPersistanceKey("dlc3achievement.ach_backwaterWon", "bool")
+    AddPersistenceKey("dlc3achievement.ach_backwaterAllModes", "int")
+    AddPersistanceKey("dlc3achievement.ach_backwaterAmpedVortexKills", "int")
+    AddPersistanceKey("dlc3achievement.ach_backwaterMeleeCloakKills", "int")
+    AddPersistenceKey("dlc3achievement.ach_sandtrapWon", "bool")
+    AddPersistenceKey("dlc3achievement.ach_sandtrapAllModes", "int")
+    AddPersistanceKey("dlc3achievement.ach_sandtrapActiveRadarKills", "int")
+    AddPersistanceKey("dlc3achievement.ach_sandtrap2TitanKillsAsPilot", "bool")
+    AddPersistenceKey("dlc3achievement.ach_zone18Won", "bool")
+    AddPersistenceKey("dlc3achievement.ach_zone18AllModes", "int")
+    AddPersistanceKey("dlc3achievement.ach_zone18StimPilotKills", "int")
+    AddPersistanceKey("dlc3achievement.ach_zone18PilotKillsAsTitan", "bool")
+
+    AddPersistenceKey("cu8achievement.ach_blackMarketCreditsEarned", "int")
+    AddPersistenceKey("cu8achievement.ach_burncardsDiscarded", "int")
+    AddPersistenceKey("cu8achievement.ach_titanVoicePacksUnlocked", "int")
+    AddPersistenceKey("cu8achievement.ach_allDailyChallengesForDay", "bool")
+    AddPersistenceKey("cu8achievement.ach_twoStarCoopMaps", "int")
+    AddPersistenceKey("cu8achievement.ach_renamedCustomLoadout", "bool")
+    AddPersistenceKey("cu8achievement.ach_titanInsigniasUnlocked", "int")
+    AddPersistenceKey("cu8achievement.ach_titanBurnCardsUsed", "int")
+    AddPersistenceKey("cu8achievement.ach_threeStarsAwarded", "bool")
+    AddPersistanceKey("cu8achievement.ach_totalStarsEarned", "int")
+    AddPersistenceKey("cu8achievement.ach_rankedGamesPlayed", "int")
+    AddPersistenceKey("cu8achievement.ach_battlemarksEarned", "int")
+    AddPersistenceKey("cu8achievement.ach_reachedGen10NoForgedCert", "bool")
+}
+
+if( IsServer() )
+{
+    
+function PersistenceGetEnumCount( val )
+{
+	//printt("PersistenceGetEnumCount: " + val )
+	return 0
+}
+
+function PersistenceGetArrayCount( val )
+{
+	//printt("PersistenceGetArrayCount: " + val )
+	return 0
+}
+
+function PersistenceEnumValueIsValid( val, index )
+{
+	//printt("PersistenceEnumValueIsValid: " + val + " " + index )
+	return false
+}
+
 }
 
 // Helper function to pack values with type information
