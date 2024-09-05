@@ -1,5 +1,5 @@
 printl( "Class Script: CBasePlayer" )
-IncludeScript("_pdef")
+::DoIncludeScript( "_pdef", this)
 __nextInputHandle <- 0
 
 CBasePlayer.ClassName <- "CBasePlayer"

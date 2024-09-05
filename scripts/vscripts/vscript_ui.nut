@@ -95,7 +95,7 @@ IncludeFile( "ui/menu_credits" )
 IncludeFile( "ui/menu_map_select" )
 IncludeFile( "ui/menu_mode_select" )
 IncludeFile( "ui/menu_ranked_mode_info" )
-
+IncludeScript( "_pdef_client" )
 
 function main()
 {

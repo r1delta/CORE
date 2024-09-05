@@ -301,7 +301,7 @@ client.dll,rdata,0x9207B8,"IsPrivateMatch","idkman\x00"
 ; force it so that the initial netchan redundant userinfo send only sends persistent convars by forcing splitscreen slot to -1
 engine.dll,text,0x7683F,8B 8B E8 00 00 00,B9 FF FF FF FF 90
 ; remove 255 clamp from Host_BuildUserInfoUpdate
-engine.dll,text,0x134A8C,0F 84 7D 01 00 00,90 90 90 90 90 90
+engine.dll,text,0x134C16,7E,EB
 ; fix ip leak (TODO: dedicated)
 engine.dll,text,0xDA899,74,EB
 ; rename old persistence funcs
