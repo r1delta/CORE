@@ -1669,6 +1669,169 @@ function InitPersistence()
     AddPersistenceKey("cu8achievement.ach_rankedGamesPlayed", "int")
     AddPersistenceKey("cu8achievement.ach_battlemarksEarned", "int")
     AddPersistenceKey("cu8achievement.ach_reachedGen10NoForgedCert", "bool")
+
+    ::trainingModules <- {
+	    JUMP = 0,
+	    WALLRUN = 1,
+	    WALLRUN_PLAYGROUND = 2,
+	    DOUBLEJUMP = 3,
+	    DOUBLEJUMP_PLAYGROUND = 4,
+	    CLOAK = 5,
+	    BASIC_COMBAT = 6,
+	    FIRINGRANGE = 7,
+	    FIRINGRANGE_GRENADES = 8,
+	    MOSH_PIT = 9,
+	    TITAN_DASH = 10,
+	    TITAN_VORTEX = 11,
+	    TITAN_PET = 12,
+	    TITAN_MOSH_PIT = 13,
+	    BEDROOM_END = 14,
+    }
+
+    AddPersistenceEnum("trainingModules", trainingModules)
+
+    AddPersistanceArray("trainingModulesCompleted", "trainingModules")
+    AddPersistanceKey("trainingModulesCompleted", "bool")
+
+    AddPersistanceKey("savedScoreboardData.gameMode", "int")
+    AddPersistanceKey("savedScoreboardData.map", "int")
+    AddPersistanceKey("savedScoreboardData.playerTeam", "int")
+    AddPersistanceKey("savedScoreboardData.playerIndex", "int")
+    AddPersistanceKey("savedScoreboardData.maxTeamPlayers", "int")
+    AddPersistanceKey("savedScoreboardData.numPlayersIMC", "int")
+    AddPersistanceKey("savedScoreboardData.numPlayersMCOR", "int")
+    AddPersistanceKey("savedScoreboardData.scoreIMC", "int")
+    AddPersistanceKey("savedScoreboardData.scoreMCOR", "int")
+    AddPersistanceKey("savedScoreboardData.privateMatch", "bool")
+    AddPersistanceKey("savedScoreboardData.campaign", "bool")
+    AddPersistanceKey("savedScoreboardData.ranked", "bool")
+    AddPersistanceKey("savedScoreboardData.hadMatchLossProtection", "bool")
+    AddPersistenceArray("savedScoreboardData.playersIMC", 8)
+    AddPersistanceKey("savedScoreboardData.playersIMC.name", "string")
+    AddPersistanceKey("savedScoreboardData.playersIMC.xuid", "string")
+    AddPersistanceKey("savedScoreboardData.playersIMC.level", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.gen", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.score_assault", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.score_defense", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.score_kills", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.score_deaths", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.score_titanKills", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.score_npcKills", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.score_assists", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.playingRanked", "bool")
+    AddPersistanceKey("savedScoreboardData.playersIMC.rank", "int")
+    AddPersistanceKey("savedScoreboardData.playersIMC.matchPerformance", "float")
+    AddPersistenceArray("savedScoreboardData.playersMCOR", 8)
+    AddPersistanceKey("savedScoreboardData.playersMCOR.name", "string")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.xuid", "string")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.level", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.gen", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.score_assault", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.score_defense", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.score_kills", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.score_deaths", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.score_titanKills", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.score_npcKills", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.score_assists", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.playingRanked", "bool")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.rank", "int")
+    AddPersistanceKey("savedScoreboardData.playersMCOR.matchPerformance", "float")
+
+    AddPersistanceKey("previousGooserProgress", "int")
+
+    AddPersistenceKey("savedCoopData.completedWaves", "int")
+    AddPersistenceKey("savedCoopData.totalWaves", "int")
+    AddPersistenceKey("savedCoopData.harvesterHealth", "int")
+    AddPersistenceKey("savedCoopData.retriesUsed", "int")
+    AddPersistenceKey("savedCoopData.gameDuration", "int")
+    AddPersistenceKey("savedCoopData.starsEarned", "int")
+    AddPersistenceKey("savedCoopData.teamScore.enemiesKilled", "int")
+    AddPersistenceKey("savedCoopData.teamScore.maxEnemiesKilled", "int")
+    AddPersistenceKey("savedCoopData.teamScore.harvesterHealth", "int")
+    AddPersistenceKey("savedCoopData.teamScore.maxHarvesterHealth", "int")
+    AddPersistenceKey("savedCoopData.teamScore.wavesCompletedBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.maxWavesCompletedBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.finalWaveCompletedBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.maxFinalWaveCompletedBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.flawlessWaveBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.maxFlawlessWaveBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.retriesBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.maxRetriesBonus", "int")
+    AddPersistenceKey("savedCoopData.teamScore.teamScore", "int")
+    AddPersistanceArray("savedCoopData.militiaKillCounts", 9)
+    AddPersistanceKey("savedCoopData.militiaKillCounts.killCount", "int")
+    AddPersistanceKey("savedCoopData.militiaKillCounts.turretKillCount", "int")
+    AddPersistanceArray("savedCoopData.players", 4)
+    AddPersistanceKey("savedCoopData.players.name", "string")
+    AddPersistanceKey("savedCoopData.players.xuid", "string")
+    AddPersistanceKey("savedCoopData.players.entityIndex", "int")
+    AddPersistanceArray("savedCoopData.players.enemyType", 9)
+    AddPersistanceKey("savedCoopData.players.enemyType.killCount", "int")
+    AddPersistanceKey("savedCoopData.players.enemyType.turretKillCount", "int")
+
+    AddPersistanceArray("mapHistory", 24)
+    AddPersistanceKey("mapHistory", "int")
+    AddPersistanceArray("modeHistory", 10)
+    AddPersistanceKey("modeHistory", "int")
+
+    ::BlackMarketUnlocks <- {
+        ["titan_decals_blackmarket01"] = 0,
+	    ["titan_decals_blackmarket02"] = 1, 
+	    ["titan_decals_blackmarket03"] = 2,
+	    ["titan_decals_blackmarket04"] = 3,
+	    ["titan_decals_blackmarket05"] = 4,
+	    ["titan_decals_blackmarket06"] = 5,
+	    ["titan_decals_blackmarket07"] = 6,
+	    ["titan_decals_blackmarket08"] = 7,
+	    titanos_femaleassistant = 8,
+	    titanos_maleintimidator = 9,
+	    titanos_bettyde = 10,
+	    titanos_bettyen = 11,
+	    titanos_bettyes = 12,
+	    titanos_bettyfr = 13,
+	    titanos_bettyit = 14,
+	    titanos_bettyjp = 15,
+	    titanos_bettyru = 16,
+    }
+
+    AddPersistenceEnum("BlackMarketUnlocks", BlackMarketUnlocks)
+
+    ::blackMarketPerishableTypes <- {
+        NULL = 0,
+	    perishable_burncard = 1,
+    }
+
+    AddPersistenceEnum("blackMarketPerishableTypes", blackMarketPerishableTypes)
+
+    AddPersistenceKey("bm.coinCount", "int")
+    AddPersistenceKey("bm.previousCoinCount", "int")
+    AddPersistanceArray("bm.coin_rewards", 6)
+    AddPersistanceKey("bm.coin_rewards", "int")
+    AddPersistanceArray("bm.coin_reward_counts", 6)
+    AddPersistanceKey("bm.coin_reward_counts", "int")
+    AddPersistanceKey("bm.newBlackMarketItems", "bool")
+    AddPersistanceKey("bm.nextDiceCardDate", "int")
+    AddPersistanceArray("bm.blackMarketItemUnlocks", "BlackMarketUnlocks")
+    AddPersistanceKey("bm.blackMarketItemUnlocks", "bool")
+    AddPersistanceArray("bm.blackMarketPerishables", 9)
+    AddPersistanceKey("bm.blackMarketPerishables.nextRestockDate", "int")
+    AddPersistanceKey("bm.blackMarketPerishables.perishableType", "blackMarketPerishableTypes")
+    AddPersistanceKey("bm.blackMarketPerishables.cardRef", "burnCard")
+    AddPersistanceKey("bm.blackMarketPerishables.coinCost", "int")
+    AddPersistanceKey("bm.blackMarketPerishables.new", "bool")
+    AddPersistanceKey("bm.challengeSkips", "int")
+
+    AddPersistanceKey("lastDailyMatchVictory", "int")
+    AddPersistanceKey("lastTimePlayed", "int")
+    AddPersistanceKey("lastTimeLoggedIn", "int")
+
+    AddPersistanceArray("mapStars", "maps")
+    AddPersistenceArray("mapStars.bestScore", "gameModesWithStars")
+    AddPersistanceKey("mapStars.bestScore", "int")
+    AddPersistenceArray("mapStars.previousBestScore", "gameModesWithStars")
+    AddPersistanceKey("mapStars.previousBestScore", "int")
+
+    AddPersistanceKey("playlistAnnouncementSeen", "bool")
 }
 
 if( IsServer() )
