@@ -8,14 +8,19 @@ function PackValue(value, type) {
         case "string": typeCode = "s"; break
         default: typeCode = "x"; break // Invalid type
     }
-	if (typeCode != "x")
-		return typeCode + value.tostring()
-	return "x"
+    if (typeCode != "x") {
+        if (type == "bool") {
+            return typeCode + (value ? "1" : "0")
+        } else {
+            return typeCode + value.tostring()
+        }
+    }
+    return "x"
 }
 
 // Helper function to unpack values and verify their type
 function UnpackValue(packedValue) {
-	if (packedValue.len() < 2) return null
+    if (packedValue.len() < 2) return null
     local typeCode = packedValue[0].tochar()
     local value = packedValue.slice(1)
     
@@ -24,7 +29,7 @@ function UnpackValue(packedValue) {
     } else if ("f" == typeCode) {
         return value.tofloat()
     } else if ("b" == typeCode) {
-        return value == "true"
+        return value == "1"
     } else if ("s" == typeCode) {
         return value
     } else {
