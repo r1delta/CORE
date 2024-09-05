@@ -1,5 +1,5 @@
 printl( "Class Script: CBasePlayer" )
-
+IncludeScript("_pdef")
 __nextInputHandle <- 0
 
 CBasePlayer.ClassName <- "CBasePlayer"
@@ -45,15 +45,27 @@ function CBasePlayer::constructor()
 	clientCommandCallbacks = {}
 }
 
-function CBasePlayer::GetPersistentVar( key )
-{
-	//printt( "GetPersistentVar " + key )
-	return 0
+
+// Server implementation of GetPersistentVar (CBasePlayer method)
+function CBasePlayer::GetPersistentVar(key) {
+    if (!IsValidKey(key)) return 0
+    
+    local packedValue = GetPersistentStringForClient(this, key, "")
+    if (packedValue == "") return 0
+    
+    local unpackedValue = UnpackValue(packedValue)
+    return (unpackedValue != null) ? unpackedValue : 0
 }
 
-function CBasePlayer::SetPersistentVar( key, value )
-{
-	//printt( "SetPersistentVar " + key + " " + value )
+// Server implementation of SetPersistentVar (CBasePlayer method)
+function CBasePlayer::SetPersistentVar(key, value) {
+    if (!IsValidKey(key)) return
+    
+    local type = typeof value
+    local packedValue = PackValue(value, type)
+    
+    if (packedValue[0] != 'x') // 'x' indicates invalid type
+        SetPersistentStringForClient(this, key, packedValue)
 }
 
 __RespawnPlayer <- CBasePlayer.RespawnPlayer
