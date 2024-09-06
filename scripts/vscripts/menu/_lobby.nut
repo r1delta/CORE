@@ -149,27 +149,27 @@ function CodeCallback_OnClientConnectionStarted( player )
 
 function UpdateBurnCardSet( player, setIndex )
 {
-	if ( !PlayerFullyConnected( player ) )
-		return
+	// if ( !PlayerFullyConnected( player ) )
+	// 	return
 
-	if ( !UsingAlternateBurnCardPersistence() )
-		return
+	// if ( !UsingAlternateBurnCardPersistence() )
+	// 	return
 
-	local deck = GetBurnCardSetForIndex( setIndex )
-	for ( local slotID = 0; slotID < INGAME_BURN_CARDS; slotID++ )
-	{
-		local cardRef = deck.len() ? deck.remove( 0 ) : null
-		SetPlayerActiveBurnCardSlotContents( player, slotID, cardRef, false )
-	}
+	// local deck = GetBurnCardSetForIndex( setIndex )
+	// for ( local slotID = 0; slotID < INGAME_BURN_CARDS; slotID++ )
+	// {
+	// 	local cardRef = deck.len() ? deck.remove( 0 ) : null
+	// 	SetPlayerActiveBurnCardSlotContents( player, slotID, cardRef, false )
+	// }
 
-	local pmDeck = []
-	foreach ( cardRef in deck )
-	{
-		pmDeck.append( { cardRef = cardRef, new = false } )
-	}
-	FillBurnCardDeckFromArray( player, pmDeck )
+	// local pmDeck = []
+	// foreach ( cardRef in deck )
+	// {
+	// 	pmDeck.append( { cardRef = cardRef, new = false } )
+	// }
+	// FillBurnCardDeckFromArray( player, pmDeck )
 
-	ChangedPlayerBurnCards( player )
+	// ChangedPlayerBurnCards( player )
 }
 Globalize( UpdateBurnCardSet )
 
