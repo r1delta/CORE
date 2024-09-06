@@ -337,7 +337,7 @@ function UpdateFooterButtons( menuName = null )
 		case "EditPilotLoadoutsMenu":
 		case "EditTitanLoadoutsMenu":
 			local focusedItem = GetFocus()
-			if ( focusedItem != null && focusedItem != "" )
+			if ( focusedItem != null )
 			{
 				local isCustom = ("isCustom" in focusedItem.s) && focusedItem.s.isCustom
 				if ( isCustom )

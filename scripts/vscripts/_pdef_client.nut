@@ -12,7 +12,7 @@ function GetPersistentVar(name) {
     } else if (type == "float") {
         return (value == "") ? 0.0 : value.tofloat()
     } else if (type == "bool") {
-        return (value == "") ? false : (value == "1")
+        return (value == "") ? false : (value.tointeger() == 1)
     } else if (type == "string") {
         return value
     } else {

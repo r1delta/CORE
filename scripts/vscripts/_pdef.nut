@@ -721,6 +721,21 @@ function InitPersistence()
 	    ["bc_titan_melee_m2"] = 73,
 	    ["bc_extra_dash"] = 74,      
     }
+	::struct_activeBurnCardData <- {
+		cardRef = null,
+		lastCardRef = null,
+		clearOnStart = false
+	}
+
+	AddPersistenceArray("persData_activeBurnCards", 3)
+	AddPersistenceKey("persData_activeBurnCards.cardRef", "burnCard")
+	AddPersistenceKey("persData_activeBurnCards.lastCardRef", "burnCard") 
+	AddPersistenceKey("persData_activeBurnCards.clearOnStart", "bool")
+	
+	AddPersistenceArray("persData_pm_activeBurnCards", 3)
+	AddPersistenceKey("persData_pm_activeBurnCards.cardRef", "burnCard")
+	AddPersistenceKey("persData_pm_activeBurnCards.lastCardRef", "burnCard")
+	AddPersistenceKey("persData_pm_activeBurnCards.clearOnStart", "bool")
 
     AddPersistenceEnum("burnCard", burnCard)
 
