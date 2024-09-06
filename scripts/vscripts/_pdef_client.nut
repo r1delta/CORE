@@ -1,7 +1,11 @@
 IncludeScript("_pdef")
 // Client/UI implementation of GetPersistentVar
 function GetPersistentVar(name) {
-    if (!IsDelta()) { return OldPersistentVar(name) }
+    if (!IsDelta()) 
+    { 
+        if ( IsClient() ) { return GetLocalClientPlayer().OldPersistentVar(name) }
+        return OldPersistentVar(name) 
+    }
     if (!IsValidKey(name)) return null
     local value = GetPersistentString(name, "pdata_null")
     local unpackedKey = UnpackKey(name)
