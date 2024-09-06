@@ -601,8 +601,8 @@ function GetPersistentPilotLoadout( player, isCustom, loadoutIndex )
 
 	foreach ( property, value in loadout )
 	{
-		//if ( ValidateLoadoutProperty( player, "pilot", loadoutIndex, property, value ) )
-		//	continue
+		if ( ValidateLoadoutProperty( player, "pilot", loadoutIndex, property, value ) )
+			continue
 
 		// invalid choice invalidates the whole loadout
 		printt( "Pilot player " + player + " has invalid loadout item " + value )
