@@ -35,12 +35,16 @@ function InitPilotLoadoutsMenu( menu )
 {
 	uiGlobal.navigateBackCallbacks[ menu ] <- PilotLoadoutsNavigateBack
 
+	uiGlobal.focusedPilotLoadoutID <- null
+	uiGlobal.registeredPilotLoadoutsIngameEditCallbacks <- false
+
 	local buttons = GetElementsByClassname( menu, "SelectLoadoutButtonClass" )
 	foreach ( button in buttons )
 	{
 		button.SetParentMenu( menu ) // TMP: should be code
 
 		button.AddEventHandler( UIE_GET_FOCUS, OnPilotLoadoutButton_Focused )
+		button.AddEventHandler( UIE_LOSE_FOCUS, OnPilotLoadoutButton_LostFocus ) 
 		button.AddEventHandler( UIE_CLICK, OnPilotLoadoutButton_Activate )
 	}
 
@@ -221,11 +225,17 @@ function OnPilotLoadoutButton_Focused( button )
 	local buttonID = button.GetScriptID().tointeger()
 	local presetPilotLoadouts = UI_GetPresetPilotLoadouts()
 
+	uiGlobal.focusedPilotLoadoutID = null
+
 	local loadout
 	if ( buttonID < presetPilotLoadouts.len() )
 		loadout = UI_GetPresetPilotLoadout( button.loadoutID )
 	else if ( buttonID >= presetPilotLoadouts.len() )
+	{
 		loadout = UI_GetCustomPilotLoadout( button.loadoutID )
+		if ( !button.IsLocked() )
+			uiGlobal.focusedPilotLoadoutID = button.loadoutID
+	}
 
 	if ( !loadout )
 		return
@@ -233,6 +243,12 @@ function OnPilotLoadoutButton_Focused( button )
 	local menu = button.GetParentMenu()
 
 	UpdatePilotLoadoutElems( menu, loadout, button )
+}
+
+function OnPilotLoadoutButton_LostFocus( button )
+{
+	//if (uiGlobal.focusedPilotLoadoutID && uiGlobal.focusedPilotLoadoutID == button.loadoutID)
+	//	uiGlobal.focusedPilotLoadoutID = null
 }
 
 function OnEditPilotLoadoutButton_LostFocus( button )
@@ -246,6 +262,8 @@ function OnEditPilotLoadoutButton_LostFocus( button )
 
 function OnPilotLoadoutButton_Activate( button )
 {
+	DeregisterPilotLoadoutsIngameEditCallbacks()
+
 	if ( !IsConnected() )
 		return
 
@@ -311,7 +329,7 @@ function OnEditPilotLoadoutButton_Activate( button )
 	if ( button.IsLocked() )
 		return
 
-	Assert( GetActiveLevel() == "mp_lobby" )
+	//Assert( GetActiveLevel() == "mp_lobby" )
 
 	local isCustom = ("isCustom" in button.s) && button.s.isCustom
 
@@ -330,14 +348,61 @@ function OnEditPilotLoadoutButton_Activate( button )
 	}
 }
 
+function RegisterPilotLoadoutsIngameEditCallbacks()
+{
+	if (!uiGlobal.registeredPilotLoadoutsIngameEditCallbacks)
+	{
+		RegisterButtonPressedCallback(BUTTON_Y, PilotLoadoutsIngameEditClick)
+		RegisterButtonPressedCallback(MOUSE_RIGHT, PilotLoadoutsIngameEditClick)
+		uiGlobal.registeredPilotLoadoutsIngameEditCallbacks = true
+	}
+}
+Globalize(RegisterPilotLoadoutsIngameEditCallbacks)
+
+function DeregisterPilotLoadoutsIngameEditCallbacks()
+{
+	if (uiGlobal.registeredPilotLoadoutsIngameEditCallbacks)
+	{
+		DeregisterButtonPressedCallback(BUTTON_Y, PilotLoadoutsIngameEditClick)
+		DeregisterButtonPressedCallback(MOUSE_RIGHT, PilotLoadoutsIngameEditClick)
+		uiGlobal.registeredPilotLoadoutsIngameEditCallbacks = false
+	}
+}
+Globalize(DeregisterPilotLoadoutsIngameEditCallbacks)
+
 function PilotLoadoutsNavigateBack()
 {
+	DeregisterPilotLoadoutsIngameEditCallbacks()
+
 	if ( uiGlobal.loadoutSelectionFinished )
 		return true
 
 	SetLoadoutSelectionFinished()
 	CloseAllInGameMenus()
 	return false
+}
+
+function PilotLoadoutsIngameEditClick(player)
+{
+	if (uiGlobal.focusedPilotLoadoutID == null) return
+
+	DeregisterPilotLoadoutsIngameEditCallbacks()
+
+	if ( !IsConnected() ) return
+
+	if ( IsItemLocked( "pilot_custom_loadout_" + (uiGlobal.focusedPilotLoadoutID + 1) ) )
+		return
+
+	local loadoutID = uiGlobal.focusedPilotLoadoutID
+	local customPilotLoadouts = UI_GetCustomPilotLoadouts()
+
+	Assert( loadoutID != null && loadoutID < customPilotLoadouts.len() )
+
+	local editMenu = GetMenu( "EditPilotLoadoutMenu" )
+	editMenu.loadoutIDBeingEdited = loadoutID
+	uiGlobal.loadoutBeingEdited = customPilotLoadouts[ loadoutID ]
+
+	AdvanceMenu( editMenu )
 }
 
 function OnOpenPilotLoadoutsMenu( menu )
@@ -352,6 +417,8 @@ function OnOpenPilotLoadoutsMenu( menu )
 	local presetPilotLoadouts = UI_GetPresetPilotLoadouts()
 	local customPilotLoadouts = UI_GetCustomPilotLoadouts()
 	local buttons = GetElementsByClassname( menu, "SelectLoadoutButtonClass" )
+
+	RegisterPilotLoadoutsIngameEditCallbacks()
 
 	if ( IsItemLocked( "pilot_custom_loadout_1" ) )
 	{
@@ -393,7 +460,7 @@ function OnOpenPilotLoadoutsMenu( menu )
 			{
 				button.SetSelected( true )
 
-				if ( IsControllerModeActive() )
+				//if ( IsControllerModeActive() )
 					thread PilotDelayedFocus( button )
 			}
 			else
@@ -445,7 +512,7 @@ function OnOpenPilotLoadoutsMenu( menu )
 			{
 				button.SetSelected( true )
 
-				if ( IsControllerModeActive() )
+				//if ( IsControllerModeActive() )
 					thread PilotDelayedFocus( button )
 			}
 			else
