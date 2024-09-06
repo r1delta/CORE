@@ -186,10 +186,10 @@ function AddChallenge( ref, title, desc, icon, weaponRef = null, progressDecimal
 
 	if ( !IsUI() )
 	{
-		// local id = PersistenceGetEnumIndexForItemName( GetChallengeEnumNameForRef( ref ), ref )
-		// if ( lastChallengeCategory == eChallengeCategory.DAILY )
-		// 	id += PersistenceGetEnumCount("challenge")
-		// level.challengeData[ ref ].id <- id
+		 local id = PersistenceGetEnumIndexForItemName( GetChallengeEnumNameForRef( ref ), ref )
+		 if ( lastChallengeCategory == eChallengeCategory.DAILY )
+			id += PersistenceGetEnumCount("challenge")
+		 level.challengeData[ ref ].id <- id
 	}
 
 	// Add to the list of challenges by category

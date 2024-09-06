@@ -278,7 +278,7 @@ function SetTitanOSForPlayer( player )
 {
 	local playerClassDataTable = GetPlayerClassDataTable( player, "titan" )
 	local titanLoadoutVoice = playerClassDataTable.voiceChoice
-	local titanOSEnumIndex = 0//PersistenceGetEnumIndexForItemName( "titanOS", titanLoadoutVoice )
+	local titanOSEnumIndex = PersistenceGetEnumIndexForItemName( "titanOS", titanLoadoutVoice )
 	player.SetVoicePackIndex ( titanOSEnumIndex )
 }
 

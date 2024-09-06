@@ -10,14 +10,14 @@ function CodeCallback_OnSpawned( ent )
 		//ent.ConnectOutput( "OnDestroy", "_RemoveFromEntityList" )
 	}
 
-    //if ( IsLobby() )
-    //{
-	//	local name = ent.GetName()
-	//	if ( name != "" )
-	//		AddToNameList( ent, name )
-	//	ent.scope().RunMySpawnFunctionsMP()
-      //  return
-    //}
+    if ( IsLobby() )
+    {
+		local name = ent.GetName()
+		if ( name != "" )
+			AddToNameList( ent, name )
+		ent.scope().RunMySpawnFunctionsMP()
+        return
+    }
 
 	if ( ent.IsNPC() )
 	{

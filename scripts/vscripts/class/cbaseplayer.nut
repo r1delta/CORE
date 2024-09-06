@@ -45,27 +45,45 @@ function CBasePlayer::constructor()
 	clientCommandCallbacks = {}
 }
 
-
 // Server implementation of GetPersistentVar (CBasePlayer method)
 function CBasePlayer::GetPersistentVar(key) {
-    if (!IsValidKey(key)) return 0
-    
-    local packedValue = GetPersistentStringForClient(this, key, "")
-    if (packedValue == "") return 0
-    
-    local unpackedValue = UnpackValue(packedValue)
-    return (unpackedValue != null) ? unpackedValue : 0
+    if (!IsValidKey(key)) return null
+    local value = GetPersistentStringForClient(this, key, "")
+    local unpackedKey = UnpackKey(key)
+    local type = pdef_keys[unpackedKey]
+    if (type == "int") {
+        return (value == "") ? 0 : value.tointeger()
+    } else if (type == "float") {
+        return (value == "") ? 0.0 : value.tofloat()
+    } else if (type == "bool") {
+        return (value == "") ? false : (value == "1")
+    } else if (type == "string") {
+        return value
+    } else {
+        return null
+    }
 }
 
 // Server implementation of SetPersistentVar (CBasePlayer method)
 function CBasePlayer::SetPersistentVar(key, value) {
     if (!IsValidKey(key)) return
-    
-    local type = typeof value
-    local packedValue = PackValue(value, type)
-    
-    if (packedValue[0] != 'x') // 'x' indicates invalid type
-        SetPersistentStringForClient(this, key, packedValue)
+    if (value == null) return
+
+    local unpackedKey = UnpackKey(key)
+    local type = pdef_keys[unpackedKey]
+    local serializedValue
+    if (type == "int") {
+        serializedValue = value.tostring()
+    } else if (type == "float") {
+        serializedValue = value.tostring()
+    } else if (type == "bool") {
+        serializedValue = value ? "1" : "0"
+    } else if (type == "string") {
+        serializedValue = value
+    } else {
+        return // Invalid type, don't set
+    }
+    SetPersistentStringForClient(this, key, serializedValue)
 }
 
 __RespawnPlayer <- CBasePlayer.RespawnPlayer

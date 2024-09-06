@@ -485,7 +485,7 @@ function CreateBurnCardOnSpawn( card, rarity, group, ctFlags, image, lastsUntil,
 
 	if ( IsServer() )
 	{
-		table.enumIndex <- 0//PersistenceGetEnumIndexForItemName( "burnCard", card );
+		table.enumIndex <- PersistenceGetEnumIndexForItemName( "burnCard", card );
 	}
 	else
 	{

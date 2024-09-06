@@ -65,12 +65,12 @@ function GetPlayerClassDataTable( self, loaderClass )
 function FixInvalidGamemodeLoadoutIndex( player )
 {
 	local gameMode = GetConVarString( "mp_gamemode" )
-	// if ( !PersistenceEnumValueIsValid( "gameModesWithLoadouts", gameMode ) )
-	// 	return
+	if ( !PersistenceEnumValueIsValid( "gameModesWithLoadouts", gameMode ) )
+		return
 
 	local currentPilotLoadoutIndex = player.GetPersistentVar( "pilotSpawnLoadout.index" )
 	local currentTitanLoadoutIndex = player.GetPersistentVar( "titanSpawnLoadout.index" )
-	local modeIndex = 0//PersistenceGetEnumIndexForItemName( "gameModesWithLoadouts", gameMode )
+	local modeIndex = PersistenceGetEnumIndexForItemName( "gameModesWithLoadouts", gameMode )
 
 	// Get the loadout slots that are gamemode valid
 	local validGamemodeLoadouts = []

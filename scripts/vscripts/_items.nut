@@ -1405,10 +1405,10 @@ function CreateDecalData( type, ref, name, desc, unlockReqText, unlockReqUnlocke
 
 	// Set the skin number for the decal for each team
 	Assert( PersistenceEnumValueIsValid( "titanDecals", ref ) )
-	// local numDecals = PersistenceGetEnumCount( "titanDecals" )
-    local numDecals = 0
-	// local decalIndex = PersistenceGetEnumIndexForItemName( "titanDecals", ref )
-    local decalIndex = 0
+	local numDecals = PersistenceGetEnumCount( "titanDecals" )
+//    local numDecals = 0
+	local decalIndex = PersistenceGetEnumIndexForItemName( "titanDecals", ref )
+//    local decalIndex = 0
 	itemData[ref].imcSkinIndex <- 2 + decalIndex
 	itemData[ref].mcorSkinIndex <- 1 + decalIndex + numDecals
 

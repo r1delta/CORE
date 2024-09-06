@@ -3348,7 +3348,7 @@ function SaveScoreForMapStars( player )
 		return
 
 	local mapName = GetMapName()
-	if ( !IsValidMapName(mapName)/*!PersistenceEnumValueIsValid( "maps", mapName )*/ )
+	if ( !PersistenceEnumValueIsValid( "maps", mapName ) )
 		return
 
 	local modeName = GameRules.GetGameMode()

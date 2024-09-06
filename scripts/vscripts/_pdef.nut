@@ -8,6 +8,9 @@ function AddPersistenceKey(key, type) {
 
 function AddPersistenceEnum(key, table)
 {
+    //foreach (k, elem in table ) {
+	//	table[k] += 1
+	//}
     pdef_enums[key] <- table
 }
 
@@ -26,6 +29,12 @@ function InitPersistence()
     AddPersistenceArray("xp_match", 48)
     AddPersistenceKey("xp_match_count", "int")
     AddPersistenceArray("xp_match_count", 48)
+    AddPersistenceKey("showGameSummary", "bool") 
+    AddPersistenceKey("regenShowNew", "bool") 
+    AddPersistenceKey("spawnAsTitan", "bool") 
+    AddPersistenceKey("haveSeenCustomCoop", "bool") 
+
+
 
     ::gameModes <- {
         tdm = 0
@@ -586,32 +595,32 @@ function InitPersistence()
 	    ["titan_custom_loadout_3"] = 29,
 	    ["titan_custom_loadout_4"] = 30,
 	    ["titan_custom_loadout_5"] = 31,
-	    ["titan_custom_loadout_6"] = 31,
-	    ["titan_custom_loadout_7"] = 32,
-	    ["titan_custom_loadout_8"] = 33,
-	    ["titan_custom_loadout_9"] = 34,
-	    ["titan_custom_loadout_10"] = 35,
-	    ["titan_custom_loadout_11"] = 36,
-	    ["titan_custom_loadout_12"] = 37,
-	    ["titan_custom_loadout_13"] = 38,
-	    ["titan_custom_loadout_14"] = 39,
-	    ["titan_custom_loadout_15"] = 40,
-	    ["titan_custom_loadout_16"] = 41,
-	    ["titan_custom_loadout_17"] = 42,
-	    ["titan_custom_loadout_18"] = 43,
-	    ["titan_custom_loadout_19"] = 44,
+	    ["titan_custom_loadout_6"] = 32,
+	    ["titan_custom_loadout_7"] = 33,
+	    ["titan_custom_loadout_8"] = 34,
+	    ["titan_custom_loadout_9"] = 35,
+	    ["titan_custom_loadout_10"] = 36,
+	    ["titan_custom_loadout_11"] = 37,
+	    ["titan_custom_loadout_12"] = 38,
+	    ["titan_custom_loadout_13"] = 39,
+	    ["titan_custom_loadout_14"] = 40,
+	    ["titan_custom_loadout_15"] = 41,
+	    ["titan_custom_loadout_16"] = 42,
+	    ["titan_custom_loadout_17"] = 43,
+	    ["titan_custom_loadout_18"] = 44,
+	    ["titan_custom_loadout_19"] = 45,
 
-	    ["burn_card_slot_1"] = 45,
-	    ["burn_card_slot_2"] = 46,
-	    ["burn_card_slot_3"] = 47,
+	    ["burn_card_slot_1"] = 46,
+	    ["burn_card_slot_2"] = 47,
+	    ["burn_card_slot_3"] = 48,
 
-	    ["burn_card_pack_1"] = 48,
-	    ["burn_card_pack_2"] = 49,
-	    ["burn_card_pack_3"] = 50,
-	    ["burn_card_pack_4"] = 51,
-	    ["burn_card_pack_5"] = 52,
+	    ["burn_card_pack_1"] = 49,
+	    ["burn_card_pack_2"] = 50,
+	    ["burn_card_pack_3"] = 51,
+	    ["burn_card_pack_4"] = 52,
+	    ["burn_card_pack_5"] = 53,
 
-	    challenges = 53    
+	    challenges = 54
     }
 
     AddPersistenceEnum("unlockRefs", unlockRefs)
@@ -850,172 +859,173 @@ function InitPersistence()
     AddPersistenceKey("mapStats.hoursPlayed", "float")
     AddPersistenceKey("mapStats.timesScored100AttritionPoints_byMap", "int")
 
-    AddPersistanceKey("timeStats.total", "float")
+    AddPersistenceKey("timeStats.total", "float")
     AddPersistenceArray("timeStats.asTitan", "titanSetFile")
-    AddPersistanceKey("timeStats.asTitan", "float")
-    AddPersistanceKey("timeStats.asPilot", "float")
-    AddPersistanceKey("timeStats.asTitanTotal", "float")
-    AddPersistanceKey("timeStats.dead", "float")
-    AddPersistanceKey("timeStats.wallhanging", "float")
-    AddPersistanceKey("timeStats.wallrunning", "float")
-    AddPersistanceKey("timeStats.inAir", "float")
+    AddPersistenceKey("timeStats.asTitan", "float")
+    AddPersistenceKey("timeStats.asPilot", "float")
+    AddPersistenceKey("timeStats.asTitanTotal", "float")
+    AddPersistenceKey("timeStats.dead", "float")
+    AddPersistenceKey("timeStats.wallhanging", "float")
+    AddPersistenceKey("timeStats.wallrunning", "float")
+    AddPersistenceKey("timeStats.inAir", "float")
 
-    AddPersistanceKey("distanceStats.total", "float")
+    AddPersistenceKey("distanceStats.total", "float")
     AddPersistenceArray("distanceStats.asTitan", "titanSetFile")
-    AddPersistanceKey("distanceStats.asTitan", "float")
-    AddPersistanceKey("distanceStats.asPilot", "float")
-    AddPersistanceKey("distanceStats.asTitanTotal", "float")
-    AddPersistanceKey("distanceStats.wallrunning", "float")
-    AddPersistanceKey("distanceStats.inAir", "float")
-    AddPersistanceKey("distanceStats.onFriendlyTitan", "float")
-    AddPersistanceKey("distanceStats.onEnemyTitan", "float")
+    AddPersistenceKey("distanceStats.asTitan", "float")
+    AddPersistenceKey("distanceStats.asPilot", "float")
+    AddPersistenceKey("distanceStats.asTitanTotal", "float")
+    AddPersistenceKey("distanceStats.wallrunning", "float")
+    AddPersistenceKey("distanceStats.inAir", "float")
+    AddPersistenceKey("distanceStats.onFriendlyTitan", "float")
+    AddPersistenceKey("distanceStats.onEnemyTitan", "float")
+    AddPersistenceKey("distanceStats.ziplining", "float")
 
     AddPersistenceArray("weaponStats", "loadoutItems")
-    AddPersistanceKey("weaponStats.hoursUsed", "float")
-    AddPersistanceKey("weaponStats.hoursEquipped", "float")
-    AddPersistanceKey("weaponStats.shotsFired", "int")
-    AddPersistanceKey("weaponStats.shotsHit", "int")
-    AddPersistanceKey("weaponStats.headshots", "int")
-    AddPersistanceKey("weaponStats.critHits", "int")
+    AddPersistenceKey("weaponStats.hoursUsed", "float")
+    AddPersistenceKey("weaponStats.hoursEquipped", "float")
+    AddPersistenceKey("weaponStats.shotsFired", "int")
+    AddPersistenceKey("weaponStats.shotsHit", "int")
+    AddPersistenceKey("weaponStats.headshots", "int")
+    AddPersistenceKey("weaponStats.critHits", "int")
 
     AddPersistenceArray("weaponKillStats", "loadoutItems")
-    AddPersistanceKey("weaponKillStats.total", "int")
-    AddPersistanceKey("weaponKillStats.pilots", "int")
-    AddPersistanceKey("weaponKillStats.ejecting_pilots", "int")
-    AddPersistanceKey("weaponKillStats.spectres", "int")
-    AddPersistanceKey("weaponKillStats.marvins", "int")
-    AddPersistanceKey("weaponKillStats.grunts", "int")
-    AddPersistanceKey("weaponKillStats.titansTotal", "int")
+    AddPersistenceKey("weaponKillStats.total", "int")
+    AddPersistenceKey("weaponKillStats.pilots", "int")
+    AddPersistenceKey("weaponKillStats.ejecting_pilots", "int")
+    AddPersistenceKey("weaponKillStats.spectres", "int")
+    AddPersistenceKey("weaponKillStats.marvins", "int")
+    AddPersistenceKey("weaponKillStats.grunts", "int")
+    AddPersistenceKey("weaponKillStats.titansTotal", "int")
     AddPersistenceArray("weaponKillStats.titans", "titanSetFile")
-    AddPersistanceKey("weaponKillStats.titans", "int")
+    AddPersistenceKey("weaponKillStats.titans", "int")
     AddPersistenceArray("weaponKillStats.npcTitans", "titanSetFile")
-    AddPersistanceKey("weaponKillStats.npcTitans", "int")
+    AddPersistenceKey("weaponKillStats.npcTitans", "int")
 
-    AddPersistanceKey("killStats.total", "int")
-    AddPersistanceKey("killStats.totalWhileUsingBurnCard", "int")
-    AddPersistanceKey("killStats.titansWhileTitanBCActive", "int")
-    AddPersistanceKey("killStats.totalPVP", "int")
-    AddPersistanceKey("killStats.pilots", "int")
-    AddPersistanceKey("killStats.spectres", "int")
-    AddPersistanceKey("killStats.marvins", "int")
-    AddPersistanceKey("killStats.grunts", "int")
-    AddPersistanceKey("killStats.totalTitans", "int")
-    AddPersistanceKey("killStats.totalTitansWhileDoomed", "int")
-    AddPersistanceKey("killStats.totalPilots", "int")
-    AddPersistanceKey("killStats.totalNPC", "int")
-    AddPersistanceKey("killStats.asPilot", "int")
+    AddPersistenceKey("killStats.total", "int")
+    AddPersistenceKey("killStats.totalWhileUsingBurnCard", "int")
+    AddPersistenceKey("killStats.titansWhileTitanBCActive", "int")
+    AddPersistenceKey("killStats.totalPVP", "int")
+    AddPersistenceKey("killStats.pilots", "int")
+    AddPersistenceKey("killStats.spectres", "int")
+    AddPersistenceKey("killStats.marvins", "int")
+    AddPersistenceKey("killStats.grunts", "int")
+    AddPersistenceKey("killStats.totalTitans", "int")
+    AddPersistenceKey("killStats.totalTitansWhileDoomed", "int")
+    AddPersistenceKey("killStats.totalPilots", "int")
+    AddPersistenceKey("killStats.totalNPC", "int")
+    AddPersistenceKey("killStats.asPilot", "int")
     AddPersistenceArray("killStats.asTitan", "titanSetFile")
-    AddPersistanceKey("killStats.asTitan", "int")
-    AddPersistanceKey("killStats.firstStrikes", "int")
-    AddPersistanceKey("killStats.ejectingPilots", "int")
-    AddPersistanceKey("killStats.whileEjecting", "int")
-    AddPersistanceKey("killStats.cloakedPilots", "int")
-    AddPersistanceKey("killStats.whileCloaked", "int")
-    AddPersistanceKey("killStats.wallrunningPilots", "int")
-    AddPersistanceKey("killStats.whileWallrunning", "int")
-    AddPersistanceKey("killStats.wallhangingPilots", "int")
-    AddPersistanceKey("killStats.whileWallhanging", "int")
-    AddPersistanceKey("killStats.pilotExecution", "int")
-    AddPersistanceKey("killStats.pilotExecutePilot", "int")
-    AddPersistanceKey("killStats.pilotKickMelee", "int")
-    AddPersistanceKey("killStats.pilotKickMeleePilot", "int")
-    AddPersistanceKey("killStats.titanMelee", "int")
-    AddPersistanceKey("killStats.titanMeleePilot", "int")
-    AddPersistanceKey("killStats.titanStepCrush", "int")
-    AddPersistanceKey("killStats.titanStepCrushPilot", "int")
-    AddPersistanceKey("killStats.titanExocutionStryder", "int")
-    AddPersistanceKey("killStats.titanExocutionAtlas", "int")
-    AddPersistanceKey("killStats.titanExocutionOgre", "int")
-    AddPersistanceKey("killStats.titanFallKill", "int")
-    AddPersistanceKey("killStats.petTitanKillsFollowMode", "int")
-    AddPersistanceKey("killStats.petTitanKillsGuardMode", "int")
-    AddPersistanceKey("killStats.rodeo_total", "int")
-    AddPersistanceKey("killStats.rodeo_stryder", "int")
-    AddPersistanceKey("killStats.rodeo_atlas", "int")
-    AddPersistanceKey("killStats.rodeo_ogre", "int")
-    AddPersistanceKey("killStats.pilot_headshots_total", "int")
-    AddPersistanceKey("killStats.evacShips", "int")
-    AddPersistanceKey("killStats.flyers", "int")
-    AddPersistanceKey("killStats.nuclearCore", "int")
-    AddPersistanceKey("killStats.evacuatingEnemies", "int")
-    AddPersistanceKey("killStats.exportTrapKills", "int")
-    AddPersistanceKey("killStats.coopChallenge_NukeTitan_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_MortarTitan_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_EmpTitan_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_BubbleShieldGrunt_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_CloakDrone_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_Dropship_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_SuicideSpectre_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_Turret_Kills", "int")
-    AddPersistanceKey("killStats.coopChallenge_Sniper_Kills", "int")
-    AddPersistanceKey("killStats.ampedVortexKills", "int")
-    AddPersistanceKey("killStats.meleeWhileCloaked", "int")
-    AddPersistanceKey("killStats.pilotKillsWhileUsingActiveRadarPulse", "int")
-    AddPersistanceKey("killStats.titanKillsAsPilot", "int")
-    AddPersistanceKey("killStats.pilotKillsWhileStimActive", "int")
-    AddPersistanceKey("killStats.pilotKillsAsTitan", "int")
+    AddPersistenceKey("killStats.asTitan", "int")
+    AddPersistenceKey("killStats.firstStrikes", "int")
+    AddPersistenceKey("killStats.ejectingPilots", "int")
+    AddPersistenceKey("killStats.whileEjecting", "int")
+    AddPersistenceKey("killStats.cloakedPilots", "int")
+    AddPersistenceKey("killStats.whileCloaked", "int")
+    AddPersistenceKey("killStats.wallrunningPilots", "int")
+    AddPersistenceKey("killStats.whileWallrunning", "int")
+    AddPersistenceKey("killStats.wallhangingPilots", "int")
+    AddPersistenceKey("killStats.whileWallhanging", "int")
+    AddPersistenceKey("killStats.pilotExecution", "int")
+    AddPersistenceKey("killStats.pilotExecutePilot", "int")
+    AddPersistenceKey("killStats.pilotKickMelee", "int")
+    AddPersistenceKey("killStats.pilotKickMeleePilot", "int")
+    AddPersistenceKey("killStats.titanMelee", "int")
+    AddPersistenceKey("killStats.titanMeleePilot", "int")
+    AddPersistenceKey("killStats.titanStepCrush", "int")
+    AddPersistenceKey("killStats.titanStepCrushPilot", "int")
+    AddPersistenceKey("killStats.titanExocutionStryder", "int")
+    AddPersistenceKey("killStats.titanExocutionAtlas", "int")
+    AddPersistenceKey("killStats.titanExocutionOgre", "int")
+    AddPersistenceKey("killStats.titanFallKill", "int")
+    AddPersistenceKey("killStats.petTitanKillsFollowMode", "int")
+    AddPersistenceKey("killStats.petTitanKillsGuardMode", "int")
+    AddPersistenceKey("killStats.rodeo_total", "int")
+    AddPersistenceKey("killStats.rodeo_stryder", "int")
+    AddPersistenceKey("killStats.rodeo_atlas", "int")
+    AddPersistenceKey("killStats.rodeo_ogre", "int")
+    AddPersistenceKey("killStats.pilot_headshots_total", "int")
+    AddPersistenceKey("killStats.evacShips", "int")
+    AddPersistenceKey("killStats.flyers", "int")
+    AddPersistenceKey("killStats.nuclearCore", "int")
+    AddPersistenceKey("killStats.evacuatingEnemies", "int")
+    AddPersistenceKey("killStats.exportTrapKills", "int")
+    AddPersistenceKey("killStats.coopChallenge_NukeTitan_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_MortarTitan_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_EmpTitan_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_BubbleShieldGrunt_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_CloakDrone_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_Dropship_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_SuicideSpectre_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_Turret_Kills", "int")
+    AddPersistenceKey("killStats.coopChallenge_Sniper_Kills", "int")
+    AddPersistenceKey("killStats.ampedVortexKills", "int")
+    AddPersistenceKey("killStats.meleeWhileCloaked", "int")
+    AddPersistenceKey("killStats.pilotKillsWhileUsingActiveRadarPulse", "int")
+    AddPersistenceKey("killStats.titanKillsAsPilot", "int")
+    AddPersistenceKey("killStats.pilotKillsWhileStimActive", "int")
+    AddPersistenceKey("killStats.pilotKillsAsTitan", "int")
 
-    AddPersistanceKey("deathStats.total", "int")
-    AddPersistanceKey("deathStats.totalPVP", "int")
-    AddPersistanceKey("deathStats.asPilot", "int")
+    AddPersistenceKey("deathStats.total", "int")
+    AddPersistenceKey("deathStats.totalPVP", "int")
+    AddPersistenceKey("deathStats.asPilot", "int")
     AddPersistenceArray("deathStats.asTitan", "titanSetFile")
-    AddPersistanceKey("deathStats.asTitan", "int")
-    AddPersistanceKey("deathStats.byPilots", "int")
-    AddPersistanceKey("deathStats.bySpectres", "int")
-    AddPersistanceKey("deathStats.byGrunts", "int")
+    AddPersistenceKey("deathStats.asTitan", "int")
+    AddPersistenceKey("deathStats.byPilots", "int")
+    AddPersistenceKey("deathStats.bySpectres", "int")
+    AddPersistenceKey("deathStats.byGrunts", "int")
     AddPersistenceArray("deathStats.byTitans", "titanSetFile")
-    AddPersistanceKey("deathStats.byTitans", "int")
+    AddPersistenceKey("deathStats.byTitans", "int")
     AddPersistenceArray("deathStats.byNPCTitans", "titanSetFile")
-    AddPersistanceKey("deathStats.byNPCTitans", "int")
-    AddPersistanceKey("deathStats.suicides", "int")
-    AddPersistanceKey("deathStats.whileEjecting", "int")
+    AddPersistenceKey("deathStats.byNPCTitans", "int")
+    AddPersistenceKey("deathStats.suicides", "int")
+    AddPersistenceKey("deathStats.whileEjecting", "int")
 
-    AddPersistanceKey("miscStats.titanFalls", "int")
-    AddPersistanceKey("miscStats.titanFallsFirst", "int")
-    AddPersistanceKey("miscStats.titanEmbarks", "int")
-    AddPersistanceKey("miscStats.rodeos", "int")
-    AddPersistanceKey("miscStats.rodeosFromEject", "int")
-    AddPersistanceKey("miscStats.timesEjected", "int")
-    AddPersistanceKey("miscStats.timesEjectedNuclear", "int")
-    AddPersistanceKey("miscStats.burnCardsEarned", "int")
-    AddPersistanceKey("miscStats.burnCardsSpent", "int")
-    AddPersistanceKey("miscStats.spectreLeeches", "int")
+    AddPersistenceKey("miscStats.titanFalls", "int")
+    AddPersistenceKey("miscStats.titanFallsFirst", "int")
+    AddPersistenceKey("miscStats.titanEmbarks", "int")
+    AddPersistenceKey("miscStats.rodeos", "int")
+    AddPersistenceKey("miscStats.rodeosFromEject", "int")
+    AddPersistenceKey("miscStats.timesEjected", "int")
+    AddPersistenceKey("miscStats.timesEjectedNuclear", "int")
+    AddPersistenceKey("miscStats.burnCardsEarned", "int")
+    AddPersistenceKey("miscStats.burnCardsSpent", "int")
+    AddPersistenceKey("miscStats.spectreLeeches", "int")
     AddPersistenceArray("miscStats.spectreLeechesByMap", "maps")
-    AddPersistanceKey("miscStats.spectreLeechesByMap", "int")
-    AddPersistanceKey("miscStats.evacsAttempted", "int")
-    AddPersistanceKey("miscStats.evacsSurvived", "int")
-    AddPersistanceKey("miscStats.flagsCaptured", "int")
-    AddPersistanceKey("miscStats.flagsReturned", "int")
-    AddPersistanceKey("miscStats.arcCannonMultiKills", "int")
-    AddPersistanceKey("miscStats.gruntsConscripted", "int")
-    AddPersistanceKey("miscStats.hardpointsCaptured", "int")
-    AddPersistanceKey("miscStats.challengeTiersCompleted", "int")
-    AddPersistanceKey("miscStats.challengesCompleted", "int")
-    AddPersistanceKey("miscStats.dailyChallengesCompleted", "int")
-    AddPersistanceKey("miscStats.timesLastTitanRemaining", "int")
-    AddPersistanceKey("miscStats.killingSprees", "int")
-    AddPersistanceKey("miscStats.coopChallengesCompleted", "int")
-    AddPersistanceKey("miscStats.forgedCertificationsUsed", "int")
-    AddPersistanceKey("miscStats.regenForgedCertificationsUsed", "int")
+    AddPersistenceKey("miscStats.spectreLeechesByMap", "int")
+    AddPersistenceKey("miscStats.evacsAttempted", "int")
+    AddPersistenceKey("miscStats.evacsSurvived", "int")
+    AddPersistenceKey("miscStats.flagsCaptured", "int")
+    AddPersistenceKey("miscStats.flagsReturned", "int")
+    AddPersistenceKey("miscStats.arcCannonMultiKills", "int")
+    AddPersistenceKey("miscStats.gruntsConscripted", "int")
+    AddPersistenceKey("miscStats.hardpointsCaptured", "int")
+    AddPersistenceKey("miscStats.challengeTiersCompleted", "int")
+    AddPersistenceKey("miscStats.challengesCompleted", "int")
+    AddPersistenceKey("miscStats.dailyChallengesCompleted", "int")
+    AddPersistenceKey("miscStats.timesLastTitanRemaining", "int")
+    AddPersistenceKey("miscStats.killingSprees", "int")
+    AddPersistenceKey("miscStats.coopChallengesCompleted", "int")
+    AddPersistenceKey("miscStats.forgedCertificationsUsed", "int")
+    AddPersistenceKey("miscStats.regenForgedCertificationsUsed", "int")
 
-    AddPersistanceKey("kdratio_lifetime", "float")
-    AddPersistanceKey("kdratio_lifetime_pvp", "float")
+    AddPersistenceKey("kdratio_lifetime", "float")
+    AddPersistenceKey("kdratio_lifetime_pvp", "float")
     AddPersistenceArray("kdratio_match", 10)
-    AddPersistanceKey("kdratio_match", "float")
+    AddPersistenceKey("kdratio_match", "float")
     AddPersistenceArray("kdratiopvp_match", 10)
-    AddPersistanceKey("kdratiopvp_match", "float")
+    AddPersistenceKey("kdratiopvp_match", "float")
 
-    AddPersistanceKey("winStreak", "int")
-    AddPersistanceKey("highestWinStreakEver", "int")
-    AddPersistanceKey("winStreakIsDraws", "bool")
+    AddPersistenceKey("winStreak", "int")
+    AddPersistenceKey("highestWinStreakEver", "int")
+    AddPersistenceKey("winStreakIsDraws", "bool")
     AddPersistenceArray("winLossHistory", 10)
-    AddPersistanceKey("winLossHistory", "int")
-    AddPersistanceKey("winLossHistorySize", "int")
+    AddPersistenceKey("winLossHistory", "int")
+    AddPersistenceKey("winLossHistorySize", "int")
 
-    AddPersistanceKey("mostProjectilesCollectedInVortex", "int")
-    AddPersistanceKey("blackMarketItemsBought", "int")
+    AddPersistenceKey("mostProjectilesCollectedInVortex", "int")
+    AddPersistenceKey("blackMarketItemsBought", "int")
 
-    AddPersistanceKey("respawnKillInfected", "bool")
+    AddPersistenceKey("respawnKillInfected", "bool")
 
     ::eGemState <- {
         gem_undefeated = 0
@@ -1034,52 +1044,52 @@ function InitPersistence()
     }
 
     AddPersistenceArray("ranked.gems", 135)
-    AddPersistanceKey("ranked.gems.gemScore", "float")
-    AddPersistanceKey("ranked.gems.gemState", "eGemState")
-    AddPersistanceKey("ranked.previousGemCount", "int")
+    AddPersistenceKey("ranked.gems.gemScore", "float")
+    AddPersistenceKey("ranked.gems.gemState", "eGemState")
+    AddPersistenceKey("ranked.previousGemCount", "int")
     AddPersistenceArray("ranked.previousGems", 6)
-    AddPersistanceKey("ranked.currentRank", "int")
-    AddPersistanceKey("ranked.isPlayingRanked", "bool")
+    AddPersistenceKey("ranked.currentRank", "int")
+    AddPersistenceKey("ranked.isPlayingRanked", "bool")
     AddPersistenceArray("ranked.sponsorHash", 15)
-    AddPersistanceKey("ranked.sponsorHash", "int")
+    AddPersistenceKey("ranked.sponsorHash", "int")
     AddPersistenceKey("ranked.sponsorName", "string")
     AddPersistenceArray("ranked.historyHash", 120)
-    AddPersistanceKey("ranked.historyHash", "int")
+    AddPersistenceKey("ranked.historyHash", "int")
     AddPersistenceArray("ranked.historyWon", 120)
-    AddPersistanceKey("ranked.historyWon", "bool")
-    AddPersistanceKey("ranked.recordedSkill", "float")
-    AddPersistanceKey("ranked.matchValid", "eMatchValid")
+    AddPersistenceKey("ranked.historyWon", "bool")
+    AddPersistenceKey("ranked.recordedSkill", "float")
+    AddPersistenceKey("ranked.matchValid", "eMatchValid")
     AddPersistenceArray("ranked.contributionPoints", 8)
-    AddPersistanceKey("ranked.contributionPoints", "int")
-    AddPersistanceKey("ranked.lastSponsorshipDate", "int")
-    AddPersistanceKey("ranked.sponsorshipsRemaining", "int")
-    AddPersistanceKey("ranked.mySponsorXuid", "string")
-    AddPersistanceKey("ranked.mySponsorName", "string")
-    AddPersistanceKey("ranked.viewRankedPlayIntro", "bool")
-    AddPersistanceKey("ranked.joinedRankedPlay", "bool")
-    AddPersistanceKey("ranked.debugMM", "bool")
-    AddPersistanceKey("ranked.nextGemDecayTime", "int")
-    AddPersistanceKey("ranked.nextInviteTime", "int")
-    AddPersistanceKey("ranked.currentSeason.season", "int")
-    AddPersistanceKey("ranked.currentSeason.seasonStartTime", "int")
-    AddPersistanceKey("ranked.currentSeason.seasonEndTime", "int")
-    AddPersistanceKey("ranked.currentSeason.rank", "int")
-    AddPersistanceKey("ranked.currentSeason.gamesPlayed", "int")
-    AddPersistanceKey("ranked.currentSeason.bestRating", "float")
-    AddPersistanceKey("ranked.currentSeason.bestRank", "int")
+    AddPersistenceKey("ranked.contributionPoints", "int")
+    AddPersistenceKey("ranked.lastSponsorshipDate", "int")
+    AddPersistenceKey("ranked.sponsorshipsRemaining", "int")
+    AddPersistenceKey("ranked.mySponsorXuid", "string")
+    AddPersistenceKey("ranked.mySponsorName", "string")
+    AddPersistenceKey("ranked.viewedRankedPlayIntro", "bool")
+    AddPersistenceKey("ranked.joinedRankedPlay", "bool")
+    AddPersistenceKey("ranked.debugMM", "bool")
+    AddPersistenceKey("ranked.nextGemDecayTime", "int")
+    AddPersistenceKey("ranked.nextInviteTime", "int")
+    AddPersistenceKey("ranked.currentSeason.season", "int")
+    AddPersistenceKey("ranked.currentSeason.seasonStartTime", "int")
+    AddPersistenceKey("ranked.currentSeason.seasonEndTime", "int")
+    AddPersistenceKey("ranked.currentSeason.rank", "int")
+    AddPersistenceKey("ranked.currentSeason.gamesPlayed", "int")
+    AddPersistenceKey("ranked.currentSeason.bestRating", "float")
+    AddPersistenceKey("ranked.currentSeason.bestRank", "int")
     AddPersistenceArray("ranked.currentSeason.rankGraph", 28)
-    AddPersistanceKey("ranked.currentSeason.rankGraph", "int")
+    AddPersistenceKey("ranked.currentSeason.rankGraph", "int")
     AddPersistenceArray("ranked.seasonHistory", 24)
-    AddPersistanceKey("ranked.seasonHistory.season", "int")
-    AddPersistanceKey("ranked.seasonHistory.seasonStartTime", "int")
-    AddPersistanceKey("ranked.seasonHistory.seasonEndTime", "int")
-    AddPersistanceKey("ranked.seasonHistory.rank", "int")
-    AddPersistanceKey("ranked.seasonHistory.gamesPlayed", "int")
-    AddPersistanceKey("ranked.seasonHistory.bestRating", "float")
-    AddPersistanceKey("ranked.seasonHistory.bestRank", "int")
+    AddPersistenceKey("ranked.seasonHistory.season", "int")
+    AddPersistenceKey("ranked.seasonHistory.seasonStartTime", "int")
+    AddPersistenceKey("ranked.seasonHistory.seasonEndTime", "int")
+    AddPersistenceKey("ranked.seasonHistory.rank", "int")
+    AddPersistenceKey("ranked.seasonHistory.gamesPlayed", "int")
+    AddPersistenceKey("ranked.seasonHistory.bestRating", "float")
+    AddPersistenceKey("ranked.seasonHistory.bestRank", "int")
     AddPersistenceArray("ranked.seasonHistory.rankGraph", 28)
-    AddPersistanceKey("ranked.seasonHistory.rankGraph", "int")
-    AddPersistanceKey("ranked.showSeasonEndDialog", "bool")
+    AddPersistenceKey("ranked.seasonHistory.rankGraph", "int")
+    AddPersistenceKey("ranked.showSeasonEndDialog", "bool")
 
     ::challenge <- {
         NULL = 0,
@@ -1581,80 +1591,80 @@ function InitPersistence()
 
     AddPersistenceEnum("dailychallenge", dailychallenge)
 
-    AddPersistanceArray("challenges", "challenge")
-    AddPersistanceKey("challenges.progress", "float")
-    AddPersistanceKey("challenges.previousProgress", "float")
-    AddPersistanceArray("dailychallenges", "dailychallenge")
-    AddPersistanceKey("dailychallenges.progress", "float")
-    AddPersistanceKey("dailychallenges.previousProgress", "float")
+    AddPersistenceArray("challenges", "challenge")
+    AddPersistenceKey("challenges.progress", "float")
+    AddPersistenceKey("challenges.previousProgress", "float")
+    AddPersistenceArray("dailychallenges", "dailychallenge")
+    AddPersistenceKey("dailychallenges.progress", "float")
+    AddPersistenceKey("dailychallenges.previousProgress", "float")
 
-    AddPersistanceArray("activeDailyChallenges", 9)
-    AddPersistanceKey("activeDailyChallenges.ref", "dailychallenge")
-    AddPersistanceKey("activeDailyChallenges.day", "int")
+    AddPersistenceArray("activeDailyChallenges", 9)
+    AddPersistenceKey("activeDailyChallenges.ref", "dailychallenge")
+    AddPersistenceKey("activeDailyChallenges.day", "int")
 
-    AddPersistanceArray("trackedChallenges", 3)
-    AddPersistanceKey("trackedChallenges", "int")
-    AddPersistanceArray("EOGTrackedChallenges", 3)
-    AddPersistanceKey("EOGTrackedChallenges", "int")
-    AddPersistanceArray("trackedChallengeRefs", 3)
-    AddPersistanceKey("trackedChallengeRefs", "string")
-    AddPersistanceArray("EOGTrackedChallengeRefs", 3)
-    AddPersistanceKey("EOGTrackedChallengeRefs", "string")
-    AddPersistanceKey("newRegenChallenges", "bool")
-    AddPersistanceKey("dailyChallengeDayIndex", "int")
-    AddPersistanceKey("newDailyChallenges", "bool")
+    AddPersistenceArray("trackedChallenges", 3)
+    AddPersistenceKey("trackedChallenges", "int")
+    AddPersistenceArray("EOGTrackedChallenges", 3)
+    AddPersistenceKey("EOGTrackedChallenges", "int")
+    AddPersistenceArray("trackedChallengeRefs", 3)
+    AddPersistenceKey("trackedChallengeRefs", "string")
+    AddPersistenceArray("EOGTrackedChallengeRefs", 3)
+    AddPersistenceKey("EOGTrackedChallengeRefs", "string")
+    AddPersistenceKey("newRegenChallenges", "bool")
+    AddPersistenceKey("dailyChallengeDayIndex", "int")
+    AddPersistenceKey("newDailyChallenges", "bool")
 
-    AddPersistanceKey("ach_campaignWonAllLevelsIMC", "int")
-    AddPersistanceKey("ach_campaignWonAllLevelsMCOR", "int")
-    AddPersistanceKey("ach_createPilotLoadout", "bool")
-    AddPersistanceKey("ach_createTitanLoadout", "bool")
-    AddPersistanceKey("ach_allModesAllMaps", "bool")
-    AddPersistanceKey("ach_multikillArcRifle", "bool")
-    AddPersistanceKey("ach_completedTraining", "bool")
-    AddPersistanceKey("ach_unlockEverything", "bool")
-    AddPersistanceKey("ach_allChallengesForSingleWeapon", "bool")
-    AddPersistanceKey("ach_vortexVolley", "bool")
-    AddPersistanceKey("ach_killedAllEvacPlayersSolo", "bool")
-    AddPersistanceKey("ach_reachedMaxLevel", "bool")
+    AddPersistenceKey("ach_campaignWonAllLevelsIMC", "int")
+    AddPersistenceKey("ach_campaignWonAllLevelsMCOR", "int")
+    AddPersistenceKey("ach_createPilotLoadout", "bool")
+    AddPersistenceKey("ach_createTitanLoadout", "bool")
+    AddPersistenceKey("ach_allModesAllMaps", "bool")
+    AddPersistenceKey("ach_multikillArcRifle", "bool")
+    AddPersistenceKey("ach_completedTraining", "bool")
+    AddPersistenceKey("ach_unlockEverything", "bool")
+    AddPersistenceKey("ach_allChallengesForSingleWeapon", "bool")
+    AddPersistenceKey("ach_vortexVolley", "bool")
+    AddPersistenceKey("ach_killedAllEvacPlayersSolo", "bool")
+    AddPersistenceKey("ach_reachedMaxLevel", "bool")
 
-    AddPersistanceKey("ach_swamplandWon", "bool")
+    AddPersistenceKey("ach_swamplandWon", "bool")
     AddPersistenceKey("ach_swamplandAllModes", "int")
-    AddPersistanceKey("ach_swamplandDontTouchGround", "bool")
-    AddPersistanceKey("ach_swamplandAirborne", "float")
-    AddPersistanceKey("ach_runoffWon", "bool")
+    AddPersistenceKey("ach_swamplandDontTouchGround", "bool")
+    AddPersistenceKey("ach_swamplandAirborne", "float")
+    AddPersistenceKey("ach_runoffWon", "bool")
     AddPersistenceKey("ach_runoffAllModes", "int")
-    AddPersistanceKey("ach_runoffEnemiesKilledWallrunning", "int")
-    AddPersistanceKey("ach_runoffEnemiesKilled", "int")
-    AddPersistanceKey("ach_wargamesWon", "bool")
+    AddPersistenceKey("ach_runoffEnemiesKilledWallrunning", "int")
+    AddPersistenceKey("ach_runoffEnemiesKilled", "int")
+    AddPersistenceKey("ach_wargamesWon", "bool")
     AddPersistenceKey("ach_wargamesAllModes", "int")
-    AddPersistanceKey("ach_wargamesPilotKillsSingleMatch", "int")
-    AddPersistanceKey("ach_wargamesPilotsKilled", "int")
+    AddPersistenceKey("ach_wargamesPilotKillsSingleMatch", "int")
+    AddPersistenceKey("ach_wargamesPilotsKilled", "int")
 
-    AddPersistanceKey("dlc2achievement.ach_havenWon", "bool")
+    AddPersistenceKey("dlc2achievement.ach_havenWon", "bool")
     AddPersistenceKey("dlc2achievement.ach_havenAllModes", "int")
-    AddPersistanceKey("dlc2achievement.ach_havenTitansExecuted", "bool")
-    AddPersistanceKey("dlc2achievement.ach_havenTitansKilledWhileBCActive", "int")
-    AddPersistanceKey("dlc2achievement.ach_exportWon", "bool")
+    AddPersistenceKey("dlc2achievement.ach_havenTitansExecuted", "bool")
+    AddPersistenceKey("dlc2achievement.ach_havenTitansKilledWhileBCActive", "int")
+    AddPersistenceKey("dlc2achievement.ach_exportWon", "bool")
     AddPersistenceKey("dlc2achievement.ach_exportAllModes", "int")
-    AddPersistanceKey("dlc2achievement.ach_exportTrapKill", "bool")
-    AddPersistanceKey("dlc2achievement.ach_exportKillsWhileCloaked", "int")
-    AddPersistanceKey("dlc2achievement.ach_digsiteWon", "bool")
+    AddPersistenceKey("dlc2achievement.ach_exportTrapKill", "bool")
+    AddPersistenceKey("dlc2achievement.ach_exportKillsWhileCloaked", "int")
+    AddPersistenceKey("dlc2achievement.ach_digsiteWon", "bool")
     AddPersistenceKey("dlc2achievement.ach_digsiteAllModes", "int")
-    AddPersistanceKey("dlc2achievement.ach_digsitePilotKillsSingleMatch", "bool")
-    AddPersistanceKey("dlc2achievement.ach_digsitePilotKills", "int")
+    AddPersistenceKey("dlc2achievement.ach_digsitePilotKillsSingleMatch", "bool")
+    AddPersistenceKey("dlc2achievement.ach_digsitePilotKills", "int")
 
-    AddPersistanceKey("dlc3achievement.ach_backwaterWon", "bool")
+    AddPersistenceKey("dlc3achievement.ach_backwaterWon", "bool")
     AddPersistenceKey("dlc3achievement.ach_backwaterAllModes", "int")
-    AddPersistanceKey("dlc3achievement.ach_backwaterAmpedVortexKills", "int")
-    AddPersistanceKey("dlc3achievement.ach_backwaterMeleeCloakKills", "int")
+    AddPersistenceKey("dlc3achievement.ach_backwaterAmpedVortexKills", "int")
+    AddPersistenceKey("dlc3achievement.ach_backwaterMeleeCloakKills", "int")
     AddPersistenceKey("dlc3achievement.ach_sandtrapWon", "bool")
     AddPersistenceKey("dlc3achievement.ach_sandtrapAllModes", "int")
-    AddPersistanceKey("dlc3achievement.ach_sandtrapActiveRadarKills", "int")
-    AddPersistanceKey("dlc3achievement.ach_sandtrap2TitanKillsAsPilot", "bool")
+    AddPersistenceKey("dlc3achievement.ach_sandtrapActiveRadarKills", "int")
+    AddPersistenceKey("dlc3achievement.ach_sandtrap2TitanKillsAsPilot", "bool")
     AddPersistenceKey("dlc3achievement.ach_zone18Won", "bool")
     AddPersistenceKey("dlc3achievement.ach_zone18AllModes", "int")
-    AddPersistanceKey("dlc3achievement.ach_zone18StimPilotKills", "int")
-    AddPersistanceKey("dlc3achievement.ach_zone18PilotKillsAsTitan", "bool")
+    AddPersistenceKey("dlc3achievement.ach_zone18StimPilotKills", "int")
+    AddPersistenceKey("dlc3achievement.ach_zone18PilotKillsAsTitan", "bool")
 
     AddPersistenceKey("cu8achievement.ach_blackMarketCreditsEarned", "int")
     AddPersistenceKey("cu8achievement.ach_burncardsDiscarded", "int")
@@ -1665,7 +1675,7 @@ function InitPersistence()
     AddPersistenceKey("cu8achievement.ach_titanInsigniasUnlocked", "int")
     AddPersistenceKey("cu8achievement.ach_titanBurnCardsUsed", "int")
     AddPersistenceKey("cu8achievement.ach_threeStarsAwarded", "bool")
-    AddPersistanceKey("cu8achievement.ach_totalStarsEarned", "int")
+    AddPersistenceKey("cu8achievement.ach_totalStarsEarned", "int")
     AddPersistenceKey("cu8achievement.ach_rankedGamesPlayed", "int")
     AddPersistenceKey("cu8achievement.ach_battlemarksEarned", "int")
     AddPersistenceKey("cu8achievement.ach_reachedGen10NoForgedCert", "bool")
@@ -1690,54 +1700,54 @@ function InitPersistence()
 
     AddPersistenceEnum("trainingModules", trainingModules)
 
-    AddPersistanceArray("trainingModulesCompleted", "trainingModules")
-    AddPersistanceKey("trainingModulesCompleted", "bool")
+    AddPersistenceArray("trainingModulesCompleted", "trainingModules")
+    AddPersistenceKey("trainingModulesCompleted", "bool")
 
-    AddPersistanceKey("savedScoreboardData.gameMode", "int")
-    AddPersistanceKey("savedScoreboardData.map", "int")
-    AddPersistanceKey("savedScoreboardData.playerTeam", "int")
-    AddPersistanceKey("savedScoreboardData.playerIndex", "int")
-    AddPersistanceKey("savedScoreboardData.maxTeamPlayers", "int")
-    AddPersistanceKey("savedScoreboardData.numPlayersIMC", "int")
-    AddPersistanceKey("savedScoreboardData.numPlayersMCOR", "int")
-    AddPersistanceKey("savedScoreboardData.scoreIMC", "int")
-    AddPersistanceKey("savedScoreboardData.scoreMCOR", "int")
-    AddPersistanceKey("savedScoreboardData.privateMatch", "bool")
-    AddPersistanceKey("savedScoreboardData.campaign", "bool")
-    AddPersistanceKey("savedScoreboardData.ranked", "bool")
-    AddPersistanceKey("savedScoreboardData.hadMatchLossProtection", "bool")
+    AddPersistenceKey("savedScoreboardData.gameMode", "int")
+    AddPersistenceKey("savedScoreboardData.map", "int")
+    AddPersistenceKey("savedScoreboardData.playerTeam", "int")
+    AddPersistenceKey("savedScoreboardData.playerIndex", "int")
+    AddPersistenceKey("savedScoreboardData.maxTeamPlayers", "int")
+    AddPersistenceKey("savedScoreboardData.numPlayersIMC", "int")
+    AddPersistenceKey("savedScoreboardData.numPlayersMCOR", "int")
+    AddPersistenceKey("savedScoreboardData.scoreIMC", "int")
+    AddPersistenceKey("savedScoreboardData.scoreMCOR", "int")
+    AddPersistenceKey("savedScoreboardData.privateMatch", "bool")
+    AddPersistenceKey("savedScoreboardData.campaign", "bool")
+    AddPersistenceKey("savedScoreboardData.ranked", "bool")
+    AddPersistenceKey("savedScoreboardData.hadMatchLossProtection", "bool")
     AddPersistenceArray("savedScoreboardData.playersIMC", 8)
-    AddPersistanceKey("savedScoreboardData.playersIMC.name", "string")
-    AddPersistanceKey("savedScoreboardData.playersIMC.xuid", "string")
-    AddPersistanceKey("savedScoreboardData.playersIMC.level", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.gen", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.score_assault", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.score_defense", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.score_kills", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.score_deaths", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.score_titanKills", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.score_npcKills", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.score_assists", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.playingRanked", "bool")
-    AddPersistanceKey("savedScoreboardData.playersIMC.rank", "int")
-    AddPersistanceKey("savedScoreboardData.playersIMC.matchPerformance", "float")
+    AddPersistenceKey("savedScoreboardData.playersIMC.name", "string")
+    AddPersistenceKey("savedScoreboardData.playersIMC.xuid", "string")
+    AddPersistenceKey("savedScoreboardData.playersIMC.level", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.gen", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.score_assault", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.score_defense", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.score_kills", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.score_deaths", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.score_titanKills", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.score_npcKills", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.score_assists", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.playingRanked", "bool")
+    AddPersistenceKey("savedScoreboardData.playersIMC.rank", "int")
+    AddPersistenceKey("savedScoreboardData.playersIMC.matchPerformance", "float")
     AddPersistenceArray("savedScoreboardData.playersMCOR", 8)
-    AddPersistanceKey("savedScoreboardData.playersMCOR.name", "string")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.xuid", "string")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.level", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.gen", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.score_assault", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.score_defense", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.score_kills", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.score_deaths", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.score_titanKills", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.score_npcKills", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.score_assists", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.playingRanked", "bool")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.rank", "int")
-    AddPersistanceKey("savedScoreboardData.playersMCOR.matchPerformance", "float")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.name", "string")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.xuid", "string")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.level", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.gen", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.score_assault", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.score_defense", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.score_kills", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.score_deaths", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.score_titanKills", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.score_npcKills", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.score_assists", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.playingRanked", "bool")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.rank", "int")
+    AddPersistenceKey("savedScoreboardData.playersMCOR.matchPerformance", "float")
 
-    AddPersistanceKey("previousGooserProgress", "int")
+    AddPersistenceKey("previousGooserProgress", "int")
 
     AddPersistenceKey("savedCoopData.completedWaves", "int")
     AddPersistenceKey("savedCoopData.totalWaves", "int")
@@ -1758,21 +1768,21 @@ function InitPersistence()
     AddPersistenceKey("savedCoopData.teamScore.retriesBonus", "int")
     AddPersistenceKey("savedCoopData.teamScore.maxRetriesBonus", "int")
     AddPersistenceKey("savedCoopData.teamScore.teamScore", "int")
-    AddPersistanceArray("savedCoopData.militiaKillCounts", 9)
-    AddPersistanceKey("savedCoopData.militiaKillCounts.killCount", "int")
-    AddPersistanceKey("savedCoopData.militiaKillCounts.turretKillCount", "int")
-    AddPersistanceArray("savedCoopData.players", 4)
-    AddPersistanceKey("savedCoopData.players.name", "string")
-    AddPersistanceKey("savedCoopData.players.xuid", "string")
-    AddPersistanceKey("savedCoopData.players.entityIndex", "int")
-    AddPersistanceArray("savedCoopData.players.enemyType", 9)
-    AddPersistanceKey("savedCoopData.players.enemyType.killCount", "int")
-    AddPersistanceKey("savedCoopData.players.enemyType.turretKillCount", "int")
+    AddPersistenceArray("savedCoopData.militiaKillCounts", 9)
+    AddPersistenceKey("savedCoopData.militiaKillCounts.killCount", "int")
+    AddPersistenceKey("savedCoopData.militiaKillCounts.turretKillCount", "int")
+    AddPersistenceArray("savedCoopData.players", 4)
+    AddPersistenceKey("savedCoopData.players.name", "string")
+    AddPersistenceKey("savedCoopData.players.xuid", "string")
+    AddPersistenceKey("savedCoopData.players.entityIndex", "int")
+    AddPersistenceArray("savedCoopData.players.enemyType", 9)
+    AddPersistenceKey("savedCoopData.players.enemyType.killCount", "int")
+    AddPersistenceKey("savedCoopData.players.enemyType.turretKillCount", "int")
 
-    AddPersistanceArray("mapHistory", 24)
-    AddPersistanceKey("mapHistory", "int")
-    AddPersistanceArray("modeHistory", 10)
-    AddPersistanceKey("modeHistory", "int")
+    AddPersistenceArray("mapHistory", 24)
+    AddPersistenceKey("mapHistory", "int")
+    AddPersistenceArray("modeHistory", 10)
+    AddPersistenceKey("modeHistory", "int")
 
     ::BlackMarketUnlocks <- {
         ["titan_decals_blackmarket01"] = 0,
@@ -1805,111 +1815,214 @@ function InitPersistence()
 
     AddPersistenceKey("bm.coinCount", "int")
     AddPersistenceKey("bm.previousCoinCount", "int")
-    AddPersistanceArray("bm.coin_rewards", 6)
-    AddPersistanceKey("bm.coin_rewards", "int")
-    AddPersistanceArray("bm.coin_reward_counts", 6)
-    AddPersistanceKey("bm.coin_reward_counts", "int")
-    AddPersistanceKey("bm.newBlackMarketItems", "bool")
-    AddPersistanceKey("bm.nextDiceCardDate", "int")
-    AddPersistanceArray("bm.blackMarketItemUnlocks", "BlackMarketUnlocks")
-    AddPersistanceKey("bm.blackMarketItemUnlocks", "bool")
-    AddPersistanceArray("bm.blackMarketPerishables", 9)
-    AddPersistanceKey("bm.blackMarketPerishables.nextRestockDate", "int")
-    AddPersistanceKey("bm.blackMarketPerishables.perishableType", "blackMarketPerishableTypes")
-    AddPersistanceKey("bm.blackMarketPerishables.cardRef", "burnCard")
-    AddPersistanceKey("bm.blackMarketPerishables.coinCost", "int")
-    AddPersistanceKey("bm.blackMarketPerishables.new", "bool")
-    AddPersistanceKey("bm.challengeSkips", "int")
+    AddPersistenceArray("bm.coin_rewards", 6)
+    AddPersistenceKey("bm.coin_rewards", "int")
+    AddPersistenceArray("bm.coin_reward_counts", 6)
+    AddPersistenceKey("bm.coin_reward_counts", "int")
+    AddPersistenceKey("bm.newBlackMarketItems", "bool")
+    AddPersistenceKey("bm.nextDiceCardDate", "int")
+    AddPersistenceArray("bm.blackMarketItemUnlocks", "BlackMarketUnlocks")
+    AddPersistenceKey("bm.blackMarketItemUnlocks", "bool")
+    AddPersistenceArray("bm.blackMarketPerishables", 9)
+    AddPersistenceKey("bm.blackMarketPerishables.nextRestockDate", "int")
+    AddPersistenceKey("bm.blackMarketPerishables.perishableType", "blackMarketPerishableTypes")
+    AddPersistenceKey("bm.blackMarketPerishables.cardRef", "burnCard")
+    AddPersistenceKey("bm.blackMarketPerishables.coinCost", "int")
+    AddPersistenceKey("bm.blackMarketPerishables.new", "bool")
+    AddPersistenceKey("bm.challengeSkips", "int")
 
-    AddPersistanceKey("lastDailyMatchVictory", "int")
-    AddPersistanceKey("lastTimePlayed", "int")
-    AddPersistanceKey("lastTimeLoggedIn", "int")
+    AddPersistenceKey("lastDailyMatchVictory", "int")
+    AddPersistenceKey("lastTimePlayed", "int")
+    AddPersistenceKey("lastTimeLoggedIn", "int")
 
-    AddPersistanceArray("mapStars", "maps")
+    AddPersistenceArray("mapStars", "maps")
     AddPersistenceArray("mapStars.bestScore", "gameModesWithStars")
-    AddPersistanceKey("mapStars.bestScore", "int")
+    AddPersistenceKey("mapStars.bestScore", "int")
     AddPersistenceArray("mapStars.previousBestScore", "gameModesWithStars")
-    AddPersistanceKey("mapStars.previousBestScore", "int")
+    AddPersistenceKey("mapStars.previousBestScore", "int")
 
-    AddPersistanceKey("playlistAnnouncementSeen", "bool")
+    AddPersistenceKey("playlistAnnouncementSeen", "bool")
+}
+InitPersistence()
+function IsDelta() {
+    return !GetConVarBool("net_secure")
 }
 
-if( IsServer() )
+function PersistenceEnumValueIsValid(enumName, value)
 {
-    
-function PersistenceGetEnumCount( val )
-{
-	//printt("PersistenceGetEnumCount: " + val )
-	return 0
-}
-
-function PersistenceGetArrayCount( val )
-{
-	//printt("PersistenceGetArrayCount: " + val )
-	return 0
-}
-
-function PersistenceEnumValueIsValid( val, index )
-{
-	//printt("PersistenceEnumValueIsValid: " + val + " " + index )
-	return false
-}
-
-}
-
-// Helper function to pack values with type information
-function PackValue(value, type) {
-    local typeCode
-    switch(type) {
-        case "integer": typeCode = "i"; break
-        case "float": typeCode = "f"; break
-        case "bool": typeCode = "b"; break
-        case "string": typeCode = "s"; break
-        default: typeCode = "x"; break // Invalid type
-    }
-    if (typeCode != "x") {
-        if (type == "bool") {
-            return typeCode + (value ? "1" : "0")
-        } else {
-            return typeCode + value.tostring()
+    if (!IsDelta())
+        return OldPersistEnumValueIsValid(enumName, value)
+	if (value == null || enumName == null) { return }
+    if (enumName in pdef_enums)
+    {
+        value = value.tolower()
+        foreach (key, _ in pdef_enums[enumName])
+        {
+            if (key.tolower() == value)
+                return true
         }
     }
-    return "x"
+    return false
 }
 
-// Helper function to unpack values and verify their type
-function UnpackValue(packedValue) {
-    if (packedValue.len() < 2) return null
-    local typeCode = packedValue[0].tochar()
-    local value = packedValue.slice(1)
-    
-    if ("i" == typeCode) {
-        return value.tointeger()
-    } else if ("f" == typeCode) {
-        return value.tofloat()
-    } else if ("b" == typeCode) {
-        return value == "1"
-    } else if ("s" == typeCode) {
-        return value
-    } else {
-        return null
+function PersistenceGetArrayCount(arrayName)
+{
+    if (!IsDelta())
+        return OldPersistGetArrayCount(arrayName)
+
+    if (arrayName in pdef_arrays)
+    {
+        return pdef_arrays[arrayName]
     }
+    return 0
 }
 
-// Helper function to validate keys against the schema (unchanged)
-function IsValidKey(key) {
-/*
-    local schema = GetPDEFSchema()
-    local parts = split(key = ".")
-    local current = schema
+function PersistenceGetEnumCount(enumName)
+{
+    if (!IsDelta())
+        return OldPersistGetEnumCount(enumName)
+
+    if (enumName in pdef_enums)
+    {
+        return pdef_enums[enumName].len() //- 1
+    }
+    return 0
+}
+
+function PersistenceGetEnumIndexForItemName(enumName, itemName)
+{
+    if (!IsDelta())
+        return OldPersistGetEnumIndexForItemName(enumName, itemName)
+
+    if (enumName in pdef_enums)
+    {
+        itemName = itemName.tolower()
+        foreach (key, value in pdef_enums[enumName])
+        {
+            if (key.tolower() == itemName)
+                return value
+        }
+    }
+    return -1  // or null, depending on how you want to handle not found cases
+}
+
+function PersistenceGetEnumItemNameForIndex(enumName, index)
+{
+    if (!IsDelta())
+        return OldPersistGetEnumItemNameForIndex(enumName, index)
+
+    if (enumName in pdef_enums)
+    {
+        foreach (itemName, itemIndex in pdef_enums[enumName])
+        {
+            if (itemIndex == index)
+            {
+                return itemName
+            }
+        }
+    }
+    return null  // or "", depending on how you want to handle not found cases
+}
+// Helper function to get the enum type for an array
+function GetEnumTypeForArray(arrayName) {
+    if (arrayName in pdef_arrays) {
+        return pdef_arrays[arrayName]
+    }
+    return null
+}
+function isInteger(str) {
+    if (str.len() == 0) return false
+    if (str[0] == '-' && str.len() == 1) return false
+    foreach (i, char in str) {
+        if (i == 0 && char == '-') continue
+        if (char < '0' || char > '9') return false
+    }
+    return true
+}
+// Helper function to unpack and validate keys
+function UnpackKey(key) {
+    //printt("UnpackKey called with key:", key)
+    local parts = split(key, ".")
+    local currentPart = ""
+    local isValid = true
     
     foreach (part in parts) {
-        if (part in current) {
-            current = current[part]
-        } else {
-            return false
+        //printt("Processing part:", part)
+        local index = 0
+        while (index < part.len()) {
+            local bracketStart = part.find("[", index)
+            if (bracketStart == null) {
+                currentPart += (currentPart == "" ? "" : ".") + part.slice(index)
+                //printt("No more brackets, current part:", currentPart)
+                break
+            }
+            
+            currentPart += (currentPart == "" ? "" : ".") + part.slice(index, bracketStart)
+            local bracketEnd = part.find("]", bracketStart)
+            if (bracketEnd == null) {
+                //printt("Invalid bracket syntax in:", part)
+                isValid = false
+                break
+            }
+            
+            local arrayName = currentPart
+            local indexValue = part.slice(bracketStart + 1, bracketEnd)
+            //printt("Array access found. Array name:", arrayName, "Index value:", indexValue)
+            
+            if (arrayName in pdef_arrays) {
+                local enumType = GetEnumTypeForArray(arrayName)
+                //printt("Array found in pdef_arrays. Enum type:", enumType)
+                if (isInteger(indexValue)) {
+                    //printt("Numeric index detected, skipping enum validation")
+                    // Valid numeric index, continue
+                } else if (enumType && PersistenceEnumValueIsValid(enumType, indexValue)) {
+                    //printt("Valid enum value for", enumType)
+                    // Valid enum value, continue
+                } else {
+                    //printt("Invalid enum value for", enumType)
+                    isValid = false
+                    break
+                }
+            } else {
+                //printt("Array not found in pdef_arrays:", arrayName)
+                isValid = false
+                break
+            }
+            
+            index = bracketEnd + 1
+        }
+        
+        if (!isValid) {
+            break
         }
     }
-    */
-    return true
+    
+    if (!isValid) {
+        //printt("Key is not valid")
+        return null
+    }
+    
+    //printt("Unpacked key:", currentPart)
+    return currentPart
+}
+
+// Helper function to validate keys against the schema
+function IsValidKey(key) {
+    //printt("IsValidKey called with key:", key)
+    local unpackedKey = UnpackKey(key)
+    if (unpackedKey == null) {
+		printt("INVAID KEY:","Unpacked key is null",key)
+
+        //printt("Unpacked key is null")
+        return false
+    }
+    local isValid = unpackedKey in pdef_keys
+    if (!isValid) {
+	    printt("INVAID KEY:","Is", unpackedKey, "in pdef_keys?", isValid)
+	}
+    return isValid
+}
+function testpdef() {
+    for (local k = 0; k < PersistenceGetEnumCount("unlockRefs"); k++)
+		printt(k, PersistenceGetEnumItemNameForIndex("unlockRefs", k))
 }
