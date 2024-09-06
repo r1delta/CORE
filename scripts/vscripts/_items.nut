@@ -830,6 +830,11 @@ function GetItemAdditionalName( ref )
 
 function GetItemImage( ref )
 {
+	printt(itemData["mp_weapon_sniper"].image)
+	printt(ref.len())
+	printt("mp_weapon_sniper".len())
+	printt(ref)
+	print("Hi")
 	return itemData[ref].image
 }
 

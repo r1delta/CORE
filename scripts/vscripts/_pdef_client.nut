@@ -4,6 +4,7 @@ function GetPersistentVar(name) {
     if (!IsDelta()) { return OldPersistentVar(name) }
     if (!IsValidKey(name)) return null
     local value = GetPersistentString(name, "")
+    if (value == "null") return null
     local unpackedKey = UnpackKey(name)
     local type = pdef_keys[unpackedKey]
     
@@ -16,7 +17,7 @@ function GetPersistentVar(name) {
     } else if (type == "string") {
         return value
     } else {
-        return null
+        return value
     }
 }
 

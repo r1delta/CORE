@@ -1880,14 +1880,16 @@ function PersistenceEnumValueIsValid(enumName, value)
     return false
 }
 
-function PersistenceGetArrayCount(arrayName)
-{
+function PersistenceGetArrayCount(arrayName) {
     if (!IsDelta())
         return OldPersistGetArrayCount(arrayName)
 
-    if (arrayName in pdef_arrays)
-    {
-        return pdef_arrays[arrayName]
+    if (arrayName in pdef_arrays) {
+        local count = pdef_arrays[arrayName]
+        if (typeof count == "string" && count in pdef_enums) {
+            return pdef_enums[count].len()
+        }
+        return count
     }
     return 0
 }
@@ -2022,20 +2024,20 @@ function UnpackKey(key) {
 }
 
 // Helper function to validate keys against the schema
-function IsValidKey(key) {
-    //printt("IsValidKey called with key:", key)
+function IsValidKey(key, value = null) {
     local unpackedKey = UnpackKey(key)
     if (unpackedKey == null) {
-		printt("INVAID KEY:","Unpacked key is null",key)
-
-        //printt("Unpacked key is null")
         return false
     }
-    local isValid = unpackedKey in pdef_keys
-    if (!isValid) {
-	    printt("INVAID KEY:","Is", unpackedKey, "in pdef_keys?", isValid)
-	}
-    return isValid
+    
+    if (unpackedKey in pdef_keys) {
+        local type = pdef_keys[unpackedKey]
+        if (value != null && type in pdef_enums) {
+            return PersistenceEnumValueIsValid(type, value)
+        }
+        return true
+    }
+    return false
 }
 function testpdef() {
     for (local k = 0; k < PersistenceGetEnumCount("unlockRefs"); k++)

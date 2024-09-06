@@ -45,13 +45,17 @@ function CBasePlayer::constructor()
 	clientCommandCallbacks = {}
 }
 
-// Server implementation of GetPersistentVar (CBasePlayer method)
+// Server implementation of GetPersistentVar
 function CBasePlayer::GetPersistentVar(key) {
     if (!IsValidKey(key)) return null
     local value = GetPersistentStringForClient(this, key, "")
+    if (value == "null") return null
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
-    if (type == "int") {
+    
+    if (type in pdef_enums) {
+        return (value == "") ? null : value
+    } else if (type == "int") {
         return (value == "") ? 0 : value.tointeger()
     } else if (type == "float") {
         return (value == "") ? 0.0 : value.tofloat()
@@ -60,28 +64,27 @@ function CBasePlayer::GetPersistentVar(key) {
     } else if (type == "string") {
         return value
     } else {
-        return null
+        return value
     }
 }
 
-// Server implementation of SetPersistentVar (CBasePlayer method)
+// Server implementation of SetPersistentVar
 function CBasePlayer::SetPersistentVar(key, value) {
-    if (!IsValidKey(key)) return
-    if (value == null) return
-
+    if (!IsValidKey(key, value)) return
+    local serializedValue = (value == null) ? "null" : value
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
-    local serializedValue
-    if (type == "int") {
-        serializedValue = value.tostring()
-    } else if (type == "float") {
-        serializedValue = value.tostring()
-    } else if (type == "bool") {
-        serializedValue = value ? "1" : "0"
-    } else if (type == "string") {
-        serializedValue = value
-    } else {
-        return // Invalid type, don't set
+    
+    if (serializedValue != "null") {
+        if (type == "int") {
+            serializedValue = value.tostring()
+        } else if (type == "float") {
+            serializedValue = value.tostring()
+        } else if (type == "bool") {
+            serializedValue = value ? "1" : "0"
+        } else if (type == "string") {
+            serializedValue = value
+        }
     }
     SetPersistentStringForClient(this, key, serializedValue)
 }

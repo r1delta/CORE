@@ -55,7 +55,7 @@ function main()
 function InitPilotLoadoutFromPreset( player, loadoutIndex, presetIndex )
 {
 	presetIndex = presetIndex % pilotLoadouts.len()
-
+	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].race", pilotLoadouts[presetIndex].race )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primary", pilotLoadouts[presetIndex].primary )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primaryMod", null/*pilotLoadouts[presetIndex].primaryMod*/ )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primaryAttachment", null/*pilotLoadouts[presetIndex].primaryAttachment*/ )
@@ -880,7 +880,7 @@ function SetLoadoutProperty( player, loadoutType, loadoutIndex, property, value 
 		CodeWarning( "Invalid ref value parameter for property " + loadoutProperty + " in SetLoadoutProperty: " + value )
 		return
 	}
-
+    printt("DEBUG:", player, loadoutType, loadoutIndex, loadoutProperty, value)
 	if ( !ValidateLoadoutProperty( player, loadoutType, loadoutIndex, loadoutProperty, value ) )
 		return
 

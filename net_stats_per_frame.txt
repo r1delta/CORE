@@ -1,2 +1,0 @@
-Per-frame bandwidth data:
-
