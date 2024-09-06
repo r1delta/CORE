@@ -3,21 +3,20 @@ IncludeScript("_pdef")
 function GetPersistentVar(name) {
     if (!IsDelta()) { return OldPersistentVar(name) }
     if (!IsValidKey(name)) return null
-    local value = GetPersistentString(name, "")
-    if (value == "null") return null
+    local value = GetPersistentString(name, "pdata_null")
     local unpackedKey = UnpackKey(name)
     local type = pdef_keys[unpackedKey]
     
     if (type == "int") {
-        return (value == "") ? 0 : value.tointeger()
+        return (value == "pdata_null") ? 0 : value.tointeger()
     } else if (type == "float") {
-        return (value == "") ? 0.0 : value.tofloat()
+        return (value == "pdata_null") ? 0.0 : value.tofloat()
     } else if (type == "bool") {
-        return (value == "") ? false : (value.tointeger() == 1)
+        return (value == "pdata_null") ? false : (value.tointeger() == 1)
     } else if (type == "string") {
-        return value
+        return (value == "pdata_null") ? "" : value
     } else {
-        return value
+        return (value == "pdata_null") ? null : value
     }
 }
 

@@ -48,34 +48,33 @@ function CBasePlayer::constructor()
 // Server implementation of GetPersistentVar
 function CBasePlayer::GetPersistentVar(key) {
     if (!IsValidKey(key)) return null
-    local value = GetPersistentStringForClient(this, key, "")
-    if (value == "null") return null
+    local value = GetPersistentStringForClient(this, key, "pdata_null")
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
     
     if (type in pdef_enums) {
-        return (value == "") ? null : value
+        return (value == "pdata_null") ? null : value
     } else if (type == "int") {
-        return (value == "") ? 0 : value.tointeger()
+        return (value == "pdata_null") ? 0 : value.tointeger()
     } else if (type == "float") {
-        return (value == "") ? 0.0 : value.tofloat()
+        return (value == "pdata_null") ? 0.0 : value.tofloat()
     } else if (type == "bool") {
-        return (value == "") ? false : (value.tointeger() == 1)
+        return (value == "pdata_null") ? false : (value.tointeger() == 1)
     } else if (type == "string") {
-        return value
+        return (value == "pdata_null") ? "" : value
     } else {
-        return value
+        return (value == "pdata_null") ? "" : value
     }
 }
 
 // Server implementation of SetPersistentVar
 function CBasePlayer::SetPersistentVar(key, value) {
     if (!IsValidKey(key, value)) return
-    local serializedValue = (value == null) ? "null" : value
+    local serializedValue = (value == null) ? "pdata_null" : value
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
     
-    if (serializedValue != "null") {
+    if (serializedValue != "pdata_null") {
         if (type == "int") {
             serializedValue = value.tostring()
         } else if (type == "float") {
