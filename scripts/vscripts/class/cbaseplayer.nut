@@ -53,7 +53,7 @@ function CBasePlayer::GetPersistentVar(key) {
     local type = pdef_keys[unpackedKey]
     
     if (type in pdef_enums) {
-        return (value == "pdata_null") ? null : value
+        return ((value == "pdata_null") || !PersistenceEnumValueIsValid(type, value)) ? null : value
     } else if (type == "int") {
         return (value == "pdata_null") ? 0 : value.tointeger()
     } else if (type == "float") {
@@ -66,7 +66,11 @@ function CBasePlayer::GetPersistentVar(key) {
         return (value == "pdata_null") ? "" : value
     }
 }
-
+// Client/UI implementation of GetPersistentVarAsInt
+function CBasePlayer::GetPersistentVarAsInt(name) {
+    local value = this.GetPersistentVar(name)
+    return (typeof value == "integer") ? value : 0
+}
 // Server implementation of SetPersistentVar
 function CBasePlayer::SetPersistentVar(key, value) {
     if (!IsValidKey(key, value)) return

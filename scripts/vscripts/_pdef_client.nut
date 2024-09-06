@@ -16,7 +16,7 @@ function GetPersistentVar(name) {
     } else if (type == "string") {
         return (value == "pdata_null") ? "" : value
     } else {
-        return (value == "pdata_null") ? null : value
+        return ((value == "pdata_null") || !PersistenceEnumValueIsValid(type, value)) ? null : value
     }
 }
 

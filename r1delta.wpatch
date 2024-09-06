@@ -305,8 +305,8 @@ engine.dll,text,0x134C16,7E,EB
 ; fix ip leak (TODO: dedicated)
 engine.dll,text,0xDA899,74,EB
 ; rename old persistence funcs
-client.dll,rdata,0x80BFE0,"GetPersistentVar","OldPersistentVar\x00"
-client.dll,rdata,0x80BFB0,"GetPersistentVarAsInt","OldPersistentVarAsInt\x00"
+client.dll,rdata,0x80BFE0,"GetPersistentVar","OldPersistentVar"
+client.dll,rdata,0x80BFB0,"GetPersistentVarAsInt","OldPersistentVarAsInt"
 client.dll,rdata,0x883E18,"PersistenceEnumValueIsValid","OldPersistEnumValueIsValid\x00"
 client.dll,rdata,0x883D98,"PersistenceGetArrayCount","OldPersistGetArrayCount\x00"
 client.dll,rdata,0x883F88,"PersistenceGetEnumCount","OldPersistGetEnumCount\x00"

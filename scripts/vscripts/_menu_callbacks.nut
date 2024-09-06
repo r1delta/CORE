@@ -907,6 +907,7 @@ function SetPersistentSpawnLoadout( player, loadoutType, isCustom, loadoutIndex 
 
 function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, ref )
 {
+    printt(player, loadoutType, loadoutIndex, property, ref)
 	local childRef = null
 	switch ( property )
 	{
@@ -914,6 +915,11 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 		case "primaryAttachment":
 			childRef = ref
 			ref = player.GetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "].primary" )
+			//local key = loadoutType + "Loadouts[" + loadoutIndex + "].primary"
+			//local value = GetPersistentStringForClient(player, key, "pdata_null")
+			//local unpackedKey = UnpackKey(key)
+			//local type = pdef_keys[unpackedKey]
+			//printt("DEBUG: ", value, unpackedKey, type)
 			break
 	}
 
