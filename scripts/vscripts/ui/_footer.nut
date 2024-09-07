@@ -676,11 +676,11 @@ function UpdatePrivateMatchSwitchTeams()
 		{
 			if ( IsPrivateMatch() )
 			{
-				//RegisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
+				RegisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
 			}
 			else
 			{
-				//DeregisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
+				DeregisterButtonPressedCallback( BUTTON_Y, PrivateMatchSwitchTeams )
 			}
 
 			UpdateFooterButtons()
