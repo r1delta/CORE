@@ -685,7 +685,7 @@ function DropReplacementTitan( player, spawnPoint )
 		EmitSoundAtPositionOnlyToPlayer( origin, player, "Titan_1P_Warpfall_Start" )
 		EmitSoundAtPositionExceptToPlayer( origin, player, "Titan_3P_Warpfall_Start" )
 
-		// PlayFX( TURBO_WARP_FX, warpAttach.position + Vector(0,0,-104), warpAttach.angle )
+		PlayFX( TURBO_WARP_FX, warpAttach.position + Vector(0,0,-104), warpAttach.angle )
 
 		wait 0.9
 
