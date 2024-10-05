@@ -232,16 +232,18 @@ function LinkToBBPanel( turret )
 //////////////////////////////////////////////////////////
 function FindLinkedBBPanel( turret )
 {
-	local targets
-	foreach( panel in GetAllBBPanels() )
-	{
-		targets = GetEntArrayByNameWildCard_Expensive( panel.Get( "target" ) )
-		foreach( target in targets )
-		{
-			if ( target == turret )
-				return panel
-		}
-	}
+	// P7: Since we are not planning to add any of the Big Brother stuff (yet), it might be ok to comment these out so Nest can load.
+	//     This might be due to cl_mp_nest2.nut requiring cl_ai_turret_bb at line 14, but apparently it isn't the root cause so here we are.
+	//local targets
+	//foreach( panel in GetAllBBPanels() )
+	//{
+	//	targets = GetEntArrayByNameWildCard_Expensive( panel.Get( "target" ) )
+	//	foreach( target in targets )
+	//	{
+	//		if ( target == turret )
+	//			return panel
+	//	}
+	//}
 	return null
 }
 

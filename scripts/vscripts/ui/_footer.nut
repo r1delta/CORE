@@ -332,6 +332,23 @@ function UpdateFooterButtons( menuName = null )
 
 			footerData.gamepad = AppendGamepadInviteLabels( footerData.gamepad )
 			footerData.pc = AppendPCInviteLabels( footerData.pc )
+
+			if (IsFullyConnected() && GetActiveLevel() != "mp_lobby") // BME
+			{
+				// gamepad default = ^798B9800, pc default = nothing
+				// #6EEB6A = light green
+				if ( menuName == "PilotLoadoutsMenu" && !IsItemLocked( "pilot_custom_loadout_1" ) )
+				{
+					footerData.gamepad.append( { label = "%[Y_BUTTON]% ^6EEB6A00Edit" } )
+					footerData.pc.append( { label = "(Mouse 2) Edit", func = LoadoutEditMouseclickNotice } )
+				}
+				else if ( menuName == "TitanLoadoutsMenu" && !IsItemLocked( "titan_custom_loadout_1" ) )
+				{
+					footerData.gamepad.append( { label = "%[Y_BUTTON]% ^6EEB6A00Edit" } )
+					footerData.pc.append( { label = "(Mouse 2) Edit", func = LoadoutEditMouseclickNotice } )
+				}
+			}
+
 			break
 
 		case "EditPilotLoadoutsMenu":
@@ -772,4 +789,19 @@ function OriginInviteFriends( button )
 	Assert( Origin_IsJoinable() )
 
 	Origin_ShowInviteFriendsDialog()
+}
+
+function LoadoutEditMouseclickNotice( button ) // BME
+{
+	local buttonData = []
+	buttonData.append( { name = "#CLOSE", func = null } )
+	local footerData = []
+	//footerData.append( { label = "#A_BUTTON_SELECT" } )
+	footerData.append( { label = "#B_BUTTON_CLOSE" } )
+	local dialogData = {}
+	dialogData.header <- "Not like this!"
+	dialogData.detailsMessage <- "To edit loadouts, you need to hover over one and right-click it."
+	dialogData.buttonData <- buttonData
+	dialogData.footerData <- footerData
+	OpenChoiceDialog( dialogData )
 }
