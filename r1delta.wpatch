@@ -320,6 +320,21 @@ client.dll,rdata,0x883EA8,"PersistenceGetEnumItemNameForIndex","OldPersistGetEnu
 server.dll,text,0x658F0,48,C3
 server.dll,text,0x66750,48,C3
 server.dll,text,0x65990,48,C3
+server.dll,text,0x67290,48,C3
+server.dll,text,0x675B0,48,C3
+server.dll,text,0x676F0,48,C3
+server.dll,text,0x67970,48,C3
+server.dll,text,0x67A10,48,C3
+server.dll,text,0x68AF0,48,C3
+server.dll,text,0x68B90,48,C3
+server.dll,text,0x68C30,48,C3
+server.dll,text,0x68CD0,48,C3
+server.dll,text,0x68D70,48,C3
+server.dll,text,0x68E10,48,C3
+server.dll,text,0x68EB0,48,C3
+server.dll,text,0x68F50,48,C3
+server.dll,text,0x68FF0,48,C3
+server.dll,text,0x69090,48,C3
 ; server.dll,text,0x59EFC7,C7 44 24 20 03 00 00 00,C7 44 24 20 04 00 00 00
 ; make showGameSettings show addon ui
 client.dll,text,0x3AD050,C7 44 24 48 0B 00 00 00,C7 44 24 48 23 00 00 00
