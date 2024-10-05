@@ -240,8 +240,10 @@ engine.dll,text,0x220203,FF 53 30,90 90 90
 ; don't shutdown vgui
 server.dll,text,0x1445fe,FF 50 58,90 90 90
 ; fix nades :)
-server.dll,text,0x59EFC7,C7 44 24 20 03 00,C7 44 24 20 04 00
-server.dll,text,0x5A0C18,C7 44 24 20 03,C7 44 24 20 04
+; server.dll,text,0x59EFC7,C7 44 24 20 03,C7 44 24 20 00
+; server.dll,text,0x5A0C18,C7 44 24 20 03,C7 44 24 20 00
+; server.dll,text,0x5A0BB2,C7 44 24 20 07,C7 44 24 20 08
+; server.dll,text,0x59EF32,C7 44 24 20 07,C7 44 24 20 08
 ; change addons to SOULs
 ;engine.dll,text,0x6297C8,"%s.vpk","%s.soul\x00"
 ;engine.dll,text,0x6297EC,"*.vpk","*.soul\x00"
@@ -312,3 +314,12 @@ client.dll,rdata,0x883D98,"PersistenceGetArrayCount","OldPersistGetArrayCount\x0
 client.dll,rdata,0x883F88,"PersistenceGetEnumCount","OldPersistGetEnumCount\x00"
 client.dll,rdata,0x883F00,"PersistenceGetEnumIndexForItemName","OldPersistGetEnumIndexForItemName\x00"
 client.dll,rdata,0x883EA8,"PersistenceGetEnumItemNameForIndex","OldPersistGetEnumItemNameForIndex\x00"
+
+; rip out static initializers for mp_titanweapon_minigun, mp_titanweapon_charge_cannon, and mp_weapon_ai_car
+; fixes grenade issue by unshifting weaponx class ids
+server.dll,text,0x658F0,48,C3
+server.dll,text,0x66750,48,C3
+server.dll,text,0x65990,48,C3
+; server.dll,text,0x59EFC7,C7 44 24 20 03 00 00 00,C7 44 24 20 04 00 00 00
+; make showGameSettings show addon ui
+client.dll,text,0x3AD050,C7 44 24 48 0B 00 00 00,C7 44 24 48 23 00 00 00
