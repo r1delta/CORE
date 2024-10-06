@@ -338,3 +338,6 @@ server.dll,text,0x69090,48,C3
 ; server.dll,text,0x59EFC7,C7 44 24 20 03 00 00 00,C7 44 24 20 04 00 00 00
 ; make showGameSettings show addon ui
 client.dll,text,0x3AD050,C7 44 24 48 0B 00 00 00,C7 44 24 48 23 00 00 00
+; unhide spawndummytitan/pilot
+server.dll,data,0xB3B998,02,00
+server.dll,data,0xB3C018,02,00

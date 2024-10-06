@@ -48,8 +48,119 @@ function main()
 
 	Globalize( GetPilotPresets )
 	Globalize( GetTitanPresets )
+	Globalize( SetBotPilotLoadout )
+	Globalize( SetBotTitanLoadout )
 
 	file.hasInvalidLoadout <- false
+}
+function SetBotTitanLoadout( player )
+{
+	local loadout = {}
+
+	loadout.name <- "#TITAN_FGT_NAME_1"
+	loadout.ref <- "titan_preset_loadout_1"
+	loadout.setFile <- "titan_atlas"
+	loadout.primary <- "mp_titanweapon_xo16"
+	loadout.primaryAttachment <- null
+	loadout.primaryMods <- []
+	loadout.secondary <- null
+	loadout.special <- "mp_titanability_bubble_shield" //전술 능력
+	loadout.specialMods <- []
+	loadout.ordnance <- "mp_titanweapon_salvo_rockets"
+	loadout.ordnanceMods <- []
+	loadout.passive1 <- "pas_defensive_core"
+	loadout.passive2 <- "pas_hyper_core"
+	loadout.passive3 <- null
+	loadout.passive4 <- null
+	loadout.passive5 <- null
+	loadout.core <- null
+
+	local table = player.playerClassData[ "titan" ]
+	table.playerSetFile <- loadout.setFile
+	table.primaryWeapon <- loadout.primary
+	table.primaryWeaponMods <- []
+	if ( loadout.primaryMods.len() != 0 )
+		table.primaryWeaponMods = loadout.primaryMods
+
+	table.secondaryWeapon <- null	// TODO: Update other script so we can safely remove this if we aren't having titan secondaries
+
+	table.offhandWeapons <- {}
+	table.offhandWeapons[0] <- { weapon = loadout.ordnance, mods = loadout.ordnanceMods }
+	table.offhandWeapons[1] <- { weapon = loadout.special, mods = loadout.specialMods }
+
+
+	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
+	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
+	table.core <- loadout.core
+
+	table.liverycode <- null
+	table.liverycolor0 <- null
+	table.liverycolor1 <- null
+	table.liverycolor2 <- null
+}
+function SetBotPilotLoadout( player )
+{
+	local loadout = {}
+
+	loadout.name <- player.GetName()
+	loadout.skin <- "pilot_male_cq"
+	loadout.ref <- null
+	loadout.primary <- "mp_weapon_r97"
+	loadout.primaryMods <- []
+	loadout.primaryAttachment <- "hcog"
+	loadout.secondary <- "mp_weapon_rocket_launcher"
+	loadout.secondaryMods <- []
+	loadout.sidearm <- "mp_weapon_semipistol"
+	loadout.sidearmMods <- []
+	loadout.special <- "mp_ability_cloak"
+	loadout.ordnance <- "mp_weapon_frag_grenade"
+	loadout.ordnanceMods <- []
+	loadout.passive1 <- "pas_power_cell"
+	loadout.passive2 <- "pas_longer_bubble"
+
+	// This occurs every respawn, not just at the beginning of the game
+	local table = player.playerClassData[ "wallrun" ]
+	table.playerSetFile <- loadout.skin
+	table.primaryWeapon <- loadout.primary
+	table.primaryWeaponMods <- []
+	if ( loadout.primaryAttachment )
+		table.primaryWeaponMods.append( loadout.primaryAttachment )
+	
+	if ( loadout.primaryMods.len() != 0 )
+	{
+		foreach( mod in loadout.primaryMods )
+		{
+			table.primaryWeaponMods.append(mod)
+		}
+	}
+
+	table.secondaryWeapon <- loadout.secondary
+	table.secondaryMods <- []
+	if ( loadout.secondaryMods.len() != 0 )
+		table.secondaryMods = loadout.secondaryMods
+
+	table.sidearmWeapon <- loadout.sidearm
+	table.sidearmMods <- []
+	if ( loadout.sidearmMods.len() != 0 )
+		table.sidearmMods = loadout.sidearmMods
+
+
+	if ( "offhandWeapons" in table && loadout.ordnance != table.offhandWeapons[0].weapon )
+		player.Signal( "NewPilotOrdnance" )
+	table.offhandWeapons <- {}
+	table.offhandWeapons[0] <- { weapon = loadout.ordnance, mods = loadout.ordnanceMods }
+	table.offhandWeapons[1] <- { weapon = loadout.special, mods = [] }
+
+	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
+	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
+
+	// TODO: Add support for offhand mods
+	//table.offhandWeapons[0].append( { weapon = null, mods = [] } )
+	//table.offhandWeapons[0].append( { weapon = null, mods = [] } )
+	//table.offhandWeapons[0].append( { weapon = null, mods = [] } )
+
+	printl( "Set BotPilot Loadout table results" )
+	PrintTable( table )
 }
 
 function InitPilotLoadoutFromPreset( player, loadoutIndex, presetIndex )
