@@ -209,9 +209,10 @@ client.dll,text,0x2DB33B,75,EB
 engine.dll,text,0xFDD60,48,C3
 engine.dll,text,0xFDE20,48,C3
 ; remove "too many cmds for player" kick
-server.dll,text,0x14A1B4,0F,66 0F 1F 44 00 00
+; server.dll,text,0x14A1B4,0F,66 0F 1F 44 00 00
+; turns out it crashes if it hits it oops
 ; remove clc_move clamp (it's better to throw an error if it overflows)
-; engine.dll,text,0x59D04,41 3B C7,90 90 90 90 90 90 90
+engine.dll,text,0x59D04,41 3B C7,90 90 90 90 90 90 90
 ; change tickinterval to 30 to fix vphys
 ;server.dll,rdata,0x9E9EC0,89 88 88 3C,80 88 08 3d
 ; fix grenades by forcing BVH TriCol to be applied even if distance is greater than 120 (hardcoded constant for lower tickrate)
@@ -341,3 +342,7 @@ client.dll,text,0x3AD050,C7 44 24 48 0B 00 00 00,C7 44 24 48 23 00 00 00
 ; unhide spawndummytitan/pilot
 server.dll,data,0xB3B998,02,00
 server.dll,data,0xB3C018,02,00
+; unhide fps_max
+engine.dll,data,0x5E0DF0,41 B9 02,41 B9 00
+; new cap: 999fps
+engine.dll,rdata,0x634CC8,00 00 10 43,00 c0 79 44
