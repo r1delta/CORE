@@ -105,7 +105,7 @@ function SetBotPilotLoadout( player )
 	loadout.name <- player.GetName()
 	loadout.skin <- "pilot_male_cq"
 	loadout.ref <- null
-	loadout.primary <- "mp_weapon_r97"
+	loadout.primary <- "mp_weapon_lmg"
 	loadout.primaryMods <- []
 	loadout.primaryAttachment <- "hcog"
 	loadout.secondary <- "mp_weapon_rocket_launcher"

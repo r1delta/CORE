@@ -350,3 +350,5 @@ engine.dll,rdata,0x634CC0,00 00 00 00 00 00 62 40,00 00 00 00 00 38 8f 40
 ; fixup clmove
 engine.dll,text,0x59E9F,83 F8 0F,83 F8 40
 engine.dll,text,0x59E90,72 12,90 90
+; unhide not_focus_sleep
+engine.dll,text,0x5E0EB0,41 B9 02,41 B9 00
