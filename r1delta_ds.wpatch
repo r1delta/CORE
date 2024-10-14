@@ -94,7 +94,7 @@ engine.dll,text,202F38,B0,90
 engine.dll,text,202F47,BC,9C
 engine.dll,text,202F55,B8,98
 ; don't send pdata message (it's not bz2'd and it's fucked anyway)
-; engine_ds.dll,text,4AFBC,49 8B CC 4C 89 B4 24 70 19 00 00,E9 7E 00 00 00 90 90 90 90 90 90
+engine_ds.dll,text,4AFBC,49 8B CC 4C 89 B4 24 70 19 00 00,E9 7E 00 00 00 90 90 90 90 90 90
 ; remove isacheater check
 engine_ds.dll,text,457F5,75,EB
 ; remove ~cnetmessage calls in shutdown until we know what's going on
@@ -129,6 +129,21 @@ engine_ds.dll,text,0xA0863,0F 86 A4 08 00 00,E9 A5 08 00 00
 ; remove rtdynamiccast on netchan
 engine.dll,text,0x1f3be5,4C 8D 0D AC FE 5D 00,48 89 C8 EB 18 90 90
 ; don't send RemoteBulletFired message on dedi (it's broken and idk why)
-server.dll,text,0x5F9690,48,C3
+; server.dll,text,0x5F9690,48,C3
 ; always send persistent data baseline
-engine_ds.dll,text,0x4C479,75,EB
+; engine_ds.dll,text,0x4C479,75,EB
+; backport a bunch of patches from listen
+; fix addon system
+; move VPK path to head
+engine_ds.dll,text,0x095D16,C7 44 24 20 01 00 00 00,C7 44 24 20 00 00
+; move fs path to head
+engine_ds.dll,text,0x095D2D,41 B9 01 00 00 00,41 B9 00 00 00 00
+; fix fs "dlc" crap
+dedicated.dll,rdata,0x208DD0,"portal2","r1\x00"
+; use r1 fs gameinfo (instead of the one in VPK)
+engine_ds.dll,text,0x4201C8,"GameInfo.txt","..\r1delta\GameInfo.txt\x00"
+; don't reload materials in FileSystem_UpdateAddonSearchPaths
+; (it's broken in resource :( )
+engine_ds.dll,text,0x95D67,48 8B,EB 0E
+; no pdata parser
+engine_ds.dll,text,0x1693D0,48,C3
