@@ -147,3 +147,5 @@ engine_ds.dll,text,0x4201C8,"GameInfo.txt","..\r1delta\GameInfo.txt\x00"
 engine_ds.dll,text,0x95D67,48 8B,EB 0E
 ; no pdata parser
 engine_ds.dll,text,0x1693D0,48,C3
+; ignore allocconsole
+dedicated.dll,text,0x6B89C,75,EB
