@@ -356,3 +356,7 @@ engine.dll,text,0x5E0EB0,41 B9 02,41 B9 00
 ; server.dll,rdata,0x807F94,"r1","r1delta\x00"
 ; ; force cr1mpgamerules
 server.dll,text,0x2A0CBB,7F 07,EB 07
+; remove "Unknown nb_ctl request" console spam
+vaudio_speex.dll,text,0x84FC,48,C3
+; don't reload models on addon reload on dedicated
+engine_ds.dll,text,0x095D52,48,EB 13
