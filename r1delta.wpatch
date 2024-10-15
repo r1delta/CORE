@@ -305,7 +305,7 @@ client.dll,rdata,0x9207B8,"IsPrivateMatch","idkman\x00"
 engine.dll,text,0x7683F,8B 8B E8 00 00 00,B9 FF FF FF FF 90
 ; remove 255 clamp from Host_BuildUserInfoUpdate
 engine.dll,text,0x134C16,7E,EB
-; fix ip leak (TODO: dedicated)
+; fix ip leak
 engine.dll,text,0xDA899,74,EB
 ; rename old persistence funcs
 client.dll,rdata,0x80BFE0,"GetPersistentVar","OldPersistentVar"

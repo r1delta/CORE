@@ -149,3 +149,9 @@ engine_ds.dll,text,0x95D67,48 8B,EB 0E
 engine_ds.dll,text,0x1693D0,48,C3
 ; ignore allocconsole
 dedicated.dll,text,0x6B89C,75,EB
+; fix modname in engine_ds.dll
+engine_ds.dll,rdata,0x425520,"r1\x00","r1delta\x00"
+; fix ip leak
+engine_ds.dll,text,0x4BFD0,74,EB
+; fix convar replication (send all convars even if non-default because defaults were different in 2014)
+engine_ds.dll,text,0xA25F7,74,EB
