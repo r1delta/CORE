@@ -161,3 +161,4 @@ engine_ds.dll,text,0x3F6639,C7 44 24 20 02 00,C7 44 24 20 00 00
 engine_ds.dll,text,0x48BFE,41 B8 0A 00 00 00 ,41 B8 1E 00 00 00
 ; unhide sv_lagpushticks
 server.dll,text,0x496FE,C7 05 80 15 B1 00 02,C7 05 80 15 B1 00 00
+; engine_ds.dll,text,0x4C46F, 48 8B D9,EB 13
