@@ -300,7 +300,7 @@ function UpdateFooterButtons( menuName = null )
             footerData.pc.append( { label = "Direct Connect", func = OpenDirectConnectDialog_Activate } )
             break
 
-		case "AddonsMenu":
+		case "Addons":
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 

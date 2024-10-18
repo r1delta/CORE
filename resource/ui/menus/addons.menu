@@ -1,6 +1,6 @@
 resource/ui/menus/addons.menu
 {
-	AddonsMenu
+	Addons
 	{
 		ControlName				Frame
 		xpos					0
