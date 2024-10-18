@@ -883,6 +883,8 @@ function InitPeople()
 	AddNameOnly( "deltacontrib", "mv (jerry)" )
 	AddNameOnly( "deltacontrib", "bt" )
 	AddNameOnly( "deltacontrib", "quadruple" )
+	AddNameOnly( "deltacontrib", "Allusive" )
+
 
 //============================
 //	EXECUTIVE
