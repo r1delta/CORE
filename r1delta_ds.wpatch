@@ -155,3 +155,7 @@ engine_ds.dll,rdata,0x425520,"r1\x00","r1delta\x00"
 engine_ds.dll,text,0x4BFD0,74,EB
 ; fix convar replication (send all convars even if non-default because defaults were different in 2014)
 engine_ds.dll,text,0xA25F7,74,EB
+; unhide convar_list
+engine_ds.dll,text,0x3F6639,C7 44 24 20 02 00,C7 44 24 20 00 00
+; set default updaterate to 60
+engine_ds.dll,text,0x48BFE,41 B8 0A 00 00 00 ,41 B8 1E 00 00 00

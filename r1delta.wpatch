@@ -360,3 +360,7 @@ server.dll,text,0x2A0CBB,7F 07,EB 07
 vaudio_speex.dll,text,0x84FC,48,C3
 ; don't reload models on addon reload on dedicated
 engine_ds.dll,text,0x095D52,48,EB 13
+; unhide convar_list
+engine.dll,text,0x5DC3E9,C7 44 24 20 02 00,C7 44 24 20 00 00
+; set default updaterate to 60
+engine.dll,text,0xD6FDE,41 B8 0A 00 00 00,41 B8 1E 00 00 00
