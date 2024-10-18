@@ -735,5 +735,5 @@ function EULA_Decline()
 
 function OnAddonButton_Activate( button )
 {
-	AdvanceMenu( GetMenu( "AddonsMenu" ) )
+	AdvanceMenu( GetMenu( "Addons" ) )
 }
