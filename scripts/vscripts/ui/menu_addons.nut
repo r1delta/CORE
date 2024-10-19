@@ -7,6 +7,8 @@ function main()
 	Globalize( ResetUIScript )
 }
 
+
+
 function InitAddonsMenu( menu )
 {
 	file.menu <- menu
@@ -33,7 +35,7 @@ function InitAddonsMenu( menu )
 	}
 	file.menu.GetChild("MapButtonsPanel").GetChild("MapButton0").SetEnabled( true )
 	file.menu.GetChild("MapButtonsPanel").GetChild("MapButton0").SetVisible( true )
-	file.menu.GetChild("NextMapImage").SetImage( "ui/menu/lobby/map_star_empty" )
+	file.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
 	file.menu.GetChild("NextMapImage").SetVisible( true )
 	file.menu.GetChild("NextMapName").SetText( "hi" )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
@@ -56,7 +58,6 @@ function ChangePreviewUI( button )
 	button.SetText( "Hello " + script_id  )
 
 	uiGlobal.menu.GetChild("NextMapName").SetText( "Hello: " + script_id)
-	ClientCommand("echo")
 }
 
 function OnAddonsMenu( button )
@@ -72,7 +73,7 @@ function OnAddonsMenu( button )
 	}
 
 	// update the preview image
-	uiGlobal.menu.GetChild("NextMapImage").SetImage( "ui/menu/lobby/map_star_empty" )
+	uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
 
 }
 
