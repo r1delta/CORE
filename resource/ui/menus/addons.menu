@@ -106,7 +106,7 @@ resource/ui/menus/addons.menu
 			ypos					60
 			auto_wide_tocontents 	1
 			auto_tall_tocontents	1
-			visible					0
+			visible					1
 			labelText				"#MAP_STARS_HEADER_KEYBOARD"
 			font					WinStreakHeaderFont
 			allcaps					0

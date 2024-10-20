@@ -14,32 +14,29 @@ function InitAddonsMenu( menu )
 	file.menu <- menu
 	file.mapListScrollState <- 0
 	file.numMapButtonsOffScreen <- null
-	uiGlobal.menu <- menu
-	file.menu.GetChild("NextMapImage").SetImage( "ui/menu/lobby/map_star_empty" )
-
-	file.menu.GetChild("MapButtonsPanel").GetChild("MapButton0").SetText( "ui/menu/lobby/map_star_empty" )
-	
+	uiGlobal.menu <- menu	
 	file.menu.GetChild("MapButtonsPanel").SetVisible( true )
 	AddEventHandlerToButtonClass( menu, "MapListScrollUpClass", UIE_CLICK, Bind( OnMapListScrollUp_Activate ) )
 	AddEventHandlerToButtonClass( menu, "MapListScrollDownClass", UIE_CLICK, Bind( OnMapListScrollDown_Activate ) )
 	file.buttons <- GetElementsByClassname( menu, "MapButtonClass" )
-	foreach ( i,button in GetElementsByClassname( file.menu, "MapButtonClass" ) )
-	{
-		button.SetText( "Hello " + i )
-		button.SetVisible( true )
-		button.SetEnabled( true )
-		
-		button.AddEventHandler( UIE_CLICK, OnAddonsMenu )
-		button.AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
-		
+	local var = GetModPath()
+	uiGlobal.addons <- {}
+	uiGlobal.addons = var
+	foreach(i,button in file.buttons) {
+		button.SetVisible( false )
 	}
-	file.menu.GetChild("MapButtonsPanel").GetChild("MapButton0").SetEnabled( true )
-	file.menu.GetChild("MapButtonsPanel").GetChild("MapButton0").SetVisible( true )
+	foreach(i,table in var) {
+		file.buttons[i].SetText( table["name"] )
+		file.buttons[i].SetVisible( true )
+		// file.buttons[i].SetScriptID( i )
+		file.buttons[i].SetSelected(table["enabled"])
+		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
+		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
+	}
+	
 	file.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
 	file.menu.GetChild("NextMapImage").SetVisible( true )
-	file.menu.GetChild("NextMapName").SetText( "hi" )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
-
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
 	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
 }	
@@ -54,27 +51,36 @@ function ChangePreviewUI( button )
 {
 
 	local script_id = button.GetScriptID().tointeger()
+	local table = uiGlobal.addons[script_id]
+	local name = table["name"]
+	local desc = table["description"]
+	local author = table["author"]
 	
-	button.SetText( "Hello " + script_id  )
+	uiGlobal.menu.GetChild("NextMapName").SetVisible( true)
+	uiGlobal.menu.GetChild("NextMapName").SetText( name)
 
-	uiGlobal.menu.GetChild("NextMapName").SetText( "Hello: " + script_id)
+	uiGlobal.menu.GetChild("NextMapDesc").SetVisible( true )
+	uiGlobal.menu.GetChild("NextMapDesc").SetText( desc )
+
+	uiGlobal.menu.GetChild("StarsLabel").SetText(author)
 }
 
 function OnAddonsMenu( button )
 {
-	
+	local script_id = button.GetScriptID().tointeger()
+	print("script_id: " + script_id)
 	if ( button.IsSelected() )
 	{
 		button.SetSelected( false )
+		UpdateAddons(script_id,false)
 	}
 	else
 	{
 		button.SetSelected( true )
+		UpdateAddons(script_id ,true)
 	}
-
-	// update the preview image
+	ClientCommand( "update_addon_paths" )
 	uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
-
 }
 
 function UpdateAddonPaths( button )
