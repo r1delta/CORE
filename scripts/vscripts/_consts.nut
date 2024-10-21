@@ -2376,7 +2376,8 @@ const TITAN_DOOMED_EFFECT = "xo_exp_doomed"
 //const TITAN_DOOMED_EFFECT = "xo_exp_death_doom"
 
 // TODO: move to a const from code
-const R1DELTA_PATCH_NOTES = @"* Added loadout support and persistence.
-* Various weapon fixes.
-* More offline play features.
+const R1DELTA_PATCH_NOTES = @"* Loadouts and persistence
+* Dedicated servers
+* Proper addons support
+* More offline play features
 "
