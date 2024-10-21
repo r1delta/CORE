@@ -58,6 +58,13 @@ function ChangePreviewUI( button )
 	local name = table["name"]
 	local desc = table["description"]
 	local author = table["author"]
+
+	if( desc == "Description_Here" )
+		desc = "No Description"
+	
+	if( author == "Author_Name_Here" )
+		author = "No Author"
+
 	uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 	uiGlobal.menu.GetChild("NextMapName").SetVisible( true)
 	uiGlobal.menu.GetChild("NextMapName").SetText( name)
