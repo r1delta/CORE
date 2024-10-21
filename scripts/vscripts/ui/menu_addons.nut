@@ -101,6 +101,9 @@ function OnAddonsMenu( button )
 function UpdateAddonPaths( button )
 {
     ClientCommand( "update_addon_paths" )
+	ClientCommand( "uiscript_reset" )
+	ClientCommand( "reload_localization")
+	ClientCommand( "loadPlaylists" )
 }
 
 function ResetUIScript( button )
