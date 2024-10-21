@@ -75,6 +75,7 @@ function ChangePreviewUI( button )
 	uiGlobal.menu.GetChild("StarsLabel").SetText(author)
 	if(table["image"] != "common/l4d_spinner") {
 		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
+		uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
 	}
 	else {
 		uiGlobal.menu.GetChild("NextMapImage").SetVisible( false )
