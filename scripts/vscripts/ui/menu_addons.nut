@@ -32,9 +32,10 @@ function InitAddonsMenu( menu )
 		file.buttons[i].SetSelected(table["enabled"])
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
 		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
+		file.menu.GetChild("NextMapImage").SetImage( table["image"] )
 	}
 	
-	file.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+	// file.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
 	file.menu.GetChild("NextMapImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
@@ -55,7 +56,7 @@ function ChangePreviewUI( button )
 	local name = table["name"]
 	local desc = table["description"]
 	local author = table["author"]
-	
+	uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 	uiGlobal.menu.GetChild("NextMapName").SetVisible( true)
 	uiGlobal.menu.GetChild("NextMapName").SetText( name)
 
@@ -80,7 +81,6 @@ function OnAddonsMenu( button )
 		UpdateAddons(script_id ,true)
 	}
 	ClientCommand( "update_addon_paths" )
-	uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
 }
 
 function UpdateAddonPaths( button )
