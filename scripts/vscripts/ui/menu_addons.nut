@@ -33,6 +33,7 @@ function InitAddonsMenu( menu )
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
 		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
 		if(table["image"] != "common/l4d_spinner") {
+			uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
 			uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 		}
 	}
@@ -59,13 +60,20 @@ function ChangePreviewUI( button )
 	local desc = table["description"]
 	local author = table["author"]
 
+	if(table["image"] != "common/l4d_spinner") {
+		uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
+		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
+	}
+	else {
+		uiGlobal.menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/map_image_frame")
+	}
+
 	if( desc == "Description_Here" )
 		desc = "No Description"
 	
 	if( author == "Author_Name_Here" )
 		author = "No Author"
 
-	uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 	uiGlobal.menu.GetChild("NextMapName").SetVisible( true)
 	uiGlobal.menu.GetChild("NextMapName").SetText( name)
 
@@ -73,6 +81,7 @@ function ChangePreviewUI( button )
 	uiGlobal.menu.GetChild("NextMapDesc").SetText( desc )
 
 	uiGlobal.menu.GetChild("StarsLabel").SetText(author)
+
 	if(table["image"] != "common/l4d_spinner") {
 		uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
 		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
