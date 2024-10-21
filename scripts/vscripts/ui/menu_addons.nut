@@ -32,13 +32,8 @@ function InitAddonsMenu( menu )
 		file.buttons[i].SetSelected(table["enabled"])
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
 		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
-		if(table["image"] != "common/l4d_spinner") {
-			uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
-			uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
-		}
 	}
-	
-	// file.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+	uiGlobal.menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/map_image_frame")
 	file.menu.GetChild("NextMapImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
