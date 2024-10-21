@@ -33,10 +33,7 @@ function InitAddonsMenu( menu )
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
 		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
 		if(table["image"] != "common/l4d_spinner") {
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
-		}
-		else {
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+			uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 		}
 	}
 	
@@ -73,7 +70,7 @@ function ChangePreviewUI( button )
 		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 	}
 	else {
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+		uiGlobal.menu.GetChild("NextMapImage").SetVisible( false )
 	}
 }
 

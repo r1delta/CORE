@@ -107,7 +107,7 @@ resource/ui/menus/addons.menu
 			auto_wide_tocontents 	1
 			auto_tall_tocontents	1
 			visible					1
-			labelText				"#MAP_STARS_HEADER_KEYBOARD"
+			labelText				""
 			font					WinStreakHeaderFont
 			allcaps					0
 			fgcolor_override		"204 234 255 255"
