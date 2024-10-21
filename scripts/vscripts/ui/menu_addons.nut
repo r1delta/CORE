@@ -32,7 +32,12 @@ function InitAddonsMenu( menu )
 		file.buttons[i].SetSelected(table["enabled"])
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
 		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
-		file.menu.GetChild("NextMapImage").SetImage( table["image"] )
+		if(table["image"] != "common/l4d_spinner") {
+		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
+		}
+		else {
+		uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+		}
 	}
 	
 	// file.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
@@ -64,6 +69,13 @@ function ChangePreviewUI( button )
 	uiGlobal.menu.GetChild("NextMapDesc").SetText( desc )
 
 	uiGlobal.menu.GetChild("StarsLabel").SetText(author)
+	print("Image: " + table["image"])
+	if(table["image"] != "common/l4d_spinner") {
+		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
+	}
+	else {
+		uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+	}
 }
 
 function OnAddonsMenu( button )
