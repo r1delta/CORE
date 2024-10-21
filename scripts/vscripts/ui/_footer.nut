@@ -304,11 +304,8 @@ function UpdateFooterButtons( menuName = null )
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
-            footerData.gamepad.append( { label = "#%[A_BUTTON]% ^798B9800Reload Paths" } )
-            footerData.pc.append( { label = "Reload Paths", func = UpdateAddonPaths } )
-
-			footerData.gamepad.append( { label = "%[X_BUTTON]% ^798B9800Reset UI" } )
-            footerData.pc.append( { label = "Reset UI", func = ResetUIScript } )
+            footerData.gamepad.append( { label = "#%[X_BUTTON]% ^798B9800Reload Paths" } )
+            footerData.pc.append( { label = "Reload", func = UpdateAddonPaths } )
 			break
 
 		case "OptionsMenu":

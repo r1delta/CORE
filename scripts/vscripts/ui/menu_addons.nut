@@ -33,10 +33,7 @@ function InitAddonsMenu( menu )
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
 		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
 		if(table["image"] != "common/l4d_spinner") {
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
-		}
-		else {
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+			uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 		}
 	}
 	
@@ -61,6 +58,13 @@ function ChangePreviewUI( button )
 	local name = table["name"]
 	local desc = table["description"]
 	local author = table["author"]
+
+	if( desc == "Description_Here" )
+		desc = "No Description"
+	
+	if( author == "Author_Name_Here" )
+		author = "No Author"
+
 	uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 	uiGlobal.menu.GetChild("NextMapName").SetVisible( true)
 	uiGlobal.menu.GetChild("NextMapName").SetText( name)
@@ -73,7 +77,7 @@ function ChangePreviewUI( button )
 		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
 	}
 	else {
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( "../ui/menu/lobby/lobby_image_mp_wargames" )
+		uiGlobal.menu.GetChild("NextMapImage").SetVisible( false )
 	}
 }
 
@@ -97,6 +101,9 @@ function OnAddonsMenu( button )
 function UpdateAddonPaths( button )
 {
     ClientCommand( "update_addon_paths" )
+	ClientCommand( "uiscript_reset" )
+	ClientCommand( "reload_localization")
+	ClientCommand( "loadPlaylists" )
 }
 
 function ResetUIScript( button )
