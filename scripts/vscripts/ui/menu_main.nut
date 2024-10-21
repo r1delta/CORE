@@ -528,19 +528,20 @@ function OnPlayButton_Activate()
 
 function OnHostButtonActivate()
 {
-	local desc 			= "Are you sure?"
-	local confirmText 	= "#YES"
+	// local desc 			= "Are you sure?"
+	// local confirmText 	= "#YES"
 
-	local buttonData = []
-	buttonData.append( { name = confirmText, func = OnHostButtonDialogActivate } )
-	buttonData.append( { name = "#NO", func = null } )
+	// local buttonData = []
+	// buttonData.append( { name = confirmText, func = OnHostButtonDialogActivate } )
+	// buttonData.append( { name = "#NO", func = null } )
 
-	local dialogData = {}
-	dialogData.header <- "Create Lobby"
-	dialogData.detailsMessage <- desc
-	dialogData.buttonData <- buttonData
+	// local dialogData = {}
+	// dialogData.header <- "Create Lobby"
+	// dialogData.detailsMessage <- desc
+	// dialogData.buttonData <- buttonData
 
-	OpenChoiceDialog( dialogData )
+	// OpenChoiceDialog( dialogData )
+	thread Threaded_CreateLocalServer()
 }
 
 function OnHostButtonDialogActivate()
@@ -594,7 +595,9 @@ function Threaded_CreateLocalServer()
 
 	uiGlobal.matchmaking = true
 
-	uiGlobal.ConfirmMenuDetails.SetText( "Connecting to local server" )
+	uiGlobal.ConfirmMenuDetails.SetText( "Starting Listen Server." )
+
+	wait 1.5 // artificial wait so people can cancel
 	
 	ClientCommand("launchplaylist private_match; map mp_lobby")
 }
