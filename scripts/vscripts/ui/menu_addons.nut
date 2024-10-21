@@ -59,6 +59,7 @@ function ChangePreviewUI( button )
 	local name = table["name"]
 	local desc = table["description"]
 	local author = table["author"]
+	local version = table["version"]
 
 	if(table["image"] != "common/l4d_spinner") {
 		uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
@@ -74,6 +75,9 @@ function ChangePreviewUI( button )
 	if( author == "Author_Name_Here" )
 		author = "No Author"
 
+	if( version == "Version_Here" )
+		version = "No Version"
+
 	uiGlobal.menu.GetChild("NextMapName").SetVisible( true)
 	uiGlobal.menu.GetChild("NextMapName").SetText( name)
 
@@ -81,14 +85,9 @@ function ChangePreviewUI( button )
 	uiGlobal.menu.GetChild("NextMapDesc").SetText( desc )
 
 	uiGlobal.menu.GetChild("StarsLabel").SetText(author)
+	uiGlobal.menu.GetChild("VersionLabel").SetVisible( true )
+	uiGlobal.menu.GetChild("VersionLabel").SetText( version )
 
-	if(table["image"] != "common/l4d_spinner") {
-		uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
-	}
-	else {
-		uiGlobal.menu.GetChild("NextMapImage").SetVisible( false )
-	}
 }
 
 function OnAddonsMenu( button )
