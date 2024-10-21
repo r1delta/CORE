@@ -364,3 +364,6 @@ engine_ds.dll,text,0x095D52,48,EB 13
 engine.dll,text,0x5DC3E9,C7 44 24 20 02 00,C7 44 24 20 00 00
 ; set default updaterate to 60
 engine.dll,text,0xD6FDE,41 B8 0A 00 00 00,41 B8 1E 00 00 00
+
+; tga size update for 2048x2048
+client.dll,text,0x3D9E2B,B8 00 01 00 00,B8 00 08 00 00
