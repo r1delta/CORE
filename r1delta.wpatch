@@ -367,3 +367,9 @@ engine.dll,text,0xD6FDE,41 B8 0A 00 00 00,41 B8 1E 00 00 00
 
 ; tga size update for 2048x2048
 client.dll,text,0x3D9E2B,B8 00 01 00 00,B8 00 08 00 00
+;patch path for vtf files
+client.dll,rdata,0x99DEA8,"%s/bin/x64_retail/%s\x00","%s/r1delta/bin/x64_delta/%s\x00"
+; \x5C = \, \x78 = x, \x36 = 6, \x34 = 4
+;client.dll,rdata,0x99DE98,"\x5C\x78\x36\x34_retail\x00","\x5C\x78\x36\x34_delta\x00"
+;client.dll,rdata,0x99DE70,"x64_retail/\x00","x64_delta/\x00"
+;client.dll,rdata,0x99DE60,"x64_retail\x00","x64_delta\x00" 
