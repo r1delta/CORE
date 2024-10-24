@@ -1,12 +1,6 @@
-IncludeFile("_xp")
 function main()
 {
 	Globalize( SendServerHeartbeat )
-    Globalize(MaxLevel)
-}
-
-function MaxLevel() {
-    SetLevel( 55 )
 }
 
 function SendServerHeartbeat() {
