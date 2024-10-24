@@ -1,47 +1,76 @@
-
+IncludeFile("_xp")
 function main()
 {
 	Globalize( SendServerHeartbeat )
+    Globalize(MaxLevel)
 }
+
+function MaxLevel() {
+    SetLevel( 55 )
+}
+
 function SendServerHeartbeat() {
-    print("Sending server heartbeat");
     // Collect data to be encoded
     local host_name = GetConVarString("hostname");
     local map_name = GetMapName();
     local game_mode = GameRules.GetGameMode();
 	local data_table = {}
-//		player = GetLocalClientPlayer()
-
     local players = GetPlayerArray()
     local player_data = []
-    print("Players: " + players.len() + "\n");
+   
     foreach(i,player in players) {
         local gen = player.GetGen()
 	    local lvl = GetLevel( player )
-        local name = player.GetName()
+        local name = player.GetPlayerName()
         local team = player.GetTeam()
-        print("Player: " + name + " Gen: " + gen + " Lvl: " + lvl + " Team: " + team + " ID: " + i + "\n");
-        player_data[i] = {
-            name = name,
-            gen = gen,
-            lvl = lvl,
-            team = team
-        }
-
-
+        local data_struct = {}
+        data_struct.name <- name;
+        data_struct.gen <- gen;
+        data_struct.lvl <- lvl;
+        data_struct.team <- team;
+        player_data.append(data_struct);
     }
-
-
     // Create a table to store data
     data_table.host_name <- host_name;
     data_table.map_name <- map_name;
     data_table.game_mode <- game_mode;
     data_table.players <- player_data;
+    if(players.len() > 0) {
+        SendDataToCppServer(data_table);
+    }
+}
 
-    print("Data table: " + data_table.players);
+function SetLevel( newLevel, player = null )
+{
+    if ( newLevel < 1 )
+        newLevel = 1
+    else if ( newLevel > MAX_LEVEL )
+        newLevel = MAX_LEVEL
+    if ( player )
+    {
+        SetPersistentStringForClient( player, "xp", GetXPForLevel( newLevel ) )
+        player.SetPersistentVar( "previousXP", player.GetPersistentVar( "xp" ) )
+        _SetXP( player, GetXPForLevel( newLevel ) )
+        DevClearAllNewStatus(player)
+        return
+    }
+    local players = GetPlayerArray()
+    foreach ( player in players )
+    {
+        _SetXP( player, GetXPForLevel( newLevel ) )
+        DevClearAllNewStatus(player)
+    }
+}
 
-
-    SendDataToCppServer(data_table);
+function DevSetGen( newGen, player )
+{
+    newGen -= 1 // Because internally they go from 0..9 and humans will enter 1..10
+    if ( newGen < 0 )
+        newGen = 0
+    if( newGen > MAX_GEN )
+        newGen = MAX_GEN
+    SetLevel( 1, player )
+    player.SetPersistentVar( "gen", newGen )
 }
 
 function Base64Encode(data) {
