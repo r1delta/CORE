@@ -7,6 +7,8 @@ function SendServerHeartbeat() {
     // Collect data to be encoded
     local host_name = GetConVarString("hostname");
     local map_name = GetMapName();
+    local ip = GetConVarString("hostip");
+    local port = GetConVarString("hostport");
     local game_mode = GameRules.GetGameMode();
 	local data_table = {}
     local players = GetPlayerArray()
@@ -29,6 +31,8 @@ function SendServerHeartbeat() {
     data_table.map_name <- map_name;
     data_table.game_mode <- game_mode;
     data_table.players <- player_data;
+    data_table.ip <- ip;
+    data_table.port <- port;
     if(players.len() > 0) {
         SendDataToCppServer(data_table);
     }
