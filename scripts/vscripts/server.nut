@@ -31,7 +31,7 @@ function SendServerHeartbeat() {
     data_table.map_name <- map_name;
     data_table.game_mode <- game_mode;
     data_table.players <- player_data;
-    data_table.ip <- ip;
+    // data_table.ip <- ip;
     data_table.port <- port;
     if(players.len() > 0) {
         SendDataToCppServer(data_table);
