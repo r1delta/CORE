@@ -28,8 +28,8 @@ function InitServerBrowserMenu( menu )
 {
 	file.menu <- menu
 	uiGlobal.menu <- menu
-	file.serverList <- GetServerList()
-	uiGlobal.serverList <- file.serverList
+	// file.serverList <- GetServerList()
+	// uiGlobal.serverList <- file.serverList
     file.dialog <- GetMenu( "DirectConnectDialog" )
     file.lblConnectTo <- file.dialog.GetChild( "LblConnectTo" )
 	file.buttons <- GetElementsByClassname( file.menu, "MapButtonClass" )
@@ -38,7 +38,7 @@ function InitServerBrowserMenu( menu )
 	uiGlobal.menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/map_image_frame")
 	file.menu.GetChild("NextMapImage").SetVisible( true )
 	foreach( i, button in file.buttons ) {
-		button.SetVisible( false )
+		button.SetVisible( true )
 	}
 
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnConnect", UIE_CLICK, OnDirectConnectDialogButtonConnect_Activate )
