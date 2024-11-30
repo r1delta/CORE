@@ -58,7 +58,6 @@ function InitServerBrowserMenu( menu )
     file.lblConnectTo <- file.dialog.GetChild( "LblConnectTo" )
 	file.menu.GetChild("MapButtonsPanel").SetVisible( true )
 	file.buttons <- GetElementsByClassname( file.menu, "MapButtonClass" )
-	file.buttons <- file.buttons
 	file.currentChoice <- 0
 	file.menu.GetChild("ServerNextMapImage").SetVisible( true )
 	file.serverList <- list
@@ -71,18 +70,20 @@ function InitServerBrowserMenu( menu )
 
 	file.menu.GetChild("ServerNextMapName").SetText( "No servers found" )
 	local num_servers = list.len()
-	foreach(i, serv in file.serverList)
-	{
-		file.buttons[i].SetText(serv.host_name )
-		file.buttons[i].SetEnabled( true )
-		file.buttons[i].SetSelected( false )
-		if( serv.host_name == "No servers found" && num_servers > 0  )
-			file.buttons[i].SetVisible( false )
-		file.buttons[i].SetVisible( true )
-		file.buttons[i].AddEventHandler( UIE_CLICK, ConnectToServer )
-		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
 
-	}
+
+	// foreach(i, serv in file.serverList)
+	// {
+	// 	printt("index: " + i + " host_name: " + serv)
+	// 	file.buttons[i].SetText(serv.host_name )
+	// 	file.buttons[i].SetEnabled( true )
+	// 	file.buttons[i].SetSelected( false )
+	// 	if( serv.host_name == "No servers found" && num_servers > 0  )
+	// 		file.buttons[i].SetVisible( false )
+	// 	file.buttons[i].SetVisible( true )
+	// 	file.buttons[i].AddEventHandler( UIE_CLICK, ConnectToServer )
+	// 	file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
+	// }
 
   }
 
@@ -99,6 +100,7 @@ function RefreshServerList(button) {
 	local num_servers = list.len()
 	foreach(i, serv in file.serverList)
 	{
+		printt("index: " + i + " host_name: " + serv.host_name)
 		file.buttons[i].SetText(serv.host_name )
 		file.buttons[i].SetEnabled( true )
 		file.buttons[i].SetSelected( false )
