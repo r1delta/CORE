@@ -1481,6 +1481,9 @@ function ResetRankSkillHistory( player )
 function InitPlayerStats( player )
 {
 	RegisterSignal( "RefreshDice" )
+	InitXP( player )
+	player.XPChanged()
+	player.GenChanged()
 	printt("InitPlayerStats: " + player )
 }
 

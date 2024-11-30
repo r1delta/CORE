@@ -1,7 +1,7 @@
+
 function main()
 {
 	Globalize( SendServerHeartbeat )
-
     AddCallback_OnClientConnected( ClientConnect )
     AddCallback_OnClientDisconnected( OnClientDisconnect )
     file.ms_data <- {}
@@ -13,16 +13,12 @@ function main()
 function ClientConnect(player) {
     InitXP(player)
 	player.GenChanged()
-    player.XPChanged()
-    local gen = player.GetGen()
-	local lvl = GetLevel( player )
-    local name = player.GetPlayerName()
-    local team = player.GetTeam()
+    // player.XPChanged()
     local data_struct = {}
-    data_struct.name <- name;
-    data_struct.gen <- gen;
-    data_struct.lvl <- lvl;
-    data_struct.team <- team;
+    data_struct.name <- player.GetPlayerName();
+    data_struct.gen <- player.GetGen();
+    data_struct.lvl <- GetLevel( player );
+    data_struct.team <- player.GetTeam();
     file.ms_data["players"].append(data_struct);
     SendServerHeartbeat();
 }
@@ -47,6 +43,7 @@ function SendServerHeartbeat() {
     local map_name = GetMapName();
     local ip = GetConVarString("hostip");
     local port = GetConVarString("hostport");
+	local maxPlayers = GetCurrentPlaylistVarInt( "max players", 0 );
     local game_mode = GameRules.GetGameMode();
 	local data_table = {}
     local players = GetPlayerArray()  
@@ -55,6 +52,7 @@ function SendServerHeartbeat() {
     data_table.map_name <- map_name;
     data_table.game_mode <- game_mode;
     data_table.players <- file.ms_data["players"];
+    data_table.max_players <- maxPlayers
     data_table.port <- port;
     
     SendDataToCppServer(data_table);

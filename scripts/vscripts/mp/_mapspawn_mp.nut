@@ -8,8 +8,8 @@ function main()
 
 	IncludeScript( "mp/_utility_mp" )
 
-	IncludeFile( "_xp" )
-
+	IncludeFile( "_xp" ) 
+	IncludeFile("masterServer")
 
 
 	IncludeFile( "mp/_serverflags" )

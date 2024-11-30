@@ -21,7 +21,7 @@ function main()
 	AddCallback_OnClientConnected( MARKED_FOR_DEATH_AddPlayer )
 	GM_AddEndRoundFunc( MARKED_FOR_DEATH_EndRoundFunc )
 	AddCallback_OnClientDisconnected( MFD_Pro_PlayerDisconnected )
-
+	
 
 	AddSpawnCallback( "npc_spectre", MFDSpawnMinion )
 	AddSpawnCallback( "npc_soldier", MFDSpawnMinion )

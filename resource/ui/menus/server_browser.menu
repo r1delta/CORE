@@ -38,7 +38,7 @@ resource/ui/menus/server_browser.menu
 			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
 		}
 
-		NextMapImage
+		ServerNextMapImage
 		{
 			ControlName				ImagePanel
 			xpos 					r532
@@ -49,10 +49,10 @@ resource/ui/menus/server_browser.menu
 			scaleImage				1
 			image					""
 		}
-		NextMapImageFrame
+		ServerNextMapImageFrame
 		{
 			ControlName				ImagePanel
-			pin_to_sibling			NextMapImage
+			pin_to_sibling			ServerNextMapImage
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	0
 			wide					493
@@ -62,10 +62,10 @@ resource/ui/menus/server_browser.menu
 			image					"../ui/menu/lobby/map_image_frame"
 		}
 
-		NextMapName
+		ServerNextMapName
 		{
 			ControlName				Label
-			pin_to_sibling			NextMapImage
+			pin_to_sibling			ServerNextMapImage
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	0
 			xpos					-11
@@ -79,10 +79,10 @@ resource/ui/menus/server_browser.menu
 			fgcolor_override		"204 234 255 255"
 		}
 
-		NextMapDesc
+		ServerNextMapDesc
 		{
 			ControlName				Label
-			pin_to_sibling			NextMapName
+			pin_to_sibling			ServerNextMapName
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			xpos					0
@@ -106,62 +106,32 @@ resource/ui/menus/server_browser.menu
 			ypos					60
 			auto_wide_tocontents 	1
 			auto_tall_tocontents	1
-			visible					0
-			labelText				"#MAP_STARS_HEADER_KEYBOARD"
+			visible					1
+			labelText				""
 			font					WinStreakHeaderFont
 			allcaps					0
 			fgcolor_override		"204 234 255 255"
-			pin_to_sibling			NextMapImage
+			pin_to_sibling			ServerNextMapImage
 			pin_corner_to_sibling	5
 			pin_to_sibling_corner	5
 		}
 
-		MapStar2
+		VersionLabel
 		{
-			ControlName				ImagePanel
-			classname 				MapStar2
+			ControlName				Label
+			classname 				VersionLabel
 			xpos					-11
-			ypos					76
-			wide					16
-			tall					16
-			visible					0
-			scaleImage				1
-			image					"../ui/menu/lobby/map_star_empty"
-			pin_to_sibling			NextMapImage
+			ypos					75
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			font					WinStreakHeaderFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+			pin_to_sibling			ServerNextMapImage
 			pin_corner_to_sibling	5
 			pin_to_sibling_corner	5
-		}
-
-		MapStar1
-		{
-			ControlName				ImagePanel
-			classname 				MapStar1
-			xpos 					0
-			ypos					0
-			wide					16
-			tall					16
-			visible					0
-			scaleImage				1
-			image					"../ui/menu/lobby/map_star_empty"
-			pin_to_sibling			MapStar2
-			pin_corner_to_sibling	5
-			pin_to_sibling_corner	7
-		}
-
-		MapStar0
-		{
-			ControlName				ImagePanel
-			classname 				MapStar0
-			xpos 					0
-			ypos					0
-			wide					16
-			tall					16
-			visible					0
-			scaleImage				1
-			image					"../ui/menu/lobby/map_star_empty"
-			pin_to_sibling			MapStar1
-			pin_corner_to_sibling	5
-			pin_to_sibling_corner	7
 		}
 
 		ImgTopBar

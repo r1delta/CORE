@@ -298,6 +298,11 @@ function UpdateFooterButtons( menuName = null )
 
             footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
             footerData.pc.append( { label = "Direct Connect", func = OpenDirectConnectDialog_Activate } )
+
+			footerData.gamepad.append( { label = "#%[X_BUTTON]% ^798B9800Refresh" } )
+			footerData.pc.append( { label = "Refresh", func = RefreshServerList } )
+
+
             break
 
 		case "Addons":

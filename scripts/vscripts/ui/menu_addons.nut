@@ -9,6 +9,7 @@ function main()
 
 
 
+
 function InitAddonsMenu( menu )
 {
 	file.menu <- menu
