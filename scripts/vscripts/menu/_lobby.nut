@@ -86,7 +86,7 @@ function main()
 	AddClientCommandCallback( "NewBlackMarketItemsViewed", ClientCommand_NewBlackMarketItemsViewed )
 
 	GameRules.EnableGlobalChat( true )
-
+	IncludeFile("masterServer")
 	if ( !IsMatchmakingServer() )
 	{
 		printt( "============================================" )
@@ -563,10 +563,10 @@ function MatchmakingServerLobbyLogic()
 
 	SetPlaylistVarOverride( "private_match", "0" )
 
-	file.teamReady[TEAM_IMC] = false
-	file.teamReady[TEAM_MILITIA] = false
+	file.teamReady[TEAM_IMC] = true
+	file.teamReady[TEAM_MILITIA] = true
 
-	thread UpdateTeamReadyStatus()
+	// thread UpdateTeamReadyStatus()
 
 	local players
 	local timeRemaining
@@ -972,7 +972,7 @@ function StartCountDown()
 	{
 		UpdateTeamStates()
 		local endTime = (file.hadBothTeamsTime + countdownDefault)
-
+		printt("StartCountDown: endTime = " + endTime)
 		local countdownMin = GetCurrentPlaylistVarInt( "lobby_countdown_min", 30 )
 		local delta = (endTime - Time())
 		if ( delta < countdownMin )
@@ -1003,7 +1003,7 @@ function MuteAllOnExitLobby( delay, fadeTime )
 function LocalServerLobbyLogic()
 {
 	Assert( !IsMatchmakingServer() )
-
+	printt("Using local server logic")
 	file.teamReady[TEAM_IMC] = false
 	file.teamReady[TEAM_MILITIA] = false
 
@@ -1953,15 +1953,15 @@ function ReadyToStart()
 	if ( IsCoopMatch() )
 		return file.teamReady[TEAM_MILITIA]
 
-	if ( !file.teamReady[TEAM_IMC] )
-		return false
-	if ( !file.teamReady[TEAM_MILITIA] )
-		return false
+	// if ( !file.teamReady[TEAM_IMC] )
+	// 	return false
+	// if ( !file.teamReady[TEAM_MILITIA] )
+	// 	return false
 
-	local minPlayersSpread = GetCurrentPlaylistVarInt( "min_players_spread", 2 )
-	local playerSpread = abs( GetTeamPlayerCount( TEAM_IMC ) - GetTeamPlayerCount( TEAM_MILITIA ) )
-	if ( playerSpread > minPlayersSpread )
-		return false
+	// local minPlayersSpread = GetCurrentPlaylistVarInt( "min_players_spread", 2 )
+	// local playerSpread = abs( GetTeamPlayerCount( TEAM_IMC ) - GetTeamPlayerCount( TEAM_MILITIA ) )
+	// if ( playerSpread > minPlayersSpread )
+	// 	return false
 
 	return true
 }
