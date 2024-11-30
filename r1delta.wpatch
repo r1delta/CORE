@@ -315,6 +315,7 @@ client.dll,rdata,0x883D98,"PersistenceGetArrayCount","OldPersistGetArrayCount\x0
 client.dll,rdata,0x883F88,"PersistenceGetEnumCount","OldPersistGetEnumCount\x00"
 client.dll,rdata,0x883F00,"PersistenceGetEnumIndexForItemName","OldPersistGetEnumIndexForItemName\x00"
 client.dll,rdata,0x883EA8,"PersistenceGetEnumItemNameForIndex","OldPersistGetEnumItemNameForIndex\x00"
+; Xp and gen changes
 
 ; rip out static initializers for mp_titanweapon_minigun, mp_titanweapon_charge_cannon, and mp_weapon_ai_car
 ; fixes grenade issue by unshifting weaponx class ids
