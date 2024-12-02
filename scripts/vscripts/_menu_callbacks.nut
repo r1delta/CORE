@@ -20,6 +20,8 @@ function main()
 	AddClientCommandCallback( "PilotLoadoutsMenuClosed", ClientCommand_PilotLoadoutsMenuClosed ) //
 	AddClientCommandCallback( "SeasonEndDialogClosed", ClientCommand_SeasonEndDialogClosed ) //
 	AddClientCommandCallback( "SetPlaylistAnnouncementSeen", ClientCommand_SetPlaylistAnnouncementSeen ) //
+	AddClientCommandCallback("BCActivateCard", ClientCommand_ActivateBurnCard )
+	AddClientCommandCallback("BCDeActivateCard", ClientCommand_DeActivateCard )
 
 	if ( GetDeveloperLevel() > 0 )
 	{
@@ -53,6 +55,25 @@ function main()
 
 	file.hasInvalidLoadout <- false
 }
+
+
+function ClientCommand_ActivateBurnCard(player, ...) {
+	local index = vargv[0].tointeger()
+
+	if (index == null)
+		return false
+
+	player.SetActiveBurnCardIndex(index)
+	return true
+}
+
+function ClientCommand_DeActivateCard(player, ...) {
+	player.SetActiveBurnCardIndex(-1)
+	return true
+}
+
+
+
 function SetBotTitanLoadout( player )
 {
 	local loadout = {}

@@ -56,8 +56,8 @@ server.dll,text,0x18CF0,4C,C3
 server.dll,text,0x1DC370,48,C3
 server.dll,text,0x18B50,4C,C3
 ; delete prop_control_panel entity factory and serverclass
-server.dll,text,0x1DC590,48,C3
-server.dll,text,0x18C20,4C,C3
+;server.dll,text,0x1DC590,48,C3
+;server.dll,text,0x18C20,4C,C3
 ; change info_spawnpoint_titan_classname to remove "_tier0" :)
 server.dll,rdata,0x86BAF0,"titan_atlas_tier0","titan_atlas\x00"
 ; fuck off client.dll CRC

@@ -671,14 +671,24 @@ function CBasePlayer::UpdateMoveSpeedScale()
 //CBasePlayer.__GetActiveBurnCardIndex <- CBasePlayer.GetActiveBurnCardIndex
 function CBasePlayer::GetActiveBurnCardIndex()
 {
-	return - 1
+	printt( "GetActiveBurnCardIndex" )
+	return  getroottable().GetActiveBurnCardIndex(this) - 1
+}
+
+function _GetBurnCardPersPlayerDataPrefix()
+{
+	if ( IsPrivateMatch() )
+		return "pm_bc"
+	else
+		return "bc"
 }
 
 //CBasePlayer.__SetActiveBurnCardIndex <- CBasePlayer.SetActiveBurnCardIndex
 function CBasePlayer::SetActiveBurnCardIndex( val )
 {
-	//this.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".uiActiveBurnCardIndex", val + 1 )
-	//return this.__SetActiveBurnCardIndex( val + 1 )
+	this.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix()  +".uiActiveBurnCardIndex", val + 1 )
+	printt("SetActiveBurnCardIndex " + val)
+	getroottable().SetActiveBurnCardIndexForPlayer( this, val + 1 )
 }
 
 
