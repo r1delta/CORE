@@ -55,8 +55,18 @@ function RefillWeaponAmmo(player) {
 
     player.EndSignal( "OnDestroy" )
 	player.EndSignal( "Disconnected" )
-    
+    if(!player) {
+        return;
+    }
     while (1) {
+        local cardRef = GetPlayerActiveBurnCard( player );
+        if(!cardRef) {
+            return;
+        }
+        local cardData = GetBurnCardData(cardRef);
+        if(!(cardData.ctFlags & CT_FRAG)) {
+            return;
+        }
         local offhand = player.GetOffhandWeapon( 0 )
 		if ( offhand )
 		{
