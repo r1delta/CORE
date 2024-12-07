@@ -1,6 +1,8 @@
 function main()
 {
 	IncludeScript( "_loadouts" )
+	IncludeScript( "_burncards_shared")
+	
 
 	InitPresetLoadouts()
 
@@ -42,6 +44,7 @@ function main()
 	Globalize( ValidateCustomLoadouts )
 
 	Globalize( GiveLoadouts )
+	Globalize(StopActiveBurnCard)
 
 	Globalize( LoadoutChangeGracePeriodThink )
 
@@ -56,14 +59,19 @@ function main()
 	file.hasInvalidLoadout <- false
 }
 
-
 function ClientCommand_ActivateBurnCard(player, ...) {
 	local index = vargv[0].tointeger()
 
 	if (index == null)
 		return false
+	local cardRef = GetBurnCardFromSlot(player, index)
+	local cardIndex = GetBurnCardIndexByRef(cardRef)
+	SetPlayerBurnCardActiveSlotID(player, index)
+	player.SetActiveBurnCardIndex(cardIndex)
+	
+	RunBurnCardFunctions(player,cardRef)
 
-	player.SetActiveBurnCardIndex(index)
+	Remote.CallFunction_Replay(player,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex,false)
 	return true
 }
 
@@ -421,11 +429,22 @@ function ClientCommand_SetPlaylistAnnouncementSeen( player, ... )
 	return true
 }
 
+function StopActiveBurnCard(player) {
+	local cardRef = GetPlayerActiveBurnCard( player )
+	if (cardRef == null)
+		return
+	local activeBCID = player.GetPersistentVar( "activeBCID" )
+	player.SetPersistentVar( "activeBCID", -1 )
+	player.SetActiveBurnCardIndex( -1 )
+	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
+	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
+	
+}
+
 function GiveLoadouts( player )
 {
 	player.Signal( "EndGiveLoadouts" )
 	player.EndSignal( "EndGiveLoadouts" )
-
 	if ( !IsAlive( player ) )
 		return
 
@@ -442,6 +461,7 @@ function GiveLoadouts( player )
 
 		// clear the current burn card if it's a pilot weapon.
 		local cardRef = GetPlayerActiveBurnCard( player )
+		printt( "cardRef: ", cardRef )
 		if ( cardRef != null )
 		{
 			local cardData = GetBurnCardData( cardRef )
@@ -503,8 +523,8 @@ function GiveLoadouts( player )
 
 function ShouldGivePilotLoadout( player )
 {
-	// if ( GetPlayerBurnCardOnDeckIndex( player ) != null )
-	// 	return true
+	if ( GetPlayerBurnCardOnDeckIndex( player ) != null )
+		return true
 
 	return NewPilotLoadoutSelected( player )
 }
@@ -512,8 +532,8 @@ function ShouldGivePilotLoadout( player )
 
 function ShouldGiveTitanLoadout( player )
 {
-	// if ( GetPlayerBurnCardOnDeckIndex( player ) != null )
-	// 	return true
+	if ( GetPlayerBurnCardOnDeckIndex( player ) != null )
+		return true
 
 	return NewTitanLoadoutSelected( player )
 }
@@ -526,7 +546,7 @@ function LoadoutChangeGracePeriodThink( player )
 	player.EndSignal( "OnDestroy" )
 	player.EndSignal( "OnDeath" )
 	player.EndSignal( "OnPrimaryAttack" )
-	// player.EndSignal( "StartBurnCardEffect" )
+	player.EndSignal( "StartBurnCardEffect" )
 	player.EndSignal( "CalledInReplacementTitan" )
 	player.EndSignal( "player_embarks_titan" )
 

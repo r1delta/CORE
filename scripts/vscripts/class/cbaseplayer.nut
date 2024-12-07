@@ -657,7 +657,8 @@ function CBasePlayer::UpdateMoveSpeedScale()
 	{
 		local playerHasStim = PlayerHasServerFlag( this, SFLAG_STIM_OFFHAND  )
 		local playerHasMoveFastBurnCard = PlayerHasServerFlag( this, SFLAG_BC_FAST_MOVESPEED )
-
+		printt("playerHasStim: " + playerHasStim)
+		printt("playerHasMoveFastBurnCard: " + playerHasMoveFastBurnCard)
 		if ( playerHasStim )
 			moveSpeedScale = ABILITY_STIM_SPEED_MOD  //Stim speed boost wins over burn card speed boost
 		else if ( playerHasMoveFastBurnCard )
@@ -671,8 +672,8 @@ function CBasePlayer::UpdateMoveSpeedScale()
 //CBasePlayer.__GetActiveBurnCardIndex <- CBasePlayer.GetActiveBurnCardIndex
 function CBasePlayer::GetActiveBurnCardIndex()
 {
-	printt( "GetActiveBurnCardIndex" )
-	return  getroottable().GetActiveBurnCardIndex(this) - 1
+	local value =  getroottable().GetActiveBurnCardIndex(this) - 1;
+	return value
 }
 
 function _GetBurnCardPersPlayerDataPrefix()
@@ -686,9 +687,10 @@ function _GetBurnCardPersPlayerDataPrefix()
 //CBasePlayer.__SetActiveBurnCardIndex <- CBasePlayer.SetActiveBurnCardIndex
 function CBasePlayer::SetActiveBurnCardIndex( val )
 {
-	this.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix()  +".uiActiveBurnCardIndex", val + 1 )
-	printt("SetActiveBurnCardIndex " + val)
+	this.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix()  + ".uiActiveBurnCardIndex", val + 1 )
+	// this.SetPersistentVar( "activeBCID", val + 1 )
 	getroottable().SetActiveBurnCardIndexForPlayer( this, val + 1 )
+	
 }
 
 

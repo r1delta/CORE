@@ -976,8 +976,8 @@ function MeleeThread_HumanVsHumanInternal( actions, action, attacker, target )
 	Assert( IsAlive( attacker ) )
 	Assert( IsAlive( target ) )
 
-	// if ( target.IsPlayer() )
-	// 	BurnCardOnDeath( target, attacker, BC_NEXTDEATH )
+	 if ( target.IsPlayer() )
+	 	BurnCardOnDeath( target, attacker, BC_NEXTDEATH )
 
 	local e = {}
 	e.targetStartOrigin <- target.GetOrigin()

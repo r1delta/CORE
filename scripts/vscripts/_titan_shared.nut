@@ -684,6 +684,16 @@ function TitanEjectPlayer( ejectTitan, instant = false )
 	if ( IsValid( rodeoPilot ) && rodeoPilot == e.attacker )
 		e.damageSourceId = eDamageSourceId.rodeo_forced_titan_eject
 
+	
+	if ( ejectTitanIsPlayer ) {
+        	local cardRef = GetPlayerActiveBurnCard( e.player )
+        	if ( cardRef != null ) {
+            	local lastsUntil = GetBurnCardLastsUntil( cardRef )
+            	if ( lastsUntil == BC_NEXTTITANDROP ) {
+                	StopActiveBurnCard( e.player )
+            	}
+        	}
+    }
 
 	ejectTitan.Signal( "TitanEjectionStarted" )
 	ejectTitan.EndSignal( "Disconnected" )

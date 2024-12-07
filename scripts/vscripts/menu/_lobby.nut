@@ -63,7 +63,6 @@ function main()
 		AddClientCommandCallback( "DevLevelToggle", ClientCommand_DevLevelToggle )
 		AddClientCommandCallback( "CampaignCheat", ClientCommand_CampaignCheat )
 	}
-
 	AddClientCommandCallback( "DoTraining", ClientCommand_DoTraining ) //
 	AddClientCommandCallback( "CancelTraining", ClientCommand_CancelTraining ) //
 	AddClientCommandCallback( "StartPrivateMatchSearch", ClientCommand_StartPrivateMatchSearch ) //
@@ -149,27 +148,27 @@ function CodeCallback_OnClientConnectionStarted( player )
 
 function UpdateBurnCardSet( player, setIndex )
 {
-	// if ( !PlayerFullyConnected( player ) )
-	// 	return
+	if ( !PlayerFullyConnected( player ) )
+		return
 
-	// if ( !UsingAlternateBurnCardPersistence() )
-	// 	return
+	if ( !UsingAlternateBurnCardPersistence() )
+		return
 
-	// local deck = GetBurnCardSetForIndex( setIndex )
-	// for ( local slotID = 0; slotID < INGAME_BURN_CARDS; slotID++ )
-	// {
-	// 	local cardRef = deck.len() ? deck.remove( 0 ) : null
-	// 	SetPlayerActiveBurnCardSlotContents( player, slotID, cardRef, false )
-	// }
+	local deck = GetBurnCardSetForIndex( setIndex )
+	for ( local slotID = 0; slotID < INGAME_BURN_CARDS; slotID++ )
+	{
+		local cardRef = deck.len() ? deck.remove( 0 ) : null
+		SetPlayerActiveBurnCardSlotContents( player, slotID, cardRef, false )
+	}
 
-	// local pmDeck = []
-	// foreach ( cardRef in deck )
-	// {
-	// 	pmDeck.append( { cardRef = cardRef, new = false } )
-	// }
-	// FillBurnCardDeckFromArray( player, pmDeck )
+	local pmDeck = []
+	foreach ( cardRef in deck )
+	{
+		pmDeck.append( { cardRef = cardRef, new = false } )
+	}
+	FillBurnCardDeckFromArray( player, pmDeck )
 
-	// ChangedPlayerBurnCards( player )
+	ChangedPlayerBurnCards( player )
 }
 Globalize( UpdateBurnCardSet )
 
@@ -178,7 +177,7 @@ function InitBurnCards( player )
 {
 	if ( !UsingAlternateBurnCardPersistence() )
 		return
-
+	printt("InitBurnCards")
 	local pmDeck = [
 		{ cardRef = "bc_minimap", new = false }
 		{ cardRef = "bc_r97_m2", new = false }

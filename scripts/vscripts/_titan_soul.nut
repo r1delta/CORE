@@ -236,6 +236,9 @@ function SoulBecomesOwnedByPlayer( soul, player )
 {
 	soul.SetBossPlayer( player )
 
+	if ( GetActiveBurnCard( player ) == "bc_core_charged" )
+		SetCoreCharged( soul )
+
 	// fix "TITAN READY" message appearing because there's a one frame lag between the player ejecting and the soul dying and reseting the titan respawn timer
 	//SetTitanRespawnTimer( player, 999999 )
 

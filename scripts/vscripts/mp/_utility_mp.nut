@@ -1433,10 +1433,15 @@ function SetPlayerActiveObjectiveWithTime( player, objective, time )
 	printt( "SetPlayerActiveObjectiveWithTime: " + player + " " + objective + " " + time )
 }
 
-function GetPlayerActiveBurnCard( player )
-{
-	return null
+function GetActiveBurnCard(player) {
+	local index = player.GetActiveBurnCardIndex()
+	if(index == -1) {
+		return null
+	}
+	local ref = GetPlayerActiveBurnCard(player)
+	return ref
 }
+
 
 function GetTitanCoreTimer( titan )
 {
@@ -1489,22 +1494,28 @@ function InitPlayerStats( player )
 
 function FillBurnCardDeckFromArray( player, array )
 {
-	//printt("FillBurnCardDeckFromArray: " + player + " " + array )
+	foreach (index,card in array)
+	{
+		player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", card.cardRef )
+		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + index + "]", card.new )
+	}
 }
 
 function Ranked_PlayerConnected( player )
 {
 	//printt("Ranked_PlayerConnected: " + player )
+
 }
 
 function BurnCard_RefreshPlayer( player )
 {
-	//printt( "BurnCard_RefreshPlayer: " + player )
+	
+	printt( "BurnCard_RefreshPlayer: " + player )
 }
 
 function BurnCard_PlayerConnected( player )
 {
-	//printt( "BurnCard_PlayerConnected: " + player )
+	printt( "BurnCard_PlayerConnected: " + player )
 }
 
 function BlackMarket_PlayerConnected( player )
@@ -1517,7 +1528,44 @@ function GetTrainingHasEverBeenStarted( player )
 	return true
 }
 
+
+function _GetActiveBurnCardsPersDataPrefix()
+{
+	if ( UsingAlternateBurnCardPersistence() )
+		return "persData_pm_activeBurnCards"
+	else
+		return "persData_activeBurnCards"
+}
+
+
 function BurnCardOnDeath( target, attacker, idx )
 {
-	//printt( "BurnCardOnDeath: " + target + " " + attacker + " " + idx )
+	local activeBCID = target.GetPersistentVar("activeBCID")
+	if(activeBCID == -1)
+	{
+		return
+	}
+	local activeCard = GetActiveBurnCard( target )
+	if(!activeCard)
+	{
+		return
+	}
+	local cardData = GetBurnCardData( activeCard )
+	if (cardData.lastsUntil == BC_NEXTDEATH) 
+	{
+		target.SetPersistentVar( "activeBCID", -1 )
+		target.SetActiveBurnCardIndex( -1 )
+		target.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
+		target.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
+	}
+
+	// if(cardData.lastsUntil == BC_NEXTSPAWN)
+	// {
+	// 	player.SetPersistentVar( "activeBCID", -1 )
+	// 	player.SetActiveBurnCardIndex( -1 )
+	// 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
+	// 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
+	// }
+
+	
 }

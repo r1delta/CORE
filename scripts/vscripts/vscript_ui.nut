@@ -660,7 +660,7 @@ function UICodeCallback_LevelInit( levelname )
 	    else if ( !GetCinematicMode() && !IsTrainingLevel() )
 	    {
 		    ClearLoadoutSelectionFinished()
-
+			printt("Hello WORLD HIhihihi")
 		    if ( ShouldShowBurnCardMenu() )
 		    	AdvanceMenu( GetMenu( "BurnCards_pickcard" ) )
 
@@ -1006,7 +1006,7 @@ function InitMenus()
 	level.BtnEditBurnCards <- GetMenu( "LobbyMenu" ).GetChild( "BtnEditBurnCards" )
 
 
-//	AddMenu( "BurnCards_OpenNewCards", "resource/ui/menus/burncards_opennewcards.menu" )
+	// AddMenu( "BurnCards_OpenNewCards", "resource/ui/menus/burncards_opennewcards.menu" )
 
 	AddMenu( "InGameMenu", "resource/ui/menus/ingame.menu", "#GAME" )
 	AddMenu( "InGameSPMenu", "resource/ui/menus/ingamesp.menu", "#GAME" )

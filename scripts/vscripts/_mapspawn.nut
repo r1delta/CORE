@@ -258,6 +258,11 @@
 	}
 	else
 	{
+		IncludeScript( "mp/_utility_mp" )
+		IncludeFile( "mp/_serverflags" )
+		IncludeFile( "_passives_shared" )
+		IncludeFile( "mp/_burncards" )
+		IncludeFile( "_burncards_shared" )
 		IncludeFile( "mp/_cinematic" ) // difference between these two files is??
 		IncludeFile( "cinematic_mp/_cinematic_mp" ) // difference between these two files is??
 		IncludeFile( "cinematic_mp/_cinematic_mp_server" )

@@ -229,10 +229,10 @@ function OnSpawned_GivePassiveLifeLong_Pilot( player )
 	{
 		GivePassiveLifeLong( player, table.passive2 )
 	}
-	local cardRef = 0//GetActiveBurnCard( player )
+	local cardRef = GetActiveBurnCard( player )//GetActiveBurnCard( player )
 	if ( cardRef )
 	{
-		local passive = 0//GetBurnCardPassive( cardRef )
+		local passive = GetBurnCardPassive( cardRef )//GetBurnCardPassive( cardRef )
 		if ( passive )
 			GivePassive( player, passive )
 	}

@@ -17,6 +17,9 @@ function GiveServerFlag( player, passive )
 	// enter/exit functions for specific passives
 	switch ( passive )
 	{
+		case SFLAG_BC_FAST_MOVESPEED:
+			player.UpdateMoveSpeedScale()
+			break
 	}
 }
 
@@ -30,6 +33,9 @@ function TakeServerFlag( player, passive )
 	// enter/exit functions for specific passives
 	switch ( passive )
 	{
+		case SFLAG_BC_FAST_MOVESPEED:
+			player.UpdateMoveSpeedScale()
+			break
 	}
 
 }

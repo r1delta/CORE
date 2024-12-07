@@ -216,10 +216,14 @@ function main()
 
 	if ( IsServer() )
 	{
+		printt("running on server")
+		CreateAllBurnCards()
 		if ( BURN_CARD_MAP_LOOT_DROP && !IsLobby() )
 			IncludeFile( "mp/_burncards_maps" )
 
 		IncludeFile( "mp/_burncards_sets" )
+		if(IsLobby())
+			IncludeFile("menu/_burncards_lobby.nut")
 		//InitBurnCardSets()
 	}
 
@@ -394,7 +398,6 @@ function CreateNewBurnCard( cardRef )
 
 	level.burnCardsByName[ cardRef ] <- table
 	level.burnCards.append( cardRef )
-
 	level.burnCardCurrentIndex++
 	return table
 }
@@ -801,6 +804,7 @@ if ( !IsUI() )
 			return null
 		if ( index == BURNCARD_INDEX_EMPTY )
 			return null
+
 		return level.indexToBurnCard[ index ]
 	}
 
@@ -1413,20 +1417,6 @@ if ( !IsServer() )
 		local activeSlotMessage
 		local selected
 
-//		if ( activeSlotIsActiveIndex )
-//		{
-//			if ( cardRef == null )
-//			{
-//				cardRef = GetPlayerActiveBurnCard( player )
-//				activeSlotMessage = "#BC_ACTIVE_SLOT"
-//				selected = true
-//			}
-//			else
-//			{
-//				activeSlotMessage = ""
-//				selected = false
-//			}
-//		}
 
 		if ( activeSlotIsActiveIndex && activeCardRef == null )
 		{
