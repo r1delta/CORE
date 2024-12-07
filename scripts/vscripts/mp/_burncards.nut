@@ -51,18 +51,17 @@ function WaitForPlayerActiveWeapon( player,className = null )
 	return weapon
 }
 
-function RefillWeaponAmmo(player,weapon) {
+function RefillWeaponAmmo(player) {
 
     player.EndSignal( "OnDestroy" )
 	player.EndSignal( "Disconnected" )
-	weapon.EndSignal( "OnDestroy" )
-
+    
     while (1) {
-        local currAmmo = player.GetWeaponAmmoLoaded( weapon )
-        if ( currAmmo <= 2 )
+        local offhand = player.GetOffhandWeapon( 0 )
+		if ( offhand )
 		{
-			weapon.SetWeaponPrimaryClipCount( 3 )
-		}
+		    offhand.SetWeaponPrimaryClipCount( 1 )
+		}	        
         wait 0.1;
     }
 } 
@@ -79,11 +78,6 @@ function RunWeaponFunction(player,cardRef) {
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
     local cardData = GetBurnCardData(cardRef);
     local weaponData = GetBurnCardWeapon(cardRef);
-    if(cardData.ctFlags & CT_FRAG) {
-            local slot = 0;
-            local weapon = player.GetOffhandWeapon(slot)
-            waitthread RefillWeaponAmmo(player,weapon)
-    }
     local weapons = player.GetMainWeapons()
     if(weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1") {
         Assert( IsAlive( player ) )
@@ -105,9 +99,13 @@ function RunWeaponFunction(player,cardRef) {
         player.TakeOffhandWeapon(slot);
         WaitForPlayerActiveWeapon(player);
         player.GiveOffhandWeapon(weaponData.weapon, slot, weaponData.mods);
+        if(cardData.ctFlags & CT_FRAG) {
+            thread RefillWeaponAmmo(player)
+        }
         return
     }
-     if(cardData.ctFlags & CT_WEAPON) {
+
+if(cardData.ctFlags & CT_WEAPON) {
     local weaponToTake = null;
     switch (weaponData.weaponType) {
         case "PRIMARY":
