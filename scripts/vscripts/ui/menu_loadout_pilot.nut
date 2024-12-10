@@ -301,7 +301,6 @@ function OnPilotLoadoutButton_Activate( button )
 
 function OnEditPilotLoadoutButton_Focused( button )
 {
-	printt( "2. OnEditPilotLoadoutButton_Focused() running" )
 
 	local isCustom = ("isCustom" in button.s) && button.s.isCustom
 	local loadout

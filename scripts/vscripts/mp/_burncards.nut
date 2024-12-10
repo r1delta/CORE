@@ -89,6 +89,8 @@ function RunWeaponFunction(player,cardRef) {
     local cardData = GetBurnCardData(cardRef);
     local weaponData = GetBurnCardWeapon(cardRef);
     local weapons = player.GetMainWeapons()
+    if(player.IsTitan())
+        return;
     if(weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1") {
         Assert( IsAlive( player ) )
         local weapons = player.GetOffhandWeapons()
@@ -117,6 +119,8 @@ function RunWeaponFunction(player,cardRef) {
 
 if(cardData.ctFlags & CT_WEAPON) {
     local weaponToTake = null;
+    if(player.IsTitan())
+        return;
     switch (weaponData.weaponType) {
         case "PRIMARY":
             weaponToTake = weapons[0];
@@ -134,7 +138,7 @@ if(cardData.ctFlags & CT_WEAPON) {
     WaitForPlayerActiveWeapon(player);
     player.GiveWeapon(weaponData.weapon, weaponData.mods);
     player.SetActiveWeapon(weaponData.weapon);   
-     }
+    }
 }
 
 function RunBurnCardFunctions(player,cardRef) {
