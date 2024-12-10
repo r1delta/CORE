@@ -52,6 +52,10 @@ function ConnectToDirectServer( button )
 function InitServerBrowserMenu( menu )
 {
 	local list = GetServerList()
+	if(list == null) {
+		printt("No servers found")
+		list = []
+	}
 	file.menu <- menu
 	uiGlobal.server_menu <- menu
     file.dialog <- GetMenu( "DirectConnectDialog" )
@@ -89,14 +93,19 @@ function InitServerBrowserMenu( menu )
 
 
 function RefreshServerList(button) {
-	local list = GetServerList()
-	if( list.len() == 0 )
+	local list = []
+	if(list.len() == 0 )
 	{
 		print("No servers found")
-		list = []
+		list = GetServerList()
+		if(list == null) {
+			printt("list is null" + list)
+			list = []
+		}
 	}
 	file.serverList <- list
 	uiGlobal.serverList <- list
+	
 	local num_servers = list.len()
 	foreach(i, serv in file.serverList)
 	{

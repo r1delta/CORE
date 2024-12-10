@@ -2380,4 +2380,6 @@ const R1DELTA_PATCH_NOTES = @"* Loadouts and persistence
 * Dedicated servers
 * Proper addons support
 * More offline play features
+* Burn card support 
+* Correct Navmeshes - Thanks wanderer
 "
