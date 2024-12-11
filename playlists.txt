@@ -153,8 +153,6 @@
 			"gamemode21"	"at"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"at"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"at"
 		}
 	}
 	"coop"
@@ -299,8 +297,6 @@
 			"gamemode18"	"coop"
 			"map19"	"mp_backwater"
 			"gamemode19"	"coop"
-			"map20"	"mp_zone_18"
-			"gamemode20"	"coop"
 			"map21"	"mp_wargames"
 			"gamemode21"	"coop"
 			"map22"	"mp_sandtrap"
@@ -813,18 +809,6 @@
 			"gamemode136"	"lts"
 			"map137"	"mp_sandtrap"
 			"gamemode137"	"mfd"
-			"map138"	"mp_zone_18"
-			"gamemode138"	"at"
-			"map139"	"mp_zone_18"
-			"gamemode139"	"tdm"
-			"map140"	"mp_zone_18"
-			"gamemode140"	"cp"
-			"map141"	"mp_zone_18"
-			"gamemode141"	"ctf"
-			"map142"	"mp_zone_18"
-			"gamemode142"	"lts"
-			"map143"	"mp_zone_18"
-			"gamemode143"	"mfd"
 		}
 	}
 	"cp"
@@ -977,8 +961,6 @@
 			"gamemode21"	"cp"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"cp"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"cp"
 		}
 	}
 	"ctf"
@@ -1131,8 +1113,6 @@
 			"gamemode21"	"ctf"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"ctf"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"ctf"
 		}
 	}
 	"lts"
@@ -1285,8 +1265,6 @@
 			"gamemode21"	"lts"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"lts"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"lts"
 		}
 	}
 	"wlts"
@@ -1439,8 +1417,6 @@
 			"gamemode21"	"wlts"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"wlts"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"wlts"
 		}
 	}
 	"lava"
@@ -1753,8 +1729,6 @@
 			"gamemode21"	"mfd"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"mfd"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"mfd"
 		}
 	}
 	"mfdp"
@@ -1907,8 +1881,6 @@
 			"gamemode21"	"mfdp"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"mfdp"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"mfdp"
 		}
 	}
 	"ps"
@@ -2043,10 +2015,8 @@
 			"gamemode12"	"ps"
 			"map13"	"mp_sandtrap"
 			"gamemode13"	"ps"
-			"map14"	"mp_zone_18"
+			"map14"	"mp_switchback"
 			"gamemode14"	"ps"
-			"map15"	"mp_switchback"
-			"gamemode15"	"ps"
 		}
 	}
 	"tdm"
@@ -2199,8 +2169,6 @@
 			"gamemode21"	"tdm"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"tdm"
-			"map23"	"mp_zone_18"
-			"gamemode23"	"tdm"
 		}
 	}
 	"solo"
