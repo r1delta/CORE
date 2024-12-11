@@ -56,8 +56,8 @@ server.dll,text,0x18CF0,4C,C3
 server.dll,text,0x1DC370,48,C3
 server.dll,text,0x18B50,4C,C3
 ; delete prop_control_panel entity factory and serverclass
-;server.dll,text,0x1DC590,48,C3
-;server.dll,text,0x18C20,4C,C3
+server.dll,text,0x1DC590,48,C3
+server.dll,text,0x18C20,4C,C3
 ; change info_spawnpoint_titan_classname to remove "_tier0" :)
 server.dll,rdata,0x86BAF0,"titan_atlas_tier0","titan_atlas\x00"
 ; fuck off client.dll CRC
@@ -374,3 +374,6 @@ client.dll,rdata,0x99DEA8,"%s/bin/x64_retail/%s\x00","%s/r1delta/bin/x64_delta/%
 ;client.dll,rdata,0x99DE98,"\x5C\x78\x36\x34_retail\x00","\x5C\x78\x36\x34_delta\x00"
 ;client.dll,rdata,0x99DE70,"x64_retail/\x00","x64_delta/\x00"
 ;client.dll,rdata,0x99DE60,"x64_retail\x00","x64_delta\x00" 
+
+; fix bug with nextmap concommand by disabling it.
+server.dll,text,0x13EF20,48,C3

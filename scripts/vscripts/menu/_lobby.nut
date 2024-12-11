@@ -702,7 +702,7 @@ function CoopMatchLobbyLogic()
 	{
 		local report_timeRemaining = -1
 
-		local requestedMap = GetRequestedNextMapForAnyPlayer()
+		local requestedMap = ""
 		if ( requestedMap != "" && level.ui.coopLobbyMap == null )
 		{
 			printt( "Forcing to requested coop map:", requestedMap )
