@@ -1,8 +1,8 @@
 function main()
 {
     RegisterSignal("StartBurnCardEffect")
-    IncludeScript( "../_burncards_shared" );
-    IncludeFile( "../menu/_burncards_lobby" );
+    IncludeScript( "_burncards_shared" );
+    IncludeFile( "menu/_burncards_lobby" );
     Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( PlayerRespawned )
     AddCallback_OnPlayerKilled( _OnPlayerKilled )

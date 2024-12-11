@@ -64,7 +64,6 @@ function main()
 
 		IncludeFile( "mp/_zipline" )
 		IncludeFile( "_riff_settings" )
-		IncludeFile("_burncards_utility")
 		IncludeFile( "_passives" )
 		IncludeFileAllowMultipleLoads( "mp/_dogfighter" )
 
