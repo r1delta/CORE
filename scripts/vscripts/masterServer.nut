@@ -13,7 +13,7 @@ function main()
 function ClientConnect(player) {
     InitXP(player)
 	player.GenChanged()
-    // player.XPChanged()
+    player.XPChanged()
     local data_struct = {}
     data_struct.name <- player.GetPlayerName();
     data_struct.gen <- player.GetGen();
