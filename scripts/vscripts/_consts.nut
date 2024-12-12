@@ -2376,10 +2376,8 @@ const TITAN_DOOMED_EFFECT = "xo_exp_doomed"
 //const TITAN_DOOMED_EFFECT = "xo_exp_death_doom"
 
 // TODO: move to a const from code
-const R1DELTA_PATCH_NOTES = @"* Loadouts and persistence
-* Dedicated servers
-* Proper addons support
-* More offline play features
-* Burn card support 
-* Correct Navmeshes - Thanks wanderer
+const R1DELTA_PATCH_NOTES = @"
+* Server Browser
+* Burn Cards 
+* Majority Navmeshes
 "
