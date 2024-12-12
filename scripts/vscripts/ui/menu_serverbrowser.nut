@@ -88,7 +88,11 @@ function InitServerBrowserMenu( menu )
 function RefreshServerList(button) {
 	thread Threaded_GetServerList()
 	
+	if (file.serverList == null)
+		return
+
 	local num_servers = file.serverList.len()
+
 	foreach(i, serv in file.serverList)
 	{
 		printt("index: " + i + " host_name: " + serv.host_name)
@@ -108,6 +112,15 @@ function Threaded_GetServerList()
 	local retries = 0
 
 	while(file.serverList.len() <= 0 && retries < 5) {
+
+		local list = GetServerList()
+
+		if(list == null)
+		{
+			WaitFrame()
+			continue
+		}
+
 		file.serverList <- GetServerList()
 		retries += 1
 		wait 1
