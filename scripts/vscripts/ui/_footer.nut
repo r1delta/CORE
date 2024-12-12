@@ -546,7 +546,7 @@ function AppendGamepadInviteLabels( footerData )
 
 function AppendPCInviteLabels( footerData )
 {
-	if ( Origin_IsEnabled() )
+	if ( Origin_IsEnabled() && !IsDelta() )
 	{
 		if ( uiGlobal.canOriginInvite )
 			footerData.append( { label = "#INVITE_FRIENDS", func = OriginInviteFriends } )
