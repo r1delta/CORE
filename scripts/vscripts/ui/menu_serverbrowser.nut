@@ -51,11 +51,6 @@ function ConnectToDirectServer( button )
 
 function InitServerBrowserMenu( menu )
 {
-	local list = GetServerList()
-	if(list == null) {
-		printt("No servers found")
-		list = []
-	}
 	file.menu <- menu
 	uiGlobal.server_menu <- menu
     file.dialog <- GetMenu( "DirectConnectDialog" )
@@ -64,8 +59,8 @@ function InitServerBrowserMenu( menu )
 	file.buttons <- GetElementsByClassname( file.menu, "MapButtonClass" )
 	file.currentChoice <- 0
 	file.menu.GetChild("ServerNextMapImage").SetVisible( true )
-	file.serverList <- list
-	uiGlobal.serverList <- list
+	file.serverList <- []
+	uiGlobal.serverList <- []
 	foreach(i,button in file.buttons) {
 		button.SetVisible( false )
 	}
@@ -73,8 +68,6 @@ function InitServerBrowserMenu( menu )
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnCancel", UIE_CLICK, OnDirectConnectDialogButtonCancel_Activate )
 
 	file.menu.GetChild("ServerNextMapName").SetText( "No servers found" )
-	local num_servers = list.len()
-
 
 	// foreach(i, serv in file.serverList)
 	// {
@@ -93,20 +86,9 @@ function InitServerBrowserMenu( menu )
 
 
 function RefreshServerList(button) {
-	local list = []
-	if(list.len() == 0 )
-	{
-		print("No servers found")
-		list = GetServerList()
-		if(list == null) {
-			printt("list is null" + list)
-			list = []
-		}
-	}
-	file.serverList <- list
-	uiGlobal.serverList <- list
+	thread Threaded_GetServerList()
 	
-	local num_servers = list.len()
+	local num_servers = file.serverList.len()
 	foreach(i, serv in file.serverList)
 	{
 		printt("index: " + i + " host_name: " + serv.host_name)
@@ -121,18 +103,29 @@ function RefreshServerList(button) {
 	}
 }
 
+function Threaded_GetServerList()
+{
+	local retries = 0
+
+	while(file.serverList.len() <= 0 && retries < 5) {
+		file.serverList <- GetServerList()
+		retries += 1
+		wait 1
+	}
+
+	uiGlobal.serverList <- file.serverList
+}
+
 function ConnectToServer(button) {
 	local script_id = button.GetScriptID().tointeger()
-	local serverList = GetServerList()
+	local serverList = file.serverList
 	local server = serverList[script_id]
 	ClientCommand( "connect " + server.ip + ":" + server.port )
 }
 
 function OnServerBrowserMenu()
 {
-	local list = GetServerList()
-	file.serverList <- list
-	
+	thread Threaded_GetServerList()
 }
 
 function ChangePreviewUI(button) {
