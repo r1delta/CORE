@@ -3,3 +3,11 @@
 net_stats_per_frame.txt
 addonlist.txt
 
+*.id0
+*.id1
+*.id2
+*.id3
+*.idb
+*.idc
+*.i64
+
