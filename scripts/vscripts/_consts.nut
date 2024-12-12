@@ -2379,5 +2379,5 @@ const TITAN_DOOMED_EFFECT = "xo_exp_doomed"
 const R1DELTA_PATCH_NOTES = @"
 * Server Browser
 * Burn Cards 
-* Majority Navmeshes
+* Some Navmeshes
 "
