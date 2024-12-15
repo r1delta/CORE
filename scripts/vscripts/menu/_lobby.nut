@@ -85,6 +85,7 @@ function main()
 	AddClientCommandCallback( "NewBlackMarketItemsViewed", ClientCommand_NewBlackMarketItemsViewed )
 
 	GameRules.EnableGlobalChat( true )
+	IncludeFile("_burncards_shared")
 	IncludeFile("masterServer")
 	if ( !IsMatchmakingServer() )
 	{
