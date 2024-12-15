@@ -89,7 +89,8 @@ function MeleeThread_TitanVsTitan_Internal( actions, action, attacker, target )
 				break
 
 			case "ogre":
-				func = MeleeThread_OgreVsTitan
+				func = MeleeThread_AtlasVsTitan
+				// func = MeleeThread_OgreVsTitan
 				break
 		}
 	}
@@ -522,7 +523,7 @@ function MeleePinkMist( _, e ) //first parameter isn't used, but function signat
 	e.attackerViewBody.Gib( gibModel, vec, false )
 	
 	// [LJS]원래 코드. 스트라이더가 타이탄 gib 시 파일럿 혈흔.
-	//e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_PINKMIST, Vector( 0, 0, 0 ), 0 )
+	// e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_PINKMIST, Vector( 0, 0, 0 ), 0 )
 	// 워게임 형식으로 변경.
 	// e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_NORMAL, Vector( 0, 0, 0 ), 0 )
 
@@ -674,9 +675,12 @@ function MeleeAnimThrow( attacker, target, throwDuration )
 // ogre vs titan melee
 function MeleeThread_OgreVsTitan( actions, action, attacker, target )
 {
-	local attackerAnimation1p = "ogpov_melee_armrip_attacker"
+	return
+	// local attackerAnimation1p = "ogpov_melee_armrip_attacker"
+	local attackerAnimation1p = "og_melee_armrip_attacker"
 	local attackerAnimation3p = "og_melee_armrip_attacker"
-	local targetAnimation1p = "ogpov_melee_armrip_victim"
+	// local targetAnimation1p = "ogpov_melee_armrip_victim"
+	local targetAnimation1p = "og_melee_armrip_victim"
 	local targetAnimation3p = "og_melee_armrip_victim"
 
 	local e = {}
