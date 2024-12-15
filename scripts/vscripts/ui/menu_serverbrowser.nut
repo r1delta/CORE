@@ -92,7 +92,6 @@ function RefreshServerList(button) {
 		return
 
 	local num_servers = file.serverList.len()
-
 	foreach(i, serv in file.serverList)
 	{
 		printt("index: " + i + " host_name: " + serv.host_name)
@@ -131,7 +130,7 @@ function Threaded_GetServerList()
 
 function ConnectToServer(button) {
 	local script_id = button.GetScriptID().tointeger()
-	local serverList = file.serverList
+	local serverList = uiGlobal.serverList
 	local server = serverList[script_id]
 	ClientCommand( "connect " + server.ip + ":" + server.port )
 }
