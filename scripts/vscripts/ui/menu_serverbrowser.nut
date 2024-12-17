@@ -255,7 +255,7 @@ function UpdateShownPage()
         } else {
         file.serversMap[i].SetText("#" +  server.map_name )
         }
-        file.serversGamemode[i].SetText( server.game_mode )
+        file.serversGamemode[i].SetText( "#" + server.game_mode )
         file.serversName[i].SetVisible(true)
         file.playerCountLabels[i].SetVisible(true)
         file.serversMap[i].SetVisible(true)
