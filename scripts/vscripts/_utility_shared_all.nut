@@ -279,7 +279,7 @@ function IsLobby()
 function GetEnemyTeam( team )
 {
 	Assert( team == TEAM_IMC || team == TEAM_MILITIA )
-	if (GAMETYPE == FFA)
+	if (GetConVarString("mp_gamemode").tolower() == "ffa")
 		return team
 	if ( team == TEAM_IMC )
 		return TEAM_MILITIA
