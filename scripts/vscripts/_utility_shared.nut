@@ -768,10 +768,15 @@ function Dump( package, depth = 0 )
 function GetOtherTeam( guy )
 {
 	local team
+	if(GAMETYPE == FFA) {
+		return 2
+	} 
 	if ( typeof guy == "integer" )
 		team = guy
 	else
 		team = guy.GetTeam()
+
+	
 
 	if ( team == 2 )
 		return 3
