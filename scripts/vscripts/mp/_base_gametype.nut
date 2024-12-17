@@ -285,7 +285,7 @@ function ScriptCallback_ShouldEntTakeDamage( ent, damageInfo )
 	local damageSourceID = damageInfo.GetDamageSourceIdentifier()
 	local suicideSpectreDamage = ( damageSourceID == eDamageSourceId.suicideSpectre || damageSourceID == eDamageSourceId.suicideSpectreAoE )
 
-	if ( ( attacker.GetTeam() == ent.GetTeam() ) && ( damageSourceID != eDamageSourceId.switchback_trap ) && !suicideSpectreDamage )
+	if ( ( attacker.GetTeam() == ent.GetTeam() ) && ( damageSourceID != eDamageSourceId.switchback_trap ) && !suicideSpectreDamage && GAMETYPE != FFA)
 	{
 		if ( attacker != ent && ent.GetOwner() != attacker && ent.GetBossPlayer() != attacker )
 		{
@@ -797,7 +797,7 @@ function PlayerOrNPCKilledByEnemy( entity, damageInfo )
 		ScoreEvent_NPCKilled( entity, attacker, damageInfo )
 	}
 
-	if ( entity.GetTeam() == attacker.GetTeam() )
+	if ( entity.GetTeam() == attacker.GetTeam() && GAMETYPE != FFA )
 	{
 		return false
 	}

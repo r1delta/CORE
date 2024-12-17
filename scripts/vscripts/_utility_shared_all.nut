@@ -279,7 +279,8 @@ function IsLobby()
 function GetEnemyTeam( team )
 {
 	Assert( team == TEAM_IMC || team == TEAM_MILITIA )
-
+	if (GAMETYPE == FFA)
+		return team
 	if ( team == TEAM_IMC )
 		return TEAM_MILITIA
 	else

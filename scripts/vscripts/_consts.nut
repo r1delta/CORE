@@ -58,6 +58,7 @@ const TITAN_TAG = "tt"
 const SCAVENGER = "scv"
 const TITAN_ESCORT = "te"
 const DEVTEST = "devtest"
+const FFA = "ffa"
 
 const MAX_TRACKED_CHALLENGES = 3
 
