@@ -255,7 +255,7 @@ function UpdateShownPage()
         } else {
         file.serversMap[i].SetText("#" +  server.map_name )
         }
-        file.serversGamemode[i].SetText( "#" + server.game_mode )
+        file.serversGamemode[i].SetText( "#MP_GAMEMODE_" + server.game_mode )
         file.serversName[i].SetVisible(true)
         file.playerCountLabels[i].SetVisible(true)
         file.serversMap[i].SetVisible(true)
@@ -343,7 +343,7 @@ function OnServerButtonFocused( button )
     
     // Update preview panel
     menu.GetChild( "NextMapName" ).SetText( server.host_name )
-    menu.GetChild( "NextMapDesc" ).SetText( server.game_mode )
+    menu.GetChild( "NextMapDesc" ).SetText( "#MP_GAMEMODE_" + server.game_mode )
     menu.GetChild( "StarsLabel" ).SetText( "#"+ server.map_name  )
     local players = server.players
     local maxPlayers = server.max_players || 12
