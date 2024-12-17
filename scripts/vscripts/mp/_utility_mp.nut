@@ -1492,6 +1492,52 @@ function InitPlayerStats( player )
 	printt("InitPlayerStats: " + player )
 }
 
+function GetBurnCardSetForIndex(setIndex) {
+	// printt("GetBurnCardSetForIndex: " + setIndex )
+	//TODO: Actually get the list of burn cards for pm options - Allusive
+	local deck = []
+	switch (setIndex) {
+		case 0:
+			deck = []
+			break
+		case 1:
+			deck = []
+			break
+		case 2:
+			deck = []
+			break
+		case 3:
+			deck = []
+			break
+		case 4:
+			deck = []
+			break
+		case 5:
+			deck = []
+			break
+		case 6:
+			deck = []
+			break
+		case 7:
+			deck = []
+			break
+		case 8:
+			deck = []
+			break
+		case 9:
+			deck = []
+			break
+		case 10:
+			deck = []
+			break
+	}
+	return deck
+}
+
+function ChangedPlayerBurnCards(player) {
+	//printt("ChangedPlayerBurnCards: " + player )	
+}
+
 function FillBurnCardDeckFromArray( player, array )
 {
 	foreach (index,card in array)

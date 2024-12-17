@@ -379,3 +379,5 @@ client.dll,rdata,0x99DEA8,"%s/bin/x64_retail/%s\x00","%s/r1delta/bin/x64_delta/%
 server.dll,text,0x13EF20,48,C3
 ; remove choke altogether
 engine.dll,text,0x5A05B,74 07,90 90
+; fixup xinput to use alsr version 
+inputsystem.dll,rdata,0x0041F50,"XInput1_3.dll","XInput9_1_0.dll\x00"
