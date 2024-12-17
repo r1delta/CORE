@@ -1802,7 +1802,7 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenClassicMenu()
 			break
 		case "ServerBrowserMenu":
-			OnServerBrowserMenu();
+			OnServerBrowserMenu(menu);
 			break;
 
 		default:
