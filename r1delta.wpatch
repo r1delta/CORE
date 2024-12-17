@@ -381,3 +381,6 @@ server.dll,text,0x13EF20,48,C3
 engine.dll,text,0x5A05B,74 07,90 90
 ; fixup xinput to use alsr version 
 inputsystem.dll,rdata,0x0041F50,"XInput1_3.dll","XInput9_1_0.dll\x00"
+
+; CBaseClientState::ProcessServerInfo fix
+engine.dll,text,0x277FA,83 F8 01,83 F8 02
