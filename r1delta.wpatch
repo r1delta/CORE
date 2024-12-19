@@ -197,8 +197,8 @@ filesystem_stdio.dll,text,0xD0728,"portal2","r1\x00"
 ; use r1 fs gameinfo (instead of the one in VPK)
 engine.dll,text,0x629A30,"GameInfo.txt","..\r1delta\GameInfo.txt\x00"
 
-; fix char check for utl parsetoken
-; engine.dll,text,0x487F02,3C 20 7E 18,3C 00 7E 18
+; ~fix char check for utl parsetoken~ | clamp net_stringcmd to 64 chars
+; engine.dll,text,0x1F8A04,41 B8 00 04 00 00,41 B8 40 00 00 00
 ; remove TFOData CSV parser
 engine_r1o.dll,text,0x28E4D0,48,C3
 ; don't reload materials in FileSystem_UpdateAddonSearchPaths

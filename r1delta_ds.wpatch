@@ -2,8 +2,9 @@
 ; dedi patches (still need to go through these)
 engine_ds.dll,text,0x24019,98 02,A8 02
 engine_ds.dll,text,0x24134,18 02,28 02
-; fix char check for utl parsetoken
-engine_ds.dll,text,0x32687F,3C 20 7E 18,90 90 90 90
+; ~fix char check for utl parsetoken~ | clamp net_stringcmd to 64 chars
+; engine_ds.dll,text,0x148B92,41 B8 00 04 00 00,41 B8 40 00 00 00
+
 engine_ds.dll,text,0x27be8,48 02,58 02
 engine_ds.dll,text,0x27c18,40 02,50 02
 engine_ds.dll,text,0x27c4d,08 01,10 01
