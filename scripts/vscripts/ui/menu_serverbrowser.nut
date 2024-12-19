@@ -84,7 +84,6 @@ function InitServerBrowserMenu( menu )
     file.lblConnectTo <- file.dialog.GetChild( "LblConnectTo" )
     // Get menu elements 
     file.buttons = GetElementsByClassname( menu, "ServerButton" )
-    printt("buttons: " + file.buttons)
     file.serversName = GetElementsByClassname( menu, "ServerName" )
     file.playerCountLabels = GetElementsByClassname( menu, "PlayerCount" ) 
     file.serversMap = GetElementsByClassname( menu, "ServerMap" )
@@ -151,7 +150,6 @@ function Threaded_GetServerList()
 		wait 1
 	}
 
-    printt("serverList: " + file.serverList.len())
 
 	uiGlobal.serverList <- file.serverList
 }
@@ -208,7 +206,6 @@ function FilterServerList()
     uiGlobal.serversArrayFiltered.clear()
     foreach ( server in file.serverList )
     {
-        printt("server: " + server)
         // Skip if filters don't match
         if (file.hideEmpty && server.players.len() == 0)
             continue
@@ -225,7 +222,6 @@ function FilterServerList()
         uiGlobal.serversArrayFiltered.append(server)
     }
 
-    printt("serversArrayFiltered: " + uiGlobal.serversArrayFiltered.len())
 }
 
 function UpdateShownPage()
@@ -246,7 +242,6 @@ function UpdateShownPage()
     // Show server info for current page
     local endIndex = uiGlobal.serversArrayFiltered.len() > 10 ? 10 : uiGlobal.serversArrayFiltered.len()
     
-    printt(file.serverList.len())
     for ( local i = 0; i < endIndex; i++ )
     {
         local buttonIndex = file.scrollOffset + i
@@ -260,7 +255,6 @@ function UpdateShownPage()
         } else {
         file.serversMap[i].SetText("#" +  server.map_name )
         }
-        printt("serverIp: " + server.ip)
         file.serversGamemode[i].SetText( "#GAMEMODE_" + server.game_mode )
         file.serversName[i].SetVisible(true)
         file.playerCountLabels[i].SetVisible(true)
@@ -326,7 +320,6 @@ function OnServerButtonFocused(button)
     local scriptID =  button.GetScriptID().tointeger()
  	if (scriptID == 10) return
     local serverIndex = uiGlobal.scrollOffset + scriptID
-    printt("serverIndex: " + serverIndex)
      
     local menu = uiGlobal.menu
     if(serverIndex >= uiGlobal.serversArrayFiltered.len())
@@ -384,7 +377,6 @@ function OnServerBrowserMenu(menu)
 function SortServerListByName( button )
 {
     uiGlobal.sortDirection.serverName = !uiGlobal.sortDirection.serverName
-    printt("sortDirection: " + uiGlobal.sortDirection.serverName)
     uiGlobal.serversArrayFiltered.sort(function(a, b) {
         if ( uiGlobal.sortDirection.serverName )
             {

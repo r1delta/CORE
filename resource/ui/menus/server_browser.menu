@@ -216,9 +216,8 @@ resource/ui/menus/server_browser.menu
         BtnServerPlayersTab
         {
             ControlName				BaseModHybridButton
-            InheritProperties		DialogButton
+            InheritProperties		DefaultButton
             wide 80
-            style					DialogListButton
 			xpos -230
             tall 30
 			ypos 0
