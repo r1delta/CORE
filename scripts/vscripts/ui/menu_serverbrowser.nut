@@ -19,7 +19,7 @@ function main()
     file.currentChoice <- 0
     file.serverList <- []
     file.scrollOffset <- 0 
-    file.serversArrayFiltered <- []
+    // uiGlobal.serversArrayFiltered <- []
     file.searchBox <- null
     file.hideFullBox <- null
     file.hideEmptyBox <- null
@@ -117,6 +117,7 @@ function InitServerBrowserMenu( menu )
 
     file.searchBox = menu.GetChild( "BtnServerSearch" )
     file.buttons = GetElementsByClassname( menu, "ServerButton" )
+	AddEventHandlerToButton( menu, "BtnServerSearch", UIE_LOSE_FOCUS, Bind( OnSearchBoxLooseFocus ) )
 
     // Initialize mouse wheel handlers
     RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
@@ -125,7 +126,11 @@ function InitServerBrowserMenu( menu )
     RefreshServerList(null)
 }
 
-
+function OnSearchBoxLooseFocus(button)
+{
+    FilterAndUpdateList()
+    UpdateShownPage()
+}
 
 function Threaded_GetServerList()
 {
@@ -186,7 +191,7 @@ function RefreshServerList(_button)
 
 function FilterAndUpdateList()
 {
-    file.searchTerm = "" //file.searchBox.GetText()
+    file.searchTerm = file.searchBox.GetTextEntryUTF8Text()
     file.useSearch = file.searchTerm != ""
     file.hideFull = file.hideFullBox.IsSelected() //file.hideFullBox.IsSelected()
     file.hideEmpty = file.hideEmptyBox.IsSelected()
@@ -199,7 +204,7 @@ function FilterAndUpdateList()
 
 function FilterServerList()
 {
-    file.serversArrayFiltered.clear()
+    uiGlobal.serversArrayFiltered.clear()
     uiGlobal.serversArrayFiltered.clear()
     foreach ( server in file.serverList )
     {
@@ -217,16 +222,15 @@ function FilterServerList()
                 continue
         }
         
-        file.serversArrayFiltered.append(server)
         uiGlobal.serversArrayFiltered.append(server)
     }
 
-    printt("serversArrayFiltered: " + file.serversArrayFiltered.len())
+    printt("serversArrayFiltered: " + uiGlobal.serversArrayFiltered.len())
 }
 
 function UpdateShownPage()
 {
-    // uiGlobal.serversArrayFiltered = file.serversArrayFiltered
+    // uiGlobal.serversArrayFiltered.clear()
     local BUTTONS_PER_PAGE = 10
     
     // Reset all buttons first
@@ -240,14 +244,14 @@ function UpdateShownPage()
     }
     
     // Show server info for current page
-    local endIndex = file.serversArrayFiltered.len() > 10 ? 10 : file.serversArrayFiltered.len()
+    local endIndex = uiGlobal.serversArrayFiltered.len() > 10 ? 10 : uiGlobal.serversArrayFiltered.len()
     
     printt(file.serverList.len())
     for ( local i = 0; i < endIndex; i++ )
     {
         local buttonIndex = file.scrollOffset + i
         
-        local server = file.serversArrayFiltered[buttonIndex]
+        local server = uiGlobal.serversArrayFiltered[buttonIndex]
         file.buttons[i].Show()
         file.serversName[i].SetText( server.host_name )
         file.playerCountLabels[i].SetText( format( "%i/%i", server.players.len(), server.max_players ) )
@@ -287,19 +291,19 @@ function OnServerSelected()
 
 function ConnectToServer()
 {
-    if (file.currentChoice >= file.serversArrayFiltered.len())
+    if (file.currentChoice >= uiGlobal.serversArrayFiltered.len())
         return
         
-    local server = file.serversArrayFiltered[file.currentChoice]
+    local server = uiGlobal.serversArrayFiltered[file.currentChoice]
     ClientCommand( "connect " + server.ip + ":" + server.port )
 }
 
 function OnScrollDown()
 {
-    if (file.serversArrayFiltered.len() <= 10) return
+    if (uiGlobal.serversArrayFiltered.len() <= 10) return
     file.scrollOffset += 1
-    if (file.scrollOffset + 10 > file.serversArrayFiltered.len())
-        file.scrollOffset = file.serversArrayFiltered.len() - 10
+    if (file.scrollOffset + 10 > uiGlobal.serversArrayFiltered.len())
+        file.scrollOffset = uiGlobal.serversArrayFiltered.len() - 10
         
     uiGlobal.scrollOffset = file.scrollOffset
     UpdateShownPage()
@@ -320,11 +324,13 @@ function OnScrollUp()
 function OnServerButtonFocused(button)
 {
     local scriptID =  button.GetScriptID().tointeger()
- 	if (scriptID == 999 || scriptID == -1 || scriptID == 10) return
+ 	if (scriptID == 10) return
     local serverIndex = uiGlobal.scrollOffset + scriptID
     printt("serverIndex: " + serverIndex)
      
     local menu = uiGlobal.menu
+    if(serverIndex >= uiGlobal.serversArrayFiltered.len())
+        return
     local server = uiGlobal.serversArrayFiltered[serverIndex]
     
     // Update preview panel
@@ -368,8 +374,8 @@ function OnServerBrowserMenu(menu)
     // Clear any previous filter settings
     file.searchTerm = ""
     // printt(file.searchBox.GetTextEntryUTF8Text())
-    // if ( file.searchBox != null )
-    //     file.searchBox.SetText( "" )
+    if ( file.searchBox != null )
+        file.searchBox.SetUTF8Text( "" )
     
     // Update UI
     FilterAndUpdateList()
@@ -399,24 +405,20 @@ function SortServerListByName( button )
 
 function SortServerListByPlayers( button )
 {
-    file.sortDirection.serverPlayers = !file.sortDirection.serverPlayers
+    uiGlobal.sortDirection.serverPlayers = !uiGlobal.sortDirection.serverPlayers
     
-    file.serversArrayFiltered.sort(function(a, b) {
-        if ( file.sortDirection.serverPlayers )
+    uiGlobal.serversArrayFiltered.sort(function(a, b) {
+        if(uiGlobal.sortDirection.serverPlayers)
         {
-            if (a.players.len() == b.players.len())
-            {
-                return 0
-            }
-            return a.players.len() > b.players.len()
-            
+            if(a.players.len() > b.players.len()) return 1
+            if(a.players.len() < b.players.len()) return -1
+            return 0
         }
-        else {
-            if (a.players.len() == b.players.len())
-            {
-                return 0
-            }
-            return a.players.len() < b.players.len()
+        else
+        {
+            if(a.players.len() < b.players.len()) return 1
+            if(a.players.len() > b.players.len()) return -1
+            return 0
         }
     })
     
@@ -425,26 +427,44 @@ function SortServerListByPlayers( button )
 
 function SortServerListByMap( button )
 {
-    file.sortDirection.serverMap = !file.sortDirection.serverMap
+    uiGlobal.sortDirection.serverMap = !uiGlobal.sortDirection.serverMap
     
-    // file.serversArrayFiltered.sort(function(a, b) {
-    //     if ( file.sortDirection.serverMap )
-    //         return GetMapDisplayName(a.map_name) > GetMapDisplayName(b.map_name)
-    //     return GetMapDisplayName(a.map_name) < GetMapDisplayName(b.map_name)
-    // })
+    uiGlobal.serversArrayFiltered.sort(function(a, b) {
+        if ( uiGlobal.sortDirection.serverMap )
+            {
+                if(a.map_name > b.map_name) return 1
+                if(a.map_name < b.map_name) return -1
+                return 0
+            }
+        else
+            {
+                if(a.map_name < b.map_name) return 1
+                if(a.map_name > b.map_name) return -1
+                return 0
+            }
+    })
     
     UpdateShownPage()
 }
 
 function SortServerListByGamemode( button )
 {
-    file.sortDirection.serverGamemode = !file.sortDirection.serverGamemode
+    uiGlobal.sortDirection.serverGamemode = !uiGlobal.sortDirection.serverGamemode
     
-    // file.serversArrayFiltered.sort(function(a, b) {
-    //     if ( file.sortDirection.serverGamemode )
-    //         return a.game_mode > b.game_mode
-    //     return a.game_mode < b.game_mode
-    // })
+    uiGlobal.serversArrayFiltered.sort(function(a, b) {
+        if ( uiGlobal.sortDirection.serverGamemode )
+            {
+                if(a.game_mode > b.game_mode) return 1
+                if(a.game_mode < b.game_mode) return -1
+                return 0
+            }
+        else
+            {
+                if(a.game_mode < b.game_mode) return 1
+                if(a.game_mode > b.game_mode) return -1
+                return 0
+            }
+    })
     
     UpdateShownPage()
 }
@@ -497,10 +517,6 @@ function OnDirectConnectDialogButtonConnect_Activate( button )
 		return
 
     ClientCommand( "connect " + str )
-	local input = []
-
-
-
 	CloseDialog( true )
 }
 
