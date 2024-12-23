@@ -123,6 +123,34 @@ function InitServerBrowserMenu( menu )
     RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
     // Initialize filter state
     RefreshServerList(null)
+
+    // Hud_GetChild(menu,"LobbyEnemyTeamBackground")
+    // LobbyEnemyTeamBackground
+
+    
+    // menu.GetChild("PlayerList1").Hide()
+    // file.enemyTeam <- menu.GetChild("LobbyEnemyTeamBackground")    
+    // file.friendlyTeam <- menu.GetChild("LobbyFriendlyTeamBackground")
+    // file.enemyTeamSlots <- []
+    // file.friendlyTeamSlots <- []
+    // file.friendlyTeamNeutral <- []
+    // file.enemyTeamNeutral <- []
+
+    // local back = menu.GetChild("EnemyBackground0")
+
+
+    // for (local i = 0; i < 6; i++) {
+    //     file.enemyTeamSlots.append(file.enemyTeam.GetChild("EnemySlot" + i))
+    //     file.friendlyTeamSlots.append(file.friendlyTeam.GetChild("FriendlySlot" + i))
+    //     file.enemyTeamNeutral.append(file.enemyTeam.GetChild("NeutralSlot" + i))
+    //     file.friendlyTeamNeutral.append(file.friendlyTeam.GetChild("NeutralSlot" + i))
+    //     file.enemyTeamNeutral[i].Hide()
+    //     file.friendlyTeamNeutral[i].Hide()
+    //     file.enemyTeamSlots[i].Show()
+    //     file.friendlyTeamSlots[i].Show()
+    // }
+ 
+    // file.friendlyTeam <- menu.GetChild("LobbyFriendlyTeamBackground")
 }
 
 function OnSearchBoxLooseFocus(button)
@@ -299,7 +327,7 @@ function OnScrollDown()
     if (file.scrollOffset + 10 > uiGlobal.serversArrayFiltered.len())
         file.scrollOffset = uiGlobal.serversArrayFiltered.len() - 10
         
-    uiGlobal.scrollOffset = file.scrollOffset
+    file.scrollOffset = file.scrollOffset
     UpdateShownPage()
 }
 
@@ -309,7 +337,7 @@ function OnScrollUp()
     if (file.scrollOffset < 0)
         file.scrollOffset = 0
 
-    uiGlobal.scrollOffset = file.scrollOffset
+    file.scrollOffset = file.scrollOffset
 
     UpdateShownPage()
 }
@@ -370,6 +398,11 @@ function OnServerBrowserMenu(menu)
     if ( file.searchBox != null )
         file.searchBox.SetUTF8Text( "" )
     
+    // local panel = menu.GetPanel()
+    menu.GetChild( "NextMapName" ).SetText( "wfe" )
+    // HudElement( "LobbyEnemyTeamBackground",panel ).SetVisible( false )
+
+
     // Update UI
     FilterAndUpdateList()
 }
