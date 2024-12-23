@@ -48,7 +48,6 @@ function SendServerHeartbeat() {
     // Collect data to be encoded
     local host_name = GetConVarString("hostname");
     local map_name = GetMapName();
-    local ip = GetConVarString("hostip");
     local port = GetConVarInt("hostport"); // Get as integer
 	local maxPlayers = GetCurrentPlaylistVarInt( "max players", 0 );
     local game_mode = GameRules.GetGameMode();
@@ -69,7 +68,6 @@ function SendServerHeartbeat() {
     data_table.game_mode <- game_mode;
     data_table.players <- players;
     data_table.max_players <- maxPlayers
-    data_table.port <- port;
     
     SendDataToCppServer(data_table);
 }
