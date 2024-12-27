@@ -5804,37 +5804,31 @@ function replace_all(original, find, replace)
     // Validate that 'find' is not an empty string to prevent infinite loops
     if (find_len == 0)
     {
-        printt("[replace_all] ERROR: 'find' string is empty. Returning original string.");
         return original; // Return original string unchanged
     }
 
-    printt("[replace_all] Starting replacement: original='" + original + "', find='" + find + "', replace='" + replace + "'");
 
     while (true)
     {
         local index = original.find(find, pos);
-        printt("[replace_all] Searching for '" + find + "' starting at position " + pos + ". Found index: " + index);
 
         // If 'find' is not found, 'index' will be null
         if (index == null)
         {
             // Append the remaining part of the string
             local remaining = original.slice(pos, original.len());
-            printt("[replace_all] '" + find + "' not found. Appending remaining string: '" + remaining + "'");
             result += remaining;
             break;
         }
 
         // Append the substring before the found occurrence and the replacement
         local before = original.slice(pos, index);
-        printt("[replace_all] Found '" + find + "' at index " + index + ". Replacing with '" + replace + "'.");
         result += before + replace;
 
         // Move the position forward to continue searching
         pos = index + find_len;
     }
 
-    printt("[replace_all] Replacement complete. Result: '" + result + "'");
     return result;
 }
 
@@ -5859,28 +5853,12 @@ function GetPlayerSettingsFieldForClassName(className, field)
         // Check if the original model was successfully retrieved
         if (!originalModel)
         {
-            printt("[GetPlayerSettingsFieldForClassName] ERROR: 'bodymodel_imc' not found for class '" + className + "'. Returning null.");
             return null;
         }
-        
-        printt("[GetPlayerSettingsFieldForClassName] Original 'bodymodel_imc' for class '" + className + "': '" + originalModel + "'");
-        
+                
         // Replace all instances of "imc_" with "mcor_"
         local modifiedModel = replace_all(originalModel, "imc_", "mcor_");
         
-        // Replace ":0" with ":1" if present at the end of the string
-        if (modifiedModel.len() >= 2 && modifiedModel.slice(modifiedModel.len() - 2, modifiedModel.len()) == ":0")
-        {
-            // Replace the last two characters ":0" with ":1"
-            modifiedModel = modifiedModel.slice(0, modifiedModel.len() - 2) + ":1";
-            printt("[GetPlayerSettingsFieldForClassName] Replaced ':0' with ':1'. Modified model: '" + modifiedModel + "'");
-        }
-        else
-        {
-            printt("[GetPlayerSettingsFieldForClassName] No ':0' suffix found. Modified model remains: '" + modifiedModel + "'");
-        }
-        
-        printt("[GetPlayerSettingsFieldForClassName] Returning modified 'bodymodel_militia': '" + modifiedModel + "'");
         return modifiedModel;
     }
     // For all other fields, delegate to the original function unchanged
@@ -5891,6 +5869,3 @@ function GetPlayerSettingsFieldForClassName(className, field)
         return originalValue;
     }
 }
-
-// Make the new function globally accessible
-Globalize(GetPlayerSettingsFieldForClassName);

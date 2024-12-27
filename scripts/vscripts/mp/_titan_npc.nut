@@ -602,7 +602,7 @@ function SetModelSkinFromSettings( table, settings, team )
 	else
 		table.model = ATLAS_MODEL
 
-	table.skin   = 0
+	table.skin   = team == TEAM_MILITIA ? 1 : 0
 }
 
 //////////////////////////////////////////////////////////
