@@ -419,11 +419,11 @@ function Wallrun_CreateCopyOfPilotModel( player )
 
 	if ( player.IsTitan() )
 	{
-		modelName =   GetPlayerSettingsFieldForClassName( player.s.storedPlayerSettings, "bodymodel_imc" )
+		modelName =   GetPlayerSettingsFieldForClassName( player.s.storedPlayerSettings, player.GetTeam() == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 	}
 	else
 	{
-		modelName =   player.GetPlayerSettingsField( "bodymodel_imc" )
+		modelName =   player.GetPlayerSettingsField( player.GetTeam() == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 	}
 
 	local model = CreatePropDynamic( modelName )

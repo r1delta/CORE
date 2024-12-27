@@ -492,6 +492,17 @@ function PlayerDamageFeedback( ent, damageInfo )
 		local punchAmount = CalcTitanViewPunch( ent, damageInfo )
 		ent.ViewPunch( damageInfo.GetInflictor().GetWorldSpaceCenter(), punchAmount, 0.0, 0.0 )
 	}
+    printt( "NotifyDidDamage params:",
+        "\n    victim:", ent,
+        "\n    hitBox:", damageInfo.GetHitBox(),
+        "\n    damagePosition:", damageInfo.GetDamagePosition(),
+        "\n    damageType:", customDamageType,
+        "\n    damageAmount:", damageInfo.GetDamage(),
+        "\n    damageFlags:", damageInfo.GetDamageFlags(),
+        "\n    hitGroup:", damageInfo.GetHitGroup(),
+        "\n    weapon:", damageInfo.GetWeapon(),
+        "\n    distanceFromAttackOrigin:", damageInfo.GetDistFromAttackOrigin()
+    )
 
 	attacker.NotifyDidDamage( ent, damageInfo.GetHitBox(), damageInfo.GetDamagePosition(), customDamageType, damageInfo.GetDamage(), damageInfo.GetDamageFlags(), damageInfo.GetHitGroup(), damageInfo.GetWeapon(), damageInfo.GetDistFromAttackOrigin() )
 }
@@ -2032,7 +2043,7 @@ function TitanPlayerHotDropsIntoLevel( player )
 
 	local animation = "at_hotdrop_01" //  "at_hotdrop_drop_2knee_turbo" // at_hotdrop_01"
 
-	local model = GetPlayerSettingsFieldForClassName( titanSettings, "bodymodel_imc" )
+	local model = GetPlayerSettingsFieldForClassName( titanSettings, player.GetTeam() == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 	local warpAttach = GetAttachmentAtTimeFromModel( model, animation, "offset", origin, angles, 0 )
 	PlayFX( TURBO_WARP_FX, warpAttach.position, warpAttach.angle )
 

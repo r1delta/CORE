@@ -660,7 +660,7 @@ function DropReplacementTitan( player, spawnPoint )
 		file.warpFallDebounce[ player ] <- Time()
 		animation = "at_hotdrop_drop_2knee_turbo_upgraded"
 		local settings = GetTitanForPlayer( player )
-		local model = GetPlayerSettingsFieldForClassName( settings, "bodymodel" )
+		local model = GetPlayerSettingsFieldForClassName( settings, player.GetTeam() == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc")
 		local warpAttach = GetAttachmentAtTimeFromModel( model, animation, "offset", origin, angles, 0 )
 
 		local fakeTitan = CreatePropDynamic( model )
@@ -780,7 +780,7 @@ function ForceReplacementTitan( player, spawnPoint )
 		file.warpFallDebounce[ player ] <- Time()
 		animation = "at_hotdrop_drop_2knee_turbo_upgraded"
 		local settings = GetTitanForPlayer( player )
-		local model = GetPlayerSettingsFieldForClassName( settings, "bodymodel" )
+		local model = GetPlayerSettingsFieldForClassName( settings, player.GetTeam() == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 		local warpAttach = GetAttachmentAtTimeFromModel( model, animation, "offset", origin, angles, 0 )
 
 		local fakeTitan = CreatePropDynamic( model )
