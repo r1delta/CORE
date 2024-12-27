@@ -2032,7 +2032,7 @@ function TitanPlayerHotDropsIntoLevel( player )
 
 	local animation = "at_hotdrop_01" //  "at_hotdrop_drop_2knee_turbo" // at_hotdrop_01"
 
-	local model = GetPlayerSettingsFieldForClassName( titanSettings, "bodymodel_imc" )
+	local model = GetPlayerSettingsFieldForClassName( titanSettings, player.GetTeam() == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 	local warpAttach = GetAttachmentAtTimeFromModel( model, animation, "offset", origin, angles, 0 )
 	PlayFX( TURBO_WARP_FX, warpAttach.position, warpAttach.angle )
 
