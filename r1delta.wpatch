@@ -389,3 +389,6 @@ inputsystem.dll,rdata,0x0041F50,"XInput1_3.dll","XInput9_1_0.dll\x00"
 
 ; CBaseClientState::ProcessServerInfo fix
 engine.dll,text,0x277FA,83 F8 01,83 F8 02
+
+; server.dll change COORD_INTEGER_BITS to 14 in bf_write::WriteBitCoordMP
+server.dll,text,0x6637DB,41 B8 0F 00 00 00,41 B8 0E 00 00 00
