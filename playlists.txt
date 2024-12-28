@@ -371,7 +371,7 @@
 			"titan_shield_health"	"0"
 			"ranking_supported"	"1"
 			"bc_base_cards"	"46"
-			"lobby_campaign_scene"	"0"
+			"lobby_campaign_scene"	"1"
 			"AT_suddendeath_timelimit"	"2"
 			"CTF_suddendeath_timelimit"	"2"
 			"TDM_suddendeath_timelimit"	"2"
