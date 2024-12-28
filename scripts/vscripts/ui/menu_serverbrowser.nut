@@ -399,7 +399,6 @@ function OnServerBrowserMenu(menu)
         file.searchBox.SetUTF8Text( "" )
     
     // local panel = menu.GetPanel()
-    menu.GetChild( "NextMapName" ).SetText( "wfe" )
     // HudElement( "LobbyEnemyTeamBackground",panel ).SetVisible( false )
 
 
