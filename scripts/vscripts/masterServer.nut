@@ -28,7 +28,7 @@ function HeartbeatLoop()
     while(1)
     {
         // Wait 10 seconds + random jitter between -2.5 and +2.5 seconds
-        wait (10.0 + RandomFloat(-2.5, 2.5))
+        wait (7.0 + RandomFloat(-2.5, 2.5))
         SendServerHeartbeat()
     }
 }
