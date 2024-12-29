@@ -25,6 +25,7 @@ function main()
 	level.AOEActiveDamageTriggers <- []
 
 	FlagSet( "DogFights" ) // tells flightpath to bake these into the ain
+	FlagSet( "DisableDropships" ) // this is uniquely broken on switchback idk why
 
 	GM_AddEndRoundFunc( EndRoundMain )
 
