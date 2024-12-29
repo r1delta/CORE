@@ -651,12 +651,12 @@ function ChooseCoopMap()
 	// If any of the players hasn't played before, choose one of the 3 "newbie" maps, Lagoon, Overlook, Relic
 	local playerArray = GetPlayerArray()
 	local gameHasNewbie = false
-	foreach ( player in playerArray )
-	{
-		local gamesPlayed =	player.GetPersistentVar( "gamestats.modesplayed[coop]" )
-		if ( gamesPlayed == 0 )
-			gameHasNewbie = true
-	}
+	//foreach ( player in playerArray )
+	//{
+	//	local gamesPlayed =	player.GetPersistentVar( "gamestats.modesplayed[coop]" )
+	//	if ( gamesPlayed == 0 )
+	//		gameHasNewbie = true
+	//}
 
 	local allowedMaps = null
 	if ( gameHasNewbie == true && GetCurrentPlaylistVarInt( "coop_newPlayerMapLimitEnabled", 1 ) )
