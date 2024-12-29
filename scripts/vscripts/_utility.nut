@@ -5869,3 +5869,6 @@ function GetPlayerSettingsFieldForClassName(className, field)
         return originalValue;
     }
 }
+function IsCoopMatch() {
+	return GetConVarInt("sv_lobbytype") == 1 && GetCurrentPlaylistName() == "coop"
+}
