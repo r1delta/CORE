@@ -405,3 +405,9 @@ engine.dll,text,0xDB86F,0F 84 86 00 00 00,E9 87 00 00 00
 
 ; stub out IsCoopMatch so we can fix it on dedi in squirrel
 server.dll,rdata,0x963820,"IsCoopMatch","NoCoopMatch"
+
+; disable cstrike matchmaking stuff (maxplayers issue)
+server.dll,text,0x1481A4,0F 85 9A 03 00 00,E9 9B 03 00 00
+engine_ds.dll,text,0x5E560,48,C3
+; always set maxplayers on dedi on playlist change
+engine_ds.dll,text,0xB9807,7C 67,90 90
