@@ -60,6 +60,9 @@ function main()
 }
 
 function ClientCommand_ActivateBurnCard(player, ...) {
+
+	if (vargc != 1)
+		return false
 	local index = vargv[0].tointeger()
 
 	if (index == null)
