@@ -6,15 +6,8 @@ function GameRules_ChangeMap( mapName, mode )
 	if( ';' in mapName || ' ' in mapName)
 		return
 
-    if ( GetCurrentPlaylistName() == "campaign_carousel" )
-    {
         ServerCommand( "mp_gamemode " + mode )
         ServerCommand( "changelevel " + mapName )
-    } else
-    {
-	    ServerCommand( "launchplaylist " + mode )
-	    ServerCommand( "changelevel " + mapName )
-    }
 }
 
 function GameRules_EndMatch()
