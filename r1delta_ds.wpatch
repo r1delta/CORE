@@ -1,4 +1,5 @@
 ; dedi patches (still need to go through these)
+; all of these patch matsystem offsets
 engine_ds.dll,text,0x24019,98 02,A8 02
 engine_ds.dll,text,0x24134,18 02,28 02
 engine_ds.dll,text,0x27be8,48 02,58 02
@@ -35,10 +36,11 @@ engine_ds.dll,text,0xdec34,70 03,80 03
 engine_ds.dll,text,0xdf151,70 03,80 03
 engine_ds.dll,text,0xdf794,70 03,80 03
 engine_ds.dll,text,0xdf807,98 03,A8 03
+engine_ds.dll,text,0x16e7eb,68 02,78 02
+; i think these were failed attempts at increasing pdef size
 engine_ds.dll,text,0x169ef3,58,D0
 engine_ds.dll,text,0x16a143,58,D0
 engine_ds.dll,text,0x16a23f,58,D0
-engine_ds.dll,text,0x16e7eb,68 02,78 02
 ; fix server_ds rename
 engine_ds.dll,rdata,0x4288B8,"server_ds.dll","server.dll\x00"
 ; fix dedi netproto
@@ -56,6 +58,7 @@ engine_ds.dll,text,0x44423,5C,90
 engine_ds.dll,text,0x44424,FF,90
 engine_ds.dll,text,0x44425,FF,90
 engine_ds.dll,text,0x44426,FF,90
+; wire up some prints
 engine_ds.dll,text,0x72BA0,C2,E9
 engine_ds.dll,text,0x72BA1,00,EB
 engine_ds.dll,text,0x72BA2,00,75
@@ -118,7 +121,7 @@ engine_ds.dll,text,0x130A93,F7 40 58 00 80 00 00,F7 40 58 00 00 01 00
 ; fix svc_snapshot message id
 engine_ds.dll,text,0x50A09,B9 21 00 00 00,B9 24 00 00 00
 ; fix CServerGameDLL::OnReceiveSayTextMessage offset
-engine_ds.dll,text,0x4BBBC,48 8B 86 30 02 00,48 8B 86 38 02 00
+; engine_ds.dll,text,0x4BBBC,48 8B 86 30 02 00,48 8B 86 38 02 00
 ; no dedi search
 engine_ds.dll,text,0xA210,48,C3
 ; no dedi telemetry
@@ -164,3 +167,5 @@ server.dll,text,0x496FE,C7 05 80 15 B1 00 02,C7 05 80 15 B1 00 00
 ; engine_ds.dll,text,0x4C46F, 48 8B D9,EB 13
 engine_ds.dll,text,0x14A170,48,C3
 engine_ds.dll,text,0x4C4DD,41 FF 93 E0 00 00 00,90 90 90 90 90 90 90
+; unhide skill_enabled
+engine_ds.dll,text,0x3F1409,41 B9 02 00 00 00,41 B9 00 00 00 00
