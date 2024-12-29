@@ -60,12 +60,11 @@ function main()
 }
 
 function ClientCommand_ActivateBurnCard(player, ...) {
-
-	if (vargc != 1)
+	if (vargc != 2)
 		return false
 	local index = vargv[0].tointeger()
 
-	if (index == null)
+	if (index == null || index < 0 || index >= MAX_BURN_CARDS)
 		return false
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
