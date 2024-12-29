@@ -13,8 +13,8 @@ function main()
 	AddClientCommandCallback( "InGameMenuOpened", ClientCommand_InGameMenuOpened ) //
 	AddClientCommandCallback( "InGameMenuClosed", ClientCommand_InGameMenuClosed ) //
 	AddClientCommandCallback( "SetLoadoutProperty", ClientCommand_SetLoadoutProperty ) //
-	AddClientCommandCallback( "LeaveMatchWithParty", ClientCommand_LeaveMatchWithParty ) //
-	AddClientCommandCallback( "LeaveMatchSolo", ClientCommand_LeaveMatchSolo ) //
+//	AddClientCommandCallback( "LeaveMatchWithParty", ClientCommand_LeaveMatchWithParty ) //
+//	AddClientCommandCallback( "LeaveMatchSolo", ClientCommand_LeaveMatchSolo ) //
 	AddClientCommandCallback( "ClearNewStatus", ClientCommand_ClearNewStatus ) //
 	AddClientCommandCallback( "SetTrackedChallenge", ClientCommand_SetTrackedChallenge ) //
 	AddClientCommandCallback( "AbandonDailyChallenge", ClientCommand_AbandonDailyChallenge )
