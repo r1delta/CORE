@@ -130,9 +130,11 @@ function ModeButton_Click( button )
 	local modeName = modesArray[mapID]
 
 	// set it
+	ClientCommand( "PrivateMatchSetMode " + modeName )
+
 	if (modeName == "campaign_carousel")
 		ClientCommand( "SetCustomMap mp_fracture" )
-	ClientCommand( "PrivateMatchSetMode " + modeName )
+
 	CloseTopMenu()
 }
 

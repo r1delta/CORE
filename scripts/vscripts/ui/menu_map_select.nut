@@ -49,7 +49,12 @@ function OnOpenMapsMenu()
 
 		if ( buttonID >= 0 && buttonID < GetPrivateMatchMaps().len() )
 		{
-			button.SetText( GetMapDisplayName( mapsArray[buttonID] ) )
+			if (GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel") {
+				button.SetText( GetCampaignMapDisplayName( mapsArray[buttonID] ) )
+			} else {
+				button.SetText( GetMapDisplayName( mapsArray[buttonID] ) )
+			}
+
 			button.SetEnabled( true )
 			button.s.dlcGroup = GetDLCMapGroupForMap( mapsArray[buttonID] )
 		}
@@ -135,7 +140,11 @@ function MapButton_Focused( button )
 
 	local mapImage = "../ui/menu/lobby/lobby_image_" + mapName
 	nextMapImage.SetImage( mapImage )
-	nextMapName.SetText( GetMapDisplayName( mapName ) )
+	if (GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel") {
+		nextMapName.SetText( GetCampaignMapDisplayName( mapName ) )
+	} else {
+		nextMapName.SetText( GetMapDisplayName( mapName ) )
+	}
 	nextMapDesc.SetText( GetMapDisplayDesc( mapName ) )
 
 	if ( !IsPrivateMatch() )

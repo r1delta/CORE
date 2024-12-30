@@ -2235,6 +2235,8 @@ pmSettingsMap["pm_score_limit"]["coop"] <- [
         750,
 ]
 
+pmSettingsMap["pm_score_limit"]["campaign_carousel"] <- [0]
+
 pmSettingsMap["pm_pilot_health"] <- [
 	0,
 	100,
