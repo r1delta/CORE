@@ -60,7 +60,7 @@ $ENUM_END
 // add new maps to the bottom of this list...DO NOT CHANGE ORDER!!
 $ENUM_START maps
 	mp_box
-	mp_test_engagement_range
+	//mp_test_engagement_range // what
 	mp_airbase
 	mp_angel_city
 	mp_boneyard

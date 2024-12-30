@@ -43,6 +43,8 @@ const ELIMINATION = "elim"
 const ATDM = "atdm"
 const ATTRITION = "at"
 const CAPTURE_THE_FLAG = "ctf"
+const CAMPAIGN = "campaign_carousel"
+const DEADLYGROUND = "lava"
 const CAPTURE_THE_FLAG_PRO = "ctfp"
 const BIG_BROTHER = "bb"
 const COOPERATIVE = "coop"
@@ -1601,15 +1603,16 @@ enum ePrivateMatchMaps
 enum ePrivateMatchModes
 {
 	at,
+	coop,
+	campaign_carousel,
 	cp,
-	lts,
 	ctf,
+	lts,
+	wlts,
 	tdm,
 	mfd,
-	ps,
-	coop,
 	mfdp,
-	wlts,
+	ps,
 }
 
 
@@ -2161,7 +2164,27 @@ pmSettingsMap["pm_score_limit"]["lts"] <- [
 	8,
 	9,
 ]
+pmSettingsMap["pm_score_limit"]["wlts"] <- [
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+]
 pmSettingsMap["pm_score_limit"]["tdm"] <- [
+	10,
+	20,
+	30,
+	40,
+	50,
+	60,
+	75,
+	100,
+]
+pmSettingsMap["pm_score_limit"]["ps"] <- [
 	10,
 	20,
 	30,
@@ -2191,7 +2214,16 @@ pmSettingsMap["pm_score_limit"]["mfd"] <- [
 	30,
 	50,
 ]
-
+pmSettingsMap["pm_score_limit"]["mfdp"] <- [
+	1,
+	3,
+	5,
+	7,
+	10,
+	20,
+	30,
+	50,
+]
 pmSettingsMap["pm_score_limit"]["coop"] <- [
         150,
         200,

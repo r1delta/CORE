@@ -10,7 +10,6 @@ function main()
 	Globalize( OnCloseMatchSettingsMenu )
 
 	Globalize( NavigateBackApplyMatchSettingsDialog )
-    Globalize( GotoCampaignLobby )
 
 	file.modeSettingsButton <- null
 	file.scoreLimitButton <- null
@@ -41,6 +40,7 @@ function main()
 	file.pmVarValues <- {}
 	file.modeSettingsName <- null
 
+
 	RegisterSignal( "OnCloseMatchSettingsMenu" )
 }
 
@@ -52,7 +52,7 @@ function InitModesMenu( menu )
 
 function OnOpenModesMenu()
 {
-    ClientCommand( "loadPlaylists" )
+	ClientCommand( "loadPlaylists" )
 
 	local modesArray = []
 	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
@@ -63,7 +63,6 @@ function OnOpenModesMenu()
 
 	local menu = GetMenu( "ModesMenu" )
 	local buttons = GetElementsByClassname( GetMenu( "ModesMenu" ), "ModeButton" )
-    
 	foreach ( button in buttons )
 	{
 		local buttonID = button.GetScriptID().tointeger()
@@ -75,15 +74,8 @@ function OnOpenModesMenu()
 		}
 		else
 		{
-            if( buttonID == getconsttable().ePrivateMatchModes.len() )
-            {
-                button.SetText( "#PL_campaign")
-                button.SetEnabled( true )
-            } else
-            {
-			    button.SetText( "" )
-			    button.SetEnabled( false )
-            }
+			button.SetText( "" )
+			button.SetEnabled( false )
 		}
 
 		if ( buttonID == level.ui.privatematch_mode )
@@ -106,14 +98,6 @@ function ModeButton_GetFocus( button )
 	local nextModeName = menu.GetChild( "NextModeName" )
 	local nextModeDesc = menu.GetChild( "NextModeDesc" )
 
-    if( mapID == getconsttable().ePrivateMatchModes.len() )
-    {
-        nextModeImage.SetImage( "../ui/menu/playlist/campaign" )
-        nextModeName.SetText( "#PL_campaign" )
-        nextModeDesc.SetText( "#PL_campaign_desc" )
-        return
-    }
-
 	local modesArray = []
 	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
 	foreach ( k, v in getconsttable().ePrivateMatchModes )
@@ -131,30 +115,9 @@ function ModeButton_GetFocus( button )
 	nextModeDesc.SetText( GetGameModeDisplayDesc( modeName ) )
 }
 
-function GotoCampaignLobby()
-{
-    ClientCommand( "launchplaylist campaign_carousel; map mp_lobby" )
-    CloseDialog()
-}
-
 function ModeButton_Click( button )
 {
 	local mapID = button.GetScriptID().tointeger()
-
-    if( mapID == getconsttable().ePrivateMatchModes.len() )
-    {
-		local buttonData = []
-		buttonData.append( { name = "#YES", func = GotoCampaignLobby } )
-		buttonData.append( { name = "#CANCEL", func = null } )
-
-        local dialogData = {}
-        dialogData.header <- "Create Campaign Lobby?"
-        dialogData.detailsMessage <- "You will leave the current Private Match."
-        dialogData.buttonData <- buttonData
-
-        OpenChoiceDialog( dialogData )
-        return
-    }
 
 	local menu = GetMenu( "MapsMenu" )
 
@@ -167,6 +130,8 @@ function ModeButton_Click( button )
 	local modeName = modesArray[mapID]
 
 	// set it
+	if (modeName == "campaign_carousel")
+		ClientCommand( "SetCustomMap mp_fracture" )
 	ClientCommand( "PrivateMatchSetMode " + modeName )
 	CloseTopMenu()
 }
