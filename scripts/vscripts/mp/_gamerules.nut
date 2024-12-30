@@ -13,12 +13,9 @@ function GameRules_ChangeMap( mapName, mode )
 function GameRules_EndMatch()
 {
     if( IsPrivateMatch() )
-    {
-        GameRules_ChangeMap( "mp_lobby", "private_match" )
-    } else
-    {
-        ServerCommand( "changelevel mp_lobby" )
-    }
+	ServerCommand("playlist private_match")
+
+    ServerCommand( "changelevel mp_lobby" )
 }
 
 function main()
