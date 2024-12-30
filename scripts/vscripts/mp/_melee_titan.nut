@@ -676,11 +676,9 @@ function MeleeAnimThrow( attacker, target, throwDuration )
 function MeleeThread_OgreVsTitan( actions, action, attacker, target )
 {
 	return
-	// local attackerAnimation1p = "ogpov_melee_armrip_attacker"
-	local attackerAnimation1p = "og_melee_armrip_attacker"
+	local attackerAnimation1p = "ogpov_melee_armrip_attacker"
 	local attackerAnimation3p = "og_melee_armrip_attacker"
-	// local targetAnimation1p = "ogpov_melee_armrip_victim"
-	local targetAnimation1p = "og_melee_armrip_victim"
+	local targetAnimation1p = "ogpov_melee_armrip_victim"
 	local targetAnimation3p = "og_melee_armrip_victim"
 
 	local e = {}
@@ -695,7 +693,7 @@ function MeleeThread_OgreVsTitan( actions, action, attacker, target )
 	attackerSequence.attachment = "ref"
 
 	local targetSequence = clone attackerSequence
-
+	printt( "MeleeThread_OgreVsTitan" )
 	attackerSequence.thirdPersonAnim = attackerAnimation3p
 	attackerSequence.firstPersonAnim = attackerAnimation1p
 	targetSequence.firstPersonAnim = targetAnimation1p

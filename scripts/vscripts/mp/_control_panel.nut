@@ -19,7 +19,7 @@ function main()
 	PrecacheMaterial( "vgui/hud/control_panel/console_e_active/console_e_active" )
 	PrecacheMaterial( "vgui/hud/control_panel/console_e_repair/console_e_repair" )
 
-	AddSpawnCallback( "prop_control_panel", 			OnPanelSpawn )
+	AddSpawnCallback( "prop_control_panel", OnPanelSpawn )
 
 	Globalize( InitControlPanelUseFuncTable )
 	Globalize( AddControlPanelUseFuncTable )
@@ -74,7 +74,7 @@ function GameModeRemovePanel( ent )
 function OnPanelSpawn( panel )
 {
 	Assert( panel.GetModelName() == "models/communication/terminal_usable_imc_01.mdl" )
-
+	printt("OnPanelSpawn")
 	thread OnPanelSpawn_Internal( panel )
 }
 
@@ -88,7 +88,7 @@ function OnPanelSpawn_Internal( panel )
 
 	Assert( IsValid( panel ), "Invalid panel " + panel )
 	panel.EndSignal( "OnDestroy" )
-
+	printt("OnPanelSpawn_Internal")
 	level.controlPanels.append( panel )
 	//Default, set it usable by everyone
 	panel.SetUsableByGroup( "pilot" )
@@ -560,6 +560,7 @@ function GetAllControlPanels()
 function CaptureAllAvailableControlPanels( player )
 {
 	local panels = GetAllControlPanels()
+	printt( "Capturing all available control panels" )
 	foreach ( panel in panels )
 	{
 		printt( "panel team " + panel.GetTeam() )

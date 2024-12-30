@@ -169,3 +169,9 @@ engine_ds.dll,text,0x14A170,48,C3
 engine_ds.dll,text,0x4C4DD,41 FF 93 E0 00 00 00,90 90 90 90 90 90 90
 ; unhide skill_enabled
 engine_ds.dll,text,0x3F1409,41 B9 02 00 00 00,41 B9 00 00 00 00
+
+; disable cstrike matchmaking stuff (maxplayers issue)
+server.dll,text,0x1481A4,0F 85 9A 03 00 00,E9 9B 03 00 00
+engine_ds.dll,text,0x5E560,48,C3
+; always set maxplayers on dedi on playlist change
+engine_ds.dll,text,0xB9807,7C 67,90 90
