@@ -402,21 +402,7 @@ function ControlMatchmakingServerLobbyLogic()
 
 	while ( 1 )
 	{
-		if ( GetLobbyType() == "game" )
-		{
-			if ( IsPrivateMatch() || IsCoopMatch() )
-			{
-				shouldDoLobbyLogic = true
-			}
-			else
-			{
-				shouldDoLobbyLogic = true
-			}
-		}
-		else
-		{
-			shouldDoLobbyLogic = false
-		}
+		shouldDoLobbyLogic = GetPlayerArray().len() > 0
 
 		if ( shouldDoLobbyLogic != prev_shouldDoLobbyLogic )
 		{
@@ -1670,7 +1656,11 @@ function ClientCommand_SetCustomMap( player, ... )
 
 	if ( vargc <= 0 )
 		return true
-
+	if ( GetPartyLeader( player ) != player )
+	{
+		printt( "Player", player.GetPlayerName(), "tried to 'PrivateMatchSetMap', but is a party follower." )
+		return false
+	}
 	local mapName = vargv[0]
 	if ( !(mapName in getconsttable().ePrivateMatchMaps) )
 		return true
@@ -1695,7 +1685,11 @@ function ClientCommand_PrivateMatchSetMode( player, ... )
 
 	if ( vargc <= 0 )
 		return true
-
+	if ( GetPartyLeader( player ) != player )
+	{
+		printt( "Player", player.GetPlayerName(), "tried to 'PrivateMatchSetMode', but is a party follower." )
+		return false
+	}
 	local modeName = vargv[0]
 	if ( !(modeName in getconsttable().ePrivateMatchModes ) )
 		return true
@@ -1739,7 +1733,11 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
 		return false
 	if ( GetMapName() != "mp_lobby")
 		return false
-
+	if ( GetPartyLeader( player ) != player )
+	{
+		printt( "Player", player.GetPlayerName(), "tried to 'PrivateMatchLaunch', but is a party follower." )
+		return false
+	}
 	local mapName = GetMapNameForEnum( level.ui.privatematch_map )
 	if ( mapName == null )
 		return true
@@ -1814,6 +1812,11 @@ function ClientCommand_UpdatePrivateMatchSetting( player, ... )
 		return false
 	if ( GetMapName() != "mp_lobby")
 		return false
+        if ( GetPartyLeader( player ) != player )
+        {
+            printt( "Player", player.GetPlayerName(), "tried to 'UpdatePrivateMatchSetting', but is a party follower." )
+            return false
+        }
 
 	if ( level.ui.privatematch_starting == ePrivateMatchStartState.STARTING )
 		return
