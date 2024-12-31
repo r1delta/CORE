@@ -166,6 +166,7 @@ function OpenOfflineNameDialogButtonOk_Activate( button )
 		return
 
     ClientCommand( "name " + str )
+	ClientCommand("hostname \""+GetConVarString("name")+"'s R1Delta Server\"")
 
 	CloseDialog( true )
 }
