@@ -2,7 +2,7 @@
 //	Base Gametype
 //********************************************************************************************
 const DEATH_CHAT_DELAY = 0.3
-
+IncludeScript("_persistentdata")
 ::botSettings <- DEFAULT_BOT_TITAN
 
 function main()
@@ -2696,7 +2696,12 @@ function CodeCallback_OnClientConnectionCompleted( player )
 
 	PlayCurrentTeamMusicEventsOnPlayer( player )
 	SetCurrentTeamObjectiveForPlayer( player )
-
+	InitPersistentData( player )
+	InitPlayerStats( player )
+	InitPlayerChallenges( player )
+	UpdatePlayerDecalUnlocks( player, false )
+	ValidateCustomLoadouts( player )
+	SaveDateLoggedIn( player )
 	FinishClientScriptInitialization( player )
 
 	if ( ShouldPlayerHaveLossProtection( player ) )

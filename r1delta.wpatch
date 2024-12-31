@@ -407,3 +407,6 @@ engine.dll,text,0xDB86F,0F 84 86 00 00 00,E9 87 00 00 00
 server.dll,rdata,0x963820,"IsCoopMatch","NoCoopMatch"
 ; change config path so we don't lose pdata on every vanilla launch
 engine.dll,text,0x698750,"/Respawn/Titanfall\x00","/Respawn/R1Delta\x00"
+; unhide give_server
+; server.dll,rdata,0xB6B638,10,00
+client.dll,text,0x2E8998,FF 50 70,FF 50 78

@@ -198,7 +198,7 @@ function InitBurnCards( player )
 
 	UpdateBurnCardSet( player, GetCurrentPlaylistVarInt( "burn_cards_set", 0 ) )
 }
-
+Globalize(InitBurnCards)
 
 function CodeCallback_OnClientConnectionCompleted( player )
 {
