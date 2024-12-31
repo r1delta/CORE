@@ -539,104 +539,137 @@ function PrivateMatchLobbyLogic()
 
 function MatchmakingServerLobbyLogic()
 {
-	OnThreadEnd(
-		function()
-		{
-			FlagClear( "mm_lobby_logic" )
-			printl( "!!! Matchmaking server lobby logic ended" )
-		}
-	)
+    OnThreadEnd(
+        function()
+        {
+            FlagClear( "mm_lobby_logic" )
+            printl( "!!! Matchmaking server lobby logic ended" )
+        }
+    )
 
-	if ( Flag( "mm_lobby_logic" ) )
-		return
-	FlagSet( "mm_lobby_logic" )
+    if ( Flag( "mm_lobby_logic" ) )
+        return
+    FlagSet( "mm_lobby_logic" )
 
-	level.ent.EndSignal( "end_lobby_logic" )
+    level.ent.EndSignal( "end_lobby_logic" )
 
-	printl( "!!! Matchmaking server lobby logic started" )
+    printl( "!!! Matchmaking server lobby logic started" )
 
-	SetPlaylistVarOverride( "private_match", "0" )
+    SetPlaylistVarOverride( "private_match", "0" )
 
-	file.teamReady[TEAM_IMC] = true
-	file.teamReady[TEAM_MILITIA] = true
+    file.teamReady[TEAM_IMC] = true
+    file.teamReady[TEAM_MILITIA] = true
 
-	// thread UpdateTeamReadyStatus()
+    local players
+    local timeRemaining
+    local tickTime
+    local lastTickTime
+    local needSkillBalance = true
 
-	local players
-	local timeRemaining
-	local tickTime
-	local lastTickTime
-	local needSkillBalance = true
+    for ( ;; )
+    {
+        local report_timeRemaining = -1
 
-	for ( ;; )
-	{
-		local report_timeRemaining = -1
+        if ( ReadyToStart() )
+        {
+            if ( file.nextMapModeCombo.index == null )
+            {
+                SelectNextMap()
+            }
+            else
+            {
+                if ( level.ui.gameStartTime == null )
+                {
+                    StartCountDown()
+                    RefreshPlayerSkillRatings()
+                }
 
-		if ( ReadyToStart() )
-		{
-			if ( file.nextMapModeCombo.index == null )
-			{
-				SelectNextMap()
-			}
-			else
-			{
-				if ( level.ui.gameStartTime == null )
-				{
-					StartCountDown()
-					RefreshPlayerSkillRatings()
-				}
+                timeRemaining = level.ui.gameStartTime - Time()
+                report_timeRemaining = timeRemaining
 
-				timeRemaining = level.ui.gameStartTime - Time()
-				report_timeRemaining = timeRemaining
+                if ( needSkillBalance && (timeRemaining <= 10) )
+                {
+                    // Add autobalancing logic here, just before marking teams as balanced
+                    local imcPlayers = []
+                    local militiaPlayers = []
+                    local players = GetPlayerArray()
+                    
+                    foreach ( p in players )
+                    {
+                        if ( p.GetTeam() == TEAM_IMC )
+                            imcPlayers.append(p)
+                        else if ( p.GetTeam() == TEAM_MILITIA )
+                            militiaPlayers.append(p)
+                    }
 
-				if ( needSkillBalance && (timeRemaining <= 10) )
-				{
-					MarkTeamsAsBalanced_On()
-					needSkillBalance = false
-				}
+                    local totalPlayers = players.len()
+                    local targetPerTeam = ceil(totalPlayers / 2.0)
+                    
+                    if ( imcPlayers.len() > militiaPlayers.len() )
+                    {
+                        local playersToMove = imcPlayers.len() - targetPerTeam
+                        for ( local i = 0; i < playersToMove; i++ )
+                        {
+                            if ( imcPlayers.len() > 0 )
+                                imcPlayers[i].TrueTeamSwitch()
+                        }
+                    }
+                    else if ( militiaPlayers.len() > imcPlayers.len() )
+                    {
+                        local playersToMove = militiaPlayers.len() - targetPerTeam
+                        for ( local i = 0; i < playersToMove; i++ )
+                        {
+                            if ( militiaPlayers.len() > 0 )
+                                militiaPlayers[i].TrueTeamSwitch()
+                        }
+                    }
 
-				if ( timeRemaining <= 10 && timeRemaining > -0.5 )
-				{
-					tickTime = ceil( timeRemaining )
+                    MarkTeamsAsBalanced_On()
+                    needSkillBalance = false
+                }
 
-					if ( tickTime != lastTickTime )
-					{
-						players = GetPlayerArray()
-						foreach ( player in players )
-							EmitSoundAtPositionOnlyToPlayer( Vector(0, 0, 0), player, PREMATCH_COUNTDOWN_SOUND )
+                if ( timeRemaining <= 10 && timeRemaining > -0.5 )
+                {
+                    tickTime = ceil( timeRemaining )
 
-						lastTickTime = tickTime
-					}
-				}
+                    if ( tickTime != lastTickTime )
+                    {
+                        players = GetPlayerArray()
+                        foreach ( player in players )
+                            EmitSoundAtPositionOnlyToPlayer( Vector(0, 0, 0), player, PREMATCH_COUNTDOWN_SOUND )
 
-				if ( Time() > level.ui.gameStartTime )
-				{
-					if ( Matchmaking_MayProceedToGame() )
-						break
+                        lastTickTime = tickTime
+                    }
+                }
 
-					if ( Time() > level.ui.gameStartTime + 1.5 )
-						level.ui.gameStartTimerComplete = true
-				}
-			}
-		}
-		else
-		{
-			if ( level.ui.gameStartTime != null )
-				StopCountDown()
+                if ( Time() > level.ui.gameStartTime )
+                {
+                    if ( Matchmaking_MayProceedToGame() )
+                        break
 
-			needSkillBalance = true
-			MarkTeamsAsBalanced_Off()
-		}
+                    if ( Time() > level.ui.gameStartTime + 1.5 )
+                        level.ui.gameStartTimerComplete = true
+                }
+            }
+        }
+        else
+        {
+            if ( level.ui.gameStartTime != null )
+                StopCountDown()
 
-		local nextMapName = file.nextMapModeCombo.mapName
-		if ( nextMapName == null )
-			nextMapName = ""
-		NoteLobbyState( report_timeRemaining, nextMapName )
-		wait 0
-	}
+            needSkillBalance = true
+            MarkTeamsAsBalanced_Off()
+        }
 
-	NoteLobbyState( 0, "" )
-	GameRules_ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
+        local nextMapName = file.nextMapModeCombo.mapName
+        if ( nextMapName == null )
+            nextMapName = ""
+        NoteLobbyState( report_timeRemaining, nextMapName )
+        wait 0
+    }
+
+    NoteLobbyState( 0, "" )
+    GameRules_ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
 }
 
 function ChooseCoopMap()
@@ -1727,37 +1760,75 @@ function GetModeNameForEnum( enumVal )
 
 function ClientCommand_PrivateMatchLaunch( player, ... )
 {
-	if ( !IsPrivateMatch() )
-		return false
-	if ( GetLobbyType() != "game" )
-		return false
-	if ( GetMapName() != "mp_lobby")
-		return false
-	if ( GetPartyLeader( player ) != player )
-	{
-		printt( "Player", player.GetPlayerName(), "tried to 'PrivateMatchLaunch', but is a party follower." )
-		return false
-	}
-	local mapName = GetMapNameForEnum( level.ui.privatematch_map )
-	if ( mapName == null )
-		return true
+    if ( !IsPrivateMatch() )
+        return false
+    if ( GetLobbyType() != "game" )
+        return false
+    if ( GetMapName() != "mp_lobby")
+        return false
+    if ( GetPartyLeader( player ) != player )
+    {
+        printt( "Player", player.GetPlayerName(), "tried to 'PrivateMatchLaunch', but is a party follower." )
+        return false
+    }
+    local mapName = GetMapNameForEnum( level.ui.privatematch_map )
+    if ( mapName == null )
+        return true
 
-	local modeName = GetModeNameForEnum( level.ui.privatematch_mode )
-	if ( modeName == null )
-		return true
+    local modeName = GetModeNameForEnum( level.ui.privatematch_mode )
+    if ( modeName == null )
+        return true
 
-	if ( Time() < file.nextLaunchCommandValid )
-		return true
+    if ( Time() < file.nextLaunchCommandValid )
+        return true
 
-	file.nextLaunchCommandValid = Time() + 0.25
+    // Auto-balance teams before launching
+    local imcPlayers = []
+    local militiaPlayers = []
+    local players = GetPlayerArray()
+    
+    // Sort current players by team
+    foreach ( p in players )
+    {
+        if ( p.GetTeam() == TEAM_IMC )
+            imcPlayers.append(p)
+        else if ( p.GetTeam() == TEAM_MILITIA )
+            militiaPlayers.append(p)
+    }
 
-	if ( level.ui.privatematch_starting == ePrivateMatchStartState.STARTING )
-		UpdatePrivateMatchReadyStatus( true )
-	else
-		level.ui.privatematch_starting = ePrivateMatchStartState.STARTING
+    // Calculate how many players need to be moved
+    local totalPlayers = players.len()
+    local targetPerTeam = ceil(totalPlayers / 2.0)
+    
+    // Balance from larger team to smaller team
+    if ( imcPlayers.len() > militiaPlayers.len() )
+    {
+        local playersToMove = imcPlayers.len() - targetPerTeam
+        for ( local i = 0; i < playersToMove; i++ )
+        {
+            if ( imcPlayers.len() > 0 )
+                imcPlayers[i].TrueTeamSwitch()
+        }
+    }
+    else if ( militiaPlayers.len() > imcPlayers.len() )
+    {
+        local playersToMove = militiaPlayers.len() - targetPerTeam
+        for ( local i = 0; i < playersToMove; i++ )
+        {
+            if ( militiaPlayers.len() > 0 )
+                militiaPlayers[i].TrueTeamSwitch()
+        }
+    }
 
-	printt( player.GetPlayerName(), "launched private match:", mapName, modeName )
-	return true
+    file.nextLaunchCommandValid = Time() + 0.25
+
+    if ( level.ui.privatematch_starting == ePrivateMatchStartState.STARTING )
+        UpdatePrivateMatchReadyStatus( true )
+    else
+        level.ui.privatematch_starting = ePrivateMatchStartState.STARTING
+
+    printt( player.GetPlayerName(), "launched private match:", mapName, modeName )
+    return true
 }
 
 function ClientCommand_PrivateMatchSwitchTeams( player, ... )
