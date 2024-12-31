@@ -864,7 +864,6 @@ function IsAnyPlayerMMDebug()
 	local players = GetPlayerArray()
 	foreach ( player in players )
 	{
-		if ( player.GetMMDbgFlags() > 0 )
 			return true
 	}
 

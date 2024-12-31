@@ -2967,13 +2967,6 @@ function CheckForEmptyTeamVictory()
 		return
 	if ( IsPrivateMatch() )
 		return
-	if ( GAMETYPE == COOPERATIVE )
-		return
-
-	if ( !IsRoundBased() && (GetGameState() >= eGameState.WinnerDetermined) )
-		return
-	if ( IsRoundBased() && level.nv.gameEndTime )
-		return
 
 	if ( GamePlayingOrSuddenDeath() && (GameTime.PlayingTime() >= START_SPAWN_GRACE_PERIOD) )
 	{
