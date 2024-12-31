@@ -142,10 +142,11 @@ function MapButton_Focused( button )
 	nextMapImage.SetImage( mapImage )
 	if (GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel") {
 		nextMapName.SetText( GetCampaignMapDisplayName( mapName ) )
+		nextMapDesc.SetText( "#" + mapName + "_CAMPAIGN_MENU_DESC" )
 	} else {
 		nextMapName.SetText( GetMapDisplayName( mapName ) )
+		nextMapDesc.SetText( GetMapDisplayDesc( mapName ) )
 	}
-	nextMapDesc.SetText( GetMapDisplayDesc( mapName ) )
 
 	if ( !IsPrivateMatch() )
 	{
