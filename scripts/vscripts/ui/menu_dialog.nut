@@ -739,3 +739,23 @@ function ClosePlaylistAnnounceDialog( button )
 
 	CloseDialog()
 }
+
+function ShowPortForwardWarning( port = 27015 )
+{
+    local isDefaultPort = (port == 27015)
+    local message = isDefaultPort ? 
+        "Your server will not be visible in the server browser\nbecause port 27015 (UDP) is not properly forwarded\non your router. Please ask in #help for assistance." :
+        format("Your server will not be visible in the server browser\nbecause port %d (UDP) is not properly forwarded.\nAnother game instance may be running.", port)
+
+    local buttonData = []
+    buttonData.append( { name = "OK", func = null } )
+
+    local dialogData = {}
+    dialogData.header <- "PORT FORWARD WARNING"
+    dialogData.detailsMessage <- message
+    dialogData.buttonData <- buttonData
+
+    OpenChoiceDialog( dialogData )
+}
+
+Globalize(ShowPortForwardWarning)
