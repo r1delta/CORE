@@ -24,7 +24,7 @@ resource/ui/menus/main.menu
 			ypos					c-240
 			wide					854 //f0
 			tall					480 //f0
-			visible					1
+			visible					0
 			image					"../ui/menu/title_screen/title_screen_logos"
 			scaleImage				1
 		}
