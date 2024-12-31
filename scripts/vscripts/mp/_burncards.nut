@@ -232,6 +232,10 @@ function PlayerRespawned(player) {
     player.Signal("StartBurnCardEffect");
     RunBurnCardFunctions(player,cardRef);
 
+    if (cardRef == "bc_cloak_forever") {
+        EnableCloakForever( player )
+    }
+
     thread RunSpawnBurnCard(player,cardRef);
 }
 
