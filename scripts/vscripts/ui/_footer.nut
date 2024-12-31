@@ -94,18 +94,15 @@ function UpdateFooterButtons( menuName = null )
 
 
             footerData.pc.append( { label = "Addons", func = OnAddonButton_Activate } )
-			footerData.gamepad.append( { label = "%[B_BUTTON]%Addons", func = OnAddonButton_Activate } )
+			footerData.gamepad.append( { label = "%[Y_BUTTON]% ^798B9800 Addons", func = OnAddonButton_Activate } )
 
 			if ( !Origin_IsEnabled() && !Origin_IsOnline() )
 			{
 				footerData.pc.append( { label = "#GAMEUI_DATACENTERNAME", func = OpenOfflineNameDialogButton_Activate } )
-				footerData.gamepad.append( { label = "%[A_BUTTON]% Edit Username", func = OpenOfflineNameDialogButton_Activate } )
+				footerData.gamepad.append( { label = "%[B_BUTTON]% ^798B9800 Edit Username", func = OpenOfflineNameDialogButton_Activate } )
 			}
             footerData.pc.append( { label = "Join Discord", func = OpenDiscordLink })
-			footerData.gamepad.append( { label = "%[X_BUTTON]%Join Discord", func = OpenDiscordLink } )
-
-
-
+			footerData.gamepad.append( { label = "%[X_BUTTON]% ^798B9800 Join Discord", func = OpenDiscordLink })
 			footerData.gamepad = AppendGamepadInviteLabels( footerData.gamepad )
 			break
 
@@ -301,9 +298,10 @@ function UpdateFooterButtons( menuName = null )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
             footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
+			 footerData.gamepad.append( { label = "%[Y_BUTTON]% ^798B9800 Direct Connect" , func = OpenDirectConnectDialog_Activate })
             footerData.pc.append( { label = "Direct Connect", func = OpenDirectConnectDialog_Activate } )
 
-			footerData.gamepad.append( { label = "#%[X_BUTTON]% ^798B9800Refresh" } )
+			footerData.gamepad.append( { label = "%[X_BUTTON]% ^798B9800 Refresh" } )
 			footerData.pc.append( { label = "Refresh", func = RefreshServerList } )
 
 
@@ -313,7 +311,7 @@ function UpdateFooterButtons( menuName = null )
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
-            footerData.gamepad.append( { label = "#%[X_BUTTON]% ^798B9800Reload Paths" } )
+            footerData.gamepad.append( { label = "#%[X_BUTTON]% ^798B9800Reload Paths",func = UpdateAddonPaths } )
             footerData.pc.append( { label = "Reload", func = UpdateAddonPaths } )
 			break
 
