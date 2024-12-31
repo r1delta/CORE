@@ -178,7 +178,7 @@ function InitBurnCards( player )
 {
 	if ( !UsingAlternateBurnCardPersistence() )
 		return
-	printt("InitBurnCards")
+
 	local pmDeck = [
 		{ cardRef = "bc_minimap", new = false }
 		{ cardRef = "bc_r97_m2", new = false }

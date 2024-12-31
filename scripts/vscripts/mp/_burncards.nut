@@ -141,6 +141,34 @@ if(cardData.ctFlags & CT_WEAPON) {
     }
 }
 
+
+function DoSummonTitanBurnCard(player, cardRef) {
+    ForceTitanBuildComplete(player)
+   
+    if(cardRef == "bc_summon_atlas") {
+        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+	    titanDataTable.playerSetFile = "titan_atlas"
+    }
+    if(cardRef == "bc_summon_ogre") {
+        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+	    titanDataTable.playerSetFile = "titan_ogre"
+    }
+    if(cardRef == "bc_summon_stryder") {
+        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+        titanDataTable.playerSetFile = "titan_stryder"
+    }
+
+    player.WaitSignal("CalledInReplacementTitan")
+
+    local activeBCID = player.GetPersistentVar("activeBCID")
+    
+	player.SetActiveBurnCardIndex( -1 )
+	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
+	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
+    player.SetPersistentVar( "activeBCID", -1 )
+
+}
+
 function RunBurnCardFunctions(player,cardRef) {
     
     local cardData = GetBurnCardData(cardRef);
@@ -153,6 +181,19 @@ function RunBurnCardFunctions(player,cardRef) {
         thread RunWeaponFunction(player,cardRef);
     }
 
+    // if it is a summon atlas,orgre or stryder burn card give the correct chasis 
+    // ForceTitanBuildComplete
+    if(cardRef == "bc_summon_atlas") {
+        thread DoSummonTitanBurnCard(player, cardRef);
+    }
+    if(cardRef == "bc_summon_ogre") {
+        thread DoSummonTitanBurnCard(player, cardRef);
+    }
+    if(cardRef == "bc_summon_stryder") {
+        thread DoSummonTitanBurnCard(player, cardRef);
+    }
+
+    
 }
 
 function PlayerRespawned(player) {
