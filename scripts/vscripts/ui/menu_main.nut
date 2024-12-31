@@ -178,7 +178,8 @@ function OpenOfflineNameDialogButtonCancel_Activate( button )
 function ShowMainMenu()
 {
 	file.buttonData = []
-	file.buttonData.append( { name = "#PLAY", activateFunc = Bind( ThreadOnPlayButton_Activate ), updateFunc = Bind( ThreadUpdatePlayButton ) } )
+	if ( Origin_IsEnabled() )
+		file.buttonData.append( { name = "#PLAY", activateFunc = Bind( ThreadOnPlayButton_Activate ), updateFunc = Bind( ThreadUpdatePlayButton ) } )
 
 	// if ( !AllDLCIsInstalled() )
 	// 	file.buttonData.append( { name = "#DLC_STORE", activateFunc = Bind( OnStoreButton_Activate ), updateFunc = Bind( ThreadUpdateStoreButton ), isNew = true } )
@@ -463,8 +464,10 @@ function UpdateDatacenterInfo()
 	local ping
 	local name
 
-	file.datacenterGamepad.Show()
-	file.datacenterPC.Show()
+	if ( Origin_IsEnabled() ) {
+		file.datacenterGamepad.Show()
+		file.datacenterPC.Show()
+	}
 
 	while ( uiGlobal.activeMenu == file.menu && ( !Durango_IsDurango() || GetMainMenuState() == mainMenuState.SIGNED_IN ) )
 	{
