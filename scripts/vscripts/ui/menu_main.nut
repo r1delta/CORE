@@ -7,6 +7,7 @@ function main()
 	Globalize( Threaded_CreateLocalServer )
 	Globalize( OpenOfflineNameDialogButton_Activate )
 	Globalize( OnAddonButton_Activate )
+	Globalize( OpenDiscordLink )
 
 	PrecacheHUDMaterial( "../ui/menu/r1delta/icon" )
 }
@@ -739,4 +740,8 @@ function EULA_Decline()
 function OnAddonButton_Activate( button )
 {
 	AdvanceMenu( GetMenu( "Addons" ) )
+}
+
+function OpenDiscordLink(button) {
+	OpenDiscordURL()
 }
