@@ -99,7 +99,7 @@ function UpdateFooterButtons( menuName = null )
 			if ( !Origin_IsEnabled() && !Origin_IsOnline() )
 			{
 				footerData.pc.append( { label = "#GAMEUI_DATACENTERNAME", func = OpenOfflineNameDialogButton_Activate } )
-				footerData.gamepad.append( { label = "%[A_BUTTON]%Name", func = OpenOfflineNameDialogButton_Activate } )
+				footerData.gamepad.append( { label = "%[A_BUTTON]% Edit Username", func = OpenOfflineNameDialogButton_Activate } )
 			}
             footerData.pc.append( { label = "Join Discord", func = OpenDiscordLink })
 			footerData.gamepad.append( { label = "%[X_BUTTON]%Join Discord", func = OpenDiscordLink } )
