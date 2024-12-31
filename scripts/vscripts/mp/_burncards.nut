@@ -70,9 +70,12 @@ function RefillWeaponAmmo(player) {
         local offhand = player.GetOffhandWeapon( 0 )
 		if ( offhand )
 		{
-		    offhand.SetWeaponPrimaryClipCount( 1 )
+            local currentAmmo = offhand.GetWeaponPrimaryClipCount()
+            if(currentAmmo != 2) {
+		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
+            }
 		}	        
-        wait 0.1;
+        wait 5;
     }
 } 
 
