@@ -1762,20 +1762,42 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
 
 function ClientCommand_PrivateMatchSwitchTeams( player, ... )
 {
-	if ( !IsPrivateMatch() )
-		return false
-	if ( GetLobbyType() != "game" )
-		return false
-	if ( GetMapName() != "mp_lobby")
-		return false
+    if ( !IsPrivateMatch() )
+        return false
+    if ( GetLobbyType() != "game" )
+        return false
+    if ( GetMapName() != "mp_lobby")
+        return false
 
-	if ( level.ui.privatematch_starting == ePrivateMatchStartState.STARTING )
-		return false
+    if ( level.ui.privatematch_starting == ePrivateMatchStartState.STARTING )
+        return false
 
-	player.TrueTeamSwitch()
+    // Get current team counts
+    local currentIMCCount = GetTeamPlayerCount( TEAM_IMC )
+    local currentMilitiaCount = GetTeamPlayerCount( TEAM_MILITIA )
+    
+    // Calculate what the counts would be after the switch
+    local newIMCCount = currentIMCCount
+    local newMilitiaCount = currentMilitiaCount
+    
+    if (player.GetTeam() == TEAM_IMC)
+    {
+        newIMCCount--
+        newMilitiaCount++
+    }
+    else if (player.GetTeam() == TEAM_MILITIA)
+    {
+        newIMCCount++
+        newMilitiaCount--
+    }
 
-	UpdatePrivateMatchReadyStatus( true )
-	return true
+    // Don't allow the switch if it would create an imbalance of more than 1 player
+    if (abs(newIMCCount - newMilitiaCount) > 1)
+        return false
+
+    player.TrueTeamSwitch()
+    UpdatePrivateMatchReadyStatus( true )
+    return true
 }
 
 function ClientCommand_CancelMatchSearch( player, ... )

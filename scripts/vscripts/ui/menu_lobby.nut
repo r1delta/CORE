@@ -1126,10 +1126,19 @@ function UpdatePrivateMatchButtons()
 		settingsButton.SetLocked( true )
 		mapsButton.SetEnabled( false )
 		modesButton.SetEnabled( false )
-		mapsButton.SetEnabled( false )
 		settingsButton.SetEnabled( false )
                 startMatchButton.SetEnabled( false)
 	}
+else {
+    startMatchButton.SetLocked( false )
+    mapsButton.SetLocked( false )
+    modesButton.SetLocked( false )
+    settingsButton.SetLocked( false )
+    mapsButton.SetEnabled( true )
+    modesButton.SetEnabled( true )
+    settingsButton.SetEnabled( true )
+    startMatchButton.SetEnabled( true )
+}
 
 }
 
