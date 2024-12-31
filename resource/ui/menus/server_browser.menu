@@ -1301,7 +1301,7 @@ resource/ui/menus/server_browser.menu
             classname               "SwtBtnHideFull"
             visible					1
             enabled					1
-            labelText				"No"
+            labelText				"OFF"
             textAlignment           center
             pin_to_sibling			LabelHideFull
 			pin_corner_to_sibling		0
@@ -1335,7 +1335,7 @@ resource/ui/menus/server_browser.menu
             xpos 0
             visible					1
             enabled					1
-            labelText				"No"
+            labelText				"OFF"
             pin_to_sibling			LabelHideEmpty
 			pin_corner_to_sibling		0
 			pin_to_sibling_corner		1
