@@ -792,10 +792,11 @@ function SetMapInfo( mapName )
 
 	nextMapImageFrame.Show()
 
-	if ( GetCinematicMode() )
+	if ( GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel" || GetCinematicMode() ) {
 		file.nextMapNameLabel.SetText( GetCampaignMapDisplayName( mapName ) )
-	else
+	} else {
 		file.nextMapNameLabel.SetText( GetMapDisplayName( mapName ) )
+	}
 	file.nextMapNameLabel.Show()
 }
 

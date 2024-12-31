@@ -98,6 +98,12 @@ if ( IsClient() )
 	PrecacheHUDMaterial( GAMETYPE_ICON[ TITAN_TAG ] )
 }
 
+
+	GameMode_Create( CAMPAIGN )
+	GameMode_SetName( CAMPAIGN, "#PL_campaign" )
+	GameMode_SetDesc( CAMPAIGN, "#PL_campaign_desc" )
+	GameMode_SetIcon( CAMPAIGN, "../ui/menu/playlist/campaign" )
+
 	GameMode_Create( CAPTURE_THE_TITAN )
 	GameMode_SetName( CAPTURE_THE_TITAN, "#GAMEMODE_CAPTURE_THE_TITAN" )
 	GameMode_SetGameModeAttackAnnouncement( CAPTURE_THE_TITAN, "GameModeAnnounce_CTT_Attack" )
@@ -275,7 +281,8 @@ enum eGameModes
 	COOPERATIVE_ID =					18,
 	SCAVENGER_ID =						19,
 	HEIST_ID =							20,
-	FFA_ID = 21
+	FFA_ID = 21,
+	CAMPAIGN_ID = 22
 }
 
 gameModesStringToIdMap <- {}
@@ -301,6 +308,7 @@ gameModesStringToIdMap[ WINGMAN_LAST_TITAN_STANDING ] 		<- eGameModes.WINGMAN_LA
 gameModesStringToIdMap[ MARKED_FOR_DEATH_PRO ] 				<- eGameModes.MARKED_FOR_DEATH_PRO_ID
 gameModesStringToIdMap[ CAPTURE_THE_FLAG_PRO ] 				<- eGameModes.CAPTURE_THE_FLAG_PRO_ID
 gameModesStringToIdMap[ FFA ] 				<- eGameModes.FFA_ID
+gameModesStringToIdMap[ CAMPAIGN ] 				<- eGameModes.CAMPAIGN_ID
 
 GameMode_VerifyModes()
 

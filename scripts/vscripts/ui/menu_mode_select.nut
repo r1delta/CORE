@@ -10,7 +10,6 @@ function main()
 	Globalize( OnCloseMatchSettingsMenu )
 
 	Globalize( NavigateBackApplyMatchSettingsDialog )
-    Globalize( GotoCampaignLobby )
 
 	file.modeSettingsButton <- null
 	file.scoreLimitButton <- null
@@ -23,7 +22,7 @@ function main()
 	file.pilotAmmoButton <- null
 	file.minimapButton <- null
 	file.pilotRespawnDelayButton <- null
-		file.pilotRespawnDelayLabel <- null
+	file.pilotRespawnDelayLabel <- null
 
 	file.titanBuildButton <- null
 		file.titanBuildLabel <- null
@@ -33,6 +32,7 @@ function main()
 
 	file.aiTypeButton <- null
 	file.aiLethalityButton <- null
+	file.floorIsLavaButton <- null
 
 	file.gameModeLabel <- null
 
@@ -40,6 +40,7 @@ function main()
 
 	file.pmVarValues <- {}
 	file.modeSettingsName <- null
+
 
 	RegisterSignal( "OnCloseMatchSettingsMenu" )
 }
@@ -52,7 +53,7 @@ function InitModesMenu( menu )
 
 function OnOpenModesMenu()
 {
-    ClientCommand( "loadPlaylists" )
+	ClientCommand( "loadPlaylists" )
 
 	local modesArray = []
 	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
@@ -63,7 +64,6 @@ function OnOpenModesMenu()
 
 	local menu = GetMenu( "ModesMenu" )
 	local buttons = GetElementsByClassname( GetMenu( "ModesMenu" ), "ModeButton" )
-    
 	foreach ( button in buttons )
 	{
 		local buttonID = button.GetScriptID().tointeger()
@@ -75,15 +75,8 @@ function OnOpenModesMenu()
 		}
 		else
 		{
-            if( buttonID == getconsttable().ePrivateMatchModes.len() )
-            {
-                button.SetText( "#PL_campaign")
-                button.SetEnabled( true )
-            } else
-            {
-			    button.SetText( "" )
-			    button.SetEnabled( false )
-            }
+			button.SetText( "" )
+			button.SetEnabled( false )
 		}
 
 		if ( buttonID == level.ui.privatematch_mode )
@@ -106,14 +99,6 @@ function ModeButton_GetFocus( button )
 	local nextModeName = menu.GetChild( "NextModeName" )
 	local nextModeDesc = menu.GetChild( "NextModeDesc" )
 
-    if( mapID == getconsttable().ePrivateMatchModes.len() )
-    {
-        nextModeImage.SetImage( "../ui/menu/playlist/campaign" )
-        nextModeName.SetText( "#PL_campaign" )
-        nextModeDesc.SetText( "#PL_campaign_desc" )
-        return
-    }
-
 	local modesArray = []
 	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
 	foreach ( k, v in getconsttable().ePrivateMatchModes )
@@ -131,30 +116,9 @@ function ModeButton_GetFocus( button )
 	nextModeDesc.SetText( GetGameModeDisplayDesc( modeName ) )
 }
 
-function GotoCampaignLobby()
-{
-    ClientCommand( "launchplaylist campaign_carousel; map mp_lobby" )
-    CloseDialog()
-}
-
 function ModeButton_Click( button )
 {
 	local mapID = button.GetScriptID().tointeger()
-
-    if( mapID == getconsttable().ePrivateMatchModes.len() )
-    {
-		local buttonData = []
-		buttonData.append( { name = "#YES", func = GotoCampaignLobby } )
-		buttonData.append( { name = "#CANCEL", func = null } )
-
-        local dialogData = {}
-        dialogData.header <- "Create Campaign Lobby?"
-        dialogData.detailsMessage <- "You will leave the current Private Match."
-        dialogData.buttonData <- buttonData
-
-        OpenChoiceDialog( dialogData )
-        return
-    }
 
 	local menu = GetMenu( "MapsMenu" )
 
@@ -168,6 +132,10 @@ function ModeButton_Click( button )
 
 	// set it
 	ClientCommand( "PrivateMatchSetMode " + modeName )
+
+	if (modeName == "campaign_carousel")
+		ClientCommand( "SetCustomMap mp_fracture" )
+
 	CloseTopMenu()
 }
 
@@ -194,6 +162,7 @@ function InitMatchSettingsMenu( menu )
 
 	file.aiTypeButton = menu.GetChild( "BtnAIType" )
 	file.aiLethalityButton = menu.GetChild( "BtnAILethality" )
+	file.floorIsLavaButton = menu.GetChild( "BtnLava" )
 
 	file.gameModeLabel = menu.GetChild( "LblSubheader1Text" )
 
@@ -210,6 +179,7 @@ function InitMatchSettingsMenu( menu )
 	AddDescFocusHandler( file.titanShieldCapacityButton, "#PM_DESC_TITAN_SHIELD_CAPACITY" )
 	AddDescFocusHandler( file.aiTypeButton, "#PM_DESC_AI_TYPE" )
 	AddDescFocusHandler( file.aiLethalityButton, "#PM_DESC_AI_LETHALITY" )
+	AddDescFocusHandler( file.floorIsLavaButton, "#PM_DESC_LAVA" )
 	AddDescFocusHandler( file.burnCardSetButton, "#PM_DESC_BURN_CARDS" )
 
 	uiGlobal.matchSettingsChanged <- false
@@ -608,6 +578,7 @@ function ApplyMatchSettings( button )
 	UpdatePlaylistFromConVar( "pm_ai_type" )
 	UpdatePlaylistFromConVar( "pm_ai_lethality" )
 	UpdatePlaylistFromConVar( "pm_burn_cards" )
+	UpdatePlaylistFromConVar( "riff_floorislava")
 
 	uiGlobal.matchSettingsChanged = false
 }

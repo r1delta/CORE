@@ -43,6 +43,7 @@ const ELIMINATION = "elim"
 const ATDM = "atdm"
 const ATTRITION = "at"
 const CAPTURE_THE_FLAG = "ctf"
+const CAMPAIGN = "campaign_carousel"
 const CAPTURE_THE_FLAG_PRO = "ctfp"
 const BIG_BROTHER = "bb"
 const COOPERATIVE = "coop"
@@ -1601,15 +1602,16 @@ enum ePrivateMatchMaps
 enum ePrivateMatchModes
 {
 	at,
+	coop,
+	campaign_carousel,
 	cp,
-	lts,
 	ctf,
+	lts,
+	wlts,
 	tdm,
 	mfd,
-	ps,
-	coop,
 	mfdp,
-	wlts,
+	ps,
 }
 
 
@@ -2161,7 +2163,27 @@ pmSettingsMap["pm_score_limit"]["lts"] <- [
 	8,
 	9,
 ]
+pmSettingsMap["pm_score_limit"]["wlts"] <- [
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+]
 pmSettingsMap["pm_score_limit"]["tdm"] <- [
+	10,
+	20,
+	30,
+	40,
+	50,
+	60,
+	75,
+	100,
+]
+pmSettingsMap["pm_score_limit"]["ps"] <- [
 	10,
 	20,
 	30,
@@ -2191,7 +2213,16 @@ pmSettingsMap["pm_score_limit"]["mfd"] <- [
 	30,
 	50,
 ]
-
+pmSettingsMap["pm_score_limit"]["mfdp"] <- [
+	1,
+	3,
+	5,
+	7,
+	10,
+	20,
+	30,
+	50,
+]
 pmSettingsMap["pm_score_limit"]["coop"] <- [
         150,
         200,
@@ -2202,6 +2233,8 @@ pmSettingsMap["pm_score_limit"]["coop"] <- [
         500,
         750,
 ]
+
+pmSettingsMap["pm_score_limit"]["campaign_carousel"] <- [0]
 
 pmSettingsMap["pm_pilot_health"] <- [
 	0,
@@ -2229,7 +2262,7 @@ pmSettingsMap["pm_titan_shields"] <- [
 
 pmSettingsMap["pm_ai_type"] <- [
 	0, // default
-	0,
+	1,
 	2,
 	3,
 ]
@@ -2268,6 +2301,7 @@ playlistVarMap["pm_titan_shields"] 	<- "titan_shield_health"
 playlistVarMap["pm_ai_type"] 		<- "riff_allow_npcs"
 playlistVarMap["pm_ai_lethality"] 	<- "riff_ai_lethality"
 playlistVarMap["pm_burn_cards"] 	<- "burn_cards_set"
+playlistVarMap["riff_floorislava"] 	<- "riff_floorislava"
 /*
 playlistVarMap["pilot_health"] 			<- "pm_pilot_health"
 playlistVarMap["riff_ammo_limit"] 		<- "pm_pilot_ammo"
