@@ -178,7 +178,7 @@ function InitBurnCards( player )
 {
 	if ( !UsingAlternateBurnCardPersistence() )
 		return
-	printt("InitBurnCards")
+
 	local pmDeck = [
 		{ cardRef = "bc_minimap", new = false }
 		{ cardRef = "bc_r97_m2", new = false }
@@ -539,7 +539,19 @@ function PrivateMatchLobbyLogic()
 	}
 
 	printt( "Launch it!" )
-	GameRules_ChangeMap( mapName, modeName )
+	if (modeName == "campaign_carousel") {
+		// we need to get gamemode, mv does not want to hardcode maps and gamemodes here so we're grabbing off playlist
+		local gamemodeForMap = null
+		for (local i = 0; i < GetMapCountForPlaylist(modeName); i++) {
+			if (GetPlaylistMapByIndex(modeName, i) == mapName)
+				gamemodeForMap = GetPlaylistGamemodeByIndex(modeName, i)
+		}
+		ServerCommand( "playlist " + modeName )
+		ServerCommand( "mp_gamemode " + gamemodeForMap )
+		ServerCommand( "changelevel " + mapName )
+	} else {
+		GameRules_ChangeMap( mapName, modeName )
+	}
 }
 
 
@@ -1916,6 +1928,10 @@ function ClientCommand_UpdatePrivateMatchSetting( player, ... )
 				value = RoundToNearestMultiplier( clamp( value, 30, 300 ), 30 )
 
 			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value.tointeger() )
+			break
+		case "riff_floorislava":
+			local value = pmVarVal.tointeger()
+			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value )
 			break
 	}
 

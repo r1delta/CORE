@@ -1501,7 +1501,72 @@ function GetBurnCardSetForIndex(setIndex) {
 			deck = []
 			break
 		case 1:
-			deck = []
+			deck = [    "bc_frag_m2",
+    "bc_arc_m2",
+    "bc_prox_m2",
+    "bc_satchel_m2",
+    "bc_autopistol_m2",
+    "bc_semipistol_m2",
+    "bc_wingman_m2",
+    "bc_smart_pistol_m2",
+    "bc_car_m2",
+    "bc_r97_m2",
+    "bc_shotgun_m2",
+    "bc_rspn101_m2",
+    "bc_hemlok_m2",
+    "bc_g2_m2",
+    "bc_lmg_m2",
+    "bc_dmr_m2",
+    "bc_sniper_m2",
+    "bc_smr_m2",
+    "bc_rocket_launcher_m2",
+    "bc_mgl_m2",
+    "bc_defender_m2",
+    "bc_super_cloak",
+    "bc_cloak_forever",
+    "bc_fast_movespeed",
+    "bc_super_stim",
+    "bc_stim_forever",
+    "bc_pilot_warning",
+    "bc_auto_sonar",
+    "bc_super_sonar",
+    "bc_sonar_forever",
+    "bc_minimap_scan",
+    "bc_minimap",
+    "bc_double_agent",
+    "bc_conscription",
+    "bc_wifi_spectre_hack",
+    "bc_nuclear_core",
+    "bc_core_charged",
+    "bc_rematch",
+    "bc_play_spectre",
+    "bc_free_build_time_1",
+    "bc_free_build_time_2",
+    "bc_fast_build_2",
+    "bc_double_xp",
+    "bc_hunt_soldier",
+    "bc_hunt_spectre",
+    "bc_hunt_pilot",
+    "bc_hunt_titan",
+    "bc_summon_atlas",
+    "bc_summon_ogre",
+    "bc_summon_stryder",
+    "bc_auto_refill",
+    "bc_dice_ondeath",
+    "bc_titan_40mm_m2",
+    "bc_titan_arc_cannon_m2",
+    "bc_titan_rocket_launcher_m2",
+    "bc_titan_sniper_m2",
+    "bc_titan_triple_threat_m2",
+    "bc_titan_xo16_m2",
+    "bc_titan_dumbfire_missile_m2",
+    "bc_titan_homing_rockets_m2",
+    "bc_titan_salvo_rockets_m2",
+    "bc_titan_shoulder_rockets_m2",
+    "bc_titan_vortex_shield_m2",
+    "bc_titan_electric_smoke_m2",
+    "bc_titan_shield_wall_m2",
+    "bc_extra_dash"]
 			break
 		case 2:
 			deck = []
@@ -1556,12 +1621,10 @@ function Ranked_PlayerConnected( player )
 function BurnCard_RefreshPlayer( player )
 {
 	
-	printt( "BurnCard_RefreshPlayer: " + player )
 }
 
 function BurnCard_PlayerConnected( player )
 {
-	printt( "BurnCard_PlayerConnected: " + player )
 }
 
 function BlackMarket_PlayerConnected( player )
