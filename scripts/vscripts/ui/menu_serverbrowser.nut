@@ -115,7 +115,6 @@ function InitServerBrowserMenu( menu )
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnCancel", UIE_CLICK, OnDirectConnectDialogButtonCancel_Activate )
 
     file.searchBox = menu.GetChild( "BtnServerSearch" )
-    file.buttons = GetElementsByClassname( menu, "ServerButton" )
 	AddEventHandlerToButton( menu, "BtnServerSearch", UIE_LOSE_FOCUS, Bind( OnSearchBoxLooseFocus ) )
 
     // Initialize mouse wheel handlers
@@ -124,33 +123,6 @@ function InitServerBrowserMenu( menu )
     // Initialize filter state
     RefreshServerList(null)
 
-    // Hud_GetChild(menu,"LobbyEnemyTeamBackground")
-    // LobbyEnemyTeamBackground
-
-    
-    // menu.GetChild("PlayerList1").Hide()
-    // file.enemyTeam <- menu.GetChild("LobbyEnemyTeamBackground")    
-    // file.friendlyTeam <- menu.GetChild("LobbyFriendlyTeamBackground")
-    // file.enemyTeamSlots <- []
-    // file.friendlyTeamSlots <- []
-    // file.friendlyTeamNeutral <- []
-    // file.enemyTeamNeutral <- []
-
-    // local back = menu.GetChild("EnemyBackground0")
-
-
-    // for (local i = 0; i < 6; i++) {
-    //     file.enemyTeamSlots.append(file.enemyTeam.GetChild("EnemySlot" + i))
-    //     file.friendlyTeamSlots.append(file.friendlyTeam.GetChild("FriendlySlot" + i))
-    //     file.enemyTeamNeutral.append(file.enemyTeam.GetChild("NeutralSlot" + i))
-    //     file.friendlyTeamNeutral.append(file.friendlyTeam.GetChild("NeutralSlot" + i))
-    //     file.enemyTeamNeutral[i].Hide()
-    //     file.friendlyTeamNeutral[i].Hide()
-    //     file.enemyTeamSlots[i].Show()
-    //     file.friendlyTeamSlots[i].Show()
-    // }
- 
-    // file.friendlyTeam <- menu.GetChild("LobbyFriendlyTeamBackground")
 }
 
 function OnSearchBoxLooseFocus(button)
@@ -276,6 +248,7 @@ function UpdateShownPage()
         
         local server = uiGlobal.serversArrayFiltered[buttonIndex]
         file.buttons[i].Show()
+        file.buttons[i].SetEnabled(true)
         file.serversName[i].SetText( server.host_name )
         file.playerCountLabels[i].SetText( format( "%i/%i", server.players.len(), server.max_players ) )
         if(server.map_name == "mp_lobby") {
@@ -345,8 +318,11 @@ function OnScrollUp()
 
 function OnServerButtonFocused(button)
 {
-    local scriptID =  button.GetScriptID().tointeger()
- 	if (scriptID == 10) return
+    local scriptID =  button.GetScriptID()
+    if(!scriptID) return
+    printt(scriptID)
+    scriptID = scriptID.tointeger()
+    if (scriptID == 10) return
     local serverIndex = uiGlobal.scrollOffset + scriptID
      
     local menu = uiGlobal.menu

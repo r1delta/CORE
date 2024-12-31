@@ -270,7 +270,7 @@ resource/ui/menus/server_browser.menu
 			pin_to_sibling_corner	TOP_RIGHT
         }
 
-        ServerButton0
+        ServerButton1
         {
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
@@ -278,23 +278,7 @@ resource/ui/menus/server_browser.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	0
             scriptID				0
-			wide 					1120
-			xpos 					-8
-            bgcolor_override       "0 0 0 0"
-            visible					1
-            enabled					1
-            labelText               ""
-            classname               "ServerButton"
-        }
-        ServerButton1
-        {
-            ControlName				BaseModHybridButton
-            InheritProperties		DefaultButton
-            pin_to_sibling			ServerButton0
-			pin_corner_to_sibling	0
-			pin_to_sibling_corner	0
-            scriptID				0
-			wide 					2000
+			wide 					600
             visible					1
             enabled					1
             labelText               ""
@@ -310,7 +294,7 @@ resource/ui/menus/server_browser.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				1
-			wide 					2000
+			wide 					600
             xpos                    0
             visible					1
             enabled					1
@@ -427,8 +411,8 @@ resource/ui/menus/server_browser.menu
 			pin_to_sibling_corner	2
             scriptID				9
 			wide 					1120
-            visible					1
-            enabled					1
+            visible					0
+            enabled					0
             labelText               ""
             classname               "ServerButton"
         }
@@ -445,7 +429,7 @@ resource/ui/menus/server_browser.menu
             enabled					1
             labelText               "Server Name"
             textAlignment           west
-            pin_to_sibling			ServerButton0
+            pin_to_sibling			ServerButton1
             pin_corner_to_sibling	TOP_LEFT
             pin_to_sibling_corner	BOTTOM_LEFT
             classname               "ServerName"
@@ -464,7 +448,7 @@ resource/ui/menus/server_browser.menu
             enabled					1
             labelText               "0/0"
             textAlignment           center
-            pin_to_sibling			ServerButton0
+            pin_to_sibling			ServerButton1
             font					Default_43_DropShadow
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
@@ -482,7 +466,7 @@ resource/ui/menus/server_browser.menu
 			tall 20
             ypos 0
 			xpos 10
-			pin_to_sibling			ServerButton0
+			pin_to_sibling			ServerButton1
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
             scriptID              0
@@ -498,8 +482,7 @@ resource/ui/menus/server_browser.menu
 			tall 20
             ypos 0
 			xpos 10
-			pin_to_sibling			ServerButton0
-            
+			pin_to_sibling			ServerButton1
             scriptID              0
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	BOTTOM_LEFT
@@ -515,7 +498,7 @@ resource/ui/menus/server_browser.menu
 			xpos 10
             visible					1
             enabled					1
-            labelText               "Server wdwddw"
+            labelText               ""
             textAlignment           west
             pin_to_sibling			ServerButton1
             classname              "ServerName"
