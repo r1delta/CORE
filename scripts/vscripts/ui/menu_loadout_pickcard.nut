@@ -188,7 +188,6 @@ function SendPickToServer( button )
 		if ( cardRef != null )
 		{
 			ClientCommand( "BCActivateCard " + button.loadoutID + " notoggle" )
-
 			SetOnDeckCardFromSlot( button.loadoutID )
 			return
 		}
