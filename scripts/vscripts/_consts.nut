@@ -2411,8 +2411,12 @@ const TITAN_DOOMED_EFFECT = "xo_exp_doomed"
 //const TITAN_DOOMED_EFFECT = "xo_exp_death_doom"
 
 // TODO: move to a const from code
-const R1DELTA_PATCH_NOTES = @"
-* Server Browser
-* Burn Cards 
-* Some Navmeshes
-"
+const R1DELTA_PATCH_HEADER = "Welcome to R1Delta!"
+
+const R1DELTA_PATCH_NOTES = @"We’re thrilled to have you join us in the Titanfall universe. 
+
+Just a heads-up: this is the BETA version, so you might encounter a few bugs. Your feedback is super important to us! If you run into any issues or have questions join our Discord server for support.
+
+Welcome aboard!
+
+~R1Delta Team"
