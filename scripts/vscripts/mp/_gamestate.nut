@@ -880,7 +880,7 @@ function DoneWaitingForPlayers()
 	local connectedPlayersCount = connectedPlayers.len()
 
 	// developer 1 skips the remaining script, we can test the rest in developer mode with developer > 1
-	if ( GetDeveloperLevel() == 1 || ( IsPrivateMatch() && IsAnyPlayerMMDebug() ) )
+	if ( GetDeveloperLevel() == 1 || ( IsAnyPlayerMMDebug() ) )
 		return true
 
 	// wait for one player to connect
@@ -889,7 +889,7 @@ function DoneWaitingForPlayers()
 
 	// start failsafe timer
 	if ( level.doneWaitingForPlayersTimeout == 0 )
-		level.doneWaitingForPlayersTimeout = Time() + GetCurrentPlaylistVarInt( "waiting_for_players_timeout_seconds", 120 )
+		level.doneWaitingForPlayersTimeout = Time() + GetCurrentPlaylistVarInt( "waiting_for_players_timeout_seconds", 30 )
 
 	local minPlayers = GetCurrentPlaylistVarInt( "min_players", 0 )
 	local knownPlayersCount = GetConnectingAndConnectedPlayerArray().len() + GetPendingClientsCount()

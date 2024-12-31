@@ -857,6 +857,7 @@ function UpdateTeamReadyStatus()
 					file.teamReady[team] = false
 				else
 					file.teamReady[team] = true
+				file.teamReady[team] = true
 			}
 			else
 			{
