@@ -238,12 +238,34 @@ resource/ui/menus/match_settings.menu
 			}
 		}
 
+		BtnLava
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnBurnCardSettings
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnBurnCardSettings
+			navDown					BtnPilotHealth
+			tabPosition				1
+			visible					1
+			labelText				"#PM_LAVA"
+			ConVar					"riff_floorislava"
+			list
+			{
+				"#SETTING_OFF"		0
+				"#SETTING_ON"		1
+			}
+		}
+
+
 		// Audio/Video subheader
 		ImgPilotSubheaderBackground
 		{
 			ControlName				ImagePanel
 			InheritProperties		SubheaderBackground
-			pin_to_sibling			BtnBurnCardSettings
+			pin_to_sibling			BtnLava
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			xpos					-10
@@ -555,6 +577,7 @@ resource/ui/menus/match_settings.menu
 				"#SETTING_BOTH"				0
 				"#SETTING_GRUNTS_ONLY"		2
 				"#SETTING_SPECTRES_ONLY"	3
+				"#SETTING_NONE"				1
 			}
 		}
 
@@ -567,7 +590,7 @@ resource/ui/menus/match_settings.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			navUp					BtnAIType
-			navDown					BtnScoreLimit
+			navDown					BtnLava
 			tabPosition				1
 			labelText				"#PM_AI_LETHALITY"
 			ConVar					"pm_ai_lethality"
@@ -579,6 +602,7 @@ resource/ui/menus/match_settings.menu
 			}
 		}
 
+		
 
 
 
@@ -802,6 +826,21 @@ resource/ui/menus/match_settings.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			navUp					BtnMatchSettings14A
+			navDown					BtnMatchSettings16A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings16A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings15A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings15A
 			navDown					BtnMatchSettings1A
 			tabPosition				1
 			labelText				"#MOUSE_KEYBOARD_CONTROLS"

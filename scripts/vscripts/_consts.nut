@@ -2262,7 +2262,7 @@ pmSettingsMap["pm_titan_shields"] <- [
 
 pmSettingsMap["pm_ai_type"] <- [
 	0, // default
-	0,
+	1,
 	2,
 	3,
 ]
@@ -2301,6 +2301,7 @@ playlistVarMap["pm_titan_shields"] 	<- "titan_shield_health"
 playlistVarMap["pm_ai_type"] 		<- "riff_allow_npcs"
 playlistVarMap["pm_ai_lethality"] 	<- "riff_ai_lethality"
 playlistVarMap["pm_burn_cards"] 	<- "burn_cards_set"
+playlistVarMap["riff_floorislava"] 	<- "riff_floorislava"
 /*
 playlistVarMap["pilot_health"] 			<- "pm_pilot_health"
 playlistVarMap["riff_ammo_limit"] 		<- "pm_pilot_ammo"

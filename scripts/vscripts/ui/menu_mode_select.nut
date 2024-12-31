@@ -22,7 +22,7 @@ function main()
 	file.pilotAmmoButton <- null
 	file.minimapButton <- null
 	file.pilotRespawnDelayButton <- null
-		file.pilotRespawnDelayLabel <- null
+	file.pilotRespawnDelayLabel <- null
 
 	file.titanBuildButton <- null
 		file.titanBuildLabel <- null
@@ -32,6 +32,7 @@ function main()
 
 	file.aiTypeButton <- null
 	file.aiLethalityButton <- null
+	file.floorIsLavaButton <- null
 
 	file.gameModeLabel <- null
 
@@ -161,6 +162,7 @@ function InitMatchSettingsMenu( menu )
 
 	file.aiTypeButton = menu.GetChild( "BtnAIType" )
 	file.aiLethalityButton = menu.GetChild( "BtnAILethality" )
+	file.floorIsLavaButton = menu.GetChild( "BtnLava" )
 
 	file.gameModeLabel = menu.GetChild( "LblSubheader1Text" )
 
@@ -177,6 +179,7 @@ function InitMatchSettingsMenu( menu )
 	AddDescFocusHandler( file.titanShieldCapacityButton, "#PM_DESC_TITAN_SHIELD_CAPACITY" )
 	AddDescFocusHandler( file.aiTypeButton, "#PM_DESC_AI_TYPE" )
 	AddDescFocusHandler( file.aiLethalityButton, "#PM_DESC_AI_LETHALITY" )
+	AddDescFocusHandler( file.floorIsLavaButton, "#PM_DESC_LAVA" )
 	AddDescFocusHandler( file.burnCardSetButton, "#PM_DESC_BURN_CARDS" )
 
 	uiGlobal.matchSettingsChanged <- false
@@ -575,6 +578,7 @@ function ApplyMatchSettings( button )
 	UpdatePlaylistFromConVar( "pm_ai_type" )
 	UpdatePlaylistFromConVar( "pm_ai_lethality" )
 	UpdatePlaylistFromConVar( "pm_burn_cards" )
+	UpdatePlaylistFromConVar( "riff_floorislava")
 
 	uiGlobal.matchSettingsChanged = false
 }

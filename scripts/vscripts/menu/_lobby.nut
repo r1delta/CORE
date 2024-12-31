@@ -1928,6 +1928,10 @@ function ClientCommand_UpdatePrivateMatchSetting( player, ... )
 
 			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value.tointeger() )
 			break
+		case "riff_floorislava":
+			local value = pmVarVal.tointeger()
+			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value )
+			break
 	}
 
 	return true
