@@ -104,11 +104,6 @@ if ( IsClient() )
 	GameMode_SetDesc( CAMPAIGN, "#PL_campaign_desc" )
 	GameMode_SetIcon( CAMPAIGN, "../ui/menu/playlist/campaign" )
 
-	//GameMode_Create( DEADLYGROUND )
-	//GameMode_SetName( DEADLYGROUND, "#PL_lava" )
-	//GameMode_SetDesc( DEADLYGROUND, "#PL_lava_desc" )
-	//GameMode_SetIcon( DEADLYGROUND, "../ui/menu/playlist/floor_is_lava" )
-
 	GameMode_Create( CAPTURE_THE_TITAN )
 	GameMode_SetName( CAPTURE_THE_TITAN, "#GAMEMODE_CAPTURE_THE_TITAN" )
 	GameMode_SetGameModeAttackAnnouncement( CAPTURE_THE_TITAN, "GameModeAnnounce_CTT_Attack" )
@@ -286,9 +281,8 @@ enum eGameModes
 	COOPERATIVE_ID =					18,
 	SCAVENGER_ID =						19,
 	HEIST_ID =							20,
-	FFA_ID = 21
-	,CAMPAIGN_ID = 22
-//	,DEADLYGROUND_ID = 23
+	FFA_ID = 21,
+	CAMPAIGN_ID = 22
 }
 
 gameModesStringToIdMap <- {}
@@ -315,7 +309,6 @@ gameModesStringToIdMap[ MARKED_FOR_DEATH_PRO ] 				<- eGameModes.MARKED_FOR_DEAT
 gameModesStringToIdMap[ CAPTURE_THE_FLAG_PRO ] 				<- eGameModes.CAPTURE_THE_FLAG_PRO_ID
 gameModesStringToIdMap[ FFA ] 				<- eGameModes.FFA_ID
 gameModesStringToIdMap[ CAMPAIGN ] 				<- eGameModes.CAMPAIGN_ID
-//gameModesStringToIdMap[ DEADLYGROUND ] 				<- eGameModes.DEADLYGROUND_ID
 
 GameMode_VerifyModes()
 
