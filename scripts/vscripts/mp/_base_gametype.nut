@@ -2473,26 +2473,6 @@ function CodeCallback_OnClientConnectionStarted( player )
 
 	if ( "ScriptCallback_OnClientConnecting" in getroottable() )
 		ScriptCallback_OnClientConnecting( player )
-	// Handle team assignment for connecting player
-	if ( GameRules.GetGameMode() == COOPERATIVE )
-	{
-		// In cooperative, all players should be on TEAM_MILITIA
-		player.SetTeam( TEAM_MILITIA )
-	}
-	else if ( !IsLobby() )
-	{
-		// Get current team counts
-	        local imcCount = GetTeamPlayerCount( TEAM_IMC )
-	        local militiaCount = GetTeamPlayerCount( TEAM_MILITIA )
-	
-	        // Put player on team with fewer players
-	        if ( imcCount > militiaCount )
-	            player.SetTeam( TEAM_MILITIA )
-	        else if ( militiaCount > imcCount ) 
-	            player.SetTeam( TEAM_IMC )
-	        else // Equal teams, randomly assign
-	            player.SetTeam( CoinFlip() ? TEAM_IMC : TEAM_MILITIA )
-	}
 
 	// Added via AddCallback_OnClientConnecting
 	foreach ( callbackInfo in level.onClientConnectingCallbacks )

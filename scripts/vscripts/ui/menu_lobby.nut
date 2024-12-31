@@ -1097,6 +1097,26 @@ function UpdatePrivateMatchButtons()
 	local mapsButton = menu.GetChild( "MapsButton" )
 	local modesButton = menu.GetChild( "ModesButton" )
 	local settingsButton = menu.GetChild( "SettingsButton" )
+        if (GetConVarString("host_map") != "mp_lobby.bsp") {
+		startMatchButton.SetLocked( true )
+		mapsButton.SetLocked( true )
+		modesButton.SetLocked( true )
+		settingsButton.SetLocked( true )
+		mapsButton.SetEnabled( false )
+		modesButton.SetEnabled( false )
+		settingsButton.SetEnabled( false )
+                startMatchButton.SetEnabled( false)
+	}
+else {
+    startMatchButton.SetLocked( false )
+    mapsButton.SetLocked( false )
+    modesButton.SetLocked( false )
+    settingsButton.SetLocked( false )
+    mapsButton.SetEnabled( true )
+    modesButton.SetEnabled( true )
+    settingsButton.SetEnabled( true )
+    startMatchButton.SetEnabled( true )
+}
 
 	if ( level.ui.privatematch_starting == ePrivateMatchStartState.STARTING )
 	{
@@ -1119,26 +1139,6 @@ function UpdatePrivateMatchButtons()
 		startMatchButton.SetLocked( true )
 	else
 		startMatchButton.SetLocked( false )
-        if (GetConVarString("host_map") != "mp_lobby.bsp") {
-		startMatchButton.SetLocked( true )
-		mapsButton.SetLocked( true )
-		modesButton.SetLocked( true )
-		settingsButton.SetLocked( true )
-		mapsButton.SetEnabled( false )
-		modesButton.SetEnabled( false )
-		settingsButton.SetEnabled( false )
-                startMatchButton.SetEnabled( false)
-	}
-else {
-    startMatchButton.SetLocked( false )
-    mapsButton.SetLocked( false )
-    modesButton.SetLocked( false )
-    settingsButton.SetLocked( false )
-    mapsButton.SetEnabled( true )
-    modesButton.SetEnabled( true )
-    settingsButton.SetEnabled( true )
-    startMatchButton.SetEnabled( true )
-}
 
 }
 
