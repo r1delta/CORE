@@ -41,7 +41,7 @@ function OpenDirectConnectDialog_Activate( button )
 
 	local dialogData = {}
 	dialogData.header <- "Connect To Address..."
-    dialogData.detailsMessage <- "R1Delta multiplayer is currently not finished, but there is some buggy early testing going on.\n ^1 Do not connect to servers you do not trust."
+    dialogData.detailsMessage <- "Enter a server IP address to connect to it."
 
 	OpenChoiceDialog( dialogData, GetMenu( "DirectConnectDialog" ) )
 	// local inputs = []
