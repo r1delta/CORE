@@ -68,12 +68,8 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 		return false
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
-	SetPlayerBurnCardActiveSlotID(player, index)
-	player.SetActiveBurnCardIndex(cardIndex)
-	
-	RunBurnCardFunctions(player,cardRef)
-
-	Remote.CallFunction_Replay(player,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex,false)
+	SetPlayerBurnCardOnDeckIndex(player, index)
+	// Remote.CallFunction_NonReplay(player,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex,false)
 	return true
 }
 

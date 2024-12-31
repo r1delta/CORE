@@ -159,7 +159,18 @@ function DoSummonTitanBurnCard(player, cardRef) {
     }
 
     player.WaitSignal("CalledInReplacementTitan")
-
+    if(cardRef == "bc_summon_atlas") {
+        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+	    titanDataTable.playerSetFile = "titan_atlas"
+    }
+    if(cardRef == "bc_summon_ogre") {
+        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+	    titanDataTable.playerSetFile = "titan_ogre"
+    }
+    if(cardRef == "bc_summon_stryder") {
+        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+        titanDataTable.playerSetFile = "titan_stryder"
+    }
     local activeBCID = player.GetPersistentVar("activeBCID")
     
 	player.SetActiveBurnCardIndex( -1 )
@@ -192,7 +203,7 @@ function RunBurnCardFunctions(player,cardRef) {
     if(cardRef == "bc_summon_stryder") {
         thread DoSummonTitanBurnCard(player, cardRef);
     }
-
+    
     
 }
 
@@ -203,13 +214,27 @@ function PlayerRespawned(player) {
         return;
     }
 
-
-    local cardRef = GetPlayerActiveBurnCard( player );
+    local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
+    local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
     if(!cardRef) {
         return;
     }
+    local idx = GetBurnCardIndexByRef(cardRef);
+    if(idx == -1) {
+        return;
+    }
+    player.SetActiveBurnCardIndex(idx);
+    player.SetPersistentVar("activeBCID", cardIndex);
+    player.SetPersistentVar("onDeckBurnCardIndex", -1);
+
+
+    printt(cardRef);
     player.Signal("StartBurnCardEffect");
     RunBurnCardFunctions(player,cardRef);
+
+    if (cardRef == "bc_cloak_forever") {
+        EnableCloakForever( player )
+    }
 
     thread RunSpawnBurnCard(player,cardRef);
 }
@@ -219,6 +244,8 @@ function RunSpawnBurnCard(player,cardRef) {
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
+
+
     if( cardData.lastsUntil == BC_NEXTSPAWN) {
         if(cardRef == "bc_free_build_time_1") {
             DecrementBuildTimer(player,40)
@@ -228,7 +255,7 @@ function RunSpawnBurnCard(player,cardRef) {
             DecrementBuildTimer(player,80)
             StopActiveBurnCard(player);
         }
-
+       
     }
 
 }
@@ -252,6 +279,10 @@ function _OnPlayerKilled (player,attacker) {
 
     if ( player.IsPlayer() )
 	 	BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
+
+    if(cardRef == "bc_rematch") {
+        StopActiveBurnCard(player);
+    }
 }
 
 function ApplyTitanWeaponBurnCard(player,titan_npc,cardRef) {
@@ -316,5 +347,5 @@ function OnTitanBecomesPilot(player,titan) {
 
 function AddBurnCardLevelingPack( cardPackName, cardPackArray )
 {
-    printt( "Hit stubbed call to AddBurnCardLevelingPack" );
+    // printt( "Hit stubbed call to AddBurnCardLevelingPack" );
 }

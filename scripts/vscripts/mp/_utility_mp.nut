@@ -1543,7 +1543,6 @@ function GetBurnCardSetForIndex(setIndex) {
     "bc_free_build_time_1",
     "bc_free_build_time_2",
     "bc_fast_build_2",
-    "bc_double_xp",
     "bc_hunt_soldier",
     "bc_hunt_spectre",
     "bc_hunt_pilot",

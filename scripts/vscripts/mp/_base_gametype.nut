@@ -901,6 +901,14 @@ function PostDeathThread( player, damageInfo )
 		rematchOrigin = attacker.GetOrigin()
 	}
 
+	if (GetActiveBurnCard( player) ==  "bc_rematch"  )
+	{
+		printt("HAS REMATCH BURN CARD")
+		printt("HAS REMATCH BURN CARD")
+		printt("HAS REMATCH BURN CARD")
+		rematchOrigin = player.GetOrigin()
+	}
+
 	local attackerViewIndex = attacker.GetIndexForEntity()
 
 	local timeSinceAttackerSpawned = attacker.GetTimeSinceSpawning()
@@ -1885,6 +1893,11 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 					printt( "Possible issue?" )
 				}
 			}
+		}
+
+		if (rematchOrigin != null)
+		{
+			spawnPoint = rematchOrigin
 		}
 
 		// stop recording spawn data

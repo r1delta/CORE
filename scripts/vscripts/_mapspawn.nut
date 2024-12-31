@@ -72,6 +72,7 @@
 
 	function CodeCallback_ClientCommand( player, args )
 	{
+		RegisterSignal( "RefreshDice" )
 		PerfStart( PerfIndexServer.CB_ClientCommand )
 		/*
 		printl( "############################" )
@@ -235,7 +236,6 @@
 	level.ent.Fire( "CallScriptFunction", "LevelFinishedStarting", 0.1 )
 
 	level.operatorAbilityClasses <- {}
-
 	RegisterSignal( "OnChangedPlayerClass" )
 	RegisterSignal( "OnLeftTitan" )
 	RegisterSignal( "Disconnected" )
