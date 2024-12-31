@@ -498,9 +498,7 @@ function UpdateMOTD()
 	// 	}
 	// )
 
-	local messages = [ "It's just like lua!", "That's nuts!", "R1Delta: 1\nTFOR: 0", "More games than the PS5" ]
-
-	file.motdMessage.SetText( R1DELTA_PATCH_NOTES + "\n\nDiscord: https://discord.gg/zbFCcSM5t7" )
+	file.motdMessage.SetText( R1DELTA_PATCH_NOTES )
 	ShowMOTD()
 }
 
