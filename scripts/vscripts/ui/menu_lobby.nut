@@ -1119,7 +1119,7 @@ function UpdatePrivateMatchButtons()
 		startMatchButton.SetLocked( true )
 	else
 		startMatchButton.SetLocked( false )
-        if (GetConVarString("host_map") != "mp_lobby") {
+        if (GetConVarString("host_map") != "mp_lobby.bsp") {
 		startMatchButton.SetLocked( true )
 		mapsButton.SetLocked( true )
 		modesButton.SetLocked( true )
