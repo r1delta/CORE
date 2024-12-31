@@ -498,6 +498,7 @@ function UpdateMOTD()
 	// 	}
 	// )
 
+	file.motdTitle.SetText( R1DELTA_PATCH_HEADER )
 	file.motdMessage.SetText( R1DELTA_PATCH_NOTES )
 	ShowMOTD()
 }
