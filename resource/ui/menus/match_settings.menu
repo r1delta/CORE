@@ -1,0 +1,854 @@
+resource/ui/menus/match_settings.menu
+{
+	MatchSettingsMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+	    MenuCommon
+	    {
+		    ControlName				CNestedPanel
+		    xpos					0
+		    ypos					0
+			wide					f0
+			tall					f0
+		    visible					1
+		    controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+	    }
+
+		BackgroundOverlay2
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		Title
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#SETTINGS"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		LblMenuItemDescription
+		{
+			ControlName				Label
+			InheritProperties		OptionMenuTooltip
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ImgSubheader1Background
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					2
+		}
+		LblSubheader1Text
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgSubheader1Background
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#PM_HEADER_GAME_MODE"
+		}
+
+		BtnScoreLimit
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			ImgSubheader1Background
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					0 [!$GAMECONSOLE]
+			xpos					10 [$GAMECONSOLE]
+			navUp					BtnAILethality
+			navDown					BtnTimeLimit
+			conCommand				"pm_score_limit"
+			minValue				0
+			maxValue				7
+			stepSize				1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#PM_SCORE_LIMIT"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		LblScoreLimitMax
+		{
+			ControlName				Label
+			xpos					-32
+			ypos					-2
+			auto_wide_to_contents	1
+			wide					100
+			font					MenuFontTiny
+			pin_to_sibling			BtnScoreLimit
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			labelText				"500"
+			textAlignment			"west"
+			fgcolor_override		"255 255 255 255"
+			zpos					0
+		}
+
+		BtnTimeLimit
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			style					DialogListButton
+			pin_to_sibling			BtnScoreLimit
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnScoreLimit
+			navDown					BtnBurnCardSettings
+			conCommand				"pm_time_limit"
+			minValue				4
+			maxValue				40
+			stepSize				1
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#PM_TIME_LIMIT"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		LblTimeLimitMax
+		{
+			ControlName				Label
+			xpos					-32
+			ypos					-2
+			auto_wide_to_contents	1
+			wide					100
+			font					MenuFontTiny
+			pin_to_sibling			BtnTimeLimit
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			labelText				"500"
+			textAlignment			"west"
+			fgcolor_override		"255 255 255 255"
+			zpos					0
+		}
+
+		BtnBurnCardSettings
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnTimeLimit
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+	//		xpos					10
+			navUp					BtnTimeLimit
+			navDown					BtnPilotHealth
+			labelText				"#PM_BURN_CARDS"
+			ConVar					"pm_burn_cards"
+			list
+			{
+				"#SETTING_SET0"			0
+				"#SETTING_SET1"			1
+				"#SETTING_SET2"			2
+				"#SETTING_SET3"			3
+				"#SETTING_SET4"			4
+				"#SETTING_SET5"			5
+				"#SETTING_SET6"			6
+				"#SETTING_SET7"			7
+				"#SETTING_SET8"			8
+				"#SETTING_SET9"			9
+				"#SETTING_SET10"		10
+			}
+		}
+
+		// Audio/Video subheader
+		ImgPilotSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			pin_to_sibling			BtnBurnCardSettings
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					-10
+		}
+		LblPilotSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgPilotSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#PM_HEADER_PILOT"
+		}
+
+		BtnPilotHealth
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			ImgPilotSubheaderBackground
+			xpos					10
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnBurnCardSettings
+			navDown					BtnPilotAmmo
+			tabPosition				1
+			labelText				"#PM_PILOT_HEALTH"
+			ConVar					"pm_pilot_health"
+			list
+			{
+				"#SETTING_LOW"		1
+				"#SETTING_NORMAL"	0
+				"#SETTING_HIGH"		2
+			}
+		}
+
+		BtnPilotAmmo
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnPilotHealth
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnPilotHealth
+			navDown					BtnPilotMinimap
+			tabPosition				1
+			labelText				"#PM_PILOT_AMMO"
+			ConVar					"pm_pilot_ammo"
+			list
+			{
+				"#SETTING_LIMITED"		1
+				"#SETTING_NORMAL"		0
+				//"#SETTING_UNLIMITED"	2
+			}
+		}
+
+		BtnPilotMinimap
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnPilotAmmo
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnPilotAmmo
+			navDown					BtnPilotRespawnDelay
+			tabPosition				1
+			labelText				"#PM_PILOT_MINIMAP"
+			ConVar					"pm_pilot_minimap"
+			list
+			{
+				"#SETTING_DISABLED"	1
+				"#SETTING_ENABLED"	0
+			}
+		}
+
+		BtnPilotRespawnDelay
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			BtnPilotMinimap
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					0
+			navUp					BtnPilotMinimap
+			navDown					BtnTitanInitialBuild
+			conCommand				"pm_pilot_respawn_delay"
+			minValue				3.0
+			maxValue				40.0
+			stepSize				0.5
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				MasterVolumeSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#PM_PILOT_RESPAWN_DELAY"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		LblPilotRespawnDelayMax
+		{
+			ControlName				Label
+			xpos					-32
+			ypos					-2
+			auto_wide_to_contents	1
+			wide					100
+			font					MenuFontTiny
+			pin_to_sibling			BtnPilotRespawnDelay
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			labelText				"500"
+			textAlignment			"west"
+			fgcolor_override		"255 255 255 255"
+			zpos					0
+		}
+
+		ImgTitanSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			pin_to_sibling			BtnPilotRespawnDelay
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					-10
+		}
+		LblTitanSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgTitanSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#PM_HEADER_TITAN"
+		}
+
+		BtnTitanInitialBuild
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			ImgTitanSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					BtnPilotRespawnDelay
+			navDown					BtnTitanRebuild
+			conCommand				"pm_titan_build"
+			minValue				0.0
+			maxValue				10.0
+			stepSize				0.5
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				MasterVolumeSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#PM_TITAN_INITIAL_BUILD"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		LblTitanInitialBuildMax
+		{
+			ControlName				Label
+			xpos					-32
+			ypos					-2
+			auto_wide_to_contents	1
+			wide					100
+			font					MenuFontTiny
+			pin_to_sibling			BtnTitanInitialBuild
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			labelText				"500"
+			textAlignment			"west"
+			fgcolor_override		"255 255 255 255"
+			zpos					0
+		}
+
+		BtnTitanRebuild
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			pin_to_sibling			BtnTitanInitialBuild
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnTitanInitialBuild
+			navDown					BtnTitanShieldCapacity
+			conCommand				"pm_titan_rebuild"
+			minValue				0.0
+			maxValue				5.5
+			stepSize				0.5
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				MasterVolumeSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#PM_TITAN_REBUILD"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		LblTitanRebuildMax
+		{
+			ControlName				Label
+			xpos					-32
+			ypos					-2
+			auto_wide_to_contents	1
+			wide					100
+			font					MenuFontTiny
+			pin_to_sibling			BtnTitanRebuild
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			labelText				"500"
+			textAlignment			"west"
+			fgcolor_override		"255 255 255 255"
+			zpos					0
+		}
+
+		BtnTitanShieldCapacity
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnTitanRebuild
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnTitanRebuild
+			navDown					BtnAIType
+			tabPosition				1
+			labelText				"#PM_TITAN_SHIELD_CAPACITY"
+			ConVar					"pm_titan_shields"
+			list
+			{
+				"#SETTING_DISABLED"	1
+				"#SETTING_LOW"		2
+				"#SETTING_NORMAL"	0
+				"#SETTING_HIGH"		3
+			}
+		}
+
+		ImgAISubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			pin_to_sibling			BtnTitanShieldCapacity
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					-10
+		}
+		LblAISubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgAISubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#PM_HEADER_AI"
+		}
+
+		BtnAIType
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			ImgAISubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					BtnTitanShieldCapacity
+			navDown					BtnAILethality
+			tabPosition				1
+			labelText				"#PM_AI_TYPE"
+			ConVar					"pm_ai_type"
+			list
+			{
+				"#SETTING_BOTH"				0
+				"#SETTING_GRUNTS_ONLY"		2
+				"#SETTING_SPECTRES_ONLY"	3
+			}
+		}
+
+		BtnAILethality
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnAIType
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnAIType
+			navDown					BtnScoreLimit
+			tabPosition				1
+			labelText				"#PM_AI_LETHALITY"
+			ConVar					"pm_ai_lethality"
+			list
+			{
+				"#SETTING_NORMAL"		0
+				"#SETTING_HIGH"			1
+				"#SETTING_VERY_HIGH"	2
+			}
+		}
+
+
+
+
+		BtnMatchSettings1A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					10
+			navUp					BtnMatchSettings15A
+			navDown					BtnMatchSettings2A
+			tabPosition				1
+			labelText				"#PM_TIME_LIMIT"
+			visible					0
+		}
+
+		BtnMatchSettings2A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings1A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings1A
+			navDown					BtnMatchSettings3A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings3A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings2A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings2A
+			navDown					BtnMatchSettings4A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings4A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings3A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings3A
+			navDown					BtnMatchSettings5A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings5A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings4A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings4A
+			navDown					BtnMatchSettings6A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings6A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings5A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings5A
+			navDown					BtnMatchSettings7A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings7A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings6A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings6A
+			navDown					BtnMatchSettings8A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings8A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings7A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings7A
+			navDown					BtnMatchSettings9A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings9A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings8A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings8A
+			navDown					BtnMatchSettings10A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings10A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings9A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings9A
+			navDown					BtnMatchSettings11A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings11A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings10A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings10A
+			navDown					BtnMatchSettings12A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings12A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings11A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings11A
+			navDown					BtnMatchSettings13A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings13A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings12A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings12A
+			navDown					BtnMatchSettings14A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings14A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings13A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings13A
+			navDown					BtnMatchSettings15A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+		BtnMatchSettings15A
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnMatchSettings14A
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMatchSettings14A
+			navDown					BtnMatchSettings1A
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+			visible					0
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ButtonTooltip
+		{
+			ControlName				CNestedPanel
+			InheritProperties		ButtonTooltip
+		}
+
+		// Audio/Video subheader
+		ImgAudioVideoSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			xpos					54
+			ypos					166
+			visible					0
+		}
+		LblAudioVideoSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgAudioVideoSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#AUDIO_VIDEO"
+			visible					0
+		}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}
