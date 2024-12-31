@@ -257,11 +257,12 @@ function ShowMainMenu()
 
 	uiGlobal.mainMenuFocus = focus
 
-	if ( GetConVarString( "platform_user_id" ) == "0" && !Origin_IsEnabled() )
+	if ( !Origin_IsEnabled() )
 	{
 		local randomID = RandomInt( 0, 999999999 ).tostring()
 		ClientCommand( "platform_user_id " + randomID )
 	}
+	ClientCommand("hostname \""+GetConVarString("name")+"'s R1Delta Server\"")
 }
 
 function ShowMOTD()
