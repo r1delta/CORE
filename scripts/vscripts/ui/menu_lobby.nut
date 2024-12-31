@@ -1119,6 +1119,18 @@ function UpdatePrivateMatchButtons()
 		startMatchButton.SetLocked( true )
 	else
 		startMatchButton.SetLocked( false )
+        if (GetConVarString("host_map") != "mp_lobby") {
+		startMatchButton.SetLocked( true )
+		mapsButton.SetLocked( true )
+		modesButton.SetLocked( true )
+		settingsButton.SetLocked( true )
+		mapsButton.SetEnabled( false )
+		modesButton.SetEnabled( false )
+		mapsButton.SetEnabled( false )
+		settingsButton.SetEnabled( false )
+                startMatchButton.SetEnabled( false)
+	}
+
 }
 
 function HideMatchmakingStatusIcons( elements )
