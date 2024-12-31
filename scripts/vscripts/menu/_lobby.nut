@@ -410,11 +410,7 @@ function ControlMatchmakingServerLobbyLogic()
 			}
 			else
 			{
-				local partyLeaders = GetPartyLeaders()
-				if ( partyLeaders.len() > 0 )
-					shouldDoLobbyLogic = true
-				else
-					shouldDoLobbyLogic = false
+				shouldDoLobbyLogic = true
 			}
 		}
 		else
