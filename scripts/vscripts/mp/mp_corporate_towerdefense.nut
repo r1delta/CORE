@@ -7,15 +7,11 @@ function main()
 	Corporate_SetupRoutesAndPositions()
 	Corporate_SetupWaveSpawns()
 
-	if ( IsClient() )
-		Global_MainHud_SetCustomMinimapZoom( 2 )
-
   	if ( IsServer() )
     	SetCustomWaveSpawn_SideView( Vector( 1388,-913, -353 ), Vector( 0, 90, 0 ) )
 
 	if ( IsServer() )
 	{
-		Riff_ForceTitanAvailability( eTitanAvailability.Never )
 		Riff_ForceSetSpawnAsTitan( eSpawnAsTitan.Never )
 	}
 }
