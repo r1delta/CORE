@@ -268,11 +268,11 @@ if ( !IsUI() )
 
 		if ( initializedVersion < 21 )
 		{
-			local nextMaxDecayTime = Daily_GetCurrentTime() + GetRankedDecayRate()
-			local nextPlayerDecayTime = GetPlayerGemDecayTime( player )
+			//local nextMaxDecayTime = Daily_GetCurrentTime() + GetRankedDecayRate()
+			//local nextPlayerDecayTime = GetPlayerGemDecayTime( player )
 
-			if ( nextPlayerDecayTime > nextMaxDecayTime )
-				UpdateGemDecayTime( player )
+			//if ( nextPlayerDecayTime > nextMaxDecayTime )
+				//UpdateGemDecayTime( player )
 		}
 
 		player.SetPersistentVar( "initializedVersion", PERSISTENCE_INIT_VERSION )
