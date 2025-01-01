@@ -1891,7 +1891,6 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 		if (GetActiveBurnCard( player) ==  "bc_rematch"  )
 		{
 			spawnPoint = player.GetOrigin()
-			
 		}
 		
 
