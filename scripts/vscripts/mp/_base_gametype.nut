@@ -999,6 +999,7 @@ function PostDeathThread( player, damageInfo )
 	if ( !IsValid( player ) )
 		return
 
+	
 	// standard delay to this point is ~7.5 seconds
 	WaitForRespawnDelay( player, timeOfDeath )
 
@@ -1890,6 +1891,7 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 		if (GetActiveBurnCard( player) ==  "bc_rematch"  )
 		{
 			spawnPoint = player.GetOrigin()
+			
 		}
 		
 
