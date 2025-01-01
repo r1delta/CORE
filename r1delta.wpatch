@@ -410,3 +410,9 @@ engine.dll,text,0x698750,"/Respawn/Titanfall\x00","/Respawn/R1Delta\x00"
 ; unhide give_server
 ; server.dll,rdata,0xB6B638,10,00
 client.dll,text,0x2E8998,FF 50 70,FF 50 78
+
+; change default gamedir
+dedicated.dll,rdata,0x205B30,"r1\x00","r1delta\x00"
+launcher.dll,rdata,0xD711C,"R1\x00","r1delta\x00"
+; force client VPK on dedicated
+dedicated.dll,rdata,0x205AC8,"vpk/server_mp_common.bsp\x00","vpk/client_mp_common.bsp\x00"
