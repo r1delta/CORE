@@ -10,4 +10,6 @@ bin/x64_delta/tier0.*
 *.idb
 *.idc
 *.i64
-
+server.vdf
+config/*/
+cfg/banned_ip.cfg

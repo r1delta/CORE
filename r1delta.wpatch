@@ -416,3 +416,5 @@ dedicated.dll,rdata,0x205B30,"r1\x00","r1delta\x00"
 launcher.dll,rdata,0xD711C,"R1\x00","r1delta\x00"
 ; force client VPK on dedicated
 dedicated.dll,rdata,0x205AC8,"vpk/server_mp_common.bsp\x00","vpk/client_mp_common.bsp\x00"
+; force vgui ds to look in r1delta for resources
+dedicated.dll,rdata,0x205190,"platform\x00","r1delta\x00"

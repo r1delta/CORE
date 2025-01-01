@@ -8,7 +8,6 @@
 //		Borders			- description of all the borders
 //
 ///////////////////////////////////////////////////////////
-
 Scheme
 {
 	//////////////////////// COLORS ///////////////////////////
@@ -17,223 +16,204 @@ Scheme
 	Colors
 	{
 		// base colors
-		"White"						"255 255 255 255"
-		"OffWhite"					"232 232 232 255"
-		"DullWhite"					"142 142 142 255"
-		"Selection"					"72 83 149 255"
-		"TransparentBlack"			"0 0 0 128"
-		"Black"						"0 0 0 255"
-		"Blank"						"0 0 0 0"
+		"White"				"255 255 255 255"
+		"OffWhite"			"221 221 221 255"
+		"DullWhite"			"211 211 211 255"
+		
+		"TransparentBlack"	"0 0 0 128"
+		"Black"				"0 0 0 255"
 
-		"SteamLightGreen"			"157 194 80 255"
-		"AchievementsLightGrey"		"79 79 79 255"
-		"AchievementsDarkGrey"		"55 55 55 255"
-		"AchievementsInactiveFG"	"130 130 130 255"
+		"Blank"				"0 0 0 0"
 
-		"ScrollBarGrey"				"51 51 51 255"
-		"ScrollBarHilight"			"110 110 110 255"
-		"ScrollBarDark"				"38 38 38 255"
+		// base colors
+		"BaseText"			"16 22 11 255"	// used in text windows, lists
+		"BrightBaseText"	"45 45 45 255"	// brightest text
+		"SelectedText"		"5 5 5 255"	// selected text
+		"DimBaseText"		"30 40 30 255"	// dim base text
+		"LabelDimText"		"40 50 20 255"	// used for info text
+		"ControlText"		"16 22 11 255"	// used in all text controls
+		"BrightControlText"	"66 61 50 255"	// use for selected controls
+		"DisabledText1"		"17 28 11 255"	// disabled text
+		"DisabledText2"		"40 46 34 255"		// overlay color for disabled text (to give that inset look)
+		"DimListText"		"17 34 62 255"	// offline friends, unsubscribed games, etc.
+
+		// background colors
+		"ControlBG"			"228 228 228 255"		// background color of controls
+		"ControlDarkBG"		"200 200 200 255"		// darker background color; used for background of scrollbars
+		"WindowBG"			"125 125 125 255"		// background color of text edit panes (chat, text entries, etc.)
+		"SelectionBG"		"212 212 212 255"	// background color of any selected text or menu item
+		"SelectionBG2"		"146 146 146 255"		// selection background in window w/o focus
+		"ListBG"			"222 222 222 255"		// background of server browser, buddy list, etc.
+
+		// titlebar colors
+		"TitleText"			"0 0 0 255"
+		"TitleDimText"		"45 45 45 255"
+		"TitleBG"			"218 218 218 0"
+		"TitleDimBG"		"218 218 218 0"
+		
+		// slider tick colors
+		"SliderTickColor"	"127 127 127 255"
+		"SliderTrackColor"	"131 131 131 255"
+
+		// border colors
+		"BorderBright"		"246 246 246 255"	// the lit side of a control
+		"BorderDark"		"140 140 140 255"		// the dark/unlit side of a control
+		"BorderSelection"	"200 200 200 255"			// the additional border color for displaying the default/selected button
+
+		"TestColor"			"255 0 255 255"
 	}
 
 	///////////////////// BASE SETTINGS ////////////////////////
+	//
 	// default settings for all panels
 	// controls use these to determine their settings
 	BaseSettings
 	{
 		// vgui_controls color specifications
-		Border.Bright					"120 120 120 196"	// the lit side of a control
-		Border.Dark						"40 40 40 196"		// the dark/unlit side of a control
-		Border.Selection				"0 0 0 196"			// the additional border color for displaying the default/selected button
+		Border.Bright					"BorderBright"	// the lit side of a control
+		Border.Dark						"BorderDark"		// the dark/unlit side of a control
+		Border.Selection				"BorderSelection"			// the additional border color for displaying the default/selected button
 
-		Button.TextColor				"OffWhite"
-		Button.BgColor					"Blank"
-		Button.ArmedTextColor			"OffWhite"
-		Button.ArmedBgColor				"Blank"
-		Button.DepressedTextColor		"OffWhite"
-		Button.DepressedBgColor			"Blank"
-		Button.FocusBorderColor			"Black"
-
-		CheckButton.TextColor			"OffWhite"
-		CheckButton.SelectedTextColor	"OffWhite"
-		CheckButton.BgColor				"TransparentBlack"
+		Button.TextColor				"ControlText"
+		Button.BgColor					"ControlBG"
+//		Button.ArmedTextColor			"BrightBaseText"
+//		Button.ArmedBgColor				"SelectionBG"
+//		Button.DepressedTextColor		"DimBaseText"
+//		Button.DepressedBgColor			"ControlDarkBG"	
+		Button.FocusBorderColor			"TransparentBlack"
+		
+		CheckButton.TextColor			"BaseText"
+		CheckButton.SelectedTextColor	"BrightControlText"
+		CheckButton.BgColor				"ListBG"
 		CheckButton.Border1  			"Border.Dark" 		// the left checkbutton border
 		CheckButton.Border2  			"Border.Bright"		// the right checkbutton border
-		CheckButton.Check				"OffWhite"			// color of the check itself
-		CheckButton.DisabledFgColor		"130 130 130 255"	// disabled check color
-		CheckButton.DisabledBgColor		"62 70 55 255"
-		CheckButton.ArmedBgColor		"62 70 55 255"
-		CheckButton.DepressedBgColor	"62 70 55 255"
-		CheckButton.HighlightFgColor	"OffWhite"
+		CheckButton.Check				"BrightControlText"	// color of the check itself
 
-		ComboBoxButton.ArrowColor		"DullWhite"
-		ComboBoxButton.ArmedArrowColor	"White"
-		ComboBoxButton.BgColor			"Blank"
-		ComboBoxButton.DisabledBgColor	"Blank"
+		ComboBoxButton.ArrowColor		"DimBaseText"
+		ComboBoxButton.ArmedArrowColor	"BrightBaseText"
+		ComboBoxButton.BgColor			"ListBG"
+		ComboBoxButton.DisabledBgColor	"ControlBG"
 
-		Frame.TitleTextInsetX				16
-		Frame.ClientInsetX					8
-		Frame.ClientInsetY					6
-		Frame.BgColor						"80 80 80 255"
-		Frame.OutOfFocusBgColor				"80 80 80 255"
-		Frame.FocusTransitionEffectTime		"0"					// time it takes for a window to fade in/out on focus/out of focus
-		Frame.TransitionEffectTime			"0"					// time it takes for a window to fade in/out on open/close
-		Frame.AutoSnapRange					"0"
-		FrameGrip.Color1					"200 200 200 196"
-		FrameGrip.Color2					"0 0 0 196"
-		FrameTitleButton.FgColor			"200 200 200 196"
-		FrameTitleButton.BgColor			"Blank"
-		FrameTitleButton.DisabledFgColor	"255 255 255 192"
-		FrameTitleButton.DisabledBgColor	"Blank"
-		FrameSystemButton.FgColor			"Blank"
-		FrameSystemButton.BgColor			"Blank"
-		FrameSystemButton.Icon				""
-		FrameSystemButton.DisabledIcon		""
-		FrameTitleBar.Font					"DefaultLarge"
-		FrameTitleBar.TextColor				"OffWhite"
-		FrameTitleBar.BgColor				"Blank"
-		FrameTitleBar.DisabledTextColor		"255 255 255 192"
-		FrameTitleBar.DisabledBgColor		"Blank"
+		Frame.TitleTextInsetX			30
+		Frame.ClientInsetX				20
+		Frame.ClientInsetY				6
+		Frame.BgColor					"ControlBG"
+		Frame.OutOfFocusBgColor			"ControlBG"
+		Frame.FocusTransitionEffectTime	"0.3"	// time it takes for a window to fade in/out on focus/out of focus
+		Frame.TransitionEffectTime		"0.3"	// time it takes for a window to fade in/out on open/close
+		Frame.AutoSnapRange				"0"
+		FrameGrip.Color1				"BorderBright"
+		FrameGrip.Color2				"BorderSelection"
+		FrameTitleButton.FgColor		"BorderBright"
+		FrameTitleButton.BgColor		"ControlBG"
+		FrameTitleButton.DisabledFgColor	"TitleDimText"
+		FrameTitleButton.DisabledBgColor	"TitleDimBG"
+		FrameSystemButton.FgColor		"TitleBG"
+		FrameSystemButton.BgColor		"TitleBG"
+		FrameSystemButton.Icon			"resource/r1icon"
+		FrameSystemButton.DisabledIcon	"resource/r1icon"
+		FrameTitleBar.TextColor			"TitleText"
+		FrameTitleBar.BgColor			"TitleBG"
+		FrameTitleBar.DisabledTextColor	"TitleText"
+		FrameTitleBar.DisabledBgColor	"TitleBG"
 
-		GraphPanel.FgColor					"White"
-		GraphPanel.BgColor					"TransparentBlack"
+		GraphPanel.FgColor				"Black"
+		GraphPanel.BgColor				"TitleBG"
 
-		Label.TextDullColor					"DullWhite"
-		Label.TextColor						"OffWhite"
-		Label.TextBrightColor				"White"
-		Label.SelectedTextColor				"White"
-		Label.BgColor						"Blank"
-		Label.DisabledFgColor1				"117 117 117 255"
-		Label.DisabledFgColor2				"30 30 30 255"
+		Label.TextDullColor				"DimBaseText"
+		Label.TextColor					"ControlText"
+		Label.TextBrightColor			"BrightBaseText"
+		Label.SelectedTextColor			"BrightControlText"
+		Label.BgColor					"ControlBG"
+		Label.DisabledFgColor1			"DisabledText1"	
+		Label.DisabledFgColor2			"DisabledText2"	
 
-		ListPanel.TextColor					"OffWhite"
-		ListPanel.TextBgColor				"Blank"
-		ListPanel.BgColor					"TransparentBlack"
-		ListPanel.SelectedTextColor			"Black"
-		ListPanel.SelectedBgColor			"Selection"
-		ListPanel.SelectedOutOfFocusBgColor	"55 23 200 128"
-		ListPanel.EmptyListInfoTextColor	"OffWhite"
+		ListPanel.TextColor					"BaseText"
+		ListPanel.BgColor					"ListBG"
+		ListPanel.SelectedTextColor			"BrightBaseText"
+		ListPanel.SelectedBgColor			"SelectionBG"
+		ListPanel.SelectedOutOfFocusBgColor	"SelectionBG2"
+		ListPanel.EmptyListInfoTextColor	"DimBaseText"
 
-		Menu.TextColor						"OffWhite"
-		Menu.BgColor						"80 80 80 255"
-		Menu.ArmedTextColor					"OffWhite"
-		Menu.ArmedBgColor					"Selection"
-		Menu.TextInset						"6"
+		Menu.TextInset					"6"
+		Menu.FgColor			"DimBaseText"
+		Menu.BgColor			"ControlBG"
+		Menu.ArmedFgColor		"BrightBaseText"
+		Menu.ArmedBgColor		"SelectionBG"
+		Menu.DividerColor		"BorderDark"
 
-		Panel.FgColor						"DullWhite"
-		Panel.BgColor						"Blank"
+		Panel.FgColor					"BorderSelection"
+		Panel.BgColor					"ControlBG"
 
-		ProgressBar.FgColor					"White"
-		ProgressBar.BgColor					"TransparentBlack"
+		ProgressBar.FgColor				"Label.FgColor"
+		ProgressBar.BgColor				"Label.BgColor"
 
-		PropertySheet.TextColor				"OffWhite"
-		PropertySheet.SelectedTextColor		"White"
-		PropertySheet.TransitionEffectTime	"0.25"	// time to change from one tab to another
+		PropertySheet.TextColor			"ControlText"
+		PropertySheet.SelectedTextColor		"BrightControlText"
+		PropertySheet.TransitionEffectTime	"0"	// time to change from one tab to another
 
-		RadioButton.TextColor				"OffWhite"
-		RadioButton.SelectedTextColor		"OffWhite"
+		RadioButton.TextColor			"ToggleButton.TextColor"
+		RadioButton.SelectedTextColor		"ToggleButton.SelectedTextColor"
 
-		RichText.TextColor					"OffWhite"
-		RichText.BgColor					"0 0 0 255"
-		RichText.SelectedTextColor			"OffWhite"
-		RichText.SelectedBgColor			"Selection"
+		RichText.TextColor				"TextEntry.TextColor"
+		RichText.BgColor				"TextEntry.BgColor"
+		RichText.SelectedTextColor		"TextEntry.SelectedTextColor"
+		RichText.SelectedBgColor		"SelectionBG"
 
-		ScrollBar.Wide						17
-	  	ScrollBarNobBorder.Outer 			"ScrollBarDark"
-		ScrollBarNobBorder.Inner 			"ScrollBarGrey"
-		ScrollBarNobBorderHover.Inner 		"ScrollBarGrey"
-		ScrollBarNobBorderDragging.Inner 	"ScrollBarHilight"
+		ScrollBar.Wide					17
 
-		ScrollBarButton.FgColor				"ScrollBarHilight"
-		ScrollBarButton.BgColor				"ScrollBarGrey"
-		ScrollBarButton.ArmedFgColor		"ScrollBarHilight"
-		ScrollBarButton.ArmedBgColor		"ScrollBarGrey"
-		ScrollBarButton.DepressedFgColor	"ScrollBarHilight"
-		ScrollBarButton.DepressedBgColor	"ScrollBarGrey"
+		ScrollBarButton.FgColor				"ControlText"
+		ScrollBarButton.BgColor				"ControlDarkBG"
+		ScrollBarButton.ArmedFgColor		"BrightBaseText"
+		ScrollBarButton.ArmedBgColor		"ControlDarkBG"
+		ScrollBarButton.DepressedFgColor	"BrightBaseText"
+		ScrollBarButton.DepressedBgColor	"ControlDarkBG"
 
-		ScrollBarSlider.Inset				1					// Number of pixels to inset scroll bar nob
-		ScrollBarSlider.FgColor				"ScrollBarGrey"		// nob color
-		ScrollBarSlider.BgColor				"ScrollBarDark"		// slider background color
-		ScrollBarSlider.NobFocusColor		"ScrollBarHilight"	// nob mouseover color
-		ScrollBarSlider.NobDragColor		"ScrollBarHilight"	// nob active drag color
+		ScrollBarSlider.BgColor				"ControlDarkBG"		// this isn't really used
+		ScrollBarSlider.FgColor				"ControlBG"		// handle with which the slider is grabbed
 
-		SectionedListPanel.HeaderTextColor				"White"
-		SectionedListPanel.HeaderBgColor				"Blank"
-		SectionedListPanel.DividerColor					"Black"
-		SectionedListPanel.TextColor					"DullWhite"
-		SectionedListPanel.BrightTextColor				"White"
-		SectionedListPanel.BgColor						"TransparentBlack"
-		SectionedListPanel.SelectedTextColor			"Black"
-		SectionedListPanel.SelectedBgColor				"Selection"
-		SectionedListPanel.OutOfFocusSelectedTextColor	"Black"
-		SectionedListPanel.OutOfFocusSelectedBgColor	"255 155 0 128"
+//		SectionedListPanel.HeaderTextColor	"White"
+//		SectionedListPanel.HeaderBgColor	"Blank"
+//		SectionedListPanel.DividerColor		"Black"
+//		SectionedListPanel.TextColor		"DullWhite"
+//		SectionedListPanel.BrightTextColor	"White"
+//		SectionedListPanel.BgColor			"TransparentBlack"
+//		SectionedListPanel.SelectedTextColor			"Black"
+//		SectionedListPanel.SelectedBgColor				"255 155 0 255"
+//		SectionedListPanel.OutOfFocusSelectedTextColor	"Black"
+//		SectionedListPanel.OutOfFocusSelectedBgColor	"255 155 0 128"
 
-		Slider.NobColor						"108 108 108 255"
-		Slider.NobFocusColor				"200 200 200 255"
-		Slider.TextColor					"180 180 180 255"
-		Slider.TrackColor					"31 31 31 255"
-		Slider.DisabledTextColor1			"117 117 117 255"
-		Slider.DisabledTextColor2			"30 30 30 255"
+		Slider.NobColor				"ControlDarkBG"		
+		Slider.TextColor			"ControlBG"
+		Slider.TrackColor			"ControlDarkBG"
+//		Slider.DisabledTextColor1	"117 117 117 255"
+//		Slider.DisabledTextColor2	"30 30 30 255"
 
-		TextEntry.TextColor					"OffWhite"
-		TextEntry.BgColor					"TransparentBlack"
-		TextEntry.CursorColor				"OffWhite"
-		TextEntry.DisabledTextColor			"DullWhite"
-		TextEntry.DisabledBgColor			"Blank"
-		TextEntry.SelectedTextColor			"OffWhite"
-		TextEntry.SelectedBgColor			"Selection"
-		TextEntry.FocusedBgColor			"TransparentBlack"
-		TextEntry.OutOfFocusSelectedBgColor	"55 23 200 128"
-		TextEntry.FocusEdgeColor			"0 0 0 196"
+		TextEntry.TextColor			"ControlText"
+		TextEntry.BgColor			"ListBG"
+		TextEntry.CursorColor		"Label.CursoColor"
+		TextEntry.DisabledTextColor	"DimBaseText"
+		TextEntry.DisabledBgColor	"ControlBG"
+		TextEntry.SelectedTextColor	"SelectedText"
+		TextEntry.SelectedBgColor	"SelectionBG"
+		TextEntry.OutOfFocusSelectedBgColor	"SelectionBG2"
+		TextEntry.FocusEdgeColor	"SelectionBG"
 
-		ToggleButton.SelectedTextColor		"White"
+		ToggleButton.SelectedTextColor	"Label.SelectedTextColor"
 
-		Tooltip.TextColor					"0 0 0 196"
-		Tooltip.BgColor						"Selection"
+//		Tooltip.TextColor			"0 0 0 196"
+//		Tooltip.BgColor				"255 155 0 255"
 
-		TreeView.BgColor					"TransparentBlack"
+		TreeView.BgColor			"WindowBG"
 
-		WizardSubPanel.BgColor				"Blank"
+		Console.TextColor			"BaseText"
+		Console.SelectedTextColor 	"SelectedText"
+		Console.SelectedBgColor		"SelectionBG"
 
-		// scheme-specific colors
-		MainMenu.TextColor					"White"
-		MainMenu.ArmedTextColor				"200 200 200 255"
-		MainMenu.DepressedTextColor			"192 186 80 255"
-		MainMenu.MenuItemHeight				"30"
-		MainMenu.MenuItemHeight_hidef		"32"				[$GAMECONSOLE]
-		MainMenu.Inset						"32"
-		MainMenu.Backdrop					"0 0 0 156"
-
-		Console.TextColor					"OffWhite"
-		Console.DevTextColor				"White"
-
-		NewGame.TextColor					"White"
-		NewGame.FillColor					"0 0 0 255"
-		NewGame.SelectionColor				"Selection"
-		NewGame.DisabledColor				"128 128 128 196"
-
-		MessageDialog.MatchmakingBG			"46 43 42 255"	[$GAMECONSOLE]
-		MessageDialog.MatchmakingBGBlack	"22 22 22 255"	[$GAMECONSOLE]
-
-		MatchmakingMenuItemTitleColor		"200 184 151 255"	[$GAMECONSOLE]
-		MatchmakingMenuItemDescriptionColor	"200 184 151 255"	[$GAMECONSOLE]
+		WizardSubPanel.BgColor		"ControlBG"
 	}
 
-	InheritableProperties
-	{
-		// this is where you setup InheritableProperties for HudMain.res.
-//		LeaguePointsSpinner
-//		{
-//			xpos			0
-//			ypos			0
-//			wide			32
-//			tall			32
-//			visible			0
-//			image			HUD/star_spinner
-//			scaleImage		1
-//			zpos			149
-//		}
-	}
-
+	//
 	//////////////////////// FONTS /////////////////////////////
 	//
 	// describes all the fonts
@@ -242,67 +222,38 @@ Scheme
 		// fonts are used in order that they are listed
 		// fonts listed later in the order will only be used if they fulfill a range not already filled
 		// if a font fails to load then the subsequent fonts will replace
-
+		// fonts are used in order that they are listed
 		"DebugFixed"
 		{
 			"1"
 			{
-				"name"		"Lucida Console"
-				"tall"		"10"			[!$GAMECONSOLE]
-				"tall"		"14"			[$GAMECONSOLE]
+				"name"		"Courier New"
+				"tall"		"10"
+				"weight"	"500"
 				"antialias" "1"
 			}
 		}
-
+		// fonts are used in order that they are listed
 		"DebugFixedSmall"
 		{
 			"1"
 			{
-				"name"		"Lucida Console"
-				"tall"		"7"				[!$GAMECONSOLE]
-				"tall"		"10"			[$GAMECONSOLE]
+				"name"		"Courier New"
+				"tall"		"7"
+				"weight"	"500"
 				"antialias" "1"
 			}
 		}
-
 		"DefaultFixedOutline"
 		{
 			"1"
 			{
 				"name"		"Lucida Console"
-				"tall"		"10"			[!$GAMECONSOLE]
-				"tall"		"14"			[$GAMECONSOLE]
+				"tall"		"10"
 				"weight"	"0"
-				"antialias"	"1"
 				"outline"	"1"
 			}
 		}
-
-		"DefaultFixed"
-		{
-			"1"
-			{
-				"name"		"Lucida Console"
-				"tall"		"10"			[!$GAMECONSOLE]
-				"tall"		"14"			[$GAMECONSOLE]
-				"weight"	"0"
-				"antialias" "1"
-			}
-		}
-
-		"DefaultFixedDropShadow"
-		{
-			"1"
-			{
-				"name"		"Lucida Console"
-				"tall"		"10"			[!$GAMECONSOLE]
-				"tall"		"14"			[$GAMECONSOLE]
-				"weight"	"0"
-				"antialias" "1"
-				"dropshadow" "1"
-			}
-		}
-
 		"Default"
 		{
 			"1"
@@ -312,7 +263,6 @@ Scheme
 				"weight"	"500"
 			}
 		}
-
 		"DefaultBold"
 		{
 			"1"
@@ -322,7 +272,6 @@ Scheme
 				"weight"	"1000"
 			}
 		}
-
 		"DefaultUnderline"
 		{
 			"1"
@@ -333,27 +282,15 @@ Scheme
 				"underline" "1"
 			}
 		}
-
-		// "Almost" dev only. ListPanels use this which we are showing on the datacenter dialog.
-		// TODO: Make the ListPanel and console use different font definitions.
 		"DefaultSmall"
 		{
 			"1"
 			{
-				//"name"		"Lucida Console"
-				"name"		"ConduitITCPro-Medium" [!$RUSSIAN && !$JAPANESE && !$KOREAN && !$TCHINESE]
-				"tall"		"17"             [!$RUSSIAN && !$JAPANESE && !$KOREAN && !$TCHINESE]
-
-				"name"		"PFDinTextCondPro-Light" [$RUSSIAN]
-				"tall"		"18"                     [$RUSSIAN]
-
-				"name"		"arial unicode ms" [$JAPANESE || $KOREAN || $TCHINESE]
-				"tall"		"18"               [$JAPANESE || $KOREAN || $TCHINESE]
-
-				"antialias" "1"
+				"name"		"Tahoma"
+				"tall"		"13"
+				"weight"	"0"
 			}
 		}
-
 		"DefaultSmallDropShadow"
 		{
 			"1"
@@ -361,10 +298,9 @@ Scheme
 				"name"		"Tahoma"
 				"tall"		"13"
 				"weight"	"0"
-				"dropshadow" "1"
+				"dropshadow" "0"
 			}
 		}
-
 		"DefaultVerySmall"
 		{
 			"1"
@@ -384,12 +320,20 @@ Scheme
 				"weight"	"0"
 			}
 		}
-
-		"MenuLarge"
+		"UiBold"
 		{
 			"1"
 			{
 				"name"		"Tahoma"
+				"tall"		"12"
+				"weight"	"1000"
+			}
+		}
+		"MenuLarge"
+		{
+			"1"
+			{
+				"name"		"Verdana"
 				"tall"		"16"
 				"weight"	"600"
 				"antialias" "1"
@@ -401,8 +345,8 @@ Scheme
 			"1"
 			{
 				"name"		"Lucida Console"
-				"tall"		"14"
-				"antialias" "1"
+				"tall"		"10"
+				"weight"	"500"
 			}
 		}
 
@@ -418,76 +362,186 @@ Scheme
 			}
 		}
 
-		// HUD numbers
-		// We use multiple fonts to 'pulse' them in the HUD, hence the need for many of near size
-		"HUDNumber" [!$GAMECONSOLE]
+		"Trebuchet24"
 		{
 			"1"
 			{
-				"name"		"ConduitITCPro-Medium"
+				"name"		"Trebuchet MS"
+				"tall"		"24"
+				"weight"	"900"
+			}
+		}
+
+
+		"Trebuchet20"
+		{
+			"1"
+			{
+				"name"		"Trebuchet MS"
+				"tall"		"20"
+				"weight"	"900"
+			}
+		}
+
+		"Trebuchet18"
+		{
+			"1"
+			{
+				"name"		"Trebuchet MS"
+				"tall"		"18"
+				"weight"	"900"
+			}
+		}
+
+		// HUD numbers
+		// We use multiple fonts to 'pulse' them in the HUD, hence the need for many of near size
+		"HUDNumber"
+		{
+			"1"
+			{
+				"name"		"Trebuchet MS"
 				"tall"		"40"
 				"weight"	"900"
 			}
 		}
-
-		"HUDNumber1" [!$GAMECONSOLE]
+		"HUDNumber1"
 		{
 			"1"
 			{
-				"name"		"ConduitITCPro-Medium"
+				"name"		"Trebuchet MS"
 				"tall"		"41"
 				"weight"	"900"
 			}
 		}
-
-		"HUDNumber2" [!$GAMECONSOLE]
+		"HUDNumber2"
 		{
 			"1"
 			{
-				"name"		"ConduitITCPro-Medium"
+				"name"		"Trebuchet MS"
 				"tall"		"42"
 				"weight"	"900"
 			}
 		}
-
-		"HUDNumber3" [!$GAMECONSOLE]
+		"HUDNumber3"
 		{
 			"1"
 			{
-				"name"		"ConduitITCPro-Medium"
+				"name"		"Trebuchet MS"
 				"tall"		"43"
 				"weight"	"900"
 			}
 		}
-
-		"HUDNumber4" [!$GAMECONSOLE]
+		"HUDNumber4"
 		{
 			"1"
 			{
-				"name"		"ConduitITCPro-Medium"
+				"name"		"Trebuchet MS"
 				"tall"		"44"
 				"weight"	"900"
 			}
 		}
-
-		"HUDNumber5" [!$GAMECONSOLE]
+		"HUDNumber5"
 		{
 			"1"
 			{
-				"name"		"ConduitITCPro-Medium"
+				"name"		"Trebuchet MS"
 				"tall"		"45"
 				"weight"	"900"
 			}
 		}
-
-		CloseCaption_StartupMovie
+		"DefaultFixed"
 		{
-			1
+			"1"
 			{
-				name		ConduitITCPro-Medium
-				tall		18
-				weight		500
-				antialias	1
+				"name"		"Lucida Console"
+				"tall"		"10"
+				"weight"	"0"
+			}
+//			"1"
+//			{
+//				"name"		"FixedSys"
+//				"tall"		"20"
+//				"weight"	"0"
+//			}
+		}
+
+		"DefaultFixedDropShadow"
+		{
+			"1"
+			{
+				"name"		"Lucida Console"
+				"tall"		"10"
+				"weight"	"0"
+				"dropshadow" "0"
+			}
+//			"1"
+//			{
+//				"name"		"FixedSys"
+//				"tall"		"20"
+//				"weight"	"0"
+//			}
+		}
+
+		"CloseCaption_Normal"
+		{
+			"1"
+			{
+				"name"		"Tahoma"
+				"tall"		"16"
+				"weight"	"500"
+			}
+		}
+		"CloseCaption_Italic"
+		{
+			"1"
+			{
+				"name"		"Tahoma"
+				"tall"		"16"
+				"weight"	"500"
+				"italic"	"1"
+			}
+		}
+		"CloseCaption_Bold"
+		{
+			"1"
+			{
+				"name"		"Tahoma"
+				"tall"		"16"
+				"weight"	"900"
+			}
+		}
+		"CloseCaption_BoldItalic"
+		{
+			"1"
+			{
+				"name"		"Tahoma"
+				"tall"		"16"
+				"weight"	"900"
+				"italic"	"1"
+			}
+		}
+
+		TitleFont
+		{
+			"1"
+			{
+				"name"		"HalfLife2"
+				"tall"		"72"
+				"weight"	"400"
+				"antialias"	"1"
+				"custom"	"1"
+			}
+		}
+
+		TitleFont2
+		{
+			"1"
+			{
+				"name"		"HalfLife2"
+				"tall"		"120"
+				"weight"	"400"
+				"antialias"	"1"
+				"custom"	"1"
 			}
 		}
 	}
@@ -498,17 +552,102 @@ Scheme
 	// describes all the border types
 	Borders
 	{
-		BaseBorder		DepressedBorder
+		BaseBorder		InsetBorder
 		ButtonBorder	RaisedBorder
-		ComboBoxBorder	DepressedBorder
+		ComboBoxBorder	InsetBorder
 		MenuBorder		RaisedBorder
-		BrowserBorder	DepressedBorder
+		BrowserBorder	InsetBorder
 		PropertySheetBorder	RaisedBorder
+		TabBorder		RaisedBorder
+		CheckBorder InsetBorder
+		FrameBorder	RaisedBorder
 
-		FrameBorder
+		TitleButtonBorder	RaisedBorder
+		TitleButtonDepressedBorder InsetBorder
+		TitleButtonDisabledBorder
 		{
-			// rounded corners for frames
-			"backgroundtype" "2"
+			"backgroundtype" "0"
+		}
+
+
+		ScrollBarButtonBorder
+		{
+			"inset" "1 0 0 0"
+			Left
+			{
+				"1"
+				{
+					"color" "BorderBright"
+					"offset" "0 1"
+				}
+			}
+
+			Right
+			{
+				"1"
+				{
+					"color" "BorderDark"
+					"offset" "1 0"
+				}
+			}
+
+			Top
+			{
+				"1"
+				{
+					"color" "BorderBright"
+					"offset" "0 0"
+				}
+			}
+
+			Bottom
+			{
+				"1"
+				{
+					"color" "BorderDark"
+					"offset" "0 0"
+				}
+			}
+		}
+
+		InsetBorder
+		{
+			"inset" "0 0 1 1"
+			Right
+			{
+				"1"
+				{
+					"color" "Border.Bright"
+					"offset" "0 1"
+				}
+			}
+
+			Left
+			{
+				"1"
+				{
+					"color" "Border.Dark"
+					"offset" "1 0"
+				}
+			}
+
+			Bottom
+			{
+				"1"
+				{
+					"color" "Border.Bright"
+					"offset" "0 0"
+				}
+			}
+
+			Top
+			{
+				"1"
+				{
+					"color" "Border.Dark"
+					"offset" "0 0"
+				}
+			}
 		}
 
 		DepressedBorder
@@ -518,7 +657,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "0 1"
 				}
 			}
@@ -527,7 +666,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Bright"
+					"color" "Border.Dark"
 					"offset" "1 0"
 				}
 			}
@@ -536,7 +675,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "0 0"
 				}
 			}
@@ -545,7 +684,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Bright"
+					"color" "Border.Dark"
 					"offset" "0 0"
 				}
 			}
@@ -553,20 +692,20 @@ Scheme
 		RaisedBorder
 		{
 			"inset" "0 0 1 1"
-			Left
-			{
-				"1"
-				{
-					"color" "Border.Bright"
-					"offset" "0 1"
-				}
-			}
-
 			Right
 			{
 				"1"
 				{
 					"color" "Border.Dark"
+					"offset" "0 1"
+				}
+			}
+
+			Left
+			{
+				"1"
+				{
+					"color" "Border.Bright"
 					"offset" "0 0"
 				}
 			}
@@ -589,22 +728,7 @@ Scheme
 				}
 			}
 		}
-
-		TitleButtonBorder
-		{
-			"backgroundtype" "0"
-		}
-
-		TitleButtonDisabledBorder
-		{
-			"backgroundtype" "0"
-		}
-
-		TitleButtonDepressedBorder
-		{
-			"backgroundtype" "0"
-		}
-
+		
 		ScrollBarButtonBorder
 		{
 			"inset" "2 2 0 0"
@@ -621,7 +745,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "1 0"
 				}
 			}
@@ -639,12 +763,12 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "0 0"
 				}
 			}
 		}
-
+		
 		ScrollBarButtonDepressedBorder
 		{
 			"inset" "2 2 0 0"
@@ -685,81 +809,6 @@ Scheme
 			}
 		}
 
-		ScrollBarSliderBorder
-		{
-			"inset" "2 2 0 0"
-			Left
-			{
-				"1"
-				{
-					"color" "ScrollBarHilight"
-					"offset" "0 1"
-				}
-			}
-
-			Right
-			{
-				"1"
-				{
-					"color" "ScrollBarDark"
-					"offset" "1 0"
-				}
-			}
-
-			Top
-			{
-				"1"
-				{
-					"color" "ScrollBarHilight"
-					"offset" "0 0"
-				}
-			}
-
-			Bottom
-			{
-				"1"
-				{
-					"color" "ScrollBarDark"
-					"offset" "0 0"
-				}
-			}
-		}
-
-		ScrollBarSliderBorderHover ScrollBarSliderBorder
-		ScrollBarSliderBorderDragging ScrollBarSliderBorder
-
-		TabBorder
-		{
-			"inset" "0 0 1 1"
-			Left
-			{
-				"1"
-				{
-					"color" "Border.Bright"
-					"offset" "0 1"
-				}
-			}
-
-			Right
-			{
-				"1"
-				{
-					"color" "Border.Dark"
-					"offset" "1 0"
-				}
-			}
-
-			Top
-			{
-				"1"
-				{
-					"color" "Border.Bright"
-					"offset" "0 0"
-				}
-			}
-
-		}
-
 		TabActiveBorder
 		{
 			"inset" "0 0 1 0"
@@ -789,7 +838,9 @@ Scheme
 					"offset" "0 0"
 				}
 			}
+
 		}
+
 
 		ToolTipBorder
 		{
@@ -798,7 +849,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "0 0"
 				}
 			}
@@ -807,7 +858,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "1 0"
 				}
 			}
@@ -816,7 +867,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "0 0"
 				}
 			}
@@ -825,7 +876,7 @@ Scheme
 			{
 				"1"
 				{
-					"color" "Border.Dark"
+					"color" "Border.Bright"
 					"offset" "0 0"
 				}
 			}
@@ -835,6 +886,32 @@ Scheme
 		ButtonKeyFocusBorder
 		{
 			"inset" "0 0 1 1"
+			Right
+			{
+				"1"
+				{
+					"color" "Border.Selection"
+					"offset" "0 0"
+				}
+				"2"
+				{
+					"color" "Border.Dark"
+					"offset" "1 1"
+				}
+			}
+			Bottom
+			{
+				"1"
+				{
+					"color" "Border.Selection"
+					"offset" "0 0"
+				}
+				"2"
+				{
+					"color" "Border.Dark"
+					"offset" "1 1"
+				}
+			}
 			Left
 			{
 				"1"
@@ -845,7 +922,7 @@ Scheme
 				"2"
 				{
 					"color" "Border.Bright"
-					"offset" "0 1"
+					"offset" "1 0"
 				}
 			}
 			Top
@@ -859,32 +936,6 @@ Scheme
 				{
 					"color" "Border.Bright"
 					"offset" "1 0"
-				}
-			}
-			Right
-			{
-				"1"
-				{
-					"color" "Border.Selection"
-					"offset" "0 0"
-				}
-				"2"
-				{
-					"color" "Border.Dark"
-					"offset" "1 0"
-				}
-			}
-			Bottom
-			{
-				"1"
-				{
-					"color" "Border.Selection"
-					"offset" "0 0"
-				}
-				"2"
-				{
-					"color" "Border.Dark"
-					"offset" "0 0"
 				}
 			}
 		}
@@ -892,30 +943,21 @@ Scheme
 		ButtonDepressedBorder
 		{
 			"inset" "2 1 1 1"
-			Left
-			{
-				"1"
-				{
-					"color" "Border.Dark"
-					"offset" "0 1"
-				}
-			}
-
 			Right
 			{
 				"1"
 				{
 					"color" "Border.Bright"
-					"offset" "1 0"
+					"offset" "1 1"
 				}
 			}
 
-			Top
+			Left
 			{
 				"1"
 				{
 					"color" "Border.Dark"
-					"offset" "0 0"
+					"offset" "1 0"
 				}
 			}
 
@@ -927,28 +969,25 @@ Scheme
 					"offset" "0 0"
 				}
 			}
+
+			Top
+			{
+				"1"
+				{
+					"color" "Border.Dark"
+					"offset" "0 0"
+				}
+			}
 		}
 	}
 
+	//////////////////////// CUSTOM FONT FILES /////////////////////////////
+	//
+	// specifies all the custom (non-system) font files that need to be loaded to service the above described fonts
 	CustomFontFiles
 	{
-		1		"resource/ConduitITCPro-Medium.vfont"
-		2		"resource/ConduitITCPro-Bold.vfont"
-		3 		"resource/PFDinTextCondPro-Light.vfont"
-		4 		"resource/PFDinTextCondPro-Medium.vfont"
-		5 		"resource/arialuni.vfont" [$WINDOWS]
-	}
-
-	FontRemap
-	{
-		"ConduitITCPro-Medium"	"PFDinTextCondPro-Light" [$RUSSIAN]
-		"ConduitITCPro-Bold"	"PFDinTextCondPro-Medium" [$RUSSIAN]
-
-		"ConduitITCPro-Medium"	"arial unicode ms" [$JAPANESE || $KOREAN || $TCHINESE]
-		"ConduitITCPro-Bold"	"arial unicode ms" [$JAPANESE || $KOREAN || $TCHINESE]
-
-		// Dev only fonts
-		"Tahoma"				"ConduitITCPro-Medium" [$GAMECONSOLE]
-		"Lucida Console"		"ConduitITCPro-Medium" [$GAMECONSOLE]
+		"1"		"resource/HALFLIFE2.ttf"
+	
 	}
 }
+ 

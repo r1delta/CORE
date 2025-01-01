@@ -1,0 +1,18 @@
+// The format in these blocks mimic the stuff in gameinfo.txt that the dedicated server looks for.
+// The only addition is "gamedir", which the dedicated server uses as a unique ID for the game.
+respawn_games
+{
+	"1"
+	{
+		"gamedir"				"r1delta"
+
+		Game					"R1Delta"
+		DedicatedServerStartMap	"mp_box"
+		type					"both"
+		
+		FileSystem
+		{
+			SteamAppId			999992
+		}
+	}
+}
