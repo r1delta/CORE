@@ -2046,6 +2046,12 @@ function ReadyToStart()
 	// if ( playerSpread > minPlayersSpread )
 	// 	return false
 
+    // Require more than 1 player total
+    local totalPlayers = GetTeamPlayerCount( TEAM_IMC ) + GetTeamPlayerCount( TEAM_MILITIA )
+    if ( totalPlayers <= 1 )
+        return false
+
+
 	return true
 }
 
