@@ -177,3 +177,5 @@ engine_ds.dll,text,0x5E560,48,C3
 engine_ds.dll,text,0xB9807,7C 67,90 90
 ; rip out this nullsub call when servergamedll is null
 engine_ds.dll,text,0xB981C,48,EB 11
+; always put on smallest team
+engine_ds.dll,text,0x40B2C,79 44,EB 17
