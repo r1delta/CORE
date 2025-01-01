@@ -2,7 +2,7 @@
 /addons/*/
 net_stats_per_frame.txt
 addonlist.txt
-
+bin/x64_delta/tier0.*
 *.id0
 *.id1
 *.id2
