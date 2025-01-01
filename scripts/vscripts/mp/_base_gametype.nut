@@ -999,11 +999,7 @@ function PostDeathThread( player, damageInfo )
 	if ( !IsValid( player ) )
 		return
 
-	if ( IsValid( attacker ) )
-	{
-		MessageToPlayer( attacker, eEventNotifications.Rematch, attacker.GetEncodedEHandle() )
-	}
-
+	
 	// standard delay to this point is ~7.5 seconds
 	WaitForRespawnDelay( player, timeOfDeath )
 
