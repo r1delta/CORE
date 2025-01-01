@@ -1,0 +1,798 @@
+
+function GetLoadoutName( loadout )
+{
+	if ( LoadoutNameIsToken( loadout.name ) )
+		return TranslateTokenToUTF8( loadout.name )
+
+	return loadout.name
+}
+
+/* NOT USED
+function SetTextFromLoadoutName( element, loadout )
+{
+	local text = ""
+
+	if ( loadout )
+		text = GetLoadoutName( loadout )
+
+	element.SetText( text )
+}*/
+
+function SetTextFromItemName( element, ref )
+{
+	local text = ""
+
+	if ( ref )
+		text = GetItemName( ref )
+
+	element.SetText( text )
+}
+
+function SetTextFromItemDescription( element, ref )
+{
+	local text = ""
+
+	if ( ref )
+		text = GetItemDescription( ref )
+
+	element.SetText( text )
+}
+
+function SetTextFromItemLongDescription( element, ref )
+{
+	local text = ""
+
+	if ( ref )
+		text = GetItemLongDescription( ref )
+
+	if ( text == null )
+		element.SetText( "ERROR: NO LONG DESC SPECIFIED" )
+	else
+		element.SetText( text )
+}
+
+function SetTextFromItemAdditionalDescription( element, ref )
+{
+	local text = ""
+
+	if ( ref )
+		text = GetItemAdditionalDescription( ref )
+
+	element.SetText( text )
+}
+
+function SetTextFromItemAdditionalName( element, ref )
+{
+	local text = ""
+
+	if ( ref )
+		text = GetItemAdditionalName( ref )
+
+	element.SetText( text )
+}
+
+function SetImageFromItemImage( element, ref )
+{
+	if ( ref )
+	{
+		element.SetImage( GetItemImage( ref ) )
+		element.Show()
+	}
+	else
+	{
+		element.Hide()
+	}
+}
+
+function SetImageFromItemIcon( element, ref )
+{
+	if ( ref )
+	{
+		element.SetImage( GetItemIcon( ref ) )
+		element.Show()
+	}
+	else
+	{
+		element.Hide()
+	}
+}
+
+function SetBarFromItemDamageStat( panel, ref, modRef = null )
+{
+	local statValue = GetItemDamageStat( ref )
+	if ( statValue == null )
+		statValue = 0
+
+	local modStatValue = 0
+	if ( modRef != null )
+	{
+		modStatValue = GetSubitemDamageStat( ref, modRef )
+		if ( modStatValue == null )
+			modStatValue = 0
+	}
+
+	SetBarFillValue( panel, statValue, modStatValue )
+}
+
+function SetBarFromItemAccuracyStat( panel, ref, modRef = null )
+{
+	local statValue = GetItemAccuracyStat( ref )
+	if ( statValue == null )
+		statValue = 0
+
+	local modStatValue = 0
+	if ( modRef != null )
+	{
+		modStatValue = GetSubitemAccuracyStat( ref, modRef )
+		if ( modStatValue == null )
+			modStatValue = 0
+	}
+
+	SetBarFillValue( panel, statValue, modStatValue )
+}
+
+function SetBarFromItemRangeStat( panel, ref, modRef = null )
+{
+	local statValue = GetItemRangeStat( ref )
+	if ( statValue == null )
+		statValue = 0
+
+	local modStatValue = 0
+	if ( modRef != null )
+	{
+		modStatValue = GetSubitemRangeStat( ref, modRef )
+		if ( modStatValue == null )
+			modStatValue = 0
+	}
+
+	SetBarFillValue( panel, statValue, modStatValue )
+}
+
+function SetBarFromItemFireRateStat( panel, ref, modRef = null )
+{
+	local statValue = GetItemFireRateStat( ref )
+	if ( statValue == null )
+		statValue = 0
+
+	local modStatValue = 0
+	if ( modRef != null )
+	{
+		modStatValue = GetSubitemFireRateStat( ref, modRef )
+		if ( modStatValue == null )
+			modStatValue = 0
+	}
+
+	SetBarFillValue( panel, statValue, modStatValue )
+}
+
+function SetTextFromItemClipSize( element, ref )
+{
+	local text = ""
+
+	if ( ref )
+		text = GetItemClipSize( ref ).tostring()
+
+	element.SetText( text )
+}
+
+function SetTextFromSubItemClipSize( element, ref, modRef )
+{
+	element.SetText( "" )
+	if ( ref && modRef )
+	{
+		local clipDiff = GetSubItemClipSizeStat( ref, modRef )
+		if ( clipDiff == null || clipDiff == 0 )
+			return
+
+		if ( clipDiff > 0 )
+		{
+			element.SetColor( 141, 197, 84, 255 )
+			element.SetText( "#MOD_CLIP_AMMO_INCREASE", clipDiff.tostring() )
+		}
+		else
+		{
+			element.SetColor( 211, 77, 61, 255 )
+			element.SetText( "#MOD_CLIP_AMMO_DECREASE", abs(clipDiff).tostring() )
+		}
+
+	}
+}
+
+function SetTextFromItemDashCount( element, ref )
+{
+	local text = ""
+
+	if ( ref )
+		text = GetItemDashCountStat( ref ).tostring()
+
+	element.SetText( text )
+}
+
+function SetBarFromItemSpeedStat( panel, ref )
+{
+	local statValue = GetItemSpeedStat( ref )
+	if ( statValue == null )
+		statValue = 0
+
+	SetBarFillValue( panel, statValue )
+}
+
+function SetBarFromItemAccelStat( panel, ref )
+{
+	local statValue = GetItemAccelStat( ref )
+	if ( statValue == null )
+		statValue = 0
+
+	SetBarFillValue( panel, statValue )
+}
+
+function SetBarFromItemHealthStat( panel, ref )
+{
+	local statValue = GetItemHealthStat( ref )
+	if ( statValue == null )
+		statValue = 0
+
+	SetBarFillValue( panel, statValue )
+}
+
+function SetBarFillValue( panel, statValue, changeValue = 0 )
+{
+	local barBottom = panel.GetChild( "BarFillBottom" )
+	local barTop = panel.GetChild( "BarFillTop" )
+	local shadow = panel.GetChild( "BarFillShadow" )
+	local frac
+
+	if ( changeValue == 0 )
+	{
+		barBottom.Hide()
+		barTop.SetImage( "../ui/menu/eog/xp_bar" )
+		barTop.Show()
+
+		frac = GraphCapped( statValue, 0, 100, 0.0, 1.0 )
+		barTop.SetScaleX( frac )
+		shadow.SetScaleX( frac )
+	}
+	else if ( changeValue > 0 )
+	{
+		barBottom.SetImage( "../ui/menu/eog/xp_bar_fill_green" )
+		barBottom.Show()
+		barTop.SetImage( "../ui/menu/eog/xp_bar" )
+		barTop.Show()
+
+		frac = GraphCapped( statValue, 0, 100, 0.0, 1.0 )
+		barTop.SetScaleX( frac )
+
+		frac = GraphCapped( statValue + changeValue, 0, 100, 0.0, 1.0 )
+		barBottom.SetScaleX( frac )
+		shadow.SetScaleX( frac )
+	}
+	else if ( changeValue < 0 )
+	{
+		barBottom.SetImage( "../ui/menu/eog/xp_bar_fill_red" )
+		barBottom.Show()
+		barTop.SetImage( "../ui/menu/eog/xp_bar" )
+		barTop.Show()
+
+		frac = GraphCapped( statValue, 0, 100, 0.0, 1.0 )
+		barBottom.SetScaleX( frac )
+		shadow.SetScaleX( frac )
+
+		frac = GraphCapped( statValue + changeValue, 0, 100, 0.0, 1.0 )
+		barTop.SetScaleX( frac )
+	}
+}
+
+function SetTextFromSubitemName( element, parentRef, childRef, defaultText = "" )
+{
+	local text = defaultText
+
+	if ( parentRef && childRef )
+		text = GetSubitemName( parentRef, childRef )
+
+	element.SetText( text )
+}
+
+function SetTextFromSubitemDescription( element, parentRef, childRef, defaultText = "" )
+{
+	local text = defaultText
+
+	if ( parentRef && childRef )
+		text = GetSubitemDescription( parentRef, childRef )
+
+	element.SetText( text )
+}
+
+function SetTextFromSubitemLongDescription( element, parentRef, childRef, defaultText = "" )
+{
+	local text = defaultText
+
+	if ( parentRef && childRef )
+		text = GetSubitemLongDescription( parentRef, childRef )
+
+	if ( text == null )
+		element.SetText( "ERROR: NO LONG DESC SPECIFIED" )
+	else
+		element.SetText( text )
+}
+
+function SetImageFromSubitemImage( element, parentRef, childRef )
+{
+	if ( parentRef && childRef )
+	{
+		element.SetImage( GetSubitemImage( parentRef, childRef ) )
+		element.Show()
+	}
+	else
+	{
+		element.Hide()
+	}
+}
+
+function SetImageFromSubitemIcon( element, parentRef, childRef, defaultIcon = null )
+{
+	if ( parentRef && childRef )
+	{
+		element.SetImage( GetSubitemIcon( parentRef, childRef ) )
+		element.Show()
+	}
+	else
+	{
+		if ( defaultIcon )
+		{
+			element.SetImage( defaultIcon )
+			element.Show()
+		}
+		else
+			element.Hide()
+	}
+}
+
+function SetImageFromItemTeamImages( element, ref, team )
+{
+	if ( ref )
+	{
+		element.SetImage( GetItemTeamImages( ref )[team] )
+		element.Show()
+	}
+	else
+	{
+		element.Hide()
+	}
+}
+
+function SetImageFromItemCoreImage( element, ref )
+{
+	if ( ref )
+	{
+		element.SetImage( GetItemCoreImage( ref ) )
+		element.Show()
+	}
+	else
+	{
+		element.Hide()
+	}
+}
+
+function GetSetFileFromPrimaryWeaponAndPersistentData( ref, isFemale )
+{
+	local setFile
+
+	local bodyType = GetWeaponInfoFileKeyField_Global( ref, "body_type" )
+
+	Assert( bodyType )
+
+	local pilotGenderString
+	if ( isFemale )
+		pilotGenderString = "female"
+	else
+		pilotGenderString = "male"
+
+	local pilotSuffix
+
+	switch ( bodyType )
+	{
+		case "close_quarters":
+			pilotSuffix = "_cq"
+			break
+
+		case "designated_marksman":
+			pilotSuffix = "_dm"
+			break
+
+		case "battle_rifle":
+			pilotSuffix = "_br"
+			break
+
+		default:
+			Assert( 0, "Error, unknown body type " + bodyType )
+	}
+
+	setFile = "pilot_" + pilotGenderString + pilotSuffix
+
+	//printt( "ref: ", ref, " is bodyType: ", bodyType,  " using setFile: ", setFile )
+
+	return setFile
+}
+
+function InitPresetLoadouts()
+{
+	local loadout = {}
+	pilotLoadouts <- []
+	titanLoadouts <- []
+
+	loadout.name <- "#PILOT_PRESET_NAME_1"
+	loadout.ref <- "pilot_preset_loadout_1"
+	loadout.primary <- "mp_weapon_rspn101"
+	loadout.primaryAttachment <- "hcog"
+	loadout.primaryMod <- null
+	loadout.secondary <- "mp_weapon_rocket_launcher"
+	loadout.sidearm <- "mp_weapon_semipistol"
+	loadout.special <- "mp_ability_cloak"
+	loadout.ordnance <- "mp_weapon_frag_grenade"
+	loadout.race <- "race_human_male"
+
+	loadout.passive1 <- "pas_ordnance_pack"
+	loadout.passive2 <- "pas_longer_bubble"
+
+	pilotLoadouts.append( clone loadout )
+
+	loadout.clear()
+	loadout.name <- "#PILOT_PRESET_NAME_2"
+	loadout.ref <- "pilot_preset_loadout_2"
+	loadout.primary <- "mp_weapon_smart_pistol"
+	loadout.primaryAttachment <- null
+	loadout.primaryMod <- "silencer"
+	loadout.secondary <- "mp_weapon_smr"
+	loadout.sidearm <- "mp_weapon_autopistol"
+	loadout.special <- "mp_ability_cloak"
+	loadout.ordnance <- "mp_weapon_frag_grenade"
+	loadout.race <- "race_human_female"
+
+	loadout.passive1 <- "pas_power_cell"
+	loadout.passive2 <- "pas_minimap_ai"
+	pilotLoadouts.append( clone loadout )
+
+	loadout.clear()
+	loadout.name <- "#PILOT_PRESET_NAME_3"
+	loadout.ref <- "pilot_preset_loadout_3"
+	loadout.primary <- "mp_weapon_shotgun"
+	loadout.primaryAttachment <- null
+	loadout.primaryMod <- null
+	loadout.secondary <- "mp_weapon_smr"
+	loadout.sidearm <- "mp_weapon_semipistol"
+	loadout.special <- "mp_ability_cloak"
+	loadout.ordnance <- "mp_weapon_frag_grenade"
+	loadout.race <- "race_human_male"
+
+	loadout.passive1 <- "pas_wall_runner"
+	loadout.passive2 <- "pas_longer_bubble"
+	pilotLoadouts.append( clone loadout )
+
+
+
+
+	loadout.clear()
+	loadout.name <- "#TITAN_PRESET_NAME_1"
+	loadout.ref <- "titan_preset_loadout_1"
+	loadout.setFile <- "titan_atlas"
+	loadout.primary <- "mp_titanweapon_xo16"
+	loadout.primaryAttachment <- null
+	loadout.primaryMod <- null
+	loadout.secondary <- null
+	loadout.special <- "mp_titanweapon_vortex_shield"
+	loadout.ordnance <- "mp_titanweapon_salvo_rockets"
+	loadout.passive1 <- "pas_shield_regen"
+	loadout.passive2 <- "pas_auto_eject"
+	loadout.decal <- null
+	loadout.voiceChoice <- "titanos_betty"
+	titanLoadouts.append( clone loadout )
+
+	loadout.clear()
+	loadout.name <- "#TITAN_PRESET_NAME_2"
+	loadout.ref <- "titan_preset_loadout_2"
+	loadout.setFile <- "titan_ogre"
+	loadout.primary <- "mp_titanweapon_40mm"
+	loadout.primaryAttachment <- null
+	loadout.primaryMod <- null
+	loadout.secondary <- null
+	loadout.special <- "mp_titanweapon_vortex_shield"
+	loadout.ordnance <- "mp_titanweapon_salvo_rockets"
+	loadout.passive1 <- "pas_build_up_nuclear_core"
+	loadout.passive2 <- "pas_doomed_time"
+	loadout.decal <- null
+	loadout.voiceChoice <- "titanos_betty"
+	titanLoadouts.append( clone loadout )
+
+	loadout.clear()
+	loadout.name <- "#TITAN_PRESET_NAME_3"
+	loadout.ref <- "titan_preset_loadout_3"
+	loadout.setFile <- "titan_stryder"
+	loadout.primary <- "mp_titanweapon_rocket_launcher"
+	loadout.primaryAttachment <- null
+	loadout.primaryMod <- null
+	loadout.secondary <- null
+	loadout.special <- "mp_titanweapon_vortex_shield"
+	loadout.ordnance <- "mp_titanweapon_salvo_rockets"
+	loadout.passive1 <- "pas_shield_regen"
+	loadout.passive2 <- "pas_doomed_time"
+	loadout.decal <- null
+	loadout.voiceChoice <- "titanos_betty"
+	titanLoadouts.append( clone loadout )
+}
+
+function InitEmptyCustomLoadouts()
+{
+	customPilotLoadouts <- []
+	customTitanLoadouts <- []
+	for ( local i = 0 ; i < NUM_CUSTOM_LOADOUTS ; i++ )
+	{
+		customPilotLoadouts.append(null)
+		customTitanLoadouts.append(null)
+	}
+}
+function InitCustomLoadouts()
+{
+    EndSignal( uiGlobal.signalDummy, "LevelShutdown" )
+
+    while ( !GetPersistentVar( "previouslyInitialized" ).tointeger() )
+        wait 0
+    while ( GetPersistentVar( "initializedVersion" ).tointeger() < PERSISTENCE_INIT_VERSION )
+        wait 0
+
+    local loadout = {}
+    customPilotLoadouts <- []
+    customTitanLoadouts <- []
+
+    local numModes = PersistenceGetEnumCount( "gameModesWithLoadouts" )
+
+    // Pilot Loadouts
+    for ( local i = 0; i < NUM_CUSTOM_LOADOUTS + (NUM_GAMEMODE_LOADOUTS * numModes); i++ )
+    {
+        loadout.clear()
+        loadout.name <- GetPersistentVar( "pilotLoadouts[" + i + "].name" )
+        loadout.ref <- "pilot_custom_loadout_" + (i + 1)
+        
+        if (i == 0)
+        {
+            loadout.primary <- "mp_weapon_rspn101"
+            loadout.primaryAttachment <- "holosight"
+            loadout.primaryMod <- "extended_ammo"
+            loadout.secondary <- "mp_weapon_mgl"
+            loadout.sidearm <- "mp_weapon_wingman"
+            loadout.special <- "mp_ability_heal"
+            loadout.ordnance <- "mp_weapon_proximity_mine"
+            loadout.race <- "race_human_female"
+            loadout.passive1 <- "pas_power_cell"
+            loadout.passive2 <- "pas_turbo_drop"
+        }
+        else if (i == 1)
+        {
+            loadout.primary <- "mp_weapon_r97"
+            loadout.primaryAttachment <- "hcog"
+            loadout.primaryMod <- "scatterfire"
+            loadout.secondary <- "mp_weapon_mgl"
+            loadout.sidearm <- "mp_weapon_wingman"
+            loadout.special <- "mp_ability_heal"
+            loadout.ordnance <- "mp_weapon_grenade_emp"
+            loadout.race <- "race_human_male"
+            loadout.passive1 <- "pas_run_and_gun"
+            loadout.passive2 <- "pas_fast_hack"
+        }
+        else if (i == 2)
+        {
+            loadout.primary <- "mp_weapon_sniper"
+            loadout.primaryAttachment <- "aog"
+            loadout.primaryMod <- "extended_ammo"
+            loadout.secondary <- "mp_weapon_mgl"
+            loadout.sidearm <- "mp_weapon_wingman"
+            loadout.special <- "mp_ability_cloak"
+            loadout.ordnance <- "mp_weapon_frag_grenade"
+            loadout.race <- "race_human_female"
+            loadout.passive1 <- "pas_power_cell"
+            loadout.passive2 <- "pas_turbo_drop"
+        }
+        else if (i == 3)
+        {
+            loadout.primary <- "mp_weapon_hemlok"
+            loadout.primaryAttachment <- "hcog"
+            loadout.primaryMod <- "starburst"
+            loadout.secondary <- "mp_weapon_mgl"
+            loadout.sidearm <- "mp_weapon_wingman"
+            loadout.special <- "mp_ability_cloak"
+            loadout.ordnance <- "mp_weapon_frag_grenade"
+            loadout.race <- "race_human_male"
+            loadout.passive1 <- "pas_stealth_movement"
+            loadout.passive2 <- "pas_turbo_drop"
+        }
+        else if (i == 4)
+        {
+            loadout.primary <- "mp_weapon_shotgun"
+            loadout.primaryAttachment <- null
+            loadout.primaryMod <- "extended_ammo"
+            loadout.secondary <- "mp_weapon_mgl"
+            loadout.sidearm <- "mp_weapon_wingman"
+            loadout.special <- "mp_ability_heal"
+            loadout.ordnance <- "mp_weapon_frag_grenade"
+            loadout.race <- "race_human_male"
+            loadout.passive1 <- "pas_power_cell"
+            loadout.passive2 <- "pas_turbo_drop"
+        }
+        else
+        {
+            local presetIndex = i % 2  // 0 for preset 1, 1 for preset 2
+            if (presetIndex == 1)  // Preset 1
+            {
+                loadout = clone customPilotLoadouts[0]
+                loadout.name = "#CUSTOM_PILOT_1"
+                loadout.ref = "pilot_custom_loadout_" + (i + 1)
+            }
+            else  // Preset 2
+            {
+                loadout = clone customPilotLoadouts[1]
+                loadout.name = "#CUSTOM_PILOT_2"
+                loadout.ref = "pilot_custom_loadout_" + (i + 1)
+            }
+        }
+        
+        customPilotLoadouts.append( clone loadout )
+    }
+
+    // Titan Loadouts
+    for ( local i = 0; i < NUM_CUSTOM_LOADOUTS + (NUM_GAMEMODE_LOADOUTS * numModes); i++ )
+    {
+        loadout.clear()
+        loadout.name <- GetPersistentVar( "titanLoadouts[" + i + "].name" )
+        loadout.ref <- "titan_custom_loadout_" + (i + 1)
+        loadout.primaryAttachment <- null
+        loadout.secondary <- null
+        
+        if (i == 0)
+        {
+            loadout.setFile <- "titan_atlas"
+            loadout.primary <- "mp_titanweapon_arc_cannon"
+            loadout.primaryMod <- "capacitor"
+            loadout.special <- "mp_titanability_bubble_shield"
+            loadout.ordnance <- "mp_titanweapon_shoulder_rockets"
+            loadout.passive1 <- "pas_defensive_core"
+            loadout.passive2 <- "pas_hyper_core"
+            loadout.decal <- "titan_decal_gen1"
+            loadout.voiceChoice <- "titanos_betty"
+        }
+        else if (i == 1)
+        {
+            loadout.setFile <- "titan_atlas"
+            loadout.primary <- "mp_titanweapon_triple_threat"
+            loadout.primaryMod <- "extended_ammo"
+            loadout.special <- "mp_titanability_bubble_shield"
+            loadout.ordnance <- "mp_titanweapon_dumbfire_rockets"
+            loadout.passive1 <- "pas_defensive_core"
+            loadout.passive2 <- "pas_hyper_core"
+            loadout.decal <- "titan_decal_gen2"
+            loadout.voiceChoice <- "titanos_femaleaudinav"
+        }
+        else if (i == 2)
+        {
+            loadout.setFile <- "titan_atlas"
+            loadout.primary <- "mp_titanweapon_40mm"
+            loadout.primaryMod <- "extended_ammo"
+            loadout.special <- "mp_titanability_smoke"
+            loadout.ordnance <- "mp_titanweapon_dumbfire_rockets"
+            loadout.passive1 <- "pas_assault_reactor"
+            loadout.passive2 <- "pas_hyper_core"
+            loadout.decal <- "titan_decal_gen3"
+            loadout.voiceChoice <- "titanos_malebutler"
+        }
+        else if (i == 3)
+        {
+            loadout.setFile <- "titan_ogre"
+            loadout.primary <- "mp_titanweapon_triple_threat"
+            loadout.primaryMod <- "extended_ammo"
+            loadout.special <- "mp_titanweapon_vortex_shield"
+            loadout.ordnance <- "mp_titanweapon_dumbfire_rockets"
+            loadout.passive1 <- "pas_defensive_core"
+            loadout.passive2 <- "pas_hyper_core"
+            loadout.decal <- "titan_decal_gen4"
+            loadout.voiceChoice <- "titanos_femaleassistant"
+        }
+        else if (i == 4)
+        {
+            loadout.setFile <- "titan_stryder"
+            loadout.primary <- "mp_titanweapon_xo16"
+            loadout.primaryMod <- "extended_ammo"
+            loadout.special <- "mp_titanability_smoke"
+            loadout.ordnance <- "mp_titanweapon_dumbfire_rockets"
+            loadout.passive1 <- "pas_dash_recharge"
+            loadout.passive2 <- "pas_titan_punch"
+            loadout.decal <- "titan_decal_gen5"
+            loadout.voiceChoice <- "titanos_maleintimidator"
+        }
+        else
+        {
+            local presetIndex = i % 2  // 0 for preset 1, 1 for preset 2
+            if (presetIndex == 1)  // Preset 1
+            {
+                loadout = clone customTitanLoadouts[0]
+                loadout.name = "#CUSTOM_TITAN_1"
+                loadout.ref = "titan_custom_loadout_" + (i + 1)
+            }
+            else  // Preset 2
+            {
+                loadout = clone customTitanLoadouts[1]
+                loadout.name = "#CUSTOM_TITAN_2"
+                loadout.ref = "titan_custom_loadout_" + (i + 1)
+            }
+        }
+        
+        customTitanLoadouts.append( clone loadout )
+    }
+}
+
+function UI_GetPresetPilotLoadout( loadoutIndex )
+{
+	if ( loadoutIndex >= pilotLoadouts.len() )
+		return null
+
+	return pilotLoadouts[loadoutIndex]
+}
+
+function UI_GetCustomPilotLoadout( loadoutIndex )
+{
+	if ( loadoutIndex >= customPilotLoadouts.len() )
+		return null
+
+	return customPilotLoadouts[loadoutIndex]
+}
+
+function UI_GetPresetTitanLoadout( loadoutIndex )
+{
+	if ( loadoutIndex >= titanLoadouts.len() )
+		return null
+
+	return titanLoadouts[loadoutIndex]
+}
+
+function UI_GetCustomTitanLoadout( loadoutIndex )
+{
+	if ( loadoutIndex >= customTitanLoadouts.len() )
+		return null
+
+	return customTitanLoadouts[loadoutIndex]
+}
+
+function UI_GetPresetPilotLoadouts()
+{
+	return pilotLoadouts
+}
+
+function UI_GetCustomPilotLoadouts()
+{
+	return customPilotLoadouts
+}
+
+function UI_GetPresetTitanLoadouts()
+{
+	return titanLoadouts
+}
+
+function UI_GetCustomTitanLoadouts()
+{
+	return customTitanLoadouts
+}
+
+function GetUnlockLevelForCustomLoadout( loadoutClass, slot )
+{
+	if ( loadoutClass == "pilot" )
+		return unlockLevels[ "pilot_custom_loadout_" + ( slot + 1 ) ]
+	else if ( loadoutClass = "titan" )
+		return unlockLevels[ "titan_custom_loadout_" + ( slot + 1 ) ]
+	else
+		Assert( 0, "Invalid loadout class" )
+}
+
+function LoadoutNameIsToken( name )
+{
+	if ( StringContains( name, "#CUSTOM_PILOT_" ) || StringContains( name, "#CUSTOM_TITAN_" ) )
+		return true
+
+	return false
+}
