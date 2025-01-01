@@ -311,8 +311,6 @@ function UpdateWaveInfo( vgui, player )
 	if ( currWave == null || GetGameState() != eGameState.Playing )
 	{
 		vgui.s.coopInfoGroup.Hide()
-		player.ClientCommand("bme_update_rounds_total 0 cl_coop_hud currWave_null")
-		player.ClientCommand("bme_update_rounds_played 0 cl_coop_hud currWave_null")
 	}
 	else
 	{
@@ -342,8 +340,6 @@ function UpdateWaveInfo( vgui, player )
 
 		waveDescription.enemyCount.SetText( "#COOP_WAVE_DESC_COUNT", totalEnemyNum )
 
-		player.ClientCommand("bme_update_rounds_total " + totalWaves + " cl_coop_hud")
-		player.ClientCommand("bme_update_rounds_played " + currWave + " cl_coop_hud")
 	}
 }
 
