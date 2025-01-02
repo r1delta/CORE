@@ -195,8 +195,6 @@ function RunBurnCardFunctions(player,cardRef) {
         thread RunWeaponFunction(player,cardRef);
     }
 
-    // if it is a summon atlas,orgre or stryder burn card give the correct chasis 
-    // ForceTitanBuildComplete
     if(cardRef == "bc_summon_atlas") {
         thread DoSummonTitanBurnCard(player, cardRef);
     }
@@ -208,6 +206,19 @@ function RunBurnCardFunctions(player,cardRef) {
     }
     
     
+}
+
+
+function ChangeOnDeckBurnCardToActive(player) {
+    local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
+    local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+    local idx = GetBurnCardIndexByRef(cardRef);
+    if(idx == -1) {
+        return;
+    }
+    player.SetActiveBurnCardIndex(idx);
+    player.SetPersistentVar("activeBCID", cardIndex);
+    player.SetPersistentVar("onDeckBurnCardIndex", -1);
 }
 
 function PlayerRespawned(player) {
@@ -230,6 +241,7 @@ function PlayerRespawned(player) {
     player.SetPersistentVar("activeBCID", cardIndex);
     player.SetPersistentVar("onDeckBurnCardIndex", -1);
 
+    
 
     printt(cardRef);
     player.Signal("StartBurnCardEffect");
@@ -248,6 +260,7 @@ function RunSpawnBurnCard(player,cardRef) {
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
+    ChangeOnDeckBurnCardToActive(player,cardRef);
 
     if( cardData.lastsUntil == BC_NEXTSPAWN) {
         if(cardRef == "bc_free_build_time_1") {
