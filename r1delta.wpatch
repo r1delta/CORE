@@ -418,13 +418,21 @@ dedicated.dll,rdata,0x205AC8,"vpk/server_mp_common.bsp\x00","vpk/client_mp_commo
 dedicated.dll,rdata,0x205190,"platform\x00","r1delta\x00"
 
 ; change audio bitrate
-;engine.dll,rdata,0x79341C,11 2B 00 00,44 AC 00 00
-;engine.dll,text,0x219789,C7 01 11 2B 00 00,C7 01 44 AC 00 00
-;engine.dll,text,0x015CD9,C7 45 D3 11 2B 00 00,C7 45 D3 44 AC 00 00
-;engine.dll,text,0x00ED8B,C7 44 24 5C 11 2B 00 00,C7 44 24 5C 44 AC 00 00
-;engine.dll,text,0x00ED9B,C7 44 24 60 22 56 00 00,C7 44 24 60 88 58 01 00
-;engine.dll,text,0x015CEC,C7 45 D7 22 56 00 00,C7 45 D7 88 58 01 00
-;engine.dll,text,0x5D3077,BA 22 56 00 00,BA 88 58 01 00
-;engine.dll,rdata,0x793420,22 56 00 00,88 58 01 00
+engine.dll,rdata,0x79341C,11 2B 00 00,80 BB 00 00
+engine.dll,text,0x219789,C7 01 11 2B 00 00,C7 01 80 BB 00 00
+engine.dll,text,0x015CD9,C7 45 D3 11 2B 00 00,C7 45 D3 80 BB 00 00
+engine.dll,text,0x00ED8B,C7 44 24 5C 11 2B 00 00,C7 44 24 5C 80 BB 00 00
+engine.dll,text,0x00ED9B,C7 44 24 60 22 56 00 00,C7 44 24 60 00 77 01 00
+engine.dll,text,0x015CEC,C7 45 D7 22 56 00 00,C7 45 D7 00 77 01 00
+engine.dll,text,0x5D3077,BA 22 56 00 00,BA 00 77 01 00
+engine.dll,rdata,0x793420,22 56 00 00,00 77 01 00
+; patch autogain
+; engine.dll,text,0x0178C2,BA 80 00 00 00,BA 00 02 00 00
+; force uncompressed voice audio
+; engine.dll,text,0x1734C,C6 44 24 28 01,C6 44 24 28 00
 ; remove "Unknown nb_ctl request" console spam
 ;vaudio_speex.dll,text,0x84FC,48,C3
+; disable autogain
+; engine.dll,text,0x018A70,48 83 EC,C3
+; remove circular buffer write
+engine.dll,text,0x4300,40 55,C3
