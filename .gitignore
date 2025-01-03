@@ -2,7 +2,7 @@
 /addons/*/
 net_stats_per_frame.txt
 addonlist.txt
-bin/x64_delta/tier0.*
+bin/tier0.*
 *.id0
 *.id1
 *.id2
@@ -13,3 +13,5 @@ bin/x64_delta/tier0.*
 server.vdf
 config/*/
 cfg/banned_ip.cfg
+cfg/banned_user.cfg
+materials/vgui/addons/*/
