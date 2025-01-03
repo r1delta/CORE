@@ -3,6 +3,7 @@
 net_stats_per_frame.txt
 addonlist.txt
 bin/tier0.*
+bin/vaudio_speex.*
 *.id0
 *.id1
 *.id2
