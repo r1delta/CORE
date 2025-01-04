@@ -418,14 +418,14 @@ dedicated.dll,rdata,0x205AC8,"vpk/server_mp_common.bsp\x00","vpk/client_mp_commo
 dedicated.dll,rdata,0x205190,"platform\x00","r1delta\x00"
 
 ; change audio bitrate
-engine.dll,rdata,0x79341C,11 2B 00 00,80 BB 00 00
-engine.dll,text,0x219789,C7 01 11 2B 00 00,C7 01 80 BB 00 00
-engine.dll,text,0x015CD9,C7 45 D3 11 2B 00 00,C7 45 D3 80 BB 00 00
-engine.dll,text,0x00ED8B,C7 44 24 5C 11 2B 00 00,C7 44 24 5C 80 BB 00 00
-engine.dll,text,0x00ED9B,C7 44 24 60 22 56 00 00,C7 44 24 60 00 77 01 00
-engine.dll,text,0x015CEC,C7 45 D7 22 56 00 00,C7 45 D7 00 77 01 00
-engine.dll,text,0x5D3077,BA 22 56 00 00,BA 00 77 01 00
-engine.dll,rdata,0x793420,22 56 00 00,00 77 01 00
+engine.dll,rdata,0x79341C,11 2B 00 00,C0 5D 00 00
+engine.dll,text,0x219789,C7 01 11 2B 00 00,C7 01 C0 5D 00 00
+engine.dll,text,0x015CD9,C7 45 D3 11 2B 00 00,C7 45 D3 C0 5D 00 00
+engine.dll,text,0x00ED8B,C7 44 24 5C 11 2B 00 00,C7 44 24 5C C0 5D 00 00
+engine.dll,text,0x00ED9B,C7 44 24 60 22 56 00 00,C7 44 24 60 80 BB 00 00
+engine.dll,text,0x015CEC,C7 45 D7 22 56 00 00,C7 45 D7 80 BB 00 00
+engine.dll,text,0x5D3077,BA 22 56 00 00,BA 80 BB 00 00
+engine.dll,rdata,0x793420,22 56 00 00,80 BB 00 00
 ; patch autogain
 ; engine.dll,text,0x0178C2,BA 80 00 00 00,BA 00 02 00 00
 ; force uncompressed voice audio

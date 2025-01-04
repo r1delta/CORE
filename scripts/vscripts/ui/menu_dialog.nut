@@ -743,15 +743,12 @@ function ClosePlaylistAnnounceDialog( button )
 function ShowPortForwardWarning( port = 27015 )
 {
     local isDefaultPort = (port == 27015)
-    local message = isDefaultPort ? 
-        "Your server will not be visible in the server browser\nbecause port 27015 (UDP) is not properly forwarded\non your router. Please ask in #help for assistance." :
-        format("Your server will not be visible in the server browser\nbecause port %d (UDP) is not properly forwarded.\nAnother game instance may be running.", port)
+    local message = "The server you are connecting to allows up to 18 players.\n\nFrontier Defense was designed to have an optimal experience within a maximum of 4 players. On servers with player counts higher than 4, we cannot guarantee acceptable performance, or balanced gameplay.\n\n\nTip: You can filter servers by maximum player count in the filter panel below."
 
     local buttonData = []
-    buttonData.append( { name = "OK", func = null } )
 
     local dialogData = {}
-    dialogData.header <- "PORT FORWARD WARNING"
+    dialogData.header <- "Server Experience Warning"
     dialogData.detailsMessage <- message
     dialogData.buttonData <- buttonData
 
