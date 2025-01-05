@@ -216,8 +216,7 @@ function main()
 
 	if ( IsServer() )
 	{
-		printt("running on server")
-		CreateAllBurnCards()
+		// CreateAllBurnCards()
 		if ( BURN_CARD_MAP_LOOT_DROP && !IsLobby() )
 			IncludeFile( "mp/_burncards_maps" )
 

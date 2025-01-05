@@ -210,7 +210,13 @@ function RunBurnCardFunctions(player,cardRef) {
 
 
 function ChangeOnDeckBurnCardToActive(player) {
+    if(!player) {
+        return;
+    }
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
+    if(cardIndex == -1) {
+        return;
+    }
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
     local idx = GetBurnCardIndexByRef(cardRef);
     if(idx == -1) {
@@ -219,36 +225,37 @@ function ChangeOnDeckBurnCardToActive(player) {
     player.SetActiveBurnCardIndex(idx);
     player.SetPersistentVar("activeBCID", cardIndex);
     player.SetPersistentVar("onDeckBurnCardIndex", -1);
+    foreach( p in GetPlayerArray() ) {
+        Remote.CallFunction_Replay(p,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx ,false)
+    }
+
 }
 
-function PlayerRespawned(player) {
-    printt("OnPlayerRespawned");
-
+function PlayerRespawned(player) {    
+    printt("Player respawned");
     if(!player) {
         return;
     }
+
 
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
     if(!cardRef) {
         return;
     }
-    local idx = GetBurnCardIndexByRef(cardRef);
-    if(idx == -1) {
-        return;
-    }
-    player.SetActiveBurnCardIndex(idx);
-    player.SetPersistentVar("activeBCID", cardIndex);
-    player.SetPersistentVar("onDeckBurnCardIndex", -1);
-
-    
-
+    ChangeOnDeckBurnCardToActive(player);
     printt(cardRef);
     player.Signal("StartBurnCardEffect");
     RunBurnCardFunctions(player,cardRef);
-
     if (cardRef == "bc_cloak_forever") {
         EnableCloakForever( player )
+    }
+
+    if (cardRef == "bc_sonar_forever") {
+        ActivateBurnCardSonar(player, 9999)
+    }
+    if(cardRef == "bc_auto_sonar") {
+        ActivateBurnCardSonar(player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true,null, BURNCARD_AUTO_SONAR_INTERVAL)
     }
 
     thread RunSpawnBurnCard(player,cardRef);
@@ -260,7 +267,7 @@ function RunSpawnBurnCard(player,cardRef) {
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
-    ChangeOnDeckBurnCardToActive(player,cardRef);
+    // ChangeOnDeckBurnCardToActive(player);
 
     if( cardData.lastsUntil == BC_NEXTSPAWN) {
         if(cardRef == "bc_free_build_time_1") {
