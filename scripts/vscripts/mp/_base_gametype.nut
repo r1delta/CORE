@@ -75,8 +75,6 @@ function main()
 		level.waveSpawnCustomSpawnPoints <- {}
 		level.waveSpawnCustomSpawnPoints[ TEAM_MILITIA ] <- []
 		level.waveSpawnCustomSpawnPoints[ TEAM_IMC ] <- []
-
-		level.burnCardWeaponModList <- null
 	}
 
 	RegisterSignal( "TitanAvailable" )
