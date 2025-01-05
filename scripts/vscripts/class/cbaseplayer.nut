@@ -657,8 +657,6 @@ function CBasePlayer::UpdateMoveSpeedScale()
 	{
 		local playerHasStim = PlayerHasServerFlag( this, SFLAG_STIM_OFFHAND  )
 		local playerHasMoveFastBurnCard = PlayerHasServerFlag( this, SFLAG_BC_FAST_MOVESPEED )
-		printt("playerHasStim: " + playerHasStim)
-		printt("playerHasMoveFastBurnCard: " + playerHasMoveFastBurnCard)
 		if ( playerHasStim )
 			moveSpeedScale = ABILITY_STIM_SPEED_MOD  //Stim speed boost wins over burn card speed boost
 		else if ( playerHasMoveFastBurnCard )
