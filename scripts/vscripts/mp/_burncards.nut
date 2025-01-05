@@ -255,7 +255,8 @@ function PlayerRespawned(player) {
         ActivateBurnCardSonar(player, 9999)
     }
     if(cardRef == "bc_auto_sonar") {
-        ActivateBurnCardSonar(player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true,null, BURNCARD_AUTO_SONAR_INTERVAL)
+        // ActivateBurnCardSonar(player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true,null, BURNCARD_AUTO_SONAR_INTERVAL)
+        // thread LoopSonarAudioPing(player)
     }
 
     thread RunSpawnBurnCard(player,cardRef);
