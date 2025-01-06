@@ -8,6 +8,8 @@ function main()
     AddCallback_OnPlayerKilled( _OnPlayerKilled )
     Globalize(RunBurnCardFunctions)
 
+    PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
+
     AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilot )
 }
 
