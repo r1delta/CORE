@@ -254,6 +254,13 @@ function PlayerRespawned(player) {
     if (cardRef == "bc_sonar_forever") {
         ActivateBurnCardSonar(player, 9999)
     }
+    if(cardRef == "bc_play_spectre") {
+        local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
+	    local pilotSettings = pilotDataTable.playerSetFile
+	    pilotSettings = "pilot_spectre" 
+        player.SetPlayerSettings( pilotSettings )
+	    player.SetPlayerPilotSettings( pilotSettings )
+    }
     if(cardRef == "bc_auto_sonar") {
         // ActivateBurnCardSonar(player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true,null, BURNCARD_AUTO_SONAR_INTERVAL)
         // thread LoopSonarAudioPing(player)
