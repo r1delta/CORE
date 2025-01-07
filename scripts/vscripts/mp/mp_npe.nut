@@ -460,7 +460,7 @@ function SetupTrainingModules()
 
 		local module 		= CreateTrainingModuleInfo()
 		module.id 			= eTrainingModules.TITAN_MOSH_PIT
-		module.startEnt 	= "destination_mosh_pit_playground"
+		module.startEnt 	= "teleport_titan_mosh_pit"
 		module.runFunc 		= Module_TitanMoshPit
 		module.resetFlags 	= [ "TitanMoshPitCombatStarted", "TitanShieldTrainingStarted", "TrainingTitanShields", "TitanHealthTrainingStarted", "TrainingTitanHealth", "CombatTestDone" ]
 		module.showLoading	= false
