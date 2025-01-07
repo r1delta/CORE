@@ -64,7 +64,7 @@ function RefillWeaponAmmo(player) {
     }
     while (1) {
         if(player.IsTitan()) {
-            return;
+            player.WaitSignal("OnLeftTitan")
         }
         local cardRef = GetPlayerActiveBurnCard( player );
         if(!cardRef) {
