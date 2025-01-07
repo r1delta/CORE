@@ -399,7 +399,7 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= 
+		module.id 			=  eTrainingModules.DOUBLEJUMP_PLAYGROUND
 		module.startEnt		= "destination_doublejump_playground"
 		module.runFunc 		= Module_Doublejump_Playground
 		// ???????????
@@ -7379,7 +7379,7 @@ function ClientCommand_NPE_StartBedEndModule( player, ... )
 
 function ClientCommand_NPE_StartTitanMoshPitModule( player, ... )
 {
-	thread StartTrainingModule( eTrainingModules.TITAN_MOSH_PIT* )
+	thread StartTrainingModule( eTrainingModules.TITAN_MOSH_PIT )
 }
 
 function ClientCommand_NPE_ConfirmInvertYes( player, ... )
