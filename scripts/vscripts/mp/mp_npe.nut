@@ -367,7 +367,7 @@ function SetupTrainingModules()
 		module.playerMods 	= [ "disable_doublejump" ]
 		module.resetTrigs 	= [ "trigger_lightswitch8", "trigger_lightswitch9", "trigger_lightswitch10", "trigger_lightswitch11" ]
 		module.resetFlags 	= [ "PlayerEnteredWallrunArea", "DoingBasicWallrunVO", "DoingWallrunHelperVO", "PlayerReachedWallrunPlatform2", "PlayerReachedWallrunPlatform3", "PlayerReachedWallrunPlatform4", "PlayerReachedWallrunEnd" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
@@ -380,7 +380,7 @@ function SetupTrainingModules()
 		// ???????????
 		module.resetFlags 	= [ "WallrunPlayground_HighRoad_1", "WallrunPlayground_HighRoad_2", "WallrunPlayground_BonusEval", "WallrunPlayground_HighRoad_Fail", "WallrunPlayground_LowRoad_1", "WallrunPlayground_LowRoad_2" ]
 		module.playerMods 	= [ "disable_doublejump" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
@@ -391,7 +391,7 @@ function SetupTrainingModules()
 		module.runFunc 		= Module_Doublejump
 		module.resetTrigs 	= [ "trigger_lightswitch12", "trigger_lightswitch13", "trigger_lightswitch14" ]
 		module.resetFlags 	= [ "PlayerReachedDoublejumpPlatform2", "PlayerPastDoubleJump2", "PlayerPassedDoubleJumpCeiling" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
@@ -402,7 +402,7 @@ function SetupTrainingModules()
 		module.runFunc 		= Module_Doublejump_Playground
 		// ???????????
 		module.resetFlags   = [ "DoublejumpPlayground_PlayerEval" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
@@ -411,7 +411,7 @@ function SetupTrainingModules()
 		module.id 			= eTrainingModules.CLOAK
 		module.startEnt		= "destination_cloak_training"
 		module.runFunc 		= Module_Cloak
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
@@ -422,8 +422,8 @@ function SetupTrainingModules()
 		module.runFunc 		= Module_BasicCombat
 		// ????????????
 		module.resetFlags   = [ "PlayerNearMultikillSpot", "PlayerNearMultiLockSpot" ]
-		module.showLoading	= false
-		module.resumePoint 	= false
+		module.showLoading	= true
+		module.resumePoint 	= true
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
 
@@ -433,7 +433,7 @@ function SetupTrainingModules()
 		module.runFunc 		= Module_FiringRange
 		// I THINK THIS IS SPOT ON
 		module.resetFlags   = [ "FiringRangeWeaponSwapped", "PlayerADSed", "PlayerReloaded" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
@@ -443,7 +443,7 @@ function SetupTrainingModules()
 		module.startEnt		= "destination_grenade_training"
 		module.runFunc 		= Module_FiringRange_Grenades
 		module.resetFlags   = [ "PlayerThrewGrenade", "GrenadeThrowingDone" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
@@ -453,7 +453,7 @@ function SetupTrainingModules()
 		module.startEnt		= "destination_mosh_pit_playground"
 		module.runFunc 		= Module_MoshPit
 		module.resetFlags 	= [ "PlayerPressedWeaponSwitchButton", "PlayerReloaded", "PilotMoshPit_AllSquadsSpawned", "TrainingPilotHealth", "PilotHealthTrainingStarted", "MoshPit_GroundTroops_Done", "FiringRangeWeaponSwapped", "PlayerCalledInTitan", "TitanDropped", "PlayerEnteredTitan" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= true
 		module.showEndEMP	= false
 		AddTrainingModuleInfo( module )
