@@ -893,12 +893,20 @@ function PostDeathThread( player, damageInfo )
 	local attacker = damageInfo.GetAttacker()
 	local methodOfDeath = damageInfo.GetDamageSourceIdentifier()
 	local rematchOrigin
+	if(GetActiveBurnCard(player) == "bc_rematch") {
 	if ( IsValid( attacker ) && methodOfDeath == eDamageSourceId.titan_execution )
 	{
 		// execution can throw you out of the map
 		rematchOrigin = attacker.GetOrigin()
 	}
+	else 
+	{
+		rematchOrigin = player.GetOrigin()
+	}
+		MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player,null)
+	}
 
+	
 	local attackerViewIndex = attacker.GetIndexForEntity()
 
 	local timeSinceAttackerSpawned = attacker.GetTimeSinceSpawning()
@@ -1885,10 +1893,10 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 				}
 			}
 		}
-
-		if (GetActiveBurnCard( player) ==  "bc_rematch"  )
+		
+		if( rematchOrigin != null )
 		{
-			spawnPoint = player.GetOrigin()
+			spawnPoint =  rematchOrigin
 		}
 		
 

@@ -7,9 +7,11 @@ function main()
     AddCallback_OnPlayerRespawned( PlayerRespawned )
     AddCallback_OnPlayerKilled( _OnPlayerKilled )
     Globalize(RunBurnCardFunctions)
+    Globalize(ChangeOnDeckBurnCardToActive)
+    Globalize(MakeActiveBurnCard)
 
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
-
+    PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
     AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilot )
 }
 
@@ -61,6 +63,9 @@ function RefillWeaponAmmo(player) {
         return;
     }
     while (1) {
+        if(player.IsTitan()) {
+            return;
+        }
         local cardRef = GetPlayerActiveBurnCard( player );
         if(!cardRef) {
             return;
@@ -146,8 +151,27 @@ if(cardData.ctFlags & CT_WEAPON) {
     }
 }
 
+function MakeActiveBurnCard(player,index) {
+    if (index == null || index < 0 || index >= MAX_BURN_CARDS)
+		return false
+	local cardRef = GetBurnCardFromSlot(player, index)
+	local cardIndex = GetBurnCardIndexByRef(cardRef)
+	printt("ActivateBurnCard Change: ", cardRef)
+	player.SetPersistentVar( "activeBCID", index )
+	player.SetActiveBurnCardIndex(cardIndex)
+	player.SetPersistentVar("onDeckBurnCardIndex", -1);
+    foreach( p in GetPlayerArray() ) {
+        Remote.CallFunction_Replay(p,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex ,false)
+    }
+    return true;
+}
 
 function DoSummonTitanBurnCard(player, cardRef) {
+    
+    
+    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+		player.WaitSignal( "CE_FLAGS_CHANGED" )
+
     ForceTitanBuildComplete(player)
    
     if(cardRef == "bc_summon_atlas") {
@@ -186,7 +210,7 @@ function DoSummonTitanBurnCard(player, cardRef) {
 }
 
 function RunBurnCardFunctions(player,cardRef) {
-    
+    thread RunSpawnBurnCard(player,cardRef);
     local cardData = GetBurnCardData(cardRef);
     if(cardData.serverFlags) {
         printt("Card has server flags");
@@ -220,8 +244,11 @@ function ChangeOnDeckBurnCardToActive(player) {
         return;
     }
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+    if(!cardRef) {
+        return;
+    }
     local idx = GetBurnCardIndexByRef(cardRef);
-    if(idx == -1) {
+    if(idx == -1 || !cardRef || idx == null) {
         return;
     }
     player.SetActiveBurnCardIndex(idx);
@@ -248,7 +275,17 @@ function PlayerRespawned(player) {
     ChangeOnDeckBurnCardToActive(player);
     printt(cardRef);
     player.Signal("StartBurnCardEffect");
-    RunBurnCardFunctions(player,cardRef);
+    RunBurnCardFunctions(player,cardRef);  
+}
+
+function RunSpawnBurnCard(player,cardRef) {
+    local cardData = GetBurnCardData(cardRef);
+
+    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+	{
+        player.WaitSignal( "CE_FLAGS_CHANGED" )
+    }
+
     if (cardRef == "bc_cloak_forever") {
         EnableCloakForever( player )
     }
@@ -268,14 +305,6 @@ function PlayerRespawned(player) {
         // thread LoopSonarAudioPing(player)
     }
 
-    thread RunSpawnBurnCard(player,cardRef);
-}
-
-function RunSpawnBurnCard(player,cardRef) {
-    local cardData = GetBurnCardData(cardRef);
-
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
     // ChangeOnDeckBurnCardToActive(player);
 

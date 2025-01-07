@@ -59,6 +59,7 @@ function main()
 	file.hasInvalidLoadout <- false
 }
 
+
 function ClientCommand_ActivateBurnCard(player, ...) {
 	if (vargc != 2)
 		return false
@@ -68,8 +69,12 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 		return false
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
+	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) ) {
+		MakeActiveBurnCard(player, index)
+		RunBurnCardFunctions(player,cardRef);
+		return true
+	}
 	SetPlayerBurnCardOnDeckIndex(player, index)
-	// Remote.CallFunction_NonReplay(player,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex,false)
 	return true
 }
 

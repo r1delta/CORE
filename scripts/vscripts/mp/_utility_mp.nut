@@ -1348,7 +1348,13 @@ function IsPlayerMalePilot( player )
 
 	local playerClassDataTable = GetPlayerClassDataTable( player, level.pilotClass )
 	local tokens = split( playerClassDataTable.playerSetFile, "_" )
-
+	printt("IsPlayerMalePilot: " + player + " " + playerClassDataTable.playerSetFile + " " + tokens )
+	foreach ( token in tokens )
+	{
+		if(token == "female") {
+			return false
+		}
+	}
 	if( "female" in tokens )
 	{
 		return false
@@ -1366,12 +1372,13 @@ function IsPlayerFemalePilot( player )
 
 	local playerClassDataTable = GetPlayerClassDataTable( player, level.pilotClass )
 	local tokens = split( playerClassDataTable.playerSetFile, "_" )
-
-	if( "female" in tokens )
+	foreach ( token in tokens )
 	{
-		return true
+		if(token == "female") {
+			return true
+		}
 	}
-
+	
 	return false
 }
 

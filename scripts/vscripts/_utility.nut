@@ -5835,13 +5835,13 @@ function replace_all(original, find, replace)
 // New implementation of GetPlayerSettingsFieldForClassName with debug prints
 function GetPlayerSettingsFieldForClassName(className, field)
 {
-    printt("[GetPlayerSettingsFieldForClassName] Called with className='" + className + "', field='" + field + "'");
+    // printt("[GetPlayerSettingsFieldForClassName] Called with className='" + className + "', field='" + field + "'");
 
     // Handle "bodymodel_imc" lookup unchanged
     if (field == "bodymodel_imc")
     {
         local originalValue = OldPlayerSettingsFieldForClassName(className, "bodymodel_imc");
-        printt("[GetPlayerSettingsFieldForClassName] Returning original 'bodymodel_imc': '" + originalValue + "'");
+        // printt("[GetPlayerSettingsFieldForClassName] Returning original 'bodymodel_imc': '" + originalValue + "'");
         return originalValue;
     }
     // Handle "bodymodel_militia" by modifying the "bodymodel_imc" value
@@ -5865,7 +5865,7 @@ function GetPlayerSettingsFieldForClassName(className, field)
     else
     {
         local originalValue = OldPlayerSettingsFieldForClassName(className, field);
-        printt("[GetPlayerSettingsFieldForClassName] Returning original '" + field + "': '" + originalValue + "'");
+        // printt("[GetPlayerSettingsFieldForClassName] Returning original '" + field + "': '" + originalValue + "'");
         return originalValue;
     }
 }
