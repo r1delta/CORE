@@ -327,8 +327,6 @@ function SetupTrainingModules()
 {
 	level.trainingModuleInfos = []
 
-	if (true)
-	{
 		local module = CreateTrainingModuleInfo()
 		module.id 			= eTrainingModules.BEDROOM
 		module.startPos 	= Vector( -13536, -6643, 0 )
@@ -459,10 +457,7 @@ function SetupTrainingModules()
 		module.resumePoint 	= true
 		module.showEndEMP	= false
 		AddTrainingModuleInfo( module )
-	}
 
-	if (true || GAMETYPE == "titan_tutorial")
-	{
 		local module 		= CreateTrainingModuleInfo()
 		module.id 			= eTrainingModules.TITAN_MOSH_PIT
 		module.startEnt 	= "destination_mosh_pit_playground"
@@ -470,9 +465,9 @@ function SetupTrainingModules()
 		module.resetFlags 	= [ "TitanMoshPitCombatStarted", "TitanShieldTrainingStarted", "TrainingTitanShields", "TitanHealthTrainingStarted", "TrainingTitanHealth", "CombatTestDone" ]
 		module.showLoading	= false
 		module.resumePoint 	= true
+		module.startAsTitan = true
 		module.showEndEMP	= false
 		AddTrainingModuleInfo( module )
-	}
 
 	if (GAMETYPE == "battle_practice")
 	{
