@@ -299,9 +299,9 @@ function TrainerStart()
 
 	// default start
 	if (true)
-		level.currentTrainingModule = TRAINING_BEDROOM
+		level.currentTrainingModule = eTrainingModules.BEDROOM
 	else if (GAMETYPE == "titan_tutorial")
-		level.currentTrainingModule = TRAINING_TITAN_MOSH_PIT
+		level.currentTrainingModule = eTrainingModules.TITAN_MOSH_PIT
 	else if (GAMETYPE == "battle_practice")
 	{
 		level.currentTrainingModule = TRAINING_BATTLE_PRACTICE
@@ -399,7 +399,7 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= eTrainingModules.DOUBLEJUMP_PLAYGROUND
+		module.id 			= 
 		module.startEnt		= "destination_doublejump_playground"
 		module.runFunc 		= Module_Doublejump_Playground
 		// ???????????
@@ -599,7 +599,7 @@ function StartTrainingModule( moduleID )
 
 	// sets the module we're about to execute as the current module so that advancing the module can increment the variable
 	// EXCEPTION: intro cabin module doesn't set it because we might want to go to a module other than the very next one afterward (for continuing training after start)
-	if (moduleID != TRAINING_BEDROOM/*eTrainingModules.BEDROOM*/)
+	if (moduleID != eTrainingModules.BEDROOM)
 	{
 		level.currentTrainingModule = moduleID  // server script
 	}
@@ -646,7 +646,7 @@ function StartTrainingModule( moduleID )
 		// let the intro screen start before we teleport, this is set up to work with the timing of the introscreen fade from black
 		local waitTime = 5.3
 		
-		if ( moduleID == TRAINING_BEDROOM/*eTrainingModules.BEDROOM*/ )
+		if ( moduleID == eTrainingModules.BEDROOM )
 			waitTime = 1  // SimpleBlackscreen wait
 
 		wait waitTime
@@ -683,7 +683,7 @@ function StartTrainingModule( moduleID )
 	{
 		wait waitBeforeTeleportFX
 
-		if (moduleID != TRAINING_BEDROOM/*eTrainingModules.BEDROOM*/)  // don't do the audio when players first spawn in
+		if (moduleID != eTrainingModules.BEDROOM)  // don't do the audio when players first spawn in
 			Remote.CallFunction_Replay( level.player, "ServerCallback_TrainingTeleport" )
 	}
 
@@ -6608,7 +6608,7 @@ function Module_TitanMoshPit()
 	else
 	{
 		level.player.SetTutorialStatus( TR_RESULT_COMPLETE );
-		thread StartTrainingModule( TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
+		thread StartTrainingModule( eTrainingModules.BEDROOM_END )
 	}
 }
 
@@ -7372,14 +7372,14 @@ function ClientCommand_NPE_NoButtonClicked( player, ... )
 function ClientCommand_NPE_StartBedEndModule( player, ... ) 
 {
 	if (true)
-		thread StartTrainingModule( TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
+		thread StartTrainingModule( eTrainingModules.BEDROOM_END)
 	else 
 		GameRules_EndMatch()		
 }
 
 function ClientCommand_NPE_StartTitanMoshPitModule( player, ... )
 {
-	thread StartTrainingModule( TRAINING_TITAN_MOSH_PIT/*eTrainingModules.TITAN_MOSH_PIT*/ )
+	thread StartTrainingModule( eTrainingModules.TITAN_MOSH_PIT* )
 }
 
 function ClientCommand_NPE_ConfirmInvertYes( player, ... )
@@ -7470,7 +7470,7 @@ function ClientCommand_CallConversationOverEndSignal( player, ... )
 function ClientCommand_LeaveTraining( player, ... )
 {
 	// if in cabin start or end, go right to lobby
-	if ( level.currentTrainingModule == TRAINING_BEDROOM/*eTrainingModules.BEDROOM*/ || level.currentTrainingModule == TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
+	if ( level.currentTrainingModule == eTrainingModules.BEDROOM || level.currentTrainingModule == eTrainingModules.BEDROOM_END )
 	{
 		if ( IsValid( level.player ) )  // defensive
 			MuteAll( level.player, 1.0 )
@@ -7481,7 +7481,7 @@ function ClientCommand_LeaveTraining( player, ... )
 
 	// otherwise go to end cabin to see end scripting
 	if (true)
-		thread StartTrainingModule( TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/ )
+		thread StartTrainingModule( eTrainingModules.BEDROOM_END )
 	else 
 		GameRules_EndMatch()
 
