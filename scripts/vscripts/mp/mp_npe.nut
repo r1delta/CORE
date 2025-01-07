@@ -2005,7 +2005,7 @@ function LookTraining()
 	FlagWait( "PlayerLookedAtBottomTarget" )
 	
 	 // 회전축 변경 팝업은 삭제
-	/* local numInverts = 0
+	 local numInverts = 0
 	local doConfirmMenu = false
 	local doConfirmAudio = false
 	while ( 1 )
@@ -2063,7 +2063,7 @@ function LookTraining()
 
 		FlagClear( "PlayerLookedAtTopTarget" )
 		FlagClear( "PlayerLookedAtBottomTarget" )
-	}*/
+	}
 	// 여기까지 회전축 변경 팝업삭제.
 
 	HideTrainingPrompt()
