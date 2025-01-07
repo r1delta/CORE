@@ -5041,7 +5041,7 @@ function Module_MoshPit()
 
 	waitthread PilotMoshPit_KillTitanWithAT()
 
-	waitthread PilotMoshPit_KillTitanWithRODEO()
+	waitthread PilotMoshPit_TitanTraining()
 
 	ClientCommand(level.player, "startTitanMoshPitModule")
 }
@@ -5750,56 +5750,151 @@ function SpawnStandDownTitan(spot, team, disableShield = true)
 	NPC_StandDown( titan )
 }
 
-function PilotMoshPit_KillTitanWithRODEO()
+function PilotMoshPit_TitanTraining()
 {
-	//중앙 하단 대타이탄 무기를 사용하라는 메세지 disable
-	//Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", false )
 
-	//로데오 하기전엔 무기사용을 못하게 막는다.
-	level.player.FreezeFireControlsOnServer()
+	ForcePlayConversationToPlayer( "train_titanfall", level.player )
 
-	level.player.SetActiveWeapon( PILOT_WEAPON_3 )
-	WaitForPlayerActiveWeapon( PILOT_WEAPON_3 )
-	level.player.TakeWeapon( PILOT_WEAPON_AT )
+	//level.player.SetNextTitanRespawnAvailable( Time() )
+	ForceTitanBuildComplete( level.player )
+	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
 
-	MoshPit_SpawnDroneTitan({ origin = Vector( 905, 3446, 6540 ), angles = Vector( 0, -130, 0 ) })
+	// 타이탄 호출 한번만 할수있게..
+	level.nv.titanAvailability = eTitanAvailability.Once
 
-	// if we started training the player on pilot health, wait for that to finish
-	FlagWaitClear( "TrainingPilotHealth" )
+	local minWaitEnd = 3.75 + Time()
 
-	// 은폐장 능력.
-	local cloakSlot = 1
-	level.player.GiveOffhandWeapon( "mp_ability_cloak", cloakSlot, [ "bc_long_cloak1" ] )
+	printt("Would wait but its fucked sorry")
+	FlagClear("ConversationOver")
+	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
 
-	thread Cloak_IntroVO()
-	waitthread Cloak_ManagePrompt(0)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.CALL_TITAN )
+	ControllerImageHint_DPad_Down()
 
-	// 은폐장을 활성화하면 로데오 허용.
-	EnableRodeo(level.moshPitTitan)
+	thread SetFlagWhenPlayerTitanInMap( "PlayerCalledInTitan" )
+	waitthread NagPlayerUntilFlag( "PlayerCalledInTitan", "train_call_in_titan_nag", 15 )
 
-	thread MoshPit_TitanCombat_ManageVO(level.moshPitTitan)
-	thread MoshPit_TitanRodeo_ManagePrompts(level.moshPitTitan)
-	thread MoshPit_TitanRodeo_VO()
+	HideTrainingPrompt()
+	StopControllerImageHint()
 
-	waitthread WaitUntilGuysAreDead( [ level.moshPitTitan ] )
+	WaittillTime( minWaitEnd )
 
-	// if currently training player on pilot health, wait for that to finish
-	if ( Flag( "TrainingPilotHealth" ) )
+	ForcePlayConversationToPlayer( "train_titanfall_lookup", level.player )
+
+	local playerTitan = GetPlayerTitanInMap( level.player )
+	TakeAllWeapons( playerTitan )
+	playerTitan.GiveWeapon( "mp_titanweapon_rocket_launcher" )
+
+	thread SetFlagWhenTitanHitsGround( playerTitan, "TitanDropped" )
+	FlagWait( "TitanDropped" )
+
+	DisplayTrainingPrompt( eTrainingButtonPrompts.ENTER_TITAN )
+	thread SetFlagWhenPlayerEntersTitan( playerTitan, "PlayerEnteredTitan" )
+	waitthread NagPlayerUntilFlag( "PlayerEnteredTitan", "train_titan_mountup", 20 )
+
+	thread MoshPit_TitanAttack_VO()
+
+	AddDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
+
+	OnThreadEnd(
+		function() : ()
+		{
+			if ( IsValid( level.player ) )
+			{
+				// turn demigod back on before removing the callback, in case Titan is currently at end of doomed state and one more hit would kill the player
+				level.player.EnableDemigod()
+				RemoveDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
+			}
+		}
+	)
+
+	waitthread MoshPit_PlayerMopsUpAsTitan()
+
+}
+
+function PilotMoshPit_TitanBasicCombat()
+{
+	DisplayTrainingPrompt(eTrainingButtonPrompts.TITAN_OFFENSIVE_MELEE)
+
+	local podSpawns = []
+	podSpawns.append( { origin = Vector( 926, 3442, 6550 ), angles = Vector( 0, -50, 0 ) } )
+	podSpawns.append( { origin = Vector( 894, 2930, 6550 ), angles = Vector( 0, -90, 0 ) } )
+	podSpawns.append( { origin = Vector( 1406, 2930, 6400 ), angles = Vector( 0, -160, 0 ) } )
+	podSpawns.append( { origin = Vector( 1534, 3442, 6400 ), angles = Vector( 0, 125, 0 ) } )
+	podSpawns.append( { origin = Vector( 382, 3266, 6400 ), angles = Vector( 0, 30, 0 ) } )
+	podSpawns.append( { origin = Vector( 574, 2946, 6450 ), angles = Vector( 0, 45, 0 ) } )
+
+	if ( !( "moshPitSquads" in level ) )
+		level.moshPitSquads <- {}
+
+	foreach (idx, spawnpoint in podSpawns)
 	{
-		FlagWaitClear( "TrainingPilotHealth" )
-		HideTrainingPrompt()
+		local squadName = "moshpit_droppod_squad_" + idx
+		level.moshPitSquads[squadName] <- null
+
+		thread MoshPit_LaunchGruntDropPod(squadName, spawnpoint)
 	}
-	else
+
+	OnThreadEnd(
+		function() : ()
+		{
+			foreach (squad in level.moshPitSquads)
+			{
+				if (!squad)
+					continue
+
+				foreach (guy in squad)
+				{
+					if (IsAlive(guy))
+						guy.Die()
+				}
+			}
+		}
+	)
+
+	while (1)
 	{
-		ForcePlayConversationToPlayer( "goodjob", level.player )
-		wait 1.5
+		local foundOne = false
+		foreach (squad in level.moshPitSquads)
+		{
+			if (squad == null)
+			{
+				foundOne = true
+				break
+			}
+		}
+
+		if (!foundOne)
+			break
+
+		wait 0.1
 	}
 
-	ForcePlayConversationToPlayer( "train_firingrange_at_killTitan_done", level.player )
-	wait 6
+	local allGuys = []
+	foreach (squad in level.moshPitSquads)
+	{
+		foreach (guy in squad)
+			allGuys.append(guy)
+	}
 
-	//중앙 하단 대타이탄 무기를 사용하라는 메세지 enable
-	//Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", true )
+	while (1)
+	{
+		local foundOne = false
+		local deathCount = 0
+
+		foreach (guy in allGuys)
+		{
+			if (!IsAlive(guy))
+				++deathCount
+		}
+
+		if (deathCount >= 16)
+			break
+
+		wait 0.1
+	}
+
+	HideTrainingPrompt()
 }
 
 function MoshPit_TitanCombatStartVO( endFlag )
@@ -6487,72 +6582,6 @@ function Module_TitanMoshPit()
 
 	level.ent.WaitSignal( "ModuleChangeDone" )
 
-	TakeAllWeapons( level.player )
-
-	ForcePlayConversationToPlayer( "train_titanfall", level.player )
-
-	//level.player.SetNextTitanRespawnAvailable( Time() )
-	ForceTitanBuildComplete( level.player )
-	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
-
-	// 타이탄 호출 한번만 할수있게..
-	level.nv.titanAvailability = eTitanAvailability.Once
-
-	local minWaitEnd = 3.75 + Time()
-
-	printt("Would wait but its fucked sorry")
-	FlagClear("ConversationOver")
-	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
-
-	DisplayTrainingPrompt( eTrainingButtonPrompts.CALL_TITAN )
-	ControllerImageHint_DPad_Down()
-
-	thread SetFlagWhenPlayerTitanInMap( "PlayerCalledInTitan" )
-	waitthread NagPlayerUntilFlag( "PlayerCalledInTitan", "train_call_in_titan_nag", 15 )
-
-	HideTrainingPrompt()
-	StopControllerImageHint()
-
-	WaittillTime( minWaitEnd )
-
-	ForcePlayConversationToPlayer( "train_titanfall_lookup", level.player )
-
-	local playerTitan = GetPlayerTitanInMap( level.player )
-	TakeAllWeapons( playerTitan )
-	playerTitan.GiveWeapon( "mp_titanweapon_rocket_launcher" )
-
-	thread SetFlagWhenTitanHitsGround( playerTitan, "TitanDropped" )
-	FlagWait( "TitanDropped" )
-
-	DisplayTrainingPrompt( eTrainingButtonPrompts.ENTER_TITAN )
-	thread SetFlagWhenPlayerEntersTitan( playerTitan, "PlayerEnteredTitan" )
-	waitthread NagPlayerUntilFlag( "PlayerEnteredTitan", "train_titan_mountup", 20 )
-
-	thread MoshPit_TitanAttack_VO()
-
-	AddDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
-
-	OnThreadEnd(
-		function() : ()
-		{
-			if ( IsValid( level.player ) )
-			{
-				// turn demigod back on before removing the callback, in case Titan is currently at end of doomed state and one more hit would kill the player
-				level.player.EnableDemigod()
-				RemoveDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
-			}
-		}
-	)
-
-	HideTrainingPrompt()
-
-	wait 5
-
-	ShowMinimap()
-
-	waitthread Titan_OffensiveMelee()
-
-	wait 1
 	waitthread Titan_OffensiveOffhandTraining()
 
 	FlagSet( "TitanMoshPitCombatStarted" )
@@ -6728,95 +6757,6 @@ function TitanMoshPit_TrainTitanConcept( type )
 	thread TitanMoshPit_NPCsResumeFightingPlayer()
 
 	FlagClear( busyFlag )
-}
-
-function Titan_OffensiveMelee()
-{
-	DisplayTrainingPrompt(eTrainingButtonPrompts.TITAN_OFFENSIVE_MELEE)
-
-	local podSpawns = []
-	podSpawns.append( { origin = Vector( 926, 3442, 6550 ), angles = Vector( 0, -50, 0 ) } )
-	podSpawns.append( { origin = Vector( 894, 2930, 6550 ), angles = Vector( 0, -90, 0 ) } )
-	podSpawns.append( { origin = Vector( 1406, 2930, 6400 ), angles = Vector( 0, -160, 0 ) } )
-	podSpawns.append( { origin = Vector( 1534, 3442, 6400 ), angles = Vector( 0, 125, 0 ) } )
-	podSpawns.append( { origin = Vector( 382, 3266, 6400 ), angles = Vector( 0, 30, 0 ) } )
-	podSpawns.append( { origin = Vector( 574, 2946, 6450 ), angles = Vector( 0, 45, 0 ) } )
-
-	if ( !( "moshPitSquads" in level ) )
-		level.moshPitSquads <- {}
-
-	foreach (idx, spawnpoint in podSpawns)
-	{
-		local squadName = "moshpit_droppod_squad_" + idx
-		level.moshPitSquads[squadName] <- null
-
-		thread MoshPit_LaunchGruntDropPod(squadName, spawnpoint)
-	}
-
-	OnThreadEnd(
-		function() : ()
-		{
-			foreach (squad in level.moshPitSquads)
-			{
-				if (!squad)
-					continue
-
-				foreach (guy in squad)
-				{
-					if (IsAlive(guy))
-						guy.Die()
-				}
-			}
-		}
-	)
-
-	level.player.FreezeFireControlsOnServer()
-
-	while (1)
-	{
-		local foundOne = false
-		foreach (squad in level.moshPitSquads)
-		{
-			if (squad == null)
-			{
-				foundOne = true
-				break
-			}
-		}
-
-		if (!foundOne)
-			break
-
-		wait 0.1
-	}
-
-	local allGuys = []
-	foreach (squad in level.moshPitSquads)
-	{
-		foreach (guy in squad)
-			allGuys.append(guy)
-	}
-
-	while (1)
-	{
-		local foundOne = false
-		local deathCount = 0
-
-		foreach (guy in allGuys)
-		{
-			if (!IsAlive(guy))
-				++deathCount
-		}
-
-		if (deathCount >= 16)
-			break
-
-		wait 0.1
-	}
-
-	level.player.UnfreezeFireControlsOnServer()
-
-	HideTrainingPrompt()
 }
 
 function Titan_OffensiveOffhandTraining()
