@@ -37,9 +37,8 @@ PrecacheWeapon( "mp_projectile_orbital_strike" )
 const PILOT_WEAPON_1					= "mp_weapon_semipistol"
 const PILOT_WEAPON_2 					= "mp_weapon_smart_pistol"
 const PILOT_WEAPON_3					= "mp_weapon_rspn101"
-const PILOT_WEAPON_4					= "mp_weapon_wingman"
 const PILOT_WEAPON_OFFHAND_OFFENSIVE 	= "mp_weapon_frag_grenade"
-const PILOT_WEAPON_AT 					= "mp_weapon_rocket_launcher"
+const PILOT_WEAPON_AT 					= "mp_weapon_smr"
 const GRENADE_SLOT 						= 0
 
 const TITAN_WEAPON_1 					= "mp_titanweapon_xo16"
@@ -331,7 +330,7 @@ function SetupTrainingModules()
 	if (true)
 	{
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_BEDROOM/*eTrainingModules.BEDROOM*/
+		module.id 			= eTrainingModules.BEDROOM
 		module.startPos 	= Vector( -13536, -6643, 0 )
 		module.startAng 	= Vector( 0, 100, 0 )
 		module.runFunc 		= Module_Bedroom
@@ -342,7 +341,7 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 		= TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/
+		module.id 		= eTrainingModules.BEDROOM_END
 		module.startPos = Vector( -13536, -6643, 0 )
 		module.startAng = Vector( 0, 100, 0 )
 		module.runFunc 	= Module_Bedroom_End
@@ -352,7 +351,7 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_JUMP/*eTrainingModules.JUMP*/
+		module.id 			= eTrainingModules.JUMP
 		module.startEnt		= "destination_run_and_jump_training"
 		module.runFunc 		= Module_RunAndJump
 		module.playerMods 	= [ "disable_doublejump", "disable_wallrun" ]
@@ -364,10 +363,10 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_DOUBLEJUMP/*eTrainingModules.DOUBLEJUMP*/
+		module.id 			= eTrainingModules.WALLRUN
 		module.startEnt		= "destination_wallrun_training"
 		module.runFunc 		= Module_Wallrun
-	//	module.playerMods 	= [ "disable_doublejump" ]
+		module.playerMods 	= [ "disable_doublejump" ]
 		module.resetTrigs 	= [ "trigger_lightswitch8", "trigger_lightswitch9", "trigger_lightswitch10", "trigger_lightswitch11" ]
 		module.resetFlags 	= [ "PlayerEnteredWallrunArea", "DoingBasicWallrunVO", "DoingWallrunHelperVO", "PlayerReachedWallrunPlatform2", "PlayerReachedWallrunPlatform3", "PlayerReachedWallrunPlatform4", "PlayerReachedWallrunEnd" ]
 		module.showLoading	= false
@@ -375,11 +374,24 @@ function SetupTrainingModules()
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
 
+
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_WALLRUN/*eTrainingModules.WALLRUN*/
+		module.id 			= eTrainingModules.WALLRUN_PLAYGROUND
+		module.startEnt		= "destination_wallrun_playground"
+		module.runFunc 		= Module_Wallrun_Playground
+		// ???????????
+		module.resetFlags 	= [ "WallrunPlayground_HighRoad_1", "WallrunPlayground_HighRoad_2", "WallrunPlayground_BonusEval", "WallrunPlayground_HighRoad_Fail", "WallrunPlayground_LowRoad_1", "WallrunPlayground_LowRoad_2" ]
+		module.playerMods 	= [ "disable_doublejump" ]
+		module.showLoading	= false
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.DOUBLEJUMP
 		module.startEnt		= "destination_doublejump_training"
 		module.runFunc 		= Module_Doublejump
-	 	module.resetTrigs 	= [ "trigger_lightswitch12", "trigger_lightswitch13", "trigger_lightswitch14" ]
+		module.resetTrigs 	= [ "trigger_lightswitch12", "trigger_lightswitch13", "trigger_lightswitch14" ]
 		module.resetFlags 	= [ "PlayerReachedDoublejumpPlatform2", "PlayerPastDoubleJump2", "PlayerPassedDoubleJumpCeiling" ]
 		module.showLoading	= false
 		module.resumePoint 	= false
@@ -387,7 +399,59 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_MOSH_PIT/*eTrainingModules.MOSH_PIT*/
+		module.id 			= eTrainingModules.DOUBLEJUMP_PLAYGROUND
+		module.startEnt		= "destination_doublejump_playground"
+		module.runFunc 		= Module_Doublejump_Playground
+		// ???????????
+		module.resetFlags   = [ "DoublejumpPlayground_PlayerEval" ]
+		module.showLoading	= false
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.CLOAK
+		module.startEnt		= "destination_cloak_training"
+		module.runFunc 		= Module_Cloak
+		module.showLoading	= false
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.BASIC_COMBAT
+		module.startEnt		= "destination_smart_pistol_training"
+		module.runFunc 		= Module_BasicCombat
+		// ????????????
+		module.resetFlags   = [ "PlayerNearMultikillSpot", "PlayerNearMultiLockSpot" ]
+		module.showLoading	= false
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.FIRINGRANGE
+		module.startEnt		= "destination_weapons_training"
+		module.runFunc 		= Module_FiringRange
+		// I THINK THIS IS SPOT ON
+		module.resetFlags   = [ "FiringRangeWeaponSwapped", "PlayerADSed", "PlayerReloaded" ]
+		module.showLoading	= false
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.FIRINGRANGE_GRENADES
+		module.startEnt		= "destination_grenade_training"
+		module.runFunc 		= Module_FiringRange_Grenades
+		module.resetFlags   = [ "PlayerThrewGrenade", "GrenadeThrowingDone" ]
+		module.showLoading	= false
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.MOSH_PIT
 		module.startEnt		= "destination_mosh_pit_playground"
 		module.runFunc 		= Module_MoshPit
 		module.resetFlags 	= [ "PlayerPressedWeaponSwitchButton", "PlayerReloaded", "PilotMoshPit_AllSquadsSpawned", "TrainingPilotHealth", "PilotHealthTrainingStarted", "MoshPit_GroundTroops_Done", "FiringRangeWeaponSwapped", "PlayerCalledInTitan", "TitanDropped", "PlayerEnteredTitan" ]
@@ -400,7 +464,7 @@ function SetupTrainingModules()
 	if (true || GAMETYPE == "titan_tutorial")
 	{
 		local module 		= CreateTrainingModuleInfo()
-		module.id 			= TRAINING_TITAN_MOSH_PIT/*eTrainingModules.TITAN_MOSH_PIT*/
+		module.id 			= eTrainingModules.TITAN_MOSH_PIT
 		module.startEnt 	= "destination_mosh_pit_playground"
 		module.runFunc 		= Module_TitanMoshPit
 		module.resetFlags 	= [ "TitanMoshPitCombatStarted", "TitanShieldTrainingStarted", "TrainingTitanShields", "TitanHealthTrainingStarted", "TrainingTitanHealth", "CombatTestDone" ]
@@ -4892,42 +4956,13 @@ function Module_MoshPit()
 	// ozyoon changed 4 - weapon switch and reload
 	TakeAllWeapons( level.player )
 
-	FlagClear("PlayerPressedPrimaryWeapon");
+	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
+	thread MoshPit_Minimap_VO()
 
-	ForcePlayConversationToPlayer( "train_pull_weapon", level.player )
-	DisplayTrainingPrompt( eTrainingButtonPrompts.WEAPONSWITCH )
-
-	FlagWait("PlayerPressedPrimaryWeapon");
-
-	local weapon = level.player.GiveWeapon(PILOT_WEAPON_3)
-
-	WaitForPlayerActiveWeapon(PILOT_WEAPON_3)
-
-	local minWaitEnd = 3 + Time()
-	HideTrainingPrompt()
-
-	SmartAmmo_Stop( weapon )
-	level.player.SetActiveWeaponPrimaryAmmoLoaded( 0 )
-	level.player.SetActiveWeaponPrimaryAmmoTotal( 0 )
-
-	FlagClear( "PlayerReloaded" )
-	thread GiveAmmoOnFlag( "PlayerReloaded" )
-
-	wait 0.9 // let pro players reload before prompting
-
-	if ( !Flag( "PlayerReloaded" ) )
-	{
-		waitthread WaittillTime( minWaitEnd )
-
-		minWaitEnd = 3 + Time()
-		ForcePlayConversationToPlayer( "train_reload", level.player )
-		DisplayTrainingPrompt( eTrainingButtonPrompts.RELOAD )
-
-		waitthread NagPlayerUntilFlag( "PlayerReloaded", "train_reload" )
-		HideTrainingPrompt()
-	}
-
+	level.player.GiveWeapon(PILOT_WEAPON_2)
 	level.player.GiveWeapon(PILOT_WEAPON_1)
+	level.player.GiveWeapon(PILOT_WEAPON_AT)
+	level.player.GiveOffhandWeapon( PILOT_WEAPON_OFFHAND_OFFENSIVE, GRENADE_SLOT )
 
 	if ( !( "moshPitSquads" in level ) )
 		level.moshPitSquads <- {}
@@ -4985,7 +5020,6 @@ function Module_MoshPit()
 
 
 	// 기본 전투 훈련
-	DisplayTrainingPrompt( eTrainingButtonPrompts.ADS )
 	spots.append( CreateScriptRef( Vector( 112, 3883, 6400 ), Vector( 0, 50, 0 ) ) )
 
 	waitthread PilotMoshPit_GroundTroops(spots)
@@ -5000,7 +5034,6 @@ function Module_MoshPit()
 	spots.append( CreateScriptRef( Vector( 318, 2686, 6400 ), Vector( 0, 50, 0 ) ) )
 	
 	FlagClear("MoshPit_GroundTroops_Done")
-	DisplayTrainingPrompt(eTrainingButtonPrompts.MELEE)
 	
 	waitthread PilotMoshPit_Melee(spots)
 
@@ -5121,8 +5154,6 @@ function PilotMoshPit_TrainPilotHealth()
 
 function PilotMoshPit_GroundTroops(spots)
 {
-	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
-	thread MoshPit_Minimap_VO()
 
 	printt( "waiting for squads to spawn" )
 
@@ -5250,11 +5281,6 @@ function PilotMoshPit_GroundTroops(spots)
 function PilotMoshPit_Melee(spots)
 {
 	FlagSet("Moshpit_Melee")
-
-	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
-	thread MoshPit_Minimap_VO()
-
-	thread MoshPit_Melee_VO()
 
 	printt( "waiting for squads to spawn" )
 
@@ -5387,24 +5413,6 @@ function PilotMoshPit_Grenade()
 {
 	FlagSet("Moshpit_Grenade")
 
-	DisplayTrainingPrompt( eTrainingButtonPrompts.FIREGRENADE )
-
-	// 수류탄 지급
-	level.player.GiveOffhandWeapon( PILOT_WEAPON_OFFHAND_OFFENSIVE, GRENADE_SLOT )
-	local grenadeWeapon = level.player.GetOffhandWeapon( GRENADE_SLOT )
-	grenadeWeapon.SetWeaponPrimaryClipCount(2)
-
-	ControllerImageHint_OffhandOffensive()
-	OffhandOffensiveHintPulse()
-
-	thread OffHintPulse()
-
-	thread RefillOffhandAmmoUntilSignal( grenadeWeapon, "MoshPit_GroundTroops_Done" )
-
-	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
-	thread MoshPit_Minimap_VO()
-
-	thread MoshPit_Grenade_VO()
 
 	printt( "waiting for squads to spawn" )
 
@@ -5663,7 +5671,6 @@ function MoshPit_NPC_FightPlayer( guy )
 
 function PilotMoshPit_KillTitanWithAT()
 {
-	level.player.GiveWeapon( PILOT_WEAPON_AT )
 	local weapon = WaitForPlayerActiveWeapon()
 
 	if ( weapon.GetClassname() != PILOT_WEAPON_AT )
