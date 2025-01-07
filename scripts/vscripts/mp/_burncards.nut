@@ -173,35 +173,22 @@ function DoSummonTitanBurnCard(player, cardRef) {
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
     ForceTitanBuildComplete(player)
-   
+    local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+    local oldSetFile = titanDataTable.playerSetFile
     if(cardRef == "bc_summon_atlas") {
-        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
 	    titanDataTable.playerSetFile = "titan_atlas"
     }
     if(cardRef == "bc_summon_ogre") {
-        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
 	    titanDataTable.playerSetFile = "titan_ogre"
     }
     if(cardRef == "bc_summon_stryder") {
-        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
         titanDataTable.playerSetFile = "titan_stryder"
     }
-
     player.WaitSignal("CalledInReplacementTitan")
-    if(cardRef == "bc_summon_atlas") {
-        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
-	    titanDataTable.playerSetFile = "titan_atlas"
-    }
-    if(cardRef == "bc_summon_ogre") {
-        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
-	    titanDataTable.playerSetFile = "titan_ogre"
-    }
-    if(cardRef == "bc_summon_stryder") {
-        local titanDataTable = GetPlayerClassDataTable( player, "titan" )
-        titanDataTable.playerSetFile = "titan_stryder"
+    if (oldSetFile) {
+        titanDataTable.playerSetFile = oldSetFile
     }
     local activeBCID = player.GetPersistentVar("activeBCID")
-    
 	player.SetActiveBurnCardIndex( -1 )
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
@@ -230,7 +217,6 @@ function RunBurnCardFunctions(player,cardRef) {
     if(cardRef == "bc_summon_stryder") {
         thread DoSummonTitanBurnCard(player, cardRef);
     }
-    
     
 }
 
