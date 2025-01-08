@@ -463,7 +463,7 @@ function SetupTrainingModules()
 		module.startEnt 	= "teleport_titan_mosh_pit"
 		module.runFunc 		= Module_TitanMoshPit
 		module.resetFlags 	= [ "TitanMoshPitCombatStarted", "TitanShieldTrainingStarted", "TrainingTitanShields", "TitanHealthTrainingStarted", "TrainingTitanHealth", "CombatTestDone" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= true
 		module.startAsTitan = true
 		module.showEndEMP	= false
@@ -5788,21 +5788,6 @@ function PilotMoshPit_TitanTraining()
 	waitthread NagPlayerUntilFlag( "PlayerEnteredTitan", "train_titan_mountup", 20 )
 
 	thread MoshPit_TitanAttack_VO()
-
-	AddDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
-
-	OnThreadEnd(
-		function() : ()
-		{
-			if ( IsValid( level.player ) )
-			{
-				// turn demigod back on before removing the callback, in case Titan is currently at end of doomed state and one more hit would kill the player
-				level.player.EnableDemigod()
-				RemoveDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
-			}
-		}
-	)
-
 	waitthread MoshPit_PlayerMopsUpAsTitan()
 
 }
@@ -6580,7 +6565,7 @@ function Module_TitanMoshPit()
 	waitthread Titan_OffensiveOffhandTraining()
 
 	FlagSet( "TitanMoshPitCombatStarted" )
-
+	ShowMinimap()
 	waitthread TitanMoshPit_Combat()
 
 	waitthread Titan_TrainEject()
@@ -6834,6 +6819,7 @@ function TitanMoshPit_Combat()
 	ForcePlayConversationToPlayer( "titan_mosh_start", level.player )
 	// 기존의 메세지 팝업창(생존, 최대한 버티세요.)을 아래 스레드 안으로 가져가기 위해 주석처리
 	// DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_SURVIVE )
+	AddDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
 
 	thread TitanMoshPit_SpawnTitans_OrForceStandDown( "CombatTestDone" )
 
@@ -6842,10 +6828,18 @@ function TitanMoshPit_Combat()
 		wait 0
 
 	HideTrainingPrompt()
-
-	FlagSet( "CombatTestDone" )
-
 	thread TitanMoshPit_NPCsStandDown()
+	  OnThreadEnd(
+        function() : ()
+        {
+            if ( IsValid( level.player ) )
+            {
+                // turn demigod back on before removing the callback, in case Titan is currently at end of doomed state and one more hit would kill the player
+                level.player.EnableDemigod()
+                RemoveDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
+            }
+        }
+    )
 }
 
 function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
@@ -6879,8 +6873,6 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 		wait 2
 	}	
 
-	// 기존의 '생존' 메세지 노출 없애기
-	HideTrainingPrompt()
 
 	level.moshPitTitans = [];
 	local soul = level.player.GetTitanSoul()
@@ -6892,11 +6884,9 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 	ForcePlayConversationToPlayer( "titan_mosh_wave_start", level.player )
 	wait 2
 
-	// 튜토리얼용 '비상사태' 메세지 출력
-	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_EMERGENCY )
 
 	for (local i = 0; i < 3; i++)
-		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, true, true, true, ATLAS_MODEL)
+		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, true, true, false, ATLAS_MODEL)
 
 	while (1)
 	{
@@ -6996,12 +6986,12 @@ function TitanMoshPit_GetBestTitanSpawn(idx)
 
 function Titan_TrainEject()
 {
-	FlagClear( "PlayerEjected" )
-
+	// FlagClear( "PlayerEjected" )
+	printt("eject stuff")
 	local playertitan = GetPlayerTitanInMap( level.player )
 	GivePassive( playertitan, PAS_NUCLEAR_CORE )
 
-	thread CatchPlayerEject()
+	// thread CatchPlayerEject()
 
 	// set player invincible again
 	level.player.EnableDemigod()
@@ -7015,11 +7005,14 @@ function Titan_TrainEject()
 	if ( level.player.IsTitan() )
 	{
 		ForcePlayConversationToPlayer( "titan_infinite_doomed_info", level.player )
+		// set the health
+		level.player.SetHealth(titan.GetMaxHealth())
 	}
 
 	if ( level.player.IsTitan() )
 	{
 		printt("Would wait but its fucked sorry")
+		FlagWait("ConversationOver")
 		FlagClear("ConversationOver")
 		DisplayTrainingPrompt( eTrainingButtonPrompts.EJECT_CONFIRM )
 		ForcePlayConversationToPlayer( "titan_doomed_eject", level.player )
@@ -7032,7 +7025,7 @@ function Titan_TrainEject()
 	}
 
 	// -- PLAYER PUNCHED OUT --
-
+	printt("Eject stuff")
 	HideTrainingPrompt()
 
 	local minWaitEnd = 5 + Time()
@@ -7051,10 +7044,10 @@ function CatchPlayerEject()
 	level.ent.EndSignal( "ModuleChanging" )
 	level.player.EndSignal( "OnDestroy" )
 	level.player.EndSignal( "Disconnected" )
-
+	printt("HELLO HERE FROM CATCH EJECT")
 	while ( level.player.IsTitan() )
-		wait 0.1
-
+		wait 30
+	
 	FlagSet( "PlayerEjected" )
 }
 
