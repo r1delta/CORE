@@ -6620,10 +6620,10 @@ function Module_TitanPet()
 	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
 	wait 8
 	ForcePlayConversationToPlayer("titan_aimode_hud", level.player)
+	TitanAIControlHintPulse()
 	wait 5
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_AI_MODE)
 	ForcePlayConversationToPlayer("titan_pet_toggle_follow", level.player)
-	TitanAIControlHintPulse()
 	titan.WaitSignal("ChangedTitanMode")
 	OpenSwapDoors("door_titan_pet_gate")
 	ForcePlayConversationToPlayer("titan_pet_follow_info", level.player)
