@@ -6616,11 +6616,14 @@ function Module_TitanPet()
 	// FlagWait("PlayerInsideControlRoom")
 	DisplayTrainingPrompt( eTrainingButtonPrompts.DATA_KNIFE )
 	level.titanPetControlPanel.WaitSignal( "PanelReprogram_Success" )
+	HideTrainingPrompt()
 	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
 	wait 8
 	ForcePlayConversationToPlayer("titan_aimode_hud", level.player)
 	wait 5
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_AI_MODE)
 	ForcePlayConversationToPlayer("titan_pet_toggle_follow", level.player)
+	TitanAIControlHintPulse()
 	titan.WaitSignal("ChangedTitanMode")
 	OpenSwapDoors("door_titan_pet_gate")
 	ForcePlayConversationToPlayer("titan_pet_follow_info", level.player)
@@ -6629,6 +6632,7 @@ function Module_TitanPet()
 	OpenSwapDoors("door_controlpanel_exit")
 	ForcePlayConversationToPlayer("titan_pet_reembark", level.player)
 	DisplayTrainingPrompt( eTrainingButtonPrompts.ENTER_TITAN )
+	StopHintPulse()
 	level.player.WaitSignal("player_embarks_titan")
 	OpenSwapDoors("door_titan_pet_exit_gate")
 	ForcePlayConversationToPlayer("titan_pet_exit", level.player)
@@ -6641,7 +6645,6 @@ function UseTitanPetControlPanel(panel,ent,target) {
 	
 	// titan_aimode_intro
 	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
-	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_AI_MODE)
 	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeChange_Once" )
 	CloseSwapDoors("door_controlpanel_enter")
 }
@@ -7183,7 +7186,6 @@ function Titan_TrainEject()
 
 	if ( level.player.IsTitan() )
 	{
-		DisplayTrainingPrompt( eTrainingButtonPrompts.EJECT_INIT )
 		ForcePlayConversationToPlayer( "titan_doomed_info", level.player )
 		wait 9
 	}
