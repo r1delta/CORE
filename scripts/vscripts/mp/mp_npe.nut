@@ -458,16 +458,16 @@ function SetupTrainingModules()
 		// module.showEndEMP	= false
 		// AddTrainingModuleInfo( module )
 
-		// local module 		= CreateTrainingModuleInfo()
-		// module.id 			= eTrainingModules.TITAN_DASH
-		// module.startEnt 	= "teleport_titan_dash"
-		// module.runFunc 		= Module_TitanDash
-		// module.resetFlags 	= [ "TitanDashFinishLine", "PlayerPastDashThreat", "PlayerStartDashThreat", "PlayerDashThreat_Alcove2", "PlayerDashThreat_Alcove1" ]
-		// module.showLoading	= true
-		// module.resumePoint 	= true
-		// module.startAsTitan = true
-		// module.showEndEMP	= false
-		// AddTrainingModuleInfo( module )
+		local module 		= CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.TITAN_DASH
+		module.startEnt 	= "teleport_titan_dash"
+		module.runFunc 		= Module_TitanDash
+		module.resetFlags 	= [ "TitanDashFinishLine", "PlayerPastDashThreat", "PlayerStartDashThreat", "PlayerDashThreat_Alcove2", "PlayerDashThreat_Alcove1" ]
+		module.showLoading	= true
+		module.resumePoint 	= true
+		module.startAsTitan = true
+		module.showEndEMP	= false
+		AddTrainingModuleInfo( module )
 
 		local module 		= CreateTrainingModuleInfo()
 		module.id 			= eTrainingModules.TITAN_VORTEX
@@ -6585,12 +6585,83 @@ function Module_TitanDash()
 	level.ent.EndSignal( "ModuleChanging" )
 	level.player.WaitSignal( "Teleported" )
 
+	local initialDash = -1
 	local table = level.player.playerClassData[ "titan" ]
 	table.liverycode <- null
 	table.liverycolor0 <- null
 	table.liverycolor1 <- null
 	table.liverycolor2 <- null
+
+	CloseSwapDoors("door_titan_dash_threat_start")
+	CloseSwapDoors("door_titan_dash_threat_enter")
+	ForcePlayConversationToPlayer( "titan_dash_speed_intro", level.player )
+	wait 5
+	ForcePlayConversationToPlayer( "titandash_dash_anydirection", level.player )
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_DASH )
+
+	waitthread NagPlayerUntilFlag( "PlayerDashed", "titandash_dash_anydirection_nag", 15 )
+
+	if (!Flag( "PlayerDashed_Left" )) {
+		ForcePlayConversationToPlayer( "titandash_left", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_LEFT )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Left", "titandash_left_nag", 15 )
+	}
+
+	HideTrainingPrompt()
+	DashMeterHintPulse()
+	ForcePlayConversationToPlayer( "titan_dash_meter", level.player )
+	wait 9
+	StopHintPulse()
+
+	if (!Flag( "PlayerDashed_Right" )) {
+		ForcePlayConversationToPlayer( "titandash_right", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_RIGHT )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Right", "titandash_right_nag", 15 )
+	}
+	
+	if (!Flag( "PlayerDashed_Forward" )) {
+		ForcePlayConversationToPlayer( "titandash_forward", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_FORWARD )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Forward", "titandash_forward_nag", 15 )
+	}
+
+	if (!Flag( "PlayerDashed_Back" )) {
+		ForcePlayConversationToPlayer( "titandash_back", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_BACK )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Back", "titandash_back_nag", 15 )
+	}
+
+	ForcePlayConversationToPlayer( "goodjob", level.player )
+	HideTrainingPrompt()
+
+	wait 2
+	ForcePlayConversationToPlayer( "titandash_move_forward", level.player )
+	OpenSwapDoors("door_titan_dash_threat_start")
+	OpenSwapDoors("door_titan_dash_threat_enter")
+	wait 1 
+	CloseSwapDoors("door_titan_dash_threat_start")
+	wait 2
+	ForcePlayConversationToPlayer("titan_dash_threat", level.player)
+	wait 5
+	OpenSwapDoors("door_titan_dash_threat_start")
+	
+	local spots = []
+	spots.append({ origin = Vector(6570,2912,192), angles = Vector(0,0,90) })
+	spots.append({ origin = Vector(6742,2912,192), angles = Vector(0,0,90) })
+	spots.append({ origin = Vector(6570,2912,108), angles = Vector(0,0,90) })
+	spots.append({ origin = Vector(6742,2912,108), angles = Vector(0,0,90) })
+
+	FireRocketsUntilSignal(spots, 380, 1, "PlayerDashThreat_Alcove1")
 }
+
 
 
 function Module_TitanVortex() {
@@ -7455,7 +7526,7 @@ function FireRocketsUntilSignal( rocketSpots, rocketSpeed, volleyWait, endSig, l
 		foreach ( idx, spot in rocketSpots )
 		{
 			local rocket = NPE_SpawnRocket( spot.origin, spot.angles, level, oppTeam, rocketSpeed )
-			thread RocketSeekPlayer( rocket, rocketSpeed )
+			// thread RocketSeekPlayer( rocket, rocketSpeed )
 			level.dashRockets.append( rocket )
 
 			//if ( ( idx + 1 ) % 2 == 0 )
@@ -7678,8 +7749,31 @@ function ClientCommand_NPE_PlayerDashed( player, ... )
 {
 	//printt( "SERVER Setting PlayerDashed" )
 	FlagSet( "PlayerDashed" )
+
+	if (level.currentTrainingModule == eTrainingModules.TITAN_DASH) {
+		thread SetAdditionalDashFlags()
+	}
+
 	thread ClearDashFlagAfterTime( player )
 	return true
+}
+
+function SetAdditionalDashFlags() {
+	wait 0.25 // to let titan gain enough velocity
+	local vec = level.player.GetVelocity()
+	if (vec.x > 280) {
+		LightTrigger_On("trigger_lightswitch_dash_R", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Right")
+	} else if (vec.x < -280) {
+		LightTrigger_On("trigger_lightswitch_dash_L", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Left")
+	} else if (vec.y > 280) {
+		LightTrigger_On("trigger_lightswitch_dash_T", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Forward")
+	} else if (vec.y < -280) {
+		LightTrigger_On("trigger_lightswitch_dash_B", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Back")
+	}
 }
 
 function ClearDashFlagAfterTime( player )
