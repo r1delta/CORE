@@ -98,7 +98,7 @@ function main()
 	//level.resumeChoice 					<- null
 	//level.training_hasEverBeenStarted 	<- null
 	//level.training_hasEverFinished 		<- null
-	level.doQuickIntro 					<- false
+	level.doQuickIntro 					<- true
 	level.doQuickOutro 					<- false
 	level.pilotTrainingOnly 			<- false
 
@@ -458,11 +458,22 @@ function SetupTrainingModules()
 		// module.showEndEMP	= false
 		// AddTrainingModuleInfo( module )
 
+		// local module 		= CreateTrainingModuleInfo()
+		// module.id 			= eTrainingModules.TITAN_DASH
+		// module.startEnt 	= "teleport_titan_dash"
+		// module.runFunc 		= Module_TitanDash
+		// module.resetFlags 	= [ "TitanDashFinishLine", "PlayerPastDashThreat", "PlayerStartDashThreat", "PlayerDashThreat_Alcove2", "PlayerDashThreat_Alcove1" ]
+		// module.showLoading	= true
+		// module.resumePoint 	= true
+		// module.startAsTitan = true
+		// module.showEndEMP	= false
+		// AddTrainingModuleInfo( module )
+
 		local module 		= CreateTrainingModuleInfo()
-		module.id 			= eTrainingModules.TITAN_DASH
-		module.startEnt 	= "teleport_titan_dash"
-		module.runFunc 		= Module_TitanDash
-		module.resetFlags 	= [ "TitanDashFinishLine", "PlayerPastDashThreat", "PlayerStartDashThreat", "PlayerDashThreat_Alcove2", "PlayerDashThreat_Alcove1" ]
+		module.id 			= eTrainingModules.TITAN_PET
+		module.startEnt 	= "teleport_titan_train_pet"
+		module.runFunc 		= Module_TitanPet
+		module.resetFlags 	= [ "TitanPetPassedGate","PlayerInsideControlRoom" ]
 		module.showLoading	= true
 		module.resumePoint 	= true
 		module.startAsTitan = true
@@ -715,7 +726,6 @@ function TrainingModule_SetPlayerSettings( moduleInfo )
 	printt( "Player embarking?", playerEmbarking )
 	if ( playerEmbarking )
 		level.player.ClearParent()  // trying to kill the titan while the player is attached causes an engine error
-
 	// Kill player's pet titan in the world. If embarking/disembarking this also kills that scripting.
 	if ( playerTitan && !playerTitan.IsPlayer() )
 		playerTitan.Kill()
@@ -862,9 +872,9 @@ function NPE_EntitySetup()
 
 	SetupSkyboxEnts()
 
-/*	local arr = GetEntArrayByName_Expensive( "control_panel_titan_pet" )
+	local arr = GetEntArrayByName_Expensive( "control_panel_titan_pet" )
 	Assert( arr.len() == 1 )
-	level.titanPetControlPanel = arr[ 0 ]*/
+	level.titanPetControlPanel = arr[ 0 ]
 
 	SetupTrainingPod()
 
@@ -6570,6 +6580,61 @@ function Module_TitanDash()
 	table.liverycolor1 <- null
 	table.liverycolor2 <- null
 }
+
+function Module_TitanPet() 
+{
+	level.player.EndSignal( "OnDestroy" )
+	level.player.EndSignal( "Disconnected" )
+	level.ent.EndSignal( "ModuleChanging" )
+	level.player.WaitSignal( "Teleported" )
+
+	local table = level.player.playerClassData[ "titan" ]
+	table.liverycode <- null
+	table.liverycolor0 <- null
+	table.liverycolor1 <- null
+	table.liverycolor2 <- null
+	CloseSwapDoors("door_controlpanel_enter")
+	CloseSwapDoors("door_controlpanel_exit")
+	CloseSwapDoors("door_titan_pet_gate")
+	CloseSwapDoors("door_titan_pet_exit_gate")
+	ForcePlayConversationToPlayer( "titan_pet_intro", level.player )
+	wait 8
+	EnableTitanDisembark()
+
+	ForcePlayConversationToPlayer("titan_pet_disembark", level.player)
+	
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_DISEMBARK )
+	local playerTitan = GetPlayerTitanInMap( level.player )
+	printt("playerTitan.s" + playerTitan.s)
+	if(playerTitan) {
+		while (GetDisembarkPlayer(playerTitan) != null) {
+			printt("GetDisembarkPlayer(playerTitan) != null")
+		} 
+		FlagSet("PlayerDisembarked")
+	}
+	FlagWait("PlayerDisembarked") 
+	OpenSwapDoors("door_controlpanel_enter")
+
+	ForcePlayConversationToPlayer("titan_pet_go_hack", level.player)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.MOVE_TO_CONTROL_ROOM )
+	
+	wait 5
+	DisplayTrainingPrompt( eTrainingButtonPrompts.DATA_KNIFE )
+	local table = {}
+	table.useFunc <- UseTitanPetControlPanel
+	table.useEnt <- GetEntArrayByName_Expensive("controlpanel_target")[0]
+	table.scope <- this
+	AddControlPanelUseFuncTable(level.titanPetControlPanel, table)
+
+}	
+
+function UseTitanPetControlPanel(panel,ent,target) {
+	printt("hello")
+	
+	
+}
+
+
 
 function Module_TitanMoshPit()
 {
