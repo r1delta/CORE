@@ -470,6 +470,17 @@ function SetupTrainingModules()
 		// AddTrainingModuleInfo( module )
 
 		local module 		= CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.TITAN_VORTEX
+		module.startEnt 	= "teleport_titan_train_vortex"
+		module.runFunc 		= Module_TitanVortex
+		module.resetFlags 	= [ "TitanPetPassedGate","PlayerInsideControlRoom" ]
+		module.showLoading	= true
+		module.resumePoint 	= true
+		module.startAsTitan = true
+		module.showEndEMP	= false
+		AddTrainingModuleInfo( module )
+
+		local module 		= CreateTrainingModuleInfo()
 		module.id 			= eTrainingModules.TITAN_PET
 		module.startEnt 	= "teleport_titan_train_pet"
 		module.runFunc 		= Module_TitanPet
@@ -6579,6 +6590,61 @@ function Module_TitanDash()
 	table.liverycolor0 <- null
 	table.liverycolor1 <- null
 	table.liverycolor2 <- null
+}
+
+
+function Module_TitanVortex() {
+	level.player.EndSignal( "OnDestroy" )
+	level.player.EndSignal( "Disconnected" )
+	level.ent.EndSignal( "ModuleChanging" )
+	level.player.WaitSignal( "Teleported" )
+
+	ForcePlayConversationToPlayer( "titan_vortex", level.player )
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_VORTEX)
+	CloseSwapDoors("door_titan_vortex_enter")
+	CloseSwapDoors("door_titan_vortex_exit")
+	wait 2
+	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_DEFENSIVE, 1 )
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_VORTEX_NAG)
+	// wait for player to use the vortex shield
+	
+	// poll the IsVortexing function until the player is no longer vortexing
+	while ( IsVortexing(level.player) )
+		wait 0.1
+	
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_VORTEX_STARTINGLINE)
+	OpenSwapDoors("door_titan_vortex_enter")
+
+	// spawn a titan
+	local spawnOrg = Vector( 8428, -2345 ,124)
+	local spawnAng = Vector( 0, 0, 0 )
+	local oppTeam = GetOppositeTeam( level.player )
+	local alert = 1
+	local titan = NPE_SpawnTitan( oppTeam, spawnOrg, spawnAng, alert )
+	titan.SetTitle( "#NPC_TITAN_TRAINING" )
+	DisableRodeo( titan )
+
+	// set the titan health to 0
+	titan.SetHealth( 1 )
+
+	while (1)
+	{
+		local foundOne = false
+		if (IsAlive(titan))
+			{
+				foundOne = true
+				break
+			}
+
+		if (!foundOne)
+			break
+
+		wait 0.1
+	}
+
+	// open the rest of the doors
+	OpenSwapDoors("door_titan_vortex_exit")
+
 }
 
 function Module_TitanPet() 
