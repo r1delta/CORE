@@ -6587,7 +6587,11 @@ function Module_TitanPet()
 	level.player.EndSignal( "Disconnected" )
 	level.ent.EndSignal( "ModuleChanging" )
 	level.player.WaitSignal( "Teleported" )
-
+	local table = {}
+	table.useFunc <- UseTitanPetControlPanel
+	table.useEnt <- GetEntArrayByName_Expensive("controlpanel_target")[0]
+	table.scope <- this
+	AddControlPanelUseFuncTable(level.titanPetControlPanel, table)
 	local table = level.player.playerClassData[ "titan" ]
 	table.liverycode <- null
 	table.liverycolor0 <- null
@@ -6598,40 +6602,48 @@ function Module_TitanPet()
 	CloseSwapDoors("door_titan_pet_gate")
 	CloseSwapDoors("door_titan_pet_exit_gate")
 	ForcePlayConversationToPlayer( "titan_pet_intro", level.player )
-	wait 8
+	wait 5
 	EnableTitanDisembark()
-
 	ForcePlayConversationToPlayer("titan_pet_disembark", level.player)
-	
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_DISEMBARK )
-	local playerTitan = GetPlayerTitanInMap( level.player )
-	printt("playerTitan.s" + playerTitan.s)
-	if(playerTitan) {
-		while (GetDisembarkPlayer(playerTitan) != null) {
-			printt("GetDisembarkPlayer(playerTitan) != null")
-		} 
-		FlagSet("PlayerDisembarked")
-	}
-	FlagWait("PlayerDisembarked") 
+	level.player.WaitSignal("DisembarkingTitan")
 	OpenSwapDoors("door_controlpanel_enter")
-
+	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
+	local titan = GetPlayerTitanInMap(level.player)
+	NPCTitanNextMode(titan, level.player)
 	ForcePlayConversationToPlayer("titan_pet_go_hack", level.player)
 	DisplayTrainingPrompt( eTrainingButtonPrompts.MOVE_TO_CONTROL_ROOM )
-	
-	wait 5
+	// FlagWait("PlayerInsideControlRoom")
 	DisplayTrainingPrompt( eTrainingButtonPrompts.DATA_KNIFE )
-	local table = {}
-	table.useFunc <- UseTitanPetControlPanel
-	table.useEnt <- GetEntArrayByName_Expensive("controlpanel_target")[0]
-	table.scope <- this
-	AddControlPanelUseFuncTable(level.titanPetControlPanel, table)
+	level.titanPetControlPanel.WaitSignal( "PanelReprogram_Success" )
+	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
+	wait 8
+	ForcePlayConversationToPlayer("titan_aimode_hud", level.player)
+	wait 5
+	ForcePlayConversationToPlayer("titan_pet_toggle_follow", level.player)
+	titan.WaitSignal("ChangedTitanMode")
+	OpenSwapDoors("door_titan_pet_gate")
+	ForcePlayConversationToPlayer("titan_pet_follow_info", level.player)
+	FlagWait("TitanPetPassedGate")
+	CloseSwapDoors("door_titan_pet_gate")
+	OpenSwapDoors("door_controlpanel_exit")
+	ForcePlayConversationToPlayer("titan_pet_reembark", level.player)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.ENTER_TITAN )
+	level.player.WaitSignal("player_embarks_titan")
+	OpenSwapDoors("door_titan_pet_exit_gate")
+	ForcePlayConversationToPlayer("titan_pet_exit", level.player)
+	HideTrainingPrompt()
+}
 
-}	
 
 function UseTitanPetControlPanel(panel,ent,target) {
 	printt("hello")
 	
-	
+	// titan_aimode_intro
+	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_AI_MODE)
+	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeChange_Once" )
+	CloseSwapDoors("door_controlpanel_enter")
 }
 
 
