@@ -6654,12 +6654,12 @@ function Module_TitanDash()
 	OpenSwapDoors("door_titan_dash_threat_start")
 	
 	local spots = []
-	spots.append({ origin = Vector(6570,2912,192), angles = Vector(0,0,90) })
-	spots.append({ origin = Vector(6742,2912,192), angles = Vector(0,0,90) })
-	spots.append({ origin = Vector(6570,2912,108), angles = Vector(0,0,90) })
-	spots.append({ origin = Vector(6742,2912,108), angles = Vector(0,0,90) })
+	spots.append({ origin = Vector(6650,2870,192), angles = Vector(0,-90,0) })
+	spots.append({ origin = Vector(6742,2870,192), angles = Vector(0,-90,0) })
+	spots.append({ origin = Vector(6655,2870,108), angles = Vector(0,-90,0) })
+	spots.append({ origin = Vector(6650,2870,108), angles = Vector(0,-90,0) })
 
-	FireRocketsUntilSignal(spots, 380, 1, "PlayerDashThreat_Alcove1")
+	FireRocketsUntilSignal(spots, 500, 1, "PlayerDashThreat_Alcove1")
 }
 
 
