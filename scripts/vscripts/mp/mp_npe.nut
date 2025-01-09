@@ -7225,7 +7225,9 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 
 		wait 2
 	}	
-
+	if(Flag("PlayerEjected")) {
+		return
+	}
 	ForcePlayConversationToPlayer("titan_mosh_wave_all_survived", level.player)
 	wait 8
 	ForcePlayConversationToPlayer("titan_mosh_wave_forced_standdown", level.player)
@@ -7241,6 +7243,8 @@ function ForceDoomedState()
 	level.player.DisableDemigod()
 
 	local soul = level.player.GetTitanSoul()
+
+	Assert( IsValid( soul ) )
 
 	soul.SetShieldHealth( 0 )
 	level.player.TakeDamage( level.player.GetHealth() + 1, null, null, { damageSourceId=eDamageSourceId.suicide } )
