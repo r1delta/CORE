@@ -6659,7 +6659,7 @@ function Module_TitanDash()
 	spots.append({ origin = Vector(6655,2870,108), angles = Vector(0,-90,0) })
 	spots.append({ origin = Vector(6650,2870,108), angles = Vector(0,-90,0) })
 
-	FireRocketsUntilSignal(spots, 500, 1, "PlayerDashThreat_Alcove1")
+	FireRocketsUntilSignal(spots, 1000, 1, "PlayerDashThreat_Alcove1")
 }
 
 
@@ -7225,11 +7225,11 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 
 		wait 2
 	}	
-	if(Flag("PlayerEjected")) {
-		return
-	}
+	
 	ForcePlayConversationToPlayer("titan_mosh_wave_all_survived", level.player)
 	wait 8
+	if(level.player.GetDoomedState())
+		return
 	ForcePlayConversationToPlayer("titan_mosh_wave_forced_standdown", level.player)
 	wait 2
 	ForceDoomedState()
@@ -7510,7 +7510,6 @@ function FireRocketsUntilSignal( rocketSpots, rocketSpeed, volleyWait, endSig, l
 	level.ent.EndSignal( endSig )
 
 	local oppTeam = GetOppositeTeam( level.player )
-	//local rocketWait = 0.1
 
 	if ( lightTrigTN )
 		LightTrigger_On( lightTrigTN, FX_LIGHT_GREEN )
@@ -7532,9 +7531,6 @@ function FireRocketsUntilSignal( rocketSpots, rocketSpeed, volleyWait, endSig, l
 			local rocket = NPE_SpawnRocket( spot.origin, spot.angles, level, oppTeam, rocketSpeed )
 			// thread RocketSeekPlayer( rocket, rocketSpeed )
 			level.dashRockets.append( rocket )
-
-			//if ( ( idx + 1 ) % 2 == 0 )
-			//	wait rocketWait
 		}
 
 		wait volleyWait
@@ -7551,7 +7547,7 @@ function NPE_SpawnRocket( spawnPos, spawnAng, owner, team, rocketSpeed )
 	rocket.SetModel( "models/weapons/bullets/projectile_rocket.mdl" )
 	rocket.SetImpactEffectTable( level.trainingRocketEffectTable )
 	rocket.SetWeaponClassName( "mp_projectile_orbital_strike" )
-	rocket.SetSpeed( rocketSpeed )
+	// rocket.SetSpeed( rocketSpeed )
 	rocket.kv.damageSourceId = eDamageSourceId.mp_titanweapon_orbital_strike
 	DispatchSpawn( rocket )
 
