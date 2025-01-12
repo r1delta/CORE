@@ -861,13 +861,10 @@ function BothTeamsConnected()
 
 function IsAnyPlayerMMDebug()
 {
-	local players = GetPlayerArray()
-	foreach ( player in players )
-	{
-			return true
-	}
-
-	return false
+    local players = GetPlayerArray()
+    if (players.len() == 1 && IsPrivateMatch())
+        return true
+    return false
 }
 
 function DoneWaitingForPlayers()
