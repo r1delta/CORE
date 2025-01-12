@@ -227,7 +227,7 @@ function MonitorDLCAvailability()
 function GetPrivateMatchMaps()
 {
 	if (GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel") {
-		local campaignMaps = ["mp_fracture","mp_colony","mp_relic","mp_angel_city","mp_outpost_207","mp_boneyard","mp_airbase","mp_corporate","mp_o2"]
+		local campaignMaps = ["mp_fracture","mp_colony","mp_relic","mp_angel_city","mp_outpost_207","mp_boneyard","mp_airbase","mp_o2","mp_corporate"]
 		return campaignMaps
 	}
 	local mapsArray = []

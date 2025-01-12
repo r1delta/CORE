@@ -417,8 +417,8 @@
 			"gamemode6"	"at"
 			"map7"	"mp_o2"
 			"gamemode7"	"cp"
-			"map7"	"mp_corporate"
-			"gamemode7"	"cp"
+			"map8"	"mp_corporate"
+			"gamemode8"	"cp"
 		}
 	}
 	"all"
