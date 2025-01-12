@@ -37,9 +37,8 @@ PrecacheWeapon( "mp_projectile_orbital_strike" )
 const PILOT_WEAPON_1					= "mp_weapon_semipistol"
 const PILOT_WEAPON_2 					= "mp_weapon_smart_pistol"
 const PILOT_WEAPON_3					= "mp_weapon_rspn101"
-const PILOT_WEAPON_4					= "mp_weapon_wingman"
 const PILOT_WEAPON_OFFHAND_OFFENSIVE 	= "mp_weapon_frag_grenade"
-const PILOT_WEAPON_AT 					= "mp_weapon_rocket_launcher"
+const PILOT_WEAPON_AT 					= "mp_weapon_smr"
 const GRENADE_SLOT 						= 0
 
 const TITAN_WEAPON_1 					= "mp_titanweapon_xo16"
@@ -99,7 +98,7 @@ function main()
 	//level.resumeChoice 					<- null
 	//level.training_hasEverBeenStarted 	<- null
 	//level.training_hasEverFinished 		<- null
-	level.doQuickIntro 					<- false
+	level.doQuickIntro 					<- true
 	level.doQuickOutro 					<- false
 	level.pilotTrainingOnly 			<- false
 
@@ -300,9 +299,9 @@ function TrainerStart()
 
 	// default start
 	if (true)
-		level.currentTrainingModule = TRAINING_BEDROOM
+		level.currentTrainingModule = eTrainingModules.BEDROOM
 	else if (GAMETYPE == "titan_tutorial")
-		level.currentTrainingModule = TRAINING_TITAN_MOSH_PIT
+		level.currentTrainingModule = eTrainingModules.TITAN_MOSH_PIT
 	else if (GAMETYPE == "battle_practice")
 	{
 		level.currentTrainingModule = TRAINING_BATTLE_PRACTICE
@@ -328,10 +327,8 @@ function SetupTrainingModules()
 {
 	level.trainingModuleInfos = []
 
-	if (true)
-	{
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_BEDROOM/*eTrainingModules.BEDROOM*/
+		module.id 			= eTrainingModules.BEDROOM
 		module.startPos 	= Vector( -13536, -6643, 0 )
 		module.startAng 	= Vector( 0, 100, 0 )
 		module.runFunc 		= Module_Bedroom
@@ -342,7 +339,7 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 		= TRAINING_BEDROOM_END/*eTrainingModules.BEDROOM_END*/
+		module.id 		= eTrainingModules.BEDROOM_END
 		module.startPos = Vector( -13536, -6643, 0 )
 		module.startAng = Vector( 0, 100, 0 )
 		module.runFunc 	= Module_Bedroom_End
@@ -352,7 +349,7 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_JUMP/*eTrainingModules.JUMP*/
+		module.id 			= eTrainingModules.JUMP
 		module.startEnt		= "destination_run_and_jump_training"
 		module.runFunc 		= Module_RunAndJump
 		module.playerMods 	= [ "disable_doublejump", "disable_wallrun" ]
@@ -364,51 +361,146 @@ function SetupTrainingModules()
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_DOUBLEJUMP/*eTrainingModules.DOUBLEJUMP*/
+		module.id 			= eTrainingModules.WALLRUN
 		module.startEnt		= "destination_wallrun_training"
 		module.runFunc 		= Module_Wallrun
-	//	module.playerMods 	= [ "disable_doublejump" ]
+		module.playerMods 	= [ "disable_doublejump" ]
 		module.resetTrigs 	= [ "trigger_lightswitch8", "trigger_lightswitch9", "trigger_lightswitch10", "trigger_lightswitch11" ]
 		module.resetFlags 	= [ "PlayerEnteredWallrunArea", "DoingBasicWallrunVO", "DoingWallrunHelperVO", "PlayerReachedWallrunPlatform2", "PlayerReachedWallrunPlatform3", "PlayerReachedWallrunPlatform4", "PlayerReachedWallrunEnd" ]
-		module.showLoading	= false
+		module.showLoading	= true
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.WALLRUN_PLAYGROUND
+		module.startEnt		= "destination_wallrun_playground"
+		module.runFunc 		= Module_Wallrun_Playground
+		// ???????????
+		module.resetFlags 	= [ "WallrunPlayground_HighRoad_1", "WallrunPlayground_HighRoad_2", "WallrunPlayground_BonusEval", "WallrunPlayground_HighRoad_Fail", "WallrunPlayground_LowRoad_1", "WallrunPlayground_LowRoad_2" ]
+		module.playerMods 	= [ "disable_doublejump" ]
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_WALLRUN/*eTrainingModules.WALLRUN*/
+		module.id 			= eTrainingModules.DOUBLEJUMP
 		module.startEnt		= "destination_doublejump_training"
 		module.runFunc 		= Module_Doublejump
-	 	module.resetTrigs 	= [ "trigger_lightswitch12", "trigger_lightswitch13", "trigger_lightswitch14" ]
+		module.resetTrigs 	= [ "trigger_lightswitch12", "trigger_lightswitch13", "trigger_lightswitch14" ]
 		module.resetFlags 	= [ "PlayerReachedDoublejumpPlatform2", "PlayerPastDoubleJump2", "PlayerPassedDoubleJumpCeiling" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= false
 		module.showEndEMP	= true
 		AddTrainingModuleInfo( module )
 
 		local module = CreateTrainingModuleInfo()
-		module.id 			= TRAINING_MOSH_PIT/*eTrainingModules.MOSH_PIT*/
+		module.id 			= eTrainingModules.DOUBLEJUMP_PLAYGROUND
+		module.startEnt		= "destination_doublejump_playground"
+		module.runFunc 		= Module_Doublejump_Playground
+		// ???????????
+		module.resetFlags   = [ "DoublejumpPlayground_PlayerEval" ]
+		module.showLoading	= true
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.CLOAK
+		module.startEnt		= "destination_cloak_training"
+		module.runFunc 		= Module_Cloak
+		module.showLoading	= true
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.BASIC_COMBAT
+		module.startEnt		= "destination_smart_pistol_training"
+		module.runFunc 		= Module_BasicCombat
+		// ????????????
+		module.resetFlags   = [ "PlayerNearMultikillSpot", "PlayerNearMultiLockSpot" ]
+		module.showLoading	= true
+		module.resumePoint 	= true
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.FIRINGRANGE
+		module.startEnt		= "destination_weapons_training"
+		module.runFunc 		= Module_FiringRange
+		// I THINK THIS IS SPOT ON
+		module.resetFlags   = [ "FiringRangeWeaponSwapped", "PlayerADSed", "PlayerReloaded" ]
+		module.showLoading	= true
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.FIRINGRANGE_GRENADES
+		module.startEnt		= "destination_grenade_training"
+		module.runFunc 		= Module_FiringRange_Grenades
+		module.resetFlags   = [ "PlayerThrewGrenade", "GrenadeThrowingDone" ]
+		module.showLoading	= true
+		module.resumePoint 	= false
+		module.showEndEMP	= true
+		AddTrainingModuleInfo( module )
+
+		local module = CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.MOSH_PIT
 		module.startEnt		= "destination_mosh_pit_playground"
 		module.runFunc 		= Module_MoshPit
 		module.resetFlags 	= [ "PlayerPressedWeaponSwitchButton", "PlayerReloaded", "PilotMoshPit_AllSquadsSpawned", "TrainingPilotHealth", "PilotHealthTrainingStarted", "MoshPit_GroundTroops_Done", "FiringRangeWeaponSwapped", "PlayerCalledInTitan", "TitanDropped", "PlayerEnteredTitan" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= true
 		module.showEndEMP	= false
 		AddTrainingModuleInfo( module )
-	}
 
-	if (true || GAMETYPE == "titan_tutorial")
-	{
 		local module 		= CreateTrainingModuleInfo()
-		module.id 			= TRAINING_TITAN_MOSH_PIT/*eTrainingModules.TITAN_MOSH_PIT*/
-		module.startEnt 	= "destination_mosh_pit_playground"
+		module.id 			= eTrainingModules.TITAN_DASH
+		module.startEnt 	= "teleport_titan_dash"
+		module.runFunc 		= Module_TitanDash
+		module.resetFlags 	= [ "TitanDashFinishLine", "PlayerPastDashThreat", "PlayerStartDashThreat", "PlayerDashThreat_Alcove2", "PlayerDashThreat_Alcove1" ]
+		module.showLoading	= true
+		module.resumePoint 	= true
+		module.startAsTitan = true
+		module.showEndEMP	= false
+		AddTrainingModuleInfo( module )
+
+		local module 		= CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.TITAN_VORTEX
+		module.startEnt 	= "teleport_titan_train_vortex"
+		module.runFunc 		= Module_TitanVortex
+		module.resetFlags 	= [ "TitanPetPassedGate","PlayerInsideControlRoom" ]
+		module.showLoading	= true
+		module.resumePoint 	= true
+		module.startAsTitan = true
+		module.showEndEMP	= false
+		AddTrainingModuleInfo( module )
+
+		local module 		= CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.TITAN_PET
+		module.startEnt 	= "teleport_titan_train_pet"
+		module.runFunc 		= Module_TitanPet
+		module.resetFlags 	= [ "TitanPetPassedGate","PlayerInsideControlRoom" ]
+		module.showLoading	= true
+		module.resumePoint 	= true
+		module.startAsTitan = true
+		module.showEndEMP	= false
+		AddTrainingModuleInfo( module )
+
+		local module 		= CreateTrainingModuleInfo()
+		module.id 			= eTrainingModules.TITAN_MOSH_PIT
+		module.startEnt 	= "teleport_titan_mosh_pit"
 		module.runFunc 		= Module_TitanMoshPit
 		module.resetFlags 	= [ "TitanMoshPitCombatStarted", "TitanShieldTrainingStarted", "TrainingTitanShields", "TitanHealthTrainingStarted", "TrainingTitanHealth", "CombatTestDone" ]
-		module.showLoading	= false
+		module.showLoading	= true
 		module.resumePoint 	= true
+		module.startAsTitan = true
 		module.showEndEMP	= false
 		AddTrainingModuleInfo( module )
-	}
 
 	if (GAMETYPE == "battle_practice")
 	{
@@ -645,7 +737,6 @@ function TrainingModule_SetPlayerSettings( moduleInfo )
 	printt( "Player embarking?", playerEmbarking )
 	if ( playerEmbarking )
 		level.player.ClearParent()  // trying to kill the titan while the player is attached causes an engine error
-
 	// Kill player's pet titan in the world. If embarking/disembarking this also kills that scripting.
 	if ( playerTitan && !playerTitan.IsPlayer() )
 		playerTitan.Kill()
@@ -792,9 +883,9 @@ function NPE_EntitySetup()
 
 	SetupSkyboxEnts()
 
-/*	local arr = GetEntArrayByName_Expensive( "control_panel_titan_pet" )
+	local arr = GetEntArrayByName_Expensive( "control_panel_titan_pet" )
 	Assert( arr.len() == 1 )
-	level.titanPetControlPanel = arr[ 0 ]*/
+	level.titanPetControlPanel = arr[ 0 ]
 
 	SetupTrainingPod()
 
@@ -1941,7 +2032,7 @@ function LookTraining()
 	FlagWait( "PlayerLookedAtBottomTarget" )
 	
 	 // 회전축 변경 팝업은 삭제
-	/* local numInverts = 0
+	 local numInverts = 0
 	local doConfirmMenu = false
 	local doConfirmAudio = false
 	while ( 1 )
@@ -1999,7 +2090,7 @@ function LookTraining()
 
 		FlagClear( "PlayerLookedAtTopTarget" )
 		FlagClear( "PlayerLookedAtBottomTarget" )
-	}*/
+	}
 	// 여기까지 회전축 변경 팝업삭제.
 
 	HideTrainingPrompt()
@@ -4892,42 +4983,13 @@ function Module_MoshPit()
 	// ozyoon changed 4 - weapon switch and reload
 	TakeAllWeapons( level.player )
 
-	FlagClear("PlayerPressedPrimaryWeapon");
+	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
+	thread MoshPit_Minimap_VO()
 
-	ForcePlayConversationToPlayer( "train_pull_weapon", level.player )
-	DisplayTrainingPrompt( eTrainingButtonPrompts.WEAPONSWITCH )
-
-	FlagWait("PlayerPressedPrimaryWeapon");
-
-	local weapon = level.player.GiveWeapon(PILOT_WEAPON_3)
-
-	WaitForPlayerActiveWeapon(PILOT_WEAPON_3)
-
-	local minWaitEnd = 3 + Time()
-	HideTrainingPrompt()
-
-	SmartAmmo_Stop( weapon )
-	level.player.SetActiveWeaponPrimaryAmmoLoaded( 0 )
-	level.player.SetActiveWeaponPrimaryAmmoTotal( 0 )
-
-	FlagClear( "PlayerReloaded" )
-	thread GiveAmmoOnFlag( "PlayerReloaded" )
-
-	wait 0.9 // let pro players reload before prompting
-
-	if ( !Flag( "PlayerReloaded" ) )
-	{
-		waitthread WaittillTime( minWaitEnd )
-
-		minWaitEnd = 3 + Time()
-		ForcePlayConversationToPlayer( "train_reload", level.player )
-		DisplayTrainingPrompt( eTrainingButtonPrompts.RELOAD )
-
-		waitthread NagPlayerUntilFlag( "PlayerReloaded", "train_reload" )
-		HideTrainingPrompt()
-	}
-
+	level.player.GiveWeapon(PILOT_WEAPON_2)
 	level.player.GiveWeapon(PILOT_WEAPON_1)
+	level.player.GiveWeapon(PILOT_WEAPON_AT)
+	level.player.GiveOffhandWeapon( PILOT_WEAPON_OFFHAND_OFFENSIVE, GRENADE_SLOT )
 
 	if ( !( "moshPitSquads" in level ) )
 		level.moshPitSquads <- {}
@@ -4985,7 +5047,6 @@ function Module_MoshPit()
 
 
 	// 기본 전투 훈련
-	DisplayTrainingPrompt( eTrainingButtonPrompts.ADS )
 	spots.append( CreateScriptRef( Vector( 112, 3883, 6400 ), Vector( 0, 50, 0 ) ) )
 
 	waitthread PilotMoshPit_GroundTroops(spots)
@@ -5000,7 +5061,6 @@ function Module_MoshPit()
 	spots.append( CreateScriptRef( Vector( 318, 2686, 6400 ), Vector( 0, 50, 0 ) ) )
 	
 	FlagClear("MoshPit_GroundTroops_Done")
-	DisplayTrainingPrompt(eTrainingButtonPrompts.MELEE)
 	
 	waitthread PilotMoshPit_Melee(spots)
 
@@ -5008,7 +5068,7 @@ function Module_MoshPit()
 
 	waitthread PilotMoshPit_KillTitanWithAT()
 
-	waitthread PilotMoshPit_KillTitanWithRODEO()
+	waitthread PilotMoshPit_TitanTraining()
 
 	ClientCommand(level.player, "startTitanMoshPitModule")
 }
@@ -5121,8 +5181,6 @@ function PilotMoshPit_TrainPilotHealth()
 
 function PilotMoshPit_GroundTroops(spots)
 {
-	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
-	thread MoshPit_Minimap_VO()
 
 	printt( "waiting for squads to spawn" )
 
@@ -5250,11 +5308,6 @@ function PilotMoshPit_GroundTroops(spots)
 function PilotMoshPit_Melee(spots)
 {
 	FlagSet("Moshpit_Melee")
-
-	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
-	thread MoshPit_Minimap_VO()
-
-	thread MoshPit_Melee_VO()
 
 	printt( "waiting for squads to spawn" )
 
@@ -5387,24 +5440,6 @@ function PilotMoshPit_Grenade()
 {
 	FlagSet("Moshpit_Grenade")
 
-	DisplayTrainingPrompt( eTrainingButtonPrompts.FIREGRENADE )
-
-	// 수류탄 지급
-	level.player.GiveOffhandWeapon( PILOT_WEAPON_OFFHAND_OFFENSIVE, GRENADE_SLOT )
-	local grenadeWeapon = level.player.GetOffhandWeapon( GRENADE_SLOT )
-	grenadeWeapon.SetWeaponPrimaryClipCount(2)
-
-	ControllerImageHint_OffhandOffensive()
-	OffhandOffensiveHintPulse()
-
-	thread OffHintPulse()
-
-	thread RefillOffhandAmmoUntilSignal( grenadeWeapon, "MoshPit_GroundTroops_Done" )
-
-	ForcePlayConversationToPlayer( "moshpit_combat_start", level.player )
-	thread MoshPit_Minimap_VO()
-
-	thread MoshPit_Grenade_VO()
 
 	printt( "waiting for squads to spawn" )
 
@@ -5663,7 +5698,6 @@ function MoshPit_NPC_FightPlayer( guy )
 
 function PilotMoshPit_KillTitanWithAT()
 {
-	level.player.GiveWeapon( PILOT_WEAPON_AT )
 	local weapon = WaitForPlayerActiveWeapon()
 
 	if ( weapon.GetClassname() != PILOT_WEAPON_AT )
@@ -5743,56 +5777,136 @@ function SpawnStandDownTitan(spot, team, disableShield = true)
 	NPC_StandDown( titan )
 }
 
-function PilotMoshPit_KillTitanWithRODEO()
+function PilotMoshPit_TitanTraining()
 {
-	//중앙 하단 대타이탄 무기를 사용하라는 메세지 disable
-	//Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", false )
 
-	//로데오 하기전엔 무기사용을 못하게 막는다.
-	level.player.FreezeFireControlsOnServer()
+	ForcePlayConversationToPlayer( "train_titanfall", level.player )
 
-	level.player.SetActiveWeapon( PILOT_WEAPON_3 )
-	WaitForPlayerActiveWeapon( PILOT_WEAPON_3 )
-	level.player.TakeWeapon( PILOT_WEAPON_AT )
+	//level.player.SetNextTitanRespawnAvailable( Time() )
+	ForceTitanBuildComplete( level.player )
+	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
 
-	MoshPit_SpawnDroneTitan({ origin = Vector( 905, 3446, 6540 ), angles = Vector( 0, -130, 0 ) })
+	// 타이탄 호출 한번만 할수있게..
+	level.nv.titanAvailability = eTitanAvailability.Once
 
-	// if we started training the player on pilot health, wait for that to finish
-	FlagWaitClear( "TrainingPilotHealth" )
+	local minWaitEnd = 3.75 + Time()
 
-	// 은폐장 능력.
-	local cloakSlot = 1
-	level.player.GiveOffhandWeapon( "mp_ability_cloak", cloakSlot, [ "bc_long_cloak1" ] )
+	printt("Would wait but its fucked sorry")
+	FlagClear("ConversationOver")
+	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
 
-	thread Cloak_IntroVO()
-	waitthread Cloak_ManagePrompt(0)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.CALL_TITAN )
+	ControllerImageHint_DPad_Down()
 
-	// 은폐장을 활성화하면 로데오 허용.
-	EnableRodeo(level.moshPitTitan)
+	thread SetFlagWhenPlayerTitanInMap( "PlayerCalledInTitan" )
+	waitthread NagPlayerUntilFlag( "PlayerCalledInTitan", "train_call_in_titan_nag", 15 )
 
-	thread MoshPit_TitanCombat_ManageVO(level.moshPitTitan)
-	thread MoshPit_TitanRodeo_ManagePrompts(level.moshPitTitan)
-	thread MoshPit_TitanRodeo_VO()
+	HideTrainingPrompt()
+	StopControllerImageHint()
 
-	waitthread WaitUntilGuysAreDead( [ level.moshPitTitan ] )
+	WaittillTime( minWaitEnd )
 
-	// if currently training player on pilot health, wait for that to finish
-	if ( Flag( "TrainingPilotHealth" ) )
+	ForcePlayConversationToPlayer( "train_titanfall_lookup", level.player )
+
+	local playerTitan = GetPlayerTitanInMap( level.player )
+	TakeAllWeapons( playerTitan )
+	playerTitan.GiveWeapon( "mp_titanweapon_rocket_launcher" )
+
+	thread SetFlagWhenTitanHitsGround( playerTitan, "TitanDropped" )
+	FlagWait( "TitanDropped" )
+
+	DisplayTrainingPrompt( eTrainingButtonPrompts.ENTER_TITAN )
+	thread SetFlagWhenPlayerEntersTitan( playerTitan, "PlayerEnteredTitan" )
+	waitthread NagPlayerUntilFlag( "PlayerEnteredTitan", "train_titan_mountup", 20 )
+
+	thread MoshPit_TitanAttack_VO()
+	waitthread MoshPit_PlayerMopsUpAsTitan()
+
+}
+
+function PilotMoshPit_TitanBasicCombat()
+{
+	DisplayTrainingPrompt(eTrainingButtonPrompts.TITAN_OFFHAND_OFFENSIVE)
+
+	local podSpawns = []
+	podSpawns.append( { origin = Vector( 926, 3442, 6550 ), angles = Vector( 0, -50, 0 ) } )
+	podSpawns.append( { origin = Vector( 894, 2930, 6550 ), angles = Vector( 0, -90, 0 ) } )
+	podSpawns.append( { origin = Vector( 1406, 2930, 6400 ), angles = Vector( 0, -160, 0 ) } )
+	podSpawns.append( { origin = Vector( 1534, 3442, 6400 ), angles = Vector( 0, 125, 0 ) } )
+	podSpawns.append( { origin = Vector( 382, 3266, 6400 ), angles = Vector( 0, 30, 0 ) } )
+	podSpawns.append( { origin = Vector( 574, 2946, 6450 ), angles = Vector( 0, 45, 0 ) } )
+
+	if ( !( "moshPitSquads" in level ) )
+		level.moshPitSquads <- {}
+
+	foreach (idx, spawnpoint in podSpawns)
 	{
-		FlagWaitClear( "TrainingPilotHealth" )
-		HideTrainingPrompt()
+		local squadName = "moshpit_droppod_squad_" + idx
+		level.moshPitSquads[squadName] <- null
+
+		thread MoshPit_LaunchGruntDropPod(squadName, spawnpoint)
 	}
-	else
+
+	OnThreadEnd(
+		function() : ()
+		{
+			foreach (squad in level.moshPitSquads)
+			{
+				if (!squad)
+					continue
+
+				foreach (guy in squad)
+				{
+					if (IsAlive(guy))
+						guy.Die()
+				}
+			}
+		}
+	)
+
+	while (1)
 	{
-		ForcePlayConversationToPlayer( "goodjob", level.player )
-		wait 1.5
+		local foundOne = false
+		foreach (squad in level.moshPitSquads)
+		{
+			if (squad == null)
+			{
+				foundOne = true
+				break
+			}
+		}
+
+		if (!foundOne)
+			break
+
+		wait 0.1
 	}
 
-	ForcePlayConversationToPlayer( "train_firingrange_at_killTitan_done", level.player )
-	wait 6
+	local allGuys = []
+	foreach (squad in level.moshPitSquads)
+	{
+		foreach (guy in squad)
+			allGuys.append(guy)
+	}
 
-	//중앙 하단 대타이탄 무기를 사용하라는 메세지 enable
-	//Remote.CallFunction_Replay( level.player, "ServerCallback_SetEnableAntiTitanHint", true )
+	while (1)
+	{
+		local foundOne = false
+		local deathCount = 0
+
+		foreach (guy in allGuys)
+		{
+			if (!IsAlive(guy))
+				++deathCount
+		}
+
+		if (deathCount >= 16)
+			break
+
+		wait 0.1
+	}
+
+	HideTrainingPrompt()
 }
 
 function MoshPit_TitanCombatStartVO( endFlag )
@@ -5841,59 +5955,59 @@ function MoshPit_TitanCombat_ManageVO( titan )
 		thread NagPlayerUntilGuysAreDead( [ titan ], "train_firingrange_at_killTitan", 40 )
 }
 
-function MoshPit_TitanRodeo_ManagePrompts( enemyTitan )
-{
-	level.ent.EndSignal( "ModuleChanging" )
-	level.player.EndSignal( "OnDestroy" )
-	level.player.EndSignal( "Disconnected" )
-	enemyTitan.EndSignal( "OnDeath" )
+// function MoshPit_TitanRodeo_ManagePrompts( enemyTitan )
+// {
+// 	level.ent.EndSignal( "ModuleChanging" )
+// 	level.player.EndSignal( "OnDestroy" )
+// 	level.player.EndSignal( "Disconnected" )
+// 	enemyTitan.EndSignal( "OnDeath" )
 
-	OnThreadEnd(
-		function() : ()
-		{
-			StopControllerImageHint()
+// 	OnThreadEnd(
+// 		function() : ()
+// 		{
+// 			StopControllerImageHint()
 
-			// don't hide the prompt if the Titan dies while player is learning about health
-			if ( !Flag( "TrainingPilotHealth" ) )
-				HideTrainingPrompt()
-		}
-	)
+// 			// don't hide the prompt if the Titan dies while player is learning about health
+// 			if ( !Flag( "TrainingPilotHealth" ) )
+// 				HideTrainingPrompt()
+// 		}
+// 	)
 
-	local currentPrompt = null
-	while ( 1 )
-	{
-		wait 0.2
+// 	local currentPrompt = null
+// 	while ( 1 )
+// 	{
+// 		wait 0.2
 
-		// don't change the prompt while talking about pilot health
-		if ( Flag( "TrainingPilotHealth" ) )
-			continue
+// 		// don't change the prompt while talking about pilot health
+// 		if ( Flag( "TrainingPilotHealth" ) )
+// 			continue
 
-		local rodeoedSoul = level.player.GetTitanSoulBeingRodeoed()
+// 		local rodeoedSoul = level.player.GetTitanSoulBeingRodeoed()
 
-		if ( rodeoedSoul == null )
-		{
-			if ( currentPrompt != eTrainingButtonPrompts.TITAN_RODEO )
-			{
-				currentPrompt = eTrainingButtonPrompts.TITAN_RODEO
-				DisplayTrainingPrompt( currentPrompt )
-				ControllerImageHint_DPad_Left()
+// 		if ( rodeoedSoul == null )
+// 		{
+// 			if ( currentPrompt != eTrainingButtonPrompts.TITAN_RODEO )
+// 			{
+// 				currentPrompt = eTrainingButtonPrompts.TITAN_RODEO
+// 				DisplayTrainingPrompt( currentPrompt )
+// 				ControllerImageHint_DPad_Left()
 
-				level.player.FreezeFireControlsOnServer()
-			}
-		}
-		else
-		{
-			if ( currentPrompt != eTrainingButtonPrompts.TITAN_RODEO_COMBAT )
-			{
-				currentPrompt = eTrainingButtonPrompts.TITAN_RODEO_COMBAT
-				DisplayTrainingPrompt( currentPrompt )
-				StopControllerImageHint()
+// 				level.player.FreezeFireControlsOnServer()
+// 			}
+// 		}
+// 		else
+// 		{
+// 			if ( currentPrompt != eTrainingButtonPrompts.TITAN_RODEO_COMBAT )
+// 			{
+// 				currentPrompt = eTrainingButtonPrompts.TITAN_RODEO_COMBAT
+// 				DisplayTrainingPrompt( currentPrompt )
+// 				StopControllerImageHint()
 		
-				level.player.UnfreezeFireControlsOnServer()
-			}
-		}
-	}
-}
+// 				level.player.UnfreezeFireControlsOnServer()
+// 			}
+// 		}
+// 	}
+// }
 
 function MoshPit_TitanCombat_ManagePrompts( enemyTitan )
 {
@@ -6463,6 +6577,217 @@ function SpawnBattlePracticeTitans(spawns)
 	}
 }
 
+
+function Module_TitanDash() 
+{
+	level.player.EndSignal( "OnDestroy" )
+	level.player.EndSignal( "Disconnected" )
+	level.ent.EndSignal( "ModuleChanging" )
+	level.player.WaitSignal( "Teleported" )
+
+	local initialDash = -1
+	local table = level.player.playerClassData[ "titan" ]
+	table.liverycode <- null
+	table.liverycolor0 <- null
+	table.liverycolor1 <- null
+	table.liverycolor2 <- null
+
+	CloseSwapDoors("door_titan_dash_threat_start")
+	CloseSwapDoors("door_titan_dash_threat_enter")
+	ForcePlayConversationToPlayer( "titan_dash_speed_intro", level.player )
+	wait 5
+	ForcePlayConversationToPlayer( "titandash_dash_anydirection", level.player )
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_DASH )
+
+	waitthread NagPlayerUntilFlag( "PlayerDashed", "titandash_dash_anydirection_nag", 15 )
+
+	if (!Flag( "PlayerDashed_Left" )) {
+		ForcePlayConversationToPlayer( "titandash_left", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_LEFT )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Left", "titandash_left_nag", 15 )
+	}
+
+	HideTrainingPrompt()
+	DashMeterHintPulse()
+	ForcePlayConversationToPlayer( "titan_dash_meter", level.player )
+	wait 9
+	StopHintPulse()
+
+	if (!Flag( "PlayerDashed_Right" )) {
+		ForcePlayConversationToPlayer( "titandash_right", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_RIGHT )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Right", "titandash_right_nag", 15 )
+	}
+	
+	if (!Flag( "PlayerDashed_Forward" )) {
+		ForcePlayConversationToPlayer( "titandash_forward", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_FORWARD )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Forward", "titandash_forward_nag", 15 )
+	}
+
+	if (!Flag( "PlayerDashed_Back" )) {
+		ForcePlayConversationToPlayer( "titandash_back", level.player )
+		DisplayTrainingPrompt( eTrainingButtonPrompts.DASH_BACK )
+
+		wait 2
+		waitthread NagPlayerUntilFlag( "PlayerDashed_Back", "titandash_back_nag", 15 )
+	}
+
+	ForcePlayConversationToPlayer( "goodjob", level.player )
+	HideTrainingPrompt()
+
+	wait 2
+	ForcePlayConversationToPlayer( "titandash_move_forward", level.player )
+	OpenSwapDoors("door_titan_dash_threat_start")
+	OpenSwapDoors("door_titan_dash_threat_enter")
+	wait 1 
+	CloseSwapDoors("door_titan_dash_threat_start")
+	wait 2
+	ForcePlayConversationToPlayer("titan_dash_threat", level.player)
+	wait 5
+	OpenSwapDoors("door_titan_dash_threat_start")
+	
+	local spots = []
+	spots.append({ origin = Vector(6650,2870,192), angles = Vector(0,-90,0) })
+	spots.append({ origin = Vector(6742,2870,192), angles = Vector(0,-90,0) })
+	spots.append({ origin = Vector(6655,2870,108), angles = Vector(0,-90,0) })
+	spots.append({ origin = Vector(6650,2870,108), angles = Vector(0,-90,0) })
+
+	FireRocketsUntilSignal(spots, 1000, 1, "PlayerDashThreat_Alcove1")
+}
+
+
+
+function Module_TitanVortex() {
+	level.player.EndSignal( "OnDestroy" )
+	level.player.EndSignal( "Disconnected" )
+	level.ent.EndSignal( "ModuleChanging" )
+	level.player.WaitSignal( "Teleported" )
+
+	ForcePlayConversationToPlayer( "titan_vortex", level.player )
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_VORTEX)
+	CloseSwapDoors("door_titan_vortex_enter")
+	CloseSwapDoors("door_titan_vortex_exit")
+	wait 2
+	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_DEFENSIVE, 1 )
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_VORTEX_NAG)
+	// wait for player to use the vortex shield
+	
+	// poll the IsVortexing function until the player is no longer vortexing
+	while ( IsVortexing(level.player) )
+		wait 0.1
+	
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_VORTEX_STARTINGLINE)
+	OpenSwapDoors("door_titan_vortex_enter")
+
+	// spawn a titan
+	local spawnOrg = Vector( 8428, -2345 ,124)
+	local spawnAng = Vector( 0, 0, 0 )
+	local oppTeam = GetOppositeTeam( level.player )
+	local alert = 1
+	local titan = NPE_SpawnTitan( oppTeam, spawnOrg, spawnAng, alert )
+	titan.SetTitle( "#NPC_TITAN_TRAINING" )
+	DisableRodeo( titan )
+
+	// set the titan health to 0
+	titan.SetHealth( 1 )
+
+	while (1)
+	{
+		local foundOne = false
+		if (IsAlive(titan))
+			{
+				foundOne = true
+				break
+			}
+
+		if (!foundOne)
+			break
+
+		wait 0.1
+	}
+
+	// open the rest of the doors
+	OpenSwapDoors("door_titan_vortex_exit")
+
+}
+
+function Module_TitanPet() 
+{
+	level.player.EndSignal( "OnDestroy" )
+	level.player.EndSignal( "Disconnected" )
+	level.ent.EndSignal( "ModuleChanging" )
+	level.player.WaitSignal( "Teleported" )
+	local table = {}
+	table.useFunc <- UseTitanPetControlPanel
+	table.useEnt <- GetEntArrayByName_Expensive("controlpanel_target")[0]
+	table.scope <- this
+	AddControlPanelUseFuncTable(level.titanPetControlPanel, table)
+	local table = level.player.playerClassData[ "titan" ]
+	table.liverycode <- null
+	table.liverycolor0 <- null
+	table.liverycolor1 <- null
+	table.liverycolor2 <- null
+	CloseSwapDoors("door_controlpanel_enter")
+	CloseSwapDoors("door_controlpanel_exit")
+	CloseSwapDoors("door_titan_pet_gate")
+	CloseSwapDoors("door_titan_pet_exit_gate")
+	ForcePlayConversationToPlayer( "titan_pet_intro", level.player )
+	wait 5
+	EnableTitanDisembark()
+	ForcePlayConversationToPlayer("titan_pet_disembark", level.player)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_DISEMBARK )
+	level.player.WaitSignal("DisembarkingTitan")
+	OpenSwapDoors("door_controlpanel_enter")
+	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
+	local titan = GetPlayerTitanInMap(level.player)
+	NPCTitanNextMode(titan, level.player)
+	ForcePlayConversationToPlayer("titan_pet_go_hack", level.player)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.MOVE_TO_CONTROL_ROOM )
+	// FlagWait("PlayerInsideControlRoom")
+	DisplayTrainingPrompt( eTrainingButtonPrompts.DATA_KNIFE )
+	level.titanPetControlPanel.WaitSignal( "PanelReprogram_Success" )
+	HideTrainingPrompt()
+	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
+	wait 8
+	ForcePlayConversationToPlayer("titan_aimode_hud", level.player)
+	TitanAIControlHintPulse()
+	wait 5
+	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_AI_MODE)
+	ForcePlayConversationToPlayer("titan_pet_toggle_follow", level.player)
+	titan.WaitSignal("ChangedTitanMode")
+	OpenSwapDoors("door_titan_pet_gate")
+	ForcePlayConversationToPlayer("titan_pet_follow_info", level.player)
+	FlagWait("TitanPetPassedGate")
+	CloseSwapDoors("door_titan_pet_gate")
+	OpenSwapDoors("door_controlpanel_exit")
+	ForcePlayConversationToPlayer("titan_pet_reembark", level.player)
+	DisplayTrainingPrompt( eTrainingButtonPrompts.ENTER_TITAN )
+	StopHintPulse()
+	level.player.WaitSignal("player_embarks_titan")
+	OpenSwapDoors("door_titan_pet_exit_gate")
+	ForcePlayConversationToPlayer("titan_pet_exit", level.player)
+	HideTrainingPrompt()
+}
+
+
+function UseTitanPetControlPanel(panel,ent,target) {
+	printt("hello")
+	
+	// titan_aimode_intro
+	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
+	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeChange_Once" )
+	CloseSwapDoors("door_controlpanel_enter")
+}
+
+
+
 function Module_TitanMoshPit()
 {
 	level.player.EndSignal( "OnDestroy" )
@@ -6475,81 +6800,16 @@ function Module_TitanMoshPit()
 	table.liverycolor0 <- null
 	table.liverycolor1 <- null
 	table.liverycolor2 <- null
+	TakePassive(level.player,PAS_AUTO_EJECT)
 
 	InitMoshPitTitans()
 
 	level.ent.WaitSignal( "ModuleChangeDone" )
 
-	TakeAllWeapons( level.player )
-
-	ForcePlayConversationToPlayer( "train_titanfall", level.player )
-
-	//level.player.SetNextTitanRespawnAvailable( Time() )
-	ForceTitanBuildComplete( level.player )
-	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
-
-	// 타이탄 호출 한번만 할수있게..
-	level.nv.titanAvailability = eTitanAvailability.Once
-
-	local minWaitEnd = 3.75 + Time()
-
-	printt("Would wait but its fucked sorry")
-	FlagClear("ConversationOver")
-	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
-
-	DisplayTrainingPrompt( eTrainingButtonPrompts.CALL_TITAN )
-	ControllerImageHint_DPad_Down()
-
-	thread SetFlagWhenPlayerTitanInMap( "PlayerCalledInTitan" )
-	waitthread NagPlayerUntilFlag( "PlayerCalledInTitan", "train_call_in_titan_nag", 15 )
-
-	HideTrainingPrompt()
-	StopControllerImageHint()
-
-	WaittillTime( minWaitEnd )
-
-	ForcePlayConversationToPlayer( "train_titanfall_lookup", level.player )
-
-	local playerTitan = GetPlayerTitanInMap( level.player )
-	TakeAllWeapons( playerTitan )
-	playerTitan.GiveWeapon( "mp_titanweapon_rocket_launcher" )
-
-	thread SetFlagWhenTitanHitsGround( playerTitan, "TitanDropped" )
-	FlagWait( "TitanDropped" )
-
-	DisplayTrainingPrompt( eTrainingButtonPrompts.ENTER_TITAN )
-	thread SetFlagWhenPlayerEntersTitan( playerTitan, "PlayerEnteredTitan" )
-	waitthread NagPlayerUntilFlag( "PlayerEnteredTitan", "train_titan_mountup", 20 )
-
-	thread MoshPit_TitanAttack_VO()
-
-	AddDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
-
-	OnThreadEnd(
-		function() : ()
-		{
-			if ( IsValid( level.player ) )
-			{
-				// turn demigod back on before removing the callback, in case Titan is currently at end of doomed state and one more hit would kill the player
-				level.player.EnableDemigod()
-				RemoveDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
-			}
-		}
-	)
-
-	HideTrainingPrompt()
-
-	wait 5
-
-	ShowMinimap()
-
-	waitthread Titan_OffensiveMelee()
-
-	wait 1
 	waitthread Titan_OffensiveOffhandTraining()
 
 	FlagSet( "TitanMoshPitCombatStarted" )
-
+	ShowMinimap()
 	waitthread TitanMoshPit_Combat()
 
 	waitthread Titan_TrainEject()
@@ -6723,95 +6983,6 @@ function TitanMoshPit_TrainTitanConcept( type )
 	FlagClear( busyFlag )
 }
 
-function Titan_OffensiveMelee()
-{
-	DisplayTrainingPrompt(eTrainingButtonPrompts.TITAN_OFFENSIVE_MELEE)
-
-	local podSpawns = []
-	podSpawns.append( { origin = Vector( 926, 3442, 6550 ), angles = Vector( 0, -50, 0 ) } )
-	podSpawns.append( { origin = Vector( 894, 2930, 6550 ), angles = Vector( 0, -90, 0 ) } )
-	podSpawns.append( { origin = Vector( 1406, 2930, 6400 ), angles = Vector( 0, -160, 0 ) } )
-	podSpawns.append( { origin = Vector( 1534, 3442, 6400 ), angles = Vector( 0, 125, 0 ) } )
-	podSpawns.append( { origin = Vector( 382, 3266, 6400 ), angles = Vector( 0, 30, 0 ) } )
-	podSpawns.append( { origin = Vector( 574, 2946, 6450 ), angles = Vector( 0, 45, 0 ) } )
-
-	if ( !( "moshPitSquads" in level ) )
-		level.moshPitSquads <- {}
-
-	foreach (idx, spawnpoint in podSpawns)
-	{
-		local squadName = "moshpit_droppod_squad_" + idx
-		level.moshPitSquads[squadName] <- null
-
-		thread MoshPit_LaunchGruntDropPod(squadName, spawnpoint)
-	}
-
-	OnThreadEnd(
-		function() : ()
-		{
-			foreach (squad in level.moshPitSquads)
-			{
-				if (!squad)
-					continue
-
-				foreach (guy in squad)
-				{
-					if (IsAlive(guy))
-						guy.Die()
-				}
-			}
-		}
-	)
-
-	level.player.FreezeFireControlsOnServer()
-
-	while (1)
-	{
-		local foundOne = false
-		foreach (squad in level.moshPitSquads)
-		{
-			if (squad == null)
-			{
-				foundOne = true
-				break
-			}
-		}
-
-		if (!foundOne)
-			break
-
-		wait 0.1
-	}
-
-	local allGuys = []
-	foreach (squad in level.moshPitSquads)
-	{
-		foreach (guy in squad)
-			allGuys.append(guy)
-	}
-
-	while (1)
-	{
-		local foundOne = false
-		local deathCount = 0
-
-		foreach (guy in allGuys)
-		{
-			if (!IsAlive(guy))
-				++deathCount
-		}
-
-		if (deathCount >= 16)
-			break
-
-		wait 0.1
-	}
-
-	level.player.UnfreezeFireControlsOnServer()
-
-	HideTrainingPrompt()
-}
-
 function Titan_OffensiveOffhandTraining()
 {
 	FlagClear( "FiredOffhandOffensive" )
@@ -6878,7 +7049,8 @@ function TitanMoshPit_Combat()
 
 	// refill player health
 	level.player.SetHealth( level.player.GetMaxHealth() )
-
+	// remove auto eject passive
+	
 	// give loadout and infinite ammo
 	local offensiveOffhand = level.player.GetOffhandWeapon( 0 )
 	if ( !offensiveOffhand )
@@ -6892,6 +7064,7 @@ function TitanMoshPit_Combat()
 	ForcePlayConversationToPlayer( "titan_mosh_start", level.player )
 	// 기존의 메세지 팝업창(생존, 최대한 버티세요.)을 아래 스레드 안으로 가져가기 위해 주석처리
 	// DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_SURVIVE )
+	AddDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
 
 	thread TitanMoshPit_SpawnTitans_OrForceStandDown( "CombatTestDone" )
 
@@ -6900,10 +7073,18 @@ function TitanMoshPit_Combat()
 		wait 0
 
 	HideTrainingPrompt()
-
-	FlagSet( "CombatTestDone" )
-
 	thread TitanMoshPit_NPCsStandDown()
+	  OnThreadEnd(
+        function() : ()
+        {
+            if ( IsValid( level.player ) )
+            {
+                // turn demigod back on before removing the callback, in case Titan is currently at end of doomed state and one more hit would kill the player
+                level.player.EnableDemigod()
+                RemoveDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
+            }
+        }
+    )
 }
 
 function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
@@ -6914,9 +7095,11 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 	level.player.EndSignal( "Disconnected" )
 
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_SURVIVE )
-
+	ForcePlayConversationToPlayer( "titan_mosh_wave_start", level.player )
+	wait 2
+	ForcePlayConversationToPlayer("titan_mosh_wave_shields_disabled", level.player)	
 	for (local i = 0; i < 1; i++)
-		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, true, true, false, ATLAS_MODEL)
+		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, false, false, false, false, ATLAS_MODEL)
 
 	while (1)
 	{
@@ -6937,8 +7120,6 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 		wait 2
 	}	
 
-	// 기존의 '생존' 메세지 노출 없애기
-	HideTrainingPrompt()
 
 	level.moshPitTitans = [];
 	local soul = level.player.GetTitanSoul()
@@ -6950,11 +7131,11 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 	ForcePlayConversationToPlayer( "titan_mosh_wave_start", level.player )
 	wait 2
 
-	// 튜토리얼용 '비상사태' 메세지 출력
-	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_EMERGENCY )
+	ForcePlayConversationToPlayer("titan_mosh_wave_advanced_weapons", level.player)
+	wait 2
 
-	for (local i = 0; i < 3; i++)
-		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, true, true, true, ATLAS_MODEL)
+	for (local i = 0; i < 2; i++)
+		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, false, false, true,false, ATLAS_MODEL)
 
 	while (1)
 	{
@@ -6973,7 +7154,86 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 			break
 
 		wait 2
-	}		
+	}	
+
+	level.moshPitTitans = [];
+	local soul = level.player.GetTitanSoul()
+	soul.SetShieldHealth(soul.GetShieldHealthMax())
+
+	ForcePlayConversationToPlayer( "titan_mosh_wave_survived", level.player )
+	wait 8
+
+	ForcePlayConversationToPlayer( "titan_mosh_wave_start", level.player )
+	wait 2
+
+	ForcePlayConversationToPlayer("titan_mosh_wave_shields_enabled", level.player)
+	wait 2
+
+	for (local i = 0; i < 3; i++)
+		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, false, true, false,ATLAS_MODEL)
+
+	while (1)
+	{
+		local foundOne = false
+		
+		foreach (titan in level.moshPitTitans)
+		{
+			if (IsAlive(titan))
+			{
+				foundOne = true
+				break
+			}
+		}
+
+		if (!foundOne)
+			break
+
+		wait 2
+	}	
+
+	level.moshPitTitans = [];
+	local soul = level.player.GetTitanSoul()
+	soul.SetShieldHealth(soul.GetShieldHealthMax())
+
+	ForcePlayConversationToPlayer( "titan_mosh_wave_survived", level.player )
+	wait 8
+
+	ForcePlayConversationToPlayer( "titan_mosh_wave_start", level.player )
+	wait 2
+
+	ForcePlayConversationToPlayer("titan_mosh_wave_vortex", level.player)
+	wait 2
+
+	for (local i = 0; i < 4; i++)
+		thread TitanMoshPit_SpawnEnemyTitan(endSig, i, true, true, true, false,ATLAS_MODEL)
+
+	while (1)
+	{
+		local foundOne = false
+		
+		foreach (titan in level.moshPitTitans)
+		{
+			if (IsAlive(titan))
+			{
+				foundOne = true
+				break
+			}
+		}
+
+		if (!foundOne)
+			break
+
+		wait 2
+	}	
+	
+	ForcePlayConversationToPlayer("titan_mosh_wave_all_survived", level.player)
+	wait 8
+	if(level.player.GetDoomedState())
+		return
+	ForcePlayConversationToPlayer("titan_mosh_wave_forced_standdown", level.player)
+	wait 2
+	ForceDoomedState()
+	
 }
 
 function ForceDoomedState()
@@ -6983,6 +7243,8 @@ function ForceDoomedState()
 	level.player.DisableDemigod()
 
 	local soul = level.player.GetTitanSoul()
+
+	Assert( IsValid( soul ) )
 
 	soul.SetShieldHealth( 0 )
 	level.player.TakeDamage( level.player.GetHealth() + 1, null, null, { damageSourceId=eDamageSourceId.suicide } )
@@ -7055,7 +7317,6 @@ function TitanMoshPit_GetBestTitanSpawn(idx)
 function Titan_TrainEject()
 {
 	FlagClear( "PlayerEjected" )
-
 	local playertitan = GetPlayerTitanInMap( level.player )
 	GivePassive( playertitan, PAS_NUCLEAR_CORE )
 
@@ -7077,7 +7338,6 @@ function Titan_TrainEject()
 
 	if ( level.player.IsTitan() )
 	{
-		printt("Would wait but its fucked sorry")
 		FlagClear("ConversationOver")
 		DisplayTrainingPrompt( eTrainingButtonPrompts.EJECT_CONFIRM )
 		ForcePlayConversationToPlayer( "titan_doomed_eject", level.player )
@@ -7090,7 +7350,6 @@ function Titan_TrainEject()
 	}
 
 	// -- PLAYER PUNCHED OUT --
-
 	HideTrainingPrompt()
 
 	local minWaitEnd = 5 + Time()
@@ -7112,7 +7371,7 @@ function CatchPlayerEject()
 
 	while ( level.player.IsTitan() )
 		wait 0.1
-
+	printt("Set PlayerEjected")
 	FlagSet( "PlayerEjected" )
 }
 
@@ -7251,7 +7510,6 @@ function FireRocketsUntilSignal( rocketSpots, rocketSpeed, volleyWait, endSig, l
 	level.ent.EndSignal( endSig )
 
 	local oppTeam = GetOppositeTeam( level.player )
-	//local rocketWait = 0.1
 
 	if ( lightTrigTN )
 		LightTrigger_On( lightTrigTN, FX_LIGHT_GREEN )
@@ -7271,11 +7529,8 @@ function FireRocketsUntilSignal( rocketSpots, rocketSpeed, volleyWait, endSig, l
 		foreach ( idx, spot in rocketSpots )
 		{
 			local rocket = NPE_SpawnRocket( spot.origin, spot.angles, level, oppTeam, rocketSpeed )
-			thread RocketSeekPlayer( rocket, rocketSpeed )
+			// thread RocketSeekPlayer( rocket, rocketSpeed )
 			level.dashRockets.append( rocket )
-
-			//if ( ( idx + 1 ) % 2 == 0 )
-			//	wait rocketWait
 		}
 
 		wait volleyWait
@@ -7292,7 +7547,7 @@ function NPE_SpawnRocket( spawnPos, spawnAng, owner, team, rocketSpeed )
 	rocket.SetModel( "models/weapons/bullets/projectile_rocket.mdl" )
 	rocket.SetImpactEffectTable( level.trainingRocketEffectTable )
 	rocket.SetWeaponClassName( "mp_projectile_orbital_strike" )
-	rocket.SetSpeed( rocketSpeed )
+	// rocket.SetSpeed( rocketSpeed )
 	rocket.kv.damageSourceId = eDamageSourceId.mp_titanweapon_orbital_strike
 	DispatchSpawn( rocket )
 
@@ -7432,7 +7687,7 @@ function ClientCommand_NPE_StartBedEndModule( player, ... )
 
 function ClientCommand_NPE_StartTitanMoshPitModule( player, ... )
 {
-	thread StartTrainingModule( TRAINING_TITAN_MOSH_PIT/*eTrainingModules.TITAN_MOSH_PIT*/ )
+	thread StartTrainingModule( eTrainingModules.TITAN_MOSH_PIT )
 }
 
 function ClientCommand_NPE_ConfirmInvertYes( player, ... )
@@ -7494,8 +7749,31 @@ function ClientCommand_NPE_PlayerDashed( player, ... )
 {
 	//printt( "SERVER Setting PlayerDashed" )
 	FlagSet( "PlayerDashed" )
+
+	if (level.currentTrainingModule == eTrainingModules.TITAN_DASH) {
+		thread SetAdditionalDashFlags()
+	}
+
 	thread ClearDashFlagAfterTime( player )
 	return true
+}
+
+function SetAdditionalDashFlags() {
+	wait 0.25 // to let titan gain enough velocity
+	local vec = level.player.GetVelocity()
+	if (vec.x > 280) {
+		LightTrigger_On("trigger_lightswitch_dash_R", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Right")
+	} else if (vec.x < -280) {
+		LightTrigger_On("trigger_lightswitch_dash_L", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Left")
+	} else if (vec.y > 280) {
+		LightTrigger_On("trigger_lightswitch_dash_T", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Forward")
+	} else if (vec.y < -280) {
+		LightTrigger_On("trigger_lightswitch_dash_B", FX_LIGHT_GREEN)
+		FlagSet("PlayerDashed_Back")
+	}
 }
 
 function ClearDashFlagAfterTime( player )

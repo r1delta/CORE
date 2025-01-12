@@ -415,6 +415,8 @@
 			"gamemode5"	"cp"
 			"map6"	"mp_airbase"
 			"gamemode6"	"at"
+			"map7"	"mp_o2"
+			"gamemode7"	"cp"
 			"map7"	"mp_corporate"
 			"gamemode7"	"cp"
 		}
