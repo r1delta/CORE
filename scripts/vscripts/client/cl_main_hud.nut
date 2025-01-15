@@ -3535,6 +3535,12 @@ function MainHud_InitXPBar( cockpit, player )
 
 	cockpit.s.xpBar <- {}
 
+	if ( player.cv.startingXP == 0 && player.cv.lastLevel == 1 )
+    {
+        player.cv.startingXP = GetXP( player ) 
+        player.cv.lastLevel = GetLevel( player )
+    }
+
 	local xpBarGroup = HudElementGroup( "xpBarGroup" )
 	local panel = cockpit.s.mainVGUI.GetPanel()
 
@@ -3601,6 +3607,10 @@ else
 		if ( lvl > MAX_LEVEL )
 			return
 
+		printt("Current Level: " + lvl)
+		printt("Last Level: " + player.cv.lastLevel)
+		printt("XP: " + GetXP( player ))
+		printt("Starting XP: " + player.cv.startingXP)
 		if ( lvl != player.cv.lastLevel )
 		{
 			cockpit.s.xpBar.pastFill.Hide()
