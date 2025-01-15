@@ -381,12 +381,17 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 		local cardRef = GetPlayerActiveBurnCard(player)
 		local cardData = GetBurnCardData(cardRef);
     	if(cardData.rarity == BURNCARD_RARE) {
-			AddPlayerScore(attacker,"StoppedBurnCardRare")
-		}
+			if(cardData.ctFlags & CT_WEAPON) {
+				AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
+			} else {
+				AddPlayerScore(attacker,"StoppedBurnCardRare")
+			}
+		}else {
 		if(cardData.ctFlags & CT_WEAPON) {
 			AddPlayerScore(attacker,"StoppedBurnCardWeapon")
 		} else {
 			AddPlayerScore(attacker,"StoppedBurnCardCommon")
+		}
 		}
     }
 	// Player is a titan that was killed, bypassing doomed state
