@@ -141,6 +141,7 @@ function main()
 	uiGlobal.eogCoopQuickMatchButtonRegistered <- false
 	uiGlobal.starsPanelVisible <- false
 	uiGlobal.ui_ChallengeProgress <- {}
+	uiGlobal.doTraining <- false
 
 	RegisterSignal( "LevelShutdown" )
 	RegisterSignal( "CleanupInGameMenus" )
@@ -1014,6 +1015,7 @@ function InitMenus()
 	AddMenu( "DirectConnectDialog", "resource/ui/menus/directconnectdialog.menu" )
 	AddMenu( "UsernameDialog", "resource/ui/menus/usernamedialog.menu" )
 	AddMenu_Named( "ChoiceDialog", "TrainingDialog", "resource/ui/menus/choicedialog.menu" )
+	AddMenu( "ChoiceDialog2", "resource/ui/menus/choicedialog2.menu" )
 	AddMenu( "ConfirmDialog", "resource/ui/menus/confirmdialog.menu" )
 	AddMenu( "RankedSeasonEndDialog", "resource/ui/menus/ranked_season_end_dialog.menu")
 	AddMenu( "PlaylistAnnounceDialog", "resource/ui/menus/playlist_announce_dialog.menu")
@@ -1237,6 +1239,7 @@ function InitMenus()
 	InitDialogMenu( GetMenu( "RankedSeasonEndDialog" ) )
 	InitDialogMenu( GetMenu( "PlaylistAnnounceDialog" ) )
 	InitChoiceDialogMenu( GetMenu( "ChoiceDialog" ) )
+	InitChoiceDialog2Menu( GetMenu( "ChoiceDialog2" ) )
 	InitChoiceDialogMenu( GetMenu( "TrainingDialog" ) )
 	InitDataCenterDialogMenu( GetMenu( "DataCenterDialog" ) )
 	InitHashtagDialogMenu( GetMenu( "HashtagDialog" ) )

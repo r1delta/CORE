@@ -1,3 +1,4 @@
+const CHOICE2_VISIBLE_ROWS = 7
 
 function InitDialogMenu( menu )
 {
@@ -26,8 +27,66 @@ function InitDialogMenu( menu )
 function InitChoiceDialogMenu( menu )
 {
 	uiGlobal.choiceDialogData <- null
+	uiGlobal.choice2DialogData <- null
 
 	AddEventHandlerToButtonClass( menu, "ChoiceDialogButtonClass", UIE_CLICK, OnChoiceButton_Activate )
+}
+
+function InitChoiceDialog2Menu( menu )
+{
+	uiGlobal.choice2DialogData <- null
+}
+
+function OnChoice2ListScrollUp_Activate(...)
+{
+	file.mapListScrollState--
+	if ( file.mapListScrollState < 0 )
+		file.mapListScrollState = 0
+
+	UpdateMapListScroll()
+}
+
+function OnChoice2ListScrollDown_Activate(...)
+{
+	file.mapListScrollState++
+	if ( file.mapListScrollState > file.numMapButtonsOffScreen )
+		file.mapListScrollState = file.numMapButtonsOffScreen
+
+	UpdateMapListScroll()
+
+	//ClientCommand("disconnect \"Scrolled down: "+file.mapListScrollState+"\"")
+
+}
+
+function Choice2Button_Focused( button )
+{
+	local buttonID = button.GetScriptID().tointeger()
+
+	// Update window scrolling if we highlight a map not in view
+	local minScrollState = clamp( buttonID - (CHOICE2_VISIBLE_ROWS - 1), 0, file.numMapButtonsOffScreen )
+	local maxScrollState = clamp( buttonID, 0, file.numMapButtonsOffScreen )
+
+	if ( file.mapListScrollState < minScrollState )
+		file.mapListScrollState = minScrollState
+	if ( file.mapListScrollState > maxScrollState )
+		file.mapListScrollState = maxScrollState
+
+	UpdateMapListScroll()
+}
+
+function OnButtonsPanel_Activate(button)
+{
+	local buttonID = button.GetScriptID().tointeger()
+	ClientCommand("disconnect \"OnButtonsPanel_Activate: "+button.GetScriptID()+"\"")
+}
+
+function UpdateMapListScroll()
+{
+	local buttons = file.buttons
+	local basePos = buttons[0].GetBasePos()
+	local offset = buttons[0].GetHeight() * file.mapListScrollState
+
+	buttons[0].SetPos( basePos[0], basePos[1] - offset )
 }
 
 function InitDataCenterDialogMenu( menu )
@@ -53,6 +112,28 @@ function OnChoiceButton_Activate( button )
 
 	if ( uiGlobal.choiceDialogData[buttonID].func )
 		uiGlobal.choiceDialogData[buttonID].func.call( this )
+}
+
+function OnChoice2Button_Activate( button )
+{
+	local buttonID = button.GetScriptID().tointeger()
+	//ClientCommand("disconnect \"Callback works: "+buttonID+"\"")
+
+	CloseDialog()
+
+	Assert( uiGlobal.choice2DialogData )
+
+	/*if ( "trainingResume" in uiGlobal.choice2DialogData[buttonID] && uiGlobal.choice2DialogData[buttonID].trainingResume ) {
+
+		if (uiGlobal.choice2DialogData[buttonID].trainingResume == 2137) ClientCommand("disconnect \"shit: "+buttonID+"\"")
+
+		SetPlayerTrainingResumeChoice( uiGlobal.choice2DialogData[buttonID].trainingResume );
+		UI_DoTraining();
+		return
+	}*/
+
+	//if ( "func" in uiGlobal.choice2DialogData[buttonID] && uiGlobal.choice2DialogData[buttonID].func && "call" in uiGlobal.choice2DialogData[buttonID].func )
+		uiGlobal.choice2DialogData[buttonID].func.call( this )
 }
 
 function OnDataCenterButton_Activate( button )
@@ -172,12 +253,17 @@ function OpenChoiceDialog( dialogData, menu = null )
 	// To start in the middle of the button stack, we create a new dialog data array that matches the length of the button array
 	local newButtonData = []
 	local choiceIdx = 0
-	if ( numButtons > numChoices )
+	if ( numButtons > numChoices && menu != GetMenu("ChoiceDialog2") ) // if things go south, comment "&& menu != GetMenu("ChoiceDialog2")"
 	{
 		startButtonID = ( numButtons / 2 ).tointeger() - 1
 
+		if ( numButtons - startButtonID < numChoices )
+			startButtonID = numButtons - numChoices - 1;
+
 		if ( startButtonID == 0 )
 			startButtonID++
+
+		if (menu == GetMenu("ChoiceDialog2")) startButtonID = 0;
 
 		for ( local i = 0; i < numButtons; i++ )
 		{
@@ -205,6 +291,9 @@ function OpenChoiceDialog( dialogData, menu = null )
 		uiGlobal.choiceDialogData = newButtonData
 	else
 		uiGlobal.choiceDialogData = buttonData
+	
+	if (menu == GetMenu("ChoiceDialog2"))
+		uiGlobal.choice2DialogData = uiGlobal.choiceDialogData
 
 	// now set up each button: hide, or set text and show
 	foreach ( idx, button in buttons )
@@ -212,6 +301,10 @@ function OpenChoiceDialog( dialogData, menu = null )
 		button.Hide()
 
 		local buttonID = button.GetScriptID().tointeger()
+		Assert(buttonID != idx, "Mismatch between buttonID and idx: "+buttonID+", "+idx);
+		if (buttonID != idx) ClientCommand("disconnect \"Mismatch between buttonID and idx: "+buttonID+", "+idx+"\"");
+		if (!(idx in uiGlobal.choiceDialogData) || !("name" in uiGlobal.choiceDialogData[idx]))
+			continue
 		if ( uiGlobal.choiceDialogData[idx].name == "BUTTONSKIP" )
 			continue
 
@@ -274,6 +367,21 @@ function OpenChoiceDialog( dialogData, menu = null )
 		img.SetVisible( spinner )
 
 	OpenMenuWrapper( uiGlobal.activeDialog, true )
+
+	if (menu == GetMenu("ChoiceDialog2")) {
+		// must be here, or we will get error for "file" from these funcs
+		AddEventHandlerToButtonClass( menu, "ChoiceDialogButtonClass", UIE_CLICK, Bind( OnChoice2Button_Activate ) )
+		AddEventHandlerToButtonClass( menu, "ChoiceDialogButtonClass", UIE_GET_FOCUS, Bind( Choice2Button_Focused ) )
+		AddEventHandlerToButtonClass( menu, "Choice2ScrollUpClass", UIE_CLICK, Bind( OnChoice2ListScrollUp_Activate ) )
+		AddEventHandlerToButtonClass( menu, "Choice2ScrollDownClass", UIE_CLICK, Bind( OnChoice2ListScrollDown_Activate ) )
+
+		RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnChoice2ListScrollUp_Activate )
+		RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnChoice2ListScrollDown_Activate )
+		file.mapListScrollState <- 0
+		file.numMapButtonsOffScreen <- null
+		file.buttons <- GetElementsByClassname( menu, "ChoiceDialogButtonClass" )
+		file.numMapButtonsOffScreen = 14 + 1 - CHOICE2_VISIBLE_ROWS
+	}
 }
 
 function CloseDialog( cancelled = false )
@@ -284,6 +392,12 @@ function CloseDialog( cancelled = false )
 	{
 		// This assert is meant to catch the case where we closed the lobby transition dialog before we were supposed to.
 		Assert( !uiGlobal.lobbyMenusLeftOpen || uiGlobal.activeDialog != GetMenu( "LobbyTransition" ) )
+
+		if (uiGlobal.activeDialog == GetMenu("ChoiceDialog2"))
+		{
+			DeregisterButtonPressedCallback( MOUSE_WHEEL_UP, OnChoice2ListScrollUp_Activate )
+			DeregisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnChoice2ListScrollDown_Activate )
+		}
 
 		if ( uiGlobal.dialogCloseCallback )
 		{
@@ -621,11 +735,13 @@ function ShowTrainingConnectDialog()
 
 	OpenChoiceDialog( dialogData )
 	uiGlobal.forceDialogChoice = true
+	uiGlobal.doTraining = true
 }
 
 function CancelTrainingConnect()
 {
-	ClientCommand( "CancelTraining" )
+	//ClientCommand( "CancelTraining" )
+	uiGlobal.doTraining = false
 	CloseDialog()
 }
 
@@ -742,6 +858,8 @@ function ClosePlaylistAnnounceDialog( button )
 
 function ShowPortForwardWarning( port = 27015 )
 {
+	if ( GetActiveLevel() == "mp_npe" ) // do not show this on training, we aren't expecting more than one player to join.
+		return
     local isDefaultPort = (port == 27015)
     local message = isDefaultPort ? 
         "Your server will not be visible in the server browser\nbecause port 27015 (UDP) is not properly forwarded\non your router. Please ask in #help for assistance." :
