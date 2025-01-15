@@ -400,14 +400,14 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 		local cardRef = GetPlayerActiveBurnCard(player)
 		local cardData = GetBurnCardData(cardRef);
     	if(cardData.rarity == BURNCARD_RARE) {
-			if(cardData.cardType & CT_WEAPON) {
+			if(cardData.ctFlags & CT_WEAPON) {
 				AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
 			} else {
 				AddPlayerScore(attacker,"StoppedBurnCardRare")
 			}
     	}
 		else {
-			if(cardData.cardType & CT_WEAPON) {
+			if(cardData.ctFlags & CT_WEAPON) {
 				AddPlayerScore(attacker,"StoppedBurnCardWeapon")
 			} else {
 				AddPlayerScore(attacker,"StoppedBurnCard")
