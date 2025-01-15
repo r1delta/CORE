@@ -47,7 +47,7 @@ function SetGameModeScoreEventOverrideFunc( func )
 }
 Globalize ( SetGameModeScoreEventOverrideFunc )
 
-
+/*
 // iskyfish.2016.10.31, setting 값으로만 동작하게 해봅니다!
 function AddPlayerScore( player, scoreEvent, targetEnt = null, pointValueOverride = null )
 {
@@ -87,9 +87,9 @@ function AddPlayerScore( player, scoreEvent, targetEnt = null, pointValueOverrid
 	ShowPlayerScoreEvent( player, event, targetEnt, pointValueOverride, multiple )
 	if ( event.HasConversation() )
 		thread PlayPrioritisedConversation( event, player )
-}
+}*/
 
-/* iskyfish.2016.10.31, backup
+// iskyfish.2016.10.31, backup
 function AddPlayerScore( player, scoreEvent, targetEnt = null, pointValueOverride = null )
 {
 	if ( !IsValid_ThisFrame( player ) || !player.IsPlayer() )
@@ -143,6 +143,7 @@ function AddPlayerScore( player, scoreEvent, targetEnt = null, pointValueOverrid
 				pointValueOverride = pointValue
 			}
 		}
+		AddXP(pointValue,player, event.GetXPType() )
 	}
 
 	AddTitanBuildPoint( player, scoreEvent )
@@ -152,7 +153,7 @@ function AddPlayerScore( player, scoreEvent, targetEnt = null, pointValueOverrid
 	if ( event.HasConversation() )
 		thread PlayPrioritisedConversation( event, player )
 }
-*/
+
 
 function GetPlayerXPMultiple( player, targetEnt )
 {
