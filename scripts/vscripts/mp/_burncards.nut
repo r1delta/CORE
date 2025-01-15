@@ -9,10 +9,28 @@ function main()
     Globalize(RunBurnCardFunctions)
     Globalize(ChangeOnDeckBurnCardToActive)
     Globalize(MakeActiveBurnCard)
+    Globalize(BurncardsAutoFillEmptyActiveSlots)
 
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
     AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilot )
+}
+
+
+function BurncardsAutoFillEmptyActiveSlots( player )
+{
+    local maxActive = GetPlayerMaxActiveBurnCards( player )
+    for ( local i = 0; i < maxActive; i++ )
+    {
+        if ( !GetPlayerActiveBurnCardSlotContents( player, i ) )
+        {
+            local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
+            if ( cardIndex != -1 )
+            {
+                MoveCardToActiveSlot( player, cardIndex, i )
+            }
+        }
+    }
 }
 
 function WaitForTitanActiveWeapon( titan ) {

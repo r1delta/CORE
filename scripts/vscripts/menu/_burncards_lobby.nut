@@ -103,7 +103,7 @@ function BCDiscard( player, index, burnCardIndex )
 	// Log the discard to stats
 	local enumIndex = GetBurnCardPersistenceEnumIndex( bcard.cardRef )
 	Assert( enumIndex != 0 )
-	LogPlayerStat_BurncardDiscard( player, enumIndex )
+	// LogPlayerStat_BurncardDiscard( player, enumIndex )
 
 	return true
 }
@@ -281,7 +281,6 @@ function MoveCardToDeck( player, burnCardIndex, index )
 	SetPlayerActiveBurnCardSlotContents( player, index, null, false )
 
 	local deck = GetPlayerBurnCardDeck( player )
-	deck.append( { cardRef = cardRef, new = false } )
 	FillBurnCardDeckFromArray( player, deck )
 
 	Remote.CallFunction_UI( player, "SCB_UpdateBCFooter" )

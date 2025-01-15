@@ -1499,6 +1499,12 @@ function InitPlayerStats( player )
 	printt("InitPlayerStats: " + player )
 }
 
+function AddCoins(player,ammount,type) {
+	local currentCount = player.GetPersistentVar("bm.coinCount")
+	player.SetPersistentVar("bm.coinCount", currentCount + ammount)
+}
+
+
 function GetBurnCardSetForIndex(setIndex) {
 	// printt("GetBurnCardSetForIndex: " + setIndex )
 	//TODO: Actually get the list of burn cards for pm options - Allusive
