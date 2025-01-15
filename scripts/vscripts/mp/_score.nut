@@ -256,6 +256,27 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 
 	titan.GetTitanSoul()
 
+	local cardRef = GetPlayerActiveBurnCard(player)
+	if(cardRef != null) {
+	local cardData = GetBurnCardData(cardRef);
+	if(cardData != null) {
+	if(cardData.rarity == BURNCARD_RARE) {
+		if(cardData.ctFlags & CT_TITAN_WPN) {
+			AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
+		} else if (cardData.ctFlags & CT_TITAN) {
+			AddPlayerScore(attacker,"StoppedBurnCardRare")
+		}
+	}
+	else {
+		if(cardData.ctFlags & CT_TITAN_WPN) {
+			AddPlayerScore(attacker,"StoppedBurnCardWeapon")
+		} else if(cardData.ctFlags & CT_TITAN) {
+			AddPlayerScore(attacker,"StoppedBurnCardCommon")
+		}
+	}
+	}
+	}
+
 	local scoreEvent
 
 	if ( attacker.IsPlayer() && !attacker.IsTitan() )
@@ -322,26 +343,7 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 	if ( IsTitanEliminationBased() )
 		AddPlayerScore( player, "EliminateTitan", titan )
 
-	local cardRef = GetPlayerActiveBurnCard(player)
-	if(cardRef != null) {
-	local cardData = GetBurnCardData(cardRef);
-	if(cardData != null) {
-	if(cardData.rarity == BURNCARD_RARE) {
-		if(cardData.ctFlags & CT_TITAN_WPN) {
-			AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
-		} else if (cardData.ctFlags & CT_TITAN) {
-			AddPlayerScore(attacker,"StoppedBurnCardRare")
-		}
-	}
-	else {
-		if(cardData.ctFlags & CT_TITAN_WPN) {
-			AddPlayerScore(attacker,"StoppedBurnCardWeapon")
-		} else if(cardData.ctFlags & CT_TITAN) {
-			AddPlayerScore(attacker,"StoppedBurnCardCommon")
-		}
-	}
-	}
-	}
+
 
 	local titanSoul = titan.GetTitanSoul()
 	if ( "recentDamageHistory" in titanSoul.s )
@@ -381,9 +383,10 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 		local cardRef = GetPlayerActiveBurnCard(player)
 		local cardData = GetBurnCardData(cardRef);
     	if(cardData.rarity == BURNCARD_RARE) {
-			if(cardData.ctFlags & CT_WEAPON) {
+			if(cardData.ctFlags & CT_TITAN_WPN) {
 				AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
-			} else {
+			}
+			else {
 				AddPlayerScore(attacker,"StoppedBurnCardRare")
 			}
 		}else {
