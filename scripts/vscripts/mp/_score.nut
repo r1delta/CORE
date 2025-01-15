@@ -372,21 +372,20 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 
 	local awardedEliminationScore = false
 
-		if(GetPlayerActiveBurnCard(player) != null) {
+	if(GetPlayerActiveBurnCard(player) != null) {
 		local cardRef = GetPlayerActiveBurnCard(player)
 		local cardData = GetBurnCardData(cardRef);
     	if(cardData.rarity == BURNCARD_RARE) {
 			AddPlayerScore(attacker,"StoppedBurnCardRare")
 		}
-    	}
-		else {
+    }
+	else {
 			if(cardData.ctFlags & CT_WEAPON) {
 				AddPlayerScore(attacker,"StoppedBurnCardWeapon")
 			} else {
 				AddPlayerScore(attacker,"StoppedBurnCard")
 			}
 		}
-	}
 
 	// Player is a titan that was killed, bypassing doomed state
 	if ( player.IsTitan() && !player.GetDoomedState() )
