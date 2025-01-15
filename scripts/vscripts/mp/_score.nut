@@ -322,7 +322,9 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 	if ( IsTitanEliminationBased() )
 		AddPlayerScore( player, "EliminateTitan", titan )
 
-
+	local cardRef = GetPlayerActiveBurnCard(player)
+	local cardData = GetBurnCardData(cardRef);
+	if(cardData != null) {
 	if(cardData.rarity == BURNCARD_RARE) {
 		if(cardData.ctFlags & CT_TITAN_WPN) {
 			AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
@@ -336,6 +338,7 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 		} else if(cardData.ctFlags & CT_TITAN) {
 			AddPlayerScore(attacker,"StoppedBurnCard")
 		}
+	}
 	}
 
 	local titanSoul = titan.GetTitanSoul()
