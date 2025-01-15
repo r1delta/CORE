@@ -356,6 +356,25 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 
 	local awardedEliminationScore = false
 
+		if(GetPlayerActiveBurnCard(player) != null) {
+		local cardRef = GetPlayerActiveBurnCard(player)
+		local cardData = GetBurnCardData(cardRef);
+    	if(cardData.rarity == BURNCARD_RARE) {
+			if(cardData.ctFlags & CT_WEAPON) {
+				AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
+			} else {
+				AddPlayerScore(attacker,"StoppedBurnCardRare")
+			}
+    	}
+		else {
+			if(cardData.ctFlags & CT_WEAPON) {
+				AddPlayerScore(attacker,"StoppedBurnCardWeapon")
+			} else {
+				AddPlayerScore(attacker,"StoppedBurnCard")
+			}
+		}
+	}
+
 	// Player is a titan that was killed, bypassing doomed state
 	if ( player.IsTitan() && !player.GetDoomedState() )
 	{
@@ -396,24 +415,6 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 		AddPlayerScore( attacker, "Headshot", player )
 
 	// check if player was killed has a burn card
-	if(GetPlayerActiveBurnCard(player) != null) {
-		local cardRef = GetPlayerActiveBurnCard(player)
-		local cardData = GetBurnCardData(cardRef);
-    	if(cardData.rarity == BURNCARD_RARE) {
-			if(cardData.ctFlags & CT_WEAPON) {
-				AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
-			} else {
-				AddPlayerScore(attacker,"StoppedBurnCardRare")
-			}
-    	}
-		else {
-			if(cardData.ctFlags & CT_WEAPON) {
-				AddPlayerScore(attacker,"StoppedBurnCardWeapon")
-			} else {
-				AddPlayerScore(attacker,"StoppedBurnCard")
-			}
-		}
-	}
 
 	ScoreCheck_DroppodKill( attacker, damageInfo )
 
