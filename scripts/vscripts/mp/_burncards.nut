@@ -261,6 +261,14 @@ function PlayerRespawned(player) {
     ChangeOnDeckBurnCardToActive(player);
     printt(cardRef);
     player.Signal("StartBurnCardEffect");
+    local cardData = GetBurnCardData(cardRef);
+    // card data ... check rarity and stuf
+    if(cardData.rarity == BURNCARD_RARE) {
+        AddPlayerScore(player,"UsedBurnCard_Rare")
+    }
+    else {
+        AddPlayerScore(player,"UsedBurnCard_Common")
+    }
     RunBurnCardFunctions(player,cardRef);  
 }
 

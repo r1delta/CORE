@@ -395,6 +395,26 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 	if ( IsValidHeadShot( damageInfo, player ) )
 		AddPlayerScore( attacker, "Headshot", player )
 
+	// check if player was killed has a burn card
+	if(GetPlayerActiveBurnCard(player) != null) {
+		local cardRef = GetPlayerActiveBurnCard(player)
+		local cardData = GetBurnCardData(cardRef);
+    	if(cardData.rarity == BURNCARD_RARE) {
+			if(cardData.cardType & CT_WEAPON) {
+				AddPlayerScore(player,"StoppedBurnCardRareWeapon")
+			} else {
+				AddPlayerScore(player,"StoppedBurnCardRare")
+			}
+    	}
+		else {
+			if(cardData.cardType & CT_WEAPON) {
+				AddPlayerScore(player,"StoppedBurnCardWeapon")
+			} else {
+				AddPlayerScore(player,"StoppedBurnCard")
+			}
+		}
+	}
+
 	ScoreCheck_DroppodKill( attacker, damageInfo )
 
 	ScoreCheck_Kill( attacker, player )
