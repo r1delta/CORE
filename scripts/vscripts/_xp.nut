@@ -567,17 +567,17 @@ function GenUp( player )
 	//				Reset Challenges
 	//##############################################
 
-	local numChallenges = PersistenceGetEnumCount( "challenge" )
-	for ( local i = 0 ; i < numChallenges ; i++ )
-	{
-		player.SetPersistentVar( "challenges[" + i + "].progress", 0 )
-		player.SetPersistentVar( "challenges[" + i + "].previousProgress", 0 )
-	}
+	// local numChallenges = PersistenceGetEnumCount( "challenge" )
+	// for ( local i = 0 ; i < numChallenges ; i++ )
+	// {
+	// 	player.SetPersistentVar( "challenges[" + i + "].progress", 0 )
+	// 	player.SetPersistentVar( "challenges[" + i + "].previousProgress", 0 )
+	// }
 
-	for ( local i = 0; i < MAX_TRACKED_CHALLENGES; i++ )
-	{
-		player.SetPersistentVar( "trackedChallengeRefs[" + i + "]", "" )
-	}
+	// for ( local i = 0; i < MAX_TRACKED_CHALLENGES; i++ )
+	// {
+	// 	player.SetPersistentVar( "trackedChallengeRefs[" + i + "]", "" )
+	// }
 
 	//##############################################
 	//		Reset players custom loadouts
