@@ -337,7 +337,7 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 		if(cardData.ctFlags & CT_TITAN_WPN) {
 			AddPlayerScore(attacker,"StoppedBurnCardWeapon")
 		} else if(cardData.ctFlags & CT_TITAN) {
-			AddPlayerScore(attacker,"StoppedBurnCard")
+			AddPlayerScore(attacker,"StoppedBurnCardCommon")
 		}
 	}
 	}
@@ -386,7 +386,7 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 		if(cardData.ctFlags & CT_WEAPON) {
 			AddPlayerScore(attacker,"StoppedBurnCardWeapon")
 		} else {
-			AddPlayerScore(attacker,"StoppedBurnCard")
+			AddPlayerScore(attacker,"StoppedBurnCardCommon")
 		}
     }
 	// Player is a titan that was killed, bypassing doomed state
