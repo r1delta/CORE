@@ -82,9 +82,9 @@ function main()
 	AddClientCommandCallback( "callConversationOverSignal", ClientCommand_CallConversationOverSignal )  // for the pause menu
 	AddClientCommandCallback( "callConversationOverEndSignal", ClientCommand_CallConversationOverEndSignal )  // for the pause menu
 
-	//AddClientCommandCallback( "trainingFinished", ClientCommand_SetTrainingHasEverFinished )
-	//AddClientCommandCallback( "trainingStarted", ClientCommand_SetTrainingHasEverBeenStarted )
-	//AddClientCommandCallback( "resumeChoice", ClientCommand_ResumeChoice )
+	AddClientCommandCallback( "trainingFinished", ClientCommand_SetTrainingHasEverFinished )
+	AddClientCommandCallback( "trainingStarted", ClientCommand_SetTrainingHasEverBeenStarted )
+	AddClientCommandCallback( "resumeChoice", ClientCommand_ResumeChoice )
 
 	AddDeathCallback( "npc_soldier", NPE_GroundTroopsDeathCallback )
 	AddDeathCallback( "npc_spectre", NPE_GroundTroopsDeathCallback )
@@ -95,12 +95,13 @@ function main()
 
 	level.trainingRocketEffectTable <- PrecacheImpactEffectTable( GetWeaponInfoFileKeyField_Global( "mp_projectile_orbital_strike", "impact_effect_table" ) )
 
-	//level.resumeChoice 					<- null
-	//level.training_hasEverBeenStarted 	<- null
-	//level.training_hasEverFinished 		<- null
-	level.doQuickIntro 					<- true
+	level.resumeChoice 					<- null
+	level.training_hasEverBeenStarted 	<- null
+	level.training_hasEverFinished 		<- null
+	level.doQuickIntro 					<- false
 	level.doQuickOutro 					<- false
 	level.pilotTrainingOnly 			<- false
+	level.titanTrainingOnly				<- false
 
 	level.currentTrainingModule <- null
 	level.trainingModuleInfos <- null
@@ -298,8 +299,31 @@ function TrainerStart()
 	level.player.EndSignal( "Disconnected" )
 
 	// default start
+	// P7 [TODO]: both these resume choices should do a quick intro and outro and have a custom voiceline for each mode
+	// and at the end of pilot training, training should end and not continue to titan training onwards
+	// life is unfair so currently it doesn't do that, but it might be worth a fix in the future
+	if(level.resumeChoice == -3) {
+		level.pilotTrainingOnly = true
+		level.doQuickIntro = true
+		level.doQuickOutro = true
+		level.resumeChoice = 0
+		Remote.CallFunction_Replay(level.player, "ServerCallback_SetTrainingResumeChoice", 0)
+	}
+	if(level.resumeChoice == -4) {
+		level.titanTrainingOnly = true
+		level.doQuickIntro = true
+		level.doQuickOutro = true
+		level.resumeChoice = 10
+		Remote.CallFunction_Replay(level.player, "ServerCallback_SetTrainingResumeChoice", 10)
+	}
+	if(level.resumeChoice == null) {
+		// in the uneventful case the resumechoice is null (a.k.a as invalid, thanks to the callbacks for catching it up)
+		// we just asume its the first training module.
+		level.resumeChoice = 0
+		Remote.CallFunction_Replay(level.player, "ServerCallback_SetTrainingResumeChoice", 0)
+	}
 	if (true)
-		level.currentTrainingModule = eTrainingModules.BEDROOM
+		level.currentTrainingModule = level.resumeChoice
 	else if (GAMETYPE == "titan_tutorial")
 		level.currentTrainingModule = eTrainingModules.TITAN_MOSH_PIT
 	else if (GAMETYPE == "battle_practice")
@@ -598,6 +622,9 @@ function NPE_TitanEmbarkFailsafeOverrideFunc( player )
 
 function StartTrainingModule( moduleID )
 {
+	// we change resumechoice accordingly if we haven't finished training yet
+	Remote.CallFunction_Replay(level.player, "ServerCallback_SetTrainingResumeChoice", moduleID)
+	//printt()
 	level.player.EndSignal( "OnDestroy" )
 	level.player.EndSignal( "Disconnected" )
 	level.player.EndSignal( "OnDeath" )
@@ -1969,11 +1996,13 @@ function Module_Bedroom()
 	TrainingPod_ViewConeLock_PodClosed( level.player )
 
 	// resumeChoice will have been set up before this runs based on how we are starting the level (first run, dev, or continuing)	
-	printt("Would wait but its fucked sorry")
+	//printt("Would wait but its fucked sorry")
+	//FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "intro_welcome", level.player )
 
-	printt("Would wait but its fucked sorry")
+	//printt("Would wait but its fucked sorry")
+	//FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	wait 1.5
 
@@ -2411,6 +2440,12 @@ function TrainingPod_GlowLightsShutDown( pod, shutdownTime )
 
 function Module_Bedroom_End()
 {
+	// P7 [TODO]: if we get here it's safe to assume we completed training
+	// theoretically this shouldn't be here since we'll be gettin' here most of the time we end training
+	// so if we haven't finished our first training, we won't be getting a prompt to continue later on.
+	// seemengly it didn't work on other potential places so here it goes i guess lol
+	Remote.CallFunction_Replay(level.player, "ServerCallback_SetPlayerHasFinishedTraining")
+
 	thread EmitSoundOnEntity_Delayed( level.player, "NPE_Scr_SimPod_End", 2.9 )
 
 	level.player.WaitSignal( "Teleported" )
@@ -8306,7 +8341,7 @@ function DisableTitanDisembark()
 	level.titanDisembarkDisabled = true
 }
 
-/*
+
 //check
 function ClientCommand_SetTrainingHasEverFinished( player, training_hasEverFinished )
 {
@@ -8317,9 +8352,9 @@ function ClientCommand_SetTrainingHasEverFinished( player, training_hasEverFinis
 	level.training_hasEverFinished = intVal
 	return true
 }
-*/
 
-/*
+
+
 //check
 function ClientCommand_SetTrainingHasEverBeenStarted( player, training_hasEverBeenStarted )
 {
@@ -8330,9 +8365,9 @@ function ClientCommand_SetTrainingHasEverBeenStarted( player, training_hasEverBe
 	level.training_hasEverBeenStarted = intVal
 	return true
 }
-*/
 
-/*
+
+
 //check
 function ClientCommand_ResumeChoice( player, resumeChoice )
 {
@@ -8343,7 +8378,7 @@ function ClientCommand_ResumeChoice( player, resumeChoice )
 	level.resumeChoice = intVal
 	return true
 }
-*/
+
 
 //check
 function SanitizeClientCommandInput( inputStr )

@@ -712,7 +712,7 @@ function LocalDialogChoice_Training_Custom()
 	CloseDialog(false)
 
 	local buttonData = []
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_1", func = Bind( function() { SetPlayerTrainingResumeChoice( 1 ); LaunchTraining() } ) } )
+	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_1", func = Bind( function() { SetPlayerTrainingResumeChoice( 0 ); LaunchTraining() } ) } )
 	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_2", func = Bind( function() { SetPlayerTrainingResumeChoice( 1 ); LaunchTraining() } ) } )
 	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_3", func = Bind( function() { SetPlayerTrainingResumeChoice( 2 ); LaunchTraining() } ) } )
 	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_4", func = Bind( function() { SetPlayerTrainingResumeChoice( 3 ); LaunchTraining() } ) } )
