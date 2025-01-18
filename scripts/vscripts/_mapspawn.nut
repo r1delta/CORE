@@ -308,11 +308,11 @@
 	IncludeFile( "_challenges_content" )
 
 	CreateChallenges()
-//	IncludeFile( "mp/_stats" )
 	// InitChallenges()
 	IncludeFile( "_menu_callbacks" )
 
 	IncludeScript( "mp/_global_entities" )
+	IncludeFile( "mp/_stats" )
 
 	local mapname = GetMapName()
 

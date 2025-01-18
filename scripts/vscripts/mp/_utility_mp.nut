@@ -1433,6 +1433,7 @@ function MoveEntity( targetName, origin, angles )
 function UpdatePlayerStat( player, category, stat, value = null )
 {
 	printt( "UpdatePlayerStat: " + player + " " + category + " " + stat + " " + value )
+	
 }
 
 function SetPlayerActiveObjectiveWithTime( player, objective, time )

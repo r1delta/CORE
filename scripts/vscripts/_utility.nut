@@ -5665,10 +5665,11 @@ function DevGiveMapStars()
 	player.SetPersistentVar( "mapStars[" + GetMapName() + "].bestScore[" + GameRules.GetGameMode() + "]", scoreReqs[2] + 1 )
 }
 
+
 function DevCompleteDailies()
 {
-	if ( developer() <= 0 )
-		return
+	// if ( developer() <= 0 )
+	// 	return
 
 	local player = GetPlayerArray()[0]
 	local challengeRefs = GetPlayersStoredDailyChallenges( player )
@@ -5681,10 +5682,12 @@ function DevCompleteDailies()
 
 		local linkedStat = level.challengeData[ ref ].linkedStat
 		local challengeGoal = GetGoalForChallengeTier( ref, 0 )
-
+		printt( "goal", challengeGoal )
+		printt( "linkedStat", linkedStat.category, linkedStat.alias )
 		UpdatePlayerWeaponStat( player, linkedStat.category, linkedStat.alias, linkedStat.weapon, challengeGoal )
 	}
 }
+
 
 function CheckMapStarAchievements( player )
 {

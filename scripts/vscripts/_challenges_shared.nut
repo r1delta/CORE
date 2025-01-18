@@ -1,5 +1,5 @@
 
-const CHALLENGES_ENABLED = false
+const CHALLENGES_ENABLED = true
 const DEBUG_CHALLENGES	= false
 const DEBUG_DAILIES	= false
 

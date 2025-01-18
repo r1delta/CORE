@@ -277,6 +277,7 @@ function CodeCallback_OnPlayerRespawned( player )
 
 function CodeCallback_OnNPCKilled( npc, damageInfo )
 {
+	
 }
 
 function CodeCallback_WeaponFireInCloak( player )
