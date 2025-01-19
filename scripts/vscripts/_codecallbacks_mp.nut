@@ -574,6 +574,8 @@ function CodeCallback_SpawnDummyPilot_or_Titan( isTitan )
 	thread SpawnDummyPilotOrTitan(isTitan)
 }
 
+
+
 function SpawnDummyPilotOrTitan(isTitan)
 {
 	if( isTitan == false)

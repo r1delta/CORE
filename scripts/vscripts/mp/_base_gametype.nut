@@ -34,6 +34,8 @@ function main()
 		level.onPlayerOrNPCKilledCallbacks <- {}
 		level.onNPCKilledCallbacks <- {}
 		level.onLeechedCustomCallbackFunc <- {}
+		level.onWeaponAttackCallbacks <- {} // these run whenever a weapon is fired
+
 	    level.hardpoints <- []
 
 	    // [LJS] 하드포인트 일정시간마다 랜덤하게 활성화
@@ -1425,6 +1427,13 @@ function CodeCallback_OnPlayerKilled( player, damageInfo )
 	foreach ( callbackInfo in level.onPlayerKilledCallbacks )
 	{
 		callbackInfo.func.acall( [callbackInfo.scope, player, damageInfo] )
+	}
+}
+
+function CodeCallback_OnWeaponAttack(player,weapon,weaponName,ammoUsed) {
+	foreach ( callbackFunc in level.onWeaponAttackCallbacks )
+	{
+		callbackFunc.func.acall( [callbackFunc.scope, player, weapon, weaponName, ammoUsed ] )
 	}
 }
 

@@ -1845,7 +1845,8 @@ function BurnCardLimitFunc( gen )
 	if ( UsingAlternateBurnCardPersistence() )
 		limit = max
 
-	return clamp( limit, 0, max )
+	// return clamp( limit, 0, max )
+	return max
 }
 
 function GetBurnCardIndexByRef( cardRef )
