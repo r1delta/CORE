@@ -309,10 +309,10 @@
 
 	CreateChallenges()
 	// InitChallenges()
+	IncludeFile( "mp/_stats" )
 	IncludeFile( "_menu_callbacks" )
 
 	IncludeScript( "mp/_global_entities" )
-	IncludeFile( "mp/_stats" )
 
 	local mapname = GetMapName()
 
