@@ -1618,8 +1618,18 @@ function ChangedPlayerBurnCards(player) {
 
 function FillBurnCardDeckFromArray( player, array )
 {
+	local max = PersistenceGetArrayCount( _GetBurnCardDeckPersDataPrefix() )
+	for ( local i = 0; i < max; i++ )
+	{
+		player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + i + "]", null )
+		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + i + "]", null )
+	}
+
 	foreach (index,card in array)
 	{
+		if(card == null)
+			player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", null )
+		
 		player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", card.cardRef )
 		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + index + "]", card.new )
 	}
