@@ -95,9 +95,9 @@ function HandleDistanceAndTimeStats() {
                 Stats_IncrementStat( player, "distance_stats", "total", distMiles )
                 if(player.IsTitan()) {
                     Stats_IncrementStat( player, "distance_stats", "asTitan", distMiles )
-                    local titanSetfile = GetPlayerSettingsFieldForClassName( attacker, "titan" )
-                    local titanName = replace_all( titanSetfile, "titan_", "" )
-                    Stats_IncrementStat( player, "distance_stats", "asTitan_" + titanName, distMiles )
+	                local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+	                local titanSettings = titanDataTable.playerSetFile                    
+                    Stats_IncrementStat( player, "distance_stats", "as" + titanSettings, distMiles )
                 } else {
                     Stats_IncrementStat( player, "distance_stats", "asPilot", distMiles )
                 }
@@ -280,9 +280,10 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
 			Stats_IncrementStat( victim, "deaths_stats", "byPilots", 1.0 )
   
         // byTitans
-        if ( attacker.IsTitan() ){
-            local titanSetfile = GetPlayerSettingsFieldForClassName( attacker, "titan" )
-            local titanName = replace_all( titanSetfile, "titan_", "" )
+        if ( attacker.IsTitan() ) {
+            local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
+           	local titanSettings = titanDataTable.playerSetFile
+            local titanName = replace_all( titanSettings, "titan_", "" )
             Stats_IncrementStat( victim, "deaths_stats", "byTitans_" + titanName , 1.0 )
         }
 
@@ -296,9 +297,9 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
 
 
         if ( attacker.IsTitan() && attacker.IsNPC() ) {
-             local titanSetfile = GetPlayerSettingsFieldForClassName( attacker, "titan" )
-             local titanName = replace_all( titanSetfile, "titan_", "" )
-            
+            local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
+           	local titanSettings = titanDataTable.playerSetFile
+            local titanName = replace_all( titanSettings, "titan_", "" )
 			 Stats_IncrementStat( player, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
         }
     }
@@ -341,14 +342,16 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
 		        Stats_IncrementStat( attacker, "weapon_kill_stats", "ejecting_pilots", 1.0,source )
             if ( victim.IsTitan() && !victim.IsNPC() )
             {    
-                local titanSetfile = GetPlayerSettingsFieldForClassName( victim, "titan" )
-                local titanName = replace_all( titanSetfile, "titan_", "" )
+                local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
+           	    local titanSettings = titanDataTable.playerSetFile
+                local titanName = replace_all( titanSettings, "titan_", "" )
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "titans_" + titanName, 1.0,source )
             }
             if (victim.IsTitan() && victim.IsNPC() ) {
-             local titanSetfile = GetPlayerSettingsFieldForClassName( victim, "titan" )
-             local titanName = replace_all( titanSetfile, "titan_", "" )
-			 Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0 )
+                local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
+           	    local titanSettings = titanDataTable.playerSetFile
+                local titanName = replace_all( titanSettings, "titan_", "" )
+                Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0 )
             }
         }
     }

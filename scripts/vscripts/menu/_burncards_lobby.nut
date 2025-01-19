@@ -92,18 +92,12 @@ function BCDiscard( player, index, burnCardIndex )
 		printt( "	Wrong, cardref was actually " + bcard.cardRef )
 		return true
 	}
-
 	deck.remove( index )
-
 	GiveDiscardReward( player, bcard.cardRef )
 
 	FillBurnCardDeckFromArray( player, deck )
 	Remote.CallFunction_UI( player, "SCB_UpdateBC" )
 
-	// Log the discard to stats
-	local enumIndex = GetBurnCardPersistenceEnumIndex( bcard.cardRef )
-	Assert( enumIndex != 0 )
-	// LogPlayerStat_BurncardDiscard( player, enumIndex )
 
 	return true
 }
