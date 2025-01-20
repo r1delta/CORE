@@ -11,9 +11,14 @@ function main() {
     AddDamageCallback("npc_solider", OnDamaged)
     AddDamageCallback("npc_titan", OnDamaged)
     AddDamageCallback("npc_spectre", OnDamaged)
+    AddCallback_OnRodeoStarted(OnRodeoStarted)
     
     AddCallback_OnWeaponAttack(OnWeaponAttack)
     thread HandleDistanceAndTimeStats()
+}
+
+function OnRodeoStarted(player) {
+    
 }
 
 function OnDamaged(ent,damageInfo) {
@@ -257,6 +262,12 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
 	    if ( victim.IsPlayer() && damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.human_melee )
 		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMeleePilot", 1.0 )      
+    
+         if(GetActiveBurnCard( attacker ) != null) 
+            Stats_IncrementStat( attacker, "kills_stats", "totalWhileUsingBurnCard", 1.0 )      
+
+        
+
     }
 }
 
@@ -330,6 +341,9 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
                 }
                 return
             }
+
+           
+
             Stats_IncrementStat( attacker, "weapon_kill_stats","total" , 1.0, source )
             if(IsPilot(victim))
                 Stats_IncrementStat( attacker, "weapon_kill_stats","pilots" , 1.0, source )
@@ -340,6 +354,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
             
             if (IsPilot(victim) && victim.pilotEjecting )
 		        Stats_IncrementStat( attacker, "weapon_kill_stats", "ejecting_pilots", 1.0,source )
+            
             if ( victim.IsTitan() && !victim.IsNPC() )
             {    
                 local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
@@ -359,13 +374,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
 
 function HandleTitanStats( victim, attacker, damageInfo ) {
     if ( attacker.IsPlayer() ) {
-        local weapon = damageInfo.GetInflictor()
-        if ( weapon != null ) {
-            local weaponName = weapon.GetClassname()
-            if ( weaponName == "npc_titan" ) {
-                // Stats_IncrementStat( attacker, "titan_kill_stats", "total", "", 1 )
-            }
-        }
+        
     }
 }
 
