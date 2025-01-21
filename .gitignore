@@ -16,3 +16,5 @@ config/*/
 cfg/banned_ip.cfg
 cfg/banned_user.cfg
 materials/vgui/addons/*/
+screenshots/*
+.vscode/*
