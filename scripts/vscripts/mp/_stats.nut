@@ -193,9 +193,9 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
                     shouldPopup = true
                 }
                 printt("challenge completed" + challRef)
-                Remote.CallFunction_Replay(player,"ServerCallback_UpdateClientChallengeProgress", id ,challengeProgress + value, shouldPopup)
+                Remote.CallFunction_Replay(player,"ServerCallback_UpdateClientChallengeProgress", id ,currentProgress, shouldPopup)
             }
-            Remote.CallFunction_Replay(player,"ServerCallback_UpdateClientChallengeProgress", id ,challengeProgress + value, shouldPopup)
+            Remote.CallFunction_Replay(player,"ServerCallback_UpdateClientChallengeProgress", id ,currentProgress, shouldPopup)
         }
     }
 }
