@@ -578,7 +578,7 @@ function AwardCaptureToPlayer( player )
 	if ( IsRoundBased() )
 	{
 		wait 1.0
-		// SetWinLossReasons( winReason, lossReason )
+		SetWinLossReasons( "#MARKED_FOR_DEATH_KILL_PLAYER","#MARKED_FOR_DEATH_KILL_PLAYER" )
 		SetWinner( player.GetTeam() )
 	}
 	else
@@ -643,7 +643,7 @@ function CTT_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 
 	if ( IsRoundBased() )
 	{
-		SetWinLossReasons( winReason, lossReason )
+		SetWinLossReasons( "#MARKED_FOR_DEATH_KILL_PLAYER","#MARKED_FOR_DEATH_KILL_PLAYER" )
 		SetWinner(GetOtherTeam(level.nv.attackingTeam))
 	}
 	else

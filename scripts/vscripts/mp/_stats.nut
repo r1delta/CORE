@@ -192,6 +192,8 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
                     FillBurnCardDeckFromArray( player, deck )
                     shouldPopup = true
                 }
+                printt("challenge completed" + challRef)
+                Remote.CallFunction_Replay(player,"ServerCallback_UpdateClientChallengeProgress", id ,challengeProgress + value, shouldPopup)
             }
             Remote.CallFunction_Replay(player,"ServerCallback_UpdateClientChallengeProgress", id ,challengeProgress + value, shouldPopup)
         }

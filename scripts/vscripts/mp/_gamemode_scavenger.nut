@@ -24,7 +24,7 @@ function main()
 {
 	level.spawnRatingFunc_Pilot = RateFrontLinePlayerSpawnpoint
 	level.spawnRatingFunc_Generic = RateFrontLinePlayerSpawnpoint
-
+	PrecacheModel( "models/rocks/rock_01_sandstone.mdl" )
 
 	file.totalOre <- {}
 	file.totalOre[ oreTypes.RANDOM ] <- 0
