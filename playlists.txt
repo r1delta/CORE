@@ -2402,7 +2402,7 @@
 			"cmdlineMapLoad"	"1"
 			"max teams"	"2"
 			"visible"	"0"
-			"TDM_scorelimit"	"50"
+			"TDM_scorelimit"	"10"
 			"TDM_timelimit"	"15"
 			"CP_scorelimit"	"400"
 			"CP_timelimit"	"15"
