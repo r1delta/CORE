@@ -283,8 +283,8 @@ if ( IsUI() )
 {
 	function GetLevel( _ = null )
 	{
-		if ( DevEverythingUnlocked() )
-			return MAX_LEVEL
+		// if ( DevEverythingUnlocked() )
+		// 	return MAX_LEVEL
 		return GetLevelForXP( GetPersistentVar( "xp" ) )
 	}
 	Globalize( GetLevel )

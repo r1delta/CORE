@@ -35,8 +35,10 @@ function OnDamaged(ent,damageInfo) {
         Stats_IncrementStat( inflictor, "weapon_stats", "shotsHit", 1.0, weaponName )
         if ( damageInfo.GetCustomDamageType() & DF_CRITICAL )
 		    Stats_IncrementStat( inflictor, "weapon_stats", "critHits", 1.0,weaponName )
-	    if ( damageInfo.GetCustomDamageType() & DF_HEADSHOT )
-		    Stats_IncrementStat( inflictor, "weapon_stats", "headshots",  1.0, weaponName )
+        
+        if(IsValidHeadShot(damageInfo,ent))
+            Stats_IncrementStat( inflictor, "weapon_stats", "headshots", 1.0, weaponName )
+        
     }
 }
 
@@ -251,7 +253,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         Stats_IncrementStat( attacker, "kills_stats", "total",  1 )
         if ( IsPilot( victim ) )
             Stats_IncrementStat( attacker, "kills_stats", "pilots", 1 )
-
+        
 // totalNPC 
         if(victim.IsNPC())
             Stats_IncrementStat( attacker, "kills_stats", "totalNPC", 1 )
@@ -347,8 +349,6 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
                 return
             }
 
-           
-
             Stats_IncrementStat( attacker, "weapon_kill_stats","total" , 1.0, source )
             if(IsPilot(victim))
                 Stats_IncrementStat( attacker, "weapon_kill_stats","pilots" , 1.0, source )
@@ -365,14 +365,20 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
                 local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
            	    local titanSettings = titanDataTable.playerSetFile
                 local titanName = replace_all( titanSettings, "titan_", "" )
+                printt("titan name: " + titanName)
+                // titans_atlas
+                Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "titans_" + titanName, 1.0,source )
             }
             if (victim.IsTitan() && victim.IsNPC() ) {
                 local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
            	    local titanSettings = titanDataTable.playerSetFile
                 local titanName = replace_all( titanSettings, "titan_", "" )
+                Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0 )
             }
+            if ( IsValidHeadShot(damageInfo,victim ) )
+		        Stats_IncrementStat( attacker, "weapon_stats", "headshots",  1.0, source )
         }
     }
 }
