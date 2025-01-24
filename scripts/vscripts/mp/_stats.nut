@@ -19,7 +19,7 @@ function main() {
     Globalize(UpdatePlayerStat)
 }
 
-function UpdatePlayerStat(player,category,alias,amount) {
+function UpdatePlayerStat(player,category,alias,amount = 1) {
     Stats_IncrementStat(player,category,alias,amount)
 }
 
@@ -330,7 +330,6 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         if(victim.IsPlayer())
             Stats_IncrementStat( attacker, "game_stats", "pvp_kills_by_mode", 1 )
 
-// totalNPC 
         if(victim.IsNPC())
             Stats_IncrementStat( attacker, "kills_stats", "totalNPC", 1 )
         if ( victim.IsSpectre() )
