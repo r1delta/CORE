@@ -251,6 +251,10 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         Stats_IncrementStat( attacker, "kills_stats", "total",  1 )
         if ( IsPilot( victim ) )
             Stats_IncrementStat( attacker, "kills_stats", "pilots", 1 )
+
+// totalNPC 
+        if(victim.IsNPC())
+            Stats_IncrementStat( attacker, "kills_stats", "totalNPC", 1 )
         if ( victim.IsSpectre() )
             Stats_IncrementStat( attacker, "kills_stats", "spectres", 1 )
         if ( victim.IsSoldier() )
