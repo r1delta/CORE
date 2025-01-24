@@ -48,6 +48,7 @@ function Stats_EndRound() {
         // check for mvp and top 3
         if(playerPlacementOnTeam == 0) {
             Stats_IncrementStat(player,"game_stats","mvp",1.0)
+            Stats_IncrementStat(player,"game_stats","mvp_total",1.0 )
         }
         if(playerPlacementOnTeam <= 3) {
             Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
