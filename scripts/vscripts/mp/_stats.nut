@@ -306,11 +306,27 @@ function SetLastPosForDistanceStatValid(player,val) {
 
 
 function HandleKillStats( victim, attacker, damageInfo ) {
+    local player = null
+    local damageSource = damageInfo.GetDamageSourceIdentifier()
+    local playerPetTitan = null
+    if ( attacker.IsNPC() )
+	{
+		if ( !attacker.IsTitan() ) // Normal NPCs case
+			return
+		
+		if ( !IsPetTitan( attacker ) ) // NPC Titans case
+			return
+		
+		player = attacker.GetTitanSoul().GetBossPlayer()
+		playerPetTitan = attacker
+	}
+	else if ( attacker.IsPlayer() ) // Still checks this because worldspawn might be the attacker
+		player = attacker
+	else
+		return
+
     if ( attacker.IsPlayer() ) {
         Stats_IncrementStat( attacker, "kills_stats", "total",  1 )
-        if ( IsPilot( victim ) )
-            Stats_IncrementStat( attacker, "kills_stats", "pilots", 1 )
-        
         if(victim.IsPlayer())
             Stats_IncrementStat( attacker, "game_stats", "pvp_kills_by_mode", 1 )
 
@@ -334,8 +350,68 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             Stats_IncrementStat( attacker, "kills_stats", "totalWhileUsingBurnCard", 1.0 )      
 
         
-
     }
+    local victimIsPilot = IsPilot( victim )
+    	// ejectingPilots
+	if ( victimIsPilot && victim.pilotEjecting )
+		Stats_IncrementStat( player, "kills_stats", "ejectingPilots", 1.0 )
+
+	// whileEjecting
+	if ( attacker.IsPlayer() && attacker.pilotEjecting )
+		Stats_IncrementStat( player, "kills_stats", "whileEjecting",  1.0 )
+
+	// cloakedPilots
+	if ( victimIsPilot && IsCloaked( victim ) )
+		Stats_IncrementStat( player, "kills_stats", "cloakedPilots", 1.0 )
+
+	// whileCloaked
+	if ( attacker == player && IsCloaked( attacker ) )
+		Stats_IncrementStat( player, "kills_stats", "whileCloaked", 1.0 )
+
+	// wallrunningPilots
+	if ( victimIsPilot && victim.IsWallRunning() )
+		Stats_IncrementStat( player, "kills_stats", "wallrunningPilots",  1.0 )
+
+	// whileWallrunning
+	if ( attacker == player && attacker.IsWallRunning() )
+		Stats_IncrementStat( player, "kills_stats", "whileWallrunning", 1.0 )
+
+	// wallhangingPilots
+	if ( victimIsPilot && victim.IsWallHanging() )
+		Stats_IncrementStat( player, "kills_stats", "wallhangingPilots", 1.0 )
+
+	// whileWallhanging
+	if ( attacker == player && attacker.IsWallHanging() )
+		Stats_IncrementStat( player, "kills_stats", "whileWallhanging",  1.0 )
+
+	
+    if ( damageSource == eDamageSourceId.titan_execution ) {
+        local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
+        local titanSettings = titanDataTable.playerSetFile
+        local titanName = replace_all( titanSettings, "titan_", "" )	
+		titanName = titanName.slice( 0, 1 ).toupper() + titanName.slice( 1, titanName.len() )
+        Stats_IncrementStat( player, "kills_stats", "titanExocution_" +titanName, 1.0 )
+    }
+
+    if ( attacker == playerPetTitan && player.GetPetTitanMode() == eNPCTitanMode.FOLLOW )
+		Stats_IncrementStat( player, "kills_stats", "petTitanKillsFollowMode",  1.0 )
+
+	// petTitanKillsGuardMode
+	if ( attacker == playerPetTitan && player.GetPetTitanMode() == eNPCTitanMode.STAY )
+		Stats_IncrementStat( player, "kills_stats", "petTitanKillsGuardMode",  1.0 )
+    
+	// pilotKillsAsTitan
+	if ( victimIsPilot && attacker.IsTitan() )
+		Stats_IncrementStat( player, "kills_stats", "pilotKillsAsTitan", 1.0 )
+
+	// pilotKillsAsPilot
+	if ( victimIsPilot && IsPilot( attacker ) )
+		Stats_IncrementStat( player, "kills_stats", "pilotKillsAsPilot", 1.0 )
+
+	// titanKillsAsTitan
+	if ( victimIsTitan && attacker.IsTitan() )
+		Stats_IncrementStat( player, "kills_stats", "titanKillsAsTitan",  1.0 )
+
 }
 
 function HandleDeathStats( victim, attacker, damageInfo ) {
@@ -378,8 +454,10 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
             local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
            	local titanSettings = titanDataTable.playerSetFile
             local titanName = replace_all( titanSettings, "titan_", "" )
-			 Stats_IncrementStat( player, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
+			Stats_IncrementStat( attacker, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
         }
+        // if ( damageSource == eDamageSourceId.damagedef_titan_fall )
+		    // Stats_IncrementStat( player, "kills_stats", "titanFallKill", "", 1.0 )
     }
 
     if(victim.IsPlayer())
