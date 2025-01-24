@@ -352,6 +352,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         
     }
     local victimIsPilot = IsPilot( victim )
+    local victimIsTitan = victim.IsTitan()
     	// ejectingPilots
 	if ( victimIsPilot && victim.pilotEjecting )
 		Stats_IncrementStat( player, "kills_stats", "ejectingPilots", 1.0 )
