@@ -1622,7 +1622,7 @@ function FillBurnCardDeckFromArray( player, array )
 	for ( local i = 0; i < max; i++ )
 	{
 		player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + i + "]", null )
-		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + i + "]", null )
+		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + i + "]", false )
 	}
 
 	foreach (index,card in array)
