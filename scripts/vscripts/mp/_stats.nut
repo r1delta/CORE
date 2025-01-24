@@ -173,7 +173,7 @@ function HandleDistanceAndTimeStats() {
 			// first tick i dont count
 			if ( timeSeconds == 0 )
 				break
-            // Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
+            Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
             Stats_IncrementStat( player, "time_stats", "hours_total", timeHours )
             if(player.IsTitan())
                 Stats_IncrementStat( player, "time_stats", "hours_as_titan",  timeHours )
@@ -238,7 +238,7 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
                     FillBurnCardDeckFromArray( player, deck )
                     shouldPopup = true
                 }
-                printt("challenge completed" + challRef)
+                printt("challenge completed: " + challRef)
             }
             Remote.CallFunction_NonReplay(player,"ServerCallback_UpdateClientChallengeProgress", id ,currentProgress, shouldPopup)
         }
