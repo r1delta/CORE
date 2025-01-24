@@ -180,6 +180,7 @@ function AwardCaptureToPlayer( player, flag )
 	GameScore.AddTeamScore( player.GetTeam(), 1 )
 
 	AddPlayerScore( player, "FlagCapture" )
+	Stats_IncrementStat( player, "misc_stats","flagsCaptured",1.0 )
 	player.SetAssaultScore( player.GetAssaultScore() + 1 )
 
 	Assert( "carriers" in flag.s )
@@ -302,6 +303,8 @@ function CodeCallback_OnTouchHealthKit( player, flag )
 			PlayConversationToTeam( "enemy_returned_flag", otherFlagTeam )
 
 			AddPlayerScore( player, "FlagReturn" )
+			Stats_IncrementStat( player, "misc_stats","flagsReturned",1.0 )
+
 			player.SetDefenseScore( player.GetDefenseScore() + 1 )
 
 			ReturnFlagToHome( flag )

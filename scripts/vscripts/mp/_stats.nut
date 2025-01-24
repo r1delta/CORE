@@ -15,6 +15,12 @@ function main() {
     GM_AddEndRoundFunc(Stats_EndRound)
     AddCallback_OnWeaponAttack(OnWeaponAttack)
     thread HandleDistanceAndTimeStats()
+    Globalize(Stats_IncrementStat)
+    Globalize(UpdatePlayerStat)
+}
+
+function UpdatePlayerStat(player,category,alias,amount) {
+    Stats_IncrementStat(player,category,alias,amount)
 }
 
 function OnRodeoStarted(player) {
@@ -130,7 +136,7 @@ function HandleDistanceAndTimeStats() {
         {
             if(!IsValid(player))
                 continue
-            
+         
             if ( player.s.lastPosForDistanceStatValid ) {
                 local distInches = Distance2D( player.s.lastPosForDistanceStat, player.GetOrigin() )
 				local distMiles = distInches / 63360.0

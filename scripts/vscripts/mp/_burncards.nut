@@ -287,6 +287,7 @@ function PlayerRespawned(player) {
     else {
         AddPlayerScore(player,"UsedBurnCard_Common")
     }
+    Stats_IncrementStat(player,"misc_stats","burnCardsSpent",1)
     RunBurnCardFunctions(player,cardRef);  
 }
 

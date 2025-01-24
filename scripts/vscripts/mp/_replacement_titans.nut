@@ -641,10 +641,13 @@ function DropReplacementTitan( player, spawnPoint )
 	{
 		AddPlayerScore( player, "FirstTitanfall" )
 		level.firstTitanfall = true
+		Stats_IncrementStat( player, "misc_stats", "titanFallsFirst", 1.0 )
+		Stats_IncrementStat( player, "misc_stats", "titanFalls", 1.0 )
 	}
 	else
 	{
 		AddPlayerScore( player, "Titanfall" )
+		Stats_IncrementStat( player, "misc_stats", "titanFalls", 1.0 )
 	}
 
 
