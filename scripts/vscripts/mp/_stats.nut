@@ -12,13 +12,49 @@ function main() {
     AddDamageCallback("npc_titan", OnDamaged)
     AddDamageCallback("npc_spectre", OnDamaged)
     AddCallback_OnRodeoStarted(OnRodeoStarted)
-    
+    GM_AddEndRoundFunc(Stats_EndRound)
     AddCallback_OnWeaponAttack(OnWeaponAttack)
     thread HandleDistanceAndTimeStats()
 }
 
 function OnRodeoStarted(player) {
     
+}
+
+function Stats_EndRound() {
+
+    if(IsLobby())
+        return
+
+    if(!IsRoundBasedGameOver())
+        return
+
+    foreach(player in GetPlayerArray()) {
+        if(!IsValid(player))
+            continue
+        if(player.IsBot())
+            continue
+        local killedTeam = player.GetTeam()
+        local compareFunc = GetScoreboardCompareFunc()
+	    local playersArray = GetSortedPlayers( compareFunc, killedTeam )
+	    local playerPlacementOnTeam = GetIndexInArray( playersArray, player )
+        Stats_IncrementStat(player,"game_stats","game_completed",1.0)
+        // check for mvp and top 3
+        if(playerPlacementOnTeam == 0) {
+            Stats_IncrementStat(player,"game_stats","mvp",1.0)
+        }
+        if(playerPlacementOnTeam <= 3) {
+            Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
+        }
+
+        if(GetCurrentWinner() == player.GetTeam()) {
+            Stats_IncrementStat(player,"game_stats","game_won",1.0)
+        }
+        else {
+            Stats_IncrementStat(player,"game_stats","game_lost",1.0)
+        }
+
+       }
 }
 
 function OnDamaged(ent,damageInfo) {
@@ -130,6 +166,7 @@ function HandleDistanceAndTimeStats() {
 			// first tick i dont count
 			if ( timeSeconds == 0 )
 				break
+            // Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
             Stats_IncrementStat( player, "time_stats", "hours_total", timeHours )
             if(player.IsTitan())
                 Stats_IncrementStat( player, "time_stats", "hours_as_titan",  timeHours )
@@ -218,8 +255,22 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
         return
     }
 
-    local currentValue = player.GetPersistentVar(var)
-    player.SetPersistentVar(var, currentValue + value)
+
+    /*
+
+    fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", map )
+			fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", mode )
+*/
+	local fixedSaveVar
+	local timesPlayed = 0
+    local mapName = GetMapName()
+    local gameMode = GameRules.GetGameMode()
+	fixedSaveVar = var
+	fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
+	fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
+
+    local currentValue = player.GetPersistentVar(fixedSaveVar)
+    player.SetPersistentVar(fixedSaveVar, currentValue + value)
 
     UpdateChallengeData(player,category,statName,value,weaponName)
    
@@ -254,6 +305,9 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         if ( IsPilot( victim ) )
             Stats_IncrementStat( attacker, "kills_stats", "pilots", 1 )
         
+        if(victim.IsPlayer())
+            Stats_IncrementStat( attacker, "game_stats", "pvp_kills_by_mode", 1 )
+
 // totalNPC 
         if(victim.IsNPC())
             Stats_IncrementStat( attacker, "kills_stats", "totalNPC", 1 )
@@ -392,7 +446,8 @@ function HandleTitanStats( victim, attacker, damageInfo ) {
 function OnClientConnected(player) {
     player.s.lastPosForDistanceStatValid <- false
     player.s.lastPosForDistanceStat <- null
-    // Stats_IncrementStat( player, "game_stats", "game_joined", 1.0 )
+    Stats_IncrementStat( player, "game_stats", "game_joined", 1.0 )
+    Stats_IncrementStat( player, "game_stats", "gamesCompletedTotal", 1.0 )
 }
 
 function OnClientDisconnected(player) {
