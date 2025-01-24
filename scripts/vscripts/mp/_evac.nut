@@ -920,6 +920,11 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 
 	local dropshipSounds = []
 
+	foreach(player in GetPlayerArrayOfTeam( level.evacTeam ))
+	{
+		Stats_IncrementStat( player, "misc_stats", "evac_attempts",1.0 )
+	}
+
 	OnThreadEnd(
 		function() : ( dropship, dropshipSounds )
 		{
@@ -1034,6 +1039,9 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 	EmitSoundOnEntity( dropship, flyoutSound )
 
 	FlagSet( "EvacShipLeave" )
+
+
+
 	if ( Flag( "EvacEndsMatch" ) )
 		HideEvacShipIconOnMinimap()
 
@@ -1090,6 +1098,14 @@ function EvacEscapeScore( dropship )
 		AddPlayerScore( rescuedPlayers[ 0 ], "SoleSurvivor" )
 	}
 
+	foreach( player in rescuedPlayers )
+	{
+		if ( !IsAlive( player ) )
+			continue
+
+		Stats_IncrementStat(player,"misc_stats","evacsSurvived",1.0)
+	}
+
 	local evacPlayers = GetPlayerArrayOfTeam( level.evacTeam )
 
 	if ( !AllEvacPlayersRescued( evacPlayers, rescuedPlayers ) )
@@ -1102,6 +1118,7 @@ function EvacEscapeScore( dropship )
 	{
 		AddPlayerScore( player, "TeamBonusFullEvac" )
 	}
+
 }
 
 function AwardBonusScoreIfAllEvacPlayersKilledBySamePlayer( lastPlayerKilled )
@@ -1423,6 +1440,8 @@ function EndEpilogue()
 	UpdateObjectives()
 	//printt( "Setting EvacFinished" )
 	FlagSet( "EvacFinished" )
+
+
 
 	SetGlobalForcedDialogueOnly( true ) //Stop misc chatter
 

@@ -3,6 +3,9 @@ function main() {
     if(IsLobby())
         return
 
+    file.playerDeathsPvp <- {}
+    file.playerKillsPvp <- {}
+
     AddCallback_OnPlayerRespawned(OnPlayerRespawned)
     AddCallback_PlayerOrNPCKilled(OnPlayerOrNPCKilled)
     AddCallback_OnClientConnected(OnClientConnected)
@@ -62,6 +65,59 @@ function Stats_EndRound() {
         else {
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
         }
+
+        local playerKills = player.GetKillCount()
+        local npcKills = player.GetNPCKillCount()
+        local playerDeaths = player.GetDeathCount()
+
+        local match_kd = 0.0
+        if(playerDeaths > 0)
+            match_kd = (playerKills + npcKills) / playerDeaths
+        else {
+            match_kd = playerKills + npcKills
+        }
+
+        local pvpMatchRatio = 0.0
+        
+        if(playerDeaths > 0)
+            pvpMatchRatio = playerKills / playerDeaths
+        else {
+            pvpMatchRatio = playerKills
+        }
+
+        local totalDeaths = player.GetPersistentVar("deathStats.total").tofloat()
+        local totalKills = player.GetPersistentVar("killStats.total").tofloat()
+        local totalPvpKills = player.GetPersistentVar("killStats.totalPVP").tofloat()
+        local totalPvpDeaths = player.GetPersistentVar("deathStats.totalPVP").tofloat()
+
+        local lifetimeKdRatio = 0.0
+
+        if(totalDeaths > 0)
+            lifetimeKdRatio = totalKills / totalDeaths
+        else {
+            lifetimeKdRatio = totalKills
+        }
+
+        local lifetimePvpRatio = 0.0
+        
+        if(totalPvpDeaths > 0)
+            lifetimePvpRatio = totalPvpKills / totalPvpDeaths
+        else {
+            lifetimePvpRatio = totalPvpKills
+        }
+
+        local i = 0
+        for ( i = NUM_GAMES_TRACK_KDRATIO - 2; i >= 0; --i )
+		{
+			player.SetPersistentVar( format( "kdratio_match[%i]", ( i + 1 ) ), player.GetPersistentVar( format("kdratio_match[%i]", i ) ) )
+			player.SetPersistentVar( format( "kdratiopvp_match[%i]", ( i + 1 ) ), player.GetPersistentVar( format( "kdratiopvp_match[%i]", i ) ) )
+		}
+
+        player.SetPersistentVar( "kdratio_match[0]", match_kd )
+        player.SetPersistentVar( "kdratiopvp_match[0]", pvpMatchRatio )
+        player.SetPersistentVar( "kdratio_lifetime", lifetimeKdRatio )
+        player.SetPersistentVar( "kdratiopvp_lifetime", lifetimePvpRatio )
+
 
        }
 }
@@ -303,7 +359,7 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
     
 	fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
 	fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
-    printt("fixed save var: " + fixedSaveVar)
+    // printt("fixed save var: " + fixedSaveVar)
     local currentValue = player.GetPersistentVar(fixedSaveVar)
     player.SetPersistentVar(fixedSaveVar, currentValue + value)
 
@@ -354,10 +410,22 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 	else
 		return
 
+    if(IsPilot(attacker)) {
+        Stats_IncrementStat( attacker, "kills_stats", "asPilot", 1 )
+    }
+
+    if ( victim.IsPlayer() || victim.GetBossPlayer() )
+	{
+		Stats_IncrementStat( attacker, "kill_stats", "totalPVP", 1.0 )
+	}
+
     if ( attacker.IsPlayer() ) {
         Stats_IncrementStat( attacker, "kills_stats", "total",  1 )
-        if(victim.IsPlayer())
+        if(victim.IsPlayer()) 
             Stats_IncrementStat( attacker, "game_stats", "pvp_kills_by_mode", 1 )
+
+        if(IsPilot(victim))
+         Stats_IncrementStat( attacker, "kills_stats", "totalPilots", 1 )
 
         if(victim.IsNPC())
             Stats_IncrementStat( attacker, "kills_stats", "totalNPC", 1 )
@@ -365,9 +433,10 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             Stats_IncrementStat( attacker, "kills_stats", "spectres", 1 )
         if ( victim.IsSoldier() )
             Stats_IncrementStat( attacker, "kills_stats", "grunts", 1 )
-        if ( victim.IsTitan() )
+        if ( victim.IsTitan() ) {
             Stats_IncrementStat( attacker , "kills_stats", "titans", 1 )
-
+            Stats_IncrementStat( attacker, "kills_stats", "totalTitans", 1 )
+        }
 	    if ( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.human_melee )
 		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMelee", 1.0 )
 
@@ -381,6 +450,15 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     }
     local victimIsPilot = IsPilot( victim )
     local victimIsTitan = victim.IsTitan()
+
+
+    if(attacker.IsTitan()) {
+        local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
+        local titanSettings = titanDataTable.playerSetFile
+        local titanName = replace_all( titanSettings, "titan_", "" )
+        Stats_IncrementStat( attacker, "kills_stats", "asTitan_" +titanName, 1.0 )
+    }
+
     	// ejectingPilots
 	if ( victimIsPilot && victim.pilotEjecting )
 		Stats_IncrementStat( player, "kills_stats", "ejectingPilots", 1.0 )
@@ -413,14 +491,32 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 	if ( attacker == player && attacker.IsWallHanging() )
 		Stats_IncrementStat( player, "kills_stats", "whileWallhanging",  1.0 )
 
+    if( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_step)
+      { 
+         Stats_IncrementStat( player, "kills_stats", "titanStepCrush", 1.0 )
+         if(victimIsPilot)
+            Stats_IncrementStat( player, "kills_stats", "titanStepCrushPilot", 1.0 )
+      }
+    
+    // 			Stats_IncrementStat( attacker, "kills_stats","titanMeleePilot",1.0)
+
+    if(!player.IsTitan() && damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_melee) {
+        Stats_IncrementStat( player, "kills_stats", "titanMelee", 1.0 )
+    }
+
+    if ( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_fall  )
+		    Stats_IncrementStat( player, "kills_stats", "titanFallKill", "", 1.0 )
 	
     if ( damageSource == eDamageSourceId.titan_execution ) {
         local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
         local titanSettings = titanDataTable.playerSetFile
         local titanName = replace_all( titanSettings, "titan_", "" )	
 		titanName = titanName.slice( 0, 1 ).toupper() + titanName.slice( 1, titanName.len() )
-        Stats_IncrementStat( player, "kills_stats", "titanExocution_" +titanName, 1.0 )
+        Stats_IncrementStat( player, "kills_stats", "titanExocution" + titanName, 1.0 )
     }
+
+    if ( IsEvacDropship( victim ) )
+		Stats_IncrementStat( player, "kills_stats", "evacShips", 1.0 )
 
     if ( attacker == playerPetTitan && player.GetPetTitanMode() == eNPCTitanMode.FOLLOW )
 		Stats_IncrementStat( player, "kills_stats", "petTitanKillsFollowMode",  1.0 )
@@ -485,8 +581,7 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
             local titanName = replace_all( titanSettings, "titan_", "" )
 			Stats_IncrementStat( attacker, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
         }
-        // if ( damageSource == eDamageSourceId.damagedef_titan_fall )
-		    // Stats_IncrementStat( player, "kills_stats", "titanFallKill", "", 1.0 )
+        
     }
 
     if(victim.IsPlayer())

@@ -416,13 +416,15 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 	        if ( rodeoTitan.IsPlayer() )
 		        Remote.CallFunction_Replay( rodeoTitan, "SCB_TitanDialogue", eTitanVO.RODEO_RAKE )
 			if ( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_melee && !awardedEliminationScore )
-				AddPlayerScore( attacker, "RodeoRake", player )
-			else if ( !awardedEliminationScore )
+			{	AddPlayerScore( attacker, "RodeoRake", player )
+				Stats_IncrementStat( attacker, "kills_stats","rodeo_total",1.0)
+			}else if ( !awardedEliminationScore )
 				AddPlayerScore( attacker, "SavedFromRodeo", player )
 		}
 		else if ( !player.IsTitan() && damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_melee && !awardedEliminationScore )
 		{
 			AddPlayerScore( attacker, "TitanMelee_VsHumanPilot", player )
+			Stats_IncrementStat( attacker, "kills_stats","titanMeleePilot",1.0)
 		}
 
 		if ( player.pilotEjecting && !awardedEliminationScore )
@@ -615,6 +617,7 @@ function ScoreCheck_FirstStrike( attacker, killed )
 
 	AddPlayerScore( attacker, "FirstStrike" )
 	FlagSet( "firstStrikeGiven" )
+	Stats_IncrementStat( attacker, "kills_stats","firstStrikes",1.0)
 
 	if ( ShouldShowFirstStrike() )
 		MessageToAll( eEventNotifications.PlayerFirstStrike, null, killed, attacker.GetEncodedEHandle() )
