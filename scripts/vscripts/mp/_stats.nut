@@ -170,7 +170,6 @@ function HandleDistanceAndTimeStats() {
 
         foreach(player in GetPlayerArray())
 		{
-			// first tick i dont count
 			if ( timeSeconds == 0 )
 				break
             Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
