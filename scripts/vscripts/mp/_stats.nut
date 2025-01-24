@@ -637,7 +637,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
            	    local titanSettings = titanDataTable.playerSetFile
                 local titanName = replace_all( titanSettings, "titan_", "" )
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
-                Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0 )
+                Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0,source )
             }
             if ( IsValidHeadShot(damageInfo,victim ) )
 		        Stats_IncrementStat( attacker, "weapon_stats", "headshots",  1.0, source )
