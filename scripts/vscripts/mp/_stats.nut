@@ -2,6 +2,8 @@
 function main() {
     if(IsLobby())
         return
+    if (GetMapName() == "mp_npe") // disable stats on training
+		return
 
     file.playerDeathsPvp <- {}
     file.playerKillsPvp <- {}
