@@ -436,3 +436,17 @@ engine.dll,rdata,0x793420,22 56 00 00,80 BB 00 00
 ; engine.dll,text,0x018A70,48 83 EC,C3
 ; remove circular buffer write
 engine.dll,text,0x4300,40 55,C3
+
+; no wav cache
+; filesystem_stdio.dll,text,0xD34C8,"wav\x00","nop\x00"
+;engine.dll,text,0x7931F8,00 04 00 00,00 02 00 00
+;engine.dll,text,0x7931FC,00 00 03 00,00 00 01 00
+; engine.dll,text,0xBA1E,49 03 8D 18 01 00 00,48 81 C1 30 00 00 00
+;  CBaseClient::Connect:
+;  
+;  if ( !bFakePlayer ) // JMP over this so we don't black flash on listen server
+;  {
+;    v8 = EngineVGui();
+;    v8->UpdateProgressBar(v8, PROGRESS_SIGNONCONNECT);
+;  }
+engine.dll,text,0xD7DEF,75 16,EB 16
