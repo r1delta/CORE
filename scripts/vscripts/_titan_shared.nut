@@ -747,9 +747,9 @@ function TitanEjectPlayer( ejectTitan, instant = false )
 
 	if ( ejectTitanIsPlayer )
 	{
-		UpdatePlayerStat( e.player, "misc_stats", "timesEjected" )
+		UpdatePlayerStat( e.player, "misc_stats", "timesEjected",1.0 )
 		if ( nuclearPayload )
-			UpdatePlayerStat( e.player, "misc_stats", "timesEjectedNuclear" )
+			UpdatePlayerStat( e.player, "misc_stats", "timesEjectedNuclear",1.0 )
 	}
 
 	if ( !ejectTitan.ContextAction_IsBusy() )
