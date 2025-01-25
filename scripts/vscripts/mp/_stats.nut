@@ -48,7 +48,7 @@ function Stats_EndRound() {
 	    local playersArray = GetSortedPlayers( compareFunc, killedTeam )
 	    local playerPlacementOnTeam = GetIndexInArray( playersArray, player )
         Stats_IncrementStat(player,"game_stats","game_completed", 1.0)
-        Stats_IncrementStat( player, "game_stats", "gamesCompletedTotal", 1.0 )
+        Stats_IncrementStat( player, "game_stats", "game_completed_total", 1.0 )
         Stats_IncrementStat( player, "game_stats", "mode_played", 1.0 )
         // check for mvp and top 3
         if(playerPlacementOnTeam == 0) {
