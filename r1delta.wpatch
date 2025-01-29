@@ -450,3 +450,6 @@ engine.dll,text,0x4300,40 55,C3
 ;    v8->UpdateProgressBar(v8, PROGRESS_SIGNONCONNECT);
 ;  }
 engine.dll,text,0xD7DEF,75 16,EB 16
+
+; change this to a jz  short loc_11DD3 to skip the callback
+;engine.dll,text,0x011DC1,48 8D 0D B8 6E 00 02 33 D2 48 83 C4 28 E9 BD E1 46 00,90 90 90 90 90 90 90

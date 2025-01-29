@@ -11,6 +11,8 @@ bin/vaudio_speex.*
 *.idb
 *.idc
 *.i64
+*.opus
+*.wav
 server.vdf
 config/*/
 cfg/banned_ip.cfg
@@ -18,3 +20,6 @@ cfg/banned_user.cfg
 materials/vgui/addons/*/
 screenshots/*
 .vscode/*
+
+sound
+sound_xma
