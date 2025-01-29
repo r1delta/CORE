@@ -1996,13 +1996,11 @@ function Module_Bedroom()
 	TrainingPod_ViewConeLock_PodClosed( level.player )
 
 	// resumeChoice will have been set up before this runs based on how we are starting the level (first run, dev, or continuing)	
-	//printt("Would wait but its fucked sorry")
-	//FlagWait("ConversationOver")
+	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "intro_welcome", level.player )
 
-	//printt("Would wait but its fucked sorry")
-	//FlagWait("ConversationOver")
+	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	wait 1.5
 
@@ -5638,11 +5636,11 @@ function MoshPit_Minimap_VO()
 
 	ForcePlayConversationToPlayer( "train_minimap", level.player )
 
-	printt("Would wait but its fucked sorry")
+	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")	
 	ForcePlayConversationToPlayer( "train_minimap_findgrunts", level.player )
 
-	printt("Would wait but its fucked sorry")
+	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	StopHighlightMinimap()
 }
@@ -5826,7 +5824,7 @@ function PilotMoshPit_TitanTraining()
 
 	local minWaitEnd = 3.75 + Time()
 
-	printt("Would wait but its fucked sorry")
+	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
 
@@ -7042,14 +7040,14 @@ function Titan_OffensiveOffhandTraining()
 		OffhandOffensiveHintPulse()
 		ControllerImageHint_OffhandOffensive()
 
-		printt("Would wait but its fucked sorry")
+		FlagWait("ConversationOver")
 		FlagClear("ConversationOver")
 		ForcePlayConversationToPlayer( "offhand_rocket_fire_name", level.player )
 	}
 
 	if ( !Flag( "FiredOffhandOffensive" ) )
 	{
-		printt("Would wait but its fucked sorry")
+		FlagWait("ConversationOver")
 		FlagClear("ConversationOver")
 		ForcePlayConversationToPlayer( "offhand_rocket_fire_direction", level.player )
 
@@ -7062,7 +7060,7 @@ function Titan_OffensiveOffhandTraining()
 		StopControllerImageHint()
 	}
 
-	printt("Would wait but its fucked sorry")
+	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "offhand_rocket_fire_finish", level.player )
 	wait 5
