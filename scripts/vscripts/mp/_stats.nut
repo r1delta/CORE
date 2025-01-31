@@ -2,8 +2,6 @@
 function main() {
     if(IsLobby())
         return
-    if (GetMapName() == "mp_npe") // disable stats on training
-		return
 
     file.playerDeathsPvp <- {}
     file.playerKillsPvp <- {}
@@ -331,6 +329,9 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
 }
 
 function Stats_IncrementStat( player, category, statName,value, weaponName = null ) {
+
+    if (GetMapName() == "mp_npe") // disable stats on training
+		return
 
     if ( player == null )
         return
