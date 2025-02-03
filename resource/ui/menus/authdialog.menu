@@ -98,6 +98,21 @@ resource/ui/menus/authdialog.menu
 			fgcolor_override		"50 60 64 255"
 		}
 
+		ImgSpinningCircle
+		{
+			ControlName				ImagePanel
+			classname 				SpinningCircle
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	1
+			xpos					c-40
+			ypos					c-40
+			wide					80
+			tall					80
+			visible					1
+			scaleImage				1
+			image					"../ui/icon_processing"
+		}
     
 		BtnCancel
 		{

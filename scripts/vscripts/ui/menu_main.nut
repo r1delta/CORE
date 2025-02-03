@@ -62,7 +62,7 @@ function OnOpenMainMenu()
 		ShowMainMenu()
 		return
 	}
-
+	
 	local state
 	local lastState
 
@@ -114,6 +114,8 @@ function OnOpenMainMenu()
 
 function GetMainMenuState()
 {
+
+
 	if ( Durango_InErrorScreen() )
 		return mainMenuState.ERROR
 	else if ( Durango_IsSigningIn() )
@@ -639,6 +641,15 @@ function OnAuthButtonConnect_Activate(button) {
 function CloseMenuWhenAuthed() {
 	while ( GetConVarString( "delta_persistent_master_auth_token" ) == "" ) {
 		wait(0.1)
+		if(GetConVarString("delta_persistent_master_auth_token_failed_reason") != "") {
+			EmitUISound( "BlackMarket_Purchase_Fail" )
+			local dialogData = {}
+			dialogData.header <- "Authentication Failed"
+			dialogData.detailsMessage <- GetConVarString("delta_persistent_master_auth_token_failed_reason")
+			dialogData.spinner <- false
+			OpenChoiceDialog( dialogData, GetMenu( "AuthDialog" ) )
+			return
+		}
 	}
 	CloseDialog(false)
 }
@@ -653,10 +664,16 @@ function AuthDialog() {
 	if ( GetConVarString( "delta_persistent_master_auth_token" ) != "" )
 		return
 	
+	local buttonData = []
+	buttonData.append( { name = "#CANCEL", func = OnAuthButtonCancel_Activate } )
+
+	local footerData = []
+	footerData.append( { label = "#A_BUTTON_SELECT" , func = OnAuthButtonConnect_Activate } )
 	
 	local dialogData = {}
 	dialogData.header <- "Authenticate with Discord"
     dialogData.detailsMessage <- "R1Delta uses Discord for authentication. Click the button below to authenticate with Discord."
+	dialogData.spinner <- true
 
 	OpenChoiceDialog( dialogData, GetMenu( "AuthDialog" ) )
 	
