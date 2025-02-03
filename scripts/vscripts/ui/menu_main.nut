@@ -8,7 +8,8 @@ function main()
 	Globalize( OpenOfflineNameDialogButton_Activate )
 	Globalize( OnAddonButton_Activate )
 	Globalize( OpenDiscordLink )
-
+	Globalize( CloseMenuWhenAuthed)
+	
 	PrecacheHUDMaterial( "../ui/menu/r1delta/icon" )
 }
 
@@ -44,9 +45,15 @@ function InitMainMenu( menu )
 	file.motdTitle <- menu.GetChild( "MOTDTitle" )
 	file.motdBox <- menu.GetChild( "MOTDBox" )
 
+	AddEventHandlerToButton( GetMenu( "AuthDialog" ), "BtnAuth", UIE_CLICK, OnAuthButtonConnect_Activate )
+    AddEventHandlerToButton( GetMenu( "AuthDialog" ), "BtnCancel", UIE_CLICK, OnAuthButtonCancel_Activate )
+
+
 	AddEventHandlerToButton( GetMenu( "UsernameDialog" ), "BtnAccept", UIE_CLICK, OpenOfflineNameDialogButtonOk_Activate )
     AddEventHandlerToButton( GetMenu( "UsernameDialog" ), "BtnCancel", UIE_CLICK, OpenOfflineNameDialogButtonCancel_Activate )
 }
+
+
 
 function OnOpenMainMenu()
 {
@@ -258,7 +265,7 @@ function ShowMainMenu()
 	}
 
 	uiGlobal.mainMenuFocus = focus
-
+	AuthDialog()
 	if ( !Origin_IsEnabled() )
 	{
 		local randomID = RandomInt( 0, 999999999 ).tostring()
@@ -623,6 +630,39 @@ function Threaded_LaunchTraining()
 	}
 	return
 }
+
+function OnAuthButtonConnect_Activate(button) {
+	ClientCommand("delta_start_discord_auth")
+	thread CloseMenuWhenAuthed()
+}
+
+function CloseMenuWhenAuthed() {
+	while ( GetConVarString( "delta_persistent_master_auth_token" ) == "" ) {
+		wait(0.1)
+	}
+	CloseDialog(false)
+}
+
+function OnAuthButtonCancel_Activate(button) {
+	CloseDialog(false)
+}
+
+function AuthDialog() {
+
+	// check if the delta_persisant_master_token is set
+	if ( GetConVarString( "delta_persistent_master_auth_token" ) != "" )
+		return
+	
+	
+	local dialogData = {}
+	dialogData.header <- "Authenticate with Discord"
+    dialogData.detailsMessage <- "R1Delta uses Discord for authentication. Click the button below to authenticate with Discord."
+
+	OpenChoiceDialog( dialogData, GetMenu( "AuthDialog" ) )
+	
+}
+
+
 
 function LaunchTraining() {
 	thread Threaded_LaunchTraining()
