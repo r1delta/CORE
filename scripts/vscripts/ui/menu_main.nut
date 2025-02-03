@@ -647,6 +647,7 @@ function CloseMenuWhenAuthed() {
 			dialogData.header <- "Authentication Failed"
 			dialogData.detailsMessage <- GetConVarString("delta_persistent_master_auth_token_failed_reason")
 			dialogData.spinner <- false
+			dialogData.detailsColor <- [ 255, 0, 0, 255 ]
 			OpenChoiceDialog( dialogData, GetMenu( "AuthDialog" ) )
 			return
 		}
