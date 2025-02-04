@@ -1588,6 +1588,10 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenLobbyMenu()
 			break
 
+		case "AddonMenu":
+			OnOpenAddonsMenu()
+			break
+
 		case "InGameMenu":
 			OnOpenInGameMenu()
 			break
@@ -1904,6 +1908,8 @@ function CloseMenuWrapper( menu )
 		case "AdvancedVideoSettingsMenu":
 			OnCloseAdvancedVideoSettingsMenu( menu )
 			break
+
+
 
 		case "Generation_Respawn":
 			OnClose_Generation_Respawn()
