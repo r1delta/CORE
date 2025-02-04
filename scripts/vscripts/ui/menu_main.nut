@@ -45,8 +45,8 @@ function InitMainMenu( menu )
 	file.motdTitle <- menu.GetChild( "MOTDTitle" )
 	file.motdBox <- menu.GetChild( "MOTDBox" )
 
-	AddEventHandlerToButton( GetMenu( "AuthDialog" ), "BtnAuth", UIE_CLICK, OnAuthButtonConnect_Activate )
-    AddEventHandlerToButton( GetMenu( "AuthDialog" ), "BtnCancel", UIE_CLICK, OnAuthButtonCancel_Activate )
+	// AddEventHandlerToButton( GetMenu( "AuthDialog" ), "BtnAuth", UIE_CLICK, OnAuthButtonConnect_Activate )
+    // AddEventHandlerToButton( GetMenu( "AuthDialog" ), "BtnCancel", UIE_CLICK, OnAuthButtonCancel_Activate )
 
 
 	AddEventHandlerToButton( GetMenu( "UsernameDialog" ), "BtnAccept", UIE_CLICK, OpenOfflineNameDialogButtonOk_Activate )
@@ -633,7 +633,7 @@ function Threaded_LaunchTraining()
 	return
 }
 
-function OnAuthButtonConnect_Activate(button) {
+function OnAuthButtonConnect_Activate() {
 	ClientCommand("delta_start_discord_auth")
 	thread CloseMenuWhenAuthed()
 }
@@ -643,19 +643,25 @@ function CloseMenuWhenAuthed() {
 		wait(0.1)
 		if(GetConVarString("delta_persistent_master_auth_token_failed_reason") != "") {
 			EmitUISound( "BlackMarket_Purchase_Fail" )
+			
+			local buttonData = []
+			buttonData.append( { name = "Join the discord", func = OpenDiscordURL } )
+			buttonData.append( { name = "#CLOSE", func = OnAuthButtonCancel_Activate  } )
 			local dialogData = {}
+
 			dialogData.header <- "Authentication Failed"
-			dialogData.detailsMessage <- GetConVarString("delta_persistent_master_auth_token_failed_reason")
+			dialogData.buttonData <- buttonData
+			dialogData.detailsMessage <- GetConVarString("delta_persistent_master_auth_token_failed_reason") + " =)"
 			dialogData.spinner <- false
 			dialogData.detailsColor <- [ 255, 0, 0, 255 ]
-			OpenChoiceDialog( dialogData, GetMenu( "AuthDialog" ) )
+			OpenChoiceDialog( dialogData)
 			return
 		}
 	}
 	CloseDialog(false)
 }
 
-function OnAuthButtonCancel_Activate(button) {
+function OnAuthButtonCancel_Activate() {
 	CloseDialog(false)
 }
 
@@ -666,7 +672,8 @@ function AuthDialog() {
 		return
 	
 	local buttonData = []
-	buttonData.append( { name = "#CANCEL", func = OnAuthButtonCancel_Activate } )
+	buttonData.append( { name = "Login with Discord", func = OnAuthButtonConnect_Activate } )
+	buttonData.append( { name = "#CLOSE", func = OnAuthButtonCancel_Activate  } )
 
 	local footerData = []
 	footerData.append( { label = "#A_BUTTON_SELECT" , func = OnAuthButtonConnect_Activate } )
@@ -674,9 +681,11 @@ function AuthDialog() {
 	local dialogData = {}
 	dialogData.header <- "Authenticate with Discord"
     dialogData.detailsMessage <- "R1Delta uses Discord for authentication. Click the button below to authenticate with Discord."
-	dialogData.spinner <- true
+	dialogData.buttonData <- buttonData
+	dialogData.footerData <- footerData
+	dialogData.spinner <- false
 
-	OpenChoiceDialog( dialogData, GetMenu( "AuthDialog" ) )
+	OpenChoiceDialog( dialogData )
 	
 }
 
