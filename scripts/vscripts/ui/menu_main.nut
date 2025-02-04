@@ -670,6 +670,9 @@ function AuthDialog() {
 	// check if the delta_persisant_master_token is set
 	if ( GetConVarString( "delta_persistent_master_auth_token" ) != "" )
 		return
+
+	if(GetConvarInt("delta_online_auth_enable") != 1)
+		return
 	
 	local buttonData = []
 	buttonData.append( { name = "Login with Discord", func = OnAuthButtonConnect_Activate } )
