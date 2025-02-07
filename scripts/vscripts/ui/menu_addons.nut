@@ -10,7 +10,9 @@ function main()
 
 
 function OnOpenAddonsMenu(menu) {
-	printt("OnOpenAddonsMenu")
+	printt("Addons")
+	if(menu != "Addons")
+		return
 	uiGlobal.menu = menu	
 	file.menu = menu
 	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")

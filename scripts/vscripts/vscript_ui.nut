@@ -1588,7 +1588,7 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenLobbyMenu()
 			break
 
-		case "AddonsMenu":
+		case "Addons":
 			OnOpenAddonsMenu()
 			break
 
