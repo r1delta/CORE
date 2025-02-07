@@ -1589,7 +1589,7 @@ function OpenMenuWrapper( menu, focusDefault )
 			break
 
 		case "Addons":
-			OnOpenAddonsMenu()
+			OnOpenAddonsMenu(menu)
 			break
 
 		case "InGameMenu":
