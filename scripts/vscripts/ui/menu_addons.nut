@@ -10,13 +10,13 @@ function main()
 
 
 function OnOpenAddonsMenu(menu) {
+	uiGlobal.menu <- menu	
+	file.menu <- menu
 	uiGlobal.menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/map_image_frame")
 	file.menu.GetChild("NextMapImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
 	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
-	uiGlobal.menu <- menu	
-	file.menu <- menu
 }
 
 
