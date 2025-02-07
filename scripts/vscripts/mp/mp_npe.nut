@@ -299,12 +299,19 @@ function TrainerStart()
 	level.player.EndSignal( "Disconnected" )
 
 	// default start
+	if(level.resumeChoice != -1 && level.resumeChoice > -1)
+	{
+		// we are starting into a custom module
+		level.doQuickIntro = true
+		if(level.training_hasEverFinished)
+			level.doQuickOutro = true
+	}
+
 	if(level.resumeChoice == -3) // user chose pilot training only
 	{
 		level.pilotTrainingOnly = true
 		level.doQuickIntro = true
 		level.doQuickOutro = true
-		level.resumeChoice = -1 // warp to bedroom intro
 	}
 
 	if(level.resumeChoice == -4) // user chose titan training only
@@ -312,18 +319,19 @@ function TrainerStart()
 		level.titanTrainingOnly = true
 		level.doQuickIntro = true
 		level.doQuickOutro = true
-		level.resumeChoice = -1 // warp to bedroom intro
 	}
 
 	if(level.resumeChoice == null)
 	{
 		// in the uneventful case the resumechoice is null (a.k.a as invalid, thanks to the callbacks for catching it up)
-		// we just asume its the first training module.
-		level.resumeChoice = 0
-		Remote.CallFunction_Replay(level.player, "ServerCallback_SetTrainingResumeChoice", 0)
+		// we just reset to the bedroom intro
+		level.resumeChoice = -1
+		Remote.CallFunction_Replay(level.player, "ServerCallback_SetTrainingResumeChoice", -1)
 	}
 	
-	if (true)
+	// technically we should always warp to the bedroom intro, then check where to go next
+	level.currentTrainingModule = -1
+	/*if (true)
 		level.currentTrainingModule = level.resumeChoice
 	else if (GAMETYPE == "titan_tutorial")
 		level.currentTrainingModule = eTrainingModules.TITAN_MOSH_PIT
@@ -331,7 +339,7 @@ function TrainerStart()
 	{
 		level.currentTrainingModule = TRAINING_BATTLE_PRACTICE
 		Remote.CallFunction_Replay(level.player, "ServerCallback_EnableTitanModeChange")
-	}
+	}*/
 
 	// first time playing the level start -- OR -- dev test start
 	thread StartTrainingModule( level.currentTrainingModule )
@@ -832,6 +840,9 @@ function AdvanceToNextTrainingModule()
 
 	if ( level.currentTrainingModule > 0 )
 		EmitSoundOnEntity( level.player, "NPE_Module_Finish" )
+	
+	if(level.resumeChoice > 0 && level.currentTrainingModule < level.resumeChoice)
+		level.currentTrainingModule = level.resumeChoice
 	
 	if(level.pilotTrainingOnly && level.currentTrainingModule > 9)
 		level.currentTrainingModule = -2 // warp to bedroom end
@@ -2004,29 +2015,30 @@ function Module_Bedroom()
 	TrainingPod_ViewConeLock_PodClosed( level.player )
 
 	// resumeChoice will have been set up before this runs based on how we are starting the level (first run, dev, or continuing)	
-	if(level.pilotTrainingOnly)
+	if(level.doQuickIntro)
 	{
 		// for *some* reason conversation isn't over at this point and i'm not 100% why, so, reset.
 		FlagToggle("ConversationOver")
-		ForcePlayConversationToPlayer( "intro_quickstart_pilot", level.player )
-	}
-
-	if(level.titanTrainingOnly)
-	{
-		FlagToggle("ConversationOver")
-		ForcePlayConversationToPlayer( "intro_quickstart_titan", level.player )
+		if(level.titanTrainingOnly || level.resumeChoice > 9)
+		{
+			ForcePlayConversationToPlayer( "intro_quickstart_titan", level.player )
+		}
+		else
+		{
+			ForcePlayConversationToPlayer( "intro_quickstart_pilot", level.player )
+		}
 	}
 
 	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 
-	if(!level.pilotTrainingOnly && !level.titanTrainingOnly)
+	if(!level.doQuickIntro)
 		ForcePlayConversationToPlayer( "intro_welcome", level.player )
 
 	FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	
-	if(level.pilotTrainingOnly || level.titanTrainingOnly)
+	if(level.doQuickIntro)
 	{
 		ForcePlayConversationToPlayer( "intro_simulator_initializing", level.player )
 	}
@@ -2468,12 +2480,6 @@ function TrainingPod_GlowLightsShutDown( pod, shutdownTime )
 
 function Module_Bedroom_End()
 {
-	// P7 [TODO]: if we get here it's safe to assume we completed training
-	// theoretically this shouldn't be here since we'll be gettin' here most of the time we end training
-	// so if we haven't finished our first training, we won't be getting a prompt to continue later on.
-	// seemengly it didn't work on other potential places so here it goes i guess lol
-	Remote.CallFunction_Replay(level.player, "ServerCallback_SetPlayerHasFinishedTraining")
-
 	thread EmitSoundOnEntity_Delayed( level.player, "NPE_Scr_SimPod_End", 2.9 )
 
 	level.player.WaitSignal( "Teleported" )
@@ -2643,7 +2649,7 @@ function Module_Bedroom_End()
 		wait 5
 
 		// Now that we've heard the money line, remember that we've seen the cinematic ending of the level
-		//Remote.CallFunction_NonReplay( level.player, "ServerCallback_SetPlayerHasFinishedTraining" )
+		Remote.CallFunction_NonReplay( level.player, "ServerCallback_SetPlayerHasFinishedTraining" )
 
 		wait 1
 	}
@@ -5109,15 +5115,19 @@ function Module_MoshPit()
 	thread HealthSuperRegen()
 
 
-	// 기본 전투 훈련
-	spots.append( CreateScriptRef( Vector( 112, 3883, 6400 ), Vector( 0, 50, 0 ) ) )
+	// 기본 전투 
+	// P7: this is based on absolutely nothing and i fucking hate it.
+	// hit me up if you know how to extract the exact coordinates necessary to match vanilla
+	spots.append( CreateScriptRef( Vector( 112, 3883, 6400 ), Vector( 0, 50, 0 ) ) ) // this is probably alright
+	spots.append( CreateScriptRef( Vector( 112, 1858, 6400 ), Vector( 0, 50, 0 ) ) )
+	spots.append( CreateScriptRef( Vector( 1218, 2686, 6400 ), Vector( 0, 50, 0 ) ) )
 
 	waitthread PilotMoshPit_GroundTroops(spots)
 
 	// 수류탄을 이용한 전투 훈련
 	FlagClear("MoshPit_GroundTroops_Done")
 
-	waitthread PilotMoshPit_Grenade()
+	/*waitthread PilotMoshPit_Grenade()
 	
 	// 근접공격을 이용한 전투 훈련 
 	spots.clear()
@@ -5125,7 +5135,7 @@ function Module_MoshPit()
 	
 	FlagClear("MoshPit_GroundTroops_Done")
 	
-	waitthread PilotMoshPit_Melee(spots)
+	waitthread PilotMoshPit_Melee(spots)*/
 
 	FlagSet("HealthSuperRegenEnd")
 
@@ -5305,7 +5315,7 @@ function PilotMoshPit_GroundTroops(spots)
 	printt( "squads spawned" )
 	FlagSet( "PilotMoshPit_AllSquadsSpawned" )
 
-	// DisplayTrainingPrompt( eTrainingButtonPrompts.MOSHPIT_KILLGUYS )
+	DisplayTrainingPrompt( eTrainingButtonPrompts.MOSHPIT_KILLGUYS )
 	// I don't think this nag is necessary
 	// thread NagPlayerUntilFlag( "MoshPit_GroundTroops_Done", "train_minimap_findgrunts", 35 )
 
@@ -5668,6 +5678,9 @@ function MoshPit_Minimap_VO()
 	wait 7
 
 	HighlightMinimap()
+
+	// idk why it bugged here lol
+	FlagToggle("ConversationOver")
 
 	ForcePlayConversationToPlayer( "train_minimap", level.player )
 
