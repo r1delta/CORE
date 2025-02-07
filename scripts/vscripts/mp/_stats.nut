@@ -336,6 +336,8 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
     if ( player == null )
         return
 
+
+
     if(!IsValidStat( category, statName,weaponName ))
         return
 
@@ -348,22 +350,21 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
         return
     }
 
-
-    /*
-
-    fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", map )
-			fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", mode )
-*/
+   
 	local fixedSaveVar
 	local timesPlayed = 0
     local mapName = GetMapName()
     local gameMode = GameRules.GetGameMode()
 	fixedSaveVar = var
-    
 	fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
 	fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
-    // printt("fixed save var: " + fixedSaveVar)
+
+    local gmIndex = PersistenceGetEnumIndexForItemName( "gamemodes", gameMode )
+	local mapIndex = PersistenceGetEnumIndexForItemName( "maps",mapName )
+    if ( gmIndex == -1 || mapIndex == -1 )
+        return
     local currentValue = player.GetPersistentVar(fixedSaveVar)
+    
     player.SetPersistentVar(fixedSaveVar, currentValue + value)
 
     UpdateChallengeData(player,category,statName,value,weaponName)
