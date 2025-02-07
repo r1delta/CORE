@@ -10,13 +10,28 @@ function main()
 
 
 function OnOpenAddonsMenu(menu) {
-	uiGlobal.menu <- menu	
-	file.menu <- menu
-	uiGlobal.menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/map_image_frame")
-	file.menu.GetChild("NextMapImage").SetVisible( true )
+	printt("OnOpenAddonsMenu")
+	uiGlobal.menu = menu	
+	file.menu = menu
+	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
+	file.menu.GetChild("AddonImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
 	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
+	local var = GetModPath()
+	uiGlobal.addons <- {}
+	uiGlobal.addons = var
+	foreach(i,button in file.buttons) {
+		button.SetVisible( false )
+	}
+	foreach(i,table in var) {
+		file.buttons[i].SetText( table["name"] )
+		file.buttons[i].SetVisible( true )
+		// file.buttons[i].SetScriptID( i )
+		file.buttons[i].SetSelected(table["enabled"])
+		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
+		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
+	}
 }
 
 
@@ -45,8 +60,8 @@ function InitAddonsMenu( menu )
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
 		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
 	}
-	uiGlobal.menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/map_image_frame")
-	file.menu.GetChild("NextMapImage").SetVisible( true )
+	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
+	file.menu.GetChild("AddonImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
 	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
@@ -62,6 +77,7 @@ function ChangePreviewUI( button )
 {
 
 	local script_id = button.GetScriptID().tointeger()
+	printt("script_id: " + script_id)
 	local table = uiGlobal.addons[script_id]
 	local name = table["name"]
 	local desc = table["description"]
@@ -69,11 +85,11 @@ function ChangePreviewUI( button )
 	local version = table["version"]
 
 	if(table["image"] != "common/l4d_spinner") {
-		uiGlobal.menu.GetChild("NextMapImage").SetVisible( true )
-		uiGlobal.menu.GetChild("NextMapImage").SetImage( table["image"] )
+		uiGlobal.menu.GetChild("AddonImage").SetVisible( true )
+		uiGlobal.menu.GetChild("AddonImage").SetImage( table["image"] )
 	}
 	else {
-		uiGlobal.menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/map_image_frame")
+		uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
 	}
 
 	if( desc == "Description_Here" )
@@ -85,11 +101,11 @@ function ChangePreviewUI( button )
 	if( version == "Version_Here" )
 		version = "No Version"
 
-	uiGlobal.menu.GetChild("NextMapName").SetVisible( true)
-	uiGlobal.menu.GetChild("NextMapName").SetText( name)
+	uiGlobal.menu.GetChild("AddonName").SetVisible( true)
+	uiGlobal.menu.GetChild("AddonName").SetText( name)
 
-	uiGlobal.menu.GetChild("NextMapDesc").SetVisible( true )
-	uiGlobal.menu.GetChild("NextMapDesc").SetText( desc )
+	uiGlobal.menu.GetChild("AddonDesc").SetVisible( true )
+	uiGlobal.menu.GetChild("AddonDesc").SetText( desc )
 
 	uiGlobal.menu.GetChild("StarsLabel").SetText(author)
 	uiGlobal.menu.GetChild("VersionLabel").SetVisible( true )
