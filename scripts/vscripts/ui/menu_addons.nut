@@ -10,28 +10,15 @@ function main()
 
 
 function OnOpenAddonsMenu(menu) {
-	printt("OnOpenAddonsMenu")
+	printt(menu)
 	uiGlobal.menu = menu	
 	file.menu = menu
 	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
 	file.menu.GetChild("AddonImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
-	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
-	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
 	local var = GetModPath()
 	uiGlobal.addons <- {}
 	uiGlobal.addons = var
-	foreach(i,button in file.buttons) {
-		button.SetVisible( false )
-	}
-	foreach(i,table in var) {
-		file.buttons[i].SetText( table["name"] )
-		file.buttons[i].SetVisible( true )
-		// file.buttons[i].SetScriptID( i )
-		file.buttons[i].SetSelected(table["enabled"])
-		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
-		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
-	}
 }
 
 
@@ -77,7 +64,6 @@ function ChangePreviewUI( button )
 {
 
 	local script_id = button.GetScriptID().tointeger()
-	printt("script_id: " + script_id)
 	local table = uiGlobal.addons[script_id]
 	local name = table["name"]
 	local desc = table["description"]
