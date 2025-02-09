@@ -70,8 +70,8 @@ engine_ds.dll,text,0xA30A2,54,70
 engine_ds.dll,text,0xA30A3,24,04
 engine_ds.dll,text,0xA30A4,10,00
 ; fix dedi vpks
-engine_ds.dll,rdata,0x422980,"vpk/server_","vpk/client_\x00"
-engine_ds.dll,rdata,0x4229A8,"%sserver_%s%s","%sclient_%s%s\x00"
+; engine_ds.dll,rdata,0x422980,"vpk/server_","vpk/client_\x00"
+; engine_ds.dll,rdata,0x4229A8,"%sserver_%s%s","%sclient_%s%s\x00"
 engine.dll,text,0xA3DE0,40,C3
 engine.dll,text,0xAD6B0,48,C3
 ; unhide sv_shutdown for testing
