@@ -24,7 +24,7 @@ function main()
 	AddClientCommandCallback( "SetPlaylistAnnouncementSeen", ClientCommand_SetPlaylistAnnouncementSeen ) //
 	AddClientCommandCallback("BCActivateCard", ClientCommand_ActivateBurnCard )
 	AddClientCommandCallback("BCDeActivateCard", ClientCommand_DeActivateCard )
-
+AddClientCommandCallback("OpenBurnCardMenu", ClientCommand_OpenBurnCardMenu )
 	if ( GetDeveloperLevel() > 0 )
 	{
 		AddClientCommandCallback( "ToggleBubbleShield", ClientCommand_ToggleBubbleShield )
@@ -59,6 +59,15 @@ function main()
 	file.hasInvalidLoadout <- false
 }
 
+
+function ClientCommand_OpenBurnCardMenu(player,...) {
+	if (vargc != 0)
+		return false
+	
+	Remote.CallFunction_UI( player, "ServerCallback_OpenBurnCardMenu" )
+	
+	return true
+}
 
 function ClientCommand_ActivateBurnCard(player, ...) {
 	if (vargc != 2)
