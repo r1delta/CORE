@@ -2021,10 +2021,13 @@ function Module_Bedroom()
 		FlagToggle("ConversationOver")
 		if(level.titanTrainingOnly || level.resumeChoice > 9)
 		{
+			// Welcome back, Pilot.
+			// Now beginning Titan training.
 			ForcePlayConversationToPlayer( "intro_quickstart_titan", level.player )
 		}
 		else
 		{
+			// Welcome back to Pilot certification.
 			ForcePlayConversationToPlayer( "intro_quickstart_pilot", level.player )
 		}
 	}
@@ -2033,6 +2036,7 @@ function Module_Bedroom()
 	FlagClear("ConversationOver")
 
 	if(!level.doQuickIntro)
+		// Welcome, Pilot.
 		ForcePlayConversationToPlayer( "intro_welcome", level.player )
 
 	FlagWait("ConversationOver")
@@ -2040,11 +2044,12 @@ function Module_Bedroom()
 	
 	if(level.doQuickIntro)
 	{
+		// Simulator initializing.
 		ForcePlayConversationToPlayer( "intro_simulator_initializing", level.player )
 	}
 	else
 	{
-		wait 1.5
+		//wait 1.5
 		waitthread LookTraining()
 	}
 	
@@ -2100,18 +2105,12 @@ function LookTraining()
 	FlagWait( "PlayerLookedAtTopTarget" )
 	FlagWait( "PlayerLookedAtBottomTarget" )
 	
-	 // 회전축 변경 팝업은 삭제
-	 local numInverts = 0
+	// 회전축 변경 팝업은 삭제
+	local numInverts = 0
 	local doConfirmMenu = false
 	local doConfirmAudio = false
 	while ( 1 )
 	{
-		Remote.CallFunction_Replay( level.player, "ScriptCallback_SetupLookTargets" )
-		wait 0.5
-		Remote.CallFunction_Replay( level.player, "ScriptCallback_LookTargets_WaitForLookat" )
-		FlagWait( "PlayerLookedAtTopTarget" )
-		FlagWait( "PlayerLookedAtBottomTarget" )
-
 		doConfirmMenu = ( numInverts > 0 )
 		doConfirmAudio = ( numInverts < 2 )
 
@@ -2159,6 +2158,14 @@ function LookTraining()
 
 		FlagClear( "PlayerLookedAtTopTarget" )
 		FlagClear( "PlayerLookedAtBottomTarget" )
+
+		// I think it might be adequate to put these in here.
+
+		Remote.CallFunction_Replay( level.player, "ScriptCallback_SetupLookTargets" )
+		wait 0.5
+		Remote.CallFunction_Replay( level.player, "ScriptCallback_LookTargets_WaitForLookat" )
+		FlagWait( "PlayerLookedAtTopTarget" )
+		FlagWait( "PlayerLookedAtBottomTarget" )
 	}
 	// 여기까지 회전축 변경 팝업삭제.
 
@@ -5663,7 +5670,7 @@ function MoshPit_TitanRodeo_VO()
 
 function MoshPit_TitanAttack_VO()
 {
-	ForcePlayConversationToPlayer( "titan_kill_drop_pod_grunts", level.player )
+	//ForcePlayConversationToPlayer( "titan_kill_drop_pod_grunts", level.player )
 
 	//wait 5
 	//ForcePlayConversationToPlayer( "train_titan_attack", level.player )
@@ -5861,7 +5868,15 @@ function SpawnStandDownTitan(spot, team, disableShield = true)
 function PilotMoshPit_TitanTraining()
 {
 
+	// it bugged again, who knows why
+	FlagToggle("ConversationOver")
 	ForcePlayConversationToPlayer( "train_titanfall", level.player )
+
+	local minWaitEnd = 3.75 + Time()
+
+	FlagWait("ConversationOver")
+	FlagClear("ConversationOver")
+	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
 
 	//level.player.SetNextTitanRespawnAvailable( Time() )
 	ForceTitanBuildComplete( level.player )
@@ -5869,12 +5884,6 @@ function PilotMoshPit_TitanTraining()
 
 	// 타이탄 호출 한번만 할수있게..
 	level.nv.titanAvailability = eTitanAvailability.Once
-
-	local minWaitEnd = 3.75 + Time()
-
-	FlagWait("ConversationOver")
-	FlagClear("ConversationOver")
-	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
 
 	DisplayTrainingPrompt( eTrainingButtonPrompts.CALL_TITAN )
 	ControllerImageHint_DPad_Down()
@@ -5900,7 +5909,7 @@ function PilotMoshPit_TitanTraining()
 	thread SetFlagWhenPlayerEntersTitan( playerTitan, "PlayerEnteredTitan" )
 	waitthread NagPlayerUntilFlag( "PlayerEnteredTitan", "train_titan_mountup", 20 )
 
-	thread MoshPit_TitanAttack_VO()
+	// useless: thread MoshPit_TitanAttack_VO()
 	waitthread MoshPit_PlayerMopsUpAsTitan()
 
 }
@@ -6302,6 +6311,8 @@ function MoshPit_PlayerMopsUpAsTitan()
 
 	level.moshPitSquads = {}  // reset so squads are null
 	local podSpawns = []
+
+	// P7 [TODO]: Check if these match on vanilla
 	podSpawns.append( { origin = Vector( -9.97231, 3632.03, 6366.88 ), angles = Vector( 0, -52.5624, 0 ) } )
 	podSpawns.append( { origin = Vector( 956.635, 3451.81, 6544.03 ), angles = Vector( 0, -96.4783, 0 ) } )
 	podSpawns.append( { origin = Vector( 1721.89, 2756.19, 6400.51 ), angles = Vector( 0, -159.951, 0 ) } )

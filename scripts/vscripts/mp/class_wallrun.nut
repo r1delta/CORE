@@ -47,7 +47,7 @@ function Wallrun_OnPlayerSpawn( player )
 
 	local playerClassDataTable = GetPlayerClassDataTable( player, level.pilotClass )
 
-	if (GAMETYPE == "tutorial" || GAMETYPE == "titan_tutorial")
+	if (GetMapName() == "mp_npe")
 		return
 
 	Wallrun_GiveLoadout( player, playerClassDataTable )
