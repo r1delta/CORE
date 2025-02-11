@@ -298,7 +298,7 @@ function PlayerProgramsRushPanel( panel, player )
 						// training level a hackable panel that isn't hooked up to a turret.
 						// In this case we need to reset the usable value to what it used to be
 						// we should change how this works for R2
-						if (GAMETYPE == "tutorial" || GAMETYPE == "titan_tutorial")
+						if (GetMapName() == "mp_npe")
 						 	panel.SetUsableValue( e.panelUsableValue )
 					}
 

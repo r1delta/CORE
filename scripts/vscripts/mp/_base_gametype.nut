@@ -2620,7 +2620,7 @@ function CodeCallback_OnClientConnectionCompleted( player )
 
 	InitPassives( player )
 
-	if (!player.IsBot() && (GAMETYPE != "tutorial" && GAMETYPE != "titan_tutorial"))
+	if (!player.IsBot() && (GetMapName() == "mp_npe"))
 	{
 		// LoadOut Setting
 		// UpdateLoadouts( player )

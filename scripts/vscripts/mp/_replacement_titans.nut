@@ -328,7 +328,7 @@ function ModifyBuildTimeForPlayerBonuses( player, amount )
 	return amount
 }
 
-if (GAMETYPE == "tutorial" || GAMETYPE == "titan_tutorial")
+if (GetMapName() == "mp_npe")
 {
 	function SetTitanCoreTimer( titan, timeDiff )
 	{

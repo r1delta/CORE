@@ -90,7 +90,7 @@ function StartTitanBuildProgress( player, forceBuild = false )
 		return
 
 	// 강제 소환이 아니고 트레이닝 모드일때
-	if ((GAMETYPE == "tutorial" || GAMETYPE == "titan_tutorial") && forceBuild == false)
+	if ((GetMapName() == "mp_npe") && forceBuild == false)
 	 	return
 
 	// 타이탄 빌드가 진행중일 경우
