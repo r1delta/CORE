@@ -453,3 +453,15 @@ engine.dll,text,0xD7DEF,75 16,EB 16
 
 ; change this to a jz  short loc_11DD3 to skip the callback
 ;engine.dll,text,0x011DC1,48 8D 0D B8 6E 00 02 33 D2 48 83 C4 28 E9 BD E1 46 00,90 90 90 90 90 90 90
+; don't check for DLCs on startup
+engine.dll,text,0x1DAB0,40,C3
+; don't add platform as a search path
+; launcher.dll,text,0x6BA83,FF 50 50,90 90 90
+; launcher.dll,text,0x65F93,FF 50 50,90 90 90
+; launcher.dll,text,0x64430,48,C3
+; materialsystem_dx11.dll,rdata,0x017C4A8,"platform\x00","GAME\x00"
+; ; don't add executable path
+; launcher.dll,text,0x64CE0,40,C3
+; engine.dll,text,0x1297D0,40,C3
+; NOP out CheckCRCs
+engine.dll,text,0x559D0,40,C3

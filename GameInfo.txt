@@ -35,11 +35,7 @@
 		SearchPaths
 		{
 			Game				|all_source_engine_paths|r1delta
-			Game				|all_source_engine_paths|r1
-
-			Hammer				|all_source_engine_paths|r1
-			Hammer				|all_source_engine_paths|platform
-
+			gamebin				|all_source_engine_paths|r1\bin\x64_retail
 			DEFAULT_WRITE_PATH   |all_source_engine_paths|r1delta
 		}
 	}
