@@ -26,6 +26,10 @@ if ( !IsUI() )
 			// TODO: Once unlock levels for weapons and custom loadouts are set, update with a better variety.
 
 			ResetCustomLoadouts( player )
+			if(GetMapName() != "mp_lobby")
+			{
+				ClientCommand( player, "retry" )
+			}
 			player.SetPersistentVar( "burncardStoryProgress", BURNCARD_STORY_PROGRESS_COMPLETE )
 			player.SetPersistentVar( "previouslyInitialized", 1 )
 		}
