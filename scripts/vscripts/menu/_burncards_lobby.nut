@@ -1,6 +1,5 @@
 function main()
 {
-	printt( "burncards Real" )
 	AddClientCommandCallback( "BCStoreActive", BCStoreActive ) //
 	AddClientCommandCallback( "BCActivateStored", BCActivateStored ) ///
 	AddClientCommandCallback( "BCOpenDelivery", BCOpenDelivery ) //
@@ -173,7 +172,6 @@ function StoreActiveCard( player, activeSlotID )
 function BCSetCurrentPile( player, index )
 {
 	index = index.tointeger()
-	printt("Index: " + index)
 	if ( index == null )
 		return
 
@@ -227,7 +225,6 @@ function MoveCardToActiveSlot( player, burnCardIndex, index, activeSlot )
 	if ( activeSlot >= GetPlayerMaxActiveBurnCards( player ) )
 		return true
 
-	printt( "Armed " + cardRef )
 	local pileActiveBurncard = GetPlayerActiveBurnCardSlotContents( player, activeSlot )
 	SetPlayerActiveBurnCardSlotContents( player, activeSlot, cardRef, false )
 	deck.remove( index )
@@ -270,7 +267,6 @@ function MoveCardToDeck( player, burnCardIndex, index )
 		printt( "MoveCardToDeck failed, tried to move " + burnCardRef + " but found " + cardRef )
 		return
 	}
-	printt( "Disarmed " + cardRef )
 
 	SetPlayerActiveBurnCardSlotContents( player, index, null, false )
 
