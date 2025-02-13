@@ -179,3 +179,6 @@ engine_ds.dll,text,0xB9807,7C 67,90 90
 engine_ds.dll,text,0xB981C,48,EB 11
 ; always put on smallest team
 engine_ds.dll,text,0x40B2C,79 44,EB 17
+
+; network id stuff
+engine_ds.dll,text,0x46086,8B 81 84 02 00 00 83 E0 01 89 42 14 8B 81 84 02 00 00 D1 E8 89 42 10,48 8B 81 84 02 00 00 48 89 42 08 90 90 90 90 90 90 90 90 90 90 90 90

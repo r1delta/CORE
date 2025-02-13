@@ -390,7 +390,7 @@ function SetupTrainingModules()
 	module.resetFlags 	= [ "DoorsImpassable", "PlayerStartWalkSection", "PlayerPassedWalkDoors", "SafeToCloseWalkDoors", "SprintDoorsStartClosing", "PlayerNotSprintingThroughTrigger", "PlayerPassedSprintDoors", "SafeToCloseSprintDoors", "PlayerNearJump", "PlayerPastJump", "PlayerPastRunAndJump", "PlayerNearMantle", "PlayerPastMantle" ]
 	module.showLoading	= true
 	module.resumePoint 	= true
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -402,7 +402,7 @@ function SetupTrainingModules()
 	module.resetFlags 	= [ "PlayerEnteredWallrunArea", "DoingBasicWallrunVO", "DoingWallrunHelperVO", "PlayerReachedWallrunPlatform2", "PlayerReachedWallrunPlatform3", "PlayerReachedWallrunPlatform4", "PlayerReachedWallrunEnd" ]
 	module.showLoading	= true
 	module.resumePoint 	= false
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 
@@ -415,7 +415,7 @@ function SetupTrainingModules()
 	module.playerMods 	= [ "disable_doublejump" ]
 	module.showLoading	= true
 	module.resumePoint 	= false
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -426,7 +426,7 @@ function SetupTrainingModules()
 	module.resetFlags 	= [ "PlayerReachedDoublejumpPlatform2", "PlayerPastDoubleJump2", "PlayerPassedDoubleJumpCeiling" ]
 	module.showLoading	= true
 	module.resumePoint 	= false
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -437,7 +437,7 @@ function SetupTrainingModules()
 	module.resetFlags   = [ "DoublejumpPlayground_PlayerEval" ]
 	module.showLoading	= true
 	module.resumePoint 	= false
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -446,7 +446,7 @@ function SetupTrainingModules()
 	module.runFunc 		= Module_Cloak
 	module.showLoading	= true
 	module.resumePoint 	= false
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -457,7 +457,7 @@ function SetupTrainingModules()
 	module.resetFlags   = [ "PlayerNearMultikillSpot", "PlayerNearMultiLockSpot" ]
 	module.showLoading	= true
 	module.resumePoint 	= true
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -468,7 +468,7 @@ function SetupTrainingModules()
 	module.resetFlags   = [ "FiringRangeWeaponSwapped", "PlayerADSed", "PlayerReloaded" ]
 	module.showLoading	= true
 	module.resumePoint 	= false
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -478,7 +478,7 @@ function SetupTrainingModules()
 	module.resetFlags   = [ "PlayerThrewGrenade", "GrenadeThrowingDone" ]
 	module.showLoading	= true
 	module.resumePoint 	= false
-	module.showEndEMP	= true
+	module.showEndEMP	= false
 	AddTrainingModuleInfo( module )
 
 	local module = CreateTrainingModuleInfo()
@@ -495,6 +495,7 @@ function SetupTrainingModules()
 	module.id 			= eTrainingModules.TITAN_DASH
 	module.startEnt 	= "teleport_titan_dash"
 	module.runFunc 		= Module_TitanDash
+	module.playerMods 	= [ "disable_sprint" ]
 	module.resetFlags 	= [ "TitanDashFinishLine", "PlayerPastDashThreat", "PlayerStartDashThreat", "PlayerDashThreat_Alcove2", "PlayerDashThreat_Alcove1" ]
 	module.showLoading	= true
 	module.resumePoint 	= true
@@ -506,6 +507,7 @@ function SetupTrainingModules()
 	module.id 			= eTrainingModules.TITAN_VORTEX
 	module.startEnt 	= "teleport_titan_train_vortex"
 	module.runFunc 		= Module_TitanVortex
+	module.playerMods 	= [ "disable_sprint" ]
 	module.resetFlags 	= [ "TitanPetPassedGate","PlayerInsideControlRoom" ]
 	module.showLoading	= true
 	module.resumePoint 	= true
@@ -5152,9 +5154,16 @@ function Module_MoshPit()
 
 	// wtf: ClientCommand(level.player, "startTitanMoshPitModule")
 
-	// P7 [TODO]: Match whatever came next after defeating grunts
-	// Since we are at it, maybe also match the entire pilot training as it's fucked
-	// For now, advance to the next module...
+	FlagClear("ConversationOver") // it bugged itself somehow, what a surprise
+
+	// Excellent. Combat scenario complete.
+	ForcePlayConversationToPlayer( "moshpit_done", level.player )
+
+	FlagWait("ConversationOver")
+	FlagClear("ConversationOver")
+
+	wait 1 // not really sure if its necessary
+
 	AdvanceToNextTrainingModule()
 }
 
@@ -5687,7 +5696,7 @@ function MoshPit_Minimap_VO()
 	HighlightMinimap()
 
 	// idk why it bugged here lol
-	FlagToggle("ConversationOver")
+	FlagClear("ConversationOver")
 
 	ForcePlayConversationToPlayer( "train_minimap", level.player )
 
@@ -5869,7 +5878,7 @@ function PilotMoshPit_TitanTraining()
 {
 
 	// it bugged again, who knows why
-	FlagToggle("ConversationOver")
+	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "train_titanfall", level.player )
 
 	local minWaitEnd = 3.75 + Time()
@@ -6816,16 +6825,21 @@ function Module_TitanPet()
 	level.player.EndSignal( "Disconnected" )
 	level.ent.EndSignal( "ModuleChanging" )
 	level.player.WaitSignal( "Teleported" )
+
+
 	local table = {}
 	table.useFunc <- UseTitanPetControlPanel
 	table.useEnt <- GetEntArrayByName_Expensive("controlpanel_target")[0]
 	table.scope <- this
+
 	AddControlPanelUseFuncTable(level.titanPetControlPanel, table)
+
 	local table = level.player.playerClassData[ "titan" ]
 	table.liverycode <- null
 	table.liverycolor0 <- null
 	table.liverycolor1 <- null
 	table.liverycolor2 <- null
+	
 	CloseSwapDoors("door_controlpanel_enter")
 	CloseSwapDoors("door_controlpanel_exit")
 	CloseSwapDoors("door_titan_pet_gate")
@@ -6836,6 +6850,7 @@ function Module_TitanPet()
 	ForcePlayConversationToPlayer("titan_pet_disembark", level.player)
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_DISEMBARK )
 	level.player.WaitSignal("DisembarkingTitan")
+	TrainingModule_GiveDefaultWeapons()
 	OpenSwapDoors("door_controlpanel_enter")
 	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
 	local titan = GetPlayerTitanInMap(level.player)
