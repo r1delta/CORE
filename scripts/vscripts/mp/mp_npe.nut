@@ -6321,7 +6321,6 @@ function MoshPit_PlayerMopsUpAsTitan()
 	level.moshPitSquads = {}  // reset so squads are null
 	local podSpawns = []
 
-	// P7 [TODO]: Check if these match on vanilla
 	podSpawns.append( { origin = Vector( -9.97231, 3632.03, 6366.88 ), angles = Vector( 0, -52.5624, 0 ) } )
 	podSpawns.append( { origin = Vector( 956.635, 3451.81, 6544.03 ), angles = Vector( 0, -96.4783, 0 ) } )
 	podSpawns.append( { origin = Vector( 1721.89, 2756.19, 6400.51 ), angles = Vector( 0, -159.951, 0 ) } )
