@@ -1476,7 +1476,8 @@ function DecrementBuildTimer( player, amount )
 	if ( !IsAlive( player ) )
 		return
 
-	SetTitanCoreTimer( player, GetTitanCoreTimer( player ) - amount )
+	local newCoreTimer = max(GetTitanCoreTimer( player ) - amount, 0)
+	SetTitanCoreTimer( player, newCoreTimer )
 
 	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
 }
