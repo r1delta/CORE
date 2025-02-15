@@ -332,7 +332,7 @@ function GiveTitanBuildAdvantage( player, ent, saveDamage = 0, shieldDamage = 0)
 
 function DecrementBuild( player, amount )
 {
-	player.SetTitanRespawnTime( player.GetTitanRespawnTime() - amount )
+	player.SetTitanRespawnTime( max(player.GetTitanRespawnTime() - amount, 0) )
 }
 
 function ForceTitanBuildComplete( player )
