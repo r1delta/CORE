@@ -509,7 +509,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     }
 
     if ( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_fall  )
-		    Stats_IncrementStat( player, "kills_stats", "titanFallKill", "", 1.0 )
+		        Stats_IncrementStat( player, "kills_stats", "titanFallKill", 1.0 )
 	
     if ( damageSource == eDamageSourceId.titan_execution ) {
         local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
