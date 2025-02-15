@@ -1465,7 +1465,10 @@ function DecrementBuildTimer( player, amount )
 	if( !player.IsTitan() )
 	{
 		printt( "DecrementBuildTimer: " + player.GetTitanRespawnTime() + " " + amount )
-		player.SetTitanRespawnTime( max(player.GetTitanRespawnTime() - amount, 0) )
+		local newRespawnTime = player.GetTitanRespawnTime() - amount
+		if (newRespawnTime >= 0) {
+			player.SetTitanRespawnTime(newRespawnTime)
+		}
 		return
 	}
 
