@@ -581,7 +581,7 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
 
         if ( attacker.IsTitan() && attacker.IsNPC() ) {
             local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
-           	local titanSettings = titanDataTable.playerSetFile
+           	local titanSettings = titanDataTable.titanSetFile
             local titanName = replace_all( titanSettings, "titan_", "" )
 			Stats_IncrementStat( attacker, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
         }
