@@ -1,8 +1,8 @@
 function main()
 {
 	Assert( !GetCinematicMode(), "Cannot play lts in cinematic mode" )
-	if ( Riff_EliminationMode() == eEliminationMode.Default )
-		level.nv.eliminationMode = eEliminationMode.PilotsTitans
+	//if ( Riff_EliminationMode() == eEliminationMode.Default )
+	level.nv.eliminationMode = eEliminationMode.PilotsTitans
 
 	SetRoundBased( true )
 	SetSwitchSidesBased( true )
@@ -18,8 +18,9 @@ function main()
 
 function EntitiesDidLoad()
 {
-	if ( Riff_SpawnAsTitan() == eSpawnAsTitan.Default )
-		level.nv.spawnAsTitan = eSpawnAsTitan.Once
+	level.nv.spawnAsTitan = eSpawnAsTitan.Once
+	level.nv.titanAvailability = eTitanAvailability.Never
+	level.nv.eliminationMode = eEliminationMode.PilotsTitans
 	SetupAssaultPointKeyValues()
 	thread SetupTeamDeathmatchNPCs()
 }
