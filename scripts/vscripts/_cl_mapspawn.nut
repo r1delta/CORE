@@ -44,7 +44,9 @@ function Cl_MapspawnMain()
 	{
 		IncludeFile( "_teams" )
     }
-
+	if (IsLobby()) {
+		IncludeScript( "mp/mp_lobby_dialog.nut" )
+	}
 	IncludeScript( "_remote_functions" )
 
     if ( !IsLobby() )

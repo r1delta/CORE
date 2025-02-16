@@ -3,7 +3,7 @@
 //********************************************************************************************
 
 RegisterSignal( "end_lobby_logic" )
-
+IncludeScript("mp/mp_lobby_dialog")
 function main()
 {
 	file.minTeamSize <- 0

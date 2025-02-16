@@ -595,3 +595,4 @@ if ( IsClient() )
 	}
 }
 
+main()
