@@ -6,7 +6,7 @@ function GameRules_ChangeMap( mapName, mode )
 	if( ';' in mapName || ' ' in mapName)
 		return
 
-        ServerCommand( "playlist " + mode )
+//        ServerCommand( "playlist " + mode )
         ServerCommand( "mp_gamemode " + mode )
         ServerCommand( "changelevel " + mapName )
 }
