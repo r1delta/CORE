@@ -1,12 +1,8 @@
 function main()
 {
 	Assert( !GetCinematicMode(), "Cannot play lts in cinematic mode" )
-	//if ( Riff_EliminationMode() == eEliminationMode.Default )
-	//level.nv.eliminationMode = eEliminationMode.PilotsTitans
-
-	//FlagSet( "PilotBot" )
-	//Riff_ForceTitanAvailability( eTitanAvailability.Never )
-	//Riff_ForceSetSpawnAsTitan( eSpawnAsTitan.Never )
+	if ( Riff_EliminationMode() == eEliminationMode.Default )
+		level.nv.eliminationMode = eEliminationMode.PilotsTitans
 
 	SetRoundBased( true )
 	SetSwitchSidesBased( true )
@@ -22,12 +18,8 @@ function main()
 
 function EntitiesDidLoad()
 {
-	// HACK: Somewhere, for some reason, these specific server vars can't be overridden, this will force them in a nasty way.
-	//       It should do the job until eventually we find why it behaves like this.
-	// EDIT: Now should be properly overriden on playlists.txt... for now
-	//ServerCommand("script (level.nv.spawnAsTitan = eSpawnAsTitan.Once)") // Spawn with a titan only once. If we force this too late, we wont spawn with a titan for the first round.
-	//ServerCommand("script (level.nv.titanAvailability = eTitanAvailability.Never)") // No new titans
-	//ServerCommand("script (level.nv.eliminationMode = eEliminationMode.PilotsTitans)") // Can eliminate both Pilots and Titans?
+	if ( Riff_SpawnAsTitan() == eSpawnAsTitan.Default )
+		level.nv.spawnAsTitan = eSpawnAsTitan.Once
 	SetupAssaultPointKeyValues()
 	thread SetupTeamDeathmatchNPCs()
 }
@@ -70,7 +62,6 @@ function LTSPlayingStart()
 function LTSPrematchStart()
 {
 	FlagSet( "ForceStartSpawn" )
-
 	local players = GetPlayerArray()
 	foreach ( player in players )
 	{
