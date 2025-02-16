@@ -3609,10 +3609,7 @@ else
 		if ( lvl > MAX_LEVEL )
 			return
 
-		printt("Current Level: " + lvl)
-		printt("Last Level: " + player.cv.lastLevel)
-		printt("XP: " + GetXP( player ))
-		printt("Starting XP: " + player.cv.startingXP)
+		
 		if ( lvl != player.cv.lastLevel )
 		{
 			cockpit.s.xpBar.pastFill.Hide()
