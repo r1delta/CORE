@@ -2620,7 +2620,7 @@ function CodeCallback_OnClientConnectionCompleted( player )
 
 	InitPassives( player )
 
-	if (!player.IsBot() && (GetMapName() == "mp_npe"))
+	if (!player.IsBot() && (GetMapName() != "mp_npe"))
 	{
 		// LoadOut Setting
 		// UpdateLoadouts( player )
