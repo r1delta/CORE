@@ -256,7 +256,7 @@ function DevPrintUnlockSort( table1, table2 )
 function InitXP( player )
 {
 	Assert( !IsLobby(), "Don't call InitXP in mp_lobby!" )	// Should not call InitXP in mp_lobby because we want to view our old xp progress in the game summary menu until we play another match
-
+	if (IsLobby()) { return; }
 	// Clear how much XP we earned in the previous match
 	player.SetPersistentVar( "previousXP", GetXP( player ) )
 	for( local i = 0 ; i < XP_TYPE._NUM_TYPES ; i++ )
