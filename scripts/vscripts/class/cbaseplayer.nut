@@ -691,6 +691,13 @@ function CBasePlayer::SetActiveBurnCardIndex( val )
 	
 }
 
+function CBasePlayer::SetIsPlayingRanked( isPlayingRanked )
+{
+	printt("SetActiveBurnCardIndex " + isPlayingRanked )
+
+	getroottable().SetIsPlayingRanked(this,isPlayingRanked )
+}
+
 
 /*
 

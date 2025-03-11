@@ -60,3 +60,8 @@ function C_BasePlayer::GetActiveBurnCardIndex()
 	return this.__GetActiveBurnCardIndex() - 1
 }
 
+function C_BasePlayer::SetIsPlayingRanked( isPlayingRanked )
+{
+	return getroottable().SetIsPlayingRanked(isPlayingRanked)
+}
+

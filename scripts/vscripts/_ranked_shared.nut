@@ -45,7 +45,6 @@ function main()
 	Globalize( RankedWinLossOnly )
 	Globalize( RankedWinLossPercent )
 	Globalize( RankedAlwaysLoseGem )
-
 	// Each supported game mode needs to be added here, and needs to be added to the next few functions as well
 	level.rankedInitFuncs <- {}
 	level.rankedInitFuncs[ ATTRITION ] 				<- null
@@ -81,9 +80,11 @@ function main()
 
 		if ( IsServer() )
 		{
-			IncludeFile( "mp/_ranked_gamemodes" )
 			IncludeFile( "mp/_ranked" )
+			// IncludeFile( "mp/_ranked_gamemodes" )
+
 		}
+		
 		else
 		{
 			Globalize( GetContributionHint )
@@ -206,6 +207,10 @@ function InitContributionMappingForGameMode( gamemode )
 
 	if ( IsClient() )
 		table.introHint <- AssignHintMessageForMapping( table )
+
+
+	// print the table for debugging
+
 
 	return table
 }
@@ -361,7 +366,7 @@ function CreateContributionMappingForGamemode( gamemode )
 			if ( !IsLobby() )
 			{
 				// lobby doesn't know about xp types and doesn't need to, yet
-
+				printt(XP_TYPE.PILOT_KILL)
 				// Leagues_OnScoreEvent adds ranked points for these events
 				table.xpTypes[ XP_TYPE.PILOT_KILL ] 	<- eRankedContributionType.TDM_PILOT_KILLS
 				table.xpTypes[ XP_TYPE.PILOT_ASSIST ] 	<- eRankedContributionType.TDM_PILOT_ASSISTS
@@ -729,7 +734,7 @@ function PlayerAcceptedRankInvite( player = null )
 
 function PlayerQualifiedForRanked( player = null )
 {
-	return false
+	// return true
 
 	if ( IsUI() )
 	{
