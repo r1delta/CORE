@@ -2,6 +2,7 @@ function main()
 {
     AddClientCommandCallback("SetPlayRankedOn", ClientCommand_SetPlayRankedOn)
     AddClientCommandCallback("SetPlayRankedOff", ClientCommand_SetPlayRankedOff)
+    // AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
     // AddCallback_OnPlayerRespawned(Ranked_OnPlayerSpawned)
     // AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
     if(!IsLobby()) {
@@ -9,6 +10,7 @@ function main()
     }
     printt("Ranked is loaded")
 }
+
 
 //ServerCallback_ToggleRankedInGame to actually toggle the ranked state
 function ClientCommand_SetPlayRankedOn(player)

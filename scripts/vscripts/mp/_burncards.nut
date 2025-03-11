@@ -3,6 +3,7 @@ function main()
     RegisterSignal("StartBurnCardEffect")
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
+    
     IncludeScript("_ranked_shared")
     Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( PlayerRespawned )
@@ -17,10 +18,20 @@ function main()
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
     AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilot )
+    AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
 
     // SetOnScoreEventFunc(Leagues_OnScoreEvent)
 }
 
+
+function ClientCommand_SetRankedPlayOnInGame(player) {
+    player.SetPersistentVar("ranked.isPlayingRanked",1)
+    player.SetIsPlayingRanked(1)
+    Remote.CallFunction_NonReplay(player, "ServerCallback_ToggleRankedInGame", true)
+    Remote.CallFunction_Replay(player, "SCB_SetUserPerformance",0)
+    printt("Set ranked play on in game: " + player.IsPlayingRanked())
+    return true
+}
 
 function BurncardsAutoFillEmptyActiveSlots( player )
 {
@@ -441,25 +452,24 @@ function Ranked_OnPlayerSpawned(player)
     }
     printt("ranked is playing ranked" + player.GetPersistentVar("ranked.isPlayingRanked"))
     // local currentSkill = GetPlayerPerformanceGoals(player)
-    local currentSkill = 5;
+
     if(player.GetPersistentVar("ranked.isPlayingRanked") == 1) {
-        //  Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", currentSkill )
+         player.SetIsPlayingRanked(1)
+         local amount = PersistenceGetArrayCount("ranked.gems")
+         printt("amount", amount)
+         local rank = GetGemsToRank(amount);
+         printt("rank", rank)
+         player.SetRank(rank)
+         Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", 5 )
+        
     }
+
     SetOnScoreEventFunc(Leagues_OnScoreEvent)
+    SetUIVar("rankEnableMode", eRankEnabledModes.ALLOWED_DURING_PERSONAL_GRACE_PERIOD)
 }
 
 
 function Leagues_OnScoreEvent(player,scoreEvent) {
-    printt("score event", scoreEvent)
-	local gameMode = GameRules.GetGameMode()
-
-    // local table = GetContributionMappingForGamemode(gameMode)
-    // printt("xpTypes", table)
-
-    // local xp_type =  scoreEvent.GetXPType()
-
-    // if(xp_type in table.xpTypes ) {
-    //     printt("is correct")
-    // }
+    
     
 }
