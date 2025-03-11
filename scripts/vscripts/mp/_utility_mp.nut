@@ -1641,9 +1641,13 @@ function FillBurnCardDeckFromArray( player, array )
 
 function Ranked_PlayerConnected( player )
 {
-	//printt("Ranked_PlayerConnected: " + player )
+	
+	printt("Ranked_PlayerConnected: " + player )
+	printt("Rank mode: " + level.ui.rankEnableMode )
 
-}
+	// eRankEnabledModes.ALLOWED_DURING_PERSONAL_GRACE_PERIOD
+
+	}
 
 function BurnCard_RefreshPlayer( player )
 {

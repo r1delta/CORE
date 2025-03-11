@@ -729,7 +729,7 @@ function PlayerAcceptedRankInvite( player = null )
 
 function PlayerQualifiedForRanked( player = null )
 {
-	return false
+	// return true
 
 	if ( IsUI() )
 	{
