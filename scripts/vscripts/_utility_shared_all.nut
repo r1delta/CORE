@@ -581,8 +581,8 @@ function PlayerPlayingRanked( player = null )
 		if ( player.IsBot() )
 			return true
 		// return true
-		return player.GetPersistentVar( "ranked.isPlayingRanked" )
-		// return player.IsPlayingRanked()
+		// return player.GetPersistentVar( "ranked.isPlayingRanked" )
+		return player.IsPlayingRanked()
 	}
 
 	if ( IsUI() )
