@@ -485,3 +485,6 @@ engine.dll,text,0xAA950,40,C3
 ; vphysics.dll,text,0x01031B4,8D 15 56 FF FF FF 45 33 C9 45 33 C0 48,89 1D 91 C0 0E 00 E8 61 FE FF FF EB 0C 	
 ; remove assert define (listen only)
 ; launcher.dll,rdata,0xE0280,"Assert","Cssert"
+
+; disable engine crash handler
+engine.dll,text,0x01A0FA5,75,EB
