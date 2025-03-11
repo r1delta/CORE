@@ -270,10 +270,10 @@ function PlayerRespawned(player) {
         return;
     }
 
-    for(local i = 0; i < 50; i++) {
-        player.SetPersistentVar("ranked.gems" + "[" + i + "].gemState", "gem_captured")
-        player.SetPersistentVar("ranked.gems" + "[" + i + "].gemScore", 100)
-    }
+    // for(local i = 0; i < 50; i++) {
+    //     player.SetPersistentVar("ranked.gems" + "[" + i + "].gemState", "gem_captured")
+    //     player.SetPersistentVar("ranked.gems" + "[" + i + "].gemScore", 100)
+    // }
 
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
