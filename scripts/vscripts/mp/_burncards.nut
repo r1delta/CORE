@@ -455,11 +455,11 @@ function Ranked_OnPlayerSpawned(player)
 
     if(player.GetPersistentVar("ranked.isPlayingRanked") == 1) {
          player.SetIsPlayingRanked(1)
-         local amount = PersistenceGetArrayCount("ranked.gems")
-         printt("amount", amount)
-         local rank = GetGemsToRank(amount);
-         printt("rank", rank)
-         player.SetRank(rank)
+        //  local amount = PersistenceGetArrayCount("ranked.gems")
+        //  printt("amount", amount)
+        //  local rank = GetGemsToRank(amount);
+        //  printt("rank", rank)
+        //  player.SetRank(rank)
          Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", 5 )
         
     }
