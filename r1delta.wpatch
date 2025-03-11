@@ -289,8 +289,8 @@ server.dll,text,0x67A80,4C,C3
 ; fix grenades :)))
 ; you should still set "grenade_use_per_poly_instead_of_physics" "1"
 ; in the weapon script but this forces it good enough:tm:
-server.dll,text,0x40F652,40 38 B7 45 11 00,C6 87 45 11 00 00 01
-server.dll,text,0x40F659,75,EB
+; server.dll,text,0x40F652,40 38 B7 45 11 00,C6 87 45 11 00 00 01
+; server.dll,text,0x40F659,75,EB
 ; steal fov patches from bme 
 engine.dll,rdata,0x6C6D34,66 66 A6 3F,66 66 67 40
 client.dll,rdata,0x9CDB74,66 66 A6 3F,66 66 67 40
@@ -467,3 +467,21 @@ engine.dll,text,0x1DAB0,40,C3
 engine.dll,text,0x559D0,40,C3
 ; discord id for status and id string
 engine.dll,text,0x00D5436,8B 81 FC 02 00 00 83 E0 01 89 42 14 8B 81 FC 02 00 00 D1 E8 89 42 10,48 8B 81 FC 02 00 00 48 89 42 08 90 90 90 90 90 90 90 90 90 90 90 90
+
+; unclamp resolutions
+engine.dll,text,0xAA950,40,C3
+;E9 9A 00 00 00
+;materialsystem_dx11.dll,text,0x75770,,B8 01 00 00 00 C3
+; materialsystem_dx11.dll,text,0x7614E,FF,C3
+; materialsystem_dx11.dll,text,0x75572,74,EB
+; materialsystem_dx11.dll,text,0x753bd,,E9 40 01 00 00
+; materialsystem_dx11.dll,text,0x1626,,EB
+; engine.dll,text,0x019BB32,,B8 01 00 00 00 90 90
+; materialsystem_dx11.dll,text,0x76140,C7 04 01 00 00 00 00,C7 04 01 01 00 00 00
+
+; engine.dll,text,0x1A7A9A,FF 15 B8 7B D3 02 FF 15 BA 7B D3 02,90 90 90 90 90 90 90 90 90 90 90 90
+; engine.dll,text,0x1A79C0,40,C3
+
+; vphysics.dll,text,0x01031B4,8D 15 56 FF FF FF 45 33 C9 45 33 C0 48,89 1D 91 C0 0E 00 E8 61 FE FF FF EB 0C 	
+; remove assert define (listen only)
+; launcher.dll,rdata,0xE0280,"Assert","Cssert"
