@@ -81,9 +81,11 @@ function main()
 
 		if ( IsServer() )
 		{
-			IncludeFile( "mp/_ranked_gamemodes" )
 			IncludeFile( "mp/_ranked" )
+			// IncludeFile( "mp/_ranked_gamemodes" )
+
 		}
+		
 		else
 		{
 			Globalize( GetContributionHint )
@@ -206,6 +208,10 @@ function InitContributionMappingForGameMode( gamemode )
 
 	if ( IsClient() )
 		table.introHint <- AssignHintMessageForMapping( table )
+
+
+	// print the table for debugging
+
 
 	return table
 }

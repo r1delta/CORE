@@ -9,6 +9,8 @@ function main()
     Globalize(RunBurnCardFunctions)
     Globalize(ChangeOnDeckBurnCardToActive)
     Globalize(MakeActiveBurnCard)
+    AddCallback_OnPlayerRespawned(Ranked_OnPlayerSpawned)
+    // AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
     Globalize(BurncardsAutoFillEmptyActiveSlots)
 
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
@@ -427,4 +429,25 @@ function OnTitanBecomesPilot(player,titan) {
 function AddBurnCardLevelingPack( cardPackName, cardPackArray )
 {
     // printt( "Hit stubbed call to AddBurnCardLevelingPack" );
+}
+
+function Ranked_OnPlayerSpawned(player)
+{   
+    if(!player) {
+        return
+    }    
+    printt("ranked is playing ranked" + player.GetPersistentVar("ranked.isPlayingRanked"))
+    // local currentSkill = GetPlayerPerformanceGoals(player)
+    local currentSkill = 5;
+    if(player.GetPersistentVar("ranked.isPlayingRanked") == 1) {
+         Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", currentSkill )
+    }
+}
+
+function SpawnThread(player) {
+   
+}
+
+function Leagues_OnScoreEvent(player,scoreEvent) {
+    printt(player, "score event", scoreEvent)
 }
