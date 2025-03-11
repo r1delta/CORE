@@ -571,9 +571,99 @@ function GameStateEnter_SwitchingSides()
 	delaythread( 0.75 ) PlayConversationToTeam( "SwitchingSides", TEAM_MILITIA )
 	delaythread( 0.75 ) PlayConversationToTeam( "SwitchingSides", TEAM_IMC )
 }
+function GetNumTeamPlayers()
+{
+	if ( GAMETYPE == COOPERATIVE )
+		return max( 4, GetCurrentPlaylistVar( "max players", 4 ).tointeger() )
+	else
+		return max( 6, GetCurrentPlaylistVar( "max players", 12 ).tointeger() / 2.0 )
+}
 
+function PopulateScoreboardData()
+{    
+    local i = 0
+    foreach (player in GetPlayerArray())
+    {
+        local myTeam = player.GetTeam()
+        local enemyTeam = GetEnemyTeam(myTeam)
+        
+        // Get enum indices for game mode and map
+        local enumModeIndex = 0
+        local enumMapIndex = 0
+        try
+        {
+            enumModeIndex = PersistenceGetEnumIndexForItemName("gameModes", GAMETYPE)
+            enumMapIndex = PersistenceGetEnumIndexForItemName("maps", GetMapName())
+        }
+        catch(ex) {}
+        
+        // Set basic match info
+        player.SetPersistentVar("savedScoreboardData.gameMode", enumModeIndex)
+        player.SetPersistentVar("savedScoreboardData.map", enumMapIndex)
+        player.SetPersistentVar("savedScoreboardData.playerTeam", myTeam)
+        player.SetPersistentVar("savedScoreboardData.playerIndex", i)
+        player.SetPersistentVar("savedScoreboardData.maxTeamPlayers", GetNumTeamPlayers())
+        
+        // Team scores and counts
+        player.SetPersistentVar("savedScoreboardData.scoreIMC", GameRules.GetTeamScore(TEAM_IMC))
+        player.SetPersistentVar("savedScoreboardData.scoreMCOR", GameRules.GetTeamScore(TEAM_MILITIA))
+        player.SetPersistentVar("savedScoreboardData.numPlayersIMC", GetTeamPlayerCount(TEAM_IMC))
+        player.SetPersistentVar("savedScoreboardData.numPlayersMCOR", GetTeamPlayerCount(TEAM_MILITIA))
+        
+        // Match type info
+        player.SetPersistentVar("savedScoreboardData.privateMatch", IsPrivateMatch())
+        player.SetPersistentVar("savedScoreboardData.campaign", GetCinematicMode()) // campaign mode check
+        player.SetPersistentVar("savedScoreboardData.ranked", false)
+        player.SetPersistentVar("savedScoreboardData.hadMatchLossProtection", player.s.hasMatchLossProtection)
+        
+        // Process IMC players
+        local imcPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_IMC)
+        for (local i = 0; i < min(imcPlayers.len(), 8); i++)
+        {
+            local imcPlayer = imcPlayers[i]
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].name", imcPlayer.GetPlayerName())
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].xuid", "0")
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].level", imcPlayer.GetLevel())
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].gen", imcPlayer.GetGen())
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assault", imcPlayer.GetAssaultScore())
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_defense", imcPlayer.GetDefenseScore())
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_kills", UpdateKills(imcPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_deaths", UpdateDeaths(imcPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_titanKills", UpdateTitanKills(imcPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_npcKills", UpdateNPCKills(imcPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assists", UpdateAssists(imcPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].playingRanked", false)
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].rank", 0)
+            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].matchPerformance", 0)
+        }
+        
+        // Process MCOR players
+        local mcorPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_MILITIA)
+        for (local i = 0; i < min(mcorPlayers.len(), 8); i++)
+        {
+            local mcorPlayer = mcorPlayers[i]
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].name", mcorPlayer.GetPlayerName())
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].xuid", "0")
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].level", mcorPlayer.GetLevel())
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].gen", mcorPlayer.GetGen())
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assault", mcorPlayer.GetAssaultScore())
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_defense", mcorPlayer.GetDefenseScore())
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_kills", UpdateKills(mcorPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_deaths", UpdateDeaths(mcorPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_titanKills", UpdateTitanKills(mcorPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_npcKills", UpdateNPCKills(mcorPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assists", UpdateAssists(mcorPlayer))
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].playingRanked", false)
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].rank", 0)
+            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].matchPerformance", 0)
+        }
+        i++
+    }
+}
+Globalize(PopulateScoreboardData)
 function GameStateEnter_Postmatch()
 {
+    PopulateScoreboardData()
 	//Functions are set in CoopTD_Postmatch to control timing.
 	if ( GAMETYPE == COOPERATIVE || GAMETYPE == DEVTEST)
 		return
