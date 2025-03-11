@@ -533,8 +533,8 @@ if ( IsClient() )
 		if ( player.IsBot() )
 			return true
 
-		return true
-		// return player.IsPlayingRanked()
+		// return true
+		return player.IsPlayingRanked()
 	}
 }
 
@@ -580,8 +580,9 @@ function PlayerPlayingRanked( player = null )
 
 		if ( player.IsBot() )
 			return true
-		return true
-		return player.IsPlayingRanked()
+		// return true
+		return player.GetPersistentVar( "ranked.isPlayingRanked" )
+		// return player.IsPlayingRanked()
 	}
 
 	if ( IsUI() )

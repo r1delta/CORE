@@ -45,7 +45,6 @@ function main()
 	Globalize( RankedWinLossOnly )
 	Globalize( RankedWinLossPercent )
 	Globalize( RankedAlwaysLoseGem )
-
 	// Each supported game mode needs to be added here, and needs to be added to the next few functions as well
 	level.rankedInitFuncs <- {}
 	level.rankedInitFuncs[ ATTRITION ] 				<- null
@@ -367,7 +366,7 @@ function CreateContributionMappingForGamemode( gamemode )
 			if ( !IsLobby() )
 			{
 				// lobby doesn't know about xp types and doesn't need to, yet
-
+				printt(XP_TYPE.PILOT_KILL)
 				// Leagues_OnScoreEvent adds ranked points for these events
 				table.xpTypes[ XP_TYPE.PILOT_KILL ] 	<- eRankedContributionType.TDM_PILOT_KILLS
 				table.xpTypes[ XP_TYPE.PILOT_ASSIST ] 	<- eRankedContributionType.TDM_PILOT_ASSISTS

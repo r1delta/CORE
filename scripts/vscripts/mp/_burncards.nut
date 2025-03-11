@@ -3,6 +3,7 @@ function main()
     RegisterSignal("StartBurnCardEffect")
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
+    IncludeScript("_ranked_shared")
     Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( PlayerRespawned )
     AddCallback_OnPlayerKilled( _OnPlayerKilled )
@@ -16,6 +17,8 @@ function main()
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
     AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilot )
+
+    // SetOnScoreEventFunc(Leagues_OnScoreEvent)
 }
 
 
@@ -435,19 +438,28 @@ function Ranked_OnPlayerSpawned(player)
 {   
     if(!player) {
         return
-    }    
+    }
     printt("ranked is playing ranked" + player.GetPersistentVar("ranked.isPlayingRanked"))
     // local currentSkill = GetPlayerPerformanceGoals(player)
     local currentSkill = 5;
     if(player.GetPersistentVar("ranked.isPlayingRanked") == 1) {
-         Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", currentSkill )
+        //  Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", currentSkill )
     }
+    SetOnScoreEventFunc(Leagues_OnScoreEvent)
 }
 
-function SpawnThread(player) {
-   
-}
 
 function Leagues_OnScoreEvent(player,scoreEvent) {
-    printt(player, "score event", scoreEvent)
+    printt("score event", scoreEvent)
+	local gameMode = GameRules.GetGameMode()
+
+    // local table = GetContributionMappingForGamemode(gameMode)
+    // printt("xpTypes", table)
+
+    // local xp_type =  scoreEvent.GetXPType()
+
+    // if(xp_type in table.xpTypes ) {
+    //     printt("is correct")
+    // }
+    
 }

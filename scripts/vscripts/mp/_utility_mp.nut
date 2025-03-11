@@ -117,6 +117,7 @@ function killminions()
 function SetOnScoreEventFunc( callbackFunc )
 {
 	Assert( level.onScoreEventFunc == null, "Already set onScoreEventFunc" )
+	printt("Setting onScoreEventFunc")
 	local callbackInfo = {}
 	callbackInfo.func <- callbackFunc
 	callbackInfo.scope <- this
