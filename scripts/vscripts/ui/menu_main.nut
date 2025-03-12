@@ -503,16 +503,34 @@ function UpdateDatacenterInfo()
 
 function UpdateMOTD()
 {
-	// OnThreadEnd(
-	// 	function() : ()
-	// 	{
-	// 		HideMOTD()
-	// 	}
-	// )
+	OnThreadEnd(
+		function() : ()
+		{
+			HideMOTD()
+		}
+	)
+	// local motd = GetConVarString( "motd" )
+	// file.motdTitle.SetText( R1DELTA_PATCH_HEADER )
+	// file.motdMessage.SetText( R1DELTA_PATCH_NOTES )
+	// ShowMOTD()
+	local motd = ""
 
-	file.motdTitle.SetText( R1DELTA_PATCH_HEADER )
-	file.motdMessage.SetText( R1DELTA_PATCH_NOTES )
-	ShowMOTD()
+	while ( uiGlobal.activeMenu == file.menu && ( !Durango_IsDurango() || GetMainMenuState() == mainMenuState.SIGNED_IN ) )
+	{
+		motd = GetConVarString( "motd" )
+
+		if ( motd != "" )
+		{
+			file.motdMessage.SetText( motd )
+			ShowMOTD()
+		}
+		else
+		{
+			HideMOTD()
+		}
+
+		wait 0
+	}
 }
 
 function MainMenuButton_Activate( button )
