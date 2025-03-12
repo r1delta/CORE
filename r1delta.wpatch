@@ -488,3 +488,8 @@ engine.dll,text,0xAA950,40,C3
 
 ; disable engine crash handler
 engine.dll,text,0x01A0FA5,75,EB
+
+;engine.dll,text,0x001DDBF,E8 AC 21 46 00,90 90 90 90 90
+
+engine.dll,rdata,0x0005F4090,"r1-pc%s.s3.amazonaws.com","motd.r1delta.net\x00\x00\x00\x00\x00\x00\x00\x00"
+engine.dll,text,0x0001DD58,48 8D 1D 89 61 5D 00,90 90 90 90 90 90 90
