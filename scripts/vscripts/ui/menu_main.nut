@@ -509,10 +509,6 @@ function UpdateMOTD()
 			HideMOTD()
 		}
 	)
-	// local motd = GetConVarString( "motd" )
-	// file.motdTitle.SetText( R1DELTA_PATCH_HEADER )
-	// file.motdMessage.SetText( R1DELTA_PATCH_NOTES )
-	// ShowMOTD()
 	local motd = ""
 
 	while ( uiGlobal.activeMenu == file.menu && ( !Durango_IsDurango() || GetMainMenuState() == mainMenuState.SIGNED_IN ) )
