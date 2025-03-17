@@ -909,6 +909,9 @@ function SetPrematchStartTime()
 			level.nv.gameStartTime = Time() + 3.0
 		}
 	}
+	if (GetDeveloperLevel() > 0) {
+		level.nv.gameStartTime = Time()
+	}
 }
 
 
