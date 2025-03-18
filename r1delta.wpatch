@@ -504,3 +504,9 @@ server.dll,text,0x4A9671,F3,E9 3C 00 00 00
 
 engine.dll,rdata,0x0005F4090,"r1-pc%s.s3.amazonaws.com","motd.r1delta.net\x00\x00\x00\x00\x00\x00\x00\x00"
 engine.dll,text,0x0001DD58,48 8D 1D 89 61 5D 00,90 90 90 90 90 90 90
+
+;ban id patches
+engine.dll,text,0x0E245D,0F B6 07 3C 30 7C 14 3C 39 7F,48 89 F9 E8 EB 3E 49 00 90 EB
+engine.dll,text,0x0E2478,48 8D 15 CD 03 54 00 41 B8 06 00 00 00 48 8B CF E8 23 F8 38 00 85 C0 0F 85,83 F8 12 90 7C EA 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+engine.dll,text,0x0E24B7,0F 84 13 04 00 00,90 90 90 90 90 90
+engine.dll,text,0x0E24ED,E7 03,57 77
