@@ -545,7 +545,7 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 	local soul = npcTitan.GetTitanSoul()
 
 
-	//soul.SetSoulOwner( npcTitan )
+	soul.SetSoulOwner( npcTitan )
 	soul.lastOwner = player
 	SoulBecomesOwnedByPlayer( soul, player )
 	SetupAutoTitan( npcTitan, player )
@@ -553,7 +553,7 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 	if (!delayedCreation)
 		GiveTitanWeaponsForPlayer( player, npcTitan )
 
-	//SetTitanOSForPlayer( player )
+	SetTitanOSForPlayer( player )
 
 	// start a new titan building when the current titan dies
 	AddSoulDeathFunc( UpdateSoulDeath )
