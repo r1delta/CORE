@@ -1729,8 +1729,6 @@ function OpenMenuWrapper( menu, focusDefault )
 			break
 
 		case "EOG_MapStars":
-			if ( developer() > 0 )
-				DumpStack()
 			thread OnOpenEOG_MapStars()
 			break
 
