@@ -510,3 +510,9 @@ engine.dll,text,0x0E245D,0F B6 07 3C 30 7C 14 3C 39 7F,48 89 F9 E8 EB 3E 49 00 9
 engine.dll,text,0x0E2478,48 8D 15 CD 03 54 00 41 B8 06 00 00 00 48 8B CF E8 23 F8 38 00 85 C0 0F 85,83 F8 12 90 7C EA 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
 engine.dll,text,0x0E24B7,0F 84 13 04 00 00,90 90 90 90 90 90
 engine.dll,text,0x0E24ED,E7 03,57 77
+
+; loading dialog fixes
+client.dll,rdata,0x8BF8D8,"#GameUI_Loading","Loading...\x00"
+client.dll,text,0x360DFA,74,EB
+; don't serverexecute in CGameRules::RefreshSkillData it will crash if we clicked disconnect because disconnect will be run during mapload
+server.dll,text,0x15d43e,FF,90 90 90 90 90 90
