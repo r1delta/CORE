@@ -34,7 +34,7 @@
 
 		SearchPaths
 		{
-			DEFAULT_WRITE_PATH   r1
+			Game   r1
 			Game				|gameinfo_path|
 		}
 	}
