@@ -519,3 +519,5 @@ server.dll,text,0x15d43e,FF,90 90 90 90 90 90
 
 launcher.dll,rdata,0xD6A50,"%s%cfilesystem_stdio.dll","filesystem_stdio.dll\x00"
 launcher.dll,text,0x0A109C,48,C3
+
+engine.dll,rdata,0x608BA0,"cfg/client/st_data.bin","cfg/delta/st_data.bin\x00"
