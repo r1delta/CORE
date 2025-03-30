@@ -516,3 +516,6 @@ client.dll,rdata,0x8BF8D8,"#GameUI_Loading","Loading...\x00"
 client.dll,text,0x360DFA,74,EB
 ; don't serverexecute in CGameRules::RefreshSkillData it will crash if we clicked disconnect because disconnect will be run during mapload
 server.dll,text,0x15d43e,FF,90 90 90 90 90 90
+
+launcher.dll,rdata,0xD6A50,"%s%cfilesystem_stdio.dll","filesystem_stdio.dll\x00"
+launcher.dll,text,0x0A109C,48,C3

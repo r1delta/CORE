@@ -34,9 +34,8 @@
 
 		SearchPaths
 		{
-			Game				|all_source_engine_paths|r1delta
-			gamebin				|all_source_engine_paths|r1\bin\x64_retail
-			DEFAULT_WRITE_PATH   |all_source_engine_paths|r1delta
+			DEFAULT_WRITE_PATH   r1
+			Game				|gameinfo_path|
 		}
 	}
 }
