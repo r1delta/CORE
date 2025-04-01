@@ -133,7 +133,7 @@ function SetBotTitanLoadout( player )
 	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
 	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
 	table.core <- loadout.core
-
+        table.voiceChoice <- "titanos_betty"
 	table.liverycode <- null
 	table.liverycolor0 <- null
 	table.liverycolor1 <- null
