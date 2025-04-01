@@ -1044,7 +1044,7 @@ function SetLoadoutProperty( player, loadoutType, loadoutIndex, property, value 
 		CodeWarning( "Invalid ref value parameter for property " + loadoutProperty + " in SetLoadoutProperty: " + value )
 		return
 	}
-    printt("DEBUG:", player, loadoutType, loadoutIndex, loadoutProperty, value)
+//    printt("DEBUG:", player, loadoutType, loadoutIndex, loadoutProperty, value)
 	if ( !ValidateLoadoutProperty( player, loadoutType, loadoutIndex, loadoutProperty, value ) )
 		return
 
@@ -1071,7 +1071,7 @@ function SetPersistentSpawnLoadout( player, loadoutType, isCustom, loadoutIndex 
 
 function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, ref )
 {
-    printt(player, loadoutType, loadoutIndex, property, ref)
+//    printt(player, loadoutType, loadoutIndex, property, ref)
 	local childRef = null
 	switch ( property )
 	{

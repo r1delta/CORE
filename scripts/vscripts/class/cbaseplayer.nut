@@ -196,7 +196,7 @@ function CBasePlayer::GetPlayerClassData( myClass )
 function CBasePlayer::InitMPClasses()
 {
 	playerClassData = {}
-
+        if (entindex() != 19) { SetName("player" +entindex() ) }
 	if(!IsLobby())
 	{
 		Titan_AddPlayer( this )

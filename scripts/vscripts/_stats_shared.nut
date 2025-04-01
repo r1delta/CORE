@@ -386,7 +386,6 @@ function StatToIntAllCompetitiveModesAndMaps( category, alias, weapon = null, pl
 			fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", map )
 			fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", mode )
 			count += IsUI() ? GetPersistentVar( fixedSaveVar ) : player.GetPersistentVar( fixedSaveVar )
-            printt(fixedSaveVar)
         }
 	}
 
