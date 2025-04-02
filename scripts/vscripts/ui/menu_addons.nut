@@ -6,6 +6,7 @@ function main()
 	Globalize( UpdateAddonPaths )
 	Globalize( ResetUIScript )
 	Globalize( OnOpenAddonsMenu )
+	Globalize( OpenAddonFolder )
 }
 
 
@@ -122,6 +123,11 @@ function UpdateAddonPaths( button )
 	ClientCommand( "uiscript_reset" )
 	ClientCommand( "reload_localization")
 	ClientCommand( "loadPlaylists" )
+}
+
+function OpenAddonFolder( button )
+{
+	GetAddonsPath(button)
 }
 
 function ResetUIScript( button )
