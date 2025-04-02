@@ -16,7 +16,7 @@ function OnOpenAddonsMenu(menu) {
 	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
 	file.menu.GetChild("AddonImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
-	local var = GetModPath()
+	local var = GetMods()
 	uiGlobal.addons <- {}
 	uiGlobal.addons = var
 }
@@ -33,7 +33,7 @@ function InitAddonsMenu( menu )
 	AddEventHandlerToButtonClass( menu, "MapListScrollUpClass", UIE_CLICK, Bind( OnMapListScrollUp_Activate ) )
 	AddEventHandlerToButtonClass( menu, "MapListScrollDownClass", UIE_CLICK, Bind( OnMapListScrollDown_Activate ) )
 	file.buttons <- GetElementsByClassname( menu, "MapButtonClass" )
-	local var = GetModPath()
+	local var = GetMods()
 	uiGlobal.addons <- {}
 	uiGlobal.addons = var
 	foreach(i,button in file.buttons) {
