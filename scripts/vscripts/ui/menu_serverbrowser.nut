@@ -135,19 +135,21 @@ function Threaded_GetServerList()
 {
 	local retries = 0
 
+    file.serverList = []
+
 	while(file.serverList.len() <= 0 && retries < 5) {
 
 		local list = PollServerList()
 
 		if(list == null)
 		{
-			WaitFrame()
+			wait 0.1
 			continue
 		}
 
 		file.serverList <- list
 		retries += 1
-        WaitFrame()
+        wait 0.1
 	}
 
 
