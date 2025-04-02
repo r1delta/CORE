@@ -313,6 +313,10 @@ function UpdateFooterButtons( menuName = null )
 
             footerData.gamepad.append( { label = "#%[X_BUTTON]% ^798B9800Reload Paths",func = UpdateAddonPaths } )
             footerData.pc.append( { label = "Reload", func = UpdateAddonPaths } )
+			
+			footerData.gamepad.append( { label = "#%[Y_BUTTON]% ^798B9800Reset UI",func = OpenAddonFolder } )
+			footerData.pc.append( { label = "Open Addons Folder", func = OpenAddonFolder } )
+			
 			break
 
 		case "OptionsMenu":
