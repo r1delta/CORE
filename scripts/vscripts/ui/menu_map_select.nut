@@ -241,6 +241,9 @@ function GetPrivateMatchMaps()
 
 function OnMapListScrollUp_Activate(...)
 {
+	if( GetModeNameForEnum( level.ui.privatematch_mode ) == "campaign_carousel" )
+		return
+
 	file.mapListScrollState--
 	if ( file.mapListScrollState < 0 )
 		file.mapListScrollState = 0
@@ -250,6 +253,9 @@ function OnMapListScrollUp_Activate(...)
 
 function OnMapListScrollDown_Activate(...)
 {
+	if( GetModeNameForEnum( level.ui.privatematch_mode ) == "campaign_carousel" )
+		return
+
 	file.mapListScrollState++
 	if ( file.mapListScrollState > file.numMapButtonsOffScreen )
 		file.mapListScrollState = file.numMapButtonsOffScreen
