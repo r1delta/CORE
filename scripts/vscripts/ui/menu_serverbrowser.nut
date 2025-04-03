@@ -125,6 +125,19 @@ function OnSearchBoxLooseFocus(button)
     UpdateShownPage()
 }
 
+function ClearPreviewPane()
+{
+    // // Update preview panel
+    // local menu = file.menu
+
+    // menu.GetChild( "NextMapName" ).SetText( "" )
+    // menu.GetChild( "NextMapDesc" ).SetText( "" )
+    // menu.GetChild( "StarsLabel" ).SetText( "" )
+    // menu.GetChild( "VersionLabel" ).SetText( "" )
+    // menu.GetChild( "StarsLabel" ).SetText( "" )
+    // menu.GetChild( "VersionLabel" ).SetText( "" )
+}
+
 function Threaded_GetServerList()
 {
 	local retries = 0
@@ -177,6 +190,8 @@ function RefreshServerList(_button)
     {
         gamemode.SetVisible(false)
     }
+
+    ClearPreviewPane()
 
     FilterAndUpdateList()
 }
@@ -257,14 +272,21 @@ function UpdateShownPage()
         local buttonIndex = file.scrollOffset + i
 
         local server = uiGlobal.serversArrayFiltered[buttonIndex]
+
+        local trimmed_hostname = server.host_name
+
+        if ( server.host_name.len() > 42 )
+            trimmed_hostname = server.host_name.slice(0, 42) + "..."
+
+
         file.buttons[i].Show()
         file.buttons[i].SetEnabled(true)
-        file.serversName[i].SetText( server.host_name )
+        file.serversName[i].SetText( trimmed_hostname )
         file.playerCountLabels[i].SetText( format( "%i/%i", server.players.len(), server.max_players ) )
-        if(server.map_name == "mp_lobby") {
+        if( StringContains( server.map_name, "mp_lobby" ) ) {
             file.serversMap[i].SetText("Lobby")
         } else {
-        file.serversMap[i].SetText("#" +  server.map_name )
+            file.serversMap[i].SetText("#" +  server.map_name )
         }
         file.serversGamemode[i].SetText( "#GAMEMODE_" + server.game_mode )
         file.serversName[i].SetVisible(true)
@@ -330,7 +352,6 @@ function OnServerButtonFocused(button)
 {
     local scriptID =  button.GetScriptID()
     if(!scriptID) return
-    printt(scriptID)
     scriptID = scriptID.tointeger()
     if (scriptID == 10) return
     local serverIndex = uiGlobal.scrollOffset + scriptID
@@ -340,19 +361,24 @@ function OnServerButtonFocused(button)
         return
     local server = uiGlobal.serversArrayFiltered[serverIndex]
 
+
+    if(server.map_name == "mp_lobby") {
+        menu.GetChild("StarsLabel").SetText( "#LOBBY" )
+		menu.GetChild("NextMapImage").SetImage("../ui/menu/common/menu_background_neutral")
+    } else {
+        menu.GetChild("StarsLabel").SetText( server.map_name )
+        menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/lobby_image_" + server.map_name)
+    }
+
     // Update preview panel
     menu.GetChild( "NextMapName" ).SetText( server.host_name )
+    menu.GetChild( "NextMapName" ).Show()
     menu.GetChild( "NextMapDesc" ).SetText( "#GAMEMODE_" + server.game_mode )
-    menu.GetChild( "StarsLabel" ).SetText( "#"+ server.map_name  )
+
     local players = server.players
     local maxPlayers = server.max_players || 12
     menu.GetChild("VersionLabel").SetText( players.len() + "/" + maxPlayers +  " players")
 
-    menu.GetChild( "NextMapImage" ).SetImage( "../ui/menu/lobby/lobby_image_" + server.map_name )
-    if(server.map_name == "mp_lobby") {
-        menu.GetChild("StarsLabel").SetText( "Lobby")
-		menu.GetChild("NextMapImage").SetImage("../ui/menu/common/menu_background_neutral")
-    }
     // Player info
     local playerCount = server.players.len()
     local maxPlayers = server.max_players
@@ -365,8 +391,7 @@ function OnServerBrowserMenu(menu)
     if ( !( "menu" in file ) )
         return
 
-    DispatchServerListReq()
-    thread Threaded_GetServerList()
+    RefreshServerList( null )
 
     uiGlobal.menu <- menu
     file.menu = menu
