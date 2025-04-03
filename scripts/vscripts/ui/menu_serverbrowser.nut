@@ -21,8 +21,6 @@ function main()
     file.scrollOffset <- 0
     // uiGlobal.serversArrayFiltered <- []
     file.searchBox <- null
-    file.hideFullBox <- null
-    file.hideEmptyBox <- null
 
     // Search/filter state
     file.searchTerm <- ""
@@ -106,10 +104,6 @@ function InitServerBrowserMenu( menu )
     AddEventHandlerToButtonClass( menu, "BtnServerListDownArrow", UIE_CLICK, OnScrollDown )
     // Get other UI elements
     // In InitServerBrowserMenu:
-    file.hideFullBox = menu.GetChild( "SwtBtnHideFull" )
-    file.hideEmptyBox = menu.GetChild( "SwtBtnHideEmpty" )
-    AddEventHandlerToButtonClass(menu , "SwtBtnHideFull",UIE_CLICK, HideFullHandler )
-    AddEventHandlerToButtonClass(menu , "SwtBtnHideEmpty",UIE_CLICK, HideEmptyHandler )
 
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnConnect", UIE_CLICK, OnDirectConnectDialogButtonConnect_Activate )
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnCancel", UIE_CLICK, OnDirectConnectDialogButtonCancel_Activate )
@@ -192,8 +186,6 @@ function FilterAndUpdateList()
 {
     file.searchTerm = file.searchBox.GetTextEntryUTF8Text()
     file.useSearch = file.searchTerm != ""
-    file.hideFull = file.hideFullBox.IsSelected() //file.hideFullBox.IsSelected()
-    file.hideEmpty = file.hideEmptyBox.IsSelected()
 
     file.scrollOffset = 0
     FilterServerList()
@@ -490,22 +482,6 @@ function DeregisterMouseWheelCallbacks()
 {
     DeregisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
     DeregisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
-}
-
-function HideFullHandler(button) {
-
-    button.SetSelected( !button.IsSelected() )
-    button.SetText( button.IsSelected() ? "ON" : "OFF" )
-    FilterAndUpdateList()
-    UpdateShownPage()
-}
-
-function HideEmptyHandler(button) {
-
-    button.SetSelected( !button.IsSelected() )
-    button.SetText( button.IsSelected() ? "ON" : "OFF" )
-    FilterAndUpdateList()
-    UpdateShownPage()
 }
 
 function OnDirectConnectDialogButtonConnect_Activate( button )
