@@ -9,7 +9,7 @@ function main()
 	Globalize( OnAddonButton_Activate )
 	Globalize( OpenDiscordLink )
 	Globalize( CloseMenuWhenAuthed)
-	
+
 	PrecacheHUDMaterial( "../ui/menu/r1delta/icon" )
 }
 
@@ -62,7 +62,7 @@ function OnOpenMainMenu()
 		ShowMainMenu()
 		return
 	}
-	
+
 	local state
 	local lastState
 
@@ -161,7 +161,7 @@ function OpenOfflineNameDialogButton_Activate( button )
 
 	local dialogData = {}
 	dialogData.header <- "Enter Username"
-    dialogData.detailsMessage <- "Create a username to use on R1Delta."
+    dialogData.detailsMessage <- "#ENTER_USERNAME_DIALOG"
 
 	OpenChoiceDialog( dialogData, GetMenu( "UsernameDialog" ) )
 }
@@ -383,7 +383,7 @@ function UpdatePCPlayButton( button )
 	{
 		if ( Origin_IsEnabled() )
 			playEnabled = Origin_IsOnline()
-		else 
+		else
 			playEnabled = false
 
 		button.SetEnabled( playEnabled )
@@ -624,10 +624,10 @@ function Threaded_CreateLocalServer()
 
 	uiGlobal.matchmaking = true
 
-	uiGlobal.ConfirmMenuDetails.SetText( "Starting Listen Server." )
+	uiGlobal.ConfirmMenuDetails.SetText( "#LOADING_SERVER" )
 
 	wait 1.5 // artificial wait so people can cancel
-	
+
 	ClientCommand("launchplaylist private_match; map mp_lobby")
 }
 
@@ -657,7 +657,7 @@ function CloseMenuWhenAuthed() {
 		wait(0.1)
 		if(GetConVarString("delta_persistent_master_auth_token_failed_reason") != "") {
 			EmitUISound( "BlackMarket_Purchase_Fail" )
-			
+
 			local buttonData = []
 			buttonData.append( { name = "Join the discord", func = OpenDiscordURL } )
 			buttonData.append( { name = "#CLOSE", func = OnAuthButtonCancel_Activate  } )
@@ -687,14 +687,14 @@ function AuthDialog() {
 
 	if(GetConvarInt("delta_online_auth_enable") != 1)
 		return
-	
+
 	local buttonData = []
 	buttonData.append( { name = "Login with Discord", func = OnAuthButtonConnect_Activate } )
 	buttonData.append( { name = "#CLOSE", func = OnAuthButtonCancel_Activate  } )
 
 	local footerData = []
 	footerData.append( { label = "#A_BUTTON_SELECT" , func = OnAuthButtonConnect_Activate } )
-	
+
 	local dialogData = {}
 	dialogData.header <- "Authenticate with Discord"
     dialogData.detailsMessage <- "R1Delta uses Discord for authentication. Click the button below to authenticate with Discord."
@@ -703,7 +703,7 @@ function AuthDialog() {
 	dialogData.spinner <- false
 
 	OpenChoiceDialog( dialogData )
-	
+
 }
 
 

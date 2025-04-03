@@ -873,7 +873,7 @@ function InitPeople()
 //============================
     AddDepartment( "deltateam", "R1Delta Team" )
     AddNameOnly( "deltateam", "wanderer" )
-    AddNameOnly( "deltateam", "VITALISED" )
+    AddNameOnly( "deltateam", "sonny-tel" )
     AddNameOnly( "deltateam", "MrSteyk" )
 	AddNameOnly( "deltateam", "PANCHO7532" )
 	AddNameOnly( "deltateam", "dogecore" )

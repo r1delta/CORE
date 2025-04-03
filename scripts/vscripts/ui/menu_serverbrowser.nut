@@ -37,8 +37,8 @@ function OpenDirectConnectDialog_Activate( button )
 		return
 
 	local dialogData = {}
-	dialogData.header <- "Connect To Address..."
-    dialogData.detailsMessage <- "Enter a server IP address to connect to it."
+	dialogData.header <- "#DIRECT_CONNECT_HEADER"
+    dialogData.detailsMessage <- "#DIRECT_CONNECT_MESSAGE"
 
 	OpenChoiceDialog( dialogData, GetMenu( "DirectConnectDialog" ) )
 	// local inputs = []
