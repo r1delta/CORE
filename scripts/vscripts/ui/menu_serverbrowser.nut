@@ -25,8 +25,6 @@ function main()
     // Search/filter state
     file.searchTerm <- ""
     file.useSearch <- false
-    file.hideFull <- false
-    file.hideEmpty <- false
 
     // Direction for sorting
 
@@ -104,6 +102,8 @@ function InitServerBrowserMenu( menu )
     AddEventHandlerToButtonClass( menu, "BtnServerListDownArrow", UIE_CLICK, OnScrollDown )
     // Get other UI elements
     // In InitServerBrowserMenu:
+    AddEventHandlerToButton( menu, "SwtBtnFilters", UIE_CLICK, FilterServerList_ )
+
 
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnConnect", UIE_CLICK, OnDirectConnectDialogButtonConnect_Activate )
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnCancel", UIE_CLICK, OnDirectConnectDialogButtonCancel_Activate )
@@ -192,27 +192,46 @@ function FilterAndUpdateList()
     UpdateShownPage()
 }
 
+function FilterServerList_( button )
+{
+    FilterAndUpdateList()
+}
+
+function ShouldHideFull()
+{
+    if( ( GetConVarInt("delta_ui_server_filter") == 2 ) || ( GetConVarInt("delta_ui_server_filter") == 3 ) )
+        return true
+
+    return false
+}
+
+function ShouldHideEmpty()
+{
+    if( ( GetConVarInt("delta_ui_server_filter") == 1 ) || ( GetConVarInt("delta_ui_server_filter") == 3 ) )
+        return true
+
+    return false
+}
+
 function FilterServerList()
 {
     uiGlobal.serversArrayFiltered.clear()
-    foreach ( server in file.serverList )
-    {
-        // // Skip if filters don't match
-        // if (file.hideEmpty && server.players.len() == 0)
-        //     continue
+    foreach ( server in uiGlobal.serverList )
+    {        // // Skip if filters don't match
+        if ( ShouldHideEmpty() && server.players.len() == 0)
+            continue
 
-        // if (file.hideFull && server.players.len() >= server.max_players)
-        //     continue
+        if ( ShouldHideFull() && server.players.len() >= server.max_players)
+            continue
 
-        // if (file.useSearch)
-        // {
-        //     if (server.host_name.tolower().find(file.searchTerm.tolower()) == null)
-        //         continue
-        // }
+        if (file.useSearch)
+        {
+            if (server.host_name.tolower().find(file.searchTerm.tolower()) == null)
+                continue
+        }
 
         uiGlobal.serversArrayFiltered.append(server)
     }
-
 }
 
 function UpdateShownPage()
