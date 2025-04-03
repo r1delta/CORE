@@ -149,7 +149,7 @@ function MeleeThread_AtlasVsTitanNPC( actions, action, attacker, target )
 	local targetSequence = clone attackerSequence
 
 	attackerSequence.thirdPersonAnim = attackerAnimation3p
-	attackerSequence.thirdPersonAnimIdle = "at_melee_sync_frontkill_end_idle"
+	// attackerSequence.thirdPersonAnimIdle = "at_melee_sync_frontkill_end_idle"
 
 	attackerSequence.firstPersonAnim = attackerAnimation1p
 	targetSequence.thirdPersonAnim = targetAnimation3p
@@ -157,7 +157,7 @@ function MeleeThread_AtlasVsTitanNPC( actions, action, attacker, target )
 
 	target.s.meleeExecutionAttacker <- attacker
 
-	attacker.SetInvulnerable()
+	// attacker.SetInvulnerable()
 	target.SetInvulnerable()    //HACK: Have to SetInvulnerable first before attacker holsters weapon, because if the attacker is vortexing, holster will release bullets caught and kill off the victim if low enough health
 	if ( ShouldHolsterWeaponForMelee( attacker ) )
 		attacker.HolsterWeapon()
@@ -285,7 +285,7 @@ function MeleeThread_TitanRipsPilot( e, actions, action, attacker, target )
 	local targetSequence = clone attackerSequence
 
 	attackerSequence.thirdPersonAnim = e.attackerAnimation3p
-	attackerSequence.thirdPersonAnimIdle = "at_melee_sync_frontkill_end_idle"
+	// attackerSequence.thirdPersonAnimIdle = "at_melee_sync_frontkill_end_idle"
 
 	attackerSequence.firstPersonAnim = e.attackerAnimation1p
 	targetSequence.thirdPersonAnim = e.targetAnimation3p
@@ -293,7 +293,7 @@ function MeleeThread_TitanRipsPilot( e, actions, action, attacker, target )
 
 	target.s.meleeExecutionAttacker <- attacker
 
-	attacker.SetInvulnerable()
+	// attacker.SetInvulnerable()
 	target.SetInvulnerable()    //HACK: Have to SetInvulnerable first before attacker holsters weapon, because if the attacker is vortexing, holster will release bullets caught and kill off the victim if low enough health
 	if ( ShouldHolsterWeaponForMelee( attacker ) )
 		attacker.HolsterWeapon()
@@ -706,7 +706,7 @@ function MeleeThread_OgreVsTitan( actions, action, attacker, target )
 	if ( !target.IsNPC() )
 		target.DisableWeaponViewModel()
 
-	attacker.SetInvulnerable()
+	// attacker.SetInvulnerable()
 	target.SetInvulnerable()
 
 	local soul = target.GetTitanSoul()
