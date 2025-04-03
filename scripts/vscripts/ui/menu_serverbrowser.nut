@@ -131,7 +131,7 @@ function Threaded_GetServerList()
 
     file.serverList = []
 
-	while(file.serverList.len() <= 0 && retries < 5) {
+	while(file.serverList.len() <= 0 && retries < 15) {
 
 		local list = PollServerList()
 
@@ -145,7 +145,6 @@ function Threaded_GetServerList()
 		retries += 1
         wait 0.1
 	}
-
 
 	uiGlobal.serverList <- file.serverList
 }
@@ -196,21 +195,20 @@ function FilterAndUpdateList()
 function FilterServerList()
 {
     uiGlobal.serversArrayFiltered.clear()
-    uiGlobal.serversArrayFiltered.clear()
     foreach ( server in file.serverList )
     {
-        // Skip if filters don't match
-        if (file.hideEmpty && server.players.len() == 0)
-            continue
+        // // Skip if filters don't match
+        // if (file.hideEmpty && server.players.len() == 0)
+        //     continue
 
-        if (file.hideFull && server.players.len() >= server.max_players)
-            continue
+        // if (file.hideFull && server.players.len() >= server.max_players)
+        //     continue
 
-        if (file.useSearch)
-        {
-            if (server.host_name.tolower().find(file.searchTerm.tolower()) == null)
-                continue
-        }
+        // if (file.useSearch)
+        // {
+        //     if (server.host_name.tolower().find(file.searchTerm.tolower()) == null)
+        //         continue
+        // }
 
         uiGlobal.serversArrayFiltered.append(server)
     }
