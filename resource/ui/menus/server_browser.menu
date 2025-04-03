@@ -63,10 +63,11 @@ resource/ui/menus/server_browser.menu
 			pin_to_sibling			NextMapImage
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	0
+            wide 260
 			xpos					-11
 			ypos					-9
-			auto_wide_tocontents 	1
-			auto_tall_tocontents	1
+			auto_wide_tocontents 	0
+			auto_tall_tocontents	0
 			visible					1
 			labelText				""
 			font					NextMapFont
