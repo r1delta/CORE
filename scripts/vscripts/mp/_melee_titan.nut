@@ -523,9 +523,9 @@ function MeleePinkMist( _, e ) //first parameter isn't used, but function signat
 	e.attackerViewBody.Gib( gibModel, vec, false )
 
 	// [LJS]원래 코드. 스트라이더가 타이탄 gib 시 파일럿 혈흔.
-	// e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_PINKMIST, Vector( 0, 0, 0 ), 0 )
+	e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_PINKMIST, Vector( 0, 0, 0 ), 0 )
 	// 워게임 형식으로 변경.
-	// e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_NORMAL, Vector( 0, 0, 0 ), 0 )
+	e.attackerViewBody.Dissolve( ENTITY_DISSOLVE_NORMAL, Vector( 0, 0, 0 ), 0 )
 
 	if ( IsValid( e.attacker ) )
 	{
