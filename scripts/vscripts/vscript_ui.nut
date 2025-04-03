@@ -1807,8 +1807,9 @@ function OpenMenuWrapper( menu, focusDefault )
 		case "ClassicMenu":
 			OnOpenClassicMenu()
 			break
+
 		case "ServerBrowserMenu":
-			OnServerBrowserMenu(menu);
+			OnOpenServerBrowserMenu( menu );
 			break;
 
 		default:
@@ -1989,6 +1990,10 @@ function CloseMenuWrapper( menu )
 		case "CoopPartyCustomMenu":
 			OnCloseCoopPartyCustomMenu( menu )
 			break
+
+		case "ServerBrowserMenu":
+			OnCloseServerBrowserMenu( menu );
+			break;
 
 		default:
 			break

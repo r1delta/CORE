@@ -2,7 +2,8 @@ function main()
 {
     // Global functions
     Globalize( InitServerBrowserMenu )
-    Globalize( OnServerBrowserMenu )
+    Globalize( OnOpenServerBrowserMenu )
+    Globalize( OnCloseServerBrowserMenu )
     Globalize( RefreshServerList )
 	Globalize( OpenDirectConnectDialog_Activate )
     Globalize(UpdateShownPage)
@@ -385,7 +386,7 @@ function OnServerButtonFocused(button)
     menu.GetChild( "VersionLabel" ).SetText( playerCount + "/" + maxPlayers + " players" )
 }
 
-function OnServerBrowserMenu(menu)
+function OnOpenServerBrowserMenu(menu)
 {
     // Called when the menu is opened
     if ( !( "menu" in file ) )
@@ -411,8 +412,15 @@ function OnServerBrowserMenu(menu)
     // HudElement( "LobbyEnemyTeamBackground",panel ).SetVisible( false )
 
 
+    RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+
     // Update UI
     FilterAndUpdateList()
+}
+
+function OnCloseServerBrowserMenu( menu )
+{
+    DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
 }
 
 function SortServerListByName( button )
