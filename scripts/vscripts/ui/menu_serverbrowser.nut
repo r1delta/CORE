@@ -366,7 +366,7 @@ function OnServerButtonFocused(button)
         menu.GetChild("StarsLabel").SetText( "#LOBBY" )
 		menu.GetChild("NextMapImage").SetImage("../ui/menu/common/menu_background_neutral")
     } else {
-        menu.GetChild("StarsLabel").SetText( server.map_name )
+        menu.GetChild("StarsLabel").SetText( "#" + server.map_name )
         menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/lobby_image_" + server.map_name)
     }
 
