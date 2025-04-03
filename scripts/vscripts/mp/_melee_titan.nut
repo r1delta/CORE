@@ -195,7 +195,7 @@ function MeleeThread_AtlasVsTitanNPC( actions, action, attacker, target )
 
 			if ( IsValid( attacker ) )
 			{
-				//attacker.ClearInvulnerable()
+				attacker.ClearInvulnerable()
 				attacker.UnforceStand()
 				attacker.ClearParent()
 				attacker.ClearAnimViewEntity()
@@ -675,7 +675,6 @@ function MeleeAnimThrow( attacker, target, throwDuration )
 // ogre vs titan melee
 function MeleeThread_OgreVsTitan( actions, action, attacker, target )
 {
-	return
 	local attackerAnimation1p = "ogpov_melee_armrip_attacker"
 	local attackerAnimation3p = "og_melee_armrip_attacker"
 	local targetAnimation1p = "ogpov_melee_armrip_victim"
