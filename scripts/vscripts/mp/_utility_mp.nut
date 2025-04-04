@@ -1403,9 +1403,7 @@ function PlayerProgressionAllowed( player = null )
 	if ( !PlayerFullyConnected( player ) )
 		return false
 
-	if ( IsPrivateMatch() )
-		return false
-
+	
 	return true
 }
 
