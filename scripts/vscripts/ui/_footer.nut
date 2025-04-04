@@ -93,16 +93,16 @@ function UpdateFooterButtons( menuName = null )
 				footerData.gamepad.append( { label = "#B_BUTTON_SWITCH_PROFILE" } )
 
 
-            footerData.pc.append( { label = "Addons", func = OnAddonButton_Activate } )
-			footerData.gamepad.append( { label = "%[Y_BUTTON]% ^798B9800 Addons", func = OnAddonButton_Activate } )
+            footerData.pc.append( { label = "#ADDONS", func = OnAddonButton_Activate } )
+			footerData.gamepad.append( { label = "#GAMEPAD_ADDONS", func = OnAddonButton_Activate } )
 
 			if ( !Origin_IsEnabled() && !Origin_IsOnline() )
 			{
 				footerData.pc.append( { label = "#GAMEUI_DATACENTERNAME", func = OpenOfflineNameDialogButton_Activate } )
-				footerData.gamepad.append( { label = "%[B_BUTTON]% ^798B9800 Edit Username", func = OpenOfflineNameDialogButton_Activate } )
+				footerData.gamepad.append( { label = "#EDIT_USERNAME", func = OpenOfflineNameDialogButton_Activate } )
 			}
-            footerData.pc.append( { label = "Discord", func = OpenDiscordLink })
-			footerData.gamepad.append( { label = "%[X_BUTTON]% ^798B9800 Discord", func = OpenDiscordLink })
+            footerData.pc.append( { label = "#DISCORD", func = OpenDiscordLink })
+			footerData.gamepad.append( { label = "#GAMEPAD_DISCORD", func = OpenDiscordLink })
 			footerData.gamepad = AppendGamepadInviteLabels( footerData.gamepad )
 			break
 
@@ -311,12 +311,12 @@ function UpdateFooterButtons( menuName = null )
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
-            footerData.gamepad.append( { label = "#%[X_BUTTON]% ^798B9800Reload Paths",func = UpdateAddonPaths } )
-            footerData.pc.append( { label = "Reload", func = UpdateAddonPaths } )
-			
-			footerData.gamepad.append( { label = "#%[Y_BUTTON]% ^798B9800Reset UI",func = OpenAddonFolder } )
-			footerData.pc.append( { label = "Open Addons Folder", func = OpenAddonFolder } )
-			
+            footerData.gamepad.append( { label = "",func = UpdateAddonPaths } )
+            footerData.pc.append( { label = "#RELOAD", func = UpdateAddonPaths } )
+
+			footerData.gamepad.append( { label = "#OPEN_ADDONS_FOLDER_GAMEPAD",func = OpenAddonFolder } )
+			footerData.pc.append( { label = "#OPEN_ADDONS_FOLDER", func = OpenAddonFolder } )
+
 			break
 
 		case "OptionsMenu":
@@ -733,7 +733,7 @@ function UpdateCanSetDataCenter()
 		if ( uiGlobal.canSetDataCenter != lastResult )
 		{
 			if ( uiGlobal.canSetDataCenter ) { } // RegisterButtonPressedCallback( BUTTON_X, DataCenterDialog ) }
-			else {} 
+			else {}
 				//DeregisterButtonPressedCallback( BUTTON_X, DataCenterDialog )
 		}
 
