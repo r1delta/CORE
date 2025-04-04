@@ -55,6 +55,9 @@ function SendServerHeartbeat() {
     local players = []
     
     foreach(player in GetPlayerArray()){
+        if(player.IsBot()) {
+            continue; // Skip bots
+        }
         local data_struct = {}
         data_struct.name <- player.GetPlayerName();
         data_struct.gen <- player.GetGen();
