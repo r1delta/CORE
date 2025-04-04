@@ -54,7 +54,7 @@ function main()
 
 	AddCallback_GameStateEnter( eGameState.WinnerDetermined, Scavenger_WinnerDeterminedEnter )
 
-	//AddDeathCallback( "npc_titan", SpawnThrownOreNugget )
+	AddDeathCallback( "npc_titan", SpawnThrownOreNugget )
 
 }
 
