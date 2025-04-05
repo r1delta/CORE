@@ -185,6 +185,7 @@ function InitBurnCards( player )
 		{ cardRef = "bc_pilot_warning", new = false }
 		{ cardRef = "bc_free_build_time_1", new = false }
 		{ cardRef = "bc_double_agent", new = false }
+		{ cardRef = "bc_titan_melee_m2", new = false}
 	]
 
 	FillBurnCardDeckFromArray( player, pmDeck )
