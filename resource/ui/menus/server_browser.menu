@@ -423,7 +423,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -494,7 +494,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -568,7 +568,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -641,7 +641,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -714,7 +714,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -787,7 +787,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -860,7 +860,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -933,7 +933,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -1006,7 +1006,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -1079,7 +1079,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
@@ -1152,7 +1152,7 @@ resource/ui/menus/server_browser.menu
         {
             ControlName				Label
             InheritProperties		ServerListButton
-            wide 560
+            wide 240
 			tall 20
             ypos 0
 			xpos -25
