@@ -63,6 +63,8 @@ function ConnectToDirectServer( button )
 	if(str == "")
 		return
 
+    DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+
 	ClientCommand( "connect " + str )
 	CloseDialog( true )
 }
@@ -321,6 +323,8 @@ function ConnectToServer()
 {
     if (file.currentChoice >= uiGlobal.serversArrayFiltered.len())
         return
+
+    DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
 
     local server = uiGlobal.serversArrayFiltered[file.currentChoice]
     ClientCommand( "connect " + server.ip + ":" + server.port )
