@@ -67,7 +67,7 @@ resource/ui/menus/server_browser.menu
 			xpos					-11
 			ypos					-9
 			auto_wide_tocontents 	0
-			auto_tall_tocontents	0
+			auto_tall_tocontents	1
 			visible					1
 			labelText				""
 			font					NextMapFont
