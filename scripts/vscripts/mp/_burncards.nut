@@ -24,7 +24,6 @@ function main()
 }
 
 
-
 function ClientCommand_SetRankedPlayOnInGame(player) {
     player.SetPersistentVar("ranked.isPlayingRanked",1)
     player.SetIsPlayingRanked(1)
