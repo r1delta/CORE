@@ -537,10 +537,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton1
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -611,10 +611,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton2
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -684,10 +684,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton3
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -757,10 +757,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos 310
 			pin_to_sibling			ServerButton4
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -830,10 +830,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton5
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -903,10 +903,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton6
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -976,10 +976,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton7
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -1049,10 +1049,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton8
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -1122,10 +1122,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton9
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -1195,10 +1195,10 @@ resource/ui/menus/server_browser.menu
 			labelText				""
 			classname               "ServerMap"
 			textAlignment	center
-			wide 670
+			wide 80
 			tall 20
             ypos 0
-			xpos -15
+			xpos -310
 			pin_to_sibling			ServerButton10
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
