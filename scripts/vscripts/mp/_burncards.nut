@@ -281,7 +281,6 @@ function ChangeOnDeckBurnCardToActive(player) {
 }
 
 function PlayerRespawned(player) {    
-    printt("Player respawned");
     if(!player) {
         return;
     }
