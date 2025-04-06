@@ -69,6 +69,31 @@ function ClientCommand_OpenBurnCardMenu(player,...) {
 	return true
 }
 
+function BurnCardActivateThink( player, index )
+{
+	if ( IsTrainingLevel() )
+		return
+
+	if ( !IsAlive( player ) )
+		return
+
+	if ( player.s.inGracePeriod )
+		return
+
+	local cardRef = GetBurnCardFromSlot(player, index)
+	local cardIndex = GetBurnCardIndexByRef(cardRef)
+	while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) ) {
+		player.WaitSignal( "CE_FLAGS_CHANGED" )
+		SetPlayerBurnCardOnDeckIndex(player, index)
+		
+		printt("Waiting for CE_FLAGS_CHANGED")
+	}
+	printt("BurnCardActivateThink: ", player.GetPlayerName(), " index: ", index, " cardRef: ", cardRef, " cardIndex: ", cardIndex)
+	MakeActiveBurnCard(player, index)
+	RunBurnCardFunctions(player,cardRef);
+	return true
+}
+
 function ClientCommand_ActivateBurnCard(player, ...) {
 	if (vargc != 2)
 		return false
@@ -76,14 +101,8 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 
 	if (index == null || index < 0 || index >= MAX_BURN_CARDS)
 		return false
-	local cardRef = GetBurnCardFromSlot(player, index)
-	local cardIndex = GetBurnCardIndexByRef(cardRef)
-	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) ) {
-		MakeActiveBurnCard(player, index)
-		RunBurnCardFunctions(player,cardRef);
-		return true
-	}
-	SetPlayerBurnCardOnDeckIndex(player, index)
+	
+	thread BurnCardActivateThink( player, index )
 	return true
 }
 
