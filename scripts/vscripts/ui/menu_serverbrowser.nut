@@ -6,9 +6,9 @@ function main()
     Globalize( OnCloseServerBrowserMenu )
     Globalize( RefreshServerList )
 	Globalize( OpenDirectConnectDialog_Activate )
-    Globalize(UpdateShownPage)
-    Globalize(FilterAndUpdateList)
-    Globalize(FilterServerList)
+    Globalize( UpdateShownPage )
+    Globalize( FilterAndUpdateList )
+    Globalize( FilterServerList )
 
     // File-level variables
     file.menu <- null
@@ -17,7 +17,6 @@ function main()
     file.playerCountLabels <- null
     file.serversMap <- null
     file.serversGamemode <- null
-    file.currentChoice <- 0
     file.serverList <- []
     file.scrollOffset <- 0
     // uiGlobal.serversArrayFiltered <- []
@@ -26,7 +25,6 @@ function main()
     // Search/filter state
     file.searchTerm <- ""
     file.useSearch <- false
-
     // Direction for sorting
 
 }
@@ -110,6 +108,9 @@ function InitServerBrowserMenu( menu )
 
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnConnect", UIE_CLICK, OnDirectConnectDialogButtonConnect_Activate )
     AddEventHandlerToButton( GetMenu( "DirectConnectDialog" ), "BtnCancel", UIE_CLICK, OnDirectConnectDialogButtonCancel_Activate )
+
+    AddEventHandlerToButton( GetMenu( "EnterPasswordDialog" ), "BtnConnect", UIE_CLICK, OnEnterPasswordDialogButtonConnect_Activate )
+    AddEventHandlerToButton( GetMenu( "EnterPasswordDialog" ), "BtnCancel", UIE_CLICK, OnEnterPasswordDialogButtonCancel_Activate )
 
     file.searchBox = menu.GetChild( "BtnServerSearch" )
 	AddEventHandlerToButton( menu, "BtnServerSearch", UIE_LOSE_FOCUS, Bind( OnSearchBoxLooseFocus ) )
@@ -309,8 +310,16 @@ function OnServerButtonClicked(button)
 
     local server = uiGlobal.serversArrayFiltered[serverIndex]
 
-    ClientCommand( "connect " + server.ip + ":" + server.port )
+    uiGlobal.currentServerChoice <- serverIndex
 
+	local dialogData = {}
+	dialogData.header <- "#DIRECT_CONNECT_HEADER"
+    dialogData.detailsMessage <- "#DIRECT_CONNECT_MESSAGE"
+
+    if( server.has_password )
+        OpenChoiceDialog( dialogData, GetMenu( "EnterPasswordDialog" ) )
+    else
+        ClientCommand( "connect " + server.ip + ":" + server.port )
 }
 
 
@@ -321,12 +330,13 @@ function OnServerSelected()
 
 function ConnectToServer()
 {
-    if (file.currentChoice >= uiGlobal.serversArrayFiltered.len())
+    if (uiGloba.currentServerChoice >= uiGlobal.serversArrayFiltered.len())
         return
 
     DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
 
-    local server = uiGlobal.serversArrayFiltered[file.currentChoice]
+    local server = uiGlobal.serversArrayFiltered[uiGlobal.currentServerChoice]
+
     ClientCommand( "connect " + server.ip + ":" + server.port )
 }
 
@@ -404,8 +414,7 @@ function OnOpenServerBrowserMenu(menu)
     // Reset scroll and current selection
     file.scrollOffset = 0
     uiGlobal.scrollOffset <- 0
-    file.currentChoice = 0
-
+    uiGlobal.currentServerChoice <- 0
     // Clear any previous filter settings
     file.searchTerm = ""
     // printt(file.searchBox.GetTextEntryUTF8Text())
@@ -538,6 +547,8 @@ function DeregisterMouseWheelCallbacks()
     DeregisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
 }
 
+//
+
 function OnDirectConnectDialogButtonConnect_Activate( button )
 {
     local str = button.GetParent().GetChild( "LblConnectTo" ).GetTextEntryUTF8Text()
@@ -550,6 +561,25 @@ function OnDirectConnectDialogButtonConnect_Activate( button )
 }
 
 function OnDirectConnectDialogButtonCancel_Activate( button )
+{
+    CloseDialog( true )
+}
+
+function OnEnterPasswordDialogButtonConnect_Activate( button )
+{
+    local str = button.GetParent().GetChild( "LblConnectTo" ).GetTextEntryUTF8Text()
+
+	if(str == "")
+		return
+
+    local server = uiGlobal.serversArrayFiltered[uiGlobal.currentServerChoice]
+
+    ClientCommand( "password " + str )
+    ClientCommand( "connect " + server.ip + ":" + server.port )
+	CloseDialog( true )
+}
+
+function OnEnterPasswordDialogButtonCancel_Activate( button )
 {
     CloseDialog( true )
 }
