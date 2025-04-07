@@ -315,8 +315,8 @@ function OnServerButtonClicked(button)
     uiGlobal.currentServerChoice <- serverIndex
 
 	local dialogData = {}
-	dialogData.header <- "#DIRECT_CONNECT_HEADER"
-    dialogData.detailsMessage <- "#DIRECT_CONNECT_MESSAGE"
+	dialogData.header <- "#ENTER_PASSWORD_HEADER"
+    dialogData.detailsMessage <- "#ENTER_PASSWORD_MESSAGE"
 
     if( server.has_password )
         OpenChoiceDialog( dialogData, GetMenu( "EnterPasswordDialog" ) )
@@ -568,12 +568,12 @@ function OnDirectConnectDialogButtonCancel_Activate( button )
 }
 
 function OnEnterPasswordDialogButtonConnect_Activate( button )
-{   
+{
      if ( uiGlobal.activeDialog == null )
         return
 
-    local str = uiGlobal.lblEnterPswd.GetTextEntryUTF8Text()  
-    
+    local str = uiGlobal.lblEnterPswd.GetTextEntryUTF8Text()
+
     if ( str == null )
         return
     if(str == "")
