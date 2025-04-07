@@ -581,6 +581,8 @@ function OnEnterPasswordDialogButtonConnect_Activate( button )
 
     local server = uiGlobal.serversArrayFiltered[uiGlobal.currentServerChoice]
 
+    DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+
     ClientCommand( "password " + str )
     ClientCommand( "connect " + server.ip + ":" + server.port )
     CloseDialog( true )
