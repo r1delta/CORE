@@ -567,7 +567,7 @@ function OnDirectConnectDialogButtonCancel_Activate( button )
 
 function OnEnterPasswordDialogButtonConnect_Activate( button )
 {
-    local str = button.GetParent().GetChild( "LblConnectTo" ).GetTextEntryUTF8Text()
+    local str = button.GetParent().GetChild( "LblEnterPswd" ).GetTextEntryUTF8Text()
 
 	if(str == "")
 		return
