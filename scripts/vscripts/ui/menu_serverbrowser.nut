@@ -78,7 +78,9 @@ function InitServerBrowserMenu( menu )
     file.menu = menu
     uiGlobal.menu <- menu
     file.dialog <- GetMenu( "DirectConnectDialog" )
+    file.passwordDialog <- GetMenu( "EnterPasswordDialog" )
     file.lblConnectTo <- file.dialog.GetChild( "LblConnectTo" )
+    uiGlobal.lblEnterPswd <- file.passwordDialog.GetChild( "LblEnterPswd" )
     // Get menu elements
     file.buttons = GetElementsByClassname( menu, "ServerButton" )
     file.serversName = GetElementsByClassname( menu, "ServerName" )
@@ -566,21 +568,22 @@ function OnDirectConnectDialogButtonCancel_Activate( button )
 }
 
 function OnEnterPasswordDialogButtonConnect_Activate( button )
-{
-    local txt = uiGlobal.activeDialog.GetChild( "LblEnterPswd" )
-    if ( txt == null )
+{   
+     if ( uiGlobal.activeDialog == null )
         return
-    local str = txt.GetTextEntryUTF8Text()  
+
+    local str = uiGlobal.lblEnterPswd.GetTextEntryUTF8Text()  
+    
     if ( str == null )
         return
-	if(str == "")
-		return
+    if(str == "")
+        return
 
     local server = uiGlobal.serversArrayFiltered[uiGlobal.currentServerChoice]
 
     ClientCommand( "password " + str )
     ClientCommand( "connect " + server.ip + ":" + server.port )
-	CloseDialog( true )
+    CloseDialog( true )
 }
 
 function OnEnterPasswordDialogButtonCancel_Activate( button )
