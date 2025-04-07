@@ -567,8 +567,12 @@ function OnDirectConnectDialogButtonCancel_Activate( button )
 
 function OnEnterPasswordDialogButtonConnect_Activate( button )
 {
-    local str = button.GetParent().GetChild( "LblEnterPswd" ).GetTextEntryUTF8Text()
-
+    local txt = uiGlobal.activeDialog.GetChild( "LblEnterPswd" )
+    if ( txt == null )
+        return
+    local str = txt.GetTextEntryUTF8Text()  
+    if ( str == null )
+        return
 	if(str == "")
 		return
 
