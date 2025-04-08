@@ -579,11 +579,12 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
 			Stats_IncrementStat( victim, "deaths_stats", "byGrunts", 1.0 )
 
 
-/*        if ( attacker.IsTitan() && attacker.IsNPC() ) {           
-           	local titanSettings = attacker.s.titanSettings
-            local titanName = replace_all( titanSettings, "titan_", "" )
-			Stats_IncrementStat( attacker, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
-        }*/
+        // if ( attacker.IsTitan() && attacker.IsNPC() ) {     
+        //     printt("npc titan killed")      
+        //    	local titanSettings = attacker.s.titanSettings
+        //     local titanName = replace_all( titanSettings, "titan_", "" )
+		// 	Stats_IncrementStat( victim, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
+        // }
         
     }
 

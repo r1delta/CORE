@@ -1349,7 +1349,6 @@ function IsPlayerMalePilot( player )
 
 	local playerClassDataTable = GetPlayerClassDataTable( player, level.pilotClass )
 	local tokens = split( playerClassDataTable.playerSetFile, "_" )
-	printt("IsPlayerMalePilot: " + player + " " + playerClassDataTable.playerSetFile + " " + tokens )
 	foreach ( token in tokens )
 	{
 		if(token == "female") {
