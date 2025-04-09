@@ -116,7 +116,7 @@ function RefillWeaponAmmo(player) {
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
             }
 		}	        
-        wait 5;
+        wait 8;
     }
 } 
 
