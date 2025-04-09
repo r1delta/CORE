@@ -558,6 +558,9 @@ function OnDirectConnectDialogButtonConnect_Activate( button )
 	if(str == "")
 		return
 
+    if ( !regexp( "^[0-9a-zA-Z:.]+$" ).match( str ) )
+        return
+
     ClientCommand( "connect " + str )
 	CloseDialog( true )
 }
