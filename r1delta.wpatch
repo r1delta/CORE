@@ -294,11 +294,11 @@ server.dll,text,0x40F659,75,EB
 ; steal fov patches from bme 
 engine.dll,rdata,0x6C6D34,66 66 A6 3F,66 66 67 40
 client.dll,rdata,0x9CDB74,66 66 A6 3F,66 66 67 40
-;engine.dll,rdata,0x31a1c4c,00 00 00 00,66 66 67 40
-;client.dll,rdata,0x387752C,00 00 00 00,66 66 67 40
-;client.dll,rdata,0x7F9844,66 66 A6 3F,66 66 67 40
+engine.dll,rdata,0x31a1c4c,00 00 00 00,66 66 67 40
+client.dll,rdata,0x387752C,00 00 00 00,66 66 67 40
+client.dll,rdata,0x7F9844,66 66 A6 3F,66 66 67 40
 materialsystem_dx11.dll,rdata,0x191734,66 66 A6 3F,66 66 67 40
-;materialsystem_dx11.dll,rdata,0x3B95CC,00 00 00 00,66 66 67 40
+materialsystem_dx11.dll,rdata,0x3B95CC,00 00 00 00,66 66 67 40
 
 ; fix keyvalues exploit
 engine.dll,text,0x2033A3,3B C1 77 0A 48 B8 F0 FF FF FF FF FF FF 0F 48 83 E0 F0,83 E0 F0 48 3D FF FF 00 00 72 07 48 C7 C0 04 00 00 00 

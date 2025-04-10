@@ -133,7 +133,7 @@ function SetBotTitanLoadout( player )
 	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
 	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
 	table.core <- loadout.core
-        table.voiceChoice <- "titanos_betty"
+    table.voiceChoice <- "titanos_betty"
 	table.liverycode <- null
 	table.liverycolor0 <- null
 	table.liverycolor1 <- null
@@ -231,6 +231,7 @@ function InitTitanLoadoutFromPreset( player, loadoutIndex, presetIndex )
 	player.SetPersistentVar( "titanLoadouts[" + loadoutIndex + "].passive1", titanLoadouts[presetIndex].passive1 )
 	player.SetPersistentVar( "titanLoadouts[" + loadoutIndex + "].passive2", titanLoadouts[presetIndex].passive2 )
 	player.SetPersistentVar( "titanLoadouts[" + loadoutIndex + "].decal", null )
+	player.SetPersistentVar( "titanLoadouts[" + loadoutIndex + "].voiceChoice", titanLoadouts[presetIndex].voiceChoice )
 }
 
 function ClientCommand_SetPresetPilotLoadout( player, ... )
