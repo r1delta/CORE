@@ -203,9 +203,52 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 
 		player.SetPlayerSettings( table.playerSetFile )
 		player.SetPlayerPilotSettings( table.playerSetFile )
+		// *** START NEW MODEL OVERRIDE CODE ***
+		// Now, explicitly determine and set the correct model using the detour function
+		local modelFieldName
+		if ( player.GetTeam() == TEAM_MILITIA )
+		{
+			modelFieldName = "bodymodel_militia"
+		}
+		else // Assume IMC or other default
+		{
+			modelFieldName = "bodymodel_imc"
+		}
+
+		// Use the provided detour function to get the correct model file name
+		local correctModelName = GetPlayerSettingsFieldForClassName( table.playerSetFile, modelFieldName )
+
+		// Check if we got a valid model name
+		if ( correctModelName != null && correctModelName != "" )
+		{
+			// Explicitly set the player's model
+			printt( "Wallrun_GiveLoadout: Setting model for player " + player + " (Team: " + player.GetTeam() + ") using " + modelFieldName + " from " + table.playerSetFile + " -> " + correctModelName )
+			player.SetModel( correctModelName )
+			local skin = 0
+			if ( table.playerSetFile.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
+				skin = player.GetTeam() == TEAM_MILITIA ? 1 : 0
+			else
+				skin = 0
+
+			player.SetSkin( skin )
+			printt("SET SKIN " + skin)
+
+		}
+		else
+		{
+			// Log a warning if the model couldn't be determined
+			printt( "Wallrun_GiveLoadout: WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + table.playerSetFile + "' and field '" + modelFieldName + "'" )
+			// Consider falling back to a default model if needed:
+			// player.SetModel( "models/humans/pilots/imc_pilot_light.mdl" )
+		}
+
 	}
 
 	local head = player.GetPlayerHeadIndex()
+	if ( table.playerSetFile.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
+		head = player.GetTeam() == TEAM_MILITIA ? 1 : 0
+	else
+		head = 0
 	SelectHead(player, head)
 
 	// if (level.onChangeLoadout)
@@ -432,6 +475,10 @@ function Wallrun_CreateCopyOfPilotModel( player )
 
 	local skin
 	local head = player.GetPlayerHeadIndex()
+	if ( table.playerSetFile.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
+		head = player.GetTeam() == TEAM_MILITIA ? 1 : 0
+	else
+		head = 0
 
 	if ( PlayerIsFemale( player ) && !PlayerHasSpectreCamo( player ) )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
 		skin = player.GetPlayerModelSkinIndex()
