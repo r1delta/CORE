@@ -453,7 +453,12 @@ function OnOpenServerBrowserMenu(menu)
     // HudElement( "LobbyEnemyTeamBackground",panel ).SetVisible( false )
 
 
-    RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+    try {
+        DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+        RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+    } catch ( e )
+    { }
+
 
     // Update UI
     FilterAndUpdateList()
