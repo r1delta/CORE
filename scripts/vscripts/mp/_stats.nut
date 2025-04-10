@@ -202,7 +202,15 @@ function HandleDistanceAndTimeStats() {
         {
             if(!IsValid(player))
                 continue
-         
+            if ( !("lastPosForDistanceStatValid" in player.s) ) {
+                // Value hasn't been initialized yet, likely player just joined.
+                // Initialize it now or just skip this player for this tick.
+                // Initializing here might be safer:
+                player.s.lastPosForDistanceStatValid <- false 
+                player.s.lastPosForDistanceStat <- player.GetOrigin() // Also init the position
+                continue // Skip distance calculation for this tick
+            }
+
             if ( player.s.lastPosForDistanceStatValid ) {
                 local distInches = Distance2D( player.s.lastPosForDistanceStat, player.GetOrigin() )
 				local distMiles = distInches / 63360.0

@@ -531,3 +531,11 @@ server.dll,text,0x125c47,74 07,90 90
 ; fix *DEAD* (note: this will break hudchat_dead_can_only_talk_to_other_dead oh well)
 ; server.dll,text,0x1487E3,74 29,90 90
 ; server.dll,text,0x1488BD,74 2F,90 90
+
+; update ban panel every 5 seconds instead of every 5 minutes
+; hope this case sensitivity doesnt break on wine
+AdminServer.dll,rdata,0x1583A8,00 00 96 43,00 00 20 41
+adminserver.dll,rdata,0x1583A8,00 00 96 43,00 00 20 41
+
+; change banned by server print to reject
+engine.dll,text,0xE0640,41 B9 42 00 00 00,41 B9 4B 00 00 00 
