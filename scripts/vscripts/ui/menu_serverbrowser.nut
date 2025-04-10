@@ -466,7 +466,10 @@ function OnOpenServerBrowserMenu(menu)
 
 function OnCloseServerBrowserMenu( menu )
 {
-    DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+    try {
+        DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+    } catch ( e )
+    { }
 }
 
 function SortServerListByName( button )
