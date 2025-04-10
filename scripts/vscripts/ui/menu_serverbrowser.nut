@@ -9,6 +9,8 @@ function main()
     Globalize( UpdateShownPage )
     Globalize( FilterAndUpdateList )
     Globalize( FilterServerList )
+    Globalize( UpdateAndShowServerDescription )
+    Globalize( HideServerDescription )
 
     // File-level variables
     file.menu <- null
@@ -388,6 +390,11 @@ function OnServerButtonFocused(button)
     }
 
     // Update preview panel
+    if( server.description.len() )
+        UpdateAndShowServerDescription( server.description )
+    else
+        HideServerDescription()
+
     menu.GetChild( "NextMapName" ).SetText( server.host_name )
     menu.GetChild( "NextMapName" ).Show()
     menu.GetChild( "NextMapDesc" ).SetText( "#GAMEMODE_" + server.game_mode )
@@ -400,6 +407,25 @@ function OnServerButtonFocused(button)
     local playerCount = server.players.len()
     local maxPlayers = server.max_players
     menu.GetChild( "VersionLabel" ).SetText( playerCount + "/" + maxPlayers + " players" )
+}
+
+function UpdateAndShowServerDescription( description )
+{
+    local menu = uiGlobal.menu
+    menu.GetChild( "DescriptionMessage" ).SetText( description )
+    menu.GetChild( "DescriptionBox" ).SetVisible( true )
+    menu.GetChild( "DescriptionTitle" ).SetVisible( true )
+    menu.GetChild( "DescriptionMessage" ).SetVisible( true )
+
+}
+
+function HideServerDescription()
+{
+    local menu = uiGlobal.menu
+    menu.GetChild( "DescriptionMessage" ).SetText( "" )
+    menu.GetChild( "DescriptionBox" ).SetVisible( false )
+    menu.GetChild( "DescriptionTitle" ).SetVisible( false )
+    menu.GetChild( "DescriptionMessage" ).SetVisible( false )
 }
 
 function OnOpenServerBrowserMenu(menu)
