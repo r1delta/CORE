@@ -455,10 +455,10 @@ function OnOpenServerBrowserMenu(menu)
 
     try {
         DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
-        RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
     } catch ( e )
     { }
 
+    RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
 
     // Update UI
     FilterAndUpdateList()
