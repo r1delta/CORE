@@ -367,13 +367,21 @@
 	if ( IsMultiplayer() && GetClassicMPMode() && !IsLobby() )
 		ClassicMP_TryDefaultIntroSetup()
 
-	if ( "EntitiesWillLoad" in getroottable() )
-		EntitiesWillLoad()
-
-	if ( !IsMultiplayer() )
+	function LobbyRestartThink()
 	{
-		function CodeCallback_GetWeaponDamageSourceId( weapon )
-		{
-			return 0
-		}
+		// Wait for 6 hours (6 * 60 * 60 seconds)
+		wait 21600
+		printl( "6 hour uptime reached, returning to lobby." )
+		ServerCommand( "map mp_lobby" )
+	}
+
+	// Lobby specific convar settings and restart timer
+	if ( IsLobby() )
+	{
+		ServerCommand( "sv_kickPlayersTooFarInFuture 0" )
+	}
+	else
+	{
+		ServerCommand( "sv_kickPlayersTooFarInFuture 1" )
+		thread LobbyRestartThink()
 	}
