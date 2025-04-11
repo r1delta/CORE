@@ -460,8 +460,6 @@ function OnOpenServerBrowserMenu(menu)
 
     RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
 
-
-
     // Update UI
     FilterAndUpdateList()
 }
