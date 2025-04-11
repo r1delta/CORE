@@ -1141,19 +1141,7 @@ function PrintServerGameHistory()
 
 function GetRecentMapModeCombo()
 {
-	// used for dev, to find the last map/mode we played
-	for ( local i = 1; i < 5; i++ )
-	{
-		local map = GameRules.GetRecentMap( i )
-		local mode = GameRules.GetRecentGameMode( i )
-
-		if ( map == "mp_lobby" )
-			continue
-
-		return { map = map, mode = mode }
-	}
-
-	return { map = "", mode = "" }
+	return { map = GetConVarString("host_mostRecentMap"), mode = GetConVarString("mp_gamemode") }
 }
 
 function GetNextComboInOrder()
