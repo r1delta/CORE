@@ -901,14 +901,14 @@ function PostDeathThread( player, damageInfo )
 		// execution can throw you out of the map
 		rematchOrigin = attacker.GetOrigin()
 	}
-	else 
+	else
 	{
 		rematchOrigin = player.GetOrigin()
 	}
 		MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player,null)
 	}
 
-	
+
 	local attackerViewIndex = attacker.GetIndexForEntity()
 
 	local timeSinceAttackerSpawned = attacker.GetTimeSinceSpawning()
@@ -1007,7 +1007,7 @@ function PostDeathThread( player, damageInfo )
 	if ( !IsValid( player ) )
 		return
 
-	
+
 	// standard delay to this point is ~7.5 seconds
 	WaitForRespawnDelay( player, timeOfDeath )
 
@@ -1902,12 +1902,12 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 				}
 			}
 		}
-		
+
 		if( rematchOrigin != null )
 		{
 			spawnPoint =  rematchOrigin
 		}
-		
+
 
 		// stop recording spawn data
 		StoreSpawnData( spawnPoint )
@@ -3375,7 +3375,7 @@ function SaveScoreForMapStars( player )
 {
 	Assert( IsValid( player ) )
 	Assert( IsPlayer( player ) )
-	if ( IsPrivateMatch() )
+	if ( IsPrivateMatch() && !IsDelta() )
 		return
 
 	if ( player.IsBot() )

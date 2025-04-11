@@ -51,7 +51,7 @@ function CBasePlayer::GetPersistentVar(key) {
     local value = GetPersistentStringForClient(this, key, "pdata_null")
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
-    
+
     if (type in pdef_enums) {
         return ((value == "pdata_null") || !PersistenceEnumValueIsValid(type, value)) ? null : value
     } else if (type == "int") {
@@ -77,7 +77,7 @@ function CBasePlayer::SetPersistentVar(key, value) {
     local serializedValue = (value == null) ? "pdata_null" : value
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
-    
+
     if (serializedValue != "pdata_null") {
         if (type == "int") {
             serializedValue = value.tostring()
@@ -676,7 +676,7 @@ function CBasePlayer::GetActiveBurnCardIndex()
 
 function _GetBurnCardPersPlayerDataPrefix()
 {
-	if ( IsPrivateMatch() )
+	if ( IsPrivateMatch() && !IsDelta() )
 		return "pm_bc"
 	else
 		return "bc"
@@ -688,7 +688,7 @@ function CBasePlayer::SetActiveBurnCardIndex( val )
 	this.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix()  + ".uiActiveBurnCardIndex", val + 1 )
 	// this.SetPersistentVar( "activeBCID", val + 1 )
 	getroottable().SetActiveBurnCardIndexForPlayer( this, val + 1 )
-	
+
 }
 
 function CBasePlayer::SetIsPlayingRanked( isPlayingRanked )

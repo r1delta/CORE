@@ -84,7 +84,7 @@ function main()
 			// IncludeFile( "mp/_ranked_gamemodes" )
 
 		}
-		
+
 		else
 		{
 			Globalize( GetContributionHint )
@@ -581,7 +581,7 @@ else
 		if ( IsMenuLevel() )
 			return false
 
-		if ( IsPrivateMatch() )
+		if ( IsPrivateMatch() && !IsDelta() )
 			return false
 
 		if ( !GetCurrentPlaylistVarInt( "ranking_supported", 0 ) )
@@ -1235,7 +1235,7 @@ Globalize( GetGoalIndexFromScore )
 
 function MatchSupportsRankedPlay( player = null )
 {
-	if( IsPrivateMatch() )
+	if( IsPrivateMatch() && !IsDelta() )
 		return false
 
 	if ( !PlaylistSupportsRankedPlay() )

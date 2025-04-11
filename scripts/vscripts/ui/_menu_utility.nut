@@ -959,7 +959,7 @@ function UpdateBurnCardDeckStatus( textLabel, time = 2.0 )
 
 function RankedPlayAvailable()
 {
-	if ( IsPrivateMatch() )
+	if ( IsPrivateMatch() && !IsDelta() )
 		return false
 
 	return PlaylistSupportsRankedPlay() && GameModeSupportsRankedPlay()

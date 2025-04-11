@@ -821,7 +821,7 @@ function ShouldShowRankInfo( mapName, gameMode )
 	if ( gameMode == null )
 		return false
 
-	if ( IsPrivateMatch() )
+	if ( IsPrivateMatch() && !IsDelta() )
 		return false
 
 	if ( !GameModeSupportsRankedPlay() )
