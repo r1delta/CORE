@@ -623,8 +623,8 @@ function BurnCards_InGame_FooterData( footerData )
 		return
 
 	local progress = GetPersistentVar( "burncardStoryProgress" )
-	if ( UsingAlternateBurnCardPersistence() )
-		progress = BURNCARD_STORY_PROGRESS_COMPLETE
+	// if ( UsingAlternateBurnCardPersistence() )
+	// 	progress = BURNCARD_STORY_PROGRESS_COMPLETE
 
 	if ( progress == BURNCARD_STORY_PROGRESS_INTRO )
 	{
@@ -647,8 +647,8 @@ function BurnCards_InGame_FooterData( footerData )
 
 	footerData.pc.append( { label = "#BACK", func = Bind( CloseTopMenuButton ) }  )
 
-	if ( UsingAlternateBurnCardPersistence() )
-		return
+	// if ( UsingAlternateBurnCardPersistence() )
+	// 	return
 
 	local deckSize = GetBurnCardDeck().len()
 	if ( deckSize > 0 )
