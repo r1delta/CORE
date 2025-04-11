@@ -10,15 +10,10 @@
 		"name" "Map"
 		"type" "customlist"
 	}
-	"sv_lan"
+	"launchplaylist"
 	{
-		"name" "Network"
-		"type" "enumeration"
-		"list"
-		{
-			"0" "Internet"
-			"1"	"LAN"
-		}
+		"name" "Playlist"
+		"type" "customlist"
 	}
 	"rcon_password"
 	{
@@ -30,12 +25,7 @@
 		"name" "Player Password"
 		"type" "string"
 	}
-	"mapcycle"
-	{
-		"name" "Map Cycle"
-		"type" "custom"
-	}
-//	"MOTD"
+//	"motd"
 //	{
 //		"name" "MOTD"
 //		"type" "multistring"
