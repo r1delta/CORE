@@ -1904,10 +1904,11 @@ Globalize( DoesPlayerHaveActiveNonTitanBurnCard )
 function UsingAlternateBurnCardPersistence()
 {
 	if ( IsUI() )
-		return IsPrivateMatch() && GetLobbyTypeScript() == eLobbyType.PRIVATE_MATCH
+		return ( IsPrivateMatch() && !IsDelta() ) && GetLobbyTypeScript() == eLobbyType.PRIVATE_MATCH
 	else
-		return IsPrivateMatch()
+		return ( IsPrivateMatch() && !IsDelta() )
 }
+
 Globalize( UsingAlternateBurnCardPersistence )
 
 function GetSellCostOfRarity( rarity )

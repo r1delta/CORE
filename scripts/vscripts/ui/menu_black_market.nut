@@ -1168,7 +1168,7 @@ function ServerCallback_ShopOpenBurnCardPack(...)
 		return false
 	local cardIndices = []
 	for ( local i = 0; i < vargc; i++ )
-	{   
+	{
         printt( vargv[i] )
 		// The server fills in unused params with null so skip them
 		if ( vargv[i] != null )
@@ -1391,7 +1391,7 @@ function UpdateBlackMarketButtonText( buttonOverride = null )
 		button.SetEnabled( false )
 	}
 
-	if ( IsPrivateMatch() )
+	if ( IsPrivateMatch() && !IsDelta() )
 	{
 		button.Hide()
 		button.SetEnabled( false )
