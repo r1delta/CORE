@@ -25,6 +25,16 @@
 		"name" "Player Password"
 		"type" "string"
 	}
+	"hide_server"
+	{
+		"name" "Server Visibility"
+		"type" "enumeration"
+		"list"
+		{
+			"0"	"Visible"
+			"1"	"Invisible"
+		}
+	}
 //	"motd"
 //	{
 //		"name" "MOTD"
