@@ -237,7 +237,7 @@ function HandleDistanceAndTimeStats() {
                 // GetEnemyRodeoPlayer(titan)
                 // GetFriendlyRodeoPlayer(titan)
 
-                if(player.GetTitanSoulBeingRodeoed() != null) {
+                if(player.GetTitanSoulBeingRodeoed() != null && player.GetTitanSoulBeingRodeoed().GetBossPlayer() != null) {
                     local soul = player.GetTitanSoulBeingRodeoed()
                     local titan = soul.GetBossPlayer()
                     if(titan.GetTeam() == player.GetTeam()) {
