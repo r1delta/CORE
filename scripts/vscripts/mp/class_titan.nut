@@ -137,7 +137,7 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 	}
 
 	//Existing Titan is to prevent disembark and eject from starting a burn card that's been put on deck after the Titan has been called in.
-	
+
 	if ( table.primaryWeapon )
 		titan.GiveWeapon( table.primaryWeapon, table.primaryWeaponMods )
 
@@ -279,6 +279,12 @@ function SetTitanOSForPlayer( player )
 	local playerClassDataTable = GetPlayerClassDataTable( player, "titan" )
 	local titanLoadoutVoice = playerClassDataTable.voiceChoice
 	local titanOSEnumIndex = PersistenceGetEnumIndexForItemName( "titanOS", titanLoadoutVoice )
+
+	if ( titanOSEnumIndex == -1 )
+	{
+		titanOSEnumIndex = 0
+	}
+
 	player.SetVoicePackIndex ( titanOSEnumIndex )
 }
 
