@@ -27,7 +27,7 @@ function UpdatePlayerStat(player,category,alias,amount = 1) {
 }
 
 function OnRodeoStarted(player) {
-    
+
 }
 
 function Stats_EndRound() {
@@ -78,7 +78,7 @@ function Stats_EndRound() {
         }
 
         local pvpMatchRatio = 0.0
-        
+
         if(playerDeaths > 0)
             pvpMatchRatio = playerKills / playerDeaths
         else {
@@ -99,7 +99,7 @@ function Stats_EndRound() {
         }
 
         local lifetimePvpRatio = 0.0
-        
+
         if(totalPvpDeaths > 0)
             lifetimePvpRatio = totalPvpKills / totalPvpDeaths
         else {
@@ -123,11 +123,11 @@ function Stats_EndRound() {
 }
 
 function OnDamaged(ent,damageInfo) {
-    
+
     local inflictor = damageInfo.GetInflictor()
     if(inflictor == null)
         return
-    
+
     if(inflictor.IsPlayer()) {
         local weapon = inflictor.GetActiveWeapon()
         if(weapon == null)
@@ -146,7 +146,7 @@ function OnDamaged(ent,damageInfo) {
 
         if(IsValidHeadShot(damageInfo,ent))
             Stats_IncrementStat( inflictor, "weapon_stats", "headshots", 1.0, weaponName )
-        
+
     }
 }
 
@@ -154,7 +154,7 @@ function AddCallback_OnWeaponAttack( callbackFunc)
 {
     Assert( "onWeaponAttackCallbacks" in level )
 	Assert( type( this ) == "table", "AddCallback_OnWeaponAttack can only be added on a table. " + type( this ) )
-	
+
 	local name = FunctionToString( callbackFunc )
     Assert( !( name in level.onWeaponAttackCallbacks ), "Already added " + name + " with AddCallback_OnPlayerRespawned" )
 
@@ -183,7 +183,7 @@ function OnWeaponAttack(player,weapon,weaponName,shotsFired) {
             return
         }
         Stats_IncrementStat( player, "weapon_stats", "shotsFired", 1.0, weaponName )
-    
+
 }
 
 
@@ -191,7 +191,7 @@ function HandleDistanceAndTimeStats() {
     if(IsLobby())
         return
 
-    while(GetGameState() < eGameState.Playing ) 
+    while(GetGameState() < eGameState.Playing )
         wait 0
 
     local lastTickTime = Time()
@@ -206,7 +206,7 @@ function HandleDistanceAndTimeStats() {
                 // Value hasn't been initialized yet, likely player just joined.
                 // Initialize it now or just skip this player for this tick.
                 // Initializing here might be safer:
-                player.s.lastPosForDistanceStatValid <- false 
+                player.s.lastPosForDistanceStatValid <- false
                 player.s.lastPosForDistanceStat <- player.GetOrigin() // Also init the position
                 continue // Skip distance calculation for this tick
             }
@@ -214,12 +214,12 @@ function HandleDistanceAndTimeStats() {
             if ( player.s.lastPosForDistanceStatValid ) {
                 local distInches = Distance2D( player.s.lastPosForDistanceStat, player.GetOrigin() )
 				local distMiles = distInches / 63360.0
-                
+
                 Stats_IncrementStat( player, "distance_stats", "total", distMiles )
                 if(player.IsTitan()) {
                     Stats_IncrementStat( player, "distance_stats", "asTitan", distMiles )
 	                local titanDataTable = GetPlayerClassDataTable( player, "titan" )
-	                local titanSettings = titanDataTable.playerSetFile                    
+	                local titanSettings = titanDataTable.playerSetFile
 		            titanSettings = titanSettings.slice( 0, 1 ).toupper() + titanSettings.slice( 1, titanSettings.len() )
                     Stats_IncrementStat( player, "distance_stats", "as" + titanSettings, distMiles )
                 } else {
@@ -233,19 +233,18 @@ function HandleDistanceAndTimeStats() {
                     Stats_IncrementStat( player, "distance_stats", "ziplining", distMiles )
 				else if ( !player.IsOnGround() )
 					Stats_IncrementStat( player, "distance_stats", "inAir", distMiles )
-            
+
                 // GetEnemyRodeoPlayer(titan)
                 // GetFriendlyRodeoPlayer(titan)
 
-                if(player.GetTitanSoulBeingRodeoed() != null && player.GetTitanSoulBeingRodeoed().GetBossPlayer() != null) {
+                if ( IsValid( player.GetTitanSoulBeingRodeoed() ) && IsValid( player.GetTitanSoulBeingRodeoed().GetBossPlayer() ) )
+                {
                     local soul = player.GetTitanSoulBeingRodeoed()
                     local titan = soul.GetBossPlayer()
-                    if(titan.GetTeam() == player.GetTeam()) {
+                    if ( titan.GetTeam() == player.GetTeam() )
                         Stats_IncrementStat( player, "distance_stats", "onFriendlyTitan", distMiles )
-                    }
-                    else {
+                    else
                         Stats_IncrementStat( player, "distance_stats", "onEnemyTitan", distMiles )
-                    }
                 }
             }
             player.s.lastPosForDistanceStat = player.GetOrigin()
@@ -322,7 +321,7 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
 
                 local burncards = GetChallengeBurnCardRewards(challRef,tier,player)
                 local deck = GetPlayerBurnCardDeck( player )
-                if(deck.len() < 99) { 
+                if(deck.len() < 99) {
                     foreach( card in burncards ) {
                         deck.append( { cardRef = card, new = true } )
                     }
@@ -358,7 +357,7 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
         return
     }
 
-   
+
 	local fixedSaveVar
 	local timesPlayed = 0
     local mapName = GetMapName()
@@ -372,11 +371,11 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
     if ( gmIndex == -1 || mapIndex == -1 )
         return
     local currentValue = player.GetPersistentVar(fixedSaveVar)
-    
+
     player.SetPersistentVar(fixedSaveVar, currentValue + value)
 
     UpdateChallengeData(player,category,statName,value,weaponName)
-   
+
 
 }
 
@@ -410,10 +409,10 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 	{
 		if ( !attacker.IsTitan() ) // Normal NPCs case
 			return
-		
+
 		if ( !IsPetTitan( attacker ) ) // NPC Titans case
 			return
-		
+
 		player = attacker.GetTitanSoul().GetBossPlayer()
 		playerPetTitan = attacker
 	}
@@ -433,7 +432,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
     if ( attacker.IsPlayer() ) {
         Stats_IncrementStat( attacker, "kills_stats", "total",  1 )
-        if(victim.IsPlayer()) 
+        if(victim.IsPlayer())
             Stats_IncrementStat( attacker, "game_stats", "pvp_kills_by_mode", 1 )
 
         if(IsPilot(victim))
@@ -453,12 +452,12 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMelee", 1.0 )
 
 	    if ( victim.IsPlayer() && damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.human_melee )
-		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMeleePilot", 1.0 )      
-    
-         if(GetActiveBurnCard( attacker ) != null) 
-            Stats_IncrementStat( attacker, "kills_stats", "totalWhileUsingBurnCard", 1.0 )      
+		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMeleePilot", 1.0 )
 
-        
+         if(GetActiveBurnCard( attacker ) != null)
+            Stats_IncrementStat( attacker, "kills_stats", "totalWhileUsingBurnCard", 1.0 )
+
+
     }
     local victimIsPilot = IsPilot( victim )
     local victimIsTitan = victim.IsTitan()
@@ -504,12 +503,12 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 		Stats_IncrementStat( player, "kills_stats", "whileWallhanging",  1.0 )
 
     if( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_step)
-      { 
+      {
          Stats_IncrementStat( player, "kills_stats", "titanStepCrush", 1.0 )
          if(victimIsPilot)
             Stats_IncrementStat( player, "kills_stats", "titanStepCrushPilot", 1.0 )
       }
-    
+
     // 			Stats_IncrementStat( attacker, "kills_stats","titanMeleePilot",1.0)
 
     if(!player.IsTitan() && damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_melee) {
@@ -518,11 +517,11 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
     if ( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_fall  )
 		        Stats_IncrementStat( player, "kills_stats", "titanFallKill", 1.0 )
-	
+
     if ( damageSource == eDamageSourceId.titan_execution ) {
         local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
         local titanSettings = titanDataTable.playerSetFile
-        local titanName = replace_all( titanSettings, "titan_", "" )	
+        local titanName = replace_all( titanSettings, "titan_", "" )
 		titanName = titanName.slice( 0, 1 ).toupper() + titanName.slice( 1, titanName.len() )
         Stats_IncrementStat( player, "kills_stats", "titanExocution" + titanName, 1.0 )
     }
@@ -536,7 +535,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 	// petTitanKillsGuardMode
 	if ( attacker == playerPetTitan && player.GetPetTitanMode() == eNPCTitanMode.STAY )
 		Stats_IncrementStat( player, "kills_stats", "petTitanKillsGuardMode",  1.0 )
-    
+
 	// pilotKillsAsTitan
 	if ( victimIsPilot && attacker.IsTitan() )
 		Stats_IncrementStat( player, "kills_stats", "pilotKillsAsTitan", 1.0 )
@@ -552,7 +551,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 }
 
 function HandleDeathStats( victim, attacker, damageInfo ) {
-   
+
    if(!IsValid(victim) || !victim.IsPlayer())
         return
 
@@ -569,7 +568,7 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
 		// byPilots
 		if ( IsPilot( attacker ) )
 			Stats_IncrementStat( victim, "deaths_stats", "byPilots", 1.0 )
-  
+
         // byTitans
         if ( attacker.IsTitan() && !attacker.IsNPC() ) {
             local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
@@ -587,19 +586,19 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
 			Stats_IncrementStat( victim, "deaths_stats", "byGrunts", 1.0 )
 
 
-        // if ( attacker.IsTitan() && attacker.IsNPC() ) {     
-        //     printt("npc titan killed")      
+        // if ( attacker.IsTitan() && attacker.IsNPC() ) {
+        //     printt("npc titan killed")
         //    	local titanSettings = attacker.s.titanSettings
         //     local titanName = replace_all( titanSettings, "titan_", "" )
 		// 	Stats_IncrementStat( victim, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
         // }
-        
+
     }
 
     if(victim.IsPlayer())
         Stats_IncrementStat( victim, "deaths_stats", "asPilot", 1.0 )
 
-    
+
     if( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.suicide)
         Stats_IncrementStat( victim, "deaths_stats", "suicides", 1.0 )
 
@@ -630,12 +629,12 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
 			    Stats_IncrementStat( attacker, "weapon_kill_stats", "spectres", 1.0 ,source)
 		    if ( victim.IsSoldier() )
 			    Stats_IncrementStat( attacker, "weapon_kill_stats", "grunts", 1.0,source )
-            
+
             if (IsPilot(victim) && victim.pilotEjecting )
 		        Stats_IncrementStat( attacker, "weapon_kill_stats", "ejecting_pilots", 1.0,source )
-            
+
             if ( victim.IsTitan() && !victim.IsNPC() )
-            {    
+            {
                 local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
            	    local titanSettings = titanDataTable.playerSetFile
                 local titanName = replace_all( titanSettings, "titan_", "" )
@@ -659,7 +658,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
 
 function HandleTitanStats( victim, attacker, damageInfo ) {
     if ( attacker.IsPlayer() ) {
-        
+
     }
 }
 
