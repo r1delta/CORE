@@ -475,10 +475,6 @@ function Wallrun_CreateCopyOfPilotModel( player )
 
 	local skin
 	local head = player.GetPlayerHeadIndex()
-	if ( table.playerSetFile.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
-		head = player.GetTeam() == TEAM_MILITIA ? 1 : 0
-	else
-		head = 0
 
 	if ( PlayerIsFemale( player ) && !PlayerHasSpectreCamo( player ) )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
 		skin = player.GetPlayerModelSkinIndex()
