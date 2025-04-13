@@ -14,7 +14,7 @@ function main() {
     AddDamageCallback("npc_solider", OnDamaged)
     AddDamageCallback("npc_titan", OnDamaged)
     AddDamageCallback("npc_spectre", OnDamaged)
-    AddCallback_OnRodeoStarted(OnRodeoStarted)
+    // AddCallback_OnRodeoStarted(OnRodeoStarted)
     GM_AddEndRoundFunc(Stats_EndRound)
     AddCallback_OnWeaponAttack(OnWeaponAttack)
     thread HandleDistanceAndTimeStats()
@@ -26,9 +26,9 @@ function UpdatePlayerStat(player,category,alias,amount = 1) {
     Stats_IncrementStat(player,category,alias,amount)
 }
 
-function OnRodeoStarted(player) {
+// function OnRodeoStarted(player) {
 
-}
+// }
 
 function Stats_EndRound() {
 
