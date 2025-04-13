@@ -628,7 +628,7 @@ function Threaded_CreateLocalServer()
 
 	wait 1.5 // artificial wait so people can cancel
 
-	ClientCommand("launchplaylist private_match; map mp_lobby")
+	ClientCommand("playlist private_match; map mp_lobby")
 }
 
 function Threaded_LaunchTraining()
@@ -642,7 +642,7 @@ function Threaded_LaunchTraining()
 		uiGlobal.doTraining = false // Just in case...
 		CloseDialog()
 		// respawn launches training on tdm gamemode in the vanilla game
-		ClientCommand("hide_server 1;playlist tdm; mp_gamemode tdm; map mp_npe")
+		ClientCommand("playlist tdm; mp_gamemode tdm; map mp_npe")
 	}
 	return
 }

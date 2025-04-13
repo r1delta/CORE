@@ -375,6 +375,13 @@
 		ServerCommand( "map mp_lobby" )
 	}
 
+	// Training
+	if ( mapname == "mp_npe" ) {
+                ServerCommand("sv_pausable 1")
+	} else {
+                ServerCommand("sv_pausable 0")
+	}
+
 	// Lobby specific convar settings and restart timer
 	if ( IsLobby() )
 	{
