@@ -642,7 +642,7 @@ function Threaded_LaunchTraining()
 		uiGlobal.doTraining = false // Just in case...
 		CloseDialog()
 		// respawn launches training on tdm gamemode in the vanilla game
-		ClientCommand("launchplaylist tdm; playlist tdm; mp_gamemode tdm; map mp_npe")
+		ClientCommand("hide_server 1;playlist tdm; mp_gamemode tdm; map mp_npe")
 	}
 	return
 }
