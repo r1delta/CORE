@@ -28,19 +28,13 @@ function main()
 
 	level.nextGameTest <- true
 	Globalize( IsNextGameTest )
-
-	if ( developer() )
+	Globalize( PrintPlayerMapHistory )
+	Globalize( PrintPlayerModeHistory )
+	if ( IsNextGameTest() )
 	{
-		Globalize( PrintPlayerMapHistory )
-		Globalize( PrintPlayerModeHistory )
-
-
+		level.recentMaps <- []
+		level.recentModes <- []
 	}
-		if ( IsNextGameTest() )
-		{
-			level.recentMaps <- []
-			level.recentModes <- []
-		}
 }
 
 function IsNextGameTest()

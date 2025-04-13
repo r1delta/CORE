@@ -29,10 +29,10 @@ function InitPersistence()
     AddPersistenceArray("xp_match", 48)
     AddPersistenceKey("xp_match_count", "int")
     AddPersistenceArray("xp_match_count", 48)
-    AddPersistenceKey("showGameSummary", "bool") 
-    AddPersistenceKey("regenShowNew", "bool") 
-    AddPersistenceKey("spawnAsTitan", "bool") 
-    AddPersistenceKey("haveSeenCustomCoop", "bool") 
+    AddPersistenceKey("showGameSummary", "bool")
+    AddPersistenceKey("regenShowNew", "bool")
+    AddPersistenceKey("spawnAsTitan", "bool")
+    AddPersistenceKey("haveSeenCustomCoop", "bool")
 
 
 
@@ -444,7 +444,7 @@ function InitPersistence()
     AddPersistenceKey("pilotLoadouts.special", "loadoutItems")
     AddPersistenceKey("pilotLoadouts.ordnance", "loadoutItems")
     AddPersistenceKey("pilotLoadouts.primaryAttachment", "pilotMod")
-    AddPersistenceKey("pilotLoadouts.primaryMod", "pilotMod")   
+    AddPersistenceKey("pilotLoadouts.primaryMod", "pilotMod")
     AddPersistenceKey("pilotLoadouts.passive1", "pilotPassive")
     AddPersistenceKey("pilotLoadouts.passive2", "pilotPassive")
     AddPersistenceKey("pilotLoadouts.race", "pilotRace")
@@ -522,7 +522,7 @@ function InitPersistence()
 	    mp_weapon_hemlok_burn_mod_hemlok = 58,
 	    mp_weapon_lmg_burn_mod_lmg = 59,
 	    ["mp_weapon_r97_burn_mod_r97"] = 60,
-	    ["mp_weapon_rspn101_burn_mod_rspn101"] = 61, 
+	    ["mp_weapon_rspn101_burn_mod_rspn101"] = 61,
 	    mp_weapon_shotgun_burn_mod_shotgun = 62,
 	    mp_weapon_smart_pistol_burn_mod_smart_pistol = 63,
 	    mp_weapon_sniper_burn_mod_sniper = 64,
@@ -719,7 +719,7 @@ function InitPersistence()
 	    ["bc_titan_electric_smoke_m2"] = 71,
 	    ["bc_titan_shield_wall_m2"] = 72,
 	    ["bc_titan_melee_m2"] = 73,
-	    ["bc_extra_dash"] = 74,      
+	    ["bc_extra_dash"] = 74,
     }
 	::struct_activeBurnCardData <- {
 		cardRef = null,
@@ -729,9 +729,9 @@ function InitPersistence()
 
 	AddPersistenceArray("persData_activeBurnCards", 3)
 	AddPersistenceKey("persData_activeBurnCards.cardRef", "burnCard")
-	AddPersistenceKey("persData_activeBurnCards.lastCardRef", "burnCard") 
+	AddPersistenceKey("persData_activeBurnCards.lastCardRef", "burnCard")
 	AddPersistenceKey("persData_activeBurnCards.clearOnStart", "bool")
-	
+
 	AddPersistenceArray("persData_pm_activeBurnCards", 3)
 	AddPersistenceKey("persData_pm_activeBurnCards.cardRef", "burnCard")
 	AddPersistenceKey("persData_pm_activeBurnCards.lastCardRef", "burnCard")
@@ -1268,7 +1268,7 @@ function InitPersistence()
 	    ch_lmg_spectre_kills = 126,
 	    ch_lmg_grunt_kills = 127,
 	    ch_lmg_hours_used = 128,
-	    ch_lmg_headshots = 129,   
+	    ch_lmg_headshots = 129,
 
 	    ["ch_rspn101_kills"] = 130,
 	    ["ch_rspn101_pilot_kills"] = 131,
@@ -1295,7 +1295,7 @@ function InitPersistence()
 	    ch_dmr_pilot_kills = 149,
 	    ch_dmr_spectre_kills = 150,
 	    ch_dmr_grunt_kills = 151,
-	    ch_dmr_hours_used = 152,   
+	    ch_dmr_hours_used = 152,
 	    ch_dmr_headshots = 153,
 
 	    ch_sniper_kills = 154,
@@ -1323,7 +1323,7 @@ function InitPersistence()
 	    ch_autopistol_spectre_kills = 167,
 	    ch_autopistol_marvin_kills = 168,
 	    ch_autopistol_grunt_kills = 169,
-	    ch_autopistol_headshots = 170,    
+	    ch_autopistol_headshots = 170,
 
 	    ch_semipistol_kills = 171,
 	    ch_semipistol_pilot_kills = 172,
@@ -1412,7 +1412,7 @@ function InitPersistence()
 	    ch_daily_first_strikes = 25,
 	    ch_daily_cloaked_pilot_kills = 26,
 	    ch_daily_kills_while_cloaked = 27,
-	    ch_daily_titanFallKill = 28, 
+	    ch_daily_titanFallKill = 28,
 	    ch_daily_petTitanKillsFollowMode = 29,
 	    ch_daily_petTitanKillsGuardMode = 30,
 
@@ -1441,7 +1441,7 @@ function InitPersistence()
 	    ["ch_daily_xo16_kills"] = 50,
 	    ["ch_daily_xo16_pilot_kills"] = 51,
 	    ["ch_daily_xo16_titan_kills"] = 52,
-	    ["ch_daily_xo16_grunt_kills"] = 53, 
+	    ["ch_daily_xo16_grunt_kills"] = 53,
 	    ["ch_daily_xo16_crits"] = 54,
 
 	    ch_daily_titan_sniper_kills = 55,
@@ -1514,7 +1514,7 @@ function InitPersistence()
 	    ["ch_daily_rspn101_grunt_kills"] = 109,
 	    ["ch_daily_rspn101_headshots"] = 110,
 
-	    ch_daily_hemlok_kills = 111, 
+	    ch_daily_hemlok_kills = 111,
 	    ch_daily_hemlok_pilot_kills = 112,
 	    ch_daily_hemlok_spectre_kills = 113,
 	    ch_daily_hemlok_grunt_kills = 114,
@@ -1562,7 +1562,7 @@ function InitPersistence()
 	    ch_daily_wingman_grunt_kills = 149,
 	    ch_daily_wingman_headshots = 150,
 
-	    ch_daily_frag_grenade_kills = 151, 
+	    ch_daily_frag_grenade_kills = 151,
 	    ch_daily_frag_grenade_pilot_kills = 152,
 	    ch_daily_frag_grenade_grunt_kills = 153,
 
@@ -1801,7 +1801,7 @@ function InitPersistence()
 
     ::BlackMarketUnlocks <- {
         ["titan_decals_blackmarket01"] = 0,
-	    ["titan_decals_blackmarket02"] = 1, 
+	    ["titan_decals_blackmarket02"] = 1,
 	    ["titan_decals_blackmarket03"] = 2,
 	    ["titan_decals_blackmarket04"] = 3,
 	    ["titan_decals_blackmarket05"] = 4,
@@ -1913,13 +1913,18 @@ function PersistenceGetEnumIndexForItemName(enumName, itemName)
 
     if (enumName in pdef_enums)
     {
-        itemName = itemName.tolower()
+
+		if ( itemName == null )
+			itemName = ""
+		else
+			itemName = itemName.tolower()
         foreach (key, value in pdef_enums[enumName])
         {
             if (key.tolower() == itemName)
                 return value
         }
     }
+
     return -1  // or null, depending on how you want to handle not found cases
 }
 
@@ -1962,7 +1967,7 @@ function UnpackKey(key) {
     local parts = split(key, ".")
     local currentPart = ""
     local isValid = true
-    
+
     foreach (part in parts) {
         //printt("Processing part:", part)
         local index = 0
@@ -1973,7 +1978,7 @@ function UnpackKey(key) {
                 //printt("No more brackets, current part:", currentPart)
                 break
             }
-            
+
             currentPart += (currentPart == "" ? "" : ".") + part.slice(index, bracketStart)
             local bracketEnd = part.find("]", bracketStart)
             if (bracketEnd == null) {
@@ -1981,11 +1986,11 @@ function UnpackKey(key) {
                 isValid = false
                 break
             }
-            
+
             local arrayName = currentPart
             local indexValue = part.slice(bracketStart + 1, bracketEnd)
             //printt("Array access found. Array name:", arrayName, "Index value:", indexValue)
-            
+
             if (arrayName in pdef_arrays) {
                 local enumType = GetEnumTypeForArray(arrayName)
                 //printt("Array found in pdef_arrays. Enum type:", enumType)
@@ -2005,20 +2010,20 @@ function UnpackKey(key) {
                 isValid = false
                 break
             }
-            
+
             index = bracketEnd + 1
         }
-        
+
         if (!isValid) {
             break
         }
     }
-    
+
     if (!isValid) {
         //printt("Key is not valid")
         return null
     }
-    
+
     //printt("Unpacked key:", currentPart)
     return currentPart
 }
@@ -2029,7 +2034,7 @@ function IsValidKey(key, value = null) {
     if (unpackedKey == null) {
         return false
     }
-    
+
     if (unpackedKey in pdef_keys) {
         local type = pdef_keys[unpackedKey]
         if (value != null && type in pdef_enums) {
