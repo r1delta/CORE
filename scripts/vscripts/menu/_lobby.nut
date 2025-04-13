@@ -1153,7 +1153,7 @@ function GetNextComboInOrder()
 		return
 
 	local currentCombo = GetRecentMapModeCombo()
-
+	print(currentCombo.map + " " + currentCombo.mode)
 	local mode
 	local mapIndex = 0
 	for ( local index = 0; index < count; index++ )
@@ -1872,8 +1872,8 @@ function ClientCommand_PrivateMatchSwitchTeams( player, ... )
     }
 
     // Don't allow the switch if it would create an imbalance of more than 1 player
-    if (abs(newIMCCount - newMilitiaCount) > 1)
-        return false
+    //if (abs(newIMCCount - newMilitiaCount) > 1)
+        //return false
 
     player.TrueTeamSwitch()
     UpdatePrivateMatchReadyStatus( true )
