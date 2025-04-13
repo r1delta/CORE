@@ -3,7 +3,7 @@ function main()
     RegisterSignal("StartBurnCardEffect")
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
-    
+
     IncludeScript("_ranked_shared")
     Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( PlayerRespawned )
@@ -115,10 +115,10 @@ function RefillWeaponAmmo(player) {
             if(currentAmmo != 2) {
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
             }
-		}	        
+		}
         wait 8;
     }
-} 
+}
 
 
 function RunWeaponFunction(player,cardRef) {
@@ -181,7 +181,7 @@ if(cardData.ctFlags & CT_WEAPON) {
     player.TakeWeapon(weaponToTake.GetClassname());
     WaitForPlayerActiveWeapon(player);
     player.GiveWeapon(weaponData.weapon, weaponData.mods);
-    player.SetActiveWeapon(weaponData.weapon);   
+    player.SetActiveWeapon(weaponData.weapon);
     }
 }
 
@@ -201,8 +201,8 @@ function MakeActiveBurnCard(player,index) {
 }
 
 function DoSummonTitanBurnCard(player, cardRef) {
-    
-    
+
+
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
@@ -251,7 +251,7 @@ function RunBurnCardFunctions(player,cardRef) {
     if(cardRef == "bc_summon_stryder") {
         thread DoSummonTitanBurnCard(player, cardRef);
     }
-    
+
 }
 
 
@@ -280,7 +280,7 @@ function ChangeOnDeckBurnCardToActive(player) {
 
 }
 
-function PlayerRespawned(player) {    
+function PlayerRespawned(player) {
     if(!player) {
         return;
     }
@@ -307,7 +307,7 @@ function PlayerRespawned(player) {
         AddPlayerScore(player,"UsedBurnCard_Common")
     }
     Stats_IncrementStat(player,"misc_stats","burnCardsSpent",1)
-    RunBurnCardFunctions(player,cardRef);  
+    RunBurnCardFunctions(player,cardRef);
 }
 
 function RunSpawnBurnCard(player,cardRef) {
@@ -328,7 +328,7 @@ function RunSpawnBurnCard(player,cardRef) {
     if(cardRef == "bc_play_spectre") {
         local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
 	    local pilotSettings = pilotDataTable.playerSetFile
-	    pilotSettings = "pilot_spectre" 
+	    pilotSettings = "pilot_spectre"
         player.SetPlayerSettings( pilotSettings )
 	    player.SetPlayerPilotSettings( pilotSettings )
     }
@@ -349,7 +349,7 @@ function RunSpawnBurnCard(player,cardRef) {
             DecrementBuildTimer(player,80)
             StopActiveBurnCard(player);
         }
-       
+
     }
 
 }
@@ -379,46 +379,63 @@ function _OnPlayerKilled (player,attacker) {
     }
 }
 
-function ApplyTitanWeaponBurnCard(player,titan_npc,cardRef) {
+function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
+{
+
+    local soul = player.GetTitanSoul()
+    if(!soul)
+        return
+
+    local titan = soul.GetTitan()
+    if(!titan)
+        return
+
+
     local cardData = GetBurnCardData(cardRef);
-    if(cardData.ctFlags & CT_TITAN_WPN) {
-        Assert( IsValid( titan ) )
-        local weaponToTake = null;
-	    local soul = player.GetTitanSoul()
-        if(!soul) {
-            return;
-        }
-        local titan = soul.GetTitan()
-        if(!titan) {
-            return;
-        }
-        local weaponData = GetBurnCardWeapon(cardRef);
-	    local weapons = titan.GetMainWeapons()
-        foreach(weapon in weapons) {
+    local weaponToTake = null
+    local weaponData = GetBurnCardWeapon(cardRef)
+    local weapons = titan.GetMainWeapons()
+
+
+    while( weaponToTake == null )
+    {
+        foreach(weapon in weapons)
+        {
             printt(weapon.GetClassname());
             weaponToTake = weapon;
         }
-        switch (weaponData.weaponType) {
-        case "TITAN_PRIMARY":
-            titan.TakeWeapon(weaponToTake.GetClassname());
-            titan.GiveWeapon(weaponData.weapon, weaponData.mods);
-            break;
-        case "TITAN_OFFHAND0":
-            printt("Ordnance weapon");
-            titan.TakeOffhandWeapon(0);
-            wait 0.1;
-            titan.GiveOffhandWeapon(weaponData.weapon, 0, weaponData.mods);
-            break;
-        case "TITAN_OFFHAND1":
-            printt("Special weapon");
-            titan.TakeOffhandWeapon(1);
-            wait 0.1;
-            titan.GiveOffhandWeapon(weaponData.weapon, 1, weaponData.mods);
-            break;
-        default:
-            break;
-    }
-        return
+
+        if(cardData.ctFlags & CT_TITAN_WPN) {
+            Assert( IsValid( titan ) )
+
+
+            switch (weaponData.weaponType)
+            {
+                case "TITAN_PRIMARY":
+                    titan.TakeWeapon(weaponToTake.GetClassname())
+                    wait 0.1;
+                    titan.GiveWeapon(weaponData.weapon, weaponData.mods)
+                    titan.SetActiveWeapon(weaponData.weapon)
+                    break;
+                case "TITAN_OFFHAND0":
+                    printt("Ordnance weapon")
+                    titan.TakeOffhandWeapon(0)
+                    wait 0.1;
+                    titan.GiveOffhandWeapon(weaponData.weapon, 0, weaponData.mods)
+                    break;
+                case "TITAN_OFFHAND1":
+                    printt("Special weapon");
+                    titan.TakeOffhandWeapon(1);
+                    wait 0.1;
+                    titan.GiveOffhandWeapon(weaponData.weapon, 1, weaponData.mods)
+                    break;
+                default:
+                    break;
+            }
+            return
+        }
+
+        wait 0.1
     }
 }
 
@@ -433,8 +450,6 @@ function OnTitanBecomesPilot(player,titan) {
         thread ApplyTitanWeaponBurnCard(player,titan,cardRef);
         return;
     }
-
-
 }
 
 
@@ -445,7 +460,7 @@ function AddBurnCardLevelingPack( cardPackName, cardPackArray )
 }
 
 function Ranked_OnPlayerSpawned(player)
-{   
+{
     if(!player) {
         return
     }
@@ -460,7 +475,7 @@ function Ranked_OnPlayerSpawned(player)
         //  printt("rank", rank)
         //  player.SetRank(rank)
          Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", 5 )
-        
+
     }
 
     SetOnScoreEventFunc(Leagues_OnScoreEvent)
@@ -469,6 +484,6 @@ function Ranked_OnPlayerSpawned(player)
 
 
 function Leagues_OnScoreEvent(player,scoreEvent) {
-    
-    
+
+
 }
