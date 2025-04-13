@@ -133,6 +133,12 @@ function RunWeaponFunction(player,cardRef) {
     local cardData = GetBurnCardData(cardRef);
     local weaponData = GetBurnCardWeapon(cardRef);
     local weapons = player.GetMainWeapons()
+    if(!weapons) {
+        return;
+    }
+    if(!weaponData) {
+        return;
+    }
     if(player.IsTitan())
         return;
     if(weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1") {
@@ -161,7 +167,7 @@ function RunWeaponFunction(player,cardRef) {
         return
     }
 
-if(cardData.ctFlags & CT_WEAPON) {
+    if(cardData.ctFlags & CT_WEAPON) {
     local weaponToTake = null;
     if(player.IsTitan())
         return;
@@ -234,7 +240,6 @@ function RunBurnCardFunctions(player,cardRef) {
     thread RunSpawnBurnCard(player,cardRef);
     local cardData = GetBurnCardData(cardRef);
     if(cardData.serverFlags) {
-        printt("Card has server flags");
         GiveServerFlag(player, cardData.serverFlags);
     }
     local weaponData = GetBurnCardWeapon(cardRef);
@@ -285,11 +290,7 @@ function PlayerRespawned(player) {
         return;
     }
 
-    // for(local i = 0; i < 50; i++) {
-    //     player.SetPersistentVar("ranked.gems" + "[" + i + "].gemState", "gem_captured")
-    //     player.SetPersistentVar("ranked.gems" + "[" + i + "].gemScore", 100)
-    // }
-
+ 
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
     if(!cardRef) {
@@ -299,7 +300,6 @@ function PlayerRespawned(player) {
     printt(cardRef);
     player.Signal("StartBurnCardEffect");
     local cardData = GetBurnCardData(cardRef);
-    // card data ... check rarity and stuf
     if(cardData.rarity == BURNCARD_RARE) {
         AddPlayerScore(player,"UsedBurnCard_Rare")
     }
