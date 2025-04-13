@@ -554,3 +554,6 @@ engine_ds.dll,rdata,0x6B17E,A0,AE
 
 ; allow dropped weapons even if we don't have a physics object
 server.dll,text,0xb81cd,74 17,90 90
+
+; Set signonstate to 666 on ReconnectClients instead of CONNECTED to force retry command
+engine.dll,text,0xD1851,BA 02 00,BA 06 66

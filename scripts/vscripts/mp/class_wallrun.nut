@@ -107,7 +107,7 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 	}
 
 
-	
+
 	local activeWeapon
 	if ( table.primaryWeapon )
 	{
@@ -119,7 +119,7 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 
 	if ( table.secondaryWeapon )
 		player.GiveWeapon( table.secondaryWeapon )
-	
+
 
 	if ( table.sidearmWeapon )
 	{
@@ -138,13 +138,13 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 	    	if ( !TryAssignOffhand( player, player, offhands, 0, "weapons_pilot_offhands" ) )
 		    	player.GiveOffhandWeapon( offhands[0].weapon, 0, [] )
 		}
-		
+
 	    if ( "weapon" in offhands[1] )
 	    {
 	    	if ( !TryAssignOffhand( player, player, offhands, 1, "weapons_pilot_offhands" ) )
 		    	player.GiveOffhandWeapon( offhands[1].weapon, 1, [] )
 		}
-		
+
 	}
 
 	if ( Riff_AmmoLimit() != eAmmoLimit.Default )
@@ -174,12 +174,12 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 				foreach ( weapon in weapons )
 				{
 					weapon.SetWeaponPrimaryAmmoCount( 0 )
-					
+
 					local offhand = player.GetOffhandWeapon( 0 )
 					if ( offhand )
 					{
 						offhand.SetWeaponPrimaryClipCount( 1 )
-					}	
+					}
 				}
 				break
 		}
@@ -195,7 +195,7 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 			player.SetPlayerSettings( player.s.customPlayerSettings )
 			player.SetPlayerPilotSettings( player.s.customPlayerSettings )
 			delete player.s.customPlayerSettings
-			
+
 			local head = player.GetPlayerHeadIndex()
 			SelectHead(player, head)
 			return
@@ -475,13 +475,14 @@ function Wallrun_CreateCopyOfPilotModel( player )
 
 	local skin
 	local head = player.GetPlayerHeadIndex()
-	if ( table.playerSetFile.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
+
+	if ( modelName.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
 		head = player.GetTeam() == TEAM_MILITIA ? 1 : 0
 	else
 		head = 0
 
-	if ( PlayerIsFemale( player ) && !PlayerHasSpectreCamo( player ) )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
-		skin = player.GetPlayerModelSkinIndex()
+	if ( modelName.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
+		skin = player.GetTeam() == TEAM_MILITIA ? 1 : 0
 	else
 		skin = 0
 
