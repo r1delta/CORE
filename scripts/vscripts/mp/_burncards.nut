@@ -11,8 +11,6 @@ function main()
     Globalize(RunBurnCardFunctions)
     Globalize(ChangeOnDeckBurnCardToActive)
     Globalize(MakeActiveBurnCard)
-    AddCallback_OnPlayerRespawned(Ranked_OnPlayerSpawned)
-    // AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
     Globalize(BurncardsAutoFillEmptyActiveSlots)
 
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
@@ -407,15 +405,18 @@ function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
 
         if(cardData.ctFlags & CT_TITAN_WPN) {
             Assert( IsValid( titan ) )
-
+            if(!weaponData) {
+                return;
+            }
 
             switch (weaponData.weaponType)
             {
                 case "TITAN_PRIMARY":
                     titan.TakeWeapon(weaponToTake.GetClassname())
                     wait 0.1;
+                    printt("Primary weapon")
                     titan.GiveWeapon(weaponData.weapon, weaponData.mods)
-                    titan.SetActiveWeapon(weaponData.weapon)
+                    // titan.SetActiveWeapon(weaponData.weapon)
                     break;
                 case "TITAN_OFFHAND0":
                     printt("Ordnance weapon")
@@ -457,33 +458,4 @@ function OnTitanBecomesPilot(player,titan) {
 function AddBurnCardLevelingPack( cardPackName, cardPackArray )
 {
     // printt( "Hit stubbed call to AddBurnCardLevelingPack" );
-}
-
-function Ranked_OnPlayerSpawned(player)
-{
-    if(!player) {
-        return
-    }
-    printt("ranked is playing ranked" + player.GetPersistentVar("ranked.isPlayingRanked"))
-    // local currentSkill = GetPlayerPerformanceGoals(player)
-
-    if(player.GetPersistentVar("ranked.isPlayingRanked") == 1) {
-         player.SetIsPlayingRanked(1)
-        //  local amount = PersistenceGetArrayCount("ranked.gems")
-        //  printt("amount", amount)
-        //  local rank = GetGemsToRank(amount);
-        //  printt("rank", rank)
-        //  player.SetRank(rank)
-         Remote.CallFunction_NonReplay( player, "SCB_SetUserPerformance", 5 )
-
-    }
-
-    SetOnScoreEventFunc(Leagues_OnScoreEvent)
-    SetUIVar("rankEnableMode", eRankEnabledModes.ALLOWED_DURING_PERSONAL_GRACE_PERIOD)
-}
-
-
-function Leagues_OnScoreEvent(player,scoreEvent) {
-
-
 }
