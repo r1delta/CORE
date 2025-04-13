@@ -89,8 +89,8 @@ function MeleeThread_TitanVsTitan_Internal( actions, action, attacker, target )
 				break
 
 			case "ogre":
-				// func = MeleeThread_AtlasVsTitan
-				func = MeleeThread_OgreVsTitan
+				func = MeleeThread_StryderVsTitan
+				// func = MeleeThread_OgreVsTitan
 				break
 		}
 	}
