@@ -3,8 +3,6 @@ function main()
     RegisterSignal("StartBurnCardEffect")
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
-
-    IncludeScript("_ranked_shared")
     Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( PlayerRespawned )
     AddCallback_OnPlayerKilled( _OnPlayerKilled )
@@ -413,10 +411,10 @@ function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
             {
                 case "TITAN_PRIMARY":
                     titan.TakeWeapon(weaponToTake.GetClassname())
-                    wait 0.1;
-                    printt("Primary weapon")
+                    wait 0.5;
                     titan.GiveWeapon(weaponData.weapon, weaponData.mods)
-                    // titan.SetActiveWeapon(weaponData.weapon)
+                    wait 0.1;
+                    titan.SetActiveWeapon(weaponData.weapon)
                     break;
                 case "TITAN_OFFHAND0":
                     printt("Ordnance weapon")
