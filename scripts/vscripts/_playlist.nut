@@ -34,12 +34,13 @@ function main()
 		Globalize( PrintPlayerMapHistory )
 		Globalize( PrintPlayerModeHistory )
 
+
+	}
 		if ( IsNextGameTest() )
 		{
 			level.recentMaps <- []
 			level.recentModes <- []
 		}
-	}
 }
 
 function IsNextGameTest()
