@@ -396,5 +396,8 @@ function IsBlackMarketUnlocked( player = null )
 			return true
 	}
 
+	if ( IsDelta() )
+		return true
+
 	return false
 }
