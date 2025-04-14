@@ -14,9 +14,7 @@ function main()
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
     AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilot )
-    AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
 
-    // SetOnScoreEventFunc(Leagues_OnScoreEvent)
 }
 
 
