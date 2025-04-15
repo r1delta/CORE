@@ -160,7 +160,7 @@ function OpenOfflineNameDialogButton_Activate( button )
 		return
 
 	local dialogData = {}
-	dialogData.header <- "Enter Username"
+	dialogData.header <- "#ENTER_USERNAME_HEADER"
     dialogData.detailsMessage <- "#ENTER_USERNAME_DIALOG"
 
 	OpenChoiceDialog( dialogData, GetMenu( "UsernameDialog" ) )

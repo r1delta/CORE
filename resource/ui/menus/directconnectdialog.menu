@@ -149,7 +149,7 @@ resource/ui/menus/directconnectdialog.menu
             ypos                    30
 			navUp					BtnCancel
 			navDown					BtnConfirmLeaveTraining
-			labelText				"Connect"
+			labelText				"#DIRECT_CONNECT_ACTION"
 		}
 
 

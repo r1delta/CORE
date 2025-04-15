@@ -862,14 +862,14 @@ function ShowPortForwardWarning( port = 27015 )
 		return
     local isDefaultPort = (port == 27015)
     local message = isDefaultPort ? 
-        "Your server will not be visible in the server browser\nbecause port 27015 (UDP) is not properly forwarded\non your router. Please ask in #help for assistance." :
-        format("Your server will not be visible in the server browser\nbecause port %d (UDP) is not properly forwarded.\nAnother game instance may be running.", port)
+        "#PORT_FORWARD_WARNING_DEFAULT" :
+        ["#PORT_FORWARD_WARNING_CUSTOMPORT", format("%d", port)]
 
     local buttonData = []
     buttonData.append( { name = "OK", func = null } )
 
     local dialogData = {}
-    dialogData.header <- "PORT FORWARD WARNING"
+    dialogData.header <- "#PORT_FORWARD_WARNING_HEADER"
     dialogData.detailsMessage <- message
     dialogData.buttonData <- buttonData
 
