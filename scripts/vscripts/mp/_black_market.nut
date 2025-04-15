@@ -33,7 +33,7 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
             }
             local coinCount = player.GetPersistentVar( "bm.coinCount" )
             local coinCost = level.shopInventoryData[ string ].coinCost
-            player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
+            // player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
             local deck = GetPlayerBurnCardDeck( player )
 
             foreach( card in cards ) {
