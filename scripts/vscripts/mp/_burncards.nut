@@ -180,7 +180,9 @@ function RunWeaponFunction(player,cardRef) {
     }
     player.TakeWeapon(weaponToTake.GetClassname());
     WaitForPlayerActiveWeapon(player);
+    wait 0.5
     player.GiveWeapon(weaponData.weapon, weaponData.mods);
+    wait 0.1
     player.SetActiveWeapon(weaponData.weapon);
     }
 }
