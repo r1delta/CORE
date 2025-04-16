@@ -13,8 +13,7 @@ function main()
 
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
-    AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilot )
-
+    AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilotBC )
 }
 
 
@@ -78,6 +77,8 @@ function WaitForPlayerActiveWeapon( player,className = null )
 			else
 				break;
 		}
+
+        printt("loop")
 	}
 
 	return weapon
@@ -115,75 +116,96 @@ function RefillWeaponAmmo(player) {
 }
 
 
-function RunWeaponFunction(player,cardRef) {
-    if(!IsAlive(player)) {
-        return;
-    }
+function RunWeaponFunction( player, cardRef )
+{
+    if( !IsAlive(player) )
+        return
+
     player.EndSignal( "OnDestroy" )
     player.EndSignal( "Disconnected" )
     player.EndSignal("EndGiveLoadouts")
+
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
+
     local cardData = GetBurnCardData(cardRef);
     local weaponData = GetBurnCardWeapon(cardRef);
     local weapons = player.GetMainWeapons()
-    if(!weapons) {
-        return;
-    }
-    if(!weaponData) {
-        return;
-    }
+
+    if(!weapons)
+        return
+    if(!weaponData)
+        return
     if(player.IsTitan())
-        return;
-    if(weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1") {
+        return
+
+
+
+    if( weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1" )
+    {
         Assert( IsAlive( player ) )
+
         local weapons = player.GetOffhandWeapons()
-        local weaponToTake = null;
-        local slot = 0;
+        local weaponToTake = null
+        local slot = 0
+
         switch (weaponData.weaponType) {
             case "OFFHAND0":
-                weaponToTake = weapons[0];
-                slot = 0;
-                break;
+                weaponToTake = weapons[0]
+                slot = 0
+                break
             case "OFFHAND1":
-                weaponToTake = weapons[1];
+                weaponToTake = weapons[1]
                 slot = 1;
+                break
+            default:
+                break
+        }
+
+        WaitForPlayerActiveWeapon( player )
+
+        player.TakeOffhandWeapon( slot )
+
+        player.GiveOffhandWeapon( weaponData.weapon, slot, weaponData.mods )
+
+        if( cardData.ctFlags & CT_FRAG )
+            thread RefillWeaponAmmo( player )
+
+        return
+    }
+
+    if(cardData.ctFlags & CT_WEAPON)
+    {
+        local weaponToTake = null;
+
+        switch ( weaponData.weaponType )
+        {
+            case "PRIMARY":
+                weaponToTake = weapons[0];
+                break;
+            case "SIDEARM":
+                weaponToTake = weapons[1];
+                break;
+            case "SECONDARY":
+                weaponToTake = weapons[2];
                 break;
             default:
                 break;
         }
-        player.TakeOffhandWeapon(slot);
-        WaitForPlayerActiveWeapon(player);
-        player.GiveOffhandWeapon(weaponData.weapon, slot, weaponData.mods);
-        if(cardData.ctFlags & CT_FRAG) {
-            thread RefillWeaponAmmo(player)
-        }
-        return
-    }
 
-    if(cardData.ctFlags & CT_WEAPON) {
-    local weaponToTake = null;
-    if(player.IsTitan())
-        return;
-    switch (weaponData.weaponType) {
-        case "PRIMARY":
-            weaponToTake = weapons[0];
-            break;
-        case "SIDEARM":
-            weaponToTake = weapons[1];
-            break;
-        case "SECONDARY":
-            weaponToTake = weapons[2];
-            break;
-        default:
-            break;
-    }
-    player.TakeWeapon(weaponToTake.GetClassname());
-    WaitForPlayerActiveWeapon(player);
-    wait 0.5
-    player.GiveWeapon(weaponData.weapon, weaponData.mods);
-    wait 0.1
-    player.SetActiveWeapon(weaponData.weapon);
+        printt( "Weapon to take: ", weaponToTake.GetClassname() )
+
+        WaitForPlayerActiveWeapon( player );
+
+        player.TakeWeapon( weaponToTake.GetClassname() )
+
+        wait 0.1
+
+        player.GiveWeapon(weaponData.weapon, weaponData.mods, true)
+
+        wait 0.1
+
+        player.SetActiveWeapon(weaponData.weapon)
     }
 }
 
@@ -232,27 +254,20 @@ function DoSummonTitanBurnCard(player, cardRef) {
 
 }
 
-function RunBurnCardFunctions(player,cardRef) {
-    thread RunSpawnBurnCard(player,cardRef);
-    local cardData = GetBurnCardData(cardRef);
-    if(cardData.serverFlags) {
-        GiveServerFlag(player, cardData.serverFlags);
-    }
-    local weaponData = GetBurnCardWeapon(cardRef);
-    if(cardData.group == BCGROUP_WEAPON || (weaponData && weaponData.weapon)) {
-        thread RunWeaponFunction(player,cardRef);
-    }
+function RunBurnCardFunctions( player, cardRef )
+{
+    thread RunSpawnBurnCard( player, cardRef )
+    local cardData = GetBurnCardData( cardRef )
+    if(cardData.serverFlags)
+        GiveServerFlag( player, cardData.serverFlags)
 
-    if(cardRef == "bc_summon_atlas") {
-        thread DoSummonTitanBurnCard(player, cardRef);
-    }
-    if(cardRef == "bc_summon_ogre") {
-        thread DoSummonTitanBurnCard(player, cardRef);
-    }
-    if(cardRef == "bc_summon_stryder") {
-        thread DoSummonTitanBurnCard(player, cardRef);
-    }
+    local weaponData = GetBurnCardWeapon( cardRef )
 
+    if ( cardData.group == BCGROUP_WEAPON || ( weaponData && weaponData.weapon ) )
+        thread RunWeaponFunction(player,cardRef)
+
+    if ( cardRef == "bc_summon_atlas" || cardRef == "bc_summon_ogre" || cardRef == "bc_summon_stryder" )
+        thread DoSummonTitanBurnCard(player, cardRef)
 }
 
 
@@ -286,7 +301,7 @@ function PlayerRespawned(player) {
         return;
     }
 
- 
+
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
     if(!cardRef) {
@@ -310,25 +325,25 @@ function RunSpawnBurnCard(player,cardRef) {
     local cardData = GetBurnCardData(cardRef);
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-	{
         player.WaitSignal( "CE_FLAGS_CHANGED" )
-    }
 
-    if (cardRef == "bc_cloak_forever") {
+    if (cardRef == "bc_cloak_forever")
         EnableCloakForever( player )
-    }
 
-    if (cardRef == "bc_sonar_forever") {
-        ActivateBurnCardSonar(player, 9999)
-    }
-    if(cardRef == "bc_play_spectre") {
+    if (cardRef == "bc_sonar_forever")
+        ActivateBurnCardSonar( player, 9999 )
+
+    if(cardRef == "bc_play_spectre")
+    {
         local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
 	    local pilotSettings = pilotDataTable.playerSetFile
 	    pilotSettings = "pilot_spectre"
         player.SetPlayerSettings( pilotSettings )
 	    player.SetPlayerPilotSettings( pilotSettings )
     }
-    if(cardRef == "bc_auto_sonar") {
+
+    if(cardRef == "bc_auto_sonar")
+    {
         // ActivateBurnCardSonar(player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true,null, BURNCARD_AUTO_SONAR_INTERVAL)
         // thread LoopSonarAudioPing(player)
     }
@@ -336,7 +351,8 @@ function RunSpawnBurnCard(player,cardRef) {
 
     // ChangeOnDeckBurnCardToActive(player);
 
-    if( cardData.lastsUntil == BC_NEXTSPAWN) {
+    if( cardData.lastsUntil == BC_NEXTSPAWN)
+    {
         if(cardRef == "bc_free_build_time_1") {
             DecrementBuildTimer(player,40)
             StopActiveBurnCard(player);
@@ -379,11 +395,12 @@ function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
 {
 
     local soul = player.GetTitanSoul()
-    if(!soul)
+    if( !IsValid( soul) )
         return
 
     local titan = soul.GetTitan()
-    if(!titan)
+
+    if( !IsValid( titan ) )
         return
 
 
@@ -392,12 +409,11 @@ function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
     local weaponData = GetBurnCardWeapon(cardRef)
     local weapons = titan.GetMainWeapons()
 
-
     while( weaponToTake == null )
     {
-        foreach(weapon in weapons)
+        foreach( weapon in weapons )
         {
-            printt(weapon.GetClassname());
+            printt( weapon.GetClassname() );
             weaponToTake = weapon;
         }
 
@@ -438,16 +454,24 @@ function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
     }
 }
 
-function OnTitanBecomesPilot(player,titan) {
+function OnTitanBecomesPilotBC(player,titan)
+{
+    thread OnTitanBecomesPilotBC_Threaded(player,titan)
+}
 
-    if(!player) {
-        return;
+function OnTitanBecomesPilotBC_Threaded( player, titan )
+{
+    while ( true )
+    {
+        if ( IsValid( player ) && IsValid( player ) )
+            break
+        wait 0.1
     }
 
-    if(DoesPlayerHaveActiveTitanBurnCard(player)) {
-        local cardRef = GetPlayerActiveBurnCard( player );
-        thread ApplyTitanWeaponBurnCard(player,titan,cardRef);
-        return;
+    if( DoesPlayerHaveActiveTitanBurnCard( player ) )
+    {
+        local cardRef = GetPlayerActiveBurnCard( player )
+        thread ApplyTitanWeaponBurnCard( player, titan, cardRef )
     }
 }
 
