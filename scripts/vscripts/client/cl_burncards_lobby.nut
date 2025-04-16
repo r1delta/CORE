@@ -3395,6 +3395,10 @@ Globalize( UpdateBurnCardHighlight )
 
 function GetCurrentPileIndex()
 {
+	// unhelpful guard, needs more testing but should prevent catastrophic ui explosions
+	if ( file.currentPileIndex >= 100 )
+		return 0
+
 	return file.currentPileIndex
 }
 Globalize( GetCurrentPileIndex )
