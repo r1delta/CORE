@@ -84,6 +84,7 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 
 	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 	{
+		printt( "about to start running bc stuff" )
 		MakeActiveBurnCard(player, index)
 		RunBurnCardFunctions(player,cardRef);
 	}

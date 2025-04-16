@@ -64,7 +64,7 @@ function WaitForPlayerActiveWeapon( player,className = null )
 
 	while ( 1 )
 	{
-		wait 0
+		wait 0.1
 		weapon = player.GetActiveWeapon()
 
 		if( weapon )
@@ -72,13 +72,11 @@ function WaitForPlayerActiveWeapon( player,className = null )
 			if( className )
 			{
 				if ( weapon.GetClassname() == className )
-					break;
+					break
 			}
 			else
-				break;
+				break
 		}
-
-        printt("loop")
 	}
 
 	return weapon
@@ -118,15 +116,15 @@ function RefillWeaponAmmo(player) {
 
 function RunWeaponFunction( player, cardRef )
 {
-    if( !IsAlive(player) )
-        return
-
     player.EndSignal( "OnDestroy" )
     player.EndSignal( "Disconnected" )
-    player.EndSignal("EndGiveLoadouts")
+    player.EndSignal( "EndGiveLoadouts" )
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
+
+    // while ( GetGameState() < eGameState.Playing && !IsAlive( player ) )
+    //     wait 0.1
 
     local cardData = GetBurnCardData(cardRef);
     local weaponData = GetBurnCardWeapon(cardRef);
@@ -199,7 +197,19 @@ function RunWeaponFunction( player, cardRef )
 
         wait 0.1
 
-        player.GiveWeapon(weaponData.weapon, weaponData.mods, true)
+        while ( true )
+        {
+            try
+            {
+                player.GiveWeapon(weaponData.weapon, weaponData.mods, true)
+            } catch (e)
+            {
+                wait 0.1
+                continue
+            }
+
+            break
+        }
 
         wait 0.1
 
@@ -226,30 +236,32 @@ function MakeActiveBurnCard(player,index)
     return true;
 }
 
-function DoSummonTitanBurnCard(player, cardRef) {
-
-
+function DoSummonTitanBurnCard(player, cardRef)
+{
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
     ForceTitanBuildComplete(player)
+
     local titanDataTable = GetPlayerClassDataTable( player, "titan" )
     local oldSetFile = titanDataTable.playerSetFile
-    if(cardRef == "bc_summon_atlas") {
+
+    if(cardRef == "bc_summon_atlas")
 	    titanDataTable.playerSetFile = "titan_atlas"
-    }
-    if(cardRef == "bc_summon_ogre") {
+    if(cardRef == "bc_summon_ogre")
 	    titanDataTable.playerSetFile = "titan_ogre"
-    }
-    if(cardRef == "bc_summon_stryder") {
+    if(cardRef == "bc_summon_stryder")
         titanDataTable.playerSetFile = "titan_stryder"
-    }
+
     player.WaitSignal("CalledInReplacementTitan")
-    if (oldSetFile) {
+
+    if (oldSetFile)
         titanDataTable.playerSetFile = oldSetFile
-    }
+
     local activeBCID = player.GetPersistentVar("activeBCID")
+
 	player.SetActiveBurnCardIndex( -1 )
+
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
     player.SetPersistentVar( "activeBCID", -1 )
@@ -271,7 +283,6 @@ function RunBurnCardFunctions( player, cardRef )
     if ( cardRef == "bc_summon_atlas" || cardRef == "bc_summon_ogre" || cardRef == "bc_summon_stryder" )
         thread DoSummonTitanBurnCard(player, cardRef)
 }
-
 
 function ChangeOnDeckBurnCardToActive(player) {
     if(!player) {
@@ -298,10 +309,10 @@ function ChangeOnDeckBurnCardToActive(player) {
 
 }
 
-function PlayerRespawned(player) {
-    if(!player) {
-        return;
-    }
+function PlayerRespawned(player)
+{
+    if( !IsValid() )
+        return
 
 
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
@@ -323,7 +334,8 @@ function PlayerRespawned(player) {
     RunBurnCardFunctions(player,cardRef);
 }
 
-function RunSpawnBurnCard(player,cardRef) {
+function RunSpawnBurnCard(player,cardRef)
+{
     local cardData = GetBurnCardData(cardRef);
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )

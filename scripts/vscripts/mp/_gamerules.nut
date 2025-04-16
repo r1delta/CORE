@@ -6,15 +6,17 @@ function GameRules_ChangeMap( mapName, mode )
 	if( ';' in mapName || ' ' in mapName)
 		return
 
+    if( IsPrivateMatch() )
         ServerCommand( "playlist " + mode )
-        ServerCommand( "mp_gamemode " + mode )
-        ServerCommand( "changelevel " + mapName )
+
+    ServerCommand( "mp_gamemode " + mode )
+    ServerCommand( "changelevel " + mapName )
 }
 
 function GameRules_EndMatch()
 {
     if( IsPrivateMatch() )
-	ServerCommand("playlist private_match")
+	    ServerCommand("playlist private_match")
 
     ServerCommand( "changelevel mp_lobby" )
 }
