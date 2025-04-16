@@ -8,6 +8,7 @@ function main()
 	level.spawnRatingFunc_Pilot = RateFrontLinePlayerSpawnpoint
 	level.spawnRatingFunc_Generic = RateFrontLinePlayerSpawnpoint
 
+	level.nv.eliminationMode = eEliminationMode.Pilots
 
 	level.mfdAssault <- {}
 	level.mfdAssault[ TEAM_IMC ] <- null
@@ -15,7 +16,7 @@ function main()
 
 	file.teams <- [ TEAM_IMC, TEAM_MILITIA ]
 
-	//AddCallback_GameStateEnter( eGameState.Prematch, MARKED_FOR_DEATH_PrematchStart )  //MFD: LTS Variant
+	// AddCallback_GameStateEnter( eGameState.Prematch, MARKED_FOR_DEATH_PrematchStart )  //MFD: LTS Variant
 	AddCallback_GameStateEnter( eGameState.Playing, MARKED_FOR_DEATH_PlayingStart )
 	AddCallback_OnPlayerRespawned( MARKED_FOR_DEATH_PlayerRespawned )
 	AddCallback_OnClientConnected( MARKED_FOR_DEATH_AddPlayer )
@@ -62,7 +63,7 @@ function main()
 function FixStartSpawns()
 {
 	FlagWait( "EntitiesDidLoad" )
-
+	level.nv.eliminationMode = eEliminationMode.Pilots
 	switch ( GetMapName() )
 	{
 		case "mp_rise":
