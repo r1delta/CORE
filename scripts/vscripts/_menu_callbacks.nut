@@ -2,7 +2,7 @@ function main()
 {
 	IncludeScript( "_loadouts" )
 	IncludeScript( "_burncards_shared")
-	
+
 
 	InitPresetLoadouts()
 
@@ -63,27 +63,31 @@ AddClientCommandCallback("OpenBurnCardMenu", ClientCommand_OpenBurnCardMenu )
 function ClientCommand_OpenBurnCardMenu(player,...) {
 	if (vargc != 0)
 		return false
-	
+
 	Remote.CallFunction_UI( player, "ServerCallback_OpenBurnCardMenu" )
-	
+
 	return true
 }
 
 function ClientCommand_ActivateBurnCard(player, ...) {
 	if (vargc != 2)
 		return false
+
 	local index = vargv[0].tointeger()
 
 	if (index == null || index < 0 || index >= MAX_BURN_CARDS)
 		return false
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
-	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) ) {
+
+	SetPlayerBurnCardOnDeckIndex(player, index)
+
+	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+	{
 		MakeActiveBurnCard(player, index)
 		RunBurnCardFunctions(player,cardRef);
-		return true
 	}
-	SetPlayerBurnCardOnDeckIndex(player, index)
+
 	return true
 }
 
@@ -166,7 +170,7 @@ function SetBotPilotLoadout( player )
 	table.primaryWeaponMods <- []
 	if ( loadout.primaryAttachment )
 		table.primaryWeaponMods.append( loadout.primaryAttachment )
-	
+
 	if ( loadout.primaryMods.len() != 0 )
 	{
 		foreach( mod in loadout.primaryMods )
@@ -451,7 +455,7 @@ function StopActiveBurnCard(player) {
 	player.SetActiveBurnCardIndex( -1 )
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
-	
+
 }
 
 function GiveLoadouts( player )

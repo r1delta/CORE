@@ -139,8 +139,6 @@ function RunWeaponFunction( player, cardRef )
     if(player.IsTitan())
         return
 
-
-
     if( weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1" )
     {
         Assert( IsAlive( player ) )
@@ -209,18 +207,22 @@ function RunWeaponFunction( player, cardRef )
     }
 }
 
-function MakeActiveBurnCard(player,index) {
+function MakeActiveBurnCard(player,index)
+{
     if (index == null || index < 0 || index >= MAX_BURN_CARDS)
 		return false
+
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
+
 	printt("ActivateBurnCard Change: ", cardRef)
+
 	player.SetPersistentVar( "activeBCID", index )
 	player.SetActiveBurnCardIndex(cardIndex)
-	player.SetPersistentVar("onDeckBurnCardIndex", -1);
-    foreach( p in GetPlayerArray() ) {
-        Remote.CallFunction_Replay(p,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex ,false)
-    }
+	player.SetPersistentVar("onDeckBurnCardIndex", -1)
+
+    foreach( p in GetPlayerArray() )
+        Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex , false)
     return true;
 }
 
