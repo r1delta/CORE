@@ -13,7 +13,7 @@ function GetPresence() {
     if(map_name == "mp_lobby") {
         table["map_display_name"] <- Localize("LOBBY")
     } else if(GetCurrentPlaylistName() == "campaign_carousel") {
-        table["map_display_name"] <- Localize(GetCampaignMapDisplayName(map_name))
+        table["map_display_name"] <- Localize(map_name + "_CAMPAIGN_NAME")
     }
     table["game_mode"] <- Localize("GAMEMODE_" + GameRules.GetGameMode())
     table["playlist"] <- Localize(GetCurrentPlaylistName())
