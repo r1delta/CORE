@@ -77,8 +77,9 @@ function InitializeHardpointsForUplink()
 	foreach ( hardpoint in hardpoints )
 		hardpoint.SetHardpointID( -1 )
 
-	local uplinkArray = GetEntArrayByName_Expensive( UPLINK )
+	// local uplinkArray = GetEntArrayByName_Expensive( UPLINK )
 
+	local uplinkArray = GetEntArrayByClass_Expensive( "info_hardpoint" )
 
 	level.hardpoints = uplinkArray
 
@@ -138,7 +139,7 @@ function UplinkThink()
 
 	while ( GetGameState() == eGameState.Playing )
 	{
-		local uplinkPoint = GetHardpointByID( 1 /*RandomInt( level.hardpoints.len() )*/ )
+		local uplinkPoint = GetHardpointByID(  1 /*RandomInt( level.hardpoints.len() )*/  ) 
 
 		waitthread UplinkControl( uplinkPoint )
 
@@ -204,9 +205,8 @@ function UplinkPanelThink( panel, hardpoint )
 	while( true )
 	{
 		local results = panel.WaitSignal( "PanelReprogram_Success" )
-
-		local player = results.player
-
+		printt("results" + results)
+		local player  = panel.GetBossPlayer()
 		Uplink_TeamChanged( hardpoint, player.GetTeam() )
 	}
 }
