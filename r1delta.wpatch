@@ -495,11 +495,11 @@ engine.dll,text,0x01A0FA5,75,EB
 ; vphysics.dll,text,0x103323,F6 C4 04,B4 FF 90
 
 ; server.dll,text,0x049022E,72 14,90 90
-server.dll,text,0x402D9,48,EB 2F
-server.dll,text,0x49023F,E9 3C 3F 00 00,E9 9C 47 00 00
+; server.dll,text,0x402D9,48,EB 2F
+; server.dll,text,0x49023F,E9 3C 3F 00 00,E9 9C 47 00 00
 ; don't let us ever become a materialsystem worker thread after the fact
 ; materialsystem_dx11.dll,text,0x75DB0,48,C3
-server.dll,text,0x4A9671,F3,E9 3C 00 00 00
+; server.dll,text,0x4A9671,F3,E9 3C 00 00 00
 ;engine.dll,text,0x001DDBF,E8 AC 21 46 00,90 90 90 90 90
 
 engine.dll,rdata,0x0005F4090,"r1-pc%s.s3.amazonaws.com","motd.r1delta.net\x00\x00\x00\x00\x00\x00\x00\x00"
