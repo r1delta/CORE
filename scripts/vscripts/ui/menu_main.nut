@@ -274,6 +274,8 @@ function ShowMainMenu()
 		ClientCommand( "platform_user_id " + randomID )
 	}
 	ClientCommand("hostname \""+GetConVarString("name")+"'s R1Delta Server\"")
+
+	SendDiscordUI()
 }
 
 function ShowMOTD()

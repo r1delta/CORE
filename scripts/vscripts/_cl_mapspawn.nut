@@ -365,6 +365,7 @@ function Cl_MapspawnMain()
 
 		PerfInitLabels()
 	}
+	IncludeFile("client/cl_discord")
 }
 
 function CodeCallback_RunClientConnectScripts( player )
@@ -406,7 +407,7 @@ function RunClientConnectScriptsThreaded( player )
 
 	RunFunctionInAllFileScopes( "EntitiesDidLoad" )
 	FlagSet( "EntitiesDidLoad" )
-
+	GetPresence()
 	if ( Durango_IsDurango() )
 	{
 		// Update game progress based off gen and xp
