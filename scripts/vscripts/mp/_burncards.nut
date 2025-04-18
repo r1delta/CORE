@@ -14,8 +14,14 @@ function main()
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
     AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilotBC )
+    AddCallback_OnClientConnected( BurnCard_OnClientConnected )
 }
 
+function BurnCard_OnClientConnected( player )
+{
+    player.SetPersistentVar("activeBCID", -1)
+    player.SetPersistentVar("onDeckBurnCardIndex", -1)
+}
 
 function ClientCommand_SetRankedPlayOnInGame(player) {
     player.SetPersistentVar("ranked.isPlayingRanked",1)
@@ -303,6 +309,7 @@ function ChangeOnDeckBurnCardToActive(player) {
     player.SetActiveBurnCardIndex(idx);
     player.SetPersistentVar("activeBCID", cardIndex);
     player.SetPersistentVar("onDeckBurnCardIndex", -1);
+    //player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
     foreach( p in GetPlayerArray() ) {
         Remote.CallFunction_Replay(p,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx ,false)
     }
