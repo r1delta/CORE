@@ -530,6 +530,8 @@ function OnTitanBecomesPilotBC_Threaded( player, titan )
         local cardRef = GetPlayerActiveBurnCard( player )
         thread ApplyTitanWeaponBurnCard( player, titan, cardRef )
     }
+
+    Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
 }
 
 

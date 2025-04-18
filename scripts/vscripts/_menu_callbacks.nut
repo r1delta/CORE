@@ -81,6 +81,7 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
 
 	SetPlayerBurnCardOnDeckIndex(player, index)
+	EmitSoundOnEntityOnlyToPlayer( player, player, "Operator.Ability_change" )
 
 	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		BurnCardIntro( player )
