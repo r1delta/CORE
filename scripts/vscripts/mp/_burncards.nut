@@ -8,7 +8,6 @@ function main()
     AddCallback_OnPlayerKilled( _OnPlayerKilled )
     Globalize(RunBurnCardFunctions)
     Globalize(ChangeOnDeckBurnCardToActive)
-    Globalize(MakeActiveBurnCard)
     Globalize( BurnCardIntro )
     Globalize(BurncardsAutoFillEmptyActiveSlots)
 
@@ -224,25 +223,6 @@ function RunWeaponFunction( player, cardRef )
     }
 }
 
-function MakeActiveBurnCard(player,index)
-{
-    if (index == null || index < 0 || index >= MAX_BURN_CARDS)
-		return false
-
-	local cardRef = GetBurnCardFromSlot(player, index)
-	local cardIndex = GetBurnCardIndexByRef(cardRef)
-
-	printt("ActivateBurnCard Change: ", cardRef)
-
-	player.SetPersistentVar( "activeBCID", index )
-	player.SetActiveBurnCardIndex(cardIndex)
-	player.SetPersistentVar("onDeckBurnCardIndex", -1)
-
-    foreach( p in GetPlayerArray() )
-        Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), cardIndex , false)
-    return true;
-}
-
 function DoSummonTitanBurnCard(player, cardRef)
 {
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
@@ -290,7 +270,7 @@ function RunBurnCardFunctions( player, cardRef )
         thread DoSummonTitanBurnCard(player, cardRef)
 }
 
-function ChangeOnDeckBurnCardToActive(player)
+function ChangeOnDeckBurnCardToActive( player )
 {
     local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
 
@@ -336,6 +316,9 @@ function BurnCardIntro_Threaded( player )
     // if ( cardData.group == BCGROUP_TITAN )
     //     thread RunSpawnBurnCard( player, cardRef )
 
+    if ( GetPlayerBurnCardActiveSlotID( player ) )
+        return
+
     ChangeOnDeckBurnCardToActive( player )
 
     printt(cardRef)
@@ -359,6 +342,9 @@ function BurnCardPlayerRespawned_Threaded( player )
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
 
     if( !cardRef )
+        return
+
+    if ( GetPlayerBurnCardActiveSlotID( player ) )
         return
 
     ChangeOnDeckBurnCardToActive( player )
