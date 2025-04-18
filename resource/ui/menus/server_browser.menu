@@ -760,7 +760,7 @@ resource/ui/menus/server_browser.menu
 			wide 80
 			tall 20
             ypos 0
-			xpos 310
+			xpos -310
 			pin_to_sibling			ServerButton4
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
