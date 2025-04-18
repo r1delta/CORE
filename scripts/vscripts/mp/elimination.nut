@@ -44,6 +44,7 @@ function ScriptCallback_OnPlayerScore( player, score )
 
 function EntitiesDidLoad()
 {
+	printt("EntitiesDidLoad")
 	thread WaitTillRoundStart()
 }
 

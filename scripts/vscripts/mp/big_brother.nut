@@ -42,7 +42,7 @@ function main()
 
 	//AddCallback_GameStateEnter( eGameState.Epilogue, BBEpilogueStart )
 
-	AddSpawnCallback( "prop_bigbrother_panel", 			OnBigBrotherPanelSpawn )
+	AddSpawnCallback( "prop_control_panel", OnBigBrotherPanelSpawn )
 
 	file.HackedPlayer <- null
 	file.panels <- []
@@ -758,7 +758,7 @@ function NuclearCoreExplosionChainReaction( origin, panel )
 		explosionDist,		// radiusFalloffMax
 		0,								// radiusFullDamage
 		null, 					// owner
-		eDamageSourceId.bbpanel_explosion,  // damage source id
+		eDamageSourceId.nuclear_core,  // damage source id
 		false,							// alive only
 		true,							// selfDamage
 		null,							// team

@@ -243,6 +243,19 @@ if ( IsMultiplayer() )
 	RegisterServerVar( "switchedSides", null )
 	RegisterServerVar( "replayDisabled", false )
 
+	if ( GAMETYPE == BIG_BROTHER )
+	{
+		// [LJS] bigbrother ??�� ?�치 ?�는지 ?�했?��? Check
+		RegisterServerVar( "BigbrotherPanelHacked", false )
+
+		// ?�킹???�널 ?�덱??
+		RegisterServerVar( "HackedBigbrotherPanelIndex", 0 )
+
+		// ??�� 진행 ?�료 ?�래�?
+		RegisterServerVar( "BigBrotherPanelExplosion", false )
+	}
+
+
 	//Round Winning Kill replay related
 	RegisterServerVar( "roundWinningKillReplayEnabled", false )
 	RegisterServerVar( "roundWinningKillReplayVictimEHandle", null )

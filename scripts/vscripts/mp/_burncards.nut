@@ -268,7 +268,6 @@ function DoSummonTitanBurnCard(player, cardRef)
     local activeBCID = player.GetPersistentVar("activeBCID")
 
 	player.SetActiveBurnCardIndex( -1 )
-
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
 	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
     player.SetPersistentVar( "activeBCID", -1 )
@@ -307,8 +306,9 @@ function ChangeOnDeckBurnCardToActive(player)
 
     player.SetActiveBurnCardIndex( idx )
     player.SetPersistentVar( "activeBCID", cardIndex )
-    player.SetPersistentVar( "onDeckBurnCardIndex", cardIndex )
-    // player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
+    player.SetPersistentVar( "onDeckBurnCardIndex", -1 )
+    player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
+    SetPlayerLastActiveBurnCardFromSlot(player, cardIndex, cardRef)
     foreach( p in GetPlayerArray() )
         Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx, false )
 
