@@ -309,7 +309,7 @@ function ChangeOnDeckBurnCardToActive(player) {
     player.SetActiveBurnCardIndex(idx);
     player.SetPersistentVar("activeBCID", cardIndex);
     player.SetPersistentVar("onDeckBurnCardIndex", -1);
-    //player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
+    // player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
     foreach( p in GetPlayerArray() ) {
         Remote.CallFunction_Replay(p,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx ,false)
     }
@@ -318,18 +318,19 @@ function ChangeOnDeckBurnCardToActive(player) {
 
 function PlayerRespawned(player)
 {
-    if( !IsValid() )
-        return
-
-
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
+
+    while ( GetGameState < eGameState.Playing && !IsAlive( player ) )
+        wait 0
+
+    player.Signal("StartBurnCardEffect");
+
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
     if(!cardRef) {
         return;
     }
     ChangeOnDeckBurnCardToActive(player);
     printt(cardRef);
-    player.Signal("StartBurnCardEffect");
     local cardData = GetBurnCardData(cardRef);
     if(cardData.rarity == BURNCARD_RARE) {
         AddPlayerScore(player,"UsedBurnCard_Rare")
