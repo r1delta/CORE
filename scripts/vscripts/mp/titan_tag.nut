@@ -29,6 +29,12 @@ function EntitiesDidLoad()
 
 	//monitor population and respawns
 	thread SetupTeamDeathmatchNPCs()
+
+	if ( Riff_TitanAvailability() == eTitanAvailability.Default )
+		level.nv.titanAvailability = eTitanAvailability.Never
+
+	if ( Riff_SpawnAsTitan() == eSpawnAsTitan.Default )
+		level.nv.spawnAsTitan = eSpawnAsTitan.Never
 }
 
 function ScriptCallback_OnClientConnecting( player )
