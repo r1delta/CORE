@@ -9,6 +9,7 @@ function main()
     Globalize(RunBurnCardFunctions)
     Globalize(ChangeOnDeckBurnCardToActive)
     Globalize(MakeActiveBurnCard)
+    Globalize( BurnCardIntro )
     Globalize(BurncardsAutoFillEmptyActiveSlots)
 
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
@@ -290,56 +291,90 @@ function RunBurnCardFunctions( player, cardRef )
         thread DoSummonTitanBurnCard(player, cardRef)
 }
 
-function ChangeOnDeckBurnCardToActive(player) {
-    if(!player) {
-        return;
-    }
-    local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
-    if(cardIndex == -1) {
-        return;
-    }
+function ChangeOnDeckBurnCardToActive(player)
+{
+    local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
+
+    if( cardIndex == -1 )
+        return
+
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
-    if(!cardRef) {
-        return;
-    }
-    local idx = GetBurnCardIndexByRef(cardRef);
-    if(idx == -1 || !cardRef || idx == null) {
-        return;
-    }
-    player.SetActiveBurnCardIndex(idx);
-    player.SetPersistentVar("activeBCID", cardIndex);
-    player.SetPersistentVar("onDeckBurnCardIndex", -1);
+
+    local idx = GetBurnCardIndexByRef( cardRef )
+
+    if ( idx == -1 || idx == null )
+        return
+
+    player.SetActiveBurnCardIndex( idx )
+    player.SetPersistentVar( "activeBCID", cardIndex )
+    player.SetPersistentVar( "onDeckBurnCardIndex", cardIndex )
     // player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
-    foreach( p in GetPlayerArray() ) {
-        Remote.CallFunction_Replay(p,"ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx ,false)
-    }
+    foreach( p in GetPlayerArray() )
+        Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx, false )
 
 }
 
-function PlayerRespawned(player)
+function BurnCardIntro( player )
 {
-    local cardIndex = GetPlayerBurnCardOnDeckIndex(player);
+    thread BurnCardIntro_Threaded( player )
+}
 
-    while ( GetGameState < eGameState.Playing && !IsAlive( player ) )
-        wait 0
+function BurnCardIntro_Threaded( player )
+{
+    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+        player.WaitSignal( "CE_FLAGS_CHANGED" )
 
-    player.Signal("StartBurnCardEffect");
+    while ( GetGameState() < eGameState.Playing && !IsAlive( player ) )
+        wait 0.1
+
+    player.Signal( "StartBurnCardEffect" )
+
+    local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+    local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+    local cardData = GetBurnCardData(cardRef)
+
+    // if ( cardData.group == BCGROUP_TITAN )
+    //     thread RunSpawnBurnCard( player, cardRef )
+
+    ChangeOnDeckBurnCardToActive( player )
+
+    printt(cardRef)
+
+    local cardData = GetBurnCardData(cardRef)
+
+    //Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+
+    RunBurnCardFunctions( player, cardRef )
+}
+
+function PlayerRespawned( player )
+{
+    thread BurnCardPlayerRespawned_Threaded( player )
+}
+
+function BurnCardPlayerRespawned_Threaded( player )
+{
+    local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
 
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
-    if(!cardRef) {
-        return;
-    }
-    ChangeOnDeckBurnCardToActive(player);
-    printt(cardRef);
-    local cardData = GetBurnCardData(cardRef);
-    if(cardData.rarity == BURNCARD_RARE) {
-        AddPlayerScore(player,"UsedBurnCard_Rare")
-    }
-    else {
-        AddPlayerScore(player,"UsedBurnCard_Common")
-    }
-    Stats_IncrementStat(player,"misc_stats","burnCardsSpent",1)
-    RunBurnCardFunctions(player,cardRef);
+
+    if( !cardRef )
+        return
+
+    ChangeOnDeckBurnCardToActive( player )
+
+    printt(cardRef)
+
+    local cardData = GetBurnCardData(cardRef)
+
+    if(cardData.rarity == BURNCARD_RARE)
+        AddPlayerScore( player, "UsedBurnCard_Rare" )
+    else
+        AddPlayerScore( player, "UsedBurnCard_Common" )
+
+    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+
+    RunBurnCardFunctions( player, cardRef )
 }
 
 function RunSpawnBurnCard(player,cardRef)

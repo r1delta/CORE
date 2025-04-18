@@ -83,11 +83,7 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 	SetPlayerBurnCardOnDeckIndex(player, index)
 
 	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-	{
-		printt( "about to start running bc stuff" )
-		MakeActiveBurnCard(player, index)
-		RunBurnCardFunctions(player,cardRef);
-	}
+		BurnCardIntro( player )
 
 	return true
 }
@@ -96,8 +92,6 @@ function ClientCommand_DeActivateCard(player, ...) {
 	player.SetActiveBurnCardIndex(-1)
 	return true
 }
-
-
 
 function SetBotTitanLoadout( player )
 {
