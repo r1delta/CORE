@@ -35,8 +35,6 @@ function HeartbeatLoop()
 
 function ClientConnect(player) {
     SendServerHeartbeat(); 
-    player.XPChanged()
-	player.GenChanged()
 }
 
 function OnClientDisconnect(player) {
