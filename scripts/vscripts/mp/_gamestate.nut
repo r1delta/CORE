@@ -1819,12 +1819,11 @@ function ScoreLimit_Complete()
 
 	if ( IsSwitchSidesBased() && !HasSwitchedSides() )
 	{
-		if( level.nv.roundsPlayed == (scoreLimit - 1) )
-		{
-			SetGameState( eGameState.SwitchingSides )
-			return true
-		}
-		/*
+		// if( level.nv.roundsPlayed == (scoreLimit - 1) )
+		// {
+		// 	SetGameState( eGameState.SwitchingSides )
+		// 	return true
+		// }
 		if ( militiaScore >= (scoreLimit * 0.5) )
 		{
 			SetGameState( eGameState.SwitchingSides )
@@ -1835,7 +1834,6 @@ function ScoreLimit_Complete()
 			SetGameState( eGameState.SwitchingSides )
 			return true
 		}
-		*/
 	}
 
 	return false
