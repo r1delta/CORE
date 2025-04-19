@@ -513,7 +513,7 @@ function UpdateMOTD()
 		}
 	)
 	local motd = ""
-	file.motdTitle.SetText( R1DELTA_PATCH_HEADER )
+	file.motdTitle.SetText( "#DELTA_PATCH_HEADER" )
 	while ( uiGlobal.activeMenu == file.menu && ( !Durango_IsDurango() || GetMainMenuState() == mainMenuState.SIGNED_IN ) )
 	{
 		motd = GetConVarString( "motd" )
