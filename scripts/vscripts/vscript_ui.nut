@@ -541,7 +541,7 @@ function UICodeCallback_UpdateLoadingLevelName( levelname )
 	// Return true to show load screen, false to not show load screen.
 	if ( uiGlobal.lobbyMenusLeftOpen )
 		return false
-
+	SendDiscordUI(levelname)
 	return true
 }
 

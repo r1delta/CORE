@@ -276,7 +276,7 @@ function ShowMainMenu()
 	ClientCommand("hostname \""+GetConVarString("name")+"'s R1Delta Server\"")
 	ClientCommand("loadPlaylists")
 
-	SendDiscordUI()
+	SendDiscordUI(null)
 }
 
 function ShowMOTD()
