@@ -387,7 +387,7 @@ function IsBlackMarketUnlocked( player = null )
 	Assert ( level != null )
 	Assert ( gen != null )
 
-	if ( completedBurnCardStory >= BURNCARD_STORY_PROGRESS_COMPLETE )
+	if ( completedBurnCardStory >= BURNCARD_STORY_PROGRESS_COMPLETE && !IsDelta() )
 	{
 		if ( level >= GetUnlockLevelReq( "burn_card_slot_3" ) )
 			return true

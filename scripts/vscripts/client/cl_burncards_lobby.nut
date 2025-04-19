@@ -542,7 +542,7 @@ function DisplayAnyMail( player )
 	)
 
 	local progress = player.GetPersistentVar( "burncardStoryProgress" )
-	if ( UsingAlternateBurnCardPersistence() )
+	if ( UsingAlternateBurnCardPersistence() || IsDelta() )
 		progress = BURNCARD_STORY_PROGRESS_COMPLETE
 
 	foreach ( elem in file.hudElemsIntro )
@@ -3729,13 +3729,13 @@ function OnBurnCardHighlight( cardRef )
 {
 	local player = GetLocalViewPlayer()
 	local progress = player.GetPersistentVar( "burncardStoryProgress" )
-	if ( UsingAlternateBurnCardPersistence() )
+	if ( UsingAlternateBurnCardPersistence() || IsDelta() )
 		progress = BURNCARD_STORY_PROGRESS_COMPLETE
 	local rarity = GetBurnCardRarity( cardRef )
 
 	local coinCost = GetSellCostOfRarity( rarity )
 
-	if ( progress != BURNCARD_STORY_PROGRESS_INTRO )
+	if ( progress != BURNCARD_STORY_PROGRESS_INTRO !IsDelta() )
 	{
 		if ( IsBlackMarketUnlocked( player ) )
 		{
