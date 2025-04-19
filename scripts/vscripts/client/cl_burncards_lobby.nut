@@ -3735,7 +3735,7 @@ function OnBurnCardHighlight( cardRef )
 
 	local coinCost = GetSellCostOfRarity( rarity )
 
-	if ( progress != BURNCARD_STORY_PROGRESS_INTRO !IsDelta() )
+	if ( progress != BURNCARD_STORY_PROGRESS_INTRO )
 	{
 		if ( IsBlackMarketUnlocked( player ) )
 		{
