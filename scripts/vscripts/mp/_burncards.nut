@@ -284,10 +284,17 @@ function ChangeOnDeckBurnCardToActive( player )
     if ( idx == -1 || idx == null )
         return
 
+    local cardData = GetBurnCardData(cardRef)
+
+   
+
     player.SetActiveBurnCardIndex( idx )
     player.SetPersistentVar( "activeBCID", cardIndex )
     player.SetPersistentVar( "onDeckBurnCardIndex", -1 )
-    player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
+    if(cardData.lastsUntil != BC_FOREVER)
+    {
+        player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
+    }
     SetPlayerLastActiveBurnCardFromSlot(player, cardIndex, cardRef)
     foreach( p in GetPlayerArray() )
         Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx, false )
@@ -297,6 +304,30 @@ function ChangeOnDeckBurnCardToActive( player )
 function BurnCardIntro( player )
 {
     thread BurnCardIntro_Threaded( player )
+}
+
+function RollTheDice( player, cardRef )
+{
+   printt("RollTheDice")
+  
+    local card =GetPlayerBurnCardFromDeck( player, RandomInt(100) )
+    if(!card) {
+        return;
+    }
+    printt("RollTheDice card: " + card.cardRef)
+    SetPlayerStashedCardRef( player, card.cardRef,0 )
+    SetPlayerStashedCardTime( player, 90,0 )
+    local idx = GetBurnCardIndexByRef( card.cardRef )
+    player.SetActiveBurnCardIndex( idx )
+    player.SetPersistentVar( "activeBCID", 0 )
+    player.SetPersistentVar( "onDeckBurnCardIndex", -1 )
+    SetPlayerActiveBurnCardSlotContents(player, 0, card.cardRef, false )
+    SetPlayerLastActiveBurnCardFromSlot(player, 0, card.cardRef)
+
+    // stash the dice card
+    local cardData = GetBurnCardData(cardRef)
+    SetPlayerStashedCardRef( player, "bc_dice_ondeath",0 )
+    SetPlayerStashedCardTime( player, 90,0 )
 }
 
 function BurnCardIntro_Threaded( player )
@@ -311,6 +342,8 @@ function BurnCardIntro_Threaded( player )
 
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+    
+
     local cardData = GetBurnCardData(cardRef)
 
     // if ( cardData.group == BCGROUP_TITAN )
@@ -322,8 +355,6 @@ function BurnCardIntro_Threaded( player )
     ChangeOnDeckBurnCardToActive( player )
 
     printt(cardRef)
-
-    local cardData = GetBurnCardData(cardRef)
 
     //Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
 
@@ -346,6 +377,10 @@ function BurnCardPlayerRespawned_Threaded( player )
 
     if ( GetPlayerBurnCardActiveSlotID( player ) )
         return
+
+    if(cardRef == "bc_dice_ondeath") {
+        thread RollTheDice(player, cardRef)
+    }
 
     ChangeOnDeckBurnCardToActive( player )
 
@@ -391,6 +426,10 @@ function RunSpawnBurnCard(player,cardRef)
         // thread LoopSonarAudioPing(player)
     }
 
+    if(cardRef == "bc_dice_ondeath") {
+        thread RollTheDice(player, cardRef)
+        return
+    }
 
     // ChangeOnDeckBurnCardToActive(player);
 

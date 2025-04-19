@@ -79,7 +79,7 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 		return false
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
-
+	
 	SetPlayerBurnCardOnDeckIndex(player, index)
 	EmitSoundOnEntityOnlyToPlayer( player, player, "Operator.Ability_change" )
 
