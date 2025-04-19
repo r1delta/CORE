@@ -188,6 +188,9 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 	{
 		CreateTitanRocketPods( soul, titan )
 	}
+
+	if (!existingTitan)
+	  thread ApplyTitanBurnCards_Threaded( titan )
 }
 
 

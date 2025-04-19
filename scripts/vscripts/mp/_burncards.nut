@@ -10,10 +10,9 @@ function main()
     Globalize(ChangeOnDeckBurnCardToActive)
     Globalize( BurnCardIntro )
     Globalize(BurncardsAutoFillEmptyActiveSlots)
-
+    Globalize( ApplyTitanBurnCards_Threaded )
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
-    AddCallback_OnPilotBecomesTitan( OnTitanBecomesPilotBC )
     AddCallback_OnClientConnected( BurnCard_OnClientConnected )
 }
 
@@ -263,6 +262,8 @@ function RunBurnCardFunctions( player, cardRef )
 
     local weaponData = GetBurnCardWeapon( cardRef )
 
+
+
     if ( cardData.group == BCGROUP_WEAPON || ( weaponData && weaponData.weapon ) )
         thread RunWeaponFunction(player,cardRef)
 
@@ -352,6 +353,9 @@ function BurnCardIntro_Threaded( player )
     if ( GetPlayerBurnCardActiveSlotID( player ) )
         return
 
+    if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
+        return
+
     ChangeOnDeckBurnCardToActive( player )
 
     printt(cardRef)
@@ -376,6 +380,9 @@ function BurnCardPlayerRespawned_Threaded( player )
         return
 
     if ( GetPlayerBurnCardActiveSlotID( player ) )
+        return
+
+    if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
         return
 
     if(cardRef == "bc_dice_ondeath") {
@@ -473,18 +480,10 @@ function _OnPlayerKilled (player,attacker) {
     }
 }
 
-function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
+function ApplyTitanWeaponBurnCard( titan, cardRef )
 {
-
-    local soul = player.GetTitanSoul()
-    if( !IsValid( soul) )
-        return
-
-    local titan = soul.GetTitan()
-
     if( !IsValid( titan ) )
         return
-
 
     local cardData = GetBurnCardData(cardRef);
     local weaponToTake = null
@@ -536,27 +535,30 @@ function ApplyTitanWeaponBurnCard( player, titan_npc, cardRef )
     }
 }
 
-function OnTitanBecomesPilotBC(player,titan)
-{
-    thread OnTitanBecomesPilotBC_Threaded(player,titan)
-}
-
-function OnTitanBecomesPilotBC_Threaded( player, titan )
+function ApplyTitanBurnCards_Threaded( titan )
 {
     while ( true )
     {
-        if ( IsValid( player ) && IsValid( player ) )
+        if ( IsValid( titan ) )
             break
         wait 0.1
     }
 
-    if( DoesPlayerHaveActiveTitanBurnCard( player ) )
+    local player = titan.GetBossPlayer()
+
+    local index = GetPlayerBurnCardOnDeckIndex( player )
+    local ref = GetBurnCardFromSlot( player, index )
+
+    if ( !ref )
+        return
+
+    if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
-        local cardRef = GetPlayerActiveBurnCard( player )
-        thread ApplyTitanWeaponBurnCard( player, titan, cardRef )
+        ChangeOnDeckBurnCardToActive( player )
+        ApplyTitanWeaponBurnCard( titan, ref )
     }
 
-    Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
+    // Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
 }
 
 
