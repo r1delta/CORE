@@ -363,6 +363,7 @@ function PlayerEnterEndRoundState( player )
 	switch ( level.endOfRoundPlayerState )
 	{
 		case ENDROUND_MOVEONLY:
+			ResetTitanBuildCompleteCondition( player )
 			TakeAmmoFromPlayer( player )
 			break
 
@@ -370,10 +371,12 @@ function PlayerEnterEndRoundState( player )
 			break
 
 		case ENDROUND_FREEZE:
+			ResetTitanBuildCompleteCondition( player )
 			player.FreezeControlsOnServer( false )
 			break
 
 		default:
+			ResetTitanBuildCompleteCondition( player )
 			player.FreezeControlsOnServer( false )
 			break
 	}
@@ -580,13 +583,13 @@ function GetNumTeamPlayers()
 }
 
 function PopulateScoreboardData()
-{    
+{
     local i = 0
     foreach (player in GetPlayerArray())
     {
         local myTeam = player.GetTeam()
         local enemyTeam = GetEnemyTeam(myTeam)
-        
+
         // Get enum indices for game mode and map
         local enumModeIndex = 0
         local enumMapIndex = 0
@@ -596,26 +599,26 @@ function PopulateScoreboardData()
             enumMapIndex = PersistenceGetEnumIndexForItemName("maps", GetMapName())
         }
         catch(ex) {}
-        
+
         // Set basic match info
         player.SetPersistentVar("savedScoreboardData.gameMode", enumModeIndex)
         player.SetPersistentVar("savedScoreboardData.map", enumMapIndex)
         player.SetPersistentVar("savedScoreboardData.playerTeam", myTeam)
         player.SetPersistentVar("savedScoreboardData.playerIndex", i)
         player.SetPersistentVar("savedScoreboardData.maxTeamPlayers", GetNumTeamPlayers())
-        
+
         // Team scores and counts
         player.SetPersistentVar("savedScoreboardData.scoreIMC", GameRules.GetTeamScore(TEAM_IMC))
         player.SetPersistentVar("savedScoreboardData.scoreMCOR", GameRules.GetTeamScore(TEAM_MILITIA))
         player.SetPersistentVar("savedScoreboardData.numPlayersIMC", GetTeamPlayerCount(TEAM_IMC))
         player.SetPersistentVar("savedScoreboardData.numPlayersMCOR", GetTeamPlayerCount(TEAM_MILITIA))
-        
+
         // Match type info
         player.SetPersistentVar("savedScoreboardData.privateMatch", IsPrivateMatch())
         player.SetPersistentVar("savedScoreboardData.campaign", GetCinematicMode()) // campaign mode check
         player.SetPersistentVar("savedScoreboardData.ranked", false)
         player.SetPersistentVar("savedScoreboardData.hadMatchLossProtection", player.s.hasMatchLossProtection)
-        
+
         // Process IMC players
         local imcPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_IMC)
         for (local i = 0; i < min(imcPlayers.len(), 8); i++)
@@ -636,7 +639,7 @@ function PopulateScoreboardData()
             player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].rank", 0)
             player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].matchPerformance", 0)
         }
-        
+
         // Process MCOR players
         local mcorPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_MILITIA)
         for (local i = 0; i < min(mcorPlayers.len(), 8); i++)
