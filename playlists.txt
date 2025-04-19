@@ -1,7 +1,7 @@
 "playlists"
 {
 	"version"	"stable"
-	"versionNum"	"1938" // Never forget to bump this for every playlist update.
+	"versionNum"	"1939" // Never forget to bump this for every playlist update.
 	"at"
 	{
 		"vars"
@@ -2547,6 +2547,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"ПРЕДУПРЕЖДЕНИЕ О ПЕРЕНАПРАВЛЕНИИ ПОРТА"
 				"PORT_FORWARD_WARNING_DEFAULT"	"Ваш сервер не будет виден в браузере сервера, так как порт 27015 (UDP) не перенаправлен должным образом на вашем маршрутизаторе. Пожалуйста, обратитесь за помощью в #help."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Ваш сервер не будет виден в браузере сервера, так как порт %s1 (UDP) не перенаправлен должным образом на вашем маршрутизаторе. Возможно, запущен другой экземпляр игры."
+				"DELTA_PATCH_HEADER"	"^CDEBFF00Добро пожаловать в ^f4433600R1Delta^CDEBFF00!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"На окраине Деметры между IMC и Ополчением разгорелась масштабная битва."
@@ -2664,6 +2665,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"連接埠轉送警告"
 				"PORT_FORWARD_WARNING_DEFAULT"	"您的伺服器將不會在伺服器瀏覽器中可見，因為連接埠 27015（UDP）未在您的路由器上正確轉送。請在#help 中尋求協助。"
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"您的伺服器將不會在伺服器瀏覽器中可見，因為連接埠 %s1（UDP）未在您的路由器上正確轉送。另一個遊戲實例可能正在運行。"
+				"DELTA_PATCH_HEADER"	"^CDEBFF00歡迎來到 ^f4433600R1Delta^CDEBFF00！"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"IMC與民兵在德墨忒爾郊外爆發了大規模戰鬥。"
@@ -2781,6 +2783,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"ポート転送の警告"
 				"PORT_FORWARD_WARNING_DEFAULT"	"ルーターでポート27015（UDP）が正しく転送されていないため、サーバーブラウザにサーバーが表示されません。#help でサポートにお問い合わせください。"
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"ルーターでポート%s1（UDP）が正しく転送されていないため、サーバーブラウザにサーバーが表示されません。別のゲームインスタンスが実行中である可能性があります。"
+				"DELTA_PATCH_HEADER"	"^f4433600R1Delta^CDEBFF00へようこそ！"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"デメテル郊外でIMCと民兵の間で大規模な戦闘が勃発した。"
@@ -2898,6 +2901,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"ADVERTENCIA DE APERTURA DE PUERTOS"
 				"PORT_FORWARD_WARNING_DEFAULT"	"Tu servidor no será visible en el navegador porque el puerto 27015 (UDP) no está abierto en tu router. Por favor pregunta en #help para obtener ayuda."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Tu servidor no será visible en el navegador porque el puerto %s1 (UDP) no está abierto. Es posible que se esté ejecutando otra instancia del juego."
+				"DELTA_PATCH_HEADER"	"^CDEBFF00¡Bienvenido a ^f4433600R1Delta^CDEBFF00!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Una batalla a larga escala se ha desatado entre la IMC y la Milicia en las afueras de Demeter."
@@ -3015,6 +3019,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"OSTRZEŻENIE O PRZEKAZYWANIU PORTU"
 				"PORT_FORWARD_WARNING_DEFAULT"	"Twój serwer nie będzie widoczny w przeglądarce serwerów, ponieważ port 27015 (UDP) nie jest prawidłowo przekazywany na routerze. Aby uzyskać pomoc, zapytaj w #help."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Twój serwer nie będzie widoczny w przeglądarce serwerów, ponieważ port %s1 (UDP) nie jest prawidłowo przekazywany na routerze. Może być uruchomiona inna instancja gry."
+				"DELTA_PATCH_HEADER"	"^CDEBFF00Witamy w ^f4433600R1Delta^CDEBFF00!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Na obrzeżach Demeter wybuchła bitwa na dużą skalę pomiędzy IMC a milicją."
@@ -3132,6 +3137,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"AVVISO DI INOLTRO PORTE"
 				"PORT_FORWARD_WARNING_DEFAULT"	"Il tuo server non sarà visibile nel browser perché la porta 27015 (UDP) non è correttamente inoltrata sul router. Chiedi assistenza tramite #help."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Il tuo server non sarà visibile nel browser perché la porta %s1 (UDP) non è correttamente inoltrata sul router. Potrebbe essere in esecuzione un'altra istanza di gioco."
+				"DELTA_PATCH_HEADER"	"^CDEBFF00Benvenuti su ^f4433600R1Delta^CDEBFF00!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Una battaglia su larga scala scoppiò tra l'IMC e la Milizia alla periferia di Demetra."
@@ -3249,6 +3255,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"AVISO DE PORTA À FRENTE"
 				"PORT_FORWARD_WARNING_DEFAULT"	"O seu servidor não estará visível no navegador do servidor porque a porta 27015 (UDP) não está corretamente encaminhada no seu router. Peça ajuda em #help."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"O seu servidor não estará visível no navegador do servidor porque a porta %s1 (UDP) não está corretamente encaminhada no seu router. Outra instância do jogo pode estar a ser executada."
+				"DELTA_PATCH_HEADER"	"^CDEBFF00Bem-vindo ao ^f4433600R1Delta^CDEBFF00!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Uma batalha em grande escala eclodiu entre o IMC e a Milícia nos arredores de Deméter."
@@ -3366,6 +3373,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"포트 포워딩 경고"
 				"PORT_FORWARD_WARNING_DEFAULT"	"라우터에서 포트 27015(UDP)가 제대로 포워딩되지 않아 서버 브라우저에 서버가 표시되지 않습니다. 도움이 필요하시면 #help에서 문의하세요."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"라우터에서 포트 %s1(UDP)가 제대로 포워딩되지 않아 서버 브라우저에 서버가 표시되지 않습니다. 다른 게임 인스턴스가 실행 중일 수 있습니다."
+				"DELTA_PATCH_HEADER"	"^f4433600R1Delta^CDEBFF00에 오신 것을 환영합니다!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"데메테르 외곽에서 IMC와 저항군간의 대규모 함대전이 벌어졌습니다."
@@ -3483,6 +3491,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"AVERTISSEMENT DE Redirection de port"
 				"PORT_FORWARD_WARNING_DEFAULT"	"Votre serveur ne sera pas visible dans le navigateur de serveur, car le port 27015 (UDP) n'est pas correctement redirigé sur votre routeur. Veuillez contacter l'aide via #Aide pour obtenir de l'aide."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Votre serveur ne sera pas visible dans le navigateur de serveur, car le port %s1 (UDP) n'est pas correctement redirigé sur votre routeur. Une autre instance de jeu est peut-être en cours d'exécution."
+				"DELTA_PATCH_HEADER"	"^CDEBFF00Bienvenue sur ^f4433600R1Delta^CDEBFF00!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Une bataille à grande échelle a éclaté entre l'IMC et la milice à la périphérie de Déméter."
@@ -3659,6 +3668,7 @@
 				"PORT_FORWARD_WARNING_HEADER"	"WARNUNG ZUR PORTWEITERLEITUNG"
 				"PORT_FORWARD_WARNING_DEFAULT"	"Ihr Server wird im Server-Browser nicht angezeigt, da Port 27015 (UDP) auf Ihrem Router nicht ordnungsgemäß weitergeleitet wird. Bitte wenden Sie sich an #help, um Hilfe zu erhalten."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Ihr Server wird im Server-Browser nicht angezeigt, da Port %s1 (UDP) auf Ihrem Router nicht ordnungsgemäß weitergeleitet wird. Möglicherweise läuft eine andere Spielinstanz."
+				"DELTA_PATCH_HEADER"	"^CDEBFF00Willkommen bei ^f4433600R1Delta^CDEBFF00!"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Am Stadtrand von Demeter kam es zu einer groß angelegten Schlacht zwischen dem IMC und der Miliz."
