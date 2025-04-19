@@ -231,7 +231,7 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	if ( IsPrivateMatch() )
 	{
 		UpdatePrivateMatchMapIfUnavailable()
-	} 
+	}
 
 	if ( GetLobbyType() == "party" )
 		UpdateCustomMatchMapIfUnavailable()
@@ -278,7 +278,7 @@ function CodeCallback_OnPlayerRespawned( player )
 
 function CodeCallback_OnNPCKilled( npc, damageInfo )
 {
-	
+
 }
 
 function CodeCallback_WeaponFireInCloak( player )
@@ -467,6 +467,11 @@ function PrivateMatchLobbyLogic()
 		level.ui.privatematch_map = getconsttable().ePrivateMatchMaps[mapName]
 
 	local modeName = GetLastServerGameMode()
+
+	// I don't like ctf
+    if (modeName == null)
+		modeName = "at"
+
 	if ( (modeName in getconsttable().ePrivateMatchModes) )
 		level.ui.privatematch_mode = getconsttable().ePrivateMatchModes[modeName]
 
@@ -603,7 +608,7 @@ function MatchmakingServerLobbyLogic()
                     {
                         local imcPlayers = []
                         local militiaPlayers = []
-                        
+
                         foreach ( p in players )
                         {
                             if ( p.GetTeam() == TEAM_IMC )
@@ -614,7 +619,7 @@ function MatchmakingServerLobbyLogic()
 
                         local totalPlayers = players.len()
                         local targetPerTeam = ceil(totalPlayers / 2.0)
-                        
+
                         if ( imcPlayers.len() > militiaPlayers.len() )
                         {
                             local playersToMove = imcPlayers.len() - targetPerTeam
@@ -1789,11 +1794,11 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
         foreach ( p in players )
             p.SetTeam( TEAM_MILITIA )
     }
-    else 
+    else
     {
         local imcPlayers = []
         local militiaPlayers = []
-        
+
         // Sort current players by team
         foreach ( p in players )
         {
@@ -1806,7 +1811,7 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
         // Calculate how many players need to be moved
         local totalPlayers = players.len()
         local targetPerTeam = ceil(totalPlayers / 2.0)
-        
+
         // Balance from larger team to smaller team
         if ( imcPlayers.len() > militiaPlayers.len() )
         {
@@ -1855,11 +1860,11 @@ function ClientCommand_PrivateMatchSwitchTeams( player, ... )
     // Get current team counts
     local currentIMCCount = GetTeamPlayerCount( TEAM_IMC )
     local currentMilitiaCount = GetTeamPlayerCount( TEAM_MILITIA )
-    
+
     // Calculate what the counts would be after the switch
     local newIMCCount = currentIMCCount
     local newMilitiaCount = currentMilitiaCount
-    
+
     if (player.GetTeam() == TEAM_IMC)
     {
         newIMCCount--
