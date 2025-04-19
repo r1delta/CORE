@@ -286,7 +286,7 @@ function ChangeOnDeckBurnCardToActive( player )
 
     local cardData = GetBurnCardData(cardRef)
 
-   
+
 
     player.SetActiveBurnCardIndex( idx )
     player.SetPersistentVar( "activeBCID", cardIndex )
@@ -309,7 +309,7 @@ function BurnCardIntro( player )
 function RollTheDice( player, cardRef )
 {
    printt("RollTheDice")
-  
+
     local card =GetPlayerBurnCardFromDeck( player, RandomInt(100) )
     if(!card) {
         return;
@@ -342,12 +342,12 @@ function BurnCardIntro_Threaded( player )
 
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
-    
+
 
     local cardData = GetBurnCardData(cardRef)
 
-    // if ( cardData.group == BCGROUP_TITAN )
-    //     thread RunSpawnBurnCard( player, cardRef )
+    if ( cardData.group == BCGROUP_TITAN )
+        thread RunSpawnBurnCard( player, cardRef )
 
     if ( GetPlayerBurnCardActiveSlotID( player ) )
         return
