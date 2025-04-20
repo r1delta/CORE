@@ -105,6 +105,8 @@ resource/ui/menus/directconnectdialog.menu
 			pin_corner_to_sibling	2
 			pin_to_sibling_corner	2
 			wide					247
+			navUp					BtnCancel
+			navDown					BtnConnect
 			tall					18
 			visible					1
 			enabled					1
@@ -132,8 +134,8 @@ resource/ui/menus/directconnectdialog.menu
 			pin_corner_to_sibling	4
 			pin_to_sibling_corner	6
 			ypos					50
-			navUp					BtnConfirmQuitGame
-			navDown					BtnConnect
+			navUp					BtnConnect
+			navDown					LblConnectTo
 			tabPosition				1
 			labelText				"#CANCEL"
 		}
@@ -147,8 +149,8 @@ resource/ui/menus/directconnectdialog.menu
 			pin_corner_to_sibling	4
 			pin_to_sibling_corner	6
             ypos                    30
-			navUp					BtnCancel
-			navDown					BtnConfirmLeaveTraining
+			navUp					LblConnectTo
+			navDown					BtnCancel
 			labelText				"#DIRECT_CONNECT_ACTION"
 		}
 

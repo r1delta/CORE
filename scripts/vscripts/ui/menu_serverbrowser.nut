@@ -122,6 +122,10 @@ function InitServerBrowserMenu( menu )
     // Initialize mouse wheel handlers
     RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
     RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
+
+    RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+    RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
+
     // Initialize filter state
     RefreshServerList(null)
 

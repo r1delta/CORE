@@ -294,10 +294,11 @@ function UpdateFooterButtons( menuName = null )
 			break
 
         case "ServerBrowserMenu":
+		    footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
+
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
-            footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
 			footerData.gamepad.append( { label = "#FOOTER_DIRECT_CONNECT_GAMEPAD" , func = OpenDirectConnectDialog_Activate })
             footerData.pc.append( { label = "#FOOTER_DIRECT_CONNECT", func = OpenDirectConnectDialog_Activate } )
 
