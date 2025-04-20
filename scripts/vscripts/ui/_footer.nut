@@ -733,9 +733,18 @@ function UpdateCanSetDataCenter()
 
 		if ( uiGlobal.canSetDataCenter != lastResult )
 		{
-			if ( uiGlobal.canSetDataCenter ) { } // RegisterButtonPressedCallback( BUTTON_X, DataCenterDialog ) }
-			else {}
-				//DeregisterButtonPressedCallback( BUTTON_X, DataCenterDialog )
+			if ( uiGlobal.canSetDataCenter ) 
+			{	 
+				RegisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
+				RegisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )
+				RegisterButtonPressedCallback(BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
+			}  
+			else 
+			{
+				DeregisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
+				DeregisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )
+				DeregisterButtonPressedCallback( BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
+			}
 		}
 
 		lastResult = uiGlobal.canSetDataCenter

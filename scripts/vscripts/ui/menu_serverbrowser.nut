@@ -123,8 +123,8 @@ function InitServerBrowserMenu( menu )
     RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
     RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
 
-    RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
-    RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
+    // RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+    // RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
 
     // Initialize filter state
     RefreshServerList(null)
@@ -464,10 +464,14 @@ function OnOpenServerBrowserMenu(menu)
 
     try {
         DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+        DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+        DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
     } catch ( e )
     { }
 
     RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+    RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+    RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
 
     // Update UI
     FilterAndUpdateList()
@@ -476,6 +480,8 @@ function OnOpenServerBrowserMenu(menu)
 function OnCloseServerBrowserMenu( menu )
 {
     try {
+        DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+        DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
         DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
     } catch ( e )
     { }
