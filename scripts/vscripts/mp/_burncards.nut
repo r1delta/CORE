@@ -456,27 +456,23 @@ function RunSpawnBurnCard(player,cardRef)
 
 function _OnPlayerKilled (player,attacker) {
 
-    if(!player) {
-        return;
-    }
+    if( !IsValid( player) )
+        return
 
-    if(!attacker) {
-        return;
-    }
+    if( !IsValid( attacker ) )
+        return
 
-    local cardRef = GetPlayerActiveBurnCard( player );
-    if(!cardRef) {
-        return;
-    }
+    local cardRef = GetPlayerActiveBurnCard( player )
+
+    if(!cardRef)
+        return
 
     local cardData = GetBurnCardData(cardRef);
 
-    if ( player.IsPlayer() )
-	 	BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
+	BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
 
-    if(cardRef == "bc_rematch") {
-        StopActiveBurnCard(player);
-    }
+    if(cardRef == "bc_rematch")
+        StopActiveBurnCard(player)
 }
 
 function ApplyTitanWeaponBurnCard( titan, cardRef )
