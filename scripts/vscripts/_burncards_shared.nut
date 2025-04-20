@@ -796,6 +796,8 @@ if ( !IsUI() )
 
 	function GetPlayerActiveBurnCard( player )
 	{
+		if(!player.IsPlayer())	
+			return null
 		local index = player.GetActiveBurnCardIndex()
 		if ( index < 0 )
 			return null
