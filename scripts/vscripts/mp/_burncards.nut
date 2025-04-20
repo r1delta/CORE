@@ -382,7 +382,7 @@ function BurnCardPlayerRespawned_Threaded( player )
     if ( GetPlayerBurnCardActiveSlotID( player ) )
         return
 
-    if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
+    if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
         return
 
     if(cardRef == "bc_dice_ondeath") {
@@ -482,9 +482,6 @@ function _OnPlayerKilled (player,attacker) {
 
 function ApplyTitanWeaponBurnCard( titan, cardRef )
 {
-    if( !IsValid( titan ) )
-        return
-
     local cardData = GetBurnCardData(cardRef);
     local weaponToTake = null
     local weaponData = GetBurnCardWeapon(cardRef)
@@ -537,15 +534,26 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
 
 function ApplyTitanBurnCards_Threaded( titan )
 {
-    while ( true )
+    local player = titan.GetBossPlayer()
+
+    local isSpawning = IsValid( player.isSpawning )
+
+    if ( isSpawning )
     {
-        if ( IsValid( titan )  )
+        while ( true )
         {
-            local player = titan.GetBossPlayer()
-            if ( IsValid( player ) )
-              break
+            if ( player.IsTitan() && IsAlive( player ) )
+                break
+            wait 0.1
         }
-        wait 0.1
+    } else
+    {
+        while ( true )
+        {
+            if ( IsValid( titan ) )
+                break
+            wait 0.1
+        }
     }
 
     local index = GetPlayerBurnCardOnDeckIndex( player )
@@ -557,7 +565,10 @@ function ApplyTitanBurnCards_Threaded( titan )
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
         ChangeOnDeckBurnCardToActive( player )
-        ApplyTitanWeaponBurnCard( titan, ref )
+        if ( isSpawning )
+            ApplyTitanWeaponBurnCard( player, ref )
+        else
+            ApplyTitanWeaponBurnCard( titan, ref )
     }
 
     // Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")

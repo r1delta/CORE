@@ -190,7 +190,7 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 	}
 
 	if (!existingTitan)
-	  thread ApplyTitanBurnCards_Threaded( titan )
+	  	thread ApplyTitanBurnCards_Threaded( titan )
 }
 
 
