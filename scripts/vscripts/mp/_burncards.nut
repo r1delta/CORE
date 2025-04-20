@@ -464,7 +464,7 @@ function _OnPlayerKilled (player,attacker)
     local lastsUntil = GetBurnCardLastsUntil( cardRef )
 
     if ( lastsUntil == BC_NEXTTITANDROP || cardRef == "bc_rematch" )
-        StopActiveBurnCard( e.player )
+        StopActiveBurnCard( player )
 
     BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
 }
