@@ -65,22 +65,12 @@ function GetLastServerMap()
 
 function GetLastServerGameMode()
 {
-	local lastMode
-	local lastMap
-	local index = IsNextGameTest() ? 0 : 1 // When using real history, 0 is the current and 1 is the last map
+	local mode = GetConVarString("mp_gamemode")
 
-	for ( ;; )
-	{
-		lastMode = GetRecentServerMode( index )
-		lastMap = GetRecentServerMap( index )
-		index++
+	if ( mode == null || mode == "" )
+		return null
 
-		if ( lastMode == null || lastMode == "" )
-			return null
-
-		if ( lastMap != "mp_lobby" )
-			return lastMode
-	}
+	return mode
 }
 
 // Returns a list of played maps, limited to the map count of the current playlist, or available maps in the case of private match
