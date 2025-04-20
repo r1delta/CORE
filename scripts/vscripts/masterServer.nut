@@ -67,6 +67,7 @@ function SendServerHeartbeat() {
     data_table.map_name <- map_name;
     data_table.game_mode <- game_mode;
     data_table.playlist <- GetCurrentPlaylistName()
+    data_table.playlist_display_name <- GetCurrentPlaylistVar("name","")
     data_table.players <- players;
     data_table.max_players <- maxPlayers
     
