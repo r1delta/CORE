@@ -468,6 +468,12 @@ engine.dll,text,0x559D0,40,C3
 ; discord id for status and id string
 engine.dll,text,0x00D5436,8B 81 FC 02 00 00 83 E0 01 89 42 14 8B 81 FC 02 00 00 D1 E8 89 42 10,48 8B 81 FC 02 00 00 48 89 42 08 90 90 90 90 90 90 90 90 90 90 90 90
 
+;net_writeStatsFile always write to net_stats.txt instead of arbitrary file
+engine.dll,text,0x130843,74 0C ,90 90
+
+; ret in mat_crosshair_edit_command_callback
+engine.dll,text,0x9D5B0,40,C3
+
 ; unclamp resolutions
 engine.dll,text,0xAA950,40,C3
 ;E9 9A 00 00 00
