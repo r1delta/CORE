@@ -1338,7 +1338,7 @@ resource/ui/menus/server_browser.menu
             textHidden				0
             editable				1
             navDown                BtnServerNameTab
-            navUp                  ButtonServer0
+            navUp                  ButtonServer1
             maxchars				32
             textAlignment			"center"
             font                    Default_28
