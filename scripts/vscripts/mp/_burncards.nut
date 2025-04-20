@@ -347,13 +347,12 @@ function BurnCardIntro_Threaded( player )
 
     local cardData = GetBurnCardData(cardRef)
 
-    if ( cardData.group == BCGROUP_TITAN )
-        thread RunSpawnBurnCard( player, cardRef )
+    thread RunSpawnBurnCard( player, cardRef )
 
     if ( GetPlayerBurnCardActiveSlotID( player ) )
         return
 
-    if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
+    if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
         return
 
     ChangeOnDeckBurnCardToActive( player )
