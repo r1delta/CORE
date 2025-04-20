@@ -539,12 +539,15 @@ function ApplyTitanBurnCards_Threaded( titan )
 {
     while ( true )
     {
-        if ( IsValid( titan ) )
-            break
+        if ( IsValid( titan )  )
+        {
+            local player = titan.GetBossPlayer()
+            if ( IsValid( player ) )
+              break
+        }
         wait 0.1
     }
 
-    local player = titan.GetBossPlayer()
 
     while ( true )
     {
