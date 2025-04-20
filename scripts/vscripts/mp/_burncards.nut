@@ -454,18 +454,24 @@ function RunSpawnBurnCard(player,cardRef)
 
 }
 
-function _OnPlayerKilled (player,attacker) {
+function _OnPlayerKilled (player,attacker)
+{
+    printt("hi")
+    // if( !IsValid( player) )
+    //     return
 
-    if( !IsValid( player) )
-        return
+    printt("hi")
 
-    if( !IsValid( attacker ) )
-        return
+    // if( !IsValid( attacker ) )
+    //     return
+
+    printt("hi")
 
     local cardRef = GetPlayerActiveBurnCard( player )
 
     if(!cardRef)
         return
+    printt("hi")
 
     local cardData = GetBurnCardData(cardRef);
 
