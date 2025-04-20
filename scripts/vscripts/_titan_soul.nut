@@ -243,6 +243,7 @@ function SoulBecomesOwnedByPlayer( soul, player )
 	//SetTitanRespawnTimer( player, 999999 )
 
 	//TryBecomeTitanBurnCard( player )
+	    Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
 
 	player.Signal( "OnPlayerHasTitanInWorld" )
 }
