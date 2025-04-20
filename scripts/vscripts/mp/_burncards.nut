@@ -567,14 +567,8 @@ function ApplyTitanBurnCards_Threaded( titan )
         ref = GetBurnCardFromSlot( player, index )
     }
 
-    printt("ref: " + ref)
-
     if ( !ref )
         return
-
-    printt("hi")
-
-    printt("isspawning: " + isSpawning)
 
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
