@@ -548,14 +548,6 @@ function ApplyTitanBurnCards_Threaded( titan )
         wait 0.1
     }
 
-
-    while ( true )
-    {
-        if ( IsValid( player ) )
-            break
-        wait 0.1
-    }
-
     local index = GetPlayerBurnCardOnDeckIndex( player )
     local ref = GetBurnCardFromSlot( player, index )
 
