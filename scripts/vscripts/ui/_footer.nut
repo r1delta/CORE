@@ -312,10 +312,10 @@ function UpdateFooterButtons( menuName = null )
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
-            footerData.gamepad.append( { label = "",func = UpdateAddonPaths } )
+            footerData.gamepad.append( { label = "#RELOAD_ADDON_PATHS_GAMEPAD" } )
             footerData.pc.append( { label = "#RELOAD", func = UpdateAddonPaths } )
 
-			footerData.gamepad.append( { label = "#OPEN_ADDONS_FOLDER_GAMEPAD",func = OpenAddonFolder } )
+			footerData.gamepad.append( { label = "#OPEN_ADDONS_FOLDER_GAMEPAD" } )
 			footerData.pc.append( { label = "#OPEN_ADDONS_FOLDER", func = OpenAddonFolder } )
 
 			break
