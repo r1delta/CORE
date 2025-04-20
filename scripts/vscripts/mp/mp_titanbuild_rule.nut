@@ -1,6 +1,6 @@
 // I fucking hate nexon
 
-function TitanBuildRuleMain()
+function main()
 {
 	// printt( "[TitanBuildRule] call TitanBuildRuleMain" )
 
@@ -17,6 +17,7 @@ function TitanBuildRuleMain()
 	// IncludeScript( "mp/mp_titanBuild_rule_time" )
 	// IncludeScript( "mp/mp_titanBuild_rule_time_atdm" )
 	// IncludeScript( "mp/mp_titanBuild_rule_point" )
+	AddCallback_GameStateEnter( eGameState.Playing, RoundBasedTitanReset )
 }
 
 
@@ -49,13 +50,14 @@ function TitanDeployed( player )
 	player.titansBuilt++
 	player.SetTitanDeployed( true )
 	player.SetTitanBuildStarted( false )
-	player.SetTitanReady( false )	
+	player.SetTitanReady( false )
 }
 
 function ResetTitanBuildCompleteCondition( player, forceBuild = false )
 {
 	local buildTime
 	local reBuildTime
+
 	if( forceBuild == true )
 	{
 		buildTime = 0
@@ -69,50 +71,34 @@ function ResetTitanBuildCompleteCondition( player, forceBuild = false )
 
 	if( player.titansBuilt > 0 )
 	{
-		// 리빌드인 경우
 		player.SetTitanBuildTime( reBuildTime )
 	}
 	else
 	{
-		//최초 빌드
 		player.SetTitanBuildTime( buildTime )
 	}
 }
 
-function StartTitanBuildProgress( player, forceBuild = false )
+function StartTitanBuildProgress( player, forceBuild = false, rebuild = false )
 {
-	// 타이탄 사용 안함
 	if( level.nv.titanAvailability == eTitanAvailability.Never )
 		return
 
-	// 한판에 타이탄 한번만 사용하고 타이탄을 한번이상 리스폰 했을경우.
 	if( level.nv.titanAvailability == eTitanAvailability.Once && player.titansBuilt > 0 )
 		return
 
-	// 강제 소환이 아니고 트레이닝 모드일때
-	if ((GetMapName() == "mp_npe") && forceBuild == false)
-	 	return
+	if ( !forceBuild && !rebuild )
+	{
+		if( player.IsTitanBuildStarted() || player.IsTitanReady() || player.IsTitanDeployed() )
+			return
+	}
 
-	// 타이탄 빌드가 진행중일 경우
-	if( player.IsTitanBuildStarted() == true )
-		return
-
-	// 타이탄이 준비되어 있을경우
-	if( player.IsTitanReady() == true )
-		return
-
-	// 타이탄이 소환된 상태 일때
-	if( player.IsTitanDeployed() == true )
-		return
-
-	local buildRule = GetTitanBuildRule()/*GameRules.GetTitanBuildRule()*/
-
-	printt( "StartTitanBuildProgress: " + player.GetName() + " " + buildRule )
+	printt( "StartTitanBuildProgress: " + player.GetName() )
 
 	player.SetTitanBuildStarted( true )
 	player.SetTitanReady( false	)
 
-	ResetTitanBuildCompleteCondition( player, forceBuild )	
+	ResetTitanBuildCompleteCondition( player, forceBuild )
 
 	StartTitanBuild( player )
 
@@ -162,7 +148,7 @@ function TryHandleTitanETA( player )
 			PlayConversationToPlayer( "TitanReplacementETA60s" , player )
 		else
 			PlayConversationToPlayer( "FirstTitanETA60s", player )
-		
+
 		player.s.replacementTitanETA_lastNagTime = Time()
 	}
 	else if( ( GetRemain( player ) < ETA30sUpperBound && GetRemain( player ) > ETA30sLowerBound ) && ETACanNagPlayer( player ) )
@@ -181,7 +167,7 @@ function TryHandleTitanETA( player )
 			PlayConversationToPlayer( "TitanReplacementETA15s" , player )
 		else
 			PlayConversationToPlayer( "FirstTitanETA15s", player )
-		
+
 		player.s.replacementTitanETA_lastNagTime = Time()
 	}
 }
@@ -210,7 +196,7 @@ function Update( player )
 
 		if( !IsValid( player ) )
 			return
-				
+
 		if( player.IsTitanBuildStarted() == false )
 			return
 
@@ -342,7 +328,7 @@ function ForceTitanBuildComplete( player )
 {
 	if( player.IsTitanReady() == true )
 		return
-		
+
 	player.SetTitanBuildStarted( false )
 	StartTitanBuildProgress( player, true )
 }
@@ -420,6 +406,19 @@ function UpdateBuildPoint( player, point, event )
 	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
 }
 
-TitanBuildRuleMain()
+function RoundBasedTitanReset()
+{
+	if ( IsRoundBased() )
+	{
+		local players = GetPlayerArray()
+		foreach ( player in players )
+		{
+			StartTitanBuildProgress( player, false, true )
+		}
+	}
+}
+
+
+main()
 
 

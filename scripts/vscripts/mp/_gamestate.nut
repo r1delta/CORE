@@ -363,7 +363,6 @@ function PlayerEnterEndRoundState( player )
 	switch ( level.endOfRoundPlayerState )
 	{
 		case ENDROUND_MOVEONLY:
-			ResetTitanBuildCompleteCondition( player )
 			TakeAmmoFromPlayer( player )
 			break
 
@@ -371,12 +370,10 @@ function PlayerEnterEndRoundState( player )
 			break
 
 		case ENDROUND_FREEZE:
-			ResetTitanBuildCompleteCondition( player )
 			player.FreezeControlsOnServer( false )
 			break
 
 		default:
-			ResetTitanBuildCompleteCondition( player )
 			player.FreezeControlsOnServer( false )
 			break
 	}
