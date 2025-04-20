@@ -278,6 +278,8 @@ resource/ui/menus/server_browser.menu
             pin_to_sibling			ButtonRowAnchor
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	TOP_LEFT
+            navDown                ServerButton2
+            navUp                  ServerButton9
             xpos 35
             scriptID				0
 			wide 					600
@@ -297,6 +299,8 @@ resource/ui/menus/server_browser.menu
 			pin_to_sibling_corner	2
             scriptID				1
 			wide 					600
+            navDown                ServerButton3
+            navUp                  ServerButton1
             xpos                    0
             visible					1
             enabled					1
@@ -312,6 +316,8 @@ resource/ui/menus/server_browser.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				2
+            navDown                ServerButton4
+            navUp                  ServerButton2
 			wide 					1120
             visible					1
             enabled					1
@@ -323,6 +329,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton3
+            navDown                ServerButton5
+            navUp                  ServerButton3
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				3
@@ -337,6 +345,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton4
+            navDown                ServerButton6
+            navUp                  ServerButton4
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				4
@@ -351,6 +361,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton5
+            navDown                ServerButton7
+            navUp                  ServerButton5
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				5
@@ -365,6 +377,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton6
+            navDown                ServerButton7
+            navUp                  ServerButton6
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				6
@@ -379,6 +393,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton7
+            navDown                ServerButton8
+            navUp                  ServerButton6
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				7
@@ -409,6 +425,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton9
+            navUp                  ServerButton8
+            navDown                ServerButton1
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				9
@@ -1319,6 +1337,8 @@ resource/ui/menus/server_browser.menu
             enabled					1
             textHidden				0
             editable				1
+            navDown                BtnServerNameTab
+            navUp                  ButtonServer0
             maxchars				32
             textAlignment			"center"
             font                    Default_28
@@ -1342,8 +1362,8 @@ resource/ui/menus/server_browser.menu
 			pin_to_sibling_corner	1
 			ypos				    425
 			xpos 					450
-			navUp					SwtBtnHideEmpty
-			navDown					SwtBtnHideEmpty
+			navUp					BtnServerSearch
+			navDown					ServerButton1
 			tabPosition				1
 			labelText				"#FILTER_SERVERS"
 			ConVar					"delta_ui_server_filter"
