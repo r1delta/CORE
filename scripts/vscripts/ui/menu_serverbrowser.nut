@@ -295,12 +295,14 @@ function UpdateShownPage()
         file.buttons[i].SetEnabled(true)
         file.serversName[i].SetText( trimmed_hostname )
         file.playerCountLabels[i].SetText( format( "%i/%i", server.players.len(), server.max_players ) )
+        file.serversGamemode[i].SetText( "#GAMEMODE_" + server.game_mode )
         if( StringContains( server.map_name, "mp_lobby" ) ) {
             file.serversMap[i].SetText("Lobby")
+            file.serversGamemode[i].SetText("#" + server.playlist_display_name)
         } else {
             file.serversMap[i].SetText("#" +  server.map_name )
         }
-        file.serversGamemode[i].SetText( "#GAMEMODE_" + server.game_mode )
+
         file.serversName[i].SetVisible(true)
         file.playerCountLabels[i].SetVisible(true)
         file.serversMap[i].SetVisible(true)
