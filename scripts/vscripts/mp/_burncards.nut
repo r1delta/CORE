@@ -555,15 +555,31 @@ function ApplyTitanBurnCards_Threaded( titan )
         }
     }
 
-    local index = GetPlayerBurnCardOnDeckIndex( player )
-    local ref = GetBurnCardFromSlot( player, index )
+    local ref
+
+    if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
+    {
+        ref = GetPlayerActiveBurnCard( player )
+    }
+    else
+    {
+        local index = GetPlayerBurnCardOnDeckIndex( player )
+        ref = GetBurnCardFromSlot( player, index )
+    }
+
+    printt("ref: " + ref)
 
     if ( !ref )
         return
 
+    printt("hi")
+
+    printt("isspawning: " + isSpawning)
+
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
-        ChangeOnDeckBurnCardToActive( player )
+        if ( !DoesPlayerHaveActiveTitanBurnCard( player ) )
+            ChangeOnDeckBurnCardToActive( player )
         if ( isSpawning )
             ApplyTitanWeaponBurnCard( player, ref )
         else
