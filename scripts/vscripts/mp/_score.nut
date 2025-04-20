@@ -262,16 +262,16 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 	if(cardData != null) {
 	if(cardData.rarity == BURNCARD_RARE) {
 		if(cardData.ctFlags & CT_TITAN_WPN) {
-			AddPlayerScore(attacker,"StoppedBurnCardRareWeapon")
+			AddPlayerScore(attacker,"StoppedBurnCardRareWeapon", player)
 		} else if (cardData.ctFlags & CT_TITAN) {
-			AddPlayerScore(attacker,"StoppedBurnCardRare")
+			AddPlayerScore(attacker,"StoppedBurnCardRare", player)
 		}
 	}
 	else {
 		if(cardData.ctFlags & CT_TITAN_WPN) {
-			AddPlayerScore(attacker,"StoppedBurnCardWeapon")
+			AddPlayerScore(attacker,"StoppedBurnCardWeapon", player)
 		} else if(cardData.ctFlags & CT_TITAN) {
-			AddPlayerScore(attacker,"StoppedBurnCardCommon")
+			AddPlayerScore(attacker,"StoppedBurnCardCommon", player)
 		}
 	}
 	}
@@ -389,7 +389,8 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 			else {
 				AddPlayerScore(attacker,"StoppedBurnCardRare")
 			}
-		}else {
+		}
+		else {
 		if(cardData.ctFlags & CT_WEAPON) {
 			AddPlayerScore(attacker,"StoppedBurnCardWeapon")
 		} else {

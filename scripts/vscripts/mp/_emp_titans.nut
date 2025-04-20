@@ -28,7 +28,7 @@ function SpawnEMPTitan( origin, angles, team )
 
 	table.weapon	= "mp_titanweapon_arc_cannon"
 	//disable burn_mode by iskyfish.2016.10.17
-	//table.weaponMod = [ "burn_mod_titan_arc_cannon" ]
+	table.weaponMod = [ "burn_mod_titan_arc_cannon" ]
 
 	local titan = SpawnNPCTitan( table )
 	titan.Minimap_SetEnemyMaterial( "vgui/hud/coop/minimap_coop_emp_titan" )

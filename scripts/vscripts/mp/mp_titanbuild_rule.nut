@@ -208,7 +208,6 @@ function Update( player )
 
 		if( IsTitanBuildComplete(player )  )
 		{
-			printt("Titan Ready!")
 			player.SetTitanBuildStarted( false )
 			player.SetTitanReady( true )
 			thread NagPlayerTitan( player )
@@ -335,7 +334,6 @@ function ForceTitanBuildComplete( player )
 
 function AddTitanBuildPoint( player, event )
 {
-	printt( "AddTitanBuildPoint: " + player.GetName() + " " + event )
 	local point = 0
 	switch ( event )
 	{

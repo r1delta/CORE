@@ -2177,11 +2177,11 @@ function GameRulesThink_SwitchingSides()
 	level.clearedPlayers = false
 
 	// iskyfish - 공수 전환 시에도 기존 타이탄 룰 유지. 모드마다 다르게 하고 싶다면 여기서 분기 타던가 따로 타입을 만들어서 설정해야 한다.
-	//local players = GetPlayerArray()
-	//foreach ( player in players )
-	//{
-	//	player.titansBuilt = 0
-	//}
+	local players = GetPlayerArray()
+	foreach ( player in players )
+	{
+		player.titansBuilt = 0
+	}
 
 	SetGameState( eGameState.Prematch )
 }
