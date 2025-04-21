@@ -297,12 +297,16 @@ function UpdateShownPage()
         file.serversName[i].SetText( trimmed_hostname )
         file.playerCountLabels[i].SetText( format( "%i/%i", server.players.len(), server.max_players ) )
         file.serversGamemode[i].SetText( "#GAMEMODE_" + server.game_mode )
-        if( StringContains( server.map_name, "mp_lobby" ) ) {
+        if( StringContains( server.map_name, "mp_lobby" ) )
+        {
+            if (playlistName.len() == 0 )
+                file.serversGamemode[i].SetText(server.playlist_display_name)
+            else
+                file.serversGamemode[i].SetText(playlistName)
+
             file.serversMap[i].SetText("Lobby")
-            file.serversGamemode[i].SetText("#" + server.playlist_display_name)
-        } else {
+        } else
             file.serversMap[i].SetText("#" +  server.map_name )
-        }
 
         file.serversName[i].SetVisible(true)
         file.playerCountLabels[i].SetVisible(true)
@@ -323,7 +327,7 @@ function OnServerButtonClicked(button)
 
     uiGlobal.currentServerChoice <- serverIndex
 
-   
+
 
 	local dialogData = {}
 	dialogData.header <- "#ENTER_PASSWORD_HEADER"
