@@ -624,7 +624,6 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
             }
 
             Stats_IncrementStat( attacker, "weapon_kill_stats","total" , 1.0, source )
-            printt("incrementing stat: total value: 1.0" + source + " weapon: " + weapon.GetClassname() + " victim: " + victim.GetClassname() + " attacker: " + attacker.GetClassname())
             if(IsPilot(victim))
                 Stats_IncrementStat( attacker, "weapon_kill_stats","pilots" , 1.0, source )
             if ( victim.IsSpectre())
@@ -660,7 +659,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
 
 function HandleTitanStats( victim, attacker, damageInfo ) {
     if ( attacker.IsPlayer() ) {
-        
+
     }
 }
 
