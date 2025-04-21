@@ -80,7 +80,9 @@ function MoveCardToActiveSlot( player, burnCardIndex, index, activeSlot )
 
 	FillBurnCardDeckFromArray( player, deck )
 
-	Remote.CallFunction_UI( player, "SCB_UpdateBCFooter" )
+
+    if ( IsLobby() )
+	    Remote.CallFunction_UI( player, "SCB_UpdateBCFooter" )
 
 	return true
 }
@@ -91,6 +93,8 @@ function BurncardsAutoFillEmptyActiveSlots( player )
     for ( local i = 0; i < maxActive; i++ )
     {
         local isActiveSlot = GetPlayerBurnCardOnDeckIndex( player ) == i || GetPlayerBurnCardActiveSlotID( player ) == i
+
+        printt("isActiveSlot: " + isActiveSlot)
 
         if ( isActiveSlot )
             continue
