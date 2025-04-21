@@ -491,7 +491,7 @@ function EOGHasCoinsToShow()
 
 function EOGIsPrivateMatch()
 {
-	return GetPersistentVar( "savedScoreboardData.privateMatch" )
+	return GetPersistentVar( "savedScoreboardData.privateMatch" ) && !IsDelta()
 }
 
 function EOGHasChallengesToShow()

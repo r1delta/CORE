@@ -17,7 +17,6 @@ function main() {
     // AddCallback_OnRodeoStarted(OnRodeoStarted)
     GM_AddEndRoundFunc(Stats_EndRound)
     AddCallback_OnWeaponAttack(OnWeaponAttack)
-    thread HandleDistanceAndTimeStats()
     Globalize(Stats_IncrementStat)
     Globalize(UpdatePlayerStat)
 }
@@ -29,6 +28,10 @@ function UpdatePlayerStat(player,category,alias,amount = 1) {
 // function OnRodeoStarted(player) {
 
 // }
+
+function EntitiesDidLoad() {
+    thread HandleDistanceAndTimeStats()
+}
 
 function Stats_EndRound() {
 
@@ -215,7 +218,7 @@ function HandleDistanceAndTimeStats() {
             if ( player.s.lastPosForDistanceStatValid ) {
                 local distInches = Distance2D( player.s.lastPosForDistanceStat, player.GetOrigin() )
 				local distMiles = distInches / 63360.0
-
+                // printt("distMiles: " + distMiles)
                 Stats_IncrementStat( player, "distance_stats", "total", distMiles )
                 if(player.IsTitan()) {
                     Stats_IncrementStat( player, "distance_stats", "asTitan", distMiles )
@@ -359,19 +362,23 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
     }
 
 
-
 	local fixedSaveVar
 	local timesPlayed = 0
     local mapName = GetMapName()
     local gameMode = GameRules.GetGameMode()
 	fixedSaveVar = var
-	fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
-	fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
-
-    local gmIndex = PersistenceGetEnumIndexForItemName( "gamemodes", gameMode )
-	local mapIndex = PersistenceGetEnumIndexForItemName( "maps",mapName )
-    if ( gmIndex == -1 || mapIndex == -1 )
-        return
+    local ex = regexp("%mapname%" )
+    if (fixedSaveVar.find("%mapname%") != null || fixedSaveVar.find("%gamemode%") != null) {
+        fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
+        fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
+        
+        local gmIndex = PersistenceGetEnumIndexForItemName( "gamemodes", gameMode )
+        local mapIndex = PersistenceGetEnumIndexForItemName( "maps", mapName )
+        
+        if ((gmIndex == -1 || mapIndex == -1) && 
+            (fixedSaveVar.find(mapName) != null || fixedSaveVar.find(gameMode) != null))
+            return
+    }
     local currentValue = player.GetPersistentVar(fixedSaveVar)
 
     player.SetPersistentVar(fixedSaveVar, currentValue + value)

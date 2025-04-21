@@ -11,6 +11,7 @@ function main()
     Globalize( FilterServerList )
     Globalize( UpdateAndShowServerDescription )
     Globalize( HideServerDescription )
+    Globalize( OnSearchBoxLooseFocus )
 
     // File-level variables
     file.menu <- null
@@ -327,13 +328,11 @@ function OnServerButtonClicked(button)
 	local dialogData = {}
 	dialogData.header <- "#ENTER_PASSWORD_HEADER"
     dialogData.detailsMessage <- "#ENTER_PASSWORD_MESSAGE"
-
+    // DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+    // DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
     if( server.has_password )
         OpenChoiceDialog( dialogData, GetMenu( "EnterPasswordDialog" ) )
     else {
-        DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
-        DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
-        DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
         ClientCommand( "connect " + server.ip + ":" + server.port )
     }
 }
