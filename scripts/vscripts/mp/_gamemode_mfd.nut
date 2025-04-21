@@ -508,7 +508,7 @@ function ReapplyMinimapPassive( player )
 	{
 		if ( !PlayerHasPassive( player, PAS_MINIMAP_ALL ) )
 		{
-			Remote.CallFunction_Replay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), 30, true )
+			Remote.CallFunction_Replay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), 31, true )
 			GivePassive( player, PAS_MINIMAP_ALL )
 		}
 
