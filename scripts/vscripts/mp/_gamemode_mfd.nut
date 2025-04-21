@@ -485,6 +485,7 @@ function SetMarkedForTeam( team, marked )
 
 	SetMinimapMaterialsForMarked( marked )
 
+	Remote.CallFunction_Replay( marked, "ServerCallback_PlayerUsesBurnCard", marked.GetEncodedEHandle(), 30, true )
 	GivePassive( marked, PAS_MINIMAP_ALL )
 
 	//printt( "Assigned " + marked + " of team " + team )
@@ -506,7 +507,10 @@ function ReapplyMinimapPassive( player )
 	while ( IsValid( player ) && player == GetMarked( player.GetTeam() ) )
 	{
 		if ( !PlayerHasPassive( player, PAS_MINIMAP_ALL ) )
+		{
+			Remote.CallFunction_Replay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), 30, true )
 			GivePassive( player, PAS_MINIMAP_ALL )
+		}
 
 		if ( !player.s.inGracePeriod )
 			return
