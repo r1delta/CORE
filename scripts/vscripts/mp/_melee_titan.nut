@@ -342,6 +342,11 @@ function MeleeThread_TitanRipsPilot( e, actions, action, attacker, target )
 		ReturnFlagFromPlayer( target, attacker )
 	}
 
+	if ( GameRules.GetGameMode() == CAPTURE_THE_FLAG_PRO && PlayerHasEnemyFlag( target ) )
+	{
+		ReturnFlagFromPlayer( target, attacker )
+	}
+
 	TitanBecomesPilot( target, targetTitan )
 
 	local soul = targetTitan.GetTitanSoul()
