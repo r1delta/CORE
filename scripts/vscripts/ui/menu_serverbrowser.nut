@@ -322,14 +322,20 @@ function OnServerButtonClicked(button)
 
     uiGlobal.currentServerChoice <- serverIndex
 
+   
+
 	local dialogData = {}
 	dialogData.header <- "#ENTER_PASSWORD_HEADER"
     dialogData.detailsMessage <- "#ENTER_PASSWORD_MESSAGE"
 
     if( server.has_password )
         OpenChoiceDialog( dialogData, GetMenu( "EnterPasswordDialog" ) )
-    else
+    else {
+        DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+        DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+        DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
         ClientCommand( "connect " + server.ip + ":" + server.port )
+    }
 }
 
 
@@ -343,10 +349,7 @@ function ConnectToServer()
     if (uiGloba.currentServerChoice >= uiGlobal.serversArrayFiltered.len())
         return
 
-    DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
-    DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
-    DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
-    local server = uiGlobal.serversArrayFiltered[uiGlobal.currentServerChoice]
+   local server = uiGlobal.serversArrayFiltered[uiGlobal.currentServerChoice]
 
     ClientCommand( "connect " + server.ip + ":" + server.port )
 }
