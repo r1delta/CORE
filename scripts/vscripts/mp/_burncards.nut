@@ -94,8 +94,6 @@ function BurncardsAutoFillEmptyActiveSlots( player )
     {
         local isActiveSlot = GetPlayerBurnCardOnDeckIndex( player ) == i || GetPlayerBurnCardActiveSlotID( player ) == i
 
-        printt("isActiveSlot: " + isActiveSlot)
-
         if ( isActiveSlot )
             continue
 
