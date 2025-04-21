@@ -344,7 +344,8 @@ function ConnectToServer()
         return
 
     DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
-
+    DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
+    DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
     local server = uiGlobal.serversArrayFiltered[uiGlobal.currentServerChoice]
 
     ClientCommand( "connect " + server.ip + ":" + server.port )
