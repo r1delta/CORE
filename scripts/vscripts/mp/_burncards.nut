@@ -410,7 +410,7 @@ function BurnCardIntro_Threaded( player )
 
     printt(cardRef)
 
-    //Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
 
     RunBurnCardFunctions( player, cardRef )
 }
