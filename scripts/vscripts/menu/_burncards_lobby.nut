@@ -23,12 +23,6 @@ function ToggleAutofill( player )
 	player.SetPersistentVar( var, autofill )
 	Remote.CallFunction_UI( player, "SCB_UpdateBC" )
 
-	if ( autofill )
-	{
-		BurncardsAutoFillEmptyActiveSlots( player )
-		ChangedPlayerBurnCards( player )
-	}
-
 	return true
 }
 

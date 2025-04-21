@@ -20,6 +20,12 @@ function BurnCard_OnClientConnected( player )
 {
     player.SetPersistentVar("activeBCID", -1)
     player.SetPersistentVar("onDeckBurnCardIndex", -1)
+
+    if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) )
+	{
+		BurncardsAutoFillEmptyActiveSlots( player )
+		ChangedPlayerBurnCards( player )
+	}
 }
 
 function ClientCommand_SetRankedPlayOnInGame(player) {
