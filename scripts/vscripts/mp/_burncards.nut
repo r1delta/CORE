@@ -21,8 +21,12 @@ function BurnCard_OnClientConnected( player )
     player.SetPersistentVar("activeBCID", -1)
     player.SetPersistentVar("onDeckBurnCardIndex", -1)
 
-    if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) )
+    if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) && !IsLobby() )
 	{
+
+        if ( FindPlayerFirstEmptyActiveSlot( player ) == null )
+            return
+
 		BurncardsAutoFillEmptyActiveSlots( player )
 		ChangedPlayerBurnCards( player )
 	}
@@ -92,7 +96,7 @@ function BurncardsAutoFillEmptyActiveSlots( player )
     local maxActive = GetPlayerMaxActiveBurnCards( player )
     for ( local i = 0; i < maxActive; i++ )
     {
-        local isEmptySlot = FindPlayerFirstEmptyActiveSlot( player ) == i
+        local isEmptySlot = GetPlayerActiveBurnCardSlotContents( player, i )
 
         if ( !isEmptySlot )
             continue
@@ -184,24 +188,16 @@ function RunWeaponFunction( player, cardRef )
     player.EndSignal( "Disconnected" )
     player.EndSignal( "EndGiveLoadouts" )
 
-    local target
-
     while ( !IsValid( player ) || !IsAlive( player ) )
         wait 0.1
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
-    if( player.IsTitan() )
-        target = player.GetBossPlayer()
-    else
-        target = player
+    wait 2
 
-    // while ( GetGameState() < eGameState.Playing && !IsAlive( player ) )
-    //     wait 0.1
-
-    if ( target.IsTitan() )
-        target.WaitSignal( "OnLeftTitan" )
+    while ( player.IsTitan() )
+        wait 0.1
 
     local cardData = GetBurnCardData(cardRef);
     local weaponData = GetBurnCardWeapon(cardRef);
@@ -215,9 +211,9 @@ function RunWeaponFunction( player, cardRef )
 
     if( weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1" )
     {
-        Assert( IsAlive( target ) )
+        Assert( IsAlive( player ) )
 
-        local weapons = target.GetOffhandWeapons()
+        local weapons = player.GetOffhandWeapons()
         local weaponToTake = null
         local slot = 0
 
@@ -234,14 +230,14 @@ function RunWeaponFunction( player, cardRef )
                 break
         }
 
-        WaitForPlayerActiveWeapon( target )
+        WaitForPlayerActiveWeapon( player )
 
-        target.TakeOffhandWeapon( slot )
+        player.TakeOffhandWeapon( slot )
 
-        target.GiveOffhandWeapon( weaponData.weapon, slot, weaponData.mods )
+        player.GiveOffhandWeapon( weaponData.weapon, slot, weaponData.mods )
 
         if( cardData.ctFlags & CT_FRAG )
-            thread RefillWeaponAmmo( target )
+            thread RefillWeaponAmmo( player )
 
         return
     }
@@ -267,9 +263,12 @@ function RunWeaponFunction( player, cardRef )
 
         printt( "Weapon to take: ", weaponToTake.GetClassname() )
 
-        WaitForPlayerActiveWeapon( target );
+        WaitForPlayerActiveWeapon( player );
 
-        target.TakeWeapon( weaponToTake.GetClassname() )
+        while ( !IsValid( weaponToTake ) )
+            wait 0.1
+
+        player.TakeWeapon( weaponToTake.GetClassname() )
 
         wait 0.1
 
@@ -277,7 +276,7 @@ function RunWeaponFunction( player, cardRef )
         {
             try
             {
-                target.GiveWeapon(weaponData.weapon, weaponData.mods, true)
+                player.GiveWeapon(weaponData.weapon, weaponData.mods, true)
             } catch (e)
             {
                 wait 0.1
@@ -289,7 +288,7 @@ function RunWeaponFunction( player, cardRef )
 
         wait 0.1
 
-        target.SetActiveWeapon(weaponData.weapon)
+        player.SetActiveWeapon(weaponData.weapon)
     }
 }
 
@@ -333,11 +332,18 @@ function RunBurnCardFunctions( player, cardRef )
 
     local weaponData = GetBurnCardWeapon( cardRef )
 
-    if ( cardData.group == BCGROUP_WEAPON || ( weaponData && weaponData.weapon ) )
-        thread RunWeaponFunction(player,cardRef)
+    if ( cardData.ctFlags & CT_TITAN_WPN )
+    {
+        local titan = player.GetTitan()
+        if ( titan )
+            thread ApplyTitanBurnCards_Threaded( titan )
+    }
 
-    if ( cardRef == "bc_summon_atlas" || cardRef == "bc_summon_ogre" || cardRef == "bc_summon_stryder" )
-        thread DoSummonTitanBurnCard(player, cardRef)
+    if ( cardData.ctFlags & CT_WEAPON || cardData.ctFlags & CT_FRAG )
+        thread RunWeaponFunction( player, cardRef )
+
+    if ( cardData.ctFlags & CT_TITAN )
+        thread DoSummonTitanBurnCard( player, cardRef )
 }
 
 function ChangeOnDeckBurnCardToActive( player )
@@ -413,6 +419,8 @@ function BurnCardIntro_Threaded( player )
     local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
     local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
 
+    if ( !cardRef )
+        return
 
     local cardData = GetBurnCardData(cardRef)
 
