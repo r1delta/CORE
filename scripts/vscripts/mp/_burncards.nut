@@ -31,19 +31,83 @@ function ClientCommand_SetRankedPlayOnInGame(player) {
     return true
 }
 
+function MoveCardToActiveSlot( player, burnCardIndex, index, activeSlot )
+{
+	burnCardIndex = burnCardIndex.tointeger()
+	if ( burnCardIndex < 0 )
+		return true
+	if ( burnCardIndex >= level.indexToBurnCard.len() )
+		return true
+	local burnCardRef = level.indexToBurnCard[ burnCardIndex ]
+
+	index = index.tointeger()
+	activeSlot = activeSlot.tointeger()
+	local deck = GetPlayerBurnCardDeck( player )
+	if ( index < 0 )
+		return true
+	if ( index >= deck.len() )
+		return true
+
+	local cardRef = deck[ index ].cardRef
+	if ( cardRef == null )
+		return true
+
+	if ( burnCardRef != cardRef )
+	{
+		printt( "MoveCardToDeck failed, tried to move " + burnCardRef + " but found " + cardRef )
+		return true
+	}
+
+	if ( activeSlot < 0 )
+		return true
+	if ( activeSlot >= GetPlayerMaxActiveBurnCards( player ) )
+		return true
+
+	local pileActiveBurncard = GetPlayerActiveBurnCardSlotContents( player, activeSlot )
+	SetPlayerActiveBurnCardSlotContents( player, activeSlot, cardRef, false )
+	deck.remove( index )
+
+	if ( pileActiveBurncard != null )
+	{
+		deck.append( { cardRef = pileActiveBurncard, new = false } )
+	}
+
+	FillBurnCardDeckFromArray( player, deck )
+
+	Remote.CallFunction_UI( player, "SCB_UpdateBCFooter" )
+
+	return true
+}
+
 function BurncardsAutoFillEmptyActiveSlots( player )
 {
     local maxActive = GetPlayerMaxActiveBurnCards( player )
     for ( local i = 0; i < maxActive; i++ )
     {
-        if ( !GetPlayerActiveBurnCardSlotContents( player, i ) )
+        local activeSlot = GetPlayerBurnCardOnDeckIndex( player ) == i || GetPlayerBurnCardActiveSlotID( player ) == i
+
+        if ( activeSlot )
+            continue
+
+        local deck = GetPlayerBurnCardDeck( player )
+        local randomCardIndex = RandomInt( deck.len() )
+        local cardRef = deck[ randomCardIndex ].cardRef
+
+        if ( cardRef == null )
+            continue
+
+        local pileActiveBurncard = GetPlayerActiveBurnCardSlotContents( player, activeSlot )
+        SetPlayerActiveBurnCardSlotContents( player, activeSlot, cardRef, false )
+        deck.remove( randomCardIndex )
+
+        if ( pileActiveBurncard != null )
         {
-            local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
-            if ( cardIndex != -1 )
-            {
-                MoveCardToActiveSlot( player, cardIndex, i )
-            }
+            deck.append( { cardRef = pileActiveBurncard, new = false } )
         }
+
+        FillBurnCardDeckFromArray( player, deck )
+
+        Remote.CallFunction_UI( player, "SCB_UpdateBCFooter" )
     }
 }
 

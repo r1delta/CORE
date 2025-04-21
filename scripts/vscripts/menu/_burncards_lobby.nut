@@ -195,6 +195,8 @@ function BCSetCurrentOffset( player, index, index2 )
 
 function MoveCardToActiveSlot( player, burnCardIndex, index, activeSlot )
 {
+	printt( "MoveCardToActiveSlot " + burnCardIndex + " " + index + " " + activeSlot )
+
 	burnCardIndex = burnCardIndex.tointeger()
 	if ( burnCardIndex < 0 )
 		return true
