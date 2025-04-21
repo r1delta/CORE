@@ -361,10 +361,6 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
         return
     }
 
-    if(category == "kill_stats" || category == "weapon_kill_stats") {
-       printt("category: " + category + " statName: " + statName + " var: " + var)      
-    }
-
 
 	local fixedSaveVar
 	local timesPlayed = 0
