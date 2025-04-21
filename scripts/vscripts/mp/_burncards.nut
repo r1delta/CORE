@@ -84,30 +84,17 @@ function BurncardsAutoFillEmptyActiveSlots( player )
     local maxActive = GetPlayerMaxActiveBurnCards( player )
     for ( local i = 0; i < maxActive; i++ )
     {
-        local activeSlot = GetPlayerBurnCardOnDeckIndex( player ) == i || GetPlayerBurnCardActiveSlotID( player ) == i
+        local isActiveSlot = GetPlayerBurnCardOnDeckIndex( player ) == i || GetPlayerBurnCardActiveSlotID( player ) == i
 
-        if ( activeSlot )
+        if ( isActiveSlot )
             continue
 
         local deck = GetPlayerBurnCardDeck( player )
         local randomCardIndex = RandomInt( deck.len() )
         local cardRef = deck[ randomCardIndex ].cardRef
+        local index = GetBurnCardIndexByRef( cardRef )
 
-        if ( cardRef == null )
-            continue
-
-        local pileActiveBurncard = GetPlayerActiveBurnCardSlotContents( player, activeSlot )
-        SetPlayerActiveBurnCardSlotContents( player, activeSlot, cardRef, false )
-        deck.remove( randomCardIndex )
-
-        if ( pileActiveBurncard != null )
-        {
-            deck.append( { cardRef = pileActiveBurncard, new = false } )
-        }
-
-        FillBurnCardDeckFromArray( player, deck )
-
-        Remote.CallFunction_UI( player, "SCB_UpdateBCFooter" )
+        MoveCardToActiveSlot( player, index, randomCardIndex, i )
     }
 }
 
