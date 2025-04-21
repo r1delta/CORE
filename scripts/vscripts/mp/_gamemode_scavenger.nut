@@ -24,7 +24,7 @@ function main()
 {
 	level.spawnRatingFunc_Pilot = RateFrontLinePlayerSpawnpoint
 	level.spawnRatingFunc_Generic = RateFrontLinePlayerSpawnpoint
-	PrecacheModel( "models/rocks/rock_01_sandstone.mdl" )
+	PrecacheModel( "models/rocks/single_rock_01.mdl" )
 
 	file.totalOre <- {}
 	file.totalOre[ oreTypes.RANDOM ] <- 0
@@ -526,7 +526,7 @@ function SpawnThrownOreNugget( deadEntity, damageInfo ) //TODO: Make this worth 
 	for ( local i = 0; i < totalThrownOreGenerated; ++i )
 	{
 		//local model = Random( models )
-		local model = "models/rocks/rock_01_sandstone.mdl"
+		local model = "models/rocks/single_rock_01.mdl"
 
 		local oreNugget = CreateEntity( "item_healthcore" )
 		oreNugget.kv.rendercolor = "255 120 90 255"
