@@ -299,6 +299,8 @@ function UpdateShownPage()
         file.serversGamemode[i].SetText( "#GAMEMODE_" + server.game_mode )
         if( StringContains( server.map_name, "mp_lobby" ) )
         {
+            local playlistName = Localize( "#" + server.playlist_display_name )
+
             if (playlistName.len() == 0 )
                 file.serversGamemode[i].SetText(server.playlist_display_name)
             else
