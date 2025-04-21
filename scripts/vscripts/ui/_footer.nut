@@ -299,8 +299,8 @@ function UpdateFooterButtons( menuName = null )
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
-			footerData.gamepad.append( { label = "#FOOTER_DIRECT_CONNECT_GAMEPAD" , func = OpenDirectConnectDialog_Activate })
-            footerData.pc.append( { label = "#FOOTER_DIRECT_CONNECT" } )
+			footerData.gamepad.append( { label = "#FOOTER_DIRECT_CONNECT_GAMEPAD"   })
+            footerData.pc.append( { label = "#FOOTER_DIRECT_CONNECT",func = OpenDirectConnectDialog_Activate } )
 
 			footerData.gamepad.append( { label = "%[X_BUTTON]% ^798B9800 Refresh" } )
 			footerData.pc.append( { label = "#FOOTER_REFRESH", func = RefreshServerList } )
