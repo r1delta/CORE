@@ -485,7 +485,7 @@ function SetMarkedForTeam( team, marked )
 
 	SetMinimapMaterialsForMarked( marked )
 
-	Remote.CallFunction_Replay( marked, "ServerCallback_PlayerUsesBurnCard", marked.GetEncodedEHandle(), 30, true )
+	Remote.CallFunction_Replay( marked, "ServerCallback_PlayerUsesBurnCard", marked.GetEncodedEHandle(), 31, true )
 	GivePassive( marked, PAS_MINIMAP_ALL )
 
 	//printt( "Assigned " + marked + " of team " + team )
