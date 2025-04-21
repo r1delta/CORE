@@ -133,6 +133,7 @@ function OnDamaged(ent,damageInfo) {
         if(weapon == null)
             return
         local weaponName = weapon.GetClassname()
+        printt("weapon name: " + weaponName)
         Stats_IncrementStat( inflictor, "weapon_stats", "shotsHit", 1.0, weaponName )
         local critHit = false
         local hitBox = damageInfo.GetHitBox()
@@ -202,14 +203,14 @@ function HandleDistanceAndTimeStats() {
         {
             if(!IsValid(player))
                 continue
-            if ( !("lastPosForDistanceStatValid" in player.s) ) {
-                // Value hasn't been initialized yet, likely player just joined.
-                // Initialize it now or just skip this player for this tick.
-                // Initializing here might be safer:
-                player.s.lastPosForDistanceStatValid <- false
-                player.s.lastPosForDistanceStat <- player.GetOrigin() // Also init the position
-                continue // Skip distance calculation for this tick
-            }
+            // if ( !("lastPosForDistanceStatValid" in player.s) ) {
+            //     // Value hasn't been initialized yet, likely player just joined.
+            //     // Initialize it now or just skip this player for this tick.
+            //     // Initializing here might be safer:
+            //     player.s.lastPosForDistanceStatValid <- false
+            //     player.s.lastPosForDistanceStat <- player.GetOrigin() // Also init the position
+            //     continue // Skip distance calculation for this tick
+            // }
 
             if ( player.s.lastPosForDistanceStatValid ) {
                 local distInches = Distance2D( player.s.lastPosForDistanceStat, player.GetOrigin() )
@@ -257,7 +258,7 @@ function HandleDistanceAndTimeStats() {
 
         foreach(player in GetPlayerArray())
 		{
-			if ( timeSeconds == 0 )
+			if ( timeSeconds <= 0 )
 				break
             Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
             Stats_IncrementStat( player, "time_stats", "hours_total", timeHours )
@@ -356,6 +357,7 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
     if ( var == null ) {
         return
     }
+
 
 
 	local fixedSaveVar
@@ -613,7 +615,6 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
         local weapon = damageInfo.GetInflictor()
         if ( weapon != null ) {
             local source = GetNameFromDamageSourceID(damageInfo.GetDamageSourceIdentifier())
-            printt("damage source" + source)
             if(source == "human_execution") {
                 Stats_IncrementStat(attacker,"kill_stats","pilotExecution",1.0)
                 if(IsPilot(victim)) {
