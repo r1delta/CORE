@@ -349,7 +349,7 @@ function UpdateMinimapStatus( player )
 		foreach ( target in players )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_AlwaysShow( 0, player )
+				target.Minimap_AlwaysShow( -1, player )
 		}
 	}
 	else
@@ -357,7 +357,7 @@ function UpdateMinimapStatus( player )
 		foreach ( target in players )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_DisplayDefault( 0, player )
+				target.Minimap_DisplayDefault( -1, player )
 		}
 	}
 
