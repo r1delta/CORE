@@ -194,7 +194,8 @@ function RunWeaponFunction( player, cardRef )
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
 		player.WaitSignal( "CE_FLAGS_CHANGED" )
 
-    wait 2
+    if ( IsValid( player.isSpawning ) )
+        wait 2
 
     while ( player.IsTitan() )
         wait 0.1
