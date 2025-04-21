@@ -537,7 +537,8 @@ function SentryTurret_ShowOnHud( turret )
 		return
 
 	local team = player.GetTeam()
-	turret.Minimap_AlwaysShow( 0, player )
+	turret.Minimap_AlwaysShow( TEAM_IMC, player )
+	turret.Minimap_AlwaysShow( TEAM_MILITIA, player )
 	local ehandle = turret.GetEncodedEHandle()
 	Remote.CallFunction_Replay( player, "ServerCallback_TurretWorldIconShow", ehandle  )
 }

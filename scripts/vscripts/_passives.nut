@@ -294,7 +294,9 @@ function UpdateMinimapStatusToOtherPlayers( player )
 		local reveal = GetRevealParms( otherPlayer )
 		if ( reveal.players )
 		{
-			player.Minimap_AlwaysShow( 0, otherPlayer )
+			player.Minimap_AlwaysShow( TEAM_MILITIA, otherPlayer )
+			player.Minimap_AlwaysShow( TEAM_IMC, otherPlayer )
+
 		}
 	}
 }
@@ -313,7 +315,8 @@ function UpdateTitanMinimapStatusToOtherPlayers( titan )
 		local reveal = GetRevealParms( otherPlayer )
 		if ( reveal.titans )
 		{
-			titan.Minimap_AlwaysShow( 0, otherPlayer )
+			titan.Minimap_AlwaysShow( TEAM_IMC, otherPlayer )
+			titan.Minimap_AlwaysShow( TEAM_MILITIA, otherPlayer )
 		}
 	}
 }
@@ -332,7 +335,8 @@ function UpdateAIMinimapStatusToOtherPlayers( guy )
 		local reveal = GetRevealParms( otherPlayer )
 		if ( reveal.ai )
 		{
-			guy.Minimap_AlwaysShow( 0, otherPlayer )
+			guy.Minimap_AlwaysShow( TEAM_IMC, otherPlayer )
+			guy.Minimap_AlwaysShow( TEAM_MILITIA, otherPlayer )
 		}
 	}
 }
@@ -349,7 +353,10 @@ function UpdateMinimapStatus( player )
 		foreach ( target in players )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_AlwaysShow( -1, player )
+			{
+				target.Minimap_AlwaysShow( TEAM_IMC, player )
+				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+			}
 		}
 	}
 	else
@@ -367,7 +374,10 @@ function UpdateMinimapStatus( player )
 		foreach ( target in titans )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_AlwaysShow( 0, player )
+			{
+				target.Minimap_AlwaysShow( TEAM_IMC, player )
+				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+			}
 		}
 	}
 	else
@@ -387,7 +397,10 @@ function UpdateMinimapStatus( player )
 		foreach ( target in ai )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_AlwaysShow( 0, player )
+			{
+				target.Minimap_AlwaysShow( TEAM_IMC, player )
+				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+			}
 		}
 	}
 	else
@@ -395,7 +408,10 @@ function UpdateMinimapStatus( player )
 		foreach ( target in ai )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_DisplayDefault( 0, player )
+			{
+				target.Minimap_DisplayDefault( TEAM_IMC, player )
+				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+			}
 		}
 	}
 
