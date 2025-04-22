@@ -188,6 +188,11 @@ function RunWeaponFunction( player, cardRef )
     player.EndSignal( "Disconnected" )
     player.EndSignal( "EndGiveLoadouts" )
 
+    printt("Running bc weapon function")
+
+    while ( GetGameState() != eGameState.Playing )
+        wait 0.1
+
     while ( !IsValid( player ) || !IsAlive( player ) )
         wait 0.1
 
@@ -449,35 +454,49 @@ function PlayerRespawned( player )
 
 function BurnCardPlayerRespawned_Threaded( player )
 {
-    local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+    local cardRef
+    local cardIndex
+    local cardData
 
-    local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+    printt( "BurnCardPlayerRespawned_Threaded" )
 
-    if( !cardRef )
-        return
+    if ( GetPlayerBurnCardActiveSlotID( player ) >= 0 )
+    {
+        cardIndex = GetPlayerBurnCardActiveSlotID( player )
+        cardRef = GetActiveBurnCard( player )
 
-    if ( GetPlayerBurnCardActiveSlotID( player ) )
-        return
+        printt( "BurnCardPlayerRespawned_Threaded cardRef: " + cardRef )
+
+        if( !cardRef )
+            return
+
+        cardData = GetBurnCardData(cardRef)
+    }
+    else
+    {
+        cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+        cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+
+        if( !cardRef )
+            return
+
+        cardData = GetBurnCardData(cardRef)
+
+        ChangeOnDeckBurnCardToActive( player )
+
+        if(cardData.rarity == BURNCARD_RARE)
+            AddPlayerScore( player, "UsedBurnCard_Rare" )
+        else
+            AddPlayerScore( player, "UsedBurnCard_Common" )
+
+        Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+    }
 
     if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
         return
 
-    if(cardRef == "bc_dice_ondeath") {
+    if(cardRef == "bc_dice_ondeath")
         thread RollTheDice(player, cardRef)
-    }
-
-    ChangeOnDeckBurnCardToActive( player )
-
-    printt(cardRef)
-
-    local cardData = GetBurnCardData(cardRef)
-
-    if(cardData.rarity == BURNCARD_RARE)
-        AddPlayerScore( player, "UsedBurnCard_Rare" )
-    else
-        AddPlayerScore( player, "UsedBurnCard_Common" )
-
-    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
 
     RunBurnCardFunctions( player, cardRef )
 }
@@ -540,6 +559,9 @@ function _OnPlayerKilled (player,attacker)
         return
 
     local lastsUntil = GetBurnCardLastsUntil( cardRef )
+
+    if( IsRoundBased() && GetGameState() != eGameState.Playing)
+        return
 
     BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
 
