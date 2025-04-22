@@ -541,10 +541,10 @@ function _OnPlayerKilled (player,attacker)
 
     local lastsUntil = GetBurnCardLastsUntil( cardRef )
 
+    BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
+
     if ( lastsUntil == BC_NEXTTITANDROP || cardRef == "bc_rematch" )
         StopActiveBurnCard( player )
-
-    BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
 }
 
 function ApplyTitanWeaponBurnCard( titan, cardRef )
