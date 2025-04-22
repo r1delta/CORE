@@ -306,6 +306,7 @@ engine.dll,text,0x2033A3,3B C1 77 0A 48 B8 F0 FF FF FF FF FF FF 0F 48 83 E0 F0,8
 ; Patch out IsPrivateMatch so we can use our own
 server.dll,rdata,0x963810,"IsPrivateMatch","idkman\x00"
 client.dll,rdata,0x9207B8,"IsPrivateMatch","idkman\x00"
+client.dll,rdata,0x008874F0,"*mm* %s","%s\x00"
 ; force it so that the initial netchan redundant userinfo send only sends persistent convars by forcing splitscreen slot to -1
 engine.dll,text,0x7683F,8B 8B E8 00 00 00,B9 FF FF FF FF 90
 ; remove 255 clamp from Host_BuildUserInfoUpdate
