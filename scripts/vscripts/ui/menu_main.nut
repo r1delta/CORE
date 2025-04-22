@@ -33,6 +33,7 @@ function InitMainMenu( menu )
 
 	file.activeProfile <- menu.GetChild( "ActiveProfile" )
 	file.versionDisplay <- menu.GetChild( "versionDisplay" )
+	file.r1DeltaVersion <- menu.GetChild("versionDisplay2")
 
 	file.datacenterGamepad <- menu.GetChild( "DatacenterGamepad" )
 	file.datacenterGamepad.EnableKeyBindingIcons()
@@ -242,6 +243,9 @@ function ShowMainMenu()
 
 	file.versionDisplay.SetText( GetPublicGameVersion() )
 	file.versionDisplay.Show()
+
+	file.r1DeltaVersion.SetText( GetR1DVersion() )
+	file.r1DeltaVersion.Show()
 
 	thread UpdateDatacenterInfo()
 	thread UpdateMOTD()
