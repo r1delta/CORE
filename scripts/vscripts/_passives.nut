@@ -500,7 +500,7 @@ function MinimapPlayerConnected( guy )
 		if ( !PlayerRevealsPlayers( player ) )
 			continue
 
-		guy.Minimap_AlwaysShow( TEAN_IMC, player )
+		guy.Minimap_AlwaysShow( TEAM_IMC, player )
 		guy.Minimap_AlwaysShow( TEAM_MILITIA, player )
 	}
 }
