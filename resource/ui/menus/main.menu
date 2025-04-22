@@ -264,7 +264,7 @@ resource/ui/menus/main.menu
 		VersionDisplay
 		{
 			ControlName				Label
-			xpos					123
+			xpos					90
 			ypos					402
 			auto_wide_tocontents 	1
 			auto_tall_tocontents 	1
