@@ -136,7 +136,6 @@ function OnDamaged(ent,damageInfo) {
         if(weapon == null)
             return
         local weaponName = weapon.GetClassname()
-        printt("weapon name: " + weaponName)
         Stats_IncrementStat( inflictor, "weapon_stats", "shotsHit", 1.0, weaponName )
         local critHit = false
         local hitBox = damageInfo.GetHitBox()
