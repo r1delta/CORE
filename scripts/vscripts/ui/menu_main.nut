@@ -241,7 +241,8 @@ function ShowMainMenu()
 	file.activeProfile.SetText( name )
 	file.activeProfile.Show()
 
-	file.versionDisplay.SetText( GetPublicGameVersion() )
+	// we don't ship gameversion.txt
+	file.versionDisplay.SetText( "v1.0.10.1" )
 	file.versionDisplay.Show()
 
 	file.r1DeltaVersion.SetText( GetR1DVersion() )
