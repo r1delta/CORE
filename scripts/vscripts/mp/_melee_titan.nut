@@ -74,10 +74,6 @@ function MeleeThread_TitanVsTitan_Internal( actions, action, attacker, target )
 	}
 	else
 	{
-		local targetType = GetSoulTitanType(target.GetTitanSoul())
-		// local titanName = Native_GetTitanNameByType(titanType)
-		// local baseTitanType = GetPlayerSettingsFieldForClassName(titanName, "baseTitanType")
-
 		switch ( titanType )
 		{
 			case "atlas":
