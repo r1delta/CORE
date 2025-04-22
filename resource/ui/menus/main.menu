@@ -251,8 +251,8 @@ resource/ui/menus/main.menu
 		ActiveProfile
 		{
 			ControlName				Label
-			xpos					123
-			ypos					383
+			xpos					90
+			ypos					375
 			auto_wide_tocontents 	1
 			auto_tall_tocontents 	1
 			labelText				""
@@ -265,7 +265,7 @@ resource/ui/menus/main.menu
 		{
 			ControlName				Label
 			xpos					90
-			ypos					387
+			ypos					395
 			auto_wide_tocontents 	1
 			auto_tall_tocontents 	1
 			labelText				""

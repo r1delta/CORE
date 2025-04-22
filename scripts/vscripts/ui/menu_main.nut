@@ -31,6 +31,7 @@ function InitMainMenu( menu )
 
 	AddEventHandlerToButtonClass( menu, "MainMenuButtonClass", UIE_CLICK, Bind( MainMenuButton_Activate ) )
 
+	uiGlobal.activeProfile <- menu.GetChild( "ActiveProfile" )
 	file.activeProfile <- menu.GetChild( "ActiveProfile" )
 	file.versionDisplay <- menu.GetChild( "versionDisplay" )
 	file.r1DeltaVersion <- menu.GetChild("versionDisplay2")
@@ -178,6 +179,9 @@ function OpenOfflineNameDialogButtonOk_Activate( button )
     ClientCommand( "name " + str )
 	ClientCommand("hostname \""+GetConVarString("name")+"'s R1Delta Server\"")
 
+	uiGlobal.activeProfile.SetText( str )
+	uiGlobal.activeProfile.Show()
+
 	CloseDialog( true )
 }
 
@@ -200,6 +204,7 @@ function ShowMainMenu()
 	file.buttonData.append( { name = "#MAIN_MENU_TRAINING", activateFunc = Bind( function() { thread OnTrainingButtonActivate() } ) } )
 	file.buttonData.append( { name = "#OPTIONS", activateFunc = Bind( OnOptionsButton_Activate ) } )
 	file.buttonData.append( { name = "#CREDITS", activateFunc = Bind( ThreadOnCreditsButton_Activate ) } )
+
 	if ( !Durango_IsDurango() )
 		file.buttonData.append( { name = "#QUIT", activateFunc = Bind( OnQuitButton_Activate ) } )
 
@@ -232,11 +237,11 @@ function ShowMainMenu()
 		}
 	}
 
-	local name = ""
-	if ( Durango_IsDurango() )
-		name = Durango_GetGameDisplayName()
-	//else
-	//	name = "Slapfight McGillicutty"
+	local name = GetConVarString("name")
+	// if ( Durango_IsDurango() )
+	// 	name = Durango_GetGameDisplayName()
+	// //else
+	// //	name = "Slapfight McGillicutty"
 
 	file.activeProfile.SetText( name )
 	file.activeProfile.Show()
@@ -271,6 +276,11 @@ function ShowMainMenu()
 		focus = GetFocus()
 	}
 
+    local username = GetConVarString( "name" )
+
+	if ( username == "unnamed" )
+		OpenOfflineNameDialogButton_Activate( null )
+
 	uiGlobal.mainMenuFocus = focus
 	AuthDialog()
 	if ( !Origin_IsEnabled() )
@@ -278,7 +288,7 @@ function ShowMainMenu()
 		local randomID = RandomInt( 0, 999999999 ).tostring()
 		ClientCommand( "platform_user_id " + randomID )
 	}
-	ClientCommand("hostname \""+GetConVarString("name")+"'s R1Delta Server\"")
+	ClientCommand("hostname \"" + username + "'s R1Delta Server\"")
 	ClientCommand("loadPlaylists")
 
 	SendDiscordUI(null)
