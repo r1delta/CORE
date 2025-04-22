@@ -240,7 +240,7 @@ function ShowMainMenu()
 	file.activeProfile.SetText( name )
 	file.activeProfile.Show()
 
-	file.versionDisplay.SetText( GetPublicGameVersion() + " + R1Delta" )
+	file.versionDisplay.SetText( GetPublicGameVersion())
 	file.versionDisplay.Show()
 
 	thread UpdateDatacenterInfo()
