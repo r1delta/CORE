@@ -240,7 +240,7 @@ function ShowMainMenu()
 	file.activeProfile.SetText( name )
 	file.activeProfile.Show()
 
-	file.versionDisplay.SetText( "v1.10.0.1")
+	file.versionDisplay.SetText( GetPublicGameVersion() )
 	file.versionDisplay.Show()
 
 	thread UpdateDatacenterInfo()
