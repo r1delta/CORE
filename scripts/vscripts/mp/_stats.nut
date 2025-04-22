@@ -369,21 +369,17 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
 	fixedSaveVar = var
     fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
     fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
-    try
-	{
-		PersistenceGetEnumIndexForItemName( "gamemodes", gameMode )
-		PersistenceGetEnumIndexForItemName( "maps", mapName )
-	}
-	catch( ex )
-	{
-		// if we have an invalid mode or map for persistence, and it is used in the
-		// persistence string, we can't save the persistence so we have to just return
-		if ( var != fixedSaveVar )
-		{
-			printt( ex, str, GetMapName(), gameMode ) // Commented out due to spamming logs on invalid modes (e.g. Gun Game, Infection, ...)
-			return
-		}
-	}
+   
+    if(PersistenceGetEnumIndexForItemName( "gamemodes", gameMode ) == -1 && StringContains( var, "%gamemode%" ) ) {
+        // printt("Invalid game mode: " + gameMode)
+        return
+    }
+    if(PersistenceGetEnumIndexForItemName( "maps", mapName ) == -1 && StringContains( var, "%mapname%" ) ) {
+        // printt("Invalid map name: " + mapName)
+        return
+    }
+	
+	
     local currentValue = player.GetPersistentVar(fixedSaveVar)
 
     player.SetPersistentVar(fixedSaveVar, currentValue + value)

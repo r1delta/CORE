@@ -261,7 +261,7 @@ function SpawnStartOres()
 		for ( local i = 0; i < level.titanSpawnPointNodes.len(); i++ ) //Makes the minimum of totalNodeCount or totalRoofOre (47.5), roof ores
 		{
 
-			if ( TrySpawnTitanOreOnTitanSpawnpointNode( level.titanSpawnPointNodes[ i ],  level.scavengerLargeRocks ) )
+			if ( TrySpawnTitanOreOnTitanSpawnpointNode( level.titanSpawnPointNodes[ i ],  level.scavengerSmallRocks ) )
 			{
 				totalTitanOre--
 
