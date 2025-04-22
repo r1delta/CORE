@@ -475,8 +475,7 @@ function PilotBecomesTitan( player, titan, fullCopy = true )
 	{
 		if ( GameRules.GetGameMode() == CAPTURE_THE_TITAN )
 		{
-			titan.Minimap_AlwaysShow( TEAM_IMC, null )
-			titan.Minimap_AlwaysShow( TEAM_MILITIA, null )
+			titan.Minimap_AlwaysShow( TEAM_INVALID, null )
 
 			player.Minimap_AlwaysShow( TEAM_IMC, null )
 			player.Minimap_AlwaysShow( TEAM_MILITIA, null )

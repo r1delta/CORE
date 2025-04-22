@@ -134,8 +134,7 @@ function CTTRoundEnd()
 	local players = GetPlayerArray()
 	foreach ( player in players )
 	{
-		player.Minimap_AlwaysShow( TEAM_IMC, null )
-		player.Minimap_AlwaysShow( TEAM_MILITIA, null )
+		player.Minimap_AlwaysShow( TEAM_INVALID, null )
 		player.SetForceCrosshairNameDraw( false )
 	}
 

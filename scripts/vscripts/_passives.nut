@@ -293,11 +293,7 @@ function UpdateMinimapStatusToOtherPlayers( player )
 
 		local reveal = GetRevealParms( otherPlayer )
 		if ( reveal.players )
-		{
-			player.Minimap_AlwaysShow( TEAM_MILITIA, otherPlayer )
-			player.Minimap_AlwaysShow( TEAM_IMC, otherPlayer )
-
-		}
+			player.Minimap_AlwaysShow( TEAM_INVALID, otherPlayer )
 	}
 }
 Globalize( UpdateMinimapStatusToOtherPlayers )
@@ -315,8 +311,7 @@ function UpdateTitanMinimapStatusToOtherPlayers( titan )
 		local reveal = GetRevealParms( otherPlayer )
 		if ( reveal.titans )
 		{
-			titan.Minimap_AlwaysShow( TEAM_IMC, otherPlayer )
-			titan.Minimap_AlwaysShow( TEAM_MILITIA, otherPlayer )
+			titan.Minimap_AlwaysShow( TEAM_INVALID, otherPlayer )
 		}
 	}
 }
@@ -334,10 +329,7 @@ function UpdateAIMinimapStatusToOtherPlayers( guy )
 
 		local reveal = GetRevealParms( otherPlayer )
 		if ( reveal.ai )
-		{
-			guy.Minimap_AlwaysShow( TEAM_IMC, otherPlayer )
-			guy.Minimap_AlwaysShow( TEAM_MILITIA, otherPlayer )
-		}
+			guy.Minimap_AlwaysShow( TEAM_INVALID, otherPlayer )
 	}
 }
 Globalize( UpdateAIMinimapStatusToOtherPlayers )
@@ -353,10 +345,7 @@ function UpdateMinimapStatus( player )
 		foreach ( target in players )
 		{
 			if ( team != target.GetTeam() )
-			{
-				target.Minimap_AlwaysShow( TEAM_IMC, player )
-				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
-			}
+				target.Minimap_AlwaysShow( TEAM_INVALID, player )
 		}
 	}
 	else
@@ -365,8 +354,7 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_DisplayDefault( TEAM_IMC, player )
-				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+				target.Minimap_DisplayDefault( TEAM_INVALID, player )
 			}
 		}
 	}
@@ -377,10 +365,7 @@ function UpdateMinimapStatus( player )
 		foreach ( target in titans )
 		{
 			if ( team != target.GetTeam() )
-			{
-				target.Minimap_AlwaysShow( TEAM_IMC, player )
-				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
-			}
+				target.Minimap_AlwaysShow( TEAM_INVALID, player )
 		}
 	}
 	else
@@ -389,8 +374,7 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_DisplayDefault( TEAM_IMC, player )
-				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+				target.Minimap_DisplayDefault( TEAM_INVALID, player )
 			}
 		}
 	}
@@ -403,10 +387,7 @@ function UpdateMinimapStatus( player )
 		foreach ( target in ai )
 		{
 			if ( team != target.GetTeam() )
-			{
-				target.Minimap_AlwaysShow( TEAM_IMC, player )
-				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
-			}
+				target.Minimap_AlwaysShow( TEAM_INVALID, player )
 		}
 	}
 	else
@@ -414,10 +395,7 @@ function UpdateMinimapStatus( player )
 		foreach ( target in ai )
 		{
 			if ( team != target.GetTeam() )
-			{
-				target.Minimap_DisplayDefault( TEAM_IMC, player )
-				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
-			}
+				target.Minimap_DisplayDefault( TEAM_INVALID, player )
 		}
 	}
 
@@ -477,8 +455,7 @@ function MinimapNPCSpawned( guy )
 		if ( !PlayerRevealsNPCs( player ) )
 			continue
 
-		guy.Minimap_AlwaysShow( TEAM_IMC, player )
-		guy.Minimap_AlwaysShow( TEAM_MILITIA, player )
+		guy.Minimap_AlwaysShow( TEAM_INVALID, player )
 	}
 }
 
@@ -500,8 +477,7 @@ function MinimapPlayerConnected( guy )
 		if ( !PlayerRevealsPlayers( player ) )
 			continue
 
-		guy.Minimap_AlwaysShow( TEAM_IMC, player )
-		guy.Minimap_AlwaysShow( TEAM_MILITIA, player )
+		guy.Minimap_AlwaysShow( TEAM_INVALID, player )
 	}
 }
 
