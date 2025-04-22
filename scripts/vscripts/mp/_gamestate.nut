@@ -1813,6 +1813,8 @@ function ScoreLimit_Complete()
 		SetWinner( winningTeam )
 		return true
 	}
+	local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
+	local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
 	if ( IsSwitchSidesBased() && !HasSwitchedSides() )
 	{
@@ -2088,15 +2090,17 @@ function GameRulesThink_WinnerDetermined()
 
 	local roundLimit = GetRoundScoreLimit_FromPlaylist()
 
-	//local idealMinSwitchSides = roundLimit * 0.5
-	//local idealMaxSwitchSides = ( ( roundLimit * 2 ) - 1 ) * 0.5
-	//local idealSwitchSides = floor( ( ( idealMinSwitchSides + idealMaxSwitchSides ) * 0.5 ) + 0.49 ) // average, round to closest (1.5 rounds to 1.0, 1.6 to 2.0)
+	local idealMinSwitchSides = roundLimit * 0.5
+	local idealMaxSwitchSides = ( ( roundLimit * 2 ) - 1 ) * 0.5
+	local idealSwitchSides = floor( ( ( idealMinSwitchSides + idealMaxSwitchSides ) * 0.5 ) + 0.49 ) // average, round to closest (1.5 rounds to 1.0, 1.6 to 2.0)
 
-	if ( roundLimit && level.nv.roundsPlayed == (roundLimit-1) && IsSwitchSidesBased() )
+	// if ( roundLimit && level.nv.roundsPlayed == (roundLimit-1) && IsSwitchSidesBased() )
+	if ( roundLimit && level.nv.roundsPlayed == idealSwitchSides && IsSwitchSidesBased() )
 	{
 		SetGameState( eGameState.SwitchingSides )
 		return
-	}
+	} 
+	
 
 	SetGameState( eGameState.Prematch )
 }
