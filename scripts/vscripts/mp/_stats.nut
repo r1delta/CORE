@@ -170,8 +170,8 @@ function AddCallback_OnWeaponAttack( callbackFunc)
 }
 
 function OnPlayerRespawned(player) {
+    player.s.lastPosForDistanceStat <- player.GetOrigin()
 	thread SetLastPosForDistanceStatValid( player, true )
-    player.s.lastPosForDistanceStat = player.GetOrigin()
 }
 
 function OnWeaponAttack(player,weapon,weaponName,shotsFired) {
