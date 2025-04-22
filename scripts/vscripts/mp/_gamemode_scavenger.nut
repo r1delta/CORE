@@ -25,7 +25,7 @@ function main()
 	level.spawnRatingFunc_Pilot = RateFrontLinePlayerSpawnpoint
 	level.spawnRatingFunc_Generic = RateFrontLinePlayerSpawnpoint
 	PrecacheModel( "models/rocks/single_rock_01.mdl" )
-
+	level.scavengerSmallRocks  <- [ "models/rocks/single_rock_01.mdl" ]
 	file.totalOre <- {}
 	file.totalOre[ oreTypes.RANDOM ] <- 0
 	file.totalOre[ oreTypes.ROOF ] <- 0
