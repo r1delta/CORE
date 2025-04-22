@@ -354,8 +354,8 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_AlwaysShow( TEAM_IMC, player )
-				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+				player.Minimap_AlwaysShow( TEAM_IMC, target )
+				player.Minimap_AlwaysShow( TEAM_MILITIA, target )
 			}
 		}
 	}
@@ -365,8 +365,8 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_DisplayDefault( TEAM_IMC, player )
-				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+				player.Minimap_DisplayDefault( TEAM_IMC, target )
+				player.Minimap_DisplayDefault( TEAM_MILITIA, target )
 			}
 		}
 	}
@@ -378,8 +378,8 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_AlwaysShow( TEAM_IMC, player )
-				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+				player.Minimap_AlwaysShow( TEAM_IMC, target )
+				player.Minimap_AlwaysShow( TEAM_MILITIA, target )
 			}
 		}
 	}
@@ -389,8 +389,8 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_DisplayDefault( TEAM_IMC, player )
-				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+				player.Minimap_DisplayDefault( TEAM_IMC, target )
+				player.Minimap_DisplayDefault( TEAM_MILITIA, target )
 			}
 		}
 	}
@@ -404,8 +404,8 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_AlwaysShow( TEAM_IMC, player )
-				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+				player.Minimap_AlwaysShow( TEAM_IMC, target )
+				player.Minimap_AlwaysShow( TEAM_MILITIA, target )
 			}
 		}
 	}
@@ -415,8 +415,8 @@ function UpdateMinimapStatus( player )
 		{
 			if ( team != target.GetTeam() )
 			{
-				target.Minimap_DisplayDefault( TEAM_IMC, player )
-				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+				player.Minimap_DisplayDefault( TEAM_IMC, target )
+				player.Minimap_DisplayDefault( TEAM_MILITIA, target )
 			}
 		}
 	}
