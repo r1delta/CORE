@@ -78,7 +78,7 @@ function MeleeThread_TitanVsTitan_Internal( actions, action, attacker, target )
 		// local titanName = Native_GetTitanNameByType(titanType)
 		// local baseTitanType = GetPlayerSettingsFieldForClassName(titanName, "baseTitanType")
 
-		switch ( targetType )
+		switch ( titanType )
 		{
 			case "atlas":
 				func = MeleeThread_AtlasVsTitan
@@ -89,8 +89,8 @@ function MeleeThread_TitanVsTitan_Internal( actions, action, attacker, target )
 				break
 
 			case "ogre":
-				func = MeleeThread_StryderVsTitan
-				// func = MeleeThread_OgreVsTitan
+				// func = MeleeThread_StryderVsTitan
+				func = MeleeThread_OgreVsTitan
 				break
 		}
 	}
