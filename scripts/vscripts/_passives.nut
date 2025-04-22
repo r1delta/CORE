@@ -364,7 +364,10 @@ function UpdateMinimapStatus( player )
 		foreach ( target in players )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_DisplayDefault( -1, player )
+			{
+				target.Minimap_DisplayDefault( TEAM_IMC, player )
+				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+			}
 		}
 	}
 
@@ -385,7 +388,10 @@ function UpdateMinimapStatus( player )
 		foreach ( target in titans )
 		{
 			if ( team != target.GetTeam() )
-				target.Minimap_DisplayDefault( 0, player )
+			{
+				target.Minimap_DisplayDefault( TEAM_IMC, player )
+				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+			}
 		}
 	}
 
@@ -471,10 +477,10 @@ function MinimapNPCSpawned( guy )
 		if ( !PlayerRevealsNPCs( player ) )
 			continue
 
-		guy.Minimap_AlwaysShow( 0, player )
+		guy.Minimap_AlwaysShow( TEAM_IMC, player )
+		guy.Minimap_AlwaysShow( TEAM_MILITIA, player )
 	}
 }
-
 
 function PlayerRevealsPlayers( player )
 {
@@ -494,7 +500,8 @@ function MinimapPlayerConnected( guy )
 		if ( !PlayerRevealsPlayers( player ) )
 			continue
 
-		guy.Minimap_AlwaysShow( 0, player )
+		guy.Minimap_AlwaysShow( TEAN_IMC, player )
+		guy.Minimap_AlwaysShow( TEAM_MILITIA, player )
 	}
 }
 
