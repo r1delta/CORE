@@ -565,25 +565,25 @@ server.dll,text,0xb81cd,74 17,90 90
 engine.dll,text,0xD1851,BA 02 00,BA 06 66
 
 ; FOV range patch (engine.dll)
-engine.dll,text,0x6C6D34,,66 66 76 40
+; engine.dll,text,0x6C6D34,,66 66 76 40
 
 ; FOV range patch 2 (engine.dll)
-engine.dll,text,0x31A1C4C,,66 66 76 40
+; engine.dll,text,0x31A1C4C,,66 66 76 40
 
 ; FOV range patch (client.dll)
-client.dll,text,0x9CDB74,,66 66 76 40
+; client.dll,text,0x9CDB74,,66 66 76 40
 
 ; FOV range patch 2 (client.dll)
-client.dll,text,0x387752C,,66 66 76 40
+; client.dll,text,0x387752C,,66 66 76 40
 
 ; FOV range patch (materialsystem_dx11.dll)
-materialsystem_dx11.dll,text,0x191734,,66 66 76 40
+; materialsystem_dx11.dll,text,0x191734,,66 66 76 40
 
 ; FOV range patch 2 (materialsystem_dx11.dll)
-materialsystem_dx11.dll,text,0x3B95CC,,66 66 76 40
+; materialsystem_dx11.dll,text,0x3B95CC,,66 66 76 40
 
 ; FOV range patch in client.dll
-client.dll,text,0x7F9844,,66 66 76 40
+; client.dll,text,0x7F9844,,66 66 76 40
 
 
 ; client received net message - use ToString rather than GetName
