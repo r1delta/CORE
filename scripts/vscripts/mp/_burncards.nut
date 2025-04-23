@@ -24,10 +24,10 @@ function BurnCard_OnClientConnected( player )
     if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) && !IsLobby() )
 	{
 
-        if ( FindPlayerFirstEmptyActiveSlot( player ) == null )
-            return
+        // if ( FindPlayerFirstEmptyActiveSlot( player ) == null )
+        //     return
 
-		BurncardsAutoFillEmptyActiveSlots( player )
+		thread BurncardsAutoFillEmptyActiveSlots( player )
 		ChangedPlayerBurnCards( player )
 	}
 }
@@ -93,12 +93,15 @@ function MoveCardToActiveSlot( player, burnCardIndex, index, activeSlot )
 
 function BurncardsAutoFillEmptyActiveSlots( player )
 {
+    while ( !PlayerFullyConnected( player ) )
+        wait 0.1
+
     local maxActive = GetPlayerMaxActiveBurnCards( player )
     for ( local i = 0; i < maxActive; i++ )
     {
         local isEmptySlot = GetPlayerActiveBurnCardSlotContents( player, i )
 
-        if ( !isEmptySlot )
+        if ( isEmptySlot != null )
             continue
 
         local deck = GetPlayerBurnCardDeck( player )
