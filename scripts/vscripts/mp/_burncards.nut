@@ -485,7 +485,8 @@ function BurnCardPlayerRespawned_Threaded( player )
 
         cardData = GetBurnCardData(cardRef)
 
-        ChangeOnDeckBurnCardToActive( player )
+        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
+            ChangeOnDeckBurnCardToActive( player )
 
         if(cardData.rarity == BURNCARD_RARE)
             AddPlayerScore( player, "UsedBurnCard_Rare" )
