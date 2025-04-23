@@ -37,6 +37,7 @@ function ClientConnect(player) {
     SendServerHeartbeat(); 
     local xp = player.GetPersistentVar("xp")
     player.SetPersistentVar("previousXP",xp)
+    InitXP(player)
     player.XPChanged()
 }
 
