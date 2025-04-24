@@ -483,9 +483,6 @@ function OnOpenServerBrowserMenu(menu)
     RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
     RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
     // RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
-
-    // Update UI
-    FilterAndUpdateList()
 }
 
 function OnCloseServerBrowserMenu( menu )
