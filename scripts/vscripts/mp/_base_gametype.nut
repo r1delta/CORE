@@ -2320,7 +2320,7 @@ function CodeCallback_OnPlayerRespawned( player )
 				if ( IsValid( soul ) )
 				{
 					local settings = soul.GetTitanSettings()
-					SetModelSkinFromSettings( petTitan, settings, newTeam ) // Assuming SetModelSkinFromSettings exists and works on entities
+					ApplyModelSkinToEntity( petTitan, settings, newTeam ) // Use the entity-applying function
 				}
 
 			}

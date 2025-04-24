@@ -509,7 +509,7 @@ function CreateSpawnNPCTitanTemplate( team, settings )
 	table.decal 	<- null
 	table.model     <- null // Ensure model is part of the table structure
 
-	SetModelSkinFromSettings( table, settings, team ) // This sets table.model and table.skin
+	PopulateModelSkinInTable( table, settings, team ) // Use the table-populating function
 	table.team      = team
 	table.settings  = settings
 
@@ -609,11 +609,11 @@ function SetModelSkinFromSettings( table, settings, team )
 	else
 		table.skin = 0 // Default skin for non-female models or if model name is unknown
 
-	printt("[SetModelSkinFromSettings] Set model '" + table.model + "' and skin '" + table.skin + "' for team " + team)
+	printt("[PopulateModelSkinInTable] Set model '" + table.model + "' and skin '" + table.skin + "' for team " + team)
 }
 
-// Overload or new function to apply model/skin directly to an entity
-function SetModelSkinFromSettings( entity, settings, team )
+// Applies model and skin directly to an entity based on settings and team
+function ApplyModelSkinToEntity( entity, settings, team )
 {
 	if ( !IsValid( entity ) ) return
 
@@ -634,11 +634,11 @@ function SetModelSkinFromSettings( entity, settings, team )
 			skin = 0 // Default skin
 
 		entity.SetSkin( skin )
-		printt("[SetModelSkinFromSettings Entity] Set model '" + modelName + "' and skin '" + skin + "' for team " + team + " on entity " + entity)
+		printt("[ApplyModelSkinToEntity] Set model '" + modelName + "' and skin '" + skin + "' for team " + team + " on entity " + entity)
 	}
 	else
 	{
-		printt("[SetModelSkinFromSettings Entity] Warning: Could not determine model for settings '" + settings + "' and team " + team)
+		printt("[ApplyModelSkinToEntity] Warning: Could not determine model for settings '" + settings + "' and team " + team)
 	}
 }
 
@@ -646,7 +646,7 @@ function SetModelSkinFromSettings( entity, settings, team )
 //////////////////////////////////////////////////////////
 function SetModelSkinAndHealthOnNPCTitanTable( table, settings, team )
 {
-	SetModelSkinFromSettings( table, settings, team ) // This now sets table.model and table.skin
+	PopulateModelSkinInTable( table, settings, team ) // Use the table-populating function
 
 	table.health    = GetPlayerSettingsFieldForClassName_Health( settings )
 	table.maxHealth = table.health
