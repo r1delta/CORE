@@ -1024,7 +1024,7 @@ function PostDeathThread( player, damageInfo )
 	if ( player.isSpawning )
 		return
 
-	player.SetPlayerSettings( "spectator" )
+	player.BecomeRagdoll(Vector(0, 0, 0))
 
 	if( player.IsBot() )
 	{
@@ -2319,7 +2319,7 @@ function CodeCallback_OnPlayerRespawned( player )
 				local soul = petTitan.GetTitanSoul()
 				if ( IsValid( soul ) )
 				{
-					local settings = soul.GetTitanSettings()
+					local settings = GetSoulPlayerSettings(soul)
 					ApplyModelSkinToEntity( petTitan, settings, newTeam ) // Use the entity-applying function
 				}
 

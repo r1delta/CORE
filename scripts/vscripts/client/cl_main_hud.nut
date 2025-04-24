@@ -2494,11 +2494,12 @@ function ScoreBarsCoopPlayerStatusThink( vgui, player, friendlyPlayerStatusElem,
 	local enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
 
 	vgui.EndSignal( "OnDestroy" )
-
+	player.EndSignal( "OnDestroy" )
 	while( true )
 	{
 		WaitSignal( level.ent, "UpdatePlayerStatusCounts", "UpdateTitanCounts" )
-
+		if ( !IsValid( player ) )
+			return;
 		// Check for team change before updating counts based on potentially stale team perspective
 		if ( player.GetTeam() != vgui.s.scoreboardTeam )
 		{
@@ -2992,11 +2993,12 @@ function ScoreBarsPlayerStatusThink( vgui, player, friendlyPlayerStatusElem, ene
 	local enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
 
 	vgui.EndSignal( "OnDestroy" )
-
+	player.EndSignal("OnDestroy")
 	while( true )
 	{
 		level.ent.WaitSignal( "UpdatePlayerStatusCounts" )
-
+		if ( !IsValid( player ) )
+			return;
 		// Check for team change before updating counts based on potentially stale team perspective
 		if ( player.GetTeam() != vgui.s.scoreboardTeam )
 		{
@@ -3154,11 +3156,13 @@ function ScoreBarsTitanCountThink( vgui, player, friendlyTitanCountElem, friendl
 	local enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
 
 	vgui.EndSignal( "OnDestroy" )
+	player.EndSignal( "OnDestroy" )
 
 	for ( ;; )
 	{
 		level.ent.WaitSignal( "UpdateTitanCounts" )
-
+		if ( !IsValid( player ) )
+			return;
 		// Check for team change before updating counts based on potentially stale team perspective
 		if ( player.GetTeam() != vgui.s.scoreboardTeam )
 		{

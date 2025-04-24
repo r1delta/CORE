@@ -22,7 +22,7 @@ function main()
 	Globalize( CreateDefaultNPCTitanTemplate )
 	Globalize( SpawnNPCTitan )
 	Globalize( ClientCommand_TrailerTitanDrop )
-
+	Globalize(ApplyModelSkinToEntity)
 	Globalize( SetupFollowTitan )
 	Globalize( FreeAutoTitan )
 
@@ -507,9 +507,8 @@ function CreateSpawnNPCTitanTemplate( team, settings )
 	table.weaponMod <- null
 	table.title		<- null
 	table.decal 	<- null
-	table.model     <- null // Ensure model is part of the table structure
 
-	PopulateModelSkinInTable( table, settings, team ) // Use the table-populating function
+	SetModelSkinFromSettings( table, settings, team ) // Use the table-populating function
 	table.team      = team
 	table.settings  = settings
 
@@ -597,20 +596,14 @@ function CreateNPCTitanFromSettings( settings, team, origin, angles, noSoul = fa
 }
 
 // Populates model and skin fields within a table based on settings and team
-function PopulateModelSkinInTable( table, settings, team )
+function SetModelSkinFromSettings( table, settings, team )
 {
-	if ( settings )
+	if ( settings && GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" ) != "" )
 		table.model  = GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
 	else
 		table.model = ATLAS_MODEL
-
-	// Determine skin based on model name and team
-	if ( table.model && table.model.find("female") != null ) // Check if model name contains "female"
-		table.skin = team == TEAM_MILITIA ? 1 : 0
-	else
-		table.skin = 0 // Default skin for non-female models or if model name is unknown
-
-	printt("[PopulateModelSkinInTable] Set model '" + table.model + "' and skin '" + table.skin + "' for team " + team)
+	table.skin = team == TEAM_MILITIA ? 1 : 0
+	
 }
 
 // Applies model and skin directly to an entity based on settings and team
@@ -621,18 +614,12 @@ function ApplyModelSkinToEntity( entity, settings, team )
 	local modelName
 	if ( settings )
 		modelName = GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
-	else
-		modelName = ATLAS_MODEL // Default if no settings
 
 	if ( modelName && modelName != "" )
 	{
 		entity.SetModel( modelName )
 
-		local skin
-		if ( modelName.find("female") != null )
-			skin = team == TEAM_MILITIA ? 1 : 0
-		else
-			skin = 0 // Default skin
+		local skin = team == TEAM_MILITIA ? 1 : 0
 
 		entity.SetSkin( skin )
 		printt("[ApplyModelSkinToEntity] Set model '" + modelName + "' and skin '" + skin + "' for team " + team + " on entity " + entity)
@@ -647,7 +634,7 @@ function ApplyModelSkinToEntity( entity, settings, team )
 //////////////////////////////////////////////////////////
 function SetModelSkinAndHealthOnNPCTitanTable( table, settings, team )
 {
-	PopulateModelSkinInTable( table, settings, team ) // Use the table-populating function
+	SetModelSkinFromSettings( table, settings, team ) // Use the table-populating function
 
 	table.health    = GetPlayerSettingsFieldForClassName_Health( settings )
 	table.maxHealth = table.health
