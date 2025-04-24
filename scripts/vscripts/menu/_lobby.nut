@@ -597,9 +597,56 @@ function MatchmakingServerLobbyLogic()
                 if ( needSkillBalance && (timeRemaining <= 10) )
                 {
                     // Add autobalancing logic here, just before marking teams as balanced
-                    local players = GetPlayerArray()
-                    if ( GetCurrentPlaylistName() == "COOPERATIVE" )
+                    if ( GetConVarBool( "delta_autoBalanceTeams" ) )
                     {
+                        local players = GetPlayerArray()
+                        if ( GetCurrentPlaylistName() == "COOPERATIVE" )
+                        {
+                            // In cooperative, put everyone on TEAM_MILITIA
+                            foreach ( p in players )
+                                p.SetTeam( TEAM_MILITIA )
+                        }
+                        else
+                        {
+                            local imcPlayers = []
+                            local militiaPlayers = []
+
+                            foreach ( p in players )
+                            {
+                                if ( p.GetTeam() == TEAM_IMC )
+                                    imcPlayers.append(p)
+                                else if ( p.GetTeam() == TEAM_MILITIA )
+                                    militiaPlayers.append(p)
+                            }
+
+                            local totalPlayers = players.len()
+                            local targetPerTeam = ceil(totalPlayers / 2.0)
+
+                            if ( imcPlayers.len() > militiaPlayers.len() )
+                            {
+                                local playersToMove = imcPlayers.len() - targetPerTeam
+                                for ( local i = 0; i < playersToMove; i++ )
+                                {
+                                    if ( imcPlayers.len() > 0 )
+                                        imcPlayers[i].TrueTeamSwitch()
+                                }
+                            }
+                            else if ( militiaPlayers.len() > imcPlayers.len() )
+                            {
+                                local playersToMove = militiaPlayers.len() - targetPerTeam
+                                for ( local i = 0; i < playersToMove; i++ )
+                                {
+                                    if ( militiaPlayers.len() > 0 )
+                                        militiaPlayers[i].TrueTeamSwitch()
+                                }
+                            }
+                        }
+                    }
+
+
+                    MarkTeamsAsBalanced_On()
+                    needSkillBalance = false
+                }
                         // In cooperative, put everyone on TEAM_MILITIA
                         foreach ( p in players )
                             p.SetTeam( TEAM_MILITIA )
@@ -1787,52 +1834,54 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
     if ( Time() < file.nextLaunchCommandValid )
         return true
 
-    local players = GetPlayerArray()
-    if ( modeName == "COOPERATIVE" )
+    if ( GetConVarBool( "delta_autoBalanceTeams" ) )
     {
-        // In cooperative, put everyone on TEAM_MILITIA
-        foreach ( p in players )
-            p.SetTeam( TEAM_MILITIA )
-    }
-    else
-    {
-        local imcPlayers = []
-        local militiaPlayers = []
-
-        // Sort current players by team
-        foreach ( p in players )
+        local players = GetPlayerArray()
+        if ( modeName == "COOPERATIVE" )
         {
-            if ( p.GetTeam() == TEAM_IMC )
-                imcPlayers.append(p)
-            else if ( p.GetTeam() == TEAM_MILITIA )
-                militiaPlayers.append(p)
+            // In cooperative, put everyone on TEAM_MILITIA
+            foreach ( p in players )
+                p.SetTeam( TEAM_MILITIA )
         }
-
-        // Calculate how many players need to be moved
-        local totalPlayers = players.len()
-        local targetPerTeam = ceil(totalPlayers / 2.0)
-
-        // Balance from larger team to smaller team
-        if ( imcPlayers.len() > militiaPlayers.len() )
+        else
         {
-            local playersToMove = imcPlayers.len() - targetPerTeam
-            for ( local i = 0; i < playersToMove; i++ )
+            local imcPlayers = []
+            local militiaPlayers = []
+
+            // Sort current players by team
+            foreach ( p in players )
             {
-                if ( imcPlayers.len() > 0 )
-                    imcPlayers[i].TrueTeamSwitch()
+                if ( p.GetTeam() == TEAM_IMC )
+                    imcPlayers.append(p)
+                else if ( p.GetTeam() == TEAM_MILITIA )
+                    militiaPlayers.append(p)
+            }
+
+            // Calculate how many players need to be moved
+            local totalPlayers = players.len()
+            local targetPerTeam = ceil(totalPlayers / 2.0)
+
+            // Balance from larger team to smaller team
+            if ( imcPlayers.len() > militiaPlayers.len() )
+            {
+                local playersToMove = imcPlayers.len() - targetPerTeam
+                for ( local i = 0; i < playersToMove; i++ )
+                {
+                    if ( imcPlayers.len() > 0 )
+                        imcPlayers[i].TrueTeamSwitch()
+                }
+            }
+            else if ( militiaPlayers.len() > imcPlayers.len() )
+            {
+                local playersToMove = militiaPlayers.len() - targetPerTeam
+                for ( local i = 0; i < playersToMove; i++ )
+                {
+                    if ( militiaPlayers.len() > 0 )
+                        militiaPlayers[i].TrueTeamSwitch()
+                }
             }
         }
-        else if ( militiaPlayers.len() > imcPlayers.len() )
-        {
-            local playersToMove = militiaPlayers.len() - targetPerTeam
-            for ( local i = 0; i < playersToMove; i++ )
-            {
-                if ( militiaPlayers.len() > 0 )
-                    militiaPlayers[i].TrueTeamSwitch()
-            }
-        }
     }
-
 
     file.nextLaunchCommandValid = Time() + 0.25
 
@@ -1876,9 +1925,20 @@ function ClientCommand_PrivateMatchSwitchTeams( player, ... )
         newMilitiaCount--
     }
 
-    // Don't allow the switch if it would create an imbalance of more than 1 player
-    //if (abs(newIMCCount - newMilitiaCount) > 1)
-        //return false
+    // If auto-balance is enabled, prevent manual switches that increase imbalance.
+    if ( GetConVarBool( "delta_autoBalanceTeams" ) )
+    {
+        local currentImbalance = abs(currentIMCCount - currentMilitiaCount)
+        local newImbalance = abs(newIMCCount - newMilitiaCount)
+        if ( newImbalance > currentImbalance )
+        {
+             printt( "AutoBalance enabled: Preventing manual team switch that would increase imbalance." )
+             return false
+        }
+    }
+    // Original check (commented out): Don't allow the switch if it would create an imbalance of more than 1 player
+    // if (abs(newIMCCount - newMilitiaCount) > 1)
+    //    return false
 
     player.TrueTeamSwitch()
     UpdatePrivateMatchReadyStatus( true )

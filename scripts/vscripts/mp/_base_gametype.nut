@@ -2274,6 +2274,26 @@ function CodeCallback_OnPlayerRespawned( player )
 	thread ReportDevStat_Spawn( player )
 
 	thread LoadoutChangeGracePeriodThink( player )
+
+	// --- Autobalance on Respawn ---
+	if ( GetConVarBool( "delta_autoBalanceTeams" ) && GamePlayingOrSuddenDeath() && !IsPrivateMatch() && GameRules.GetGameMode() != COOPERATIVE && GAMETYPE != FFA )
+	{
+		local currentTeam = player.GetTeam()
+		local otherTeam = GetOtherTeam( currentTeam )
+		local currentTeamCount = GetTeamPlayerCount( currentTeam )
+		local otherTeamCount = GetTeamPlayerCount( otherTeam )
+		local totalPlayers = currentTeamCount + otherTeamCount
+		local targetPerTeam = ceil( totalPlayers / 2.0 )
+
+		// Check if current team is over target and other team is under target
+		if ( currentTeamCount > targetPerTeam && otherTeamCount < targetPerTeam )
+		{
+			printt( "AutoBalancing player " + player.GetPlayerName() + " from team " + currentTeam + " to team " + otherTeam )
+			player.TrueTeamSwitch()
+			NotifyClientsOfTeamChange( player, currentTeam, otherTeam ) // Notify clients about the team change
+		}
+	}
+	// --- End Autobalance on Respawn ---
 }
 
 function GetEmbarkPlayer( titan )
