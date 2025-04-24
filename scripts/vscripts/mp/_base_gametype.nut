@@ -2276,7 +2276,18 @@ function CodeCallback_OnPlayerRespawned( player )
 	thread LoadoutChangeGracePeriodThink( player )
 
 	// --- Autobalance on Respawn ---
-	if ( GetConVarBool( "delta_autoBalanceTeams" ) && GamePlayingOrSuddenDeath() && !IsPrivateMatch() && GameRules.GetGameMode() != COOPERATIVE && GAMETYPE != FFA )
+	// Force Militia team in Cooperative mode
+	if ( GameRules.GetGameMode() == COOPERATIVE )
+	{
+		if ( player.GetTeam() != TEAM_MILITIA )
+		{
+			printt( "Forcing player " + player.GetPlayerName() + " back to Militia on respawn in Cooperative mode." )
+			player.SetTeam( TEAM_MILITIA )
+			NotifyClientsOfTeamChange( player, GetOtherTeam(TEAM_MILITIA), TEAM_MILITIA ) // Notify clients about the team change
+		}
+	}
+	// Standard autobalance for other modes
+	else if ( GetConVarBool( "delta_autoBalanceTeams" ) && GamePlayingOrSuddenDeath() && !IsPrivateMatch() && GAMETYPE != FFA )
 	{
 		local currentTeam = player.GetTeam()
 		local otherTeam = GetOtherTeam( currentTeam )
@@ -2502,10 +2513,11 @@ function CodeCallback_OnClientConnectionStarted( player )
 
 	if ( "ScriptCallback_OnClientConnecting" in getroottable() )
 		ScriptCallback_OnClientConnecting( player )
+
 	// Handle team assignment for connecting player
+	// Force Militia team in Cooperative mode
 	if ( GameRules.GetGameMode() == COOPERATIVE )
 	{
-		// In cooperative, all players should be on TEAM_MILITIA
 		player.SetTeam( TEAM_MILITIA )
 	}
 

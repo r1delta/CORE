@@ -596,18 +596,27 @@ function MatchmakingServerLobbyLogic()
 
                 if ( needSkillBalance && (timeRemaining <= 10) )
                 {
-                    // Add autobalancing logic here, just before marking teams as balanced
-                    if ( GetConVarBool( "delta_autoBalanceTeams" ) )
+                    local players = GetPlayerArray()
+                    // Force everyone to Militia in Cooperative mode, regardless of autobalance setting
+                    if ( GetCurrentPlaylistName() == "COOPERATIVE" )
                     {
-                        local players = GetPlayerArray()
-                        if ( GetCurrentPlaylistName() == "COOPERATIVE" )
+                        foreach ( p in players )
                         {
-                            // In cooperative, put everyone on TEAM_MILITIA
-                            foreach ( p in players )
+                            if ( p.GetTeam() != TEAM_MILITIA )
                                 p.SetTeam( TEAM_MILITIA )
                         }
-                        else
-                        {
+                    }
+                    // Add autobalancing logic here, just before marking teams as balanced
+                    else if ( GetConVarBool( "delta_autoBalanceTeams" ) )
+                    {
+                        //if ( GetCurrentPlaylistName() == "COOPERATIVE" ) // Original coop check moved above
+                        //{
+                        //    // In cooperative, put everyone on TEAM_MILITIA
+                        //    foreach ( p in players )
+                        //        p.SetTeam( TEAM_MILITIA )
+                        //}
+                        //else
+                        //{
                             local imcPlayers = []
                             local militiaPlayers = []
 
@@ -1834,17 +1843,27 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
     if ( Time() < file.nextLaunchCommandValid )
         return true
 
-    if ( GetConVarBool( "delta_autoBalanceTeams" ) )
+    local players = GetPlayerArray()
+    // Force everyone to Militia in Cooperative mode, regardless of autobalance setting
+    if ( modeName == "COOPERATIVE" )
     {
-        local players = GetPlayerArray()
-        if ( modeName == "COOPERATIVE" )
+        foreach ( p in players )
         {
-            // In cooperative, put everyone on TEAM_MILITIA
-            foreach ( p in players )
+            if ( p.GetTeam() != TEAM_MILITIA )
                 p.SetTeam( TEAM_MILITIA )
         }
-        else
-        {
+    }
+    // Add autobalancing logic here, just before marking teams as balanced
+    else if ( GetConVarBool( "delta_autoBalanceTeams" ) )
+    {
+        //if ( modeName == "COOPERATIVE" ) // Original coop check moved above
+        //{
+        //    // In cooperative, put everyone on TEAM_MILITIA
+        //    foreach ( p in players )
+        //        p.SetTeam( TEAM_MILITIA )
+        //}
+        //else
+        //{
             local imcPlayers = []
             local militiaPlayers = []
 
