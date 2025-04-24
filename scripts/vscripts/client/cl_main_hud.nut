@@ -2313,6 +2313,7 @@ function MainHud_InitScoreBars( vgui, player, scoreGroup )
 	local scoreboardProgressBars = {}
 	vgui.s.scoreboardProgressBars <- scoreboardProgressBars
 
+	vgui.s.scoreboardTeam <- player.GetTeam() // Store initial team
 	local panel = vgui.GetPanel()
 
 	scoreboardProgressBars.GameInfoBG 			<- scoreGroup.CreateElement( "GameInfoBG", panel )
@@ -2591,6 +2592,52 @@ function ShouldUsePlayerStatusCount()
 	}
 }
 Globalize( ShouldUsePlayerStatusCount )
+
+
+function UpdateScoreboardTeamProperties( vgui, player )
+{
+	local scoreboardProgressBars = vgui.s.scoreboardProgressBars
+	local friendlyTeam = player.GetTeam()
+	local enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
+
+	// Update score limits based on current round/game state
+	local scoreLimitFriendly, scoreLimitEnemy
+	if ( IsRoundBased() )
+	{
+		scoreLimitFriendly = IsMultiplayer() ? GetRoundScoreLimit_FromPlaylist() : 0
+		scoreLimitEnemy = IsMultiplayer() ? GetRoundScoreLimit_FromPlaylist() : 0
+	}
+	else
+	{
+		scoreLimitFriendly = IsMultiplayer() ? GetScoreLimit_FromPlaylist() : 0
+		scoreLimitEnemy = IsMultiplayer() ? GetScoreLimit_FromPlaylist() : 0
+	}
+	// Ensure level.scoreLimit is updated if other parts of the HUD rely on it directly
+	level.scoreLimit[friendlyTeam] = scoreLimitFriendly
+	level.scoreLimit[enemyTeam] = scoreLimitEnemy
+
+	// Update Friendly Score Bar
+	scoreboardProgressBars.ScoresFriendly.SetBarProgressSource( ProgressSource.PROGRESS_SOURCE_FRIENDLY_TEAM_SCORE )
+	scoreboardProgressBars.ScoresFriendly.SetBarProgressRemap( 0, scoreLimitFriendly, 0.011, 0.96 )
+	scoreboardProgressBars.Friendly_Number.SetAutoText( "", HATT_FRIENDLY_TEAM_SCORE, 0 )
+	scoreboardProgressBars.Friendly_Team.SetAutoText( "", HATT_FRIENDLY_TEAM_NAME, 0 )
+
+	// Update Enemy Score Bar
+	scoreboardProgressBars.ScoresEnemy.SetBarProgressSource( ProgressSource.PROGRESS_SOURCE_ENEMY_TEAM_SCORE )
+	scoreboardProgressBars.ScoresEnemy.SetBarProgressRemap( 0, scoreLimitEnemy, 0.011, 0.96 )
+	scoreboardProgressBars.Enemy_Number.SetAutoText( "", HATT_ENEMY_TEAM_SCORE, 0 )
+	scoreboardProgressBars.Enemy_Team.SetAutoText( "", HATT_ENEMY_TEAM_NAME, 0 )
+
+	// Update Team Icon
+	if ( friendlyTeam == TEAM_IMC )
+		scoreboardProgressBars.GameInfo_Icon.SetImage( TEAM_ICON_IMC )
+	else
+		scoreboardProgressBars.GameInfo_Icon.SetImage( TEAM_ICON_MILITIA )
+
+	// Re-trigger player status/titan count updates to use new team context immediately
+	// This ensures the counts/icons associated with the bars also update team perspective
+	UpdatePlayerStatusCounts()
+}
 
 
 function GetScoreEndTime()
@@ -3091,6 +3138,16 @@ function ScoreBarsTitanCountThink( vgui, player, friendlyTitanCountElem, friendl
 	for ( ;; )
 	{
 		level.ent.WaitSignal( "UpdateTitanCounts" )
+
+		// Check for team change before updating counts based on potentially stale team perspective
+		if ( player.GetTeam() != vgui.s.scoreboardTeam )
+		{
+			vgui.s.scoreboardTeam = player.GetTeam()
+			UpdateScoreboardTeamProperties( vgui, player )
+			// Update local team variables after properties have been reset
+			friendlyTeam = player.GetTeam()
+			enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
+		}
 
 		local friendlyTitans = GetPlayerTitansOnTeam( friendlyTeam )
 		local friendlyTitanCount = friendlyTitans.len()
