@@ -234,9 +234,6 @@ function InitScoreboard()
 	file.header_highlight_color <- [204, 234, 255]
 	file.data_default_color <- [155, 178, 194]
 	file.data_highlight_color <- [230, 230, 230]
-	file.data_highlight_bg_color <- {}
-	file.data_highlight_bg_color[myTeam] <- [0, 138, 166]
-	file.data_highlight_bg_color[enemyTeam] <- [156, 71, 6]
 
 	local scoreboard = HudElement( "Scoreboard" )
 	file.scoreboard <- scoreboard
@@ -336,10 +333,7 @@ function InitScoreboard()
 				table[varName].SetWidth( width )
 
 				if ( file.highlightColumns[varName] )
-				{
 					table[varName].SetColor( file.data_highlight_color )
-					table[varName].SetColorBG( file.data_highlight_bg_color[team] )
-				}
 				else
 				{
 					table[varName].SetColor( file.data_default_color )
@@ -469,6 +463,12 @@ function ShowScoreboard()
 	for ( ;; )
 	{
 		localPlayer = GetLocalClientPlayer()
+		myTeam = localPlayer.GetTeam()
+		enemyTeam = GetEnemyTeam( myTeam )
+
+		local data_highlight_bg_color = {}
+		data_highlight_bg_color[myTeam] <- [0, 138, 166]
+		data_highlight_bg_color[enemyTeam] <- [156, 71, 6]
 
 		teamPlayers[myTeam] = GetSortedPlayers( compareFunc, myTeam )
 		teamPlayers[enemyTeam] = GetSortedPlayers( compareFunc, enemyTeam )
