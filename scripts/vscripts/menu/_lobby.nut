@@ -594,68 +594,12 @@ function MatchmakingServerLobbyLogic()
                 timeRemaining = level.ui.gameStartTime - Time()
                 report_timeRemaining = timeRemaining
 
-                if ( needSkillBalance && (timeRemaining <= 10) )
+                if ( GetConVarBool("delta_autoBalanceTeams") && needSkillBalance && (timeRemaining <= 10) )
                 {
+                    // Add autobalancing logic here, just before marking teams as balanced
                     local players = GetPlayerArray()
-                    // Force everyone to Militia in Cooperative mode, regardless of autobalance setting
                     if ( GetCurrentPlaylistName() == "COOPERATIVE" )
                     {
-                        foreach ( p in players )
-                        {
-                            if ( p.GetTeam() != TEAM_MILITIA )
-                                p.SetTeam( TEAM_MILITIA )
-                        }
-                    }
-                    // Add autobalancing logic here, just before marking teams as balanced
-                    else if ( GetConVarBool( "delta_autoBalanceTeams" ) )
-                    {
-                        //if ( GetCurrentPlaylistName() == "COOPERATIVE" ) // Original coop check moved above
-                        //{
-                        //    // In cooperative, put everyone on TEAM_MILITIA
-                        //    foreach ( p in players )
-                        //        p.SetTeam( TEAM_MILITIA )
-                        //}
-                        //else
-                        //{
-                            local imcPlayers = []
-                            local militiaPlayers = []
-
-                            foreach ( p in players )
-                            {
-                                if ( p.GetTeam() == TEAM_IMC )
-                                    imcPlayers.append(p)
-                                else if ( p.GetTeam() == TEAM_MILITIA )
-                                    militiaPlayers.append(p)
-                            }
-
-                            local totalPlayers = players.len()
-                            local targetPerTeam = ceil(totalPlayers / 2.0)
-
-                            if ( imcPlayers.len() > militiaPlayers.len() )
-                            {
-                                local playersToMove = imcPlayers.len() - targetPerTeam
-                                for ( local i = 0; i < playersToMove; i++ )
-                                {
-                                    if ( imcPlayers.len() > 0 )
-                                        imcPlayers[i].TrueTeamSwitch()
-                                }
-                            }
-                            else if ( militiaPlayers.len() > imcPlayers.len() )
-                            {
-                                local playersToMove = militiaPlayers.len() - targetPerTeam
-                                for ( local i = 0; i < playersToMove; i++ )
-                                {
-                                    if ( militiaPlayers.len() > 0 )
-                                        militiaPlayers[i].TrueTeamSwitch()
-                                }
-                            }
-                        }
-                    }
-
-
-                    MarkTeamsAsBalanced_On()
-                    needSkillBalance = false
-                }
                         // In cooperative, put everyone on TEAM_MILITIA
                         foreach ( p in players )
                             p.SetTeam( TEAM_MILITIA )
@@ -1899,7 +1843,7 @@ function ClientCommand_PrivateMatchLaunch( player, ... )
                         militiaPlayers[i].TrueTeamSwitch()
                 }
             }
-        }
+        //}
     }
 
     file.nextLaunchCommandValid = Time() + 0.25
