@@ -589,10 +589,10 @@ engine.dll,text,0xD1851,BA 02 00,BA 06 66
 client.dll,text,0x3578A,F3 0F 10 0D B2 40 7C 00 F3 0F 5D D1,90 90 90 90 90 90 90 90 90 90 90 90
 
 ; client received net message - use ToString rather than GetName
-engine.dll,text,0x1E559A,,60
+engine.dll,text,0x1E559A,50,60
 
 ; SecurityPatch: prevent server plugin DLL loading
-engine.dll,text,0xF3F40,,32 C0 C3
+engine.dll,text,0xF3F40,48,32 C0 C3
 
 ; don't let parasite engine make threads for tfonet
 engine_r1o.dll,text,0x048AEE8,75 0F,90 90
