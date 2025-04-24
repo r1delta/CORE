@@ -2499,6 +2499,16 @@ function ScoreBarsCoopPlayerStatusThink( vgui, player, friendlyPlayerStatusElem,
 	{
 		WaitSignal( level.ent, "UpdatePlayerStatusCounts", "UpdateTitanCounts" )
 
+		// Check for team change before updating counts based on potentially stale team perspective
+		if ( player.GetTeam() != vgui.s.scoreboardTeam )
+		{
+			vgui.s.scoreboardTeam = player.GetTeam()
+			UpdateScoreboardTeamProperties( vgui, player )
+			// Update local team variables after properties have been reset
+			friendlyTeam = player.GetTeam()
+			enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
+		}
+
 		if ( IsWatchingKillReplay() || !level.showScoreboard ) //Don't update visibility if the scoreboardgroup should be hidden
 			continue
 
@@ -2986,6 +2996,16 @@ function ScoreBarsPlayerStatusThink( vgui, player, friendlyPlayerStatusElem, ene
 	while( true )
 	{
 		level.ent.WaitSignal( "UpdatePlayerStatusCounts" )
+
+		// Check for team change before updating counts based on potentially stale team perspective
+		if ( player.GetTeam() != vgui.s.scoreboardTeam )
+		{
+			vgui.s.scoreboardTeam = player.GetTeam()
+			UpdateScoreboardTeamProperties( vgui, player )
+			// Update local team variables after properties have been reset
+			friendlyTeam = player.GetTeam()
+			enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
+		}
 
 		if ( IsWatchingKillReplay() || !level.showScoreboard ) //Don't update visibility if the scoreboardgroup should be hidden
 			continue
