@@ -593,3 +593,6 @@ engine.dll,text,0x1E559A,,60
 
 ; SecurityPatch: prevent server plugin DLL loading
 engine.dll,text,0xF3F40,,32 C0 C3
+
+; don't let parasite engine make threads for tfonet
+engine_r1o.dll,text,0x048AEE8,75 0F,90 90
