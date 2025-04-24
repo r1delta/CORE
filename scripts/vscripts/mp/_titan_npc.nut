@@ -507,8 +507,9 @@ function CreateSpawnNPCTitanTemplate( team, settings )
 	table.weaponMod <- null
 	table.title		<- null
 	table.decal 	<- null
+	table.model     <- null // Ensure model is part of the table structure
 
-	SetModelSkinFromSettings( table, settings, team )
+	SetModelSkinFromSettings( table, settings, team ) // This sets table.model and table.skin
 	table.team      = team
 	table.settings  = settings
 
@@ -602,13 +603,50 @@ function SetModelSkinFromSettings( table, settings, team )
 	else
 		table.model = ATLAS_MODEL
 
-	table.skin   = team == TEAM_MILITIA ? 1 : 0
+	// Determine skin based on model name and team
+	if ( table.model && table.model.find("female") != null ) // Check if model name contains "female"
+		table.skin = team == TEAM_MILITIA ? 1 : 0
+	else
+		table.skin = 0 // Default skin for non-female models or if model name is unknown
+
+	printt("[SetModelSkinFromSettings] Set model '" + table.model + "' and skin '" + table.skin + "' for team " + team)
 }
+
+// Overload or new function to apply model/skin directly to an entity
+function SetModelSkinFromSettings( entity, settings, team )
+{
+	if ( !IsValid( entity ) ) return
+
+	local modelName
+	if ( settings )
+		modelName = GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
+	else
+		modelName = ATLAS_MODEL // Default if no settings
+
+	if ( modelName && modelName != "" )
+	{
+		entity.SetModel( modelName )
+
+		local skin
+		if ( modelName.find("female") != null )
+			skin = team == TEAM_MILITIA ? 1 : 0
+		else
+			skin = 0 // Default skin
+
+		entity.SetSkin( skin )
+		printt("[SetModelSkinFromSettings Entity] Set model '" + modelName + "' and skin '" + skin + "' for team " + team + " on entity " + entity)
+	}
+	else
+	{
+		printt("[SetModelSkinFromSettings Entity] Warning: Could not determine model for settings '" + settings + "' and team " + team)
+	}
+}
+
 
 //////////////////////////////////////////////////////////
 function SetModelSkinAndHealthOnNPCTitanTable( table, settings, team )
 {
-	SetModelSkinFromSettings( table, settings, team )
+	SetModelSkinFromSettings( table, settings, team ) // This now sets table.model and table.skin
 
 	table.health    = GetPlayerSettingsFieldForClassName_Health( settings )
 	table.maxHealth = table.health

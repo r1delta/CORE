@@ -2300,8 +2300,77 @@ function CodeCallback_OnPlayerRespawned( player )
 		if ( currentTeamCount > targetPerTeam && otherTeamCount < targetPerTeam )
 		{
 			printt( "AutoBalancing player " + player.GetPlayerName() + " from team " + currentTeam + " to team " + otherTeam )
+
+			// Store pet titan before switching
+			local petTitan = player.GetPetTitan()
+
+			// Switch player team
 			player.TrueTeamSwitch()
-			NotifyClientsOfTeamChange( player, currentTeam, otherTeam ) // Notify clients about the team change
+			local newTeam = player.GetTeam() // Get the new team after switching
+
+			// Switch pet titan team if it exists
+			if ( IsValid( petTitan ) && IsAlive( petTitan ) )
+			{
+				printt( "AutoBalancing pet titan for player " + player.GetPlayerName() + " to team " + newTeam )
+				petTitan.SetTeam( newTeam )
+				// Update titan's title and minimap icon for the new team context
+				SetupNPC_TitanTitle( petTitan, player )
+				// Ensure the titan's model/skin reflects the new team if necessary (though usually handled by SetupNPC_TitanTitle or initial spawn)
+				local soul = petTitan.GetTitanSoul()
+				if ( IsValid( soul ) )
+				{
+					local settings = soul.GetTitanSettings()
+					SetModelSkinFromSettings( petTitan, settings, newTeam ) // Assuming SetModelSkinFromSettings exists and works on entities
+				}
+
+			}
+
+			// Update player model based on new team
+			local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
+			if ( pilotDataTable.playerSetFile )
+			{
+				player.SetPlayerSettings( pilotDataTable.playerSetFile ) // Re-apply settings to potentially trigger model updates
+				player.SetPlayerPilotSettings( pilotDataTable.playerSetFile )
+
+				local modelFieldName
+				if ( newTeam == TEAM_MILITIA )
+				{
+					modelFieldName = "bodymodel_militia"
+				}
+				else // Assume IMC or other default
+				{
+					modelFieldName = "bodymodel_imc"
+				}
+
+				local correctModelName = GetPlayerSettingsFieldForClassName( pilotDataTable.playerSetFile, modelFieldName )
+				if ( correctModelName != null && correctModelName != "" )
+				{
+					printt( "Autobalance: Setting model for player " + player + " (New Team: " + newTeam + ") using " + modelFieldName + " from " + pilotDataTable.playerSetFile + " -> " + correctModelName )
+					player.SetModel( correctModelName )
+
+					local skin = 0
+					if ( pilotDataTable.playerSetFile.find("female") != null )
+						skin = newTeam == TEAM_MILITIA ? 1 : 0
+					else
+						skin = 0 // Assuming non-female models use skin 0 regardless of team, adjust if needed
+
+					player.SetSkin( skin )
+					printt("Autobalance: SET SKIN " + skin)
+
+					local head = 0 // Reset head based on skin logic
+					if ( pilotDataTable.playerSetFile.find("female") != null )
+						head = newTeam == TEAM_MILITIA ? 1 : 0
+					else
+						head = 0
+					SelectHead(player, head)
+				}
+				else
+				{
+					printt( "Autobalance: WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + pilotDataTable.playerSetFile + "' and field '" + modelFieldName + "'" )
+				}
+			}
+
+			NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
 		}
 	}
 	// --- End Autobalance on Respawn ---
