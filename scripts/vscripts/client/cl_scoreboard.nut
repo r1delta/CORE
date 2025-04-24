@@ -788,6 +788,19 @@ function ShowScoreboard()
 
 					local val = file.columnLabelsUpdateFuncs[ varName ]( player )
 					elemTable[ varName ].SetText( file.columnLabelsLocalize[ varName ], val, "" )
+
+					// Set colors based on highlight status and current team
+					if ( file.highlightColumns[varName] )
+					{
+						elemTable[ varName ].SetColor( file.data_highlight_color )
+						elemTable[ varName ].SetColorBG( data_highlight_bg_color[team] ) // Use loop-local color table
+					}
+					else
+					{
+						elemTable[ varName ].SetColor( file.data_default_color )
+						elemTable[ varName ].SetColorBG( [0,0,0,0] ) // Clear background for non-highlighted
+					}
+
 					elemTable[ varName ].Show()
 				}
 
