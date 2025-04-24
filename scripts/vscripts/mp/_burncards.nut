@@ -461,6 +461,9 @@ function BurnCardPlayerRespawned_Threaded( player )
     local cardIndex
     local cardData
 
+    if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+        return
+
     printt( "BurnCardPlayerRespawned_Threaded" )
 
     if ( GetPlayerBurnCardActiveSlotID( player ) >= 0 )
