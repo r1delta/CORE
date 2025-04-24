@@ -596,7 +596,8 @@ function CreateNPCTitanFromSettings( settings, team, origin, angles, noSoul = fa
 	return titan
 }
 
-function SetModelSkinFromSettings( table, settings, team )
+// Populates model and skin fields within a table based on settings and team
+function PopulateModelSkinInTable( table, settings, team )
 {
 	if ( settings )
 		table.model  = GetPlayerSettingsFieldForClassName( settings, team == TEAM_MILITIA ? "bodymodel_militia" : "bodymodel_imc" )
