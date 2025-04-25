@@ -58,11 +58,11 @@ function main()
 		AddEmbarkAnims( "titan_atlas", "atlas" )
 		AddEmbarkAnims( "titan_ogre", "ogre" )
 		AddEmbarkAnims( "titan_stryder", "stryder" )
-
+		AddEmbarkAnims( "titan_destroyer_tier0", "destroyer","ogre" )
 		AddEmbarkAudio( "titan_atlas", "atlas" )
 		AddEmbarkAudio( "titan_ogre", "ogre" )
 		AddEmbarkAudio( "titan_stryder", "stryder" )
-
+		AddEmbarkAudio("titan_destroyer_tier0", "destroyer", "ogre")
 		Globalize( PlayerDisembarksTitan )
 
 		RegisterSignal( "titanKneel" )
@@ -76,7 +76,9 @@ function main()
 	}
 }
 
-function AddEmbarkAnims( titan, titanType )
+
+
+function AddEmbarkAnims( titan, titanType,basetitanType = "" )
 {
 	// anims are string-constructed from these types:
 	local array =
@@ -103,15 +105,23 @@ function AddEmbarkAnims( titan, titanType )
 		//printt( "Adding base " + item + " to " + titan )
 		local thirdPersonAlias = "pt_mount_" + item
 		local firstPersonAlias = "ptpov_mount_" + item
-		local thirdPersonAnim = "pt_mount_" + titanType + "_" + item
-		local firstPersonAnim = "ptpov_mount_" + titanType + "_" + item
-
+		local thirdPersonAnim;
+		local firstPersonAnim;
+		if( basetitanType != "" )
+		{
+			thirdPersonAnim = "pt_mount_" + basetitanType + "_" + item
+			firstPersonAnim = "ptpov_mount_" + basetitanType + "_" + item
+		}
+		else {
+			thirdPersonAnim = "pt_mount_" + titanType + "_" + item
+		 	firstPersonAnim = "ptpov_mount_" + titanType + "_" + item
+		}
 		AddAnimAlias( titanType, thirdPersonAlias, thirdPersonAnim )
 		AddAnimAlias( titanType, firstPersonAlias, firstPersonAnim )
 	}
 }
 
-function AddEmbarkAudio( titan, titanType )
+function AddEmbarkAudio( titan, titanType, basetitanType = "" )
 {
 	// audio files are string-constructed from these types:
 	local array =
@@ -137,13 +147,24 @@ function AddEmbarkAudio( titan, titanType )
 		//printt( "Adding base " + item + " to " + titan )
 		local thirdPersonAlias = "Embark_" + item + "_3P"
 		local firstPersonAlias = "Embark_" + item + "_1P"
-		local thirdPersonAnim =  titanType + "_Embark_" + item + "_3P"
-		local firstPersonAnim =  titanType + "_Embark_" + item + "_1P"
-
+		local thirdPersonAnim;
+		local firstPersonAnim;
+		if( basetitanType != "" )
+		{
+			thirdPersonAnim =  basetitanType + "_Embark_" + item + "_3P"
+			firstPersonAnim =  basetitanType + "_Embark_" + item + "_1P"
+		}
+		else
+		{
+		 	thirdPersonAnim =  titanType + "_Embark_" + item + "_3P"
+		 	firstPersonAnim =  titanType + "_Embark_" + item + "_1P"
+		}
 		AddAudioAlias( titanType, thirdPersonAlias, thirdPersonAnim )
 		AddAudioAlias( titanType, firstPersonAlias, firstPersonAnim )
 	}
 }
+
+
 
 function RefreshTitanEmbarkActions()
 {
@@ -889,6 +910,11 @@ function TitanEmbark_PlayerEmbarks( player, titan, e )
 
 	local thirdPersonAudio
 	local firstPersonAudio
+
+	if(settings == "titan_destroyer") 
+	{
+		settings = "titan_ogre"
+	}
 
 	if ( standing )
 	{

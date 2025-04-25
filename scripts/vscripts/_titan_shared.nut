@@ -40,11 +40,13 @@ function main()
 	level.hatchModels[ ATLAS_MODEL ] <- ATLAS_HATCH_PANEL
 	level.hatchModels[ STRYDER_MODEL ] <- STRYDER_HATCH_PANEL
 	level.hatchModels[ OGRE_MODEL ] <- OGRE_HATCH_PANEL
+	level.hatchModels[ "models/titans/destroyer/destroyer_titan.mdl" ] <- "models/titans/destroyer/destroyer_titan_hatch_panel.mdl"
 
 	level.rodeoHitBoxNumber <- {}
 	level.rodeoHitBoxNumber[ ATLAS_MODEL ] <- 34
 	level.rodeoHitBoxNumber[ STRYDER_MODEL ] <- 50
 	level.rodeoHitBoxNumber[ OGRE_MODEL ] <- 41
+	level.rodeoHitBoxNumber[ "models/titans/destroyer/destroyer_titan.mdl" ] <- 30
 
 	Globalize( CodeCallback_PlayerInTitanCockpit )
 
@@ -105,7 +107,7 @@ function main()
 		PrecacheModel( ROCKET_POD_MODEL_ATLAS_LEFT )
 		PrecacheModel( ROCKET_POD_MODEL_OGRE_LEFT )
 		PrecacheModel( ROCKET_POD_MODEL_STRYDER_LEFT )
-
+		PrecacheModel( "models/titans/destroyer/destroyer_titan_hatch_panel.mdl" )
 		PrecacheModel( "models/industrial/bolt_tiny01.mdl" )
 	}
 	else
@@ -356,13 +358,16 @@ function CreateTitanRocketPods( soul, titan = null, oldTitan = null )
 	local titanType = GetSoulTitanType( soul )
 	local leftModelName = GetRocketPodModel( titanType )
 
+	if (leftModelName.len() == 0)
+		return
+
 	local team = titan.GetTeam()
 	rocketPod = CreatePropDynamic( leftModelName, null, null, 8 )
 	rocketPod.kv.PassDamageToParent = true
 	rocketPod.kv.CollisionGroup = 21	// COLLISION_GROUP_BLOCK_WEAPONS
 	rocketPod.SetTeam( team )
 	rocketPod.MarkAsNonMovingAttachment();
-	soul.rocketPod.model = rocketPod
+	soul.rocketPod.model = rocketPod	
 
 	thread RocketPodThink( soul, titan, rocketPod )
 
@@ -380,7 +385,8 @@ function GetRocketPodModel( playerSettings )
 
 		case "ogre":
 			return ROCKET_POD_MODEL_OGRE_LEFT
-
+		case "destroyer":
+			return "models/Titans/ogre/ogre_titan_L_rocket_pod.mdl"
 		case "atlas":
 		default:
 			return ROCKET_POD_MODEL_ATLAS_LEFT

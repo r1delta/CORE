@@ -53,6 +53,7 @@ function main()
 	AddTitanMapping( "titan_stryder", "stryder" )
 	AddTitanMapping( "titan_atlas_training", "atlas" )
 	AddTitanMapping( "titan_ctt", "ogre" )
+	AddTitanMapping("titan_destroyer_tier0", "destroyer")
 }
 
 function AddTitanMapping( settings, titan )

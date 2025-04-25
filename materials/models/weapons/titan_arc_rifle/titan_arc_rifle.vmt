@@ -1,0 +1,63 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+
+	"$surfaceprop" "metal"
+	"$basetexture" "models\weapons\titan_arc_rifle\titan_arc_rifle_col"
+	"$bumpmap" "models\weapons\titan_arc_rifle\titan_arc_rifle_nml"
+	"$envmap" "env_cubemap"
+	"$reflectiontint" "models\weapons\titan_arc_rifle\titan_arc_rifle_spc"
+	"$reflectiontintshininess" "models\weapons\titan_arc_rifle\titan_arc_rifle_spc"
+	"$reflectiontintcolor" "1"
+	"$fresnelamount" "1"
+	"$fresnelintensity" "20"
+	"$fresnelcurvesharpness" "1"
+	"$envmapfresnel" "1"
+	"$envmapLambertian" "3"
+	"$envmaptint" "[1 1 1]"
+	"$EnvmapSharpnessBias" "0"
+	"$specularboost" "2"
+	"$speculartint" "[1 1 1]"
+	"$shininess" "models\weapons\titan_arc_rifle\titan_arc_rifle_exp"
+	"$rimlight" "1"
+	"$rimlighttint" "[1 1 1]"
+	"$rimlightintensity" "2"
+	"$selfillum" "1"
+	"$selfillummask" "models\weapons\titan_arc_rifle\titan_arc_rifle_col_ilm"
+	//Start of freehand input from reVaMpT//
+
+	//$chargeColor	"[4.7 5.5 9.9 ]"
+	$chargeColor	"[2.38 2.75 4.95 ]"
+	$charge		"[1 1 1]"
+	
+	"Proxies"
+	{
+		"ScriptModify"
+		{
+			scriptFuncName	"VMTCallback_ArcCannonChargeAmount"
+			resultVar $charge
+		}
+			
+	
+		"clamp"
+		{
+	
+			min 		"0.025"
+			max		1
+	
+			srcVar1		$charge
+	
+			resultVar		$charge
+	
+		}
+			
+	
+		"Multiply"
+		{
+			srcVar1		"$charge"
+			srcVar2		"$chargeColor"
+			resultVar		"$selfillumtint"
+		}
+	}
+}

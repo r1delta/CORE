@@ -1,0 +1,296 @@
+"titan_destroyer_tier0"
+{
+	"titan"
+	{
+		scriptName 				"destroyer"
+
+		baseTitanType			"ogre"
+
+		nametext				"#CHASSIS_DESTROYER_NAME"
+		desctext				"#CHASSIS_DESTROYER_DESCRIPTION"
+		titanImage				"../ui/menu/loadouts/titan_chassis_destroyer_imc"
+
+		// CBT 인게임 로드아웃 리버리 이미지를 위한 임시코드
+		liverycode0				0
+		titanImage0				"../ui/menu/loadouts/titan_chassis_destroyer_imc"
+		liverycode1				301
+		titanImage1				"../ui/menu/loadouts/titan_chassis_destroyer_imc"
+		liverycode2				302
+		titanImage2				"../ui/menu/loadouts/titan_chassis_destroyer_imc"
+
+		lockedText				"#CHASSIS_LOCKED_TEXT_DESTROYER"
+
+		coreName 				"#CHASSIS_LOCKED_CORE"
+		coreDesc 				"#CHASSIS_ATLAS_CORE_DESCRIPTION"
+		coreImage 				"../ui/menu/items/ability_images/chassis_page_core_locked"
+		coreBuildingIcon		"../ui/menu/items/ability_images/chassis_page_core_locked"
+		coreIcon				"../ui/menu/items/ability_images/chassis_page_core_locked"
+		
+		statSpeed 				70
+		statAccel 				38
+		statHealth 				100 
+		statDash 				1
+
+		// tier_attach_part0		"models/Titans/destroyer\destroyer_tier0__c_spineC.mdl"
+		// tier_attach_part1		"models/Titans/destroyer\destroyer_tier0__c_spineCT.mdl"
+		// tier_attach_part2		"models/Titans/destroyer\destroyer_tier0__jx_railgun.mdl"
+		// tier_attach_part3		"models/Titans/destroyer\destroyer_tier0__l_shoulderMid.mdl"
+		// tier_attach_part4		"models/Titans/destroyer\destroyer_tier0__l_thigh.mdl"
+		// tier_attach_part5		"models/Titans/destroyer\destroyer_tier0__r_shoulderMid.mdl"
+		
+		
+		rocket_pod_left_model	"models/Titans/ogre/ogre_titan_L_rocket_pod.mdl"
+		hatch_panel				"models/titans/destroyer/destroyer_titan_hatch_panel.mdl"
+		rodeoHitBoxNumber		30
+		titanmodel				"models/titans/destroyer/destroyer_titan.mdl"
+		CharacterFaceImage		"HUD/coop/coop_char_ogre"
+		
+		RodeoViewCone_MinYaw	-90
+		RodeoViewCone_MaxYaw	45
+		RodeoViewCone_MinPitch	-35
+		RodeoViewCone_MaxPitch	35
+		MeleeAnimationsTimer	0.9
+		
+		
+		healthCore				3000
+		
+		bc_name					"bc_summon_destroyer"
+		bc_image				"burncards/burncard_art_55"
+		bc_nametext				"#BC_SUMMON_DESTROYER"
+		bc_desctext				"#BC_SUMMON_DESTROYER_DESC"	
+		bc_flavortext			"#BC_SUMMON_DESTROYER_FLAVOR"	
+		bc_flavorownertext		"#BC_SUMMON_DESTROYER_DESC"
+
+		//!ky 실드 데이터 원래데이터는 _conts.nut 파일 참조
+		shieldHealth						2000 // 2250
+		shieldRegenDelay					9999.00
+		//shieldRegenDelay					6.00
+		shieldRegenTime						9999.00
+		//shieldRegenTime						2.00
+		shieldPermamentDamageFrac			0.25
+		shieldPermamentDamageFracPilot		0.30
+		shieldPermamentDamageFracPilot		0.50	
+	}
+	
+	"animation_alias"
+	{
+		ptpov_rodeo_move_back_idle				"ptpov_rodeo_move_destroyer_back_idle"
+		ptpov_rodeo_move_back_entrance			"ptpov_rodeo_move_destroyer_back_entrance"
+		ptpov_rodeo_move_right_entrance			"ptpov_rodeo_move_destroyer_right_entrance"
+		ptpov_rodeo_move_front_entrance			"ptpov_rodeo_move_destroyer_front_entrance"
+		ptpov_rodeo_move_front_lower_entrance	"ptpov_rodeo_move_destroyer_front_lower_entrance"
+		ptpov_rodeo_move_back_mid_entrance		"ptpov_rodeo_move_destroyer_back_mid_entrance"
+		ptpov_rodeo_move_back_lower_entrance	"ptpov_rodeo_move_destroyer_back_lower_entrance"
+		ptpov_rodeo_move_left_entrance			"ptpov_rodeo_move_destroyer_left_entrance"
+		pt_rodeo_move_back_idle					"pt_rodeo_move_destroyer_back_idle"
+		pt_rodeo_move_right_entrance			"pt_rodeo_move_destroyer_right_entrance"
+		pt_rodeo_move_back_entrance				"pt_rodeo_move_destroyer_back_entrance"
+		pt_rodeo_move_front_entrance			"pt_rodeo_move_destroyer_front_entrance"
+		pt_rodeo_move_front_lower_entrance		"pt_rodeo_move_destroyer_front_lower_entrance"
+		pt_rodeo_move_back_mid_entrance			"pt_rodeo_move_destroyer_back_mid_entrance"
+		pt_rodeo_move_back_lower_entrance		"pt_rodeo_move_destroyer_back_lower_entrance"
+		pt_rodeo_move_left_entrance				"pt_rodeo_move_destroyer_left_entrance"
+
+		at_rodeo_panel_opening					"hatch_rodeo_panel_opening"
+		at_rodeo_panel_close_idle				"hatch_rodeo_panel_close_idle"
+		at_Rodeo_Panel_Damage_State_0_Idle		"hatch_Rodeo_Panel_Damage_State_0_Idle"
+		at_Rodeo_Panel_Damage_State_1_Idle		"hatch_Rodeo_Panel_Damage_State_1_Idle"
+		at_Rodeo_Panel_Damage_State_2_Idle		"hatch_Rodeo_Panel_Damage_State_2_Idle"
+		at_Rodeo_Panel_Damage_State_3_Idle		"hatch_Rodeo_Panel_Damage_State_3_Idle"
+		at_Rodeo_Panel_Damage_State_4_Idle		"hatch_Rodeo_Panel_Damage_State_final_Idle"
+		pt_rodeo_panel_fire						"pt_rodeo_destroyer_panel_fire"
+		pt_rodeo_panel_opening					"pt_rodeo_destroyer_panel_opening"
+		pt_rodeo_panel_aim_idle					"pt_rodeo_destroyer_panel_aim_idle_move"
+		pt_rodeo_player_side_lean				"pt_rodeo_destroyer_player_side_lean"
+		ptpov_rodeo_panel_opening				"ptpov_rodeo_destroyer_panel_opening"
+		ptpov_rodeo_panel_aim_idle				"ptpov_destroyer_rodeo_panel_aim_idle"
+		ptpov_rodeo_panel_aim_idle_move			"ptpov_destroyer_rodeo_panel_aim_idle_move"
+		ptpov_rodeo_player_side_lean_enemy		"ptpov_Rodeo_destroyer_player_side_lean"
+	}
+	
+	"global"
+	{
+		name 			"titan_destroyer_tier0"
+		wallrun			0
+		automantle		0
+		healthpacks		1
+		jump			0
+		doublejump		0
+		dodge			1
+		fov				75
+		viewmodelfov	75
+		jumpheight		15
+		hardFallDist	40
+		viewkickFallDistMin			10
+		viewkickFallDistMax			120
+		viewkickFallDistMaxScale	6
+
+		viewPunchSpring		punch_titan_ogre
+
+		friction		2
+		speedScaleSide	0.85
+		speedScaleBack	0.6
+		footstepAccelReduce 1
+
+		magneticRange	190
+
+		aimAngleBackwardEnd		-120
+		aimAngleForwardStart	-40
+		aimAngleForwardEnd		40
+		aimAngleBackwardStart	120
+
+		doomStateMoveSpeedScale	0.85
+		doomStateAccelScale  	0.85
+
+		dodgeDuration		0.27
+        dodgeAnimDuration	0.5
+        dodgeInterval		0.2
+        dodgeSpeed			610
+        dodgeStopSpeed		400
+        dodgeHeight			10
+        dodgeHeightMax		15
+        dodgePowerDrain		100
+        powerregenrate		22
+        dodgePowerDelay		0.3
+
+		//health			12500
+		health			10000
+		stepheight		80
+		stepTestDist	35
+
+		physicsMass				3000
+		physicsIgnoreBelowMass	500
+		physicsSoftBelowMass	1000
+		physicsPushMassLimit	5000
+		physicsPushSpeedLimit	200
+
+		damageImpulseScale		0.4
+		damageImpulseScaleAir	0.1
+		damageImpulseSpeedBoostLimit	930
+		damageImpulseSpeedLossLimit		930
+		
+		bodymodel			"models/titans/destroyer/destroyer_titan.mdl"
+		bodymodel_militia	"models/titans/destroyer/destroyer_titan.mdl"
+		bodymodel_imc		"models/titans/destroyer/destroyer_titan.mdl"
+		armsmodel			"models/weapons/arms/destroyer_pov.mdl"
+		armsmodel_militia	"models/weapons/arms/destroyer_pov.mdl"
+		armsmodel_imc		"models/weapons/arms/destroyer_pov.mdl"
+		cockpitmodel		"models/weapons/arms/destroyer_pov_cockpit.mdl"
+		weaponClass			"titan"
+		class				"titan"
+		ArmorType		heavy
+		context_action_can_melee		1
+		context_action_can_use			1
+
+		deathcamDistanceMin			230
+		deathcamDistanceMax			500
+		deathcamDistanceGrowRate	130
+		deathcamExtraHeight			200
+		deathcamMinHeight			60
+
+		chasecamMaxOrbitDepth		120
+
+		impactSpeed 1000
+
+		meleeDamage 1875
+		meleePushback 510
+		meleeLungeSpeed 300
+
+		sound_superJump			""
+		sound_superJumpFail		""
+		sound_dodge				"Ogre.Dash"
+		sound_dodgeFail			"Player.DodgeFail"
+		sound_groundImpact		"Titan.GroundImpact"
+		sound_wallrunImpact		""
+		sound_standToCrouch		"Titan_CrouchDown_1P"
+		sound_crouchToStand		"Titan_CrouchStand_1P"
+
+		sprinttiltMaxRoll		2
+
+		aiEnemy_priority		50
+
+		footstep_type           "ogre"
+
+		titan_footstep_damage_height_check_ratio 0.15
+
+		ClassMods
+		{
+			pas_dash_recharge
+			{
+		        powerregenrate	2.5++
+			}
+			sflag_bc_dash_capacity
+			{
+				dodgePowerDrain		50
+				powerregenrate		11
+			}
+			pas_titan_punch
+			{
+				meleeDamage 2300
+			}
+		}
+	}
+	"crouch"
+	{
+		footstepInterval 500
+		footstepWalkSoundRadius	500
+		footstepRunSoundRadius	700
+		footstepMinSpeed	0
+
+		viewheight "0 0 125"
+		firstpersonproxyoffset "0 0 -125"
+		hull_min "-60 -60 0"
+		hull_max "60 60 140"
+
+		speed			112
+		acceleration	150
+		deceleration	375
+	}
+
+	"dead"
+	{
+		viewheight "0 0 90"
+	}
+
+	"observe"
+	{
+		hull_min "-10 -10 -10"
+		hull_max "10 10 10"
+	}
+
+	"stand"
+	{
+		footstepInterval 700
+		footstepIntervalSprint 415
+		footstepWalkSoundRadius	700
+		footstepRunSoundRadius	1000
+		footstepMinSpeed	0
+
+		viewheight "0 0 185"
+		firstpersonproxyoffset "0 0 -185"
+		hull_min "-60 -60 0"
+		hull_max "60 60 235"
+
+		//speed				212
+		speed				265
+		acceleration		380
+		deceleration		1200
+
+		//sprintspeed			320
+		sprintspeed			400
+		sprintAcceleration	100
+		sprintDeceleration	600
+
+		//lowSpeed			128
+		lowSpeed			160
+		lowAcceleration		1400
+
+		stepDipTime				0.65
+		stepDipDist				29.0
+		stepShakeStartTime		0.37
+		stepShakeEndTime		0.55
+		stepShakeMagnitude		4.4
+		stepShakeFrequencyHorz	0.0
+		stepShakeFrequencyVert	8.4
+	}
+}

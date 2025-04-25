@@ -1,0 +1,43 @@
+"UnlitTwoTexture"
+{
+	"$surfaceprop"	"metal"
+
+	"$basetexture" "models\weapons\titan_minigun\titan_minigun_charge_col"
+	"$texture2" "effects\laserplane_atmosphere"
+
+	$allowoverbright 1
+
+//	"$nocull"      1
+	"$translucent" 1
+
+	"$additive" 1
+
+	$layercolor1 "[0.4 0.4 1.0]"
+	$layeralpha1 "1"
+
+	//$layercolor2 "[3 1 0]"
+	$layercolor2 "[1 3 15]"
+	$layeralpha2 "1"
+
+
+	$charge		"[1 1 1]"
+
+	"Proxies"
+	{
+
+		"TextureScroll"
+		{
+			"texturescrollvar" "$texture2transform"
+			"texturescrollrate" "-0.05"
+			"texturescrollangle" "180"
+			"texturescale"	.25
+		}
+
+		"WeaponChargeFraction"
+		{
+			"resultVar" "$alpha"
+		}
+	}
+
+}
+ 

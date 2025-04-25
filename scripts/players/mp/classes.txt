@@ -1,0 +1,34 @@
+"class list"
+{
+	import	"spectator.set"
+	import	"titan_atlas.set"
+	import	"titan_ogre.set"
+	import	"titan_stryder.set"
+
+	import	"titan_destroyer_tier0.set"
+	import	"titan_destroyer_tier1.set"
+    import	"titan_atlas_training.set"
+	import	"pilot_female_fastest.set"
+	import	"pilot_female_quickdraw.set"
+	import	"pilot_female_br.set"
+	import	"pilot_female_cq.set"
+	import	"pilot_female_dm.set"
+	import	"pilot_male_br.set"
+	//import	"pilot_male_captain.set"
+	import	"pilot_spectre.set"
+	import	"pilot_male_cq.set"
+	import	"pilot_male_dm.set"
+	import	"pilot_male_fastest.set"
+	import	"pilot_training.set"
+	import	"pilot_titan_cockpit.set" // used for scripted sequences for pilot in titan
+	import	"lobby_view.set"
+	import	"titan_ctt.set"
+
+//	dev
+	import	"model_viewer.set"
+
+//	old
+//	import	"fireteam.set"
+//	import  "operator.set"
+//	import	"fireteam_droppod.set"
+}

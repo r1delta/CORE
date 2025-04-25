@@ -1,0 +1,75 @@
+#base "titan_destroyer_tier0.set"
+"titan_destroyer_tier1"
+{
+	"titan"
+	{
+
+		titanImage				"../ui/menu/loadouts/titan_destroyer_T1"
+
+		// CBT 인게임 로드아웃 리버리 이미지를 위한 임시코드
+		liverycode0				0
+		titanImage0				"../ui/menu/loadouts/titan_destroyer_T1"
+		liverycode1				301
+		titanImage1				"../ui/menu/loadouts/titan_destroyer_scorpio_T1"
+		liverycode2				302
+		titanImage2				"../ui/menu/loadouts/titan_destroyer_sledge_T1"
+		
+		coretype				damage
+		coreName 				"#CHASSIS_ATLAS_CORE_NAME"
+		coreDesc 				"#CHASSIS_ATLAS_CORE_DESCRIPTION"
+		coreImage 				"../ui/menu/items/ability_images/chassis_page_core_atlas"
+		coreOnlineMsg			"#HUD_CORE_ONLINE_ATLAS"
+		coreOnlineHintMsg		"#HUD_CORE_ONLINE_ATLAS_HINT"
+		coreBuildingIcon		"HUD/dpad_titan_core_emp"
+		coreIcon				"HUD/dpad_titan_core_emp"
+		
+		// tier_attach_part0		"models/Titans/destroyer\destroyer_tier0__c_spineC.mdl"
+		// tier_attach_part1		"models/Titans/destroyer\destroyer_tier0__jx_railgun.mdl"
+		// tier_attach_part2		"models/Titans/destroyer\destroyer_tier0__l_shoulderMid.mdl"
+		// tier_attach_part3		"models/Titans/destroyer\destroyer_tier0__l_thigh.mdl"
+		// tier_attach_part4		"models/Titans/destroyer\destroyer_tier0__r_shoulderMid.mdl"
+		// tier_attach_part5		"models/Titans/destroyer\destroyer_tier1__c_spineC.mdl"
+		// tier_attach_part6		"models/Titans/destroyer\destroyer_tier1__l_thigh.mdl"
+		// tier_attach_part7		"models/Titans/destroyer\destroyer_tier1__r_thigh.mdl"
+
+		//!ky 실드 데이터 원래데이터는 _conts.nut 파일 참조
+		shieldHealth						2000 // 2250
+
+	}
+	
+	"animation_alias"
+	{
+
+	}
+	
+	"global"
+	{
+		name 			"titan_destroyer_tier1"
+
+		health			10000 // 10500
+
+		ClassMods
+		{
+			
+		}
+	}
+	"crouch"
+	{
+	
+	}
+
+	"dead"
+	{
+		
+	}
+
+	"observe"
+	{
+
+	}
+
+	"stand"
+	{
+
+	}
+}

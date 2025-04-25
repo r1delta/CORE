@@ -316,7 +316,7 @@ function DoSummonTitanBurnCard(player, cardRef)
     if(cardRef == "bc_summon_ogre")
 	    titanDataTable.playerSetFile = "titan_ogre"
     if(cardRef == "bc_summon_stryder")
-        titanDataTable.playerSetFile = "titan_stryder"
+        titanDataTable.playerSetFile = "titan_destroyer_tier0"
 
     player.WaitSignal("CalledInReplacementTitan")
 
