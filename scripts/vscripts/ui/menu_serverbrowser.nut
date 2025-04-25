@@ -291,6 +291,17 @@ function UpdateShownPage()
         if ( server.host_name.len() > 42 )
             trimmed_hostname = server.host_name.slice(0, 42) + "..."
 
+        if ( StringContains( server.host_name, "#" ) )
+        {
+            local result = ""
+            for (local i = 0; i < trimmed_hostname.len(); i++)
+            {
+                if (trimmed_hostname.slice(i, i + 1) != "#")
+                    result += trimmed_hostname.slice(i, i + 1)
+            }
+
+            trimmed_hostname = result;
+        }
 
         file.buttons[i].Show()
         file.buttons[i].SetEnabled(true)
@@ -415,7 +426,24 @@ function OnServerButtonFocused(button)
     else
         HideServerDescription()
 
-    menu.GetChild( "NextMapName" ).SetText( server.host_name )
+    local trimmed_hostname = server.host_name
+
+    if ( StringContains( server.host_name, "#" ) )
+    {
+        local result = ""
+
+        for (local i = 0; i < trimmed_hostname.len(); i++)
+        {
+            if (trimmed_hostname.slice(i, i + 1) != "#")
+            {
+                result += trimmed_hostname.slice(i, i + 1);
+            }
+        }
+        trimmed_hostname = result;
+    }
+
+
+    menu.GetChild( "NextMapName" ).SetText( trimmed_hostname )
     menu.GetChild( "NextMapName" ).Show()
     menu.GetChild( "NextMapDesc" ).SetText( "#GAMEMODE_" + server.game_mode )
 
@@ -432,6 +460,24 @@ function OnServerButtonFocused(button)
 function UpdateAndShowServerDescription( description )
 {
     local menu = uiGlobal.menu
+
+    local trimmed_description = description
+
+    if ( StringContains( description, "#" ) )
+    {
+        local result = ""
+
+        for (local i = 0; i < trimmed_description.len(); i++)
+        {
+            if (trimmed_description.slice(i, i + 1) != "#")
+            {
+                result += trimmed_description.slice(i, i + 1);
+            }
+        }
+
+        trimmed_description = result;
+    }
+
     menu.GetChild( "DescriptionMessage" ).SetText( description )
     menu.GetChild( "DescriptionBox" ).SetVisible( true )
     menu.GetChild( "DescriptionTitle" ).SetVisible( true )
