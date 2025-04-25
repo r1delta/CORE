@@ -190,3 +190,6 @@ engine_ds.dll,text,0x3FA1B0,41 B9 02 00 00 00,41 B9 00 00 00 00
 ;comment out a print about good rep
 engine_ds.dll,text,0x003D030,48 8D 0D 89 6F 3D 00 8B D6 E8 92 D0 0A 00,90 90 90 90 90 90 90 90 90 90 90 90 90 90
 engine_ds.dll,text,0x003CC50,48 8D 0D 69 73 3D 00 8B D6 E8 72 D4 0A 00,90 90 90 90 90 90 90 90 90 90 90 90 90 90         
+
+; hide dedi banner
+dedicated.dll,text,0x6B6E0,40,C3
