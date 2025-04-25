@@ -88,6 +88,9 @@ function MeleeThread_TitanVsTitan_Internal( actions, action, attacker, target )
 				// func = MeleeThread_StryderVsTitan
 				func = MeleeThread_OgreVsTitan
 				break
+			// case "destroyer":
+			// 	func = MeleeThread_OgreVsTitan
+			// 	break
 		}
 	}
 
