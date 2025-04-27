@@ -10,20 +10,25 @@ function GetPresence() {
 
 function GetPresence_Threaded()
 {
+    local init = true
+    printt("Init: " + init)
+    
     while(true)
     {
         if( !IsConnected() )
             break
 
 
-        //printt("Sending Discord presence update")
-
         local table = {}
+        if(init) 
+            init = false
+        
+       
 
         local map_name = GetMapName()
         table["map_name"] <- map_name
         table["map_display_name"] <- Localize(map_name)
-
+        
         if(map_name == "mp_lobby")
             table["map_display_name"] <- Localize("LOBBY")
         else if(GetCurrentPlaylistName() == "campaign_carousel")
@@ -49,7 +54,7 @@ function GetPresence_Threaded()
 
         //printt("Discord presence update: " + table["map_name"] + " " + table["game_mode"] + " " + table["playlist"] + " " + player_count + "/" + maxPlayers)
 
-        SendDiscordClient(table)
+        SendDiscordClient(table,init)
 
         wait 2
     }
