@@ -279,7 +279,7 @@ resource/ui/menus/server_browser.menu
 			pin_corner_to_sibling	TOP_LEFT
 			pin_to_sibling_corner	TOP_LEFT
             navDown                ServerButton2
-            navUp                  ServerButton9
+            navUp                  ServerButton15
             xpos 35
             scriptID				0
 			wide 					600
@@ -377,7 +377,7 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton6
-            navDown                ServerButton7
+            navDown                ServerButton8
             navUp                  ServerButton6
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -394,7 +394,7 @@ resource/ui/menus/server_browser.menu
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton7
             navDown                ServerButton8
-            navUp                  ServerButton6
+            navUp                  ServerButton7
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				7
@@ -425,8 +425,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton9
-            navUp                  ServerButton8
-            navDown                ServerButton1
+            navUp                  ServerButton9
+            navDown                ServerButton11
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
             scriptID				9
@@ -441,7 +441,7 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton10
-            navUp                  ServerButton9
+            navUp                  ServerButton10
             navDown                ServerButton12
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
@@ -457,7 +457,7 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton11
-            navUp                  ServerButton10
+            navUp                  ServerButton11
             navDown                ServerButton13
             pin_corner_to_sibling	0
             pin_to_sibling_corner	2
@@ -473,7 +473,7 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton12
-            navUp                  ServerButton11
+            navUp                  ServerButton12
             navDown                ServerButton14
             pin_corner_to_sibling	0
             pin_to_sibling_corner	2
@@ -489,7 +489,7 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton13
-            navUp                  ServerButton12
+            navUp                  ServerButton13
             navDown                ServerButton15
             pin_corner_to_sibling	0
             pin_to_sibling_corner	2
@@ -505,8 +505,8 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton14
-            navUp                  ServerButton13
-            navDown                ServerButton16
+            navUp                  ServerButton14
+            navDown                ServerButton1
             pin_corner_to_sibling	0
             pin_to_sibling_corner	2
             scriptID				14

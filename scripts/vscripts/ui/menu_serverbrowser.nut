@@ -278,8 +278,8 @@ function UpdateShownPage()
     }
 
     // Show server info for current page
-    local endIndex = uiGlobal.serversArrayFiltered.len() > 14 ? 14 : uiGlobal.serversArrayFiltered.len()
-    printt("End index: " + endIndex)
+    local endIndex = uiGlobal.serversArrayFiltered.len() > 15 ? 15: uiGlobal.serversArrayFiltered.len()
+
     for ( local i = 0; i < endIndex; i++ )
     {
         local buttonIndex = file.scrollOffset + i
@@ -372,10 +372,10 @@ function ConnectToServer()
 
 function OnScrollDown()
 {
-    if (uiGlobal.serversArrayFiltered.len() <= 10) return
+    if (uiGlobal.serversArrayFiltered.len() <= 15) return
     file.scrollOffset += 1
-    if (file.scrollOffset + 10 > uiGlobal.serversArrayFiltered.len())
-        file.scrollOffset = uiGlobal.serversArrayFiltered.len() - 10
+    if (file.scrollOffset + 15 > uiGlobal.serversArrayFiltered.len())
+        file.scrollOffset = uiGlobal.serversArrayFiltered.len() - 15
 
     file.scrollOffset = file.scrollOffset
     UpdateShownPage()
