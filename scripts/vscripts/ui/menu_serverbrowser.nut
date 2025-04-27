@@ -278,8 +278,8 @@ function UpdateShownPage()
     }
 
     // Show server info for current page
-    local endIndex = uiGlobal.serversArrayFiltered.len() > 15 ? 15 : uiGlobal.serversArrayFiltered.len()
-
+    local endIndex = uiGlobal.serversArrayFiltered.len() > 14 ? 14 : uiGlobal.serversArrayFiltered.len()
+    printt("End index: " + endIndex)
     for ( local i = 0; i < endIndex; i++ )
     {
         local buttonIndex = file.scrollOffset + i
