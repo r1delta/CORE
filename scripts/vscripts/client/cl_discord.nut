@@ -11,7 +11,6 @@ function GetPresence() {
 function GetPresence_Threaded()
 {
     local init = true
-    printt("Init: " + init)
     
     while(true)
     {
