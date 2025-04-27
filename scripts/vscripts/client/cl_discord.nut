@@ -51,8 +51,6 @@ function GetPresence_Threaded()
         table["max_players"] <- maxPlayers
         table["team"] <- GetLocalClientPlayer().GetTeam()
 
-        //printt("Discord presence update: " + table["map_name"] + " " + table["game_mode"] + " " + table["playlist"] + " " + player_count + "/" + maxPlayers)
-
         SendDiscordClient(table,init)
 
         wait 2
