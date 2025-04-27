@@ -436,6 +436,86 @@ resource/ui/menus/server_browser.menu
             labelText               ""
             classname               "ServerButton"
         }
+        ServerButton11
+        {
+            ControlName				BaseModHybridButton
+            InheritProperties		DefaultButton
+            pin_to_sibling			ServerButton10
+            navUp                  ServerButton9
+            navDown                ServerButton12
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+            scriptID				10
+			wide 					1120
+            visible					0
+            enabled					0
+            labelText               ""
+            classname               "ServerButton"
+        }
+        ServerButton12
+        {
+            ControlName				BaseModHybridButton
+            InheritProperties		DefaultButton
+            pin_to_sibling			ServerButton11
+            navUp                  ServerButton10
+            navDown                ServerButton13
+            pin_corner_to_sibling	0
+            pin_to_sibling_corner	2
+            scriptID				11
+            wide 					1120
+            visible					0
+            enabled					0
+            labelText               ""
+            classname               "ServerButton"
+        }
+        ServerButton13
+        {
+            ControlName				BaseModHybridButton
+            InheritProperties		DefaultButton
+            pin_to_sibling			ServerButton12
+            navUp                  ServerButton11
+            navDown                ServerButton14
+            pin_corner_to_sibling	0
+            pin_to_sibling_corner	2
+            scriptID				12
+            wide 					1120
+            visible					0
+            enabled					0
+            labelText               ""
+            classname               "ServerButton"
+        }
+        ServerButton14
+        {
+            ControlName				BaseModHybridButton
+            InheritProperties		DefaultButton
+            pin_to_sibling			ServerButton13
+            navUp                  ServerButton12
+            navDown                ServerButton15
+            pin_corner_to_sibling	0
+            pin_to_sibling_corner	2
+            scriptID				13
+            wide 					1120
+            visible					0
+            enabled					0
+            labelText               ""
+            classname               "ServerButton"
+        }
+        ServerButton15
+        {
+            ControlName				BaseModHybridButton
+            InheritProperties		DefaultButton
+            pin_to_sibling			ServerButton14
+            navUp                  ServerButton13
+            navDown                ServerButton16
+            pin_corner_to_sibling	0
+            pin_to_sibling_corner	2
+            scriptID				14
+            wide 					1120
+            visible					0
+            enabled					0
+            labelText               ""
+            classname               "ServerButton"
+        }
        
         ServerName0
         {
@@ -1238,6 +1318,370 @@ resource/ui/menus/server_browser.menu
 			pin_to_sibling_corner	2
             scriptID              10
 		}
+        ServerName11
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 240
+    tall 20
+    ypos 0
+    xpos -25
+    visible                 1
+    enabled                 1
+    labelText               ""
+    textAlignment           west
+    pin_to_sibling          ServerButton11
+    classname              "ServerName"
+    scriptID               11
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+}
+
+        
+ServerPlayers11
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 104
+    tall 20
+    ypos 0
+    xpos -230
+    visible                 1
+    enabled                 1
+    labelText               ""
+    
+    textAlignment           center
+    pin_to_sibling          ServerButton11
+    font                    Default_43_DropShadow
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    classname               "PlayerCount"
+    scriptID              11
+}
+
+ServerMap11
+{
+    ControlName             Label
+    labelText               ""
+    classname               "ServerMap"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -310
+    pin_to_sibling          ServerButton11
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              11
+}
+
+ServerGamemode11
+{
+    ControlName             Label
+    labelText               "#GAMEMODE_TDM"
+    classname               "ServerGamemode"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -405
+    pin_to_sibling          ServerButton11
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              11
+}
+
+ServerName12
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 240
+    tall 20
+    ypos 0
+    xpos -25
+    visible                 1
+    enabled                 1
+    labelText               ""
+    textAlignment           west
+    pin_to_sibling          ServerButton12
+    classname              "ServerName"
+    scriptID               12
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+}
+
+        
+ServerPlayers12
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 104
+    tall 20
+    ypos 0
+    xpos -230
+    visible                 1
+    enabled                 1
+    labelText               ""
+    
+    textAlignment           center
+    pin_to_sibling          ServerButton12
+    font                    Default_43_DropShadow
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    classname               "PlayerCount"
+    scriptID              12
+}
+
+ServerMap12
+{
+    ControlName             Label
+    labelText               ""
+    classname               "ServerMap"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -310
+    pin_to_sibling          ServerButton12
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              12
+}
+
+ServerGamemode12
+{
+    ControlName             Label
+    labelText               "#GAMEMODE_TDM"
+    classname               "ServerGamemode"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -405
+    pin_to_sibling          ServerButton12
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              12
+}
+
+ServerName13
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 240
+    tall 20
+    ypos 0
+    xpos -25
+    visible                 1
+    enabled                 1
+    labelText               ""
+    textAlignment           west
+    pin_to_sibling          ServerButton13
+    classname              "ServerName"
+    scriptID               13
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+}
+
+        
+ServerPlayers13
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 104
+    tall 20
+    ypos 0
+    xpos -230
+    visible                 1
+    enabled                 1
+    labelText               ""
+    
+    textAlignment           center
+    pin_to_sibling          ServerButton13
+    font                    Default_43_DropShadow
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    classname               "PlayerCount"
+    scriptID              13
+}
+
+ServerMap13
+{
+    ControlName             Label
+    labelText               ""
+    classname               "ServerMap"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -310
+    pin_to_sibling          ServerButton13
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              13
+}
+
+ServerGamemode13
+{
+    ControlName             Label
+    labelText               "#GAMEMODE_TDM"
+    classname               "ServerGamemode"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -405
+    pin_to_sibling          ServerButton13
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              13
+}
+
+ServerName14
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 240
+    tall 20
+    ypos 0
+    xpos -25
+    visible                 1
+    enabled                 1
+    labelText               ""
+    textAlignment           west
+    pin_to_sibling          ServerButton14
+    classname              "ServerName"
+    scriptID               14
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+}
+
+        
+ServerPlayers14
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 104
+    tall 20
+    ypos 0
+    xpos -230
+    visible                 1
+    enabled                 1
+    labelText               ""
+    
+    textAlignment           center
+    pin_to_sibling          ServerButton14
+    font                    Default_43_DropShadow
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    classname               "PlayerCount"
+    scriptID              14
+}
+
+ServerMap14
+{
+    ControlName             Label
+    labelText               ""
+    classname               "ServerMap"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -310
+    pin_to_sibling          ServerButton14
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              14
+}
+
+ServerGamemode14
+{
+    ControlName             Label
+    labelText               "#GAMEMODE_TDM"
+    classname               "ServerGamemode"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -405
+    pin_to_sibling          ServerButton14
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              14
+}
+
+ServerName15
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 240
+    tall 20
+    ypos 0
+    xpos -25
+    visible                 1
+    enabled                 1
+    labelText               ""
+    textAlignment           west
+    pin_to_sibling          ServerButton15
+    classname              "ServerName"
+    scriptID               15
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+}
+
+        
+ServerPlayers15
+{
+    ControlName             Label
+    InheritProperties       ServerListButton
+    wide 104
+    tall 20
+    ypos 0
+    xpos -230
+    visible                 1
+    enabled                 1
+    labelText               ""
+    
+    textAlignment           center
+    pin_to_sibling          ServerButton15
+    font                    Default_43_DropShadow
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    classname               "PlayerCount"
+    scriptID              15
+}
+
+ServerMap15
+{
+    ControlName             Label
+    labelText               ""
+    classname               "ServerMap"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -310
+    pin_to_sibling          ServerButton15
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              15
+}
+
+ServerGamemode15
+{
+    ControlName             Label
+    labelText               "#GAMEMODE_TDM"
+    classname               "ServerGamemode"
+    textAlignment           center
+    wide 80
+    tall 20
+    ypos 0
+    xpos -405
+    pin_to_sibling          ServerButton15
+    pin_corner_to_sibling   0
+    pin_to_sibling_corner   2
+    scriptID              15
+}
 
 		ServerDetailPanel 
         {

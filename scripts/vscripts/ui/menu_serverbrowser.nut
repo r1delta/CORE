@@ -265,7 +265,7 @@ function FilterServerList()
 function UpdateShownPage()
 {
     // uiGlobal.serversArrayFiltered.clear()
-    local BUTTONS_PER_PAGE = 10
+    local BUTTONS_PER_PAGE = 15
 
     // Reset all buttons first
     for ( local i = 0; i < BUTTONS_PER_PAGE; i++ )
@@ -278,7 +278,7 @@ function UpdateShownPage()
     }
 
     // Show server info for current page
-    local endIndex = uiGlobal.serversArrayFiltered.len() > 10 ? 10 : uiGlobal.serversArrayFiltered.len()
+    local endIndex = uiGlobal.serversArrayFiltered.len() > 15 ? 15 : uiGlobal.serversArrayFiltered.len()
 
     for ( local i = 0; i < endIndex; i++ )
     {
