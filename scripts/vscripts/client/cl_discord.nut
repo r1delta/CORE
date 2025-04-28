@@ -46,8 +46,8 @@ function GetPresence_Threaded()
         table["playlist"] <- Localize(GetCurrentPlaylistName())
         
         table["playlist_display_name"] <- Localize(GetCurrentPlaylistVar("name",""))
-        if(GetCurrentPlaylistName() == "campaign_carousel") {
-             table["playlist_display_name"] = table["playlist_display_name"] + " " + Localize(map_name + "_CAMPAIGN_NAME")
+        if(GetCurrentPlaylistName() == "campaign_carousel" && map_name != "mp_lobby") {
+             table["playlist_display_name"] = table["playlist_display_name"] + " - " + Localize(map_name + "_CAMPAIGN_NAME")
         }
         local players = GetPlayerArray()
         local player_count = 0
