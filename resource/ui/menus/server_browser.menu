@@ -393,7 +393,7 @@ resource/ui/menus/server_browser.menu
             ControlName				BaseModHybridButton
             InheritProperties		DefaultButton
             pin_to_sibling			ServerButton7
-            navDown                ServerButton8
+            navDown                ServerButton9
             navUp                  ServerButton7
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
