@@ -596,3 +596,9 @@ engine.dll,text,0xF3F40,48,32 C0 C3
 
 ; don't let parasite engine make threads for tfonet
 engine_r1o.dll,text,0x048AEE8,75 0F,90 90
+
+; bytepatch out "ProcessUsercmds:  Incorrect reading frame"
+; sometimes under packet loss(?) the server doesn't consume all of the usercmd data during the first snapshot
+; just ignore it, we only care if there's an actual overflow
+engine.dll,text,0xDA2E9,74,EB
+engine_ds.dll,text,0x4B9D9,74,EB
