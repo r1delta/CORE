@@ -14,9 +14,10 @@ function GetPresence_Threaded()
     
     while(true)
     {
+        wait 2
         if( !IsConnected() )
             break
-
+        
 
         local table = {}
         if(init) 
@@ -33,8 +34,14 @@ function GetPresence_Threaded()
         else if(GetCurrentPlaylistName() == "campaign_carousel")
             table["map_display_name"] <- Localize(map_name + "_CAMPAIGN_NAME")
 
+        if( GetGameState() >= eGameState.Playing) {
+            if(IsRoundBased()) {
+                table["end_time"] <- level.nv.roundEndTime - Time()
+            } else {
+                table["end_time"] <- level.nv.gameEndTime - Time()
+            }
+        }
         table["game_mode"] <- Localize("GAMEMODE_" + GameRules.GetGameMode())
-
         table["playlist"] <- Localize(GetCurrentPlaylistName())
         table["playlist_display_name"] <- Localize(GetCurrentPlaylistVar("name",""))
 
@@ -53,6 +60,6 @@ function GetPresence_Threaded()
 
         SendDiscordClient(table,init)
 
-        wait 2
+       
     }
 }
