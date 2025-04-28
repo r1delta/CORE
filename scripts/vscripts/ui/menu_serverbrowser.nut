@@ -350,7 +350,9 @@ function OnServerButtonClicked(button)
     if( server.has_password )
         OpenChoiceDialog( dialogData, GetMenu( "EnterPasswordDialog" ) )
     else {
-        DeregisterMouseWheelCallbacks()
+        try {
+            DeregisterMouseWheelCallbacks()
+        } catch(e) { }
         ClientCommand( "connect " + server.ip + ":" + server.port )
     }
 }
