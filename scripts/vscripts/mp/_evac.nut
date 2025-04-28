@@ -3,8 +3,8 @@ const EVAC_IDLE_ANIM 	= "cd_dropship_rescue_side_idle"
 const EVAC_LEAVE_ANIM 	= "cd_dropship_rescue_side_end"
 const EVAC_SPACE_ANIM 	= "ds_space_flyby_dropshipA"
 
-const EVAC_DROPSHIP_SHIELD_HEALTH = 2200
-const EVAC_DROPSHIP_HEALTH = 150000
+const EVAC_DROPSHIP_SHIELD_HEALTH = 22000
+const EVAC_DROPSHIP_HEALTH = 15000
 const EVAC_TRIGGER_RADIUS = 120
 const EVAC_PROXIMITY_VDU_RADIUS = 400
 const EVAC_SHIP_DAMAGE_MULTIPLIER_AGAINST_CLUSTER_ROCKET = 0.6
