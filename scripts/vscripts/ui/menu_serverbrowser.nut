@@ -418,7 +418,7 @@ function OnScrollUp()
     if (file.scrollOffset < 0)
         file.scrollOffset = 0
 
-    uiGlobal.scrollOffset = file.scrollOffset
+    uiGlobal.scrollOffset <- file.scrollOffset
 
     UpdateShownPage()
 }
