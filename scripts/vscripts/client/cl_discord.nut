@@ -42,9 +42,13 @@ function GetPresence_Threaded()
             }
         }
         table["game_mode"] <- Localize("GAMEMODE_" + GameRules.GetGameMode())
+        local isCamp = GetCurrentPlaylistVar("cinematic_mode",0) == 1
         table["playlist"] <- Localize(GetCurrentPlaylistName())
+        
         table["playlist_display_name"] <- Localize(GetCurrentPlaylistVar("name",""))
-
+        if(GetCurrentPlaylistName() == "campaign_carousel") {
+             table["playlist_display_name"] = table["playlist_display_name"] + " " + Localize(map_name + "_CAMPAIGN_NAME")
+        }
         local players = GetPlayerArray()
         local player_count = 0
         foreach (player in players) {
