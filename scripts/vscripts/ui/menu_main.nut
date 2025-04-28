@@ -199,7 +199,7 @@ function ShowMainMenu()
 	// if ( !AllDLCIsInstalled() )
 	// 	file.buttonData.append( { name = "#DLC_STORE", activateFunc = Bind( OnStoreButton_Activate ), updateFunc = Bind( ThreadUpdateStoreButton ), isNew = true } )
 
-	file.buttonData.append( { name = "#FIND_SERVERS", activateFunc = Bind( OnFindMatchButton_Activate ) } )
+	file.buttonData.append( { name = "#PLAY", activateFunc = Bind( OnFindMatchButton_Activate ) } )
 	file.buttonData.append( { name = "#CREATE_SERVER", activateFunc = Bind( OnHostButtonActivate ) } )
 	file.buttonData.append( { name = "#MAIN_MENU_TRAINING", activateFunc = Bind( function() { thread OnTrainingButtonActivate() } ) } )
 	file.buttonData.append( { name = "#OPTIONS", activateFunc = Bind( OnOptionsButton_Activate ) } )
