@@ -398,9 +398,8 @@ function OnServerButtonFocused(button)
     local scriptID =  button.GetScriptID()
     if(!scriptID) return
     scriptID = scriptID.tointeger()
-    if (scriptID == 10) return
+    if (scriptID == 15) return
     local serverIndex = uiGlobal.scrollOffset + scriptID
-
     local menu = uiGlobal.menu
     if(serverIndex >= uiGlobal.serversArrayFiltered.len())
         return
