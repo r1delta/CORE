@@ -241,16 +241,42 @@ function ShouldHideEmpty()
     return false
 }
 
+function CompareSemver(versionA, versionB)
+{
+    local partsA = split( versionA, "." )
+    local partsB = split( versionB, "." )
+
+    for (local i = 0; i < max(partsA.len(), partsB.len()); i++)
+    {
+        local numA = (i < partsA.len()) ? partsA[i].tointeger() : 0
+        local numB = (i < partsB.len()) ? partsB[i].tointeger() : 0
+
+        if (numA < numB) return -1
+        if (numA > numB) return 1
+    }
+    return 0
+}
+
 function FilterServerList()
 {
     uiGlobal.serversArrayFiltered.clear()
     foreach ( server in uiGlobal.serverList )
-    {        // // Skip if filters don't match
+    {
         if ( ShouldHideEmpty() && server.players.len() == 0)
             continue
 
         if ( ShouldHideFull() && server.players.len() >= server.max_players)
             continue
+
+        if ( server.version == "" )
+            continue
+
+        local r1dVersionFull = GetR1DVersion()
+        local r1dVersion = r1dVersionFull.slice(0, r1dVersionFull.find(" "))
+
+        if ( r1dVersion != "dev" )
+            if( CompareSemver( server.version, r1dVersion ) < 0 )
+                continue
 
         if (file.useSearch)
         {
