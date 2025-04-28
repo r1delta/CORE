@@ -374,10 +374,12 @@ function OnScrollDown()
 {
     if (uiGlobal.serversArrayFiltered.len() <= 15) return
     file.scrollOffset += 1
-    if (file.scrollOffset + 15 > uiGlobal.serversArrayFiltered.len())
-        file.scrollOffset = uiGlobal.serversArrayFiltered.len() - 15
+    if (file.scrollOffset >= uiGlobal.serversArrayFiltered.len())
+        file.scrollOffset = uiGlobal.serversArrayFiltered.len() - 1
+    // if (file.scrollOffset + 15 > uiGlobal.serversArrayFiltered.len())
+        // file.scrollOffset = uiGlobal.serversArrayFiltered.len() - 15
 
-    file.scrollOffset = file.scrollOffset
+    uiGlobal.scrollOffset = file.scrollOffset
     UpdateShownPage()
 }
 
@@ -387,7 +389,7 @@ function OnScrollUp()
     if (file.scrollOffset < 0)
         file.scrollOffset = 0
 
-    file.scrollOffset = file.scrollOffset
+    uiGlobal.scrollOffset = file.scrollOffset
 
     UpdateShownPage()
 }
