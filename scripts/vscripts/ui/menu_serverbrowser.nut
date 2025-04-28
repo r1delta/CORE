@@ -12,6 +12,7 @@ function main()
     Globalize( UpdateAndShowServerDescription )
     Globalize( HideServerDescription )
     Globalize( OnSearchBoxLooseFocus )
+    Globalize( DeregisterMouseWheelCallbacks )
 
     // File-level variables
     file.menu <- null
@@ -121,8 +122,7 @@ function InitServerBrowserMenu( menu )
 	AddEventHandlerToButton( menu, "BtnServerSearch", UIE_LOSE_FOCUS, Bind( OnSearchBoxLooseFocus ) )
 
     // Initialize mouse wheel handlers
-    RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
-    RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
+    RegisterMouseWheelCallbacks()
 
     // RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
     // RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
@@ -350,6 +350,7 @@ function OnServerButtonClicked(button)
     if( server.has_password )
         OpenChoiceDialog( dialogData, GetMenu( "EnterPasswordDialog" ) )
     else {
+        DeregisterMouseWheelCallbacks()
         ClientCommand( "connect " + server.ip + ":" + server.port )
     }
 }
@@ -665,6 +666,8 @@ function OnDirectConnectDialogButtonConnect_Activate( button )
     if ( !regexp( "^[0-9a-zA-Z:._\\-]+$" ).match( str ) )
         return
 
+    DeregisterMouseWheelCallbacks()
+
     ClientCommand( "connect " + str )
 	CloseDialog( true )
 }
@@ -691,6 +694,7 @@ function OnEnterPasswordDialogButtonConnect_Activate( button )
     try {
         DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
         RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+        DeregisterMouseWheelCallbacks()
     } catch ( e )
     { }
     ClientCommand( "password " + str )
