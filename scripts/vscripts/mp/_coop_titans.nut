@@ -25,7 +25,7 @@ function SpawnCoopTitan( origin, angles, team, settings = null, weapon = null, w
 	}*/
 
 	if ( settings == null )
-		settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder", "titan_slammer" ] )
+		settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder" ] )
 
 
 	UseSettingsOnTitanTemplate( table, settings )
