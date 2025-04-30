@@ -2753,11 +2753,12 @@ function CodeCallback_OnClientConnectionCompleted( player )
 
 				if ( !botSettings )
 				{
-					local rInt = RandomInt( Native_GetTitanCount() )
+					/*local rInt = RandomInt( Native_GetTitanCount() )
 					local titanName = Native_GetTitanName(rInt)
 					player.playerClassData["titan"].playerSetFile = titanName
-/*
-					local rInt = RandomInt( 4 )
+					*/
+
+					local rInt = RandomInt( 3 )
 
 					if ( rInt == 0 )
 						player.playerClassData["titan"].playerSetFile = "titan_ogre"
@@ -2765,9 +2766,9 @@ function CodeCallback_OnClientConnectionCompleted( player )
 						player.playerClassData["titan"].playerSetFile = "titan_atlas"
 					else if ( rInt == 2 )
 						player.playerClassData["titan"].playerSetFile = "titan_stryder"
-					else
-						player.playerClassData["titan"].playerSetFile = "titan_slammer"
-*/
+					// else
+						// player.playerClassData["titan"].playerSetFile = "titan_slammer"
+
 				}
 			}
 

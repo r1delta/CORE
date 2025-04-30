@@ -17,18 +17,18 @@ function WLTS_SetScoreEventOverride()
 	//Only do scoreEventOverrides for events involving killing Titan and killing pilots. Bonuses like headshots, melee kills etc are not overriden
 	level.gameModeScoreEventOverrides[ "EliminateTitan" ] 	<- POINTVALUE_WLTS_ELIMINATE_TITAN
 
-	for ( local i = 0 ; i < Native_GetTitanCount() ; i+=1 )
+/*	for ( local i = 0 ; i < Native_GetTitanCount() ; i+=1 )
 	{
 		local strTitanType = Native_GetTitanScriptType(i)
 		local strEventName = "Kill" + strTitanType
 		level.gameModeScoreEventOverrides[ strEventName ] 		<- POINTVALUE_WLTS_KILL_TITAN
-	}
-/*
+	}*/
+
 	level.gameModeScoreEventOverrides[ "KillAtlas" ] 		<- POINTVALUE_WLTS_KILL_TITAN
 	level.gameModeScoreEventOverrides[ "KillStryder" ] 		<- POINTVALUE_WLTS_KILL_TITAN
-	level.gameModeScoreEventOverrides[ "KillSlammer" ] 		<- POINTVALUE_WLTS_KILL_TITAN
+//	level.gameModeScoreEventOverrides[ "KillSlammer" ] 		<- POINTVALUE_WLTS_KILL_TITAN
 	level.gameModeScoreEventOverrides[ "KillOgre" ] 		<- POINTVALUE_WLTS_KILL_TITAN
-*/
+
 	level.gameModeScoreEventOverrides[ "KillTitan" ] 		<- POINTVALUE_WLTS_KILL_TITAN
 	level.gameModeScoreEventOverrides[ "TitanAssist" ] 		<- POINTVALUE_WLTS_ASSIST_TITAN
 	level.gameModeScoreEventOverrides[ "EliminatePilot" ] 	<- POINTVALUE_WLTS_ELIMINATE_PILOT

@@ -61,15 +61,15 @@ function SpawnAmpedCoopTitan( origin, angles, team, settings = null, weapon = nu
 	table.origin 	= origin
 	table.angles 	= angles
 
-	if ( settings == null )
+	/*(if ( settings == null )
 	{
 		local rInt = RandomInt( Native_GetTitanCount() )
 		settings = Native_GetTitanName( rInt )
-	}
-/*	
+	}*/
+	
 	if ( settings == null )
-		settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder", "titan_slammer" ] )
-*/
+		settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder"] )
+
 	UseSettingsOnTitanTemplate( table, settings )
 
 	if ( weapon )
