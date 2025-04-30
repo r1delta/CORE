@@ -418,12 +418,13 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 		if ( !attacker.IsTitan() ) // Normal NPCs case
 			return
 
-		if ( !IsPetTitan( attacker ) ) // NPC Titans case
-			return
         local soul = attacker.GetTitanSoul()
         if ( !IsValid( soul ) )
             return
-    
+
+		if ( !IsPetTitan( attacker ) ) // NPC Titans case
+			return
+       
 		player = soul.GetBossPlayer()
         if ( !IsValid( player ) )
             return
