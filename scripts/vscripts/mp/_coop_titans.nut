@@ -132,7 +132,7 @@ Globalize( UseSettingsOnTitanTemplate )
 
 function SetRandomWeaponOnTitanTemplate( table, randomMod = false, useAmpedWeapons = false )
 {	
-	useAmpedWeapons = false //disable burn_mode by iskyfish.2016.10.13
+	// useAmpedWeapons = false //disable burn_mode by iskyfish.2016.10.13
 
 	local weapon, weaponMod = null
 
