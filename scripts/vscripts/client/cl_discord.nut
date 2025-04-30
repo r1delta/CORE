@@ -34,7 +34,7 @@ function GetPresence_Threaded()
         else if(GetCurrentPlaylistName() == "campaign_carousel")
             table["map_display_name"] <- Localize(map_name + "_CAMPAIGN_NAME")
 
-        if( GetGameState() >= eGameState.Playing) {
+        if( GetGameState() >= eGameState.Playing && GameRules.GetGameMode() != COOP) {
             if(IsRoundBased()) {
                 table["end_time"] <- level.nv.roundEndTime - Time()
             } else {
