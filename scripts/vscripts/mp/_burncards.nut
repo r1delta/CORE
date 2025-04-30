@@ -516,47 +516,58 @@ function RunSpawnBurnCard(player,cardRef)
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" )
 
-    if (cardRef == "bc_cloak_forever")
-        EnableCloakForever( player )
+    while ( IsValid( player.isSpawning ) )
+        wait 0.1
 
-    if (cardRef == "bc_sonar_forever")
-        ActivateBurnCardSonar( player, 9999 )
-
-    if(cardRef == "bc_play_spectre")
+    switch( cardRef )
     {
-        local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
-	    local pilotSettings = pilotDataTable.playerSetFile
-	    pilotSettings = "pilot_spectre"
-        player.SetPlayerSettings( pilotSettings )
-	    player.SetPlayerPilotSettings( pilotSettings )
+        case "bc_cloak_forever":
+            EnableCloakForever( player )
+            break
+        case "bc_sonar_forever":
+            ActivateBurnCardSonar( player, 9999 )
+            break
+        case "bc_play_spectre":
+            local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
+            local pilotSettings = pilotDataTable.playerSetFile
+            pilotSettings = "pilot_spectre"
+            player.SetPlayerSettings( pilotSettings )
+            player.SetPlayerPilotSettings( pilotSettings )
+            break
+        case "bc_auto_sonar":
+            thread BCAutoSonarLoop( player )
+            break
+        case "bc_dice_ondeath":
+            thread RollTheDice( player, cardRef )
+            break
+        case "bc_free_build_time_1":
+            DecrementBuildTimer( player, 40 )
+            StopActiveBurnCard( player )
+            break
+        case "bc_free_build_time_2":
+            DecrementBuildTimer(player, 80 )
+            StopActiveBurnCard( player )
+            break
     }
+}
 
-    if(cardRef == "bc_auto_sonar")
+function BCAutoSonarLoop( player )
+{
+    player.EndSignal( "OnDeath" )
+	player.EndSignal( "OnDestroy" )
+	player.EndSignal( "Disconnected" )
+
+    thread LoopSonarAudioPing( player )
+
+    while ( true )
     {
-        // ActivateBurnCardSonar(player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true,null, BURNCARD_AUTO_SONAR_INTERVAL)
-        // thread LoopSonarAudioPing(player)
+        if( player.IsTitan() )
+            player.WaitSignal( "OnLeftTitan" )
+
+        ActivateBurnCardSonar( player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true, null )
+
+        wait BURNCARD_AUTO_SONAR_INTERVAL
     }
-
-    if(cardRef == "bc_dice_ondeath") {
-        thread RollTheDice(player, cardRef)
-        return
-    }
-
-    // ChangeOnDeckBurnCardToActive(player);
-
-    if( cardData.lastsUntil == BC_NEXTSPAWN)
-    {
-        if(cardRef == "bc_free_build_time_1") {
-            DecrementBuildTimer(player,40)
-            StopActiveBurnCard(player);
-        }
-        if(cardRef == "bc_free_build_time_2") {
-            DecrementBuildTimer(player,80)
-            StopActiveBurnCard(player);
-        }
-
-    }
-
 }
 
 function _OnPlayerKilled (player,attacker)
