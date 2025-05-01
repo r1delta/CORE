@@ -2287,7 +2287,7 @@ function CodeCallback_OnPlayerRespawned( player )
 		}
 	}
 	// Standard autobalance for other modes
-	else if ( GetConVarBool( "delta_autoBalanceTeams" ) && GamePlayingOrSuddenDeath() && !IsPrivateMatch() && GAMETYPE != FFA )
+	else if ( GetConVarBool( "delta_autoBalanceTeams" ) && GamePlayingOrSuddenDeath() && GAMETYPE != FFA && player.s.respawnCount > 1 )
 	{
 		local currentTeam = player.GetTeam()
 		local otherTeam = GetOtherTeam( currentTeam )
