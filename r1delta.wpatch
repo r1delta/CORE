@@ -606,3 +606,6 @@ engine_ds.dll,text,0x4B9D9,74,EB
 server.dll,text,0x3C150E,83 C1 0E,83 C1 04
 server.dll,text,0x3C1417,83 C1 0E,83 C1 04
 server.dll,text,0x3C12E0,83 C1 0E,83 C1 04
+
+; ignore ssl failure 
+engine.dll,text,0x29457C,7F 47,EB 47 
