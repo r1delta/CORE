@@ -559,7 +559,6 @@ function OnOpenServerBrowserMenu(menu)
 
     // Initialize mouse wheel handlers
     RegisterMouseWheelCallbacks()
-
     RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
     RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
     // RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
@@ -571,6 +570,7 @@ function OnCloseServerBrowserMenu( menu )
         DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
         DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
         DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
+        DeregisterMouseWheelCallbacks()
     } catch ( e )
     { }
 }
