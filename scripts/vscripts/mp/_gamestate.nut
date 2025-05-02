@@ -2185,6 +2185,7 @@ function GameRulesThink_SwitchingSides()
 	foreach ( player in players )
 	{
 		player.titansBuilt = 0
+		StartTitanBuildProgress( player, false, true )
 	}
 
 	SetGameState( eGameState.Prematch )
