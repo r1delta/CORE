@@ -676,14 +676,23 @@ function OnMouseWheelDown(...)
 // Register/deregister mouse wheel callbacks when menu opens/closes
 function RegisterMouseWheelCallbacks()
 {
-    RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
-    RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
+    try {
+        RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
+        RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
+    } catch ( e )
+    { 
+        DeregisterMouseWheelCallbacks()
+        RegisterMouseWheelCallbacks()
+    }
 }
 
 function DeregisterMouseWheelCallbacks()
 {
-    DeregisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
-    DeregisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
+    try {
+        DeregisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMouseWheelUp )
+        DeregisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMouseWheelDown )
+    } catch ( e )
+    { }
 }
 
 //
