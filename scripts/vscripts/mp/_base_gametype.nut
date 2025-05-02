@@ -1709,7 +1709,7 @@ function DecideRespawnPlayer( player, rematchOrigin = null )
 
 	if ( PlayerShouldObserve( player ) )
 	{
-		printt( "are we observing?" )
+		// printt( "are we observing?" )
 		if ( IsPlayerEliminated( player ) && GetGameState() == eGameState.Playing )
 		{
 			SendHudMessage( player, "#GAMEMODE_RESPAWN_NEXT_ROUND", -1, 0.4, 255, 255, 255, 255, 1.0, 6.0, 1.0 )
