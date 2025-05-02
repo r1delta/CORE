@@ -561,8 +561,9 @@ function BCAutoSonarLoop( player )
 
     while ( true )
     {
-        if( player.IsTitan() )
-            player.WaitSignal( "OnLeftTitan" )
+        // apparently this works in titan
+        // if( player.IsTitan() )
+        //     player.WaitSignal( "OnLeftTitan" )
 
         ActivateBurnCardSonar( player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true, null )
 
