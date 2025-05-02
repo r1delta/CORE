@@ -121,9 +121,6 @@ function InitServerBrowserMenu( menu )
     file.searchBox = menu.GetChild( "BtnServerSearch" )
 	AddEventHandlerToButton( menu, "BtnServerSearch", UIE_LOSE_FOCUS, Bind( OnSearchBoxLooseFocus ) )
 
-    // Initialize mouse wheel handlers
-    RegisterMouseWheelCallbacks()
-
     // RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
     // RegisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
 
@@ -304,11 +301,14 @@ function UpdateShownPage()
     }
 
     // Show server info for current page
-    local endIndex = uiGlobal.serversArrayFiltered.len() > 15 ? 15: uiGlobal.serversArrayFiltered.len()
+    local endIndex = uiGlobal.serversArrayFiltered.len() > 15 ? 15 : uiGlobal.serversArrayFiltered.len()
 
     for ( local i = 0; i < endIndex; i++ )
     {
         local buttonIndex = file.scrollOffset + i
+
+        if ( buttonIndex >= uiGlobal.serversArrayFiltered.len() )
+            break
 
         local server = uiGlobal.serversArrayFiltered[buttonIndex]
 
@@ -553,8 +553,12 @@ function OnOpenServerBrowserMenu(menu)
         DeregisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
         DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
         DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
+        DeregisterMouseWheelCallbacks()
     } catch ( e )
     { }
+
+    // Initialize mouse wheel handlers
+    RegisterMouseWheelCallbacks()
 
     RegisterButtonPressedCallback( KEY_ENTER, OnSearchBoxLooseFocus )
     RegisterButtonPressedCallback( BUTTON_X, RefreshServerList)
