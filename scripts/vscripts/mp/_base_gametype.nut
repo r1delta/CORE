@@ -2711,9 +2711,15 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	{
 		// LoadOut Setting
 		// UpdateLoadouts( player )
+		local pilotIndex = player.GetPersistentVar("pilotSpawnLoadout.index")
+		local pilotIsCustom = player.GetPersistentVar("pilotSpawnLoadout.isCustom")
+		
+		local titanIndex = player.GetPersistentVar("titanSpawnLoadout.index")
+		local titanIsCustom = player.GetPersistentVar("titanSpawnLoadout.isCustom")
+	
+		SetPilotLoadout( player, pilotIsCustom, pilotIndex )
+		SetTitanLoadout( player, titanIsCustom, titanIndex )
 
-		SetPilotLoadout( player, false, 0 )
-		SetTitanLoadout( player, false, 0 )
 	}
 	else
 	{
