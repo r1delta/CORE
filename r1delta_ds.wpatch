@@ -195,3 +195,6 @@ engine_ds.dll,text,0x003CC50,48 8D 0D 69 73 3D 00 8B D6 E8 72 D4 0A 00,90 90 90 
 dedicated.dll,text,0x6D320,40,C3
 ; don't move window on startup
 dedicated.dll,text,0x6D01B,FF 15 27 75 19 00,EB 04
+
+;idle patches 
+server.dll,text,0x148B31,0F 84 89 02 00 00,90 90 90 90 90 90
