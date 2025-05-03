@@ -592,6 +592,18 @@ function CoreActivatedVO( player )
 	wait TITAN_CORE_CHARGE_TIME
 	if ( player.IsTitan() )
 		TitanCockpit_PlayDialog( player, "core_fired" )
+
+	local coreDuration = GetTitanCoreActiveTime( player )
+
+	// If coreDuration is less that 5 for whatever reason, dont even bother
+	if ( coreDuration <= 5 )
+		return
+
+	local expiringTime = coreDuration / 1.5
+	wait expiringTime
+	
+	if ( player.IsTitan() )
+		TitanCockpit_PlayDialog( player, "core_expiring" )
 }
 
 function MonitorFlickerAndChange( screen, modelname )
