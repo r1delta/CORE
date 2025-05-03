@@ -18,6 +18,7 @@ function main()
 	level.onPlayerKilledCallbacks <- {} //
 	level.onTitanDoomedCallbacks <- {}
 	level.titanDamageScaler <- {}
+	level.onClientChatMsgCallbacks <- {}
 
 	IncludeScript( "_codecallbacks_shared", getroottable() )
 
@@ -521,6 +522,36 @@ function CodeCallback_OnInventoryChanged( player )
 
 function CodeCallback_OnEntityChangedTeam( entity )
 {
+}
+
+function AddCallback_OnClientChatMsg( callbackFunc )
+{
+	Assert( "onClientChatMsgCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnClientChatMsg can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 3, "playerIndex, msg, isTeamChat" )
+
+	local name = FunctionToString( callbackFunc )
+	Assert( !( name in level.onClientChatMsgCallbacks ), "Already added " + name + " with AddCallback_OnClientChatMsg" )
+
+	local callbackInfo = {}
+	callbackInfo.name <- name
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onClientChatMsgCallbacks[name] <- callbackInfo
+}
+
+function CodeCallback_OnClientChatMsg( playerIndex, msg, isTeamChat )
+{
+	foreach ( callbackInfo in level.onClientChatMsgCallbacks )
+	{
+		local text = callbackInfo.func.acall( [callbackInfo.scope, playerIndex, msg, isTeamChat] )
+		if ( text != null )
+			return text
+	}
+
+	// Default case
+	return text
 }
 
 main()
