@@ -551,7 +551,7 @@ function CodeCallback_OnClientChatMsg( playerIndex, msg, isTeamChat )
 	}
 
 	// Default case
-	return text
+	return msg
 }
 
 main()
