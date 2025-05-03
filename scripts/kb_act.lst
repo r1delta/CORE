@@ -12,6 +12,7 @@
 "+scriptCommand1"		"#DISABLE_EJECT_SAFETY_TITAN"
 "+ability 1"			"#SWITCH_TITAN_AI_MODE_PILOT"
 "+displayFullscreenMap"	"#DISPLAY_FULLSCREEN_MINIMAP"
+"+toggleFullscreenMap"	"#TOGGLE_FULLSCREEN_MINIMAP"
 "blank"					"=========================="
 "blank"					"#KEY_BINDINGS_HEADER_WEAPONS"
 "blank"					"=========================="
