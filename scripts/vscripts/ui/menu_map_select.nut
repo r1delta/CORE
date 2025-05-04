@@ -64,7 +64,7 @@ function OnOpenMapsMenu()
 			button.SetEnabled( false )
 		}
 
-		if ( buttonID == level.ui.privatematch_map )
+		if ( buttonID == level.ui.privatematch_map && buttonID < GetPrivateMatchMaps().len() )
 		{
 			printt( buttonID, mapsArray[buttonID] )
 			button.SetFocused()
