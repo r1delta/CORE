@@ -528,6 +528,7 @@ function RunSpawnBurnCard(player,cardRef)
             ActivateBurnCardSonar( player, 9999 )
             break
         case "bc_play_spectre":
+            
             local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
             local pilotSettings = pilotDataTable.playerSetFile
             pilotSettings = "pilot_spectre"
@@ -644,7 +645,8 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
 function ApplyTitanBurnCards_Threaded( titan )
 {
     local player = titan.GetBossPlayer()
-
+    if ( !IsValid( player ) )
+        return
     local isSpawning = IsValid( player.isSpawning )
 
     if ( isSpawning )
