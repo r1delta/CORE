@@ -646,7 +646,7 @@ function ApplyTitanBurnCards_Threaded( titan )
 {
     local player = titan.GetBossPlayer()
     if ( !IsValid( player ) )
-        return
+        wait 0.1
     local isSpawning = IsValid( player.isSpawning )
 
     if ( isSpawning )
