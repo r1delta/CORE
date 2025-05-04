@@ -910,6 +910,7 @@ function HideScoreboard()
 	UpdateMainHudVisibility( localPlayer, 0.0 )
 	ShowScriptHUD( localPlayer )
 	ClearCrosshairPriority( crosshairPriorityLevel.MENU )
+	ColorCorrection_SetExclusive( file.menuColorCorrection, false )
 	ColorCorrection_SetWeight( file.menuColorCorrection, 0.0 )
 }
 
