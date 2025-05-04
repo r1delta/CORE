@@ -1,7 +1,7 @@
 "playlists"
 {
 	"version"	"stable"
-	"versionNum"	"1940" // Never forget to bump this for every playlist update.
+	"versionNum"	"1941" // Never forget to bump this for every playlist update.
 	"at"
 	{
 		"vars"
@@ -2968,6 +2968,7 @@
 				"PORT_FORWARD_WARNING_DEFAULT"	"Tu servidor no será visible en el navegador porque el puerto 27015 (UDP) no está abierto en tu router. Por favor pregunta en #help para obtener ayuda."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Tu servidor no será visible en el navegador porque el puerto %s1 (UDP) no está abierto. Es posible que se esté ejecutando otra instancia del juego."
 				"DELTA_PATCH_HEADER"	"^CDEBFF00¡Bienvenido a ^f4433600R1Delta^CDEBFF00!"
+				"TOGGLE_FULLSCREEN_MINIMAP"	"Mostrar/Cerrar minimapa a pantalla completa"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Una batalla a larga escala se ha desatado entre la IMC y la Milicia en las afueras de Demeter."
@@ -3322,6 +3323,7 @@
 				"PORT_FORWARD_WARNING_DEFAULT"	"O seu servidor não estará visível no navegador do servidor porque a porta 27015 (UDP) não está corretamente encaminhada no seu router. Peça ajuda em #help."
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"O seu servidor não estará visível no navegador do servidor porque a porta %s1 (UDP) não está corretamente encaminhada no seu router. Outra instância do jogo pode estar a ser executada."
 				"DELTA_PATCH_HEADER"	"^CDEBFF00Bem-vindo ao ^f4433600R1Delta^CDEBFF00!"
+				"TOGGLE_FULLSCREEN_MINIMAP"	"Alternar minimapa em tela inteira"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Uma batalha em grande escala eclodiu entre o IMC e a Milícia nos arredores de Deméter."
