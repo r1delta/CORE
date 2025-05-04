@@ -516,6 +516,9 @@ function RunSpawnBurnCard(player,cardRef)
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" )
 
+    while ( !IsValid( player ) )
+        wait 0.1
+
     while ( IsValid( player.isSpawning ) )
         wait 0.1
 
@@ -528,7 +531,9 @@ function RunSpawnBurnCard(player,cardRef)
             ActivateBurnCardSonar( player, 9999 )
             break
         case "bc_play_spectre":
-            
+            if ( player.IsTitan() )
+                player.WaitSignal( "OnLeftTitan" ); wait 0.5
+
             local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
             local pilotSettings = pilotDataTable.playerSetFile
             pilotSettings = "pilot_spectre"
@@ -645,7 +650,7 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
 function ApplyTitanBurnCards_Threaded( titan )
 {
     local player = titan.GetBossPlayer()
-    if ( !IsValid( player ) )
+    while ( !IsValid( player ) && !titan.IsPlayer()  )
         wait 0.1
     local isSpawning = IsValid( player.isSpawning )
 
