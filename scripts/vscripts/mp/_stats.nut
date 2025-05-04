@@ -332,7 +332,7 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
                 }
                 printt("challenge completed: " + challRef)
             }
-            Remote.CallFunction_NonReplay(player,"ServerCallback_UpdateClientChallengeProgress", id ,currentProgress, shouldPopup)
+            Remote.CallFunction_NonReplay(player,"ServerCallback_UpdateClientChallengeProgress", id ,currentProgress, true)
         }
     }
 }
