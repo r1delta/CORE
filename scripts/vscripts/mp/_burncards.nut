@@ -188,37 +188,20 @@ function RefillWeaponAmmo(player) {
 }
 
 
-function RunWeaponFunction( player, cardRef )
+function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 {
     player.EndSignal( "OnDestroy" )
     player.EndSignal( "Disconnected" )
     player.EndSignal( "EndGiveLoadouts" )
 
-    printt("Running bc weapon function")
-
-    while ( GetGameState() != eGameState.Playing )
-        wait 0.1
-
-    while ( !IsValid( player ) || !IsAlive( player ) )
-        wait 0.1
-
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-		player.WaitSignal( "CE_FLAGS_CHANGED" )
-
-    if ( IsValid( player.isSpawning ) )
-        wait 2
-
     while ( player.IsTitan() )
-        wait 0.1
+        player.WaitSignal("OnLeftTitan"); wait 0.5
 
     local cardData = GetBurnCardData(cardRef);
     local weaponData = GetBurnCardWeapon(cardRef);
     local weapons = player.GetMainWeapons()
 
-    if( !weapons )
-        return
-
-    if( !weaponData )
+    if( !weapons || !weaponData )
         return
 
     if( weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1" )
@@ -353,7 +336,7 @@ function RunBurnCardFunctions( player, cardRef )
     }
 
     if ( cardData.ctFlags & CT_WEAPON || cardData.ctFlags & CT_FRAG )
-        thread RunWeaponFunction( player, cardRef )
+        thread ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
     if ( cardData.ctFlags & CT_TITAN )
         thread DoSummonTitanBurnCard( player, cardRef )
@@ -374,8 +357,6 @@ function ChangeOnDeckBurnCardToActive( player )
         return
 
     local cardData = GetBurnCardData(cardRef)
-
-
 
     player.SetActiveBurnCardIndex( idx )
     player.SetPersistentVar( "activeBCID", cardIndex )
