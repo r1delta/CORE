@@ -553,7 +553,22 @@ function InitPersistence()
 	    ["mp_titanweapon_xo16_accelerator"] = 89,
 	    ["mp_titanweapon_xo16_burst"] = 90,
 	    ["mp_titanweapon_xo16_extended_ammo"] = 91,
-	    ["mp_titanweapon_xo16_fast_reload"] = 92
+	    ["mp_titanweapon_xo16_fast_reload"] = 92,
+
+		// R1 Delta custom stuff
+	    ["mp_weapon_car_holosight"] = 93,
+	    ["mp_weapon_r97_holosight"] = 94 // <- Add a comma if you re-enable the mods below
+
+		// Disabled for now
+/*
+	    mp_weapon_autopistol_extended_ammo = 95,
+	    mp_weapon_autopistol_starburst = 96,
+
+	    mp_weapon_semipistol_extended_ammo = 97,
+	    mp_weapon_semipistol_silencer = 98,
+
+	    mp_weapon_wingman_silencer = 99
+*/
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
