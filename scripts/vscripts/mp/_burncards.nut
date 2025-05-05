@@ -9,8 +9,8 @@ function main()
     Globalize( RunBurnCardFunctions)
     Globalize( ChangeOnDeckBurnCardToActive )
     Globalize( ApplyTitanBurnCards_Threaded )
-    PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
-    PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
+    PrecacheModel( MILITIA_SPECTRE_MODEL )
+    PrecacheModel( IMC_SPECTRE_MODEL )
     AddCallback_OnClientConnected( BCOnClientConnected )
 }
 

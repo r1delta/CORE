@@ -5861,6 +5861,7 @@ function GetPlayerSettingsFieldForClassName(className, field)
                 
         // Replace all instances of "imc_" with "mcor_"
         local modifiedModel = replace_all(originalModel, "imc_", "mcor_");
+        modifiedModel = replace_all(originalModel, "mcor_spectre", "mcor_spectre_assault"); // fix Militia spectres
         
         return modifiedModel;
     }
