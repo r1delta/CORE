@@ -446,10 +446,13 @@ function ClientCommand_SetPlaylistAnnouncementSeen( player, ... )
 	return true
 }
 
-function StopActiveBurnCard(player) {
+function StopActiveBurnCard( player )
+{
 	local cardRef = GetPlayerActiveBurnCard( player )
+
 	if (cardRef == null)
 		return
+
 	local activeBCID = player.GetPersistentVar( "activeBCID" )
 	player.SetPersistentVar( "activeBCID", -1 )
 	player.SetActiveBurnCardIndex( -1 )

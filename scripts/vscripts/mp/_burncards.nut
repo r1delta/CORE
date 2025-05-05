@@ -30,11 +30,6 @@ function BCOnClientConnected( player )
 	}
 }
 
-function ConsumeActiveBurnCard( player )
-{
-
-}
-
 function MoveCardToActiveSlot( player, burnCardIndex, index, activeSlot )
 {
 	burnCardIndex = burnCardIndex.tointeger()
@@ -274,13 +269,13 @@ function DoSummonTitanBurnCard( player, cardRef )
 
     switch( cardRef )
     {
-        case "bc_summon_atlas"
+        case "bc_summon_atlas":
             titanDataTable.playerSetFile = "titan_atlas"
             break
-        case "bc_summon_ogre"
+        case "bc_summon_ogre":
             titanDataTable.playerSetFile = "titan_ogre"
             break
-        case "bc_summon_stryder"
+        case "bc_summon_stryder":
             titanDataTable.playerSetFile = "titan_stryder"
             break
     }
@@ -290,13 +285,7 @@ function DoSummonTitanBurnCard( player, cardRef )
     if (oldSetFile)
         titanDataTable.playerSetFile = oldSetFile
 
-    local activeBCID = player.GetPersistentVar("activeBCID")
-
-	player.SetActiveBurnCardIndex( -1 )
-	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].cardRef", null )
-	player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + activeBCID + "].clearOnStart", 0 )
-    player.SetPersistentVar( "activeBCID", -1 )
-
+    StopActiveBurnCard( player )
 }
 
 function RunBurnCardFunctions( player, cardRef )
@@ -324,13 +313,6 @@ function RunBurnCardFunctions( player, cardRef )
 
 function ChangeOnDeckBurnCardToActive( player )
 {
-    if(cardData.rarity == BURNCARD_RARE)
-        AddPlayerScore( player, "UsedBurnCard_Rare" )
-    else
-        AddPlayerScore( player, "UsedBurnCard_Common" )
-
-    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
-
     local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
 
     if( cardIndex == -1 )
@@ -345,17 +327,25 @@ function ChangeOnDeckBurnCardToActive( player )
 
     local cardData = GetBurnCardData(cardRef)
 
+
+    if(cardData.rarity == BURNCARD_RARE)
+        AddPlayerScore( player, "UsedBurnCard_Rare" )
+    else
+        AddPlayerScore( player, "UsedBurnCard_Common" )
+
+    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+
     player.SetActiveBurnCardIndex( idx )
     player.SetPersistentVar( "activeBCID", cardIndex )
     player.SetPersistentVar( "onDeckBurnCardIndex", -1 )
+
     if(cardData.lastsUntil != BC_FOREVER)
-    {
         player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
-    }
+
     SetPlayerLastActiveBurnCardFromSlot(player, cardIndex, cardRef)
+
     foreach( p in GetPlayerArray() )
         Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx, false )
-
 }
 
 function RollTheDice( player, cardRef )
@@ -480,28 +470,23 @@ function BCAutoSonarLoop( player )
 
     thread LoopSonarAudioPing( player )
 
-    while ( true )
+    for( ;; )
     {
-        // apparently this works in titan
-        // if( player.IsTitan() )
-        //     player.WaitSignal( "OnLeftTitan" )
-
         ActivateBurnCardSonar( player, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true, null )
-
         wait BURNCARD_AUTO_SONAR_INTERVAL
     }
 }
 
-function BCOnPlayerKilled (player,attacker)
+function BCOnPlayerKilled( player,attacker )
 {
     local cardRef = GetPlayerActiveBurnCard( player )
 
-    if(!cardRef)
+    if( !cardRef )
         return
 
     local lastsUntil = GetBurnCardLastsUntil( cardRef )
 
-    if( IsRoundBased() && GetGameState() != eGameState.Playing)
+    if( IsRoundBased() && !GamePlayingOrSuddenDeath() )
         return
 
     BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
