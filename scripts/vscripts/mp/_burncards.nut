@@ -301,14 +301,6 @@ function DoSummonTitanBurnCard( player, cardRef )
 
 function RunBurnCardFunctions( player, cardRef )
 {
-    if(cardData.rarity == BURNCARD_RARE)
-        AddPlayerScore( player, "UsedBurnCard_Rare" )
-    else
-        AddPlayerScore( player, "UsedBurnCard_Common" )
-
-
-    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
-
     thread RunSpawnBurnCard( player, cardRef )
     local cardData = GetBurnCardData( cardRef )
     if(cardData.serverFlags)
@@ -332,6 +324,13 @@ function RunBurnCardFunctions( player, cardRef )
 
 function ChangeOnDeckBurnCardToActive( player )
 {
+    if(cardData.rarity == BURNCARD_RARE)
+        AddPlayerScore( player, "UsedBurnCard_Rare" )
+    else
+        AddPlayerScore( player, "UsedBurnCard_Common" )
+
+    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+
     local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
 
     if( cardIndex == -1 )
@@ -397,10 +396,7 @@ function BurnCardPlayerRespawned_Threaded( player )
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" )
 
-    while ( !IsValid( player ) )
-        wait 0.1
-
-    while ( IsValid( player.isSpawning ) )
+    while ( !IsValid( player ) || IsValid( player.isSpawning ) )
         wait 0.1
 
     printt( "BurnCardPlayerRespawned_Threaded" )
@@ -420,7 +416,7 @@ function BurnCardPlayerRespawned_Threaded( player )
     else
     {
         cardIndex = GetPlayerBurnCardOnDeckIndex(player)
-        cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+        cardRef = GetBurnCardFromSlot( player, cardIndex )
 
         if( !cardRef )
             return
