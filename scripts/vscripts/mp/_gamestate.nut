@@ -1531,9 +1531,11 @@ function CheckEliminationTitanWinner( setWinner = false )
 			if ( !IsValid( player ) )
 				continue
 
-			teamPlayers[team]++
 			local petTitan = player.GetPetTitan()
 			local team = player.GetTeam()
+
+			if ( IsAlive( player ) )
+				teamPlayers[team]++
 
 			if ( IsAlive( petTitan ) && !("noLongerCountsForLTS" in petTitan.s ) )
 			{
