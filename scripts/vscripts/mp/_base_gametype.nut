@@ -894,19 +894,7 @@ function PostDeathThread( player, damageInfo )
 
 	local attacker = damageInfo.GetAttacker()
 	local methodOfDeath = damageInfo.GetDamageSourceIdentifier()
-	local rematchOrigin
-	if(GetActiveBurnCard(player) == "bc_rematch") {
-	if ( IsValid( attacker ) && methodOfDeath == eDamageSourceId.titan_execution )
-	{
-		// execution can throw you out of the map
-		rematchOrigin = attacker.GetOrigin()
-	}
-	else
-	{
-		rematchOrigin = player.GetOrigin()
-	}
-		MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player,null)
-	}
+	
 
 
 	local attackerViewIndex = attacker.GetIndexForEntity()
@@ -1025,6 +1013,21 @@ function PostDeathThread( player, damageInfo )
 		return
 
 	player.BecomeRagdoll(Vector(0, 0, 0))
+
+	local rematchOrigin
+	local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
+	local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+	if (cardRef == "bc_rematch") {
+		if ( IsValid( attacker ) && methodOfDeath == eDamageSourceId.titan_execution )
+		{
+			// execution can throw you out of the map
+			rematchOrigin = attacker.GetOrigin()
+		} else {
+			rematchOrigin = player.GetOrigin()
+		}
+		MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player,null)
+	}
+
 
 	if( player.IsBot() )
 	{
