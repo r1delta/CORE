@@ -89,9 +89,6 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 	SetPlayerBurnCardOnDeckIndex(player, index)
 	EmitSoundOnEntityOnlyToPlayer( player, player, "UI_InGame_ActivateBurnCard" )
 	Remote.CallFunction_UI( player, "SCB_RefreshBurnCardSelector" )
-	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-		BurnCardIntro( player )
-
 
 	return true
 }

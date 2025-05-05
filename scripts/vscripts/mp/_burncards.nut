@@ -8,7 +8,6 @@ function main()
     AddCallback_OnPlayerKilled( BCOnPlayerKilled )
     Globalize( RunBurnCardFunctions)
     Globalize( ChangeOnDeckBurnCardToActive )
-    Globalize( BurnCardIntro )
     Globalize( BurncardsAutoFillEmptyActiveSlots )
     Globalize( ApplyTitanBurnCards_Threaded )
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
@@ -391,11 +390,6 @@ function ChangeOnDeckBurnCardToActive( player )
 
 }
 
-function BurnCardIntro( player )
-{
-    thread BurnCardIntro_Threaded( player )
-}
-
 function RollTheDice( player, cardRef )
 {
     printt("RollTheDice")
@@ -420,41 +414,6 @@ function RollTheDice( player, cardRef )
     SetPlayerStashedCardTime( player, 90,0 )
 }
 
-function BurnCardIntro_Threaded( player )
-{
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        player.WaitSignal( "CE_FLAGS_CHANGED" )
-
-    while ( GetGameState() < eGameState.Playing && !IsAlive( player ) )
-        wait 0.1
-
-    player.Signal( "StartBurnCardEffect" )
-
-    local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
-    local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
-
-    if ( !cardRef )
-        return
-
-    local cardData = GetBurnCardData(cardRef)
-
-    thread RunSpawnBurnCard( player, cardRef )
-
-    if ( GetPlayerBurnCardActiveSlotID( player ) )
-        return
-
-    if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
-        return
-
-    ChangeOnDeckBurnCardToActive( player )
-
-    printt(cardRef)
-
-    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
-
-    RunBurnCardFunctions( player, cardRef )
-}
-
 function BCPlayerRespawned( player )
 {
     thread BurnCardPlayerRespawned_Threaded( player )
@@ -467,7 +426,7 @@ function BurnCardPlayerRespawned_Threaded( player )
     local cardData
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        wait 0.1
+        player.WaitSignal( "CE_FLAGS_CHANGED" )
 
     while ( !IsValid( player ) )
         wait 0.1
@@ -491,28 +450,22 @@ function BurnCardPlayerRespawned_Threaded( player )
     }
     else
     {
-        player.WaitSignal( "EndGiveLoadouts" )
+        cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+        cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
 
-        while ( player.s.inGracePeriod )
-        {
-            cardIndex = GetPlayerBurnCardOnDeckIndex(player)
-            cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+        if( !cardRef )
+            return
 
-            if( !cardRef )
-                return
+        cardData = GetBurnCardData(cardRef)
 
-            cardData = GetBurnCardData(cardRef)
+        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
+            ChangeOnDeckBurnCardToActive( player )
 
-            if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
-                ChangeOnDeckBurnCardToActive( player )
+        // if(cardData.rarity == BURNCARD_RARE)
+        //     AddPlayerScore( player, "UsedBurnCard_Rare" )
+        // else
+        //     AddPlayerScore( player, "UsedBurnCard_Common" )
 
-            if(cardData.rarity == BURNCARD_RARE)
-                AddPlayerScore( player, "UsedBurnCard_Rare" )
-            else
-                AddPlayerScore( player, "UsedBurnCard_Common" )
-
-            wait 0.1
-        }
 
         // Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
     }
@@ -526,15 +479,6 @@ function BurnCardPlayerRespawned_Threaded( player )
 function RunSpawnBurnCard(player,cardRef)
 {
     local cardData = GetBurnCardData(cardRef);
-
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        player.WaitSignal( "CE_FLAGS_CHANGED" )
-
-    while ( !IsValid( player ) )
-        wait 0.1
-
-    while ( IsValid( player.isSpawning ) )
-        wait 0.1
 
     switch( cardRef )
     {
