@@ -4,12 +4,12 @@ function main()
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
     Globalize( AddBurnCardLevelingPack );
-    AddCallback_OnPlayerRespawned( PlayerRespawned )
-    AddCallback_OnPlayerKilled( _OnPlayerKilled )
-    Globalize(RunBurnCardFunctions)
-    Globalize(ChangeOnDeckBurnCardToActive)
+    AddCallback_OnPlayerRespawned( BCPlayerRespawned )
+    AddCallback_OnPlayerKilled( BCOnPlayerKilled )
+    Globalize( RunBurnCardFunctions)
+    Globalize( ChangeOnDeckBurnCardToActive )
     Globalize( BurnCardIntro )
-    Globalize(BurncardsAutoFillEmptyActiveSlots)
+    Globalize( BurncardsAutoFillEmptyActiveSlots )
     Globalize( ApplyTitanBurnCards_Threaded )
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
@@ -20,6 +20,10 @@ function BurnCard_OnClientConnected( player )
 {
     player.SetPersistentVar("activeBCID", -1)
     player.SetPersistentVar("onDeckBurnCardIndex", -1)
+
+    for ( local i = 0; i < GetPlayerMaxActiveBurnCards( player ); i++ )
+        player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]", null )
+
 
     if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) && !IsLobby() )
 	{
@@ -394,12 +398,12 @@ function BurnCardIntro( player )
 
 function RollTheDice( player, cardRef )
 {
-   printt("RollTheDice")
+    printt("RollTheDice")
 
-    local card =GetPlayerBurnCardFromDeck( player, RandomInt(100) )
-    if(!card) {
-        return;
-    }
+    local card = GetPlayerBurnCardFromDeck( player, RandomInt(100) )
+    if(!card)
+        return
+
     printt("RollTheDice card: " + card.cardRef)
     SetPlayerStashedCardRef( player, card.cardRef,0 )
     SetPlayerStashedCardTime( player, 90,0 )
@@ -451,7 +455,7 @@ function BurnCardIntro_Threaded( player )
     RunBurnCardFunctions( player, cardRef )
 }
 
-function PlayerRespawned( player )
+function BCPlayerRespawned( player )
 {
     thread BurnCardPlayerRespawned_Threaded( player )
 }
@@ -462,8 +466,14 @@ function BurnCardPlayerRespawned_Threaded( player )
     local cardIndex
     local cardData
 
-    if ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        return
+    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+        wait 0.1
+
+    while ( !IsValid( player ) )
+        wait 0.1
+
+    while ( IsValid( player.isSpawning ) )
+        wait 0.1
 
     printt( "BurnCardPlayerRespawned_Threaded" )
 
@@ -472,39 +482,43 @@ function BurnCardPlayerRespawned_Threaded( player )
         cardIndex = GetPlayerBurnCardActiveSlotID( player )
         cardRef = GetActiveBurnCard( player )
 
-        printt( "BurnCardPlayerRespawned_Threaded cardRef: " + cardRef )
-
         if( !cardRef )
             return
+
+        printt( "BurnCardPlayerRespawned_Threaded cardRef: " + cardRef )
 
         cardData = GetBurnCardData(cardRef)
     }
     else
     {
-        cardIndex = GetPlayerBurnCardOnDeckIndex(player)
-        cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
+        player.WaitSignal( "EndGiveLoadouts" )
 
-        if( !cardRef )
-            return
+        while ( player.s.inGracePeriod )
+        {
+            cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+            cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
 
-        cardData = GetBurnCardData(cardRef)
+            if( !cardRef )
+                return
 
-        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
-            ChangeOnDeckBurnCardToActive( player )
+            cardData = GetBurnCardData(cardRef)
 
-        if(cardData.rarity == BURNCARD_RARE)
-            AddPlayerScore( player, "UsedBurnCard_Rare" )
-        else
-            AddPlayerScore( player, "UsedBurnCard_Common" )
+            if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
+                ChangeOnDeckBurnCardToActive( player )
 
-        Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+            if(cardData.rarity == BURNCARD_RARE)
+                AddPlayerScore( player, "UsedBurnCard_Rare" )
+            else
+                AddPlayerScore( player, "UsedBurnCard_Common" )
+
+            wait 0.1
+        }
+
+        // Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
     }
 
     if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
         return
-
-    if(cardRef == "bc_dice_ondeath")
-        thread RollTheDice(player, cardRef)
 
     RunBurnCardFunctions( player, cardRef )
 }
@@ -577,7 +591,7 @@ function BCAutoSonarLoop( player )
     }
 }
 
-function _OnPlayerKilled (player,attacker)
+function BCOnPlayerKilled (player,attacker)
 {
     local cardRef = GetPlayerActiveBurnCard( player )
 
