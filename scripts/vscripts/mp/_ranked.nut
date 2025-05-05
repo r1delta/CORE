@@ -11,6 +11,14 @@ function main()
     printt("Ranked is loaded")
 }
 
+function ClientCommand_SetRankedPlayOnInGame(player) {
+    player.SetPersistentVar("ranked.isPlayingRanked",1)
+    player.SetIsPlayingRanked(1)
+    Remote.CallFunction_NonReplay(player, "ServerCallback_ToggleRankedInGame", true)
+    Remote.CallFunction_Replay(player, "SCB_SetUserPerformance",0)
+    printt("Set ranked play on in game: " + player.IsPlayingRanked())
+    return true
+}
 
 //ServerCallback_ToggleRankedInGame to actually toggle the ranked state
 function ClientCommand_SetPlayRankedOn(player)
@@ -21,7 +29,7 @@ function ClientCommand_SetPlayRankedOn(player)
 }
 
 function ClientCommand_SetPlayRankedOff(player)
-{   
+{
     player.SetPersistentVar("ranked.isPlayingRanked",0)
     player.SetIsPlayingRanked(0)
     return true

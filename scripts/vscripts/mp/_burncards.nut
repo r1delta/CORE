@@ -8,14 +8,13 @@ function main()
     AddCallback_OnPlayerKilled( BCOnPlayerKilled )
     Globalize( RunBurnCardFunctions)
     Globalize( ChangeOnDeckBurnCardToActive )
-    Globalize( BurncardsAutoFillEmptyActiveSlots )
     Globalize( ApplyTitanBurnCards_Threaded )
     PrecacheModel("models/Robots/spectre/mcor_spectre.mdl")
     PrecacheModel("models/Robots/spectre/imc_spectre.mdl")
-    AddCallback_OnClientConnected( BurnCard_OnClientConnected )
+    AddCallback_OnClientConnected( BCOnClientConnected )
 }
 
-function BurnCard_OnClientConnected( player )
+function BCOnClientConnected( player )
 {
     player.SetPersistentVar("activeBCID", -1)
     player.SetPersistentVar("onDeckBurnCardIndex", -1)
@@ -26,22 +25,14 @@ function BurnCard_OnClientConnected( player )
 
     if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) && !IsLobby() )
 	{
-
-        // if ( FindPlayerFirstEmptyActiveSlot( player ) == null )
-        //     return
-
 		thread BurncardsAutoFillEmptyActiveSlots( player )
 		ChangedPlayerBurnCards( player )
 	}
 }
 
-function ClientCommand_SetRankedPlayOnInGame(player) {
-    player.SetPersistentVar("ranked.isPlayingRanked",1)
-    player.SetIsPlayingRanked(1)
-    Remote.CallFunction_NonReplay(player, "ServerCallback_ToggleRankedInGame", true)
-    Remote.CallFunction_Replay(player, "SCB_SetUserPerformance",0)
-    printt("Set ranked play on in game: " + player.IsPlayingRanked())
-    return true
+function ConsumeActiveBurnCard( player )
+{
+
 }
 
 function MoveCardToActiveSlot( player, burnCardIndex, index, activeSlot )
@@ -114,19 +105,6 @@ function BurncardsAutoFillEmptyActiveSlots( player )
 
         MoveCardToActiveSlot( player, index, randomCardIndex, i )
     }
-}
-
-function WaitForTitanActiveWeapon( titan ) {
-    titan.EndSignal( "OnDestroy" )
-    local weapon = null
-    while (1) {
-        wait 0
-        weapon = titan.GetActiveWeapon()
-        if(weapon) {
-            break;
-        }
-    }
-    return weapon
 }
 
 function WaitForPlayerActiveWeapon( player,className = null )
@@ -287,23 +265,25 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
     }
 }
 
-function DoSummonTitanBurnCard(player, cardRef)
+function DoSummonTitanBurnCard( player, cardRef )
 {
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-		player.WaitSignal( "CE_FLAGS_CHANGED" )
-
     ForceTitanBuildComplete(player)
 
     local titanDataTable = GetPlayerClassDataTable( player, "titan" )
     local oldSetFile = titanDataTable.playerSetFile
 
-    if(cardRef == "bc_summon_atlas")
-	    titanDataTable.playerSetFile = "titan_atlas"
-    if(cardRef == "bc_summon_ogre")
-	    titanDataTable.playerSetFile = "titan_ogre"
-    if(cardRef == "bc_summon_stryder")
-        titanDataTable.playerSetFile = "titan_stryder"
-        // titanDataTable.playerSetFile = "titan_destroyer_tier0"
+    switch( cardRef )
+    {
+        case "bc_summon_atlas"
+            titanDataTable.playerSetFile = "titan_atlas"
+            break
+        case "bc_summon_ogre"
+            titanDataTable.playerSetFile = "titan_ogre"
+            break
+        case "bc_summon_stryder"
+            titanDataTable.playerSetFile = "titan_stryder"
+            break
+    }
 
     player.WaitSignal("CalledInReplacementTitan")
 
@@ -321,6 +301,14 @@ function DoSummonTitanBurnCard(player, cardRef)
 
 function RunBurnCardFunctions( player, cardRef )
 {
+    if(cardData.rarity == BURNCARD_RARE)
+        AddPlayerScore( player, "UsedBurnCard_Rare" )
+    else
+        AddPlayerScore( player, "UsedBurnCard_Common" )
+
+
+    Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
+
     thread RunSpawnBurnCard( player, cardRef )
     local cardData = GetBurnCardData( cardRef )
     if(cardData.serverFlags)
@@ -441,14 +429,6 @@ function BurnCardPlayerRespawned_Threaded( player )
 
         if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
             ChangeOnDeckBurnCardToActive( player )
-
-        // if(cardData.rarity == BURNCARD_RARE)
-        //     AddPlayerScore( player, "UsedBurnCard_Rare" )
-        // else
-        //     AddPlayerScore( player, "UsedBurnCard_Common" )
-
-
-        // Stats_IncrementStat( player, "misc_stats", "burnCardsSpent", 1 )
     }
 
     if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
