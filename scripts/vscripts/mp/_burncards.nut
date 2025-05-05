@@ -626,13 +626,11 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
                     titan.SetActiveWeapon(weaponData.weapon)
                     break;
                 case "TITAN_OFFHAND0":
-                    printt("Ordnance weapon")
                     titan.TakeOffhandWeapon(0)
                     wait 0.1;
                     titan.GiveOffhandWeapon(weaponData.weapon, 0, weaponData.mods)
                     break;
                 case "TITAN_OFFHAND1":
-                    printt("Special weapon");
                     titan.TakeOffhandWeapon(1);
                     wait 0.1;
                     titan.GiveOffhandWeapon(weaponData.weapon, 1, weaponData.mods)
