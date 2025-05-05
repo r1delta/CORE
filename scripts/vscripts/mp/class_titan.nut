@@ -115,6 +115,10 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 
 	local table = player.playerClassData["titan"]
 
+	if ( level.onOverrideLoadoutCallbacks )
+		foreach ( callbackInfo in level.onOverrideLoadoutCallbacks )
+			callbackInfo.func.acall( [callbackInfo.scope, player, table, true] )
+
 	local soul = titan.GetTitanSoul()
 	if ( soul )
 	{
@@ -142,7 +146,7 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 		titan.GiveWeapon( table.primaryWeapon, table.primaryWeaponMods )
 
 	if ( table.secondaryWeapon )
-		titan.GiveWeapon( table.secondaryWeapon )
+		titan.GiveWeapon( table.secondaryWeapon, table.secondaryWeaponMods )
 
 	if ( table.offhandWeapons )
 	{
@@ -191,6 +195,10 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 
 	if (!existingTitan)
 	  	thread ApplyTitanBurnCards_Threaded( titan )
+
+	if ( level.onChangeLoadoutCallbacks )
+		foreach ( callbackInfo in level.onChangeLoadoutCallbacks )
+			callbackInfo.func.acall( [callbackInfo.scope, player, table, true] )
 }
 
 

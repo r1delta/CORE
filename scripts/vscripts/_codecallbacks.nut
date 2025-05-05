@@ -19,6 +19,8 @@ function main()
 	level.onTitanDoomedCallbacks <- {}
 	level.titanDamageScaler <- {}
 	level.onClientChatMsgCallbacks <- {}
+	level.onOverrideLoadoutCallbacks <- {}
+	level.onChangeLoadoutCallbacks <- {}
 
 	IncludeScript( "_codecallbacks_shared", getroottable() )
 
@@ -552,6 +554,40 @@ function CodeCallback_OnClientChatMsg( playerIndex, msg, isTeamChat )
 
 	// Default case
 	return msg
+}
+
+function AddCallback_OnOverrideLoadout( callbackFunc )
+{
+	Assert( "onOverrideLoadoutCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnOverrideLoadout can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 3, "player, loadoutTable, isTitan" )
+
+	local name = FunctionToString( callbackFunc )
+	Assert( !( name in level.onOverrideLoadoutCallbacks ), "Already added " + name + " with AddCallback_OnOverrideLoadout" )
+
+	local callbackInfo = {}
+	callbackInfo.name <- name
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onOverrideLoadoutCallbacks[name] <- callbackInfo
+}
+
+function AddCallback_OnChangeLoadout( callbackFunc )
+{
+	Assert( "onChangeLoadoutCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnChangeLoadout can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 3, "player, loadoutTable, isTitan" )
+
+	local name = FunctionToString( callbackFunc )
+	Assert( !( name in level.onChangeLoadoutCallbacks ), "Already added " + name + " with AddCallback_OnChangeLoadout" )
+
+	local callbackInfo = {}
+	callbackInfo.name <- name
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onChangeLoadoutCallbacks[name] <- callbackInfo
 }
 
 main()

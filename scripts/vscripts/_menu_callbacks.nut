@@ -128,6 +128,7 @@ function SetBotTitanLoadout( player )
 		table.primaryWeaponMods = loadout.primaryMods
 
 	table.secondaryWeapon <- null	// TODO: Update other script so we can safely remove this if we aren't having titan secondaries
+	table.secondaryWeaponMods <- []
 
 	table.offhandWeapons <- {}
 	table.offhandWeapons[0] <- { weapon = loadout.ordnance, mods = loadout.ordnanceMods }
@@ -180,14 +181,14 @@ function SetBotPilotLoadout( player )
 	}
 
 	table.secondaryWeapon <- loadout.secondary
-	table.secondaryMods <- []
+	table.secondaryWeaponMods <- []
 	if ( loadout.secondaryMods.len() != 0 )
-		table.secondaryMods = loadout.secondaryMods
+		table.secondaryWeaponMods = loadout.secondaryMods
 
 	table.sidearmWeapon <- loadout.sidearm
-	table.sidearmMods <- []
+	table.sidearmWeaponMods <- []
 	if ( loadout.sidearmMods.len() != 0 )
-		table.sidearmMods = loadout.sidearmMods
+		table.sidearmWeaponMods = loadout.sidearmMods
 
 
 	if ( "offhandWeapons" in table && loadout.ordnance != table.offhandWeapons[0].weapon )
@@ -640,6 +641,9 @@ function SetPilotLoadout( player, isCustom, loadoutIndex )
 	if ( loadout.primaryMod )
 		table.primaryWeaponMods.append( loadout.primaryMod )
 
+	table.secondaryWeaponMods <- []
+	table.sidearmWeaponMods <- []
+
 	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
 	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
 
@@ -711,6 +715,9 @@ function SetTitanLoadout( player, isCustom, loadoutIndex )
 		table.primaryWeaponMods.append( loadout.primaryAttachment )
 	if ( loadout.primaryMod )
 		table.primaryWeaponMods.append( loadout.primaryMod )
+
+	table.secondaryWeaponMods <- []
+	table.sidearmWeaponMods <- []
 
 	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
 	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )

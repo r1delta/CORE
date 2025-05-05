@@ -251,6 +251,11 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	// force these angles because client can have incorrect angles, depending on their view when they left previous map
 	player.SetOrigin( Vector(0,0,0) )
 	player.SetAngles( Vector(0,0,0) )
+
+	foreach ( callbackInfo in level.onClientConnectedCallbacks )
+	{
+		callbackInfo.func.acall( [callbackInfo.scope, player] )
+	}
 }
 
 function CodeCallback_OnClientSendingPersistenceToNewServer( player )

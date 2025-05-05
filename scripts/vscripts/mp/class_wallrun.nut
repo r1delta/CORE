@@ -77,6 +77,10 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 		OverrideBotLoadout( table, false )
 	}
 
+	if ( level.onOverrideLoadoutCallbacks )
+		foreach ( callbackInfo in level.onOverrideLoadoutCallbacks )
+			callbackInfo.func.acall( [callbackInfo.scope, player, table, false] )
+
 	UpdateLastPilotLoadout( player )
 
 	if ( Riff_OSPState() != eOSPState.Default )
@@ -118,12 +122,12 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 	}
 
 	if ( table.secondaryWeapon )
-		player.GiveWeapon( table.secondaryWeapon )
+		player.GiveWeapon( table.secondaryWeapon, table.secondaryWeaponMods )
 
 
 	if ( table.sidearmWeapon )
 	{
-		player.GiveWeapon( table.sidearmWeapon )
+		player.GiveWeapon( table.sidearmWeapon, table.sidearmWeaponMods )
 
 		if ( !activeWeapon )
 			activeWeapon = table.sidearmWeapon
@@ -251,8 +255,9 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 		head = 0
 	SelectHead(player, head)
 
-	// if (level.onChangeLoadout)
-	// 	level.onChangeLoadout.func.acall([level.onChangeLoadout.scope, player])
+	if ( level.onChangeLoadoutCallbacks )
+		foreach ( callbackInfo in level.onChangeLoadoutCallbacks )
+			callbackInfo.func.acall( [callbackInfo.scope, player, table, false] )
 }
 
 function AddLethalityMod( lethality, weaponName, modName )
