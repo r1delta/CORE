@@ -77,6 +77,13 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 
 	if (index == null || index < 0 || index >= MAX_BURN_CARDS)
 		return false
+
+	// check if we already have an active burn card
+	if (player.GetActiveBurnCardIndex() != -1)
+	{
+		SendHudMessage( player, "#BURN_CARD_IS_ACTIVE", -1, 0.4, 255, 255, 255, 255, 1.0, 2.0, 1.0 )
+		return false
+	}
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
 	SetPlayerBurnCardOnDeckIndex(player, index)
