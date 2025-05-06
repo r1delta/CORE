@@ -284,7 +284,7 @@ function DoSummonTitanBurnCard( player, cardRef )
     StopActiveBurnCard( player )
     if (oldSetFile) {
         player.WaitSignal("titan_impact")
-        printt("Setting titan data table back to: " + oldSetFile)
+        // printt("Setting titan data table back to: " + oldSetFile)
         titanDataTable.playerSetFile = oldSetFile
     }
 }
