@@ -604,8 +604,8 @@ function SetEvacShipArrivalTimeAndDistanceFromFlagPoint()
 		case "mp_angel_city":
 		case "mp_outpost_207":
 		{
-			Evac_SetDropshipArrivalWaitTime( 5.0 )
-			Evac_SetDropshipArrivalIdleTime( 25.0 )
+			Evac_SetDropshipArrivalWaitTime( 25.0 )
+			Evac_SetDropshipArrivalIdleTime( 20.0 )
 			return //Depend on level script to pick a random evac node. Main reason for this is that the 2 maps don't use AddEvacLocation
 			break
 		}

@@ -984,14 +984,14 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 						}
 						else
 						{
-							SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_PRO_ESCAPE_TO_SHIP" )
+							SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED" )
 							SetWinner( GetOtherTeam( level.evacTeam ) )
 						}
 
 					}
 					else
 					{
-						SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_PRO_ESCORT_STOP_FLAG" ) //CTF PRo only. Make this more generic later
+						SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED" ) //CTF PRo only. Make this more generic later
 						SetWinner( GetOtherTeam( level.evacTeam ) )
 					}
 				}
