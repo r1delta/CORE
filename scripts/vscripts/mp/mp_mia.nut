@@ -147,6 +147,8 @@ function EntitiesDidLoad()
 		{ origin = Vector( 4207, 3296, -63 ), angles = Vector( 0, -177, 0 ) },
 		{ origin = Vector( 4208, 4103, -64 ), angles = Vector( 0, 179, 0 ) },
 	]
+	// P7 [TODO?] As these spawns are now used by every team it might be worth it to go through all of them since
+	//			  some might be harmful to this specific mode, and merge all of these in a unique array
 	local MIA_CTF_PILOT_SPAWN_MILITIA = [
 		// down-center
 		{ origin = Vector( -1558, 3408, -320 ), angles = Vector( 0, 19, 0 ) },
@@ -233,12 +235,13 @@ function EntitiesDidLoad()
 				CreatePilotStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_human_start_" + (ENT_STARTSPAWNPILOT_COUNT+1))
 				ENT_STARTSPAWNPILOT_COUNT++
 			}
+			// P7 [TODO?] Maybe merge these loops later since they're all to unassigned teams anyway, check previous comment
 			foreach(location in MIA_CTF_PILOT_SPAWN_MILITIA) {
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
+				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
 				ENT_SPAWNPILOT_COUNT++
 			}
 			foreach(location in MIA_CTF_PILOT_SPAWN_IMC) {
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
+				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
 				ENT_SPAWNPILOT_COUNT++
 			}
 			break
@@ -247,13 +250,13 @@ function EntitiesDidLoad()
 			// At the moment, start spawns will also be spawns when you die, would this go wrong? absolutely (not (probably))
 			foreach(location in MIA_GENERIC_PILOT_SPAWNSTART_MILITIA) {
 				CreatePilotStartSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_human_start_" + (ENT_STARTSPAWNPILOT_COUNT+1))
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
+				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
 				ENT_STARTSPAWNPILOT_COUNT++
 				ENT_SPAWNPILOT_COUNT++
 			}
 			foreach(location in MIA_GENERIC_PILOT_SPAWNSTART_IMC) {
 				CreatePilotStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_human_start_" + (ENT_STARTSPAWNPILOT_COUNT+1))
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
+				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
 				ENT_STARTSPAWNPILOT_COUNT++
 				ENT_SPAWNPILOT_COUNT++
 			}
@@ -263,13 +266,13 @@ function EntitiesDidLoad()
 	// At the moment, these will be the spawns when starting and respawning for every mode that might require it
 	foreach(location in MIA_TITAN_SPAWNSTART_MILITIA) {
 		CreateTitanPilotStartSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_titan_start_" + (ENT_STARTSPAWNTITAN_COUNT+1))
-		CreateTitanPilotSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_titan_" + ENT_SPAWNTITAN_COUNT+1)
+		CreateTitanPilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_titan_" + ENT_SPAWNTITAN_COUNT+1)
 		ENT_STARTSPAWNTITAN_COUNT++
 		ENT_SPAWNTITAN_COUNT++
 	}
 	foreach(location in MIA_TITAN_SPAWNSTART_IMC) {
 		CreateTitanPilotStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_titan_start_" + (ENT_STARTSPAWNTITAN_COUNT+1))
-		CreateTitanPilotSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_titan_" + (ENT_SPAWNTITAN_COUNT+1))
+		CreateTitanPilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_titan_" + (ENT_SPAWNTITAN_COUNT+1))
 		ENT_STARTSPAWNTITAN_COUNT++
 		ENT_SPAWNTITAN_COUNT++
 	}
