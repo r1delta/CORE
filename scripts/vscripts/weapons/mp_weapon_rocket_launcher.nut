@@ -142,7 +142,8 @@ function OnWeaponPrimaryAttack( attackParams )
 			speed = 800
 
 		if ( self.HasMod( "guided_missile" ) )
-			self.EmitWeaponSound( weaponSounds["fire"] )
+			SmartWeaponFireSound(self, null)
+		//	self.EmitWeaponSound( weaponSounds["fire"] )
 
 		local missile = self.FireWeaponMissile( attackParams.pos, attackParams.dir, speed, damageTypes.ATRocket | DF_IMPACT, damageTypes.ATRocket, false, shouldPredict )
 
