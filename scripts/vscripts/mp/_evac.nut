@@ -980,7 +980,7 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 
 						if ( IsAlive( dropship ) )
 						{
-							SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_ESCAPE_TO_SHIP", "#CAPTURE_THE_FLAG_PRO_ESCORT_STOP_FLAG" ) //CTF PRo only. Make this more generic later
+							SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_ESCAPE_TO_SHIP", "#CAPTURE_THE_FLAG_FLAG_ESCAPED" ) //CTF PRo only. Make this more generic later
 							SetWinner( level.evacTeam )
 						}
 						else
@@ -992,7 +992,7 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 					}
 					else
 					{
-						SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_ESCAPE_TO_SHIP", "#CAPTURE_THE_FLAG_PRO_ESCORT_STOP_FLAG" ) //CTF PRo only. Make this more generic later
+						SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_PRO_ESCORT_STOP_FLAG" ) //CTF PRo only. Make this more generic later
 						SetWinner( GetOtherTeam( level.evacTeam ) )
 					}
 				}
