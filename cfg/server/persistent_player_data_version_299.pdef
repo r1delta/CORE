@@ -528,6 +528,21 @@ $ENUM_START modsCombined
 	mp_titanweapon_xo16_burst
 	mp_titanweapon_xo16_extended_ammo
 	mp_titanweapon_xo16_fast_reload
+
+	// R1 Delta custom stuff
+	mp_weapon_car_holosight
+	mp_weapon_r97_holosight
+
+	// Disabled for now
+/*
+	mp_weapon_autopistol_extended_ammo
+	mp_weapon_autopistol_starburst
+
+	mp_weapon_semipistol_extended_ammo
+	mp_weapon_semipistol_silencer
+
+	mp_weapon_wingman_silencer
+*/
 $ENUM_END
 
 $ENUM_START unlockRefs

@@ -683,8 +683,28 @@ function InitItems()
 	CreateDecalData( itemType.TITAN_DECAL, "titan_decals_3s_marked4death",	"#TITAN_DECALS_3S_MARKED4DEATH_NAME",	"#TITAN_DECALS_3S_MARKED4DEATH_DESC",	"#TITAN_DECALS_3S_MARKED4DEATH_REQ",	"#TITAN_DECALS_3S_MARKED4DEATH_REQUNLOCKED",	"../models/titans/custom_decals/decal_pack_01/titan_decals_3S_marked4death_menu",	false )
 	CreateDecalData( itemType.TITAN_DECAL, "titan_decals_3s_pilothunter",	"#TITAN_DECALS_3S_PILOTHUNTER_NAME",	"#TITAN_DECALS_3S_PILOTHUNTER_DESC",	"#TITAN_DECALS_3S_PILOTHUNTER_REQ",		"#TITAN_DECALS_3S_PILOTHUNTER_REQUNLOCKED",		"../models/titans/custom_decals/decal_pack_01/titan_decals_3S_pilothunter_menu",	false )
 
+	// R1 Delta custom stuff
+	// When you add anything here, the game will start looking for [WEAPON_NAME] + [MOD_NAME] (ex: mp_weapon_car_holosight, mp_weapon_autopistol_starburst )
+	// So make sure you also have new entries for them in _pdef.nut and persistent_player_data_version_299.pdef
 
+	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_car_grunt_kills", 		1,		"mp_weapon_car",		"holosight",	"#MOD_HOLOSIGHT_NAME",		"#MOD_HOLOSIGHT_DESC",		"#MOD_HOLOSIGHT_LONGDESC",				"../ui/menu/items/attachment_icons/holosight", 			"../ui/menu/items/attachment_icons/holosight" )
+	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_r97_grunt_kills", 		1,		"mp_weapon_r97",		"holosight",	"#MOD_HOLOSIGHT_NAME",		"#MOD_HOLOSIGHT_DESC",		"#MOD_HOLOSIGHT_LONGDESC",				"../ui/menu/items/attachment_icons/holosight", 			"../ui/menu/items/attachment_icons/holosight" )
 
+	// Disabled for now - see: https://discord.com/channels/1186901921567617115/1186907055840301086/1368994432996606034
+
+	// "true like i was debating if i should make holosight usable for R-97 and CAR"
+	// "those are probably fine but compared to pistol perks, pistol probably shouldn't have pekrs"
+	// "Probably not on the main game experience, but would be nice to have it as a mod. just for fun"
+
+/*
+	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_spectre_kills", 		1, 		"mp_weapon_autopistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 10, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
+	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_pilot_kills", 		1, 		"mp_weapon_autopistol",		"starburst",					"#MOD_STARBURST_NAME",			"#MOD_STARBURST_DESC",				"#MOD_STARBURST_LONGDESC",				0, -5, 0, 10, 0, 		"../ui/menu/items/mod_icons/starburst", 			"../ui/menu/items/mod_icons/starburst" )
+
+	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_spectre_kills", 		1, 		"mp_weapon_semipistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
+	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_kills", 				1, 		"mp_weapon_semipistol",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, -5, -2, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
+
+	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_wingman_kills", 				1, 		"mp_weapon_wingman",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-10, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
+*/
 
 	// Sort some items based on unlock level
 	itemsOfType[itemType.PILOT_PRIMARY].sort( SortByUnlockReq )
