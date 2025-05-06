@@ -977,10 +977,9 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 				{
 					if ( evacPlayerCount )
 					{
-
 						if ( IsAlive( dropship ) )
 						{
-							SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_ESCAPE_TO_SHIP", "#CAPTURE_THE_FLAG_FLAG_ESCAPED" ) //CTF PRo only. Make this more generic later
+							SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_FLAG_TAKEN", "#CAPTURE_THE_FLAG_FLAG_ESCAPED" ) //CTF PRo only. Make this more generic later
 							SetWinner( level.evacTeam )
 						}
 						else
