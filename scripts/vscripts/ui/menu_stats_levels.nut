@@ -308,7 +308,12 @@ function UpdateStatsForLevel( mapName )
 	menu.GetChild( "LevelName" ).SetText( GetMapDisplayName( mapName ) )
 
 	// Image
-	local image = "../ui/menu/lobby/lobby_image_" + mapName
+	local image
+	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box")
+		image = "../loadscreens/" + mapName + "_widescreen"
+	else
+		image = "../ui/menu/lobby/lobby_image_" + mapName
+
 	local levelImageElem = menu.GetChild( "LevelImageLarge" )
 	levelImageElem.SetImage( image )
 	levelImageElem.SetAlpha( 255 )
