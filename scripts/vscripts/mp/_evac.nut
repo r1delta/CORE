@@ -45,6 +45,8 @@ function main()
 	Globalize( Evac_SetPostEvacDialogueTime )
 	Globalize( Evac_GetDropshipArrivalWaitTime )
 	Globalize( Evac_SetDropshipArrivalWaitTime )
+	Globalize( Evac_GetDropshipArrivalIdleTime )
+	Globalize( Evac_SetDropshipArrivalIdleTime )
 	Globalize( Evac_CreateAnimPackage )
 	Globalize( Evac_SetEvacTeamOverride )
 
@@ -76,7 +78,7 @@ function main()
 
 	level.postEvacDialogueTime <- 4.0
 	level.dropshipArrivalWaitTime <- EVAC_SHIP_ARRIVE_WAIT
-
+	level.dropshipArrivalIdleTime <- EVAC_SHIP_IDLE_TIME
 	level.evacVDU <- {}
 	level.evacVDU[ TEAM_MILITIA ] <- {}
 	level.evacVDU[ TEAM_MILITIA ].losersEvacPostEvac 			<- null
@@ -218,6 +220,16 @@ function Evac_SetDropshipArrivalWaitTime( time )
 function Evac_GetDropshipArrivalWaitTime()
 {
 	return level.dropshipArrivalWaitTime
+}
+
+function Evac_SetDropshipArrivalIdleTime( time )
+{
+	level.dropshipArrivalIdleTime = time
+}
+
+function Evac_GetDropshipArrivalIdleTime()
+{
+	return level.dropshipArrivalIdleTime
 }
 
 function Evac_CreateAnimPackage( arriveAnim, idleAnim, leaveAnim )
@@ -505,12 +517,12 @@ function EvacObjective( evacTeam )
 		level.evacShipIcon.Minimap_AlwaysShow( level.pursuitTeam, null )
 	}
 
-	local timeThatDropshipTakesOff =  Time() + EVAC_SHIP_IDLE_TIME
+	local timeThatDropshipTakesOff =  Time() + Evac_GetDropshipArrivalIdleTime()
 
 	SetTeamActiveObjective( evacTeam, "EG_DropshipExtract2", timeThatDropshipTakesOff,  level.evacShipIcon )
 	SetTeamActiveObjective( pursuitTeam, "EG_StopExtract2", timeThatDropshipTakesOff,  level.dropship )
 
-	wait EVAC_SHIP_IDLE_TIME
+	wait Evac_GetDropshipArrivalIdleTime()
 
 	// anything to do here?
 }
@@ -551,7 +563,7 @@ function EvacVDU( evacTeam, winningTeam )
 		thread DelayedConversationToTeam( Evac_GetDropshipArrivalWaitTime(), pursuitTeamVDUTable.pursuitDustOff, pursuitTeam )
 
 	if ( GameRules.GetGameMode() != EXFILTRATION )
-		delaythread ( (Evac_GetDropshipArrivalWaitTime() + EVAC_SHIP_IDLE_TIME) - 10.0 ) FlagSet( "EvacKillProximityConversationThread" )
+		delaythread ( (Evac_GetDropshipArrivalWaitTime() + Evac_GetDropshipArrivalIdleTime()) - 10.0 ) FlagSet( "EvacKillProximityConversationThread" )
 }
 
 
