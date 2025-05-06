@@ -94,7 +94,7 @@ function InitMenu()
 
 	// Map Image
 	local mapImage
-	if ( eogStarsMap == "mp_mia" || eogStarsMap == "mp_nest2" || eogStarsMap == "mp_box")
+	if ( eogStarsMap == "mp_mia" || eogStarsMap == "mp_nest2" || eogStarsMap == "mp_box" )
 		mapImage = "../loadscreens/" + eogStarsMap + "_widescreen"
 	else
 		mapImage = "../ui/menu/lobby/lobby_image_" + eogStarsMap

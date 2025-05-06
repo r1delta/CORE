@@ -309,7 +309,7 @@ function UpdateStatsForLevel( mapName )
 
 	// Image
 	local image
-	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box")
+	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" )
 		image = "../loadscreens/" + mapName + "_widescreen"
 	else
 		image = "../ui/menu/lobby/lobby_image_" + mapName
