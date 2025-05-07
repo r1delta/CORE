@@ -3012,7 +3012,7 @@ function GetEpilogueDuration()
 
 	if ( ShouldRunEvac() )
 	{
-		local totalWaitTime = GetWinnerDeterminedWait() + Evac_GetDropshipArrivalWaitTime() + EVAC_SHIP_IDLE_TIME +  Evac_GetPostEvacDialogueTime() +  EVAC_BUFFER_TIME //8 seconds of buffer time to allow for assorted waits here and there in the evac system.
+		local totalWaitTime = GetWinnerDeterminedWait() + Evac_GetDropshipArrivalWaitTime() + Evac_GetDropshipArrivalIdleTime() +  Evac_GetPostEvacDialogueTime() +  EVAC_BUFFER_TIME //8 seconds of buffer time to allow for assorted waits here and there in the evac system.
 		//printt( "Total epilogue evac time: " + totalWaitTime )
 		return totalWaitTime
 	}

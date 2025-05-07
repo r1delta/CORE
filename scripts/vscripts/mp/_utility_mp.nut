@@ -1467,6 +1467,9 @@ function DecrementBuildTimer( player, amount )
 		if (newRespawnTime >= 0) {
 			player.SetTitanRespawnTime(newRespawnTime)
 		}
+		else if (newRespawnTime < 0) {
+			player.SetTitanRespawnTime(1)
+		}
 		return
 	}
 

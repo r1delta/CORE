@@ -4,7 +4,7 @@
 	{
 		"ControlName"		"CPluginGameUIDialog"
 		"fieldName"		"Plugins"
-		"xpos"		"240"
+		"xpos"		"420"
 		"ypos"		"68"
 		"wide"		"460"
 		"tall"		"340"

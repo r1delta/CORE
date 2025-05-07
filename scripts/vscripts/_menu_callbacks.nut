@@ -60,10 +60,8 @@ AddClientCommandCallback("OpenBurnCardMenu", ClientCommand_OpenBurnCardMenu )
 }
 
 
-function ClientCommand_OpenBurnCardMenu(player,...) {
-	if (vargc != 0)
-		return false
-
+function ClientCommand_OpenBurnCardMenu(player, ...) 
+{
 	Remote.CallFunction_UI( player, "ServerCallback_OpenBurnCardMenu" )
 
 	return true
@@ -84,6 +82,7 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 		SendHudMessage( player, "#BURN_CARD_IS_ACTIVE", -1, 0.4, 255, 255, 255, 255, 1.0, 2.0, 1.0 )
 		return false
 	}
+	
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
 	SetPlayerBurnCardOnDeckIndex(player, index)

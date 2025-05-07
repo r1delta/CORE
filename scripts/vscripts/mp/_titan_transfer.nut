@@ -512,6 +512,12 @@ function PilotBecomesTitan( player, titan, fullCopy = true )
 			DropFlag( player )
 	}
 
+	if ( GameRules.GetGameMode() == CAPTURE_THE_FLAG_PRO && PlayerHasEnemyFlag( player ) )
+	{
+		if ( !GetCurrentPlaylistVarInt( "ctf_titan_flag_carry", 0 ) )
+			DropFlag( player )
+	}
+
 	ApplyTitanColor( player, titan.s.titanSettings )
 
 	if ( IsValid( soul.rodeoPanel ) )

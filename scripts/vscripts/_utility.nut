@@ -5372,6 +5372,8 @@ function NearFlagSpawnPoint( dropPoint )
 	{
 		foreach ( flagSpawnPoint in level.flagSpawnPoints )
 		{
+			if ( !IsValid( flagSpawnPoint ) )
+				continue
 			local fspOrigin = flagSpawnPoint.GetOrigin()
 			if ( Distance( fspOrigin, dropPoint ) < SAFE_TITANFALL_DISTANCE_CTF )
 				return true

@@ -262,7 +262,7 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
 function DoSummonTitanBurnCard( player, cardRef )
 {
-    ForceTitanBuildComplete(player)
+    StartTitanBuildProgress( player, true )
 
     local titanDataTable = GetPlayerClassDataTable( player, "titan" )
     local oldSetFile = titanDataTable.playerSetFile
@@ -281,11 +281,12 @@ function DoSummonTitanBurnCard( player, cardRef )
     }
 
     player.WaitSignal("CalledInReplacementTitan")
-
-    if (oldSetFile)
-        titanDataTable.playerSetFile = oldSetFile
-
     StopActiveBurnCard( player )
+    if (oldSetFile) {
+        player.WaitSignal("titan_impact")
+        // printt("Setting titan data table back to: " + oldSetFile)
+        titanDataTable.playerSetFile = oldSetFile
+    }
 }
 
 function RunBurnCardFunctions( player, cardRef )
@@ -386,9 +387,6 @@ function BurnCardPlayerRespawned_Threaded( player )
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" )
 
-    while ( !IsValid( player ) || IsValid( player.isSpawning ) )
-        wait 0.1
-
     printt( "BurnCardPlayerRespawned_Threaded" )
 
     if ( GetPlayerBurnCardActiveSlotID( player ) >= 0 )
@@ -420,12 +418,15 @@ function BurnCardPlayerRespawned_Threaded( player )
     if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
         return
 
+    while ( !IsValid( player ) || IsValid( player.isSpawning ) )
+        wait 0.1
+
     RunBurnCardFunctions( player, cardRef )
 }
 
 function RunSpawnBurnCard(player,cardRef)
 {
-    local cardData = GetBurnCardData(cardRef);
+    OnSpawned_GivePassiveLifeLong_Pilot( player )
 
     switch( cardRef )
     {
@@ -447,6 +448,9 @@ function RunSpawnBurnCard(player,cardRef)
             break
         case "bc_auto_sonar":
             thread BCAutoSonarLoop( player )
+            break
+        case "bc_minimap_scan":
+            ScanMinimapUntilDeath(player)
             break
         case "bc_dice_ondeath":
             thread RollTheDice( player, cardRef )

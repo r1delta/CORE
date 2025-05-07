@@ -45,6 +45,8 @@ function main()
 	Globalize( Evac_SetPostEvacDialogueTime )
 	Globalize( Evac_GetDropshipArrivalWaitTime )
 	Globalize( Evac_SetDropshipArrivalWaitTime )
+	Globalize( Evac_GetDropshipArrivalIdleTime )
+	Globalize( Evac_SetDropshipArrivalIdleTime )
 	Globalize( Evac_CreateAnimPackage )
 	Globalize( Evac_SetEvacTeamOverride )
 
@@ -76,7 +78,7 @@ function main()
 
 	level.postEvacDialogueTime <- 4.0
 	level.dropshipArrivalWaitTime <- EVAC_SHIP_ARRIVE_WAIT
-
+	level.dropshipArrivalIdleTime <- EVAC_SHIP_IDLE_TIME
 	level.evacVDU <- {}
 	level.evacVDU[ TEAM_MILITIA ] <- {}
 	level.evacVDU[ TEAM_MILITIA ].losersEvacPostEvac 			<- null
@@ -218,6 +220,16 @@ function Evac_SetDropshipArrivalWaitTime( time )
 function Evac_GetDropshipArrivalWaitTime()
 {
 	return level.dropshipArrivalWaitTime
+}
+
+function Evac_SetDropshipArrivalIdleTime( time )
+{
+	level.dropshipArrivalIdleTime = time
+}
+
+function Evac_GetDropshipArrivalIdleTime()
+{
+	return level.dropshipArrivalIdleTime
 }
 
 function Evac_CreateAnimPackage( arriveAnim, idleAnim, leaveAnim )
@@ -505,12 +517,12 @@ function EvacObjective( evacTeam )
 		level.evacShipIcon.Minimap_AlwaysShow( level.pursuitTeam, null )
 	}
 
-	local timeThatDropshipTakesOff =  Time() + EVAC_SHIP_IDLE_TIME
+	local timeThatDropshipTakesOff =  Time() + Evac_GetDropshipArrivalIdleTime()
 
 	SetTeamActiveObjective( evacTeam, "EG_DropshipExtract2", timeThatDropshipTakesOff,  level.evacShipIcon )
 	SetTeamActiveObjective( pursuitTeam, "EG_StopExtract2", timeThatDropshipTakesOff,  level.dropship )
 
-	wait EVAC_SHIP_IDLE_TIME
+	wait Evac_GetDropshipArrivalIdleTime()
 
 	// anything to do here?
 }
@@ -551,7 +563,7 @@ function EvacVDU( evacTeam, winningTeam )
 		thread DelayedConversationToTeam( Evac_GetDropshipArrivalWaitTime(), pursuitTeamVDUTable.pursuitDustOff, pursuitTeam )
 
 	if ( GameRules.GetGameMode() != EXFILTRATION )
-		delaythread ( (Evac_GetDropshipArrivalWaitTime() + EVAC_SHIP_IDLE_TIME) - 10.0 ) FlagSet( "EvacKillProximityConversationThread" )
+		delaythread ( (Evac_GetDropshipArrivalWaitTime() + Evac_GetDropshipArrivalIdleTime()) - 10.0 ) FlagSet( "EvacKillProximityConversationThread" )
 }
 
 
@@ -736,7 +748,7 @@ function EvacShipInit( node )
 	dummy.Kill()
 
 	level.arrivalAnimStartTime = Time() + Evac_GetDropshipArrivalWaitTime() - warpInFxTime - emarkStartTime
-	level.departureAnimStartTime = Time() + ( Evac_GetDropshipArrivalWaitTime() + EVAC_SHIP_IDLE_TIME) - (dustOffTime)
+	level.departureAnimStartTime = Time() + ( Evac_GetDropshipArrivalWaitTime() + Evac_GetDropshipArrivalIdleTime()) - (dustOffTime)
 }
 
 function GetEvacStartDelay()
@@ -965,22 +977,21 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 				{
 					if ( evacPlayerCount )
 					{
-
 						if ( IsAlive( dropship ) )
 						{
-							SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_ESCAPE_TO_SHIP", "#CAPTURE_THE_FLAG_PRO_ESCORT_STOP_FLAG" ) //CTF PRo only. Make this more generic later
+							SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_FLAG_TAKEN", "#CAPTURE_THE_FLAG_FLAG_ESCAPED" ) //CTF PRo only. Make this more generic later
 							SetWinner( level.evacTeam )
 						}
 						else
 						{
-							SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_PRO_ESCAPE_TO_SHIP" )
+							SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED" )
 							SetWinner( GetOtherTeam( level.evacTeam ) )
 						}
 
 					}
 					else
 					{
-						SetWinLossReasons( "#HEIST_SUCCEED_INTERRUPT_ESCAPE_DEFTEAM", "#HEIST_FAILED_ESCAPE_TO_SHIP_EVACTEAM" ) //CTF PRo only. Make this more generic later
+						SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED" ) //CTF PRo only. Make this more generic later
 						SetWinner( GetOtherTeam( level.evacTeam ) )
 					}
 				}

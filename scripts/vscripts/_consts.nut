@@ -2406,3 +2406,12 @@ const TITAN_DOOMED_EFFECT = "xo_exp_doomed"
 
 // TODO: move to a const from code
 const R1DELTA_PATCH_HEADER = "^CDEBFF00Welcome to ^f4433600R1Delta^CDEBFF00!"
+
+// for SendMenu function
+enum eMenuType
+{
+	MSG = 0,
+	MENU = 1,
+	TEXT = 2,
+	ENTRY = 3
+}
