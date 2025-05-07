@@ -449,6 +449,9 @@ function RunSpawnBurnCard(player,cardRef)
         case "bc_auto_sonar":
             thread BCAutoSonarLoop( player )
             break
+        case "bc_minimap_scan":
+            ScanMinimapUntilDeath(player)
+            break
         case "bc_dice_ondeath":
             thread RollTheDice( player, cardRef )
             break
