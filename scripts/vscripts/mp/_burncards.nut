@@ -262,7 +262,7 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
 function DoSummonTitanBurnCard( player, cardRef )
 {
-    ForceTitanBuildComplete(player)
+    StartTitanBuildProgress( player, true )
 
     local titanDataTable = GetPlayerClassDataTable( player, "titan" )
     local oldSetFile = titanDataTable.playerSetFile
