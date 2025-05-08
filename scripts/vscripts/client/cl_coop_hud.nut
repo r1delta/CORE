@@ -1633,6 +1633,15 @@ function EnableCoopMinimap( cockpit, player )
 	vgui.s.minimapGroup.SetScale( COOPMINIMAPSCALE, COOPMINIMAPSCALE )
 	vgui.s.coopMinimapGroup.satLabel.SetScale( 1, 1 )
 	vgui.s.coopMinimapGroup.satLabel.Show()
+
+	// Didn't place this earlier because the harvester healthbar will kinda break if i do that
+	if ( Riff_MinimapState() == eMinimapState.Hidden )
+	{
+		vgui.s.minimapGroup.GetElement( "MinimapCoop" ).Hide()
+		vgui.s.minimapGroup.GetElement( "MinimapBGCoop" ).Hide()
+		vgui.s.minimapGroup.GetElement( "MinimapCompassCoop" ).Hide()
+		vgui.s.minimapGroup.GetElement( "MinimapSatelliteLabel" ).Hide()
+	}
 }
 Globalize( EnableCoopMinimap )
 
