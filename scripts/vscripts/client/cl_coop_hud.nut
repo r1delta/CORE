@@ -1633,6 +1633,14 @@ function EnableCoopMinimap( cockpit, player )
 	vgui.s.minimapGroup.SetScale( COOPMINIMAPSCALE, COOPMINIMAPSCALE )
 	vgui.s.coopMinimapGroup.satLabel.SetScale( 1, 1 )
 	vgui.s.coopMinimapGroup.satLabel.Show()
+
+	if ( Riff_MinimapState() == eMinimapState.Hidden )
+	{
+		vgui.s.minimapGroup.GetElement( "MinimapCoop" ).Hide()
+		vgui.s.minimapGroup.GetElement( "MinimapBGCoop" ).Hide()
+		vgui.s.minimapGroup.GetElement( "MinimapCompassCoop" ).Hide()
+		vgui.s.minimapGroup.GetElement( "MinimapSatelliteLabel" ).Hide()
+	}
 }
 Globalize( EnableCoopMinimap )
 
