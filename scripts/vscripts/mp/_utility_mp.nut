@@ -1710,3 +1710,152 @@ function BurnCardOnDeath( target, attacker, idx )
 
 	
 }
+
+// -----------------------------------------------------------
+// Spawnpoint nodes
+//
+// _start player spawns are used at the beggining of the match, and they're team specific
+// non _start player spawns are used after the intro sequence, and they're usually generic, so they should be set to TEAM_UNASSIGNED (team 0)
+//
+// to find positions:
+// 1. open a local server
+// 2. turn on sv_cheats
+// 3. go to a spot that you think is nice
+// 4. run: script ( printt( "POSITION: " + GetPlayerArray()[0].GetOrigin(), "ANGLES: " + GetPlayerArray()[0].GetAngles() ) )
+// -----------------------------------------------------------
+
+// Start spawnpoint for Pilots
+function CreatePilotStartSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_human_start" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	DispatchSpawn( ent )
+}
+
+// Start spawnpoint for Titans
+function CreateTitanPilotStartSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_titan_start" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	DispatchSpawn( ent )
+}
+
+// Spawnpoint for Pilots ( generic )
+function CreatePilotSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_human" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	DispatchSpawn( ent )
+}
+
+// Spawnpoint for Pilots ( generic )
+function CreateTitanPilotSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_titan" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	DispatchSpawn( ent )
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+// Spawnpoint for Marvins
+
+// These have a "bodytype" option that selects which type of Marvin to spawn
+// 0 = regular Marvin
+// 1 = worker
+// 2 = Marvinone (???)
+// 3 = firefighter (seen in Demeter)
+function CreateMarvinSpawnPoint( origin, angles, team, name, marvinType = 0 )
+{
+	local ent = CreateEntity( "info_spawnpoint_marvin" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+
+	if ( marvinType = 3 )
+	{
+		ent.kv.bodytype = marvinType
+		ent.kv.headtype = 0
+	}
+	else
+	{
+		ent.kv.bodytype = marvinType
+		ent.kv.headtype = 4
+	}
+
+	DispatchSpawn( ent )
+}
+
+// Start spawnpoint for Droppods
+function CreateDropPodStartSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_droppod_start" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	ent.s.inUse <- false
+	DispatchSpawn( ent )
+}
+
+// Spawnpoint for Droppods ( generic )
+function CreateDropPodSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_droppod" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	ent.s.inUse <- false
+	DispatchSpawn( ent )
+}
+
+// Start spawnpoint for Dropships
+function CreateDropShipStartSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_dropship_start" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	ent.s.inUse <- false
+	DispatchSpawn( ent )
+}
+
+// Spawnpoint for Dropships ( generic )
+function CreateDropShipSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_dropship" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	ent.s.inUse <- false
+	DispatchSpawn( ent )
+}
+
+// Spawnpoint for Flags
+function CreateFlagSpawnPoint( origin, angles, team, name )
+{
+	local ent = CreateEntity( "info_spawnpoint_flag" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.SetTeam( team )
+	DispatchSpawn( ent )
+}
+
+// TODO: Could theoretically create hardpoint spawns like this as well

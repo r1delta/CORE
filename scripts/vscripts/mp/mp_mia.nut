@@ -30,55 +30,6 @@ function Mp_Mia_main()
 
 }
 
-function CreatePilotStartSpawnPoint( origin, angles, team, name )
-{
-	local ent = CreateEntity( "info_spawnpoint_human_start" )
-	ent.SetName( name )
-	ent.SetOrigin( origin )
-	ent.SetAngles( angles )
-	ent.SetTeam( team )
-	DispatchSpawn( ent )
-}
-
-function CreateTitanPilotStartSpawnPoint( origin, angles, team, name )
-{
-	local ent = CreateEntity( "info_spawnpoint_titan_start" )
-	ent.SetName( name )
-	ent.SetOrigin( origin )
-	ent.SetAngles( angles )
-	ent.SetTeam( team )
-	DispatchSpawn( ent )
-}
-function CreatePilotSpawnPoint( origin, angles, team, name )
-{
-	local ent = CreateEntity( "info_spawnpoint_human" )
-	ent.SetName( name )
-	ent.SetOrigin( origin )
-	ent.SetAngles( angles )
-	ent.SetTeam( team )
-	DispatchSpawn( ent )
-}
-
-function CreateTitanPilotSpawnPoint( origin, angles, team, name )
-{
-	local ent = CreateEntity( "info_spawnpoint_titan" )
-	ent.SetName( name )
-	ent.SetOrigin( origin )
-	ent.SetAngles( angles )
-	ent.SetTeam( team )
-	DispatchSpawn( ent )
-}
-
-function CreateDropPodSpawnPoint( origin, angles, team )
-{
-	local ent = CreateEntity( "info_spawnpoint_droppod_start" )
-	ent.SetOrigin( origin )
-	ent.SetAngles( angles )
-	ent.SetTeam( team )
-    ent.s.inUse <- false
-	DispatchSpawn( ent )
-}
-
 function EntitiesDidLoad()
 {
 	if ( !IsServer() )
