@@ -595,6 +595,10 @@ function ApplyTitanBurnCards_Threaded( titan )
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
         ChangeOnDeckBurnCardToActive( player )
+        local cardData = GetBurnCardData( ref )
+
+        if(cardData.serverFlags)
+            GiveServerFlag( player, cardData.serverFlags)
 
         if ( isSpawning )
             ApplyTitanWeaponBurnCard( player, ref )
