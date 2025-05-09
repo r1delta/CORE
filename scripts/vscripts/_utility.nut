@@ -5799,43 +5799,6 @@ function CheckDailyChallengeAchievement( player )
 	if ( todaysDailiesComplete >= 3 )
 		player.SetPersistentVar( "cu8achievement.ach_allDailyChallengesForDay", true )
 }
-// Helper function to replace all occurrences of 'find' with 'replace' in 'original'
-function replace_all(original, find, replace)
-{
-    local result = "";
-    local pos = 0;
-    local find_len = find.len();
-
-    // Validate that 'find' is not an empty string to prevent infinite loops
-    if (find_len == 0)
-    {
-        return original; // Return original string unchanged
-    }
-
-
-    while (true)
-    {
-        local index = original.find(find, pos);
-
-        // If 'find' is not found, 'index' will be null
-        if (index == null)
-        {
-            // Append the remaining part of the string
-            local remaining = original.slice(pos, original.len());
-            result += remaining;
-            break;
-        }
-
-        // Append the substring before the found occurrence and the replacement
-        local before = original.slice(pos, index);
-        result += before + replace;
-
-        // Move the position forward to continue searching
-        pos = index + find_len;
-    }
-
-    return result;
-}
 
 // New implementation of GetPlayerSettingsFieldForClassName with debug prints
 function GetPlayerSettingsFieldForClassName(className, field)
@@ -5854,17 +5817,19 @@ function GetPlayerSettingsFieldForClassName(className, field)
     {
         // Retrieve the original "bodymodel_imc" value
         local originalModel = OldPlayerSettingsFieldForClassName(className, "bodymodel_imc");
-        
+
         // Check if the original model was successfully retrieved
         if (!originalModel)
         {
             return null;
         }
-                
+
         // Replace all instances of "imc_" with "mcor_"
-        local modifiedModel = replace_all(originalModel, "imc_", "mcor_");
-        modifiedModel = replace_all(originalModel, "mcor_spectre", "mcor_spectre_assault"); // fix Militia spectres
-        
+        local modifiedModel = StringReplace(originalModel, "imc_", "mcor_");
+
+		if ( StringContains( modifiedModel, "mcor_spectre" ) )
+        	modifiedModel = StringReplace(originalModel, "mcor_spectre", "mcor_spectre_assault"); // fix Militia spectres
+
         return modifiedModel;
     }
     // For all other fields, delegate to the original function unchanged

@@ -367,7 +367,7 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
 	fixedSaveVar = var
     fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
     fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
-   
+
     if(PersistenceGetEnumIndexForItemName( "gamemodes", gameMode ) == -1 && StringContains( var, "%gamemode%" ) ) {
         // printt("Invalid game mode: " + gameMode)
         return
@@ -376,8 +376,8 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
         // printt("Invalid map name: " + mapName)
         return
     }
-	
-	
+
+
     local currentValue = player.GetPersistentVar(fixedSaveVar)
 
     player.SetPersistentVar(fixedSaveVar, currentValue + value)
@@ -424,7 +424,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
 		if ( !IsPetTitan( attacker ) ) // NPC Titans case
 			return
-       
+
 		player = soul.GetBossPlayer()
         if ( !IsValid( player ) )
             return
@@ -480,7 +480,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     if(attacker.IsTitan()) {
         local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
         local titanSettings = titanDataTable.playerSetFile
-        local titanName = replace_all( titanSettings, "titan_", "" )
+        local titanName = StringReplace( titanSettings, "titan_", "" )
         Stats_IncrementStat( attacker, "kills_stats", "asTitan_" +titanName, 1.0 )
     }
 
@@ -535,7 +535,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     if ( damageSource == eDamageSourceId.titan_execution ) {
         local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
         local titanSettings = titanDataTable.playerSetFile
-        local titanName = replace_all( titanSettings, "titan_", "" )
+        local titanName = StringReplace( titanSettings, "titan_", "" )
 		titanName = titanName.slice( 0, 1 ).toupper() + titanName.slice( 1, titanName.len() )
         Stats_IncrementStat( player, "kills_stats", "titanExocution" + titanName, 1.0 )
     }
@@ -587,7 +587,7 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
         if ( attacker.IsTitan() && !attacker.IsNPC() ) {
             local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
             local titanSettings = titanDataTable.playerSetFile
-            local titanName = replace_all( titanSettings, "titan_", "" )
+            local titanName = StringReplace( titanSettings, "titan_", "" )
             Stats_IncrementStat( victim, "deaths_stats", "byTitans_" + titanName , 1.0 )
         }
 
@@ -603,7 +603,7 @@ function HandleDeathStats( victim, attacker, damageInfo ) {
         // if ( attacker.IsTitan() && attacker.IsNPC() ) {
         //     printt("npc titan killed")
         //    	local titanSettings = attacker.s.titanSettings
-        //     local titanName = replace_all( titanSettings, "titan_", "" )
+        //     local titanName = StringReplace( titanSettings, "titan_", "" )
 		// 	Stats_IncrementStat( victim, "deaths_stats", "byNPCTitans_" + titanName, 1.0 )
         // }
 
@@ -650,7 +650,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
             {
                 local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
            	    local titanSettings = titanDataTable.playerSetFile
-                local titanName = replace_all( titanSettings, "titan_", "" )
+                local titanName = StringReplace( titanSettings, "titan_", "" )
                 printt("titan name: " + titanName)
                 // titans_atlas
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
@@ -659,7 +659,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
             if (victim.IsTitan() && victim.IsNPC() ) {
                 local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
            	    local titanSettings = titanDataTable.playerSetFile
-                local titanName = replace_all( titanSettings, "titan_", "" )
+                local titanName = StringReplace( titanSettings, "titan_", "" )
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0,source )
             }
