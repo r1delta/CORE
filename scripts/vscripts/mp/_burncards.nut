@@ -580,9 +580,7 @@ function ApplyTitanBurnCards_Threaded( titan )
     local ref
 
     if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
-    {
         ref = GetPlayerActiveBurnCard( player )
-    }
     else
     {
         local index = GetPlayerBurnCardOnDeckIndex( player )
@@ -594,10 +592,13 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     local cardData = GetBurnCardData( ref )
 
+    if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
+        return
+
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
-        if ( !DoesPlayerHaveActiveTitanBurnCard( player ) )
-            ChangeOnDeckBurnCardToActive( player )
+        ChangeOnDeckBurnCardToActive( player )
+
         if ( isSpawning )
             ApplyTitanWeaponBurnCard( player, ref )
         else
