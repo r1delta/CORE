@@ -411,9 +411,6 @@ function BurnCardPlayerRespawned_Threaded( player )
 
         cardData = GetBurnCardData(cardRef)
 
-        if ( cardData.ctFlags & CT_TITAN && cardData.group != BCGROUP_BONUS )
-            return
-
         if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP  )
             ChangeOnDeckBurnCardToActive( player )
     }
@@ -607,8 +604,6 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     // Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
 }
-
-
 
 function AddBurnCardLevelingPack( cardPackName, cardPackArray )
 {
