@@ -5801,7 +5801,7 @@ function CheckDailyChallengeAchievement( player )
 }
 
 // Helper function to replace all occurrences of 'find' with 'replace' in 'original'
-function replace_all(original, find, replace)
+function StringReplaceAll(original, find, replace)
 {
     local result = "";
     local pos = 0;
@@ -5863,10 +5863,10 @@ function GetPlayerSettingsFieldForClassName(className, field)
         }
 
         // Replace all instances of "imc_" with "mcor_"
-        local modifiedModel = replace_all(originalModel, "imc_", "mcor_");
+        local modifiedModel = StringReplaceAll(originalModel, "imc_", "mcor_");
 
 		if ( StringContains( modifiedModel, "mcor_spectre" ) )
-        	modifiedModel = replace_all(originalModel, "mcor_spectre", "mcor_spectre_assault"); // fix Militia spectres
+        	modifiedModel = StringReplaceAll(originalModel, "mcor_spectre", "mcor_spectre_assault"); // fix Militia spectres
 
         return modifiedModel;
     }
