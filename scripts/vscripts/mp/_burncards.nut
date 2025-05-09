@@ -308,7 +308,7 @@ function RunBurnCardFunctions( player, cardRef )
     if ( cardData.ctFlags & CT_WEAPON || cardData.ctFlags & CT_FRAG )
         thread ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
-    if ( cardData.ctFlags & CT_TITAN )
+    if ( cardData.ctFlags & CT_TITAN && cardData.group == BCGROUP_BONUS )
         thread DoSummonTitanBurnCard( player, cardRef )
 }
 
@@ -411,7 +411,10 @@ function BurnCardPlayerRespawned_Threaded( player )
 
         cardData = GetBurnCardData(cardRef)
 
-        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
+        if ( cardData.ctFlags & CT_TITAN && cardData.group != BCGROUP_BONUS )
+            return
+
+        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP  )
             ChangeOnDeckBurnCardToActive( player )
     }
 
@@ -588,6 +591,8 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     if ( !ref )
         return
+
+    local cardData = GetBurnCardData( ref )
 
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
