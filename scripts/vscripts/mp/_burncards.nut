@@ -312,6 +312,46 @@ function RunBurnCardFunctions( player, cardRef )
         thread DoSummonTitanBurnCard( player, cardRef )
 }
 
+// account for edge cases where it makes no sense to actually use the card
+function IsBurnCardEdgeCaseUseValid( player, cardRef )
+{
+    local cardData = GetBurnCardData( cardRef )
+
+    if ( cardData.ctFlags & CT_TITAN )
+    {
+        // no point using titan bcs if they're disabled
+        if ( Riff_TitanAvailability() == eTitanAvailability.Never )
+            return false
+
+        if ( Riff_TitanAvailability() == eTitanAvailability.Once )
+        {
+            // titan is out, so might be valid in grace or intro
+            if ( player.IsTitan() )
+                return true
+            
+            // most likely lost titan in grace or in pilot skirmish
+            if ( player.IsTitanBuildStarted() == false )
+                return false
+        }
+    }
+
+    if ( cardData.ctFlags & CT_GRUNT )
+    {
+        if ( Riff_AllowNPCs() == eAllowNPCs.None || 
+             Riff_AllowNPCs() == eAllowNPCs.SpectreOnly )
+            return false
+    }
+
+    if ( cardData.ctFlags & CT_SPECTRE )
+    {
+        if ( Riff_AllowNPCs() == eAllowNPCs.None || 
+             Riff_AllowNPCs() == eAllowNPCs.GruntOnly )
+            return false
+    }
+
+    return true
+}
+
 function ChangeOnDeckBurnCardToActive( player )
 {
     local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
@@ -397,6 +437,9 @@ function BurnCardPlayerRespawned_Threaded( player )
         if( !cardRef )
             return
 
+        if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
+            return
+
         printt( "BurnCardPlayerRespawned_Threaded cardRef: " + cardRef )
 
         cardData = GetBurnCardData(cardRef)
@@ -407,6 +450,9 @@ function BurnCardPlayerRespawned_Threaded( player )
         cardRef = GetBurnCardFromSlot( player, cardIndex )
 
         if( !cardRef )
+            return
+
+        if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
             return
 
         cardData = GetBurnCardData(cardRef)
@@ -594,6 +640,9 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
+        if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
+            return
+
         ChangeOnDeckBurnCardToActive( player )
         local cardData = GetBurnCardData( ref )
 
