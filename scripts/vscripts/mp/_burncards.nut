@@ -430,7 +430,7 @@ function BurnCardPlayerRespawned_Threaded( player )
     local cardIndex
     local cardData
 
-    // players are spawned in campaign before cinematic mode is set, this makes sure there ARE flags before we try waiting
+    // players are spawned in campaign before ce flags are set, this makes sure there ARE flags before we try waiting
     if ( GetCinematicMode() )
         player.WaitSignal( "CE_FLAGS_CHANGED" ) 
 
