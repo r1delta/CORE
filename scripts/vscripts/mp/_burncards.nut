@@ -262,6 +262,11 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
 function DoSummonTitanBurnCard( player, cardRef )
 {
+    local cardData = GetBurnCardData(cardRef)
+
+    if ( cardData.ctFlags & CT_TITAN && cardData.group != BCGROUP_BONUS )
+        return
+
     StartTitanBuildProgress( player, true )
 
     local titanDataTable = GetPlayerClassDataTable( player, "titan" )
