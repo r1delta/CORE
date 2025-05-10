@@ -161,6 +161,7 @@ function RefillWeaponAmmo(player) {
 }
 
 
+
 function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 {
     player.EndSignal( "OnDestroy" )
@@ -429,9 +430,13 @@ function BurnCardPlayerRespawned_Threaded( player )
     local cardIndex
     local cardData
 
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        player.WaitSignal( "CE_FLAGS_CHANGED" )
+    // players are spawned in campaign before cinematic mode is set, this makes sure there ARE flags before we try waiting
+    if ( GetCinematicMode() )
+        player.WaitSignal( "CE_FLAGS_CHANGED" ) 
 
+    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+        player.WaitSignal( "CE_FLAGS_CHANGED" ) 
+        
     printt( "BurnCardPlayerRespawned_Threaded" )
 
     if ( GetPlayerBurnCardActiveSlotID( player ) >= 0 )
