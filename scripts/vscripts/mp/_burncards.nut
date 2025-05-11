@@ -719,7 +719,7 @@ function ApplyTitanBurnCards_Threaded( titan )
             ApplyTitanWeaponBurnCard( titan, ref )
     }
 
-    if ( player.IsTitan() )
+    if ( isSpawning )
         Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
 }
 
