@@ -499,6 +499,12 @@ function RollTheDice( player, slot )
             {
                 local titan = player.IsTitan() ? player : player.GetPetTitan()
 
+                if ( !IsValid( titan ) )
+                {
+                    wait 0.1
+                    continue
+                }
+
                 local soul = titan.GetTitanSoul()
                 local player = titan.GetBossPlayer()
             
