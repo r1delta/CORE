@@ -20,17 +20,21 @@ function BCOnClientConnected( player )
 
     for ( local i = 0; i < GetPlayerMaxActiveBurnCards( player ); i++ )
     {
-        local stashedRef = GetPlayerStashedCardRef( player, i )
+        player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]", null )
 
-        if ( stashedRef )
+        local ref = GetBurnCardFromSlot( player, i )
+
+        if ( ref == null )
+            continue
+
+        if ( IsDiceCard( GetBurnCardFromSlot( player, i ) ) )
         {
             local deck = GetPlayerBurnCardDeck( player )
-            deck.append( { cardRef = stashedRef, new = false } )
+            deck.append( { cardRef = "bc_dice_ondeath", new = false } )
 
             FillBurnCardDeckFromArray( player, deck )
+            thread RollTheDice( player, i )
         }
-
-        player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]", null )
     }
 
     if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) )
@@ -419,32 +423,87 @@ function ChangeOnDeckBurnCardToActive( player )
         Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx, false )
 }
 
-function RollTheDice( player, cardRef )
+function RemoveCardsOfRarityFromDeckArrayAndDice( deck, rarity )
 {
-    printt("RollTheDice")
+    for( local i = 0; i < deck.len(); i++ )
+    {
+        if ( GetBurnCardRarity( deck[i].cardRef ) == rarity || IsDiceCard( deck[i].cardRef ) )
+            deck.remove( i )
+    }
+}
 
-    local card = GetPlayerBurnCardFromDeck( player, RandomInt(100) )
-    local slot = GetPlayerBurnCardActiveSlotID( player )
+function RollTheDice_PickCard( player, slot )
+{
+    local deck = GetPlayerBurnCardDeck( player )
 
-    if( !card )
+    if ( deck.len() == 0 )
         return
 
+    local removeCommons = RandomFloat( 0, 1.0 ) <= 1.0 / NON_RARES_PER_RARE
+
+    if ( removeCommons )
+        RemoveCardsOfRarityFromDeckArrayAndDice( deck, BURNCARD_COMMON )
+    else
+        RemoveCardsOfRarityFromDeckArrayAndDice( deck, BURNCARD_RARE )
+
+    // if this somehow blows up just ignore the fancy rules
+    if ( deck.len() == 0 )
+        deck = GetPlayerBurnCardDeck( player )
+
+    local card = deck[ RandomInt( deck.len() ) ]
+    
+    if( !card || card.cardRef == "bc_dice_ondeath" )
+        return
+
+    local cardRef = card.cardRef
     printt( "RollTheDice card: " + card.cardRef )
     SetPlayerStashedCardRef( player, card.cardRef, slot )
     SetPlayerStashedCardTime( player, 90, slot )
 
-    local idx = GetBurnCardIndexByRef( card.cardRef )
-    player.SetActiveBurnCardIndex( idx )
-    player.SetPersistentVar( "activeBCID", slot )
-    player.SetPersistentVar( "onDeckBurnCardIndex", -1 )
-
     SetPlayerActiveBurnCardSlotContents(player, slot, card.cardRef, false )
     SetPlayerLastActiveBurnCardFromSlot(player, slot, card.cardRef )
+}
 
-    // stash the dice card
-    local cardData = GetBurnCardData(cardRef)
-    SetPlayerStashedCardRef( player, "bc_dice_ondeath", slot )
-    SetPlayerStashedCardTime( player, 90, slot )
+function RollTheDice( player, slot )
+{
+    player.EndSignal( "Disconnected" )
+
+    RollTheDice_PickCard( player, slot )
+
+    local diceNextTime = Time() + 90
+
+    for( ;; )
+    {
+        while ( GetPlayerBurnCardActiveSlotID( player ) == slot )
+        {
+            if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
+            {
+                local titan = player.IsTitan() ? player : player.GetPetTitan()
+
+                local soul = titan.GetTitanSoul()
+                local player = titan.GetBossPlayer()
+            
+                soul.WaitSignal( "OnTitanDeath" )
+            } else
+                player.WaitSignal( "OnDeath" )
+
+            // stash the dice card
+            SetPlayerStashedCardRef( player, "bc_dice_ondeath", slot )
+            SetPlayerStashedCardTime( player, 90, slot )
+            diceNextTime = Time() + 90
+
+            wait 0.1
+        }
+
+        if ( Time() >= diceNextTime )
+        {
+            RollTheDice_PickCard( player, slot )
+
+            diceNextTime = Time() + 90
+        }
+
+        wait 0.1
+    }
 }
 
 function BCPlayerRespawned( player )
@@ -577,9 +636,6 @@ function RunSpawnBurnCard( player, cardRef )
             break
         case "bc_minimap_scan":
             ScanMinimapUntilDeath(player)
-            break
-        case "bc_dice_ondeath":
-            thread RollTheDice( player, cardRef )
             break
         case "bc_free_build_time_1":
             if ( IsValid( player.GetPetTitan() ) )
