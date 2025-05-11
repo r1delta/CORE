@@ -493,11 +493,11 @@ function RollTheDice_PickCard( player, slot )
 
     local stashTime = Time() + 90
     printt( "RollTheDice card: " + card.cardRef )
-    SetPlayerStashedCardRef( player, card.cardRef, slot )
-    SetPlayerStashedCardTime( player, stashTime.tointeger(), slot )
 
     SetPlayerActiveBurnCardSlotContents(player, slot, card.cardRef, false )
     SetPlayerLastActiveBurnCardFromSlot(player, slot, card.cardRef )
+
+    SetPlayerStashedCardTime( player, stashTime.tointeger(), slot )
 }
 
 function RollTheDice( player, slot )
@@ -507,6 +507,8 @@ function RollTheDice( player, slot )
     RollTheDice_PickCard( player, slot )
 
     local diceNextTime = Time() + 90
+
+    SetPlayerStashedCardRef( player, "bc_dice_ondeath", slot )
 
     for( ;; )
     {
@@ -531,7 +533,6 @@ function RollTheDice( player, slot )
             diceNextTime = Time() + 90
 
             // stash the dice card
-            SetPlayerStashedCardRef( player, "bc_dice_ondeath", slot )
             SetPlayerStashedCardTime( player, diceNextTime.tointeger(), slot )
 
             wait 0.1
