@@ -474,6 +474,20 @@ function RollTheDice_PickCard( player, slot )
         return
 
     local cardRef = card.cardRef
+
+    local actualDeck = GetPlayerBurnCardDeck( player )
+
+    for( local i = 0; i < actualDeck.len(); i++ )
+    {
+        if ( actualDeck[i].cardRef == cardRef )
+        {
+            actualDeck.remove( i )
+            break
+        }
+    }
+
+    FillBurnCardDeckFromArray( player, actualDeck )
+
     local stashTime = Time() + 90
     printt( "RollTheDice card: " + card.cardRef )
     SetPlayerStashedCardRef( player, card.cardRef, slot )
@@ -584,6 +598,11 @@ function BurnCardPlayerRespawned_Threaded( player )
     local cardIndex
     local cardData
 
+    player.EndSignal( "Disconnected" )
+
+    while ( !IsValid( player ) )
+        wait 0.1
+
     // players are spawned in campaign before ce flags are set, this makes sure there ARE flags before we try waiting
     if ( GetCinematicMode() )
         player.WaitSignal( "CE_FLAGS_CHANGED" );
@@ -600,7 +619,7 @@ function BurnCardPlayerRespawned_Threaded( player )
     if ( GetPlayerActiveBurnCard( player ) )
         return
 
-    cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+    cardIndex = GetPlayerBurnCardOnDeckIndex( player )
     cardRef = GetBurnCardFromSlot( player, cardIndex )
 
     if( cardRef )
@@ -635,6 +654,8 @@ function BurnCardPlayerRespawned_Threaded( player )
 
 function RunSpawnBurnCard( player, cardRef )
 {
+    player.EndSignal( "Disconnected" )
+    
     OnSpawned_GivePassiveLifeLong_Pilot( player )
 
     switch( cardRef )
@@ -787,6 +808,8 @@ function ApplyTitanBurnCards_Threaded( titan )
     else 
         player = titan
 
+    player.EndSignal( "Disconnected")
+
     if ( isSpawning )
     {
         while ( true )
@@ -858,10 +881,14 @@ function TakeAwayTitanBCOnDeath( titan )
     local player = titan.GetBossPlayer()
 
     soul.EndSignal( "OnTitanDeath" )
+    player.EndSignal( "Disconnected" )
 
 	OnThreadEnd(
 		function() : ( player )
 		{
+            if ( !IsValid( player ) )
+                return
+
             if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
                 StopActiveBurnCard( player )
 		}
