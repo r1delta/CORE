@@ -423,11 +423,20 @@ function ChangeOnDeckBurnCardToActive( player )
         Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx, false )
 }
 
-function RemoveCardsOfRarityFromDeckArrayAndDice( deck, rarity )
+function RemoveCardsOfRarityFromDeckArray( deck, rarity )
 {
     for( local i = 0; i < deck.len(); i++ )
     {
         if ( GetBurnCardRarity( deck[i].cardRef ) == rarity || IsDiceCard( deck[i].cardRef ) )
+            deck.remove( i )
+    }
+}
+
+function RemoveDiceCardFromDeck( deck)
+{
+    for( local i = 0; i < deck.len(); i++ )
+    {
+        if ( IsDiceCard( deck[i].cardRef ) )
             deck.remove( i )
     }
 }
@@ -442,13 +451,22 @@ function RollTheDice_PickCard( player, slot )
     local removeCommons = RandomFloat( 0, 1.0 ) <= 1.0 / NON_RARES_PER_RARE
 
     if ( removeCommons )
-        RemoveCardsOfRarityFromDeckArrayAndDice( deck, BURNCARD_COMMON )
+        RemoveCardsOfRarityFromDeckArray( deck, BURNCARD_COMMON )
     else
-        RemoveCardsOfRarityFromDeckArrayAndDice( deck, BURNCARD_RARE )
+        RemoveCardsOfRarityFromDeckArray( deck, BURNCARD_RARE )
 
     // if this somehow blows up just ignore the fancy rules
     if ( deck.len() == 0 )
         deck = GetPlayerBurnCardDeck( player )
+
+    RemoveDiceCardFromDeck( deck )
+
+    // don't bother using dice if there's no cards left
+    if ( deck.len() == 0 )
+    {
+        player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + slot + "].cardRef", null )
+        return
+    }
 
     local card = deck[ RandomInt( deck.len() ) ]
     
