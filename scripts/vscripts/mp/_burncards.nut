@@ -739,6 +739,9 @@ function BCSpiderSense_Think( player )
             if ( !IsValid( guy ) )
                 continue
 
+            if ( !IsAlive( guy ) )
+                continue
+
             if ( GetOtherTeam( player ) == guy.GetTeam() )
             {
                 local distance = Distance( player.GetOrigin(), guy.GetOrigin() )
