@@ -22,7 +22,6 @@ function BCOnClientConnected( player )
     for ( local i = 0; i < GetPlayerMaxActiveBurnCards( player ); i++ )
         player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]", null )
 
-
     if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) && !IsLobby() )
 	{
 		thread BurncardsAutoFillEmptyActiveSlots( player )
@@ -389,6 +388,8 @@ function ChangeOnDeckBurnCardToActive( player )
     if(cardData.lastsUntil != BC_FOREVER)
         player.SetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef", null )
 
+    player.Signal( "StartBurnCardEffect" )
+
     SetPlayerLastActiveBurnCardFromSlot(player, cardIndex, cardRef)
 
     foreach( p in GetPlayerArray() )
@@ -424,6 +425,46 @@ function BCPlayerRespawned( player )
     thread BurnCardPlayerRespawned_Threaded( player )
 }
 
+function BCLoadoutGrace_Think( player )
+{
+    player.EndSignal( "OnDestroy" )
+    player.EndSignal( "Disconnected" )
+    player.EndSignal( "StartBurnCardEffect" )
+
+    if ( !player.s.inGracePeriod )
+        player.WaitSignal( "EndGiveLoadouts" )
+
+    local cardIndex
+    local cardRef
+    local cardData
+
+    while( player.s.inGracePeriod && !( GetPlayerBurnCardActiveSlotID( player ) >= 0 ) )
+    {
+        cardIndex = GetPlayerBurnCardOnDeckIndex( player )
+        cardRef = GetBurnCardFromSlot( player, cardIndex )
+
+        if ( cardRef != null )
+        {
+            if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
+            {
+                wait 0.1
+                continue
+            }
+
+            cardData = GetBurnCardData( cardRef )
+
+            local lastsUntil = GetBurnCardLastsUntil( cardRef )
+
+            if ( lastsUntil != BC_NEXTTITANDROP )
+                ChangeOnDeckBurnCardToActive( player )
+            else if ( player.IsTitan() )
+                ChangeOnDeckBurnCardToActive( player )
+        }
+
+        wait 0.1
+    }
+}
+
 function BurnCardPlayerRespawned_Threaded( player )
 {
     local cardRef
@@ -443,29 +484,14 @@ function BurnCardPlayerRespawned_Threaded( player )
 
     printt( "BurnCardPlayerRespawned_Threaded" )
 
-    if ( GetPlayerBurnCardActiveSlotID( player ) >= 0 )
+    if ( GetPlayerActiveBurnCard( player ) )
+        return
+
+    cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+    cardRef = GetBurnCardFromSlot( player, cardIndex )
+
+    if( cardRef )
     {
-        cardIndex = GetPlayerBurnCardActiveSlotID( player )
-        cardRef = GetActiveBurnCard( player )
-
-        if( !cardRef )
-            return
-
-        if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
-            return
-
-        printt( "BurnCardPlayerRespawned_Threaded cardRef: " + cardRef )
-
-        cardData = GetBurnCardData(cardRef)
-    }
-    else
-    {
-        cardIndex = GetPlayerBurnCardOnDeckIndex(player)
-        cardRef = GetBurnCardFromSlot( player, cardIndex )
-
-        if( !cardRef )
-            return
-
         if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
             return
 
@@ -474,6 +500,16 @@ function BurnCardPlayerRespawned_Threaded( player )
         if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP  )
             ChangeOnDeckBurnCardToActive( player )
     }
+    else
+    {
+        waitthread BCLoadoutGrace_Think( player )
+
+        cardIndex = GetPlayerBurnCardActiveSlotID( player )
+        cardRef = GetActiveBurnCard( player )
+    }
+
+    if ( !cardRef )
+        return
 
     if ( GetBurnCardLastsUntil( cardRef ) == BC_NEXTTITANDROP )
         return
@@ -614,7 +650,13 @@ function ApplyTitanBurnCards_Threaded( titan )
     local player = titan.GetBossPlayer()
     while ( !IsValid( player ) && !titan.IsPlayer()  )
         wait 0.1
-    local isSpawning = IsValid( player.isSpawning )
+    
+    local isSpawning = false
+
+    if ( IsValid( player ) )
+        isSpawning = IsValid( player.isSpawning )        
+    else 
+        player = titan
 
     if ( isSpawning )
     {
@@ -634,14 +676,25 @@ function ApplyTitanBurnCards_Threaded( titan )
         }
     }
 
-    local ref
+    if ( GetPlayerActiveBurnCard( player ) )
+        return
 
-    if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
-        ref = GetPlayerActiveBurnCard( player )
+    local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+    local ref = GetBurnCardFromSlot( player, cardIndex )
+
+    if( ref )
+    {
+        if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
+            return
+
+        ChangeOnDeckBurnCardToActive( player )
+    }
     else
     {
-        local index = GetPlayerBurnCardOnDeckIndex( player )
-        ref = GetBurnCardFromSlot( player, index )
+        waitthread BCLoadoutGrace_Think( player )
+
+        cardIndex = GetPlayerBurnCardActiveSlotID( player )
+        ref = GetActiveBurnCard( player )
     }
 
     if ( !ref )
@@ -649,12 +702,9 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     local cardData = GetBurnCardData( ref )
 
-    if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
-        return
-
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
-        if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
+        if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
             return
 
         ChangeOnDeckBurnCardToActive( player )
@@ -669,7 +719,8 @@ function ApplyTitanBurnCards_Threaded( titan )
             ApplyTitanWeaponBurnCard( titan, ref )
     }
 
-    // Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
+    if ( player.IsTitan() )
+        Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
 }
 
 function AddBurnCardLevelingPack( cardPackName, cardPackArray )
