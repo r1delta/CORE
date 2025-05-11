@@ -594,7 +594,7 @@ function BCOnPlayerKilled( player,attacker )
 
     BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
 
-    if ( lastsUntil == BC_NEXTTITANDROP || cardRef == "bc_rematch" )
+    if ( cardRef == "bc_rematch" )
         StopActiveBurnCard( player )
 }
 
@@ -707,10 +707,7 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
-        if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
-            return
 
-        ChangeOnDeckBurnCardToActive( player )
         local cardData = GetBurnCardData( ref )
 
         if(cardData.serverFlags)
@@ -722,8 +719,28 @@ function ApplyTitanBurnCards_Threaded( titan )
             ApplyTitanWeaponBurnCard( titan, ref )
     }
 
+    thread TakeAwayTitanBCOnDeath( titan )
+
     if ( isSpawning )
         Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
+}
+
+function TakeAwayTitanBCOnDeath( titan )
+{
+    local soul = titan.GetTitanSoul()
+    local player = titan.GetBossPlayer()
+
+    soul.EndSignal( "OnTitanDeath" )
+
+	OnThreadEnd(
+		function() : ( titan, player )
+		{
+            if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
+                StopActiveBurnCard( player )
+		}
+	)
+
+    WaitForever()
 }
 
 function AddBurnCardLevelingPack( cardPackName, cardPackArray )
