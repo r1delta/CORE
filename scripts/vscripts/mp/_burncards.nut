@@ -527,6 +527,9 @@ function RunSpawnBurnCard(player,cardRef)
     switch( cardRef )
     {
         case "bc_cloak_forever":
+            if ( player.IsTitan() )
+                player.WaitSignal( "OnLeftTitan" ); wait 0.5
+
             EnableCloakForever( player )
             break
         case "bc_sonar_forever":
