@@ -712,6 +712,78 @@ function RunSpawnBurnCard( player, cardRef )
             DecrementBuildTimer( player, 80 )
             StopActiveBurnCard( player )
             break
+        case "bc_pilot_warning":
+            if ( player.IsTitan() )
+                player.WaitSignal( "OnLeftTitan" ); wait 0.5
+
+            BCSpiderSense( player )
+            break
+    }
+}
+
+function BCSpiderSense( player )
+{
+    thread BCSpiderSense_Think_Close( player )
+    thread BCSpiderSense_Think_Distant( player )
+}
+
+function BCSpiderSense_Think_Close( player )
+{
+    player.EndSignal( "OnDeath" )
+	player.EndSignal( "OnDestroy" )
+	player.EndSignal( "Disconnected" )
+
+    for( ;; )
+    {
+        foreach ( guy in GetPlayerArray() )
+        {
+            if ( !IsValid( guy ) )
+                continue
+
+            if ( GetOtherTeam( player ) == guy.GetTeam() )
+            {
+                local distance = Distance( player.GetOrigin(), guy.GetOrigin() )
+
+                if ( distance < 500 )
+                {
+                    EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_SpiderSense_CloseWarn" )
+                    Remote.CallFunction_Replay( player, "ServerCallback_SpiderSense" )
+                }
+            }
+        }
+
+        wait 1.25
+    }
+}
+
+function BCSpiderSense_Think_Distant( player )
+{
+    player.EndSignal( "OnDeath" )
+    player.EndSignal( "OnDestroy" )
+    player.EndSignal( "Disconnected" )
+
+    for( ;; )
+    {
+        foreach ( guy in GetPlayerArray() )
+        {
+            if ( !IsValid( guy ) )
+                continue
+
+            if ( GetOtherTeam( player ) == guy.GetTeam() )
+            {
+                local distance = Distance( player.GetOrigin(), guy.GetOrigin() )
+
+                if ( distance < 1000 && distance >= 500 )
+                {
+                    EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_SpiderSense_DistantWarn" )
+                    Remote.CallFunction_Replay( player, "ServerCallback_SpiderSense" )
+                }
+            }
+
+            wait 1.25
+        }
+
+        wait 1.25
     }
 }
 
