@@ -19,9 +19,21 @@ function BCOnClientConnected( player )
     player.SetPersistentVar("onDeckBurnCardIndex", -1)
 
     for ( local i = 0; i < GetPlayerMaxActiveBurnCards( player ); i++ )
-        player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]", null )
+    {
+        local stashedRef = GetPlayerStashedCardRef( player, i )
 
-    if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) && !IsLobby() )
+        if ( stashedRef )
+        {
+            local deck = GetPlayerBurnCardDeck( player )
+            deck.append( { cardRef = stashedRef, new = false } )
+
+            FillBurnCardDeckFromArray( player, deck )
+        }
+
+        player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]", null )
+    }
+
+    if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) )
 	{
 		thread BurncardsAutoFillEmptyActiveSlots( player )
 		ChangedPlayerBurnCards( player )
@@ -412,23 +424,27 @@ function RollTheDice( player, cardRef )
     printt("RollTheDice")
 
     local card = GetPlayerBurnCardFromDeck( player, RandomInt(100) )
-    if(!card)
+    local slot = GetPlayerBurnCardActiveSlotID( player )
+
+    if( !card )
         return
 
-    printt("RollTheDice card: " + card.cardRef)
-    SetPlayerStashedCardRef( player, card.cardRef,0 )
-    SetPlayerStashedCardTime( player, 90,0 )
+    printt( "RollTheDice card: " + card.cardRef )
+    SetPlayerStashedCardRef( player, card.cardRef, slot )
+    SetPlayerStashedCardTime( player, 90, slot )
+
     local idx = GetBurnCardIndexByRef( card.cardRef )
     player.SetActiveBurnCardIndex( idx )
-    player.SetPersistentVar( "activeBCID", 0 )
+    player.SetPersistentVar( "activeBCID", slot )
     player.SetPersistentVar( "onDeckBurnCardIndex", -1 )
-    SetPlayerActiveBurnCardSlotContents(player, 0, card.cardRef, false )
-    SetPlayerLastActiveBurnCardFromSlot(player, 0, card.cardRef)
+
+    SetPlayerActiveBurnCardSlotContents(player, slot, card.cardRef, false )
+    SetPlayerLastActiveBurnCardFromSlot(player, slot, card.cardRef )
 
     // stash the dice card
     local cardData = GetBurnCardData(cardRef)
-    SetPlayerStashedCardRef( player, "bc_dice_ondeath",0 )
-    SetPlayerStashedCardTime( player, 90,0 )
+    SetPlayerStashedCardRef( player, "bc_dice_ondeath", slot )
+    SetPlayerStashedCardTime( player, 90, slot )
 }
 
 function BCPlayerRespawned( player )
