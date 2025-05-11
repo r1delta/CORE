@@ -6,7 +6,6 @@ function main()
     Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( BCPlayerRespawned )
     AddCallback_OnPlayerKilled( BCOnPlayerKilled )
-    Globalize( RunBurnCardFunctions)
     Globalize( ChangeOnDeckBurnCardToActive )
     Globalize( ApplyTitanBurnCards_Threaded )
     PrecacheModel( MILITIA_SPECTRE_MODEL )
@@ -322,22 +321,34 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
 {
     local cardData = GetBurnCardData( cardRef )
 
-    if ( cardData.ctFlags & CT_TITAN )
+    if ( cardData.ctFlags & CT_TITAN || cardData.ctFlags & CT_BUILDTIME )
     {
-        // no point using titan bcs if they're disabled
         if ( Riff_TitanAvailability() == eTitanAvailability.Never )
             return false
 
         if ( Riff_TitanAvailability() == eTitanAvailability.Once )
         {
-            // titan is out, so might be valid in grace or intro
-            if ( player.IsTitan() )
+            if ( player.IsTitan() || IsValid( player.GetPetTitan() ) )
                 return true
             
-            // most likely lost titan in grace or in pilot skirmish
             if ( player.IsTitanBuildStarted() == false )
                 return false
         }
+    }
+
+    // only for buildtime reduction cards
+    if ( cardData.ctFlags == CT_BUILDTIME && cardRef != "bc_fast_build_2" )
+    {
+        if ( player.IsTitanReady() )
+            return false
+
+        if ( player.IsTitan() )
+            if ( GetTitanCoreTimer( player ) <= 0 )
+                return false
+        
+        if ( IsValid( player.GetPetTitan() ) )
+            if ( GetTitanCoreTimer( player.GetPetTitan() ) <= 0 )
+                return false
     }
 
     if ( cardData.ctFlags & CT_GRUNT )
@@ -520,7 +531,7 @@ function BurnCardPlayerRespawned_Threaded( player )
     RunBurnCardFunctions( player, cardRef )
 }
 
-function RunSpawnBurnCard(player,cardRef)
+function RunSpawnBurnCard( player, cardRef )
 {
     OnSpawned_GivePassiveLifeLong_Pilot( player )
 
@@ -555,11 +566,27 @@ function RunSpawnBurnCard(player,cardRef)
             thread RollTheDice( player, cardRef )
             break
         case "bc_free_build_time_1":
+            if ( IsValid( player.GetPetTitan() ) )
+            {
+                local titan = player.GetPetTitan()
+                local soul = titan.GetTitanSoul()
+
+                soul.WaitSignal( "OnSoulTransfer" )
+            }
+
             DecrementBuildTimer( player, 40 )
             StopActiveBurnCard( player )
             break
         case "bc_free_build_time_2":
-            DecrementBuildTimer(player, 80 )
+            if ( IsValid( player.GetPetTitan() ) )
+            {
+                local titan = player.GetPetTitan()
+                local soul = titan.GetTitanSoul()
+
+                soul.WaitSignal( "OnSoulTransfer" )
+            }
+
+            DecrementBuildTimer( player, 80 )
             StopActiveBurnCard( player )
             break
     }
@@ -707,11 +734,12 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     if ( GetBurnCardLastsUntil( ref ) == BC_NEXTTITANDROP )
     {
-
         local cardData = GetBurnCardData( ref )
 
         if(cardData.serverFlags)
             GiveServerFlag( player, cardData.serverFlags)
+
+        RunSpawnBurnCard( player, ref )
 
         if ( isSpawning )
             ApplyTitanWeaponBurnCard( player, ref )
@@ -722,7 +750,7 @@ function ApplyTitanBurnCards_Threaded( titan )
     thread TakeAwayTitanBCOnDeath( titan )
 
     if ( isSpawning )
-        Remote.CallFunction_NonReplay(player,"ServerCallback_TitanDialogueBurnCardVO")
+        Remote.CallFunction_NonReplay( player,"ServerCallback_TitanDialogueBurnCardVO" )
 }
 
 function TakeAwayTitanBCOnDeath( titan )
