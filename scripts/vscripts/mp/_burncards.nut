@@ -733,7 +733,7 @@ function TakeAwayTitanBCOnDeath( titan )
     soul.EndSignal( "OnTitanDeath" )
 
 	OnThreadEnd(
-		function() : ( titan, player )
+		function() : ( player )
 		{
             if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
                 StopActiveBurnCard( player )
