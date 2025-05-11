@@ -20,7 +20,7 @@ function BCOnClientConnected( player )
 
     for ( local i = 0; i < GetPlayerMaxActiveBurnCards( player ); i++ )
     {
-        local stashedRef = player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]" )
+        local stashedRef = GetPlayerStashedCardRef( player, i )
 
         if( stashedRef )
             SetPlayerActiveBurnCardSlotContents( player, i, stashedRef, false )
@@ -872,7 +872,11 @@ function ApplyTitanBurnCards_Threaded( titan )
             ApplyTitanWeaponBurnCard( titan, ref )
     }
 
-    thread TakeAwayTitanBCOnDeath( titan )
+
+    if ( isSpawning )
+        thread TakeAwayTitanBCOnDeath( player )    
+    else
+        thread TakeAwayTitanBCOnDeath( titan )
 
     if ( isSpawning )
         Remote.CallFunction_NonReplay( player,"ServerCallback_TitanDialogueBurnCardVO" )
@@ -881,7 +885,13 @@ function ApplyTitanBurnCards_Threaded( titan )
 function TakeAwayTitanBCOnDeath( titan )
 {
     local soul = titan.GetTitanSoul()
-    local player = titan.GetBossPlayer()
+
+    local player
+
+    if ( !titan.IsPlayer())
+        player = titan.GetBossPlayer()
+    else
+        player = titan
 
     soul.EndSignal( "OnTitanDeath" )
     player.EndSignal( "Disconnected" )
