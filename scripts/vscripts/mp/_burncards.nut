@@ -143,34 +143,39 @@ function WaitForPlayerActiveWeapon( player,className = null )
 	return weapon
 }
 
-function RefillWeaponAmmo(player) {
-
+function RefillWeaponAmmo( player ) 
+{
     player.EndSignal( "OnDestroy" )
 	player.EndSignal( "Disconnected" )
-    if(!player) {
-        return;
-    }
-    while (1) {
-        if(player.IsTitan()) {
+
+    while ( true ) 
+    {
+        if( player.IsTitan() ) 
             player.WaitSignal("OnLeftTitan")
-        }
-        local cardRef = GetPlayerActiveBurnCard( player );
-        if(!cardRef) {
-            return;
-        }
-        local cardData = GetBurnCardData(cardRef);
-        if(!(cardData.ctFlags & CT_FRAG)) {
-            return;
-        }
+        
+        local cardRef = GetPlayerActiveBurnCard( player )
+
+        if(!cardRef) 
+            return
+        
+        local cardData = GetBurnCardData(cardRef)
+
+        if( !(cardData.ctFlags & CT_FRAG) ) 
+            return
+        
         local offhand = player.GetOffhandWeapon( 0 )
 		if ( offhand )
 		{
             local currentAmmo = offhand.GetWeaponPrimaryClipCount()
-            if(currentAmmo != 2) {
+
+            if( currentAmmo > GetWeaponAmmoMaxLoaded() )
+                return
+
+            if(currentAmmo != 2) 
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
-            }
 		}
-        wait 8;
+
+        wait 8
     }
 }
 
