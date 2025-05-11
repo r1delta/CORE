@@ -432,11 +432,15 @@ function BurnCardPlayerRespawned_Threaded( player )
 
     // players are spawned in campaign before ce flags are set, this makes sure there ARE flags before we try waiting
     if ( GetCinematicMode() )
-        player.WaitSignal( "CE_FLAGS_CHANGED" ) 
+        player.WaitSignal( "CE_FLAGS_CHANGED" );
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        player.WaitSignal( "CE_FLAGS_CHANGED" ) 
+        player.WaitSignal( "CE_FLAGS_CHANGED" );
         
+    // some missions in campaign do not use CE flags properly and rely on eGameState.Playing, 
+    if ( GetCinematicMode() )
+        WaittillGameStateOrHigher( eGameState.Playing )
+
     printt( "BurnCardPlayerRespawned_Threaded" )
 
     if ( GetPlayerBurnCardActiveSlotID( player ) >= 0 )
