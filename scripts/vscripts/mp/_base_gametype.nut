@@ -1017,15 +1017,16 @@ function PostDeathThread( player, damageInfo )
 	local rematchOrigin
 	local cardIndex = GetPlayerBurnCardOnDeckIndex( player )
 	local cardRef = player.GetPersistentVar( _GetActiveBurnCardsPersDataPrefix() + "[" + cardIndex + "].cardRef" )
-	if (cardRef == "bc_rematch") {
+	if (cardRef == "bc_rematch")
+	{
 		if ( IsValid( attacker ) && methodOfDeath == eDamageSourceId.titan_execution )
-		{
-			// execution can throw you out of the map
 			rematchOrigin = attacker.GetOrigin()
-		} else {
+		else 
 			rematchOrigin = player.GetOrigin()
-		}
-		MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player,null)
+
+		// don't bother showing message if you killed yourself
+		if( attacker != victim )
+			MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player, null )
 	}
 
 
