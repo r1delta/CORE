@@ -20,6 +20,11 @@ function BCOnClientConnected( player )
 
     for ( local i = 0; i < GetPlayerMaxActiveBurnCards( player ); i++ )
     {
+        local stashedRef = player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]" )
+
+        if( stashedRef )
+            SetPlayerActiveBurnCardSlotContents( player, i, stashedRef, false )
+
         player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".stashedCardRef[" + i + "]", null )
 
         local ref = GetBurnCardFromSlot( player, i )
@@ -27,14 +32,8 @@ function BCOnClientConnected( player )
         if ( ref == null )
             continue
 
-        if ( IsDiceCard( GetBurnCardFromSlot( player, i ) ) )
-        {
-            local deck = GetPlayerBurnCardDeck( player )
-            deck.append( { cardRef = "bc_dice_ondeath", new = false } )
-
-            FillBurnCardDeckFromArray( player, deck )
+        if ( IsDiceCard( GetBurnCardFromSlot( player, i ) ) && !IsLobby() )
             thread RollTheDice( player, i )
-        }
     }
 
     if ( player.GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" ) )
