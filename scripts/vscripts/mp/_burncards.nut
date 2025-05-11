@@ -168,8 +168,6 @@ function RefillWeaponAmmo( player )
 		{
             local currentAmmo = offhand.GetWeaponPrimaryClipCount()
 
-            if( currentAmmo > offhand.GetWeaponAmmoMaxLoaded() )
-                return
 
             if(currentAmmo != 2) 
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
