@@ -456,9 +456,10 @@ function RollTheDice_PickCard( player, slot )
         return
 
     local cardRef = card.cardRef
+    local stashTime = Time() + 90
     printt( "RollTheDice card: " + card.cardRef )
     SetPlayerStashedCardRef( player, card.cardRef, slot )
-    SetPlayerStashedCardTime( player, 90, slot )
+    SetPlayerStashedCardTime( player, stashTime.tointeger(), slot )
 
     SetPlayerActiveBurnCardSlotContents(player, slot, card.cardRef, false )
     SetPlayerLastActiveBurnCardFromSlot(player, slot, card.cardRef )
@@ -486,11 +487,11 @@ function RollTheDice( player, slot )
                 soul.WaitSignal( "OnTitanDeath" )
             } else
                 player.WaitSignal( "OnDeath" )
+            diceNextTime = Time() + 90
 
             // stash the dice card
             SetPlayerStashedCardRef( player, "bc_dice_ondeath", slot )
-            SetPlayerStashedCardTime( player, 90, slot )
-            diceNextTime = Time() + 90
+            SetPlayerStashedCardTime( player, diceNextTime.tointeger(), slot )
 
             wait 0.1
         }
@@ -498,6 +499,8 @@ function RollTheDice( player, slot )
         if ( Time() >= diceNextTime )
         {
             RollTheDice_PickCard( player, slot )
+            Remote.CallFunction_UI( player, "SCB_RefreshBurnCardSelector" )
+            player.Signal("RefreshDice")
 
             diceNextTime = Time() + 90
         }
