@@ -99,7 +99,7 @@ function BurncardsAutoFillEmptyActiveSlots( player )
         wait 0.1
 
     if ( GetPlayerBurnCardDeck( player ).len() == 0 )
-        return  
+        return
 
     local maxActive = GetPlayerMaxActiveBurnCards( player )
     for ( local i = 0; i < maxActive; i++ )
@@ -145,33 +145,33 @@ function WaitForPlayerActiveWeapon( player,className = null )
 	return weapon
 }
 
-function RefillWeaponAmmo( player ) 
+function RefillWeaponAmmo( player )
 {
     player.EndSignal( "OnDestroy" )
 	player.EndSignal( "Disconnected" )
 
-    while ( true ) 
+    while ( true )
     {
-        if( player.IsTitan() ) 
+        if( player.IsTitan() )
             player.WaitSignal("OnLeftTitan")
-        
+
         local cardRef = GetPlayerActiveBurnCard( player )
 
-        if(!cardRef) 
+        if(!cardRef)
             return
-        
+
         local cardData = GetBurnCardData(cardRef)
 
-        if( !(cardData.ctFlags & CT_FRAG) ) 
+        if( !(cardData.ctFlags & CT_FRAG) )
             return
-        
+
         local offhand = player.GetOffhandWeapon( 0 )
 		if ( offhand )
 		{
             local currentAmmo = offhand.GetWeaponPrimaryClipCount()
 
 
-            if(currentAmmo != 2) 
+            if(currentAmmo != 2)
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
 		}
 
@@ -351,7 +351,7 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
         {
             if ( player.IsTitan() || IsValid( player.GetPetTitan() ) )
                 return true
-            
+
             if ( player.IsTitanBuildStarted() == false )
                 return false
         }
@@ -366,7 +366,7 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
         if ( player.IsTitan() )
             if ( GetTitanCoreTimer( player ) <= 0 )
                 return false
-        
+
         if ( IsValid( player.GetPetTitan() ) )
             if ( GetTitanCoreTimer( player.GetPetTitan() ) <= 0 )
                 return false
@@ -374,14 +374,14 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
 
     if ( cardData.ctFlags & CT_GRUNT )
     {
-        if ( Riff_AllowNPCs() == eAllowNPCs.None || 
+        if ( Riff_AllowNPCs() == eAllowNPCs.None ||
              Riff_AllowNPCs() == eAllowNPCs.SpectreOnly )
             return false
     }
 
     if ( cardData.ctFlags & CT_SPECTRE )
     {
-        if ( Riff_AllowNPCs() == eAllowNPCs.None || 
+        if ( Riff_AllowNPCs() == eAllowNPCs.None ||
              Riff_AllowNPCs() == eAllowNPCs.GruntOnly )
             return false
     }
@@ -405,7 +405,6 @@ function ChangeOnDeckBurnCardToActive( player )
 
     local cardData = GetBurnCardData(cardRef)
 
-
     if(cardData.rarity == BURNCARD_RARE)
         AddPlayerScore( player, "UsedBurnCard_Rare" )
     else
@@ -422,10 +421,26 @@ function ChangeOnDeckBurnCardToActive( player )
 
     player.Signal( "StartBurnCardEffect" )
 
-    SetPlayerLastActiveBurnCardFromSlot(player, cardIndex, cardRef)
+    SetPlayerLastActiveBurnCardFromSlot( player, cardIndex, cardRef )
 
     foreach( p in GetPlayerArray() )
         Remote.CallFunction_Replay( p, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), idx, false )
+
+    if ( PlayerHasDiceStashed( player, cardIndex ) )
+    {
+        local deck = GetPlayerBurnCardDeck( player )
+
+        for( local i = 0; i < deck.len(); i++ )
+        {
+            if ( deck[i].cardRef == cardRef )
+            {
+                deck.remove( i )
+                break
+            }
+        }
+
+        FillBurnCardDeckFromArray( player, deck )
+    }
 }
 
 function RemoveCardsOfRarityFromDeckArray( deck, rarity )
@@ -474,24 +489,11 @@ function RollTheDice_PickCard( player, slot )
     }
 
     local card = deck[ RandomInt( deck.len() ) ]
-    
+
     if( !card || card.cardRef == "bc_dice_ondeath" )
         return
 
     local cardRef = card.cardRef
-
-    local actualDeck = GetPlayerBurnCardDeck( player )
-
-    for( local i = 0; i < actualDeck.len(); i++ )
-    {
-        if ( actualDeck[i].cardRef == cardRef )
-        {
-            actualDeck.remove( i )
-            break
-        }
-    }
-
-    FillBurnCardDeckFromArray( player, actualDeck )
 
     local stashTime = Time() + 90
     printt( "RollTheDice card: " + card.cardRef )
@@ -528,7 +530,7 @@ function RollTheDice( player, slot )
 
                 local soul = titan.GetTitanSoul()
                 local player = titan.GetBossPlayer()
-            
+
                 soul.WaitSignal( "OnTitanDeath" )
             } else
                 player.WaitSignal( "OnDeath" )
@@ -615,8 +617,8 @@ function BurnCardPlayerRespawned_Threaded( player )
 
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" );
-        
-    // some missions in campaign do not use CE flags properly and rely on eGameState.Playing, 
+
+    // some missions in campaign do not use CE flags properly and rely on eGameState.Playing,
     if ( GetCinematicMode() )
         WaittillGameStateOrHigher( eGameState.Playing )
 
@@ -661,7 +663,7 @@ function BurnCardPlayerRespawned_Threaded( player )
 function RunSpawnBurnCard( player, cardRef )
 {
     player.EndSignal( "Disconnected" )
-    
+
     OnSpawned_GivePassiveLifeLong_Pilot( player )
 
     switch( cardRef )
@@ -857,12 +859,12 @@ function ApplyTitanBurnCards_Threaded( titan )
     local player = titan.GetBossPlayer()
     while ( !IsValid( player ) && !titan.IsPlayer()  )
         wait 0.1
-    
+
     local isSpawning = false
 
     if ( IsValid( player ) )
-        isSpawning = IsValid( player.isSpawning )        
-    else 
+        isSpawning = IsValid( player.isSpawning )
+    else
         player = titan
 
     player.EndSignal( "Disconnected")
@@ -928,7 +930,7 @@ function ApplyTitanBurnCards_Threaded( titan )
 
 
     if ( isSpawning )
-        thread TakeAwayTitanBCOnDeath( player )    
+        thread TakeAwayTitanBCOnDeath( player )
     else
         thread TakeAwayTitanBCOnDeath( titan )
 
