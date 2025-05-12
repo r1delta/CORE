@@ -682,10 +682,6 @@ function BurnCardPlayerRespawned_Threaded( player )
     while ( !IsValid( player ) )
         wait 0.1
 
-    // players are spawned in campaign before ce flags are set, this makes sure there ARE flags before we try waiting
-    if ( GetCinematicMode() )
-        player.WaitSignal( "CE_FLAGS_CHANGED" );
-
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" );
 
