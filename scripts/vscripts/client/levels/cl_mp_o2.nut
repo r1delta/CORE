@@ -64,7 +64,7 @@ const FX_CRASH = "P_impact_dpod_dirt"
 
 const REFINERY_HARDPOINT_ID 	= 1
 
-const MACGUN 	= "models/weapons/m1a1_hemlok/w_hemlok.mdl"
+const MACGUN 	= "models/weapons/rspn101/w_rspn101.mdl"
 const BLISKGUN 	= "models/weapons/car101/w_car101.mdl"
 const O2FUELROD = "models/levels_terrain/mp_o2/mp_o2_fuel_rod.mdl"
 const DOORIMC64_MODEL = "models/door/door_imc_interior_split_64_animated.mdl"
