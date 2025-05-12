@@ -98,6 +98,9 @@ function BurncardsAutoFillEmptyActiveSlots( player )
     while ( !PlayerFullyConnected( player ) )
         wait 0.1
 
+    if ( GetPlayerBurnCardDeck( player ).len() == 0 )
+        return  
+
     local maxActive = GetPlayerMaxActiveBurnCards( player )
     for ( local i = 0; i < maxActive; i++ )
     {
