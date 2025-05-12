@@ -1024,7 +1024,7 @@ function PostDeathThread( player, damageInfo )
 		else 
 			rematchOrigin = player.GetOrigin()
 
-		if(IsValid(victim)) {
+		if(victim != null && IsValid(victim)) {
 			// don't bother showing message if you killed yourself
 			if( attacker != victim )
 				MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player, null )
