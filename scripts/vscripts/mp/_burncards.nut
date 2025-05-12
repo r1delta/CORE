@@ -32,7 +32,10 @@ function BCOnClientConnected( player )
         if ( ref == null )
             continue
 
-        if ( IsDiceCard( GetBurnCardFromSlot( player, i ) ) && !IsLobby() )
+        if ( IsLobby() )
+            continue
+
+        if ( IsDiceCard( GetBurnCardFromSlot( player, i ) ) )
             thread RollTheDice( player, i )
     }
 
