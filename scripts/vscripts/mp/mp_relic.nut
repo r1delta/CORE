@@ -162,12 +162,12 @@ function SetupClassicMode()
 
 function ProgressAnnouncementEarly()
 {
-	if ( GetTeamIndex(GetWinningTeam()) == TEAM_IMC )
+	if ( GetWinningTeam() == TEAM_IMC )
 	{
 		PlayConversationToTeam( "EarlyProgressWinning", TEAM_IMC )
 		PlayConversationToTeam( "EarlyProgressLosing", TEAM_MILITIA )
 	}
-	else if ( GetTeamIndex(GetWinningTeam()) == TEAM_MILITIA )
+	else if ( GetWinningTeam() == TEAM_MILITIA )
 	{
 		PlayConversationToTeam( "EarlyProgressWinning", TEAM_MILITIA )
 		PlayConversationToTeam( "EarlyProgressLosing", TEAM_IMC )
@@ -176,12 +176,12 @@ function ProgressAnnouncementEarly()
 
 function ProgressAnnouncementMid()
 {
-	if ( GetTeamIndex(GetWinningTeam()) == TEAM_IMC )
+	if ( GetWinningTeam() == TEAM_IMC )
 	{
 		PlayConversationToTeam( "MidProgressWinning", TEAM_IMC )
 		PlayConversationToTeam( "MidProgressLosing", TEAM_MILITIA )
 	}
-	else if ( GetTeamIndex(GetWinningTeam()) == TEAM_MILITIA )
+	else if ( GetWinningTeam() == TEAM_MILITIA )
 	{
 		PlayConversationToTeam( "MidProgressWinning", TEAM_MILITIA )
 		PlayConversationToTeam( "MidProgressLosing", TEAM_IMC )
@@ -190,12 +190,12 @@ function ProgressAnnouncementMid()
 
 function ProgressAnnouncementLate()
 {
-	if ( GetTeamIndex(GetWinningTeam()) == TEAM_IMC )
+	if ( GetWinningTeam() == TEAM_IMC )
 	{
 		PlayConversationToTeam( "LateProgressWinning", TEAM_IMC )
 		PlayConversationToTeam( "LateProgressLosing", TEAM_MILITIA )
 	}
-	else if ( GetTeamIndex(GetWinningTeam()) == TEAM_MILITIA )
+	else if ( GetWinningTeam() == TEAM_MILITIA )
 	{
 		PlayConversationToTeam( "LateProgressWinning", TEAM_MILITIA )
 		PlayConversationToTeam( "LateProgressLosing", TEAM_IMC )
@@ -1145,7 +1145,7 @@ function MidEpilogue()
 	FlagWait( "EvacShipArrive" )
 	wait 5
 
-	if ( GetTeamIndex(GetWinningTeam()) == TEAM_IMC )
+	if ( GetWinningTeam() == TEAM_IMC )
 	{
 //		IMC post epilogue lines moved into "epilogue_mid"
 //		ForcePlayConversationToTeam( "post_epilogue_win", TEAM_IMC )

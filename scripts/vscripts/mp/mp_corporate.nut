@@ -2905,7 +2905,7 @@ function EvacSetupRoundEnd()
 		//-------------------------
 		FlagSet( "epilogueStarted" )
 
-		if ( GetTeamIndex(level.winners) == TEAM_IMC )
+		if ( level.winners == TEAM_IMC )
 			thread EvacWinnersIMC()
 		else
 			thread EvacWinnersMilitia()

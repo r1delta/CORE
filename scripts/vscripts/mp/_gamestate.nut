@@ -459,7 +459,7 @@ function GameStateEnter_WinnerDetermined()
 
 	DoEndRoundFunctions() // TEMP, replace with gamestate functions
 
-	AnnounceWinner(GetTeamIndex(level.nv.winningTeam))
+	AnnounceWinner( level.nv.winningTeam )
 
 	level.nv.gameEndTime = Time()
 
@@ -2101,8 +2101,8 @@ function GameRulesThink_WinnerDetermined()
 	{
 		SetGameState( eGameState.SwitchingSides )
 		return
-	} 
-	
+	}
+
 
 	SetGameState( eGameState.Prematch )
 }
@@ -2627,7 +2627,7 @@ function DefaultMatchProgressionAnnouncement( progression )
 {
 	local winningTeam = GetWinningTeam()
 
-	if ( !GetTeamIndex(winningTeam) )
+	if ( !winningTeam )
 		return
 
 	if ( progression < level.nextMatchProgressAnnouncementLevel  )
@@ -2641,9 +2641,9 @@ function DefaultMatchProgressionAnnouncement( progression )
 	Assert( announcements.winningAnnouncement!= null )
 	Assert( announcements.losingAnnouncement!= null )
 
-	PlayConversationToTeam( announcements.winningAnnouncement, GetTeamIndex(winningTeam) )
+	PlayConversationToTeam( announcements.winningAnnouncement, winningTeam )
 	local losingTeam = GetOtherTeam(winningTeam)
-	PlayConversationToTeam( announcements.losingAnnouncement, GetTeamIndex(losingTeam) )
+	PlayConversationToTeam( announcements.losingAnnouncement, losingTeam )
 
 
 	//Set the nextMatchProgressAnnouncementLevel

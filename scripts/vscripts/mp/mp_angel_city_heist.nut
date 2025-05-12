@@ -122,7 +122,7 @@ function EntitiesDidLoad()
 								Vector( -2776.000000, 1988.000000, 480.000000 )//테스트용
 								//Vector( 1253.530029, -554.075012, 811.125000 ),
 								//Vector( -2027.430054, 960.395020, 609.007996)
-		
+
 							  ]
 
 		local evacAngles = [ 	//Vector( 0, -80.54, 0 ),
@@ -130,21 +130,21 @@ function EntitiesDidLoad()
 								Vector( 0, 78, 0 ) //테스트용
 								//Vector( 0, 180, 0 ),
 								//Vector( 0, 179.604, 0 )
-		
+
 						   ]
 
 		local evacSpectatorPositions = [ Vector( 2154.047852, -2074.738770, 942.299316 ),
 										 Vector( 2714.390625, 45.400002, 759.743164 ),
 										 Vector( 1903.058960, -1322.483521, 823.097656 ),
 										 Vector( -1138.018311, 195.281570, 691.627930 )
-		
+
 							  		   ]
 
 		local evacSpectatorAngles = [ 	Vector( 7.924948, -65.822983, 0 ),
 										Vector( 0.014044, -234.180573, 0 ),
 										Vector( 4.037039, -229.682098, 0 ),
 										Vector( -4.035686, 140.311783, 0 )
-		
+
 									]
 
 		level.evacNodes <- []
@@ -1341,7 +1341,7 @@ function AngelCitySpecificChatter( npc )
 
 function AngelCityRoundEnd()
 {
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 
 	// TODO: needs to handle draw better
 	if ( winningTeam == TEAM_IMC )

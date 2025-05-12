@@ -1335,7 +1335,7 @@ function AngelCitySpecificChatter( npc )
 
 function AngelCityRoundEnd()
 {
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 
 	// TODO: needs to handle draw better
 	if ( winningTeam == TEAM_IMC )

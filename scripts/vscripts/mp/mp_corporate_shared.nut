@@ -28,7 +28,7 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 	{
 		case "spectreZombie":
 			//Spectre
-			actors.append( SpawnIntroNPC( "spectre", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang, true ) )
+			actors.append( SpawnIntroNPC( "spectre", UniqueString(), GetOtherTeam( team ), pos, ang, true ) )
 			actors[ 0 ].s.idle <- "sp_spectre_zombiedrag_idle"
 			actors[ 0 ].s.actions <- []
 			actors[ 0 ].s.actions.append( "sp_spectre_zombiedrag" )
@@ -44,7 +44,7 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 			break
 		case "spectreCrawl":
 			//Spectre
-			actors.append( SpawnIntroNPC( "spectre", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang, true ) )
+			actors.append( SpawnIntroNPC( "spectre", UniqueString(), GetOtherTeam( team ), pos, ang, true ) )
 			actors[ 0 ].s.idle <- "sp_spectre_crawl_idle"
 			actors[ 0 ].s.actions <- []
 			actors[ 0 ].s.actions.append( "sp_spectre_crawl" )
@@ -68,13 +68,13 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 			if ( walkPos )
 				actors[ 0 ].s.walkPos <- walkPos
 			//Grunt 1
-			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang ) )
+			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetOtherTeam( team ), pos, ang ) )
 			actors[ 1 ].s.idle <- "pt_spectre_speedkill_skit_A_idle"
 			actors[ 1 ].s.actions <- []
 			actors[ 1 ].s.actions.append( "pt_spectre_speedkill_skit_A" )
 			actors[ 1 ].s.sound <- "ai_skit_spectre_speedkill_Soldier1_comp"
 			//Grunt 2
-			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang ) )
+			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetOtherTeam( team ), pos, ang ) )
 			actors[ 2 ].s.idle <- "pt_spectre_speedkill_skit_B_idle"
 			actors[ 2 ].s.actions <- []
 			actors[ 2 ].s.actions.append( "pt_spectre_speedkill_skit_B" )
@@ -111,7 +111,7 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 			break
 		case "multikillMilitia":
 			//Spectre
-			actors.append( SpawnIntroNPC( "spectre", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang, true ) )
+			actors.append( SpawnIntroNPC( "spectre", UniqueString(), GetOtherTeam( team ), pos, ang, true ) )
 			actors[ 0 ].SetName( "SpectreIntroMilitia01" )
 			actors[ 0 ].SetMaxHealth( 1 )
 			actors[ 0 ].SetHealth( 1 )
@@ -142,7 +142,7 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 				actors[ 0 ].s.walkPos <- walkPos
 			//actors[ 0 ].s.sound <- null
 			//Grunt
-			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang ) )
+			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetOtherTeam( team ), pos, ang ) )
 			actors[ 1 ].s.idle <- "pt_curbstomp_idle_skit"
 			actors[ 1 ].s.actions <- []
 			actors[ 1 ].s.actions.append( "pt_curbstomp_skit" )
@@ -160,7 +160,7 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 				actors[ 0 ].s.walkPos <- walkPos
 			//actors[ 0 ].s.sound <- null
 			//Grunt
-			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang ) )
+			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetOtherTeam( team ), pos, ang ) )
 			actors[ 1 ].s.idle <- "pt_blindfire_idle_skit"
 			actors[ 1 ].s.actions <- []
 			actors[ 1 ].s.actions.append( "pt_blindfire_skit" )
@@ -176,7 +176,7 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 				actors[ 0 ].s.walkPos <- walkPos
 			//actors[ 0 ].s.sound <- null
 			//Grunt
-			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang ) )
+			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetOtherTeam( team ), pos, ang ) )
 			actors[ 1 ].s.idle <- "pt_spectre_chestpunch_idle"
 			actors[ 1 ].s.actions <- []
 			actors[ 1 ].s.actions.append( "pt_spectre_chestpunch" )
@@ -193,7 +193,7 @@ function IntroSkit( skitType, squadName, pos, ang, team, walkPos = null, flagTri
 			if ( walkPos )
 				actors[ 0 ].s.walkPos <- walkPos
 			//Grunt
-			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetTeamIndex(GetOtherTeams(1 << team)), pos, ang ) )
+			actors.append( SpawnIntroNPC( "grunt", UniqueString(), GetOtherTeam( team ), pos, ang ) )
 			actors[ 1 ].s.idle <- "pt_spectre_kill_skit_idle"
 			actors[ 1 ].s.actions <- []
 			actors[ 1 ].s.actions.append( "pt_spectre_kill_skit" )
