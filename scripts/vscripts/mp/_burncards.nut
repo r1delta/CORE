@@ -682,12 +682,12 @@ function BurnCardPlayerRespawned_Threaded( player )
     while ( !IsValid( player ) )
         wait 0.1
 
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        player.WaitSignal( "CE_FLAGS_CHANGED" );
-
     // some missions in campaign do not use CE flags properly and rely on eGameState.Playing,
     if ( GetCinematicMode() )
         WaittillGameStateOrHigher( eGameState.Playing )
+
+    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+        player.WaitSignal( "CE_FLAGS_CHANGED" );
 
     printt( "BurnCardPlayerRespawned_Threaded" )
 
