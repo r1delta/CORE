@@ -317,6 +317,21 @@ function DoSummonTitanBurnCard( player, cardRef )
     }
 }
 
+function IsAmpedTactical( cardRef )
+{
+    switch ( cardRef )
+    {
+        case "bc_super_stim":
+            return true
+        case "bc_super_cloak":
+            return true
+        case "bc_super_sonar":
+            return true
+        default:
+            return false
+    }
+}
+
 function RunBurnCardFunctions( player, cardRef )
 {
     thread RunSpawnBurnCard( player, cardRef )
@@ -336,8 +351,61 @@ function RunBurnCardFunctions( player, cardRef )
     if ( cardData.ctFlags & CT_WEAPON || cardData.ctFlags & CT_FRAG )
         thread ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
+    if ( IsAmpedTactical( cardRef ) )
+        ApplyAmpedTactical( player, cardRef )
+
     if ( cardData.ctFlags & CT_TITAN && cardData.group == BCGROUP_BONUS )
         thread DoSummonTitanBurnCard( player, cardRef )
+}
+
+function ApplyAmpedTactical( player, cardRef )
+{
+    local mods = []
+
+    switch( cardRef )
+    {
+        case "bc_super_stim":
+            mods = [ "bc_super_stim" ]
+            break
+        case "bc_super_cloak":
+            mods = [ "bc_super_cloak" ]
+            break
+        case "bc_super_sonar":
+            mods = [ "bc_super_sonar" ]
+            break
+    }
+
+    local cardData = GetBurnCardData( cardRef )
+    local weaponData = GetBurnCardWeapon( cardRef )
+
+    if( !weaponData )
+        return
+
+    if( weaponData.weaponType == "OFFHAND0" || weaponData.weaponType == "OFFHAND1" )
+    {
+        local weapons = player.GetOffhandWeapons()
+        local weaponToTake = null
+        local slot = 0
+
+        switch (weaponData.weaponType)
+        {
+            case "OFFHAND0":
+                weaponToTake = weapons[0]
+                slot = 0
+                break
+            case "OFFHAND1":
+                weaponToTake = weapons[1]
+                slot = 1;
+                break
+            default:
+                break
+        }
+
+        WaitForPlayerActiveWeapon( player )
+
+        player.TakeOffhandWeapon( slot )
+        player.GiveOffhandWeapon( weaponData.weapon, slot, mods )
+    }
 }
 
 // account for edge cases where it makes no sense to actually use the card
