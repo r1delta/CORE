@@ -657,6 +657,13 @@ function BCLoadoutGrace_Think( player )
                 continue
             }
 
+            // don't burn rematch if you're alive
+            if ( cardRef == "bc_rematch" )
+            {
+                wait 0.1
+                continue
+            }
+
             cardData = GetBurnCardData( cardRef )
 
             local lastsUntil = GetBurnCardLastsUntil( cardRef )
@@ -963,6 +970,9 @@ function ApplyTitanBurnCards_Threaded( titan )
     if( ref )
     {
         if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
+            return
+
+        if ( GetBurnCardLastsUntil( ref ) != BC_NEXTTITANDROP && !isSpawning)
             return
 
         ChangeOnDeckBurnCardToActive( player )
