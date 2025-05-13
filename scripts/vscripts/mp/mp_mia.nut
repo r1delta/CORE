@@ -83,6 +83,75 @@ function Mia_SetupHardpointMode() {
 	triggerHardpointB.SetOrigin( Vector( 1021, 3663, 53 ) )
 	triggerHardpointC.SetOrigin( Vector( -1290, 3583, 64 ) )
 
+	// Set assault points for hardpoints
+	// P7 [TODO]: Angles do matter here?
+	//// Test assault points, purely based on nothing as well
+	local MIA_ASSAULTPOINTS_A = [
+		{ origin = Vector( 3196, 2825, -62 ), angles = Vector( 0, 0, 0 ) },
+		{ origin = Vector( 2737, 2841, -307 ), angles = Vector( 0, 0, 0 ) }
+	]
+	local MIA_ASSAULTPOINTS_B = [
+		{ origin = Vector( 1075, 3055, -319 ), angles = Vector( 0, 0, 0 ) },
+		{ origin = Vector( 1031, 4193, -314 ), angles = Vector( 0, 0, 0 ) },
+	]
+	local MIA_ASSAULTPOINTS_C = [
+		{ origin = Vector( -1128, 2800, -62 ), angles = Vector( 0, 0, 0 ) },
+		{ origin = Vector( -674, 2830, -306 ), angles = Vector( 0, 0, 0 ) },
+	]
+	local MIA_ASSAULTPOINTS_NEAR_A = [
+		// IMC cabin, left door
+		{ origin = Vector( 3384, 3179, 64 ), angles = Vector( 0, 0, 0 ) },
+		// IMC cabin, right door
+		{ origin = Vector( 3378, 4022, 64 ), angles = Vector( 0, 0, 0 ) }
+	]
+	local MIA_ASSAULTPOINTS_NEAR_B = [
+		// Center 1
+		{ origin = Vector( 550, 4005, -319 ), angles = Vector( 0, 0, 0 ) },
+		// Center 2
+		{ origin = Vector( 1256, 3218, -319 ), angles = Vector( 0, 0, 0 ) },
+	]
+	local MIA_ASSAULTPOINTS_NEAR_C = [
+		// Militia cabin, left door
+		{ origin = Vector( -1342, 3963, 64 ), angles = Vector( 0, 0, 0 ) },
+		// Militia cabin, right door
+		{ origin = Vector( -1336, 3226, 64 ), angles = Vector( 0, 0, 0 ) },
+	]
+	foreach(idx, location in MIA_ASSAULTPOINTS_A) {
+		local assaultPoint = CreateAssaultPoint()
+		assaultPoint.SetName("hardpoint_A_ass_" + idx)
+		assaultPoint.SetOrigin(location.origin)
+		assaultPoint.SetAngles(location.angles)
+	}
+	foreach(idx, location in MIA_ASSAULTPOINTS_B) {
+		local assaultPoint = CreateAssaultPoint()
+		assaultPoint.SetName("hardpoint_B_ass_" + idx)
+		assaultPoint.SetOrigin(location.origin)
+		assaultPoint.SetAngles(location.angles)
+	}
+	foreach(idx, location in MIA_ASSAULTPOINTS_C) {
+		local assaultPoint = CreateAssaultPoint()
+		assaultPoint.SetName("hardpoint_C_ass_" + idx)
+		assaultPoint.SetOrigin(location.origin)
+		assaultPoint.SetAngles(location.angles)
+	}
+	foreach(idx, location in MIA_ASSAULTPOINTS_NEAR_A) {
+		local assaultPoint = CreateAssaultPoint()
+		assaultPoint.SetName("hardpoint_A_near_ass_" + idx)
+		assaultPoint.SetOrigin(location.origin)
+		assaultPoint.SetAngles(location.angles)
+	}
+	foreach(idx, location in MIA_ASSAULTPOINTS_NEAR_B) {
+		local assaultPoint = CreateAssaultPoint()
+		assaultPoint.SetName("hardpoint_B_near_ass_" + idx)
+		assaultPoint.SetOrigin(location.origin)
+		assaultPoint.SetAngles(location.angles)
+	}
+	foreach(idx, location in MIA_ASSAULTPOINTS_NEAR_C) {
+		local assaultPoint = CreateAssaultPoint()
+		assaultPoint.SetName("hardpoint_C_near_ass_" + idx)
+		assaultPoint.SetOrigin(location.origin)
+		assaultPoint.SetAngles(location.angles)
+	}
 }
 
 function Mia_CreateSpawnPoints()
