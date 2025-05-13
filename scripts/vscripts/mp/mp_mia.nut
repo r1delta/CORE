@@ -35,10 +35,68 @@ function EntitiesDidLoad()
 	if ( !IsServer() )
 		return
 	
+	Mia_CreateSpawnPoints()
+
+	if ( EvacEnabled() )
+	{
+		Mia_CreateEvacNodes()
+	}
+
+	switch(GameRules.GetGameMode()) {
+		// Mode specifics setup
+		case "cp":
+			Mia_SetupHardpointMode()
+			break;
+	}
+
+	FlagWait( "ReadyToStartMatch" )
+	
+
+	thread Mia_SkyShowMain()
+	thread MatchProgressMilestones()
+}
+
+function Mia_SetupHardpointMode() {
+	// remove this when mode is playable
+	if( GetDeveloperLevel() < 1 )
+	{
+		return
+	}
+
+	// See maps/mp_mia_script.ent for creation of these ents
+	local hardpointA = GetEnt("hardpoint_A")
+	local hardpointB = GetEnt("hardpoint_B")
+	local hardpointC = GetEnt("hardpoint_C")
+
+	// spots
+	hardpointA.SetOrigin( Vector( 3173, 3583, 64 ) ) // IMC side
+	hardpointB.SetOrigin( Vector( 1021, 3583, 53 ) ) // Middle
+	hardpointC.SetOrigin( Vector( -1158, 3583, 64 ) ) // Militia side
+
+	// triggers
+	local triggerHardpointA = GetEnt("trigger_hardpoint_A_target")
+	local triggerHardpointA = GetEnt("trigger_hardpoint_B_target")
+	local triggerHardpointA = GetEnt("trigger_hardpoint_C_target")
+
+	// this placement is purely based on nothing btw
+	triggerHardpointA.SetOrigin( Vector( 3318, 3583, 64 ) )
+	triggerHardpointB.SetOrigin( Vector( 1021, 3663, 53 ) )
+	triggerHardpointC.SetOrigin( Vector( -1290, 3583, 64 ) )
+
+}
+
+function Mia_CreateSpawnPoints()
+{
 	local ENT_STARTSPAWNPILOT_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_human_start").len()
 	local ENT_STARTSPAWNTITAN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_titan_start").len()
 	local ENT_SPAWNPILOT_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_human").len()
 	local ENT_SPAWNTITAN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_titan").len()
+
+	local ENT_STARTSPAWNDROPPOD_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_droppod_start").len()
+	local ENT_SPAWNDROPPOD_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_droppod").len()
+
+	local ENT_SPAWNDROSHIP_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_dropship").len()
+	local ENT_SPAWNMARVIN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_marvin").len()
 
 	// Generic spawns
 	// Basically each team on their respective cabin side on the ship
@@ -164,10 +222,53 @@ function EntitiesDidLoad()
 		{ origin = Vector( 2112, 3495, -315 ), angles = Vector( 0, -84, 0 ) },
 		{ origin = Vector( 2093, 3579, -218 ), angles = Vector( 0, 69, 0 ) }
 	]
-	
+
+	// Droppod spawns
+	local MIA_DROPPOD_SPAWN_MILITIA = [
+		// Front cargo door
+		{ origin = Vector( 3125, 5274, -304 ), angles = Vector( 0, -125, 0 ) },
+		{ origin = Vector( 2398, 5269, -271 ), angles = Vector( 0, -60, 0 ) },
+
+		// Mid
+		{ origin = Vector( 1060, 5202, -64 ), angles = Vector( 0, -90, 0 ) },
+		{ origin = Vector( 688, 5691, -74 ), angles = Vector( 0, -70, 0 ) },
+
+		// Back
+		{ origin = Vector( -333, 5420, -252 ), angles = Vector( 0, -125, 0 ) },
+		{ origin = Vector( -538, 6080, -212 ), angles = Vector( 0, -90, 0 ) },
+		{ origin = Vector( -1261, 5593, -285 ), angles = Vector( 0, -125, 0 ) },
+		{ origin = Vector( -977, 5280, -287 ), angles = Vector( 0, -64, 0 ) }
+	]
+	local MIA_DROPPOD_SPAWN_IMC = [
+		// Front cargo door
+		{ origin = Vector( 3521, 444, -294 ), angles = Vector( 0, 110, 0 ) },
+		{ origin = Vector( 3096, 694, -219 ), angles = Vector( 0, 90, 0 ) },
+		{ origin = Vector( 2465, 1278, -209 ), angles = Vector( 0, 92, 0 ) },
+		{ origin = Vector( 2851, 1682, -231 ), angles = Vector( 0, 90, 0 ) },
+
+		// Mid
+		{ origin = Vector( 579, 1133, -147 ), angles = Vector( 0, 72, 0 ) },
+		{ origin = Vector( 170, 2039, -275 ), angles = Vector( 0, 25, 0 ) },
+		{ origin = Vector( 167, 1433, -202 ), angles = Vector( 0, 80, 0 ) },
+
+		// Back
+		{ origin = Vector( -978, 839, -192 ), angles = Vector( 0, -146, 0 ) },
+		{ origin = Vector( -196, 1497, -235 ), angles = Vector( 0, 120, 0 ) },
+		{ origin = Vector( -643, 1916, -281 ), angles = Vector( 0, 100, 0 ) }
+	]
+
+	local MIA_DROPSHIP_SPAWN = [
+		{ origin = Vector( -811, 1727, -271 ), angles = Vector( 0, 90, 0 ) }
+	]
+	local MIA_MARVIN_SPAWN = [
+		{ origin = Vector( -1264, 3545, 64 ), angles = Vector( 0, 90, 0 ) },
+		{ origin = Vector( -296, 3441, -319 ), angles = Vector( 0, 0, 0 ) }
+	]
+
 	switch(GameRules.GetGameMode()) {
 		case "ctf":
 		case "ctfp":
+		case "scv":
 			// P7: [CTF] Fix flag spawns
 			//	   The flags were already in the map, so we just move them somewhere else
 			local imcFlag = GetFlagSpawnPoint( TEAM_IMC )
@@ -228,11 +329,136 @@ function EntitiesDidLoad()
 		ENT_SPAWNTITAN_COUNT++
 	}
 
-	FlagWait( "ReadyToStartMatch" )
-	
+	foreach(location in MIA_DROPPOD_SPAWN_MILITIA) {
+		CreateDropPodStartSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_droppod_start_" + (ENT_STARTSPAWNDROPPOD_COUNT+1))
+		CreateDropPodSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_droppod_" + (ENT_SPAWNDROPPOD_COUNT+1))
+		ENT_STARTSPAWNDROPPOD_COUNT++
+		ENT_SPAWNDROPPOD_COUNT++
+	}
+	foreach(location in MIA_DROPPOD_SPAWN_IMC) {
+		CreateDropPodStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_droppod_start_" + (ENT_STARTSPAWNDROPPOD_COUNT+1))
+		CreateDropPodSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_droppod_" + (ENT_SPAWNDROPPOD_COUNT+1))
+		ENT_STARTSPAWNDROPPOD_COUNT++
+		ENT_SPAWNDROPPOD_COUNT++
+	}
 
-	thread Mia_SkyShowMain()
-	thread MatchProgressMilestones()
+/*
+	foreach(location in MIA_DROPSHIP_SPAWN) {
+		CreateDropShipSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_dropship_" + (ENT_SPAWNDROSHIP_COUNT+1))
+		ENT_SPAWNDROSHIP_COUNT++
+	}
+	foreach(location in MIA_MARVIN_SPAWN) {
+		CreateMarvinSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_marvin_" + (ENT_SPAWNMARVIN_COUNT+1))
+		ENT_SPAWNMARVIN_COUNT++
+	}
+*/
+}
+
+function Mia_CreateEvacNodes()
+{
+	// The single previous evac spot sucks so im getting rid of it
+	local oldEvacNode = GetEnt( "escape_node1" )
+	oldEvacNode.Kill()
+
+	// Nothing wrong with this camera spot, just recreating it below
+	local oldSpecCam = GetEnt( "spec_cam1" )
+	oldSpecCam.Kill()
+
+	local ENT_EVACNODES_COUNT = GetEntArrayByNameWildCard_Expensive( "escape_node*" ).len()
+	local ENT_EVACSPEC_CAM_COUNT = GetEntArrayByNameWildCard_Expensive( "spec_cam*" ).len()
+
+	local MIA_EVACNODES = [
+		// Front cargo door, Militia side
+		{ origin = Vector( 3100, 5000, 0 ), angles = Vector( 0, 90, 0 ), camera = "spec_cam1" },
+		{ origin = Vector( 2350, 5000, 0 ), angles = Vector( 0, 90, 0 ), camera = "spec_cam1" },
+
+		// Mid
+		{ origin = Vector( 1408, 5000, 0 ), angles = Vector( 0, 90, 0 ), camera = "spec_cam2" },
+		{ origin = Vector( 650, 5000, 0 ), angles = Vector( 0, 90, 0 ), camera = "spec_cam2" },
+
+		// Back
+		{ origin = Vector( -350, 5000, 0 ), angles = Vector( 0, 90, 0 ), camera = "spec_cam2" },
+		{ origin = Vector( -1080, 5000, 0 ), angles = Vector( 0, 90, 0 ), camera = "spec_cam2" },
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Front cargo door, IMC side
+		{ origin = Vector( 3100, 2100, 0 ), angles = Vector( 0, -90, 0 ), camera = "spec_cam3" },
+		{ origin = Vector( 2350, 2100, 0 ), angles = Vector( 0, -90, 0 ), camera = "spec_cam3" },
+
+		// Mid
+		{ origin = Vector( 1408, 2100, 0 ), angles = Vector( 0, -90, 0 ), camera = "spec_cam4" },
+		{ origin = Vector( 650, 2100, 0 ), angles = Vector( 0, -90, 0 ), camera = "spec_cam4" },
+
+		// Back
+		{ origin = Vector( -350, 2100, 0 ), angles = Vector( 0, -90, 0 ), camera = "spec_cam4" },
+		{ origin = Vector( -1080, 2100, 0 ), angles = Vector( 0, -90, 0 ), camera = "spec_cam4" }
+	]
+
+/*
+	// This is stupid, theres definitely a better way to do this
+	local MIA_CAMNODES = [
+		// Front cargo door, Militia side
+		{ origin = Vector( -576, 5920, 480 ), angles = Vector( 18.0352, -43.483, 13.322 ) },
+		{ origin = Vector( -576, 5920, 480 ), angles = Vector( 18.0352, -43.483, 13.322 ) },
+
+		// Mid
+		{ origin = Vector( 2976, 5920, 480 ), angles = Vector( 18.0352, -143.483, 13.322 ) },
+		{ origin = Vector( 2976, 5920, 480 ), angles = Vector( 18.0352, -143.483, 13.322 ) },
+
+		// Back
+		{ origin = Vector( 2976, 5920, 480 ), angles = Vector( 18.0352, -143.483, 13.322 ) },
+		{ origin = Vector( 2976, 5920, 480 ), angles = Vector( 18.0352, -143.483, 13.322 ) },
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Front cargo door, IMC side
+		{ origin = Vector( -576, 1180, 480 ), angles = Vector( 18.0352, 43.483, 13.322 ) },
+		{ origin = Vector( -576, 1180, 480 ), angles = Vector( 18.0352, 43.483, 13.322 ) },
+
+		// Mid
+		{ origin = Vector( 2976, 1180, 480 ), angles = Vector( 18.0352, 143.483, 13.322 ) },
+		{ origin = Vector( 2976, 1180, 480 ), angles = Vector( 18.0352, 143.483, 13.322 ) },
+
+		// Back
+		{ origin = Vector( 2976, 1180, 480 ), angles = Vector( 18.0352, 143.483, 13.322 ) },
+		{ origin = Vector( 2976, 1180, 480 ), angles = Vector( 18.0352, 143.483, 13.322 ) }
+	]
+*/
+
+	local MIA_CAMNODES = [
+		// Front cargo door, Militia side
+		{ origin = Vector( -576, 5920, 480 ), angles = Vector( 18.0352, -43.483, 13.322 ) },
+
+		// Mid + back
+		{ origin = Vector( 2976, 5920, 480 ), angles = Vector( 18.0352, -143.483, 13.322 ) },
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Front cargo door, IMC side
+		{ origin = Vector( -576, 1180, 480 ), angles = Vector( 18.0352, 43.483, 13.322 ) },
+
+		// Mid
+		{ origin = Vector( 2976, 1180, 480 ), angles = Vector( 18.0352, 143.483, 13.322 ) }
+	]
+
+	foreach( location in MIA_CAMNODES )
+	{
+		CreateInfoTarget( location.origin, location.angles, "spec_cam" + ( ENT_EVACSPEC_CAM_COUNT + 1 ) )
+		ENT_EVACSPEC_CAM_COUNT++
+	}
+
+	foreach( location in MIA_EVACNODES )
+	{
+		//CreateInfoTarget( location.origin, location.angles, "escape_node" + ( ENT_EVACNODES_COUNT + 1 ), "spec_cam" + ENT_EVACSPEC_CAM_COUNT )
+		CreateInfoTarget( location.origin, location.angles, "escape_node" + ( ENT_EVACNODES_COUNT + 1 ), location.camera )
+		ENT_EVACNODES_COUNT++
+
+		Evac_AddLocation( "escape_node" + ENT_EVACNODES_COUNT, location.origin, location.angles )
+	}
+
+	local spacenode = GetEnt( "intro_spacenode" )
+	Evac_SetSpaceNode( spacenode )
 }
 
 /************************************************************************************************\
