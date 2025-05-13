@@ -371,8 +371,6 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
     if(mapNameIndex != -1)
         fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapNameIndex )
 
-    printt("fixedSaveVar: " + fixedSaveVar)
-
     if( StringContains( fixedSaveVar, "%gamemode%" ) || StringContains( fixedSaveVar, "%mapname%" ) )
         return
 
