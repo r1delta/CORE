@@ -701,6 +701,12 @@ function EndContactGravesAnim( node )
 	Cl_SetParent( macgun, mac, "PROPGUN" )
 	macgun.MarkAsNonMovingAttachment()
 
+	local bodyGroupIndex1 = macgun.FindBodyGroup( "r101_sight_front_on" )
+	local bodyGroupIndex2 = macgun.FindBodyGroup( "r101_sight_rear_on" )
+
+	macgun.SetBodygroup( bodyGroupIndex1, 1 )
+	macgun.SetBodygroup( bodyGroupIndex2, 1 )
+
 	//camera setup
 	local origin 	= Vector( -11425, 12010, -10305  )
 	local angles 	= Vector( 0, 165, 0 )
@@ -796,6 +802,12 @@ function EndCamFeedMilitiaAnim( node )
 
 	Cl_SetParent( macgun, mac, "PROPGUN" )
 	macgun.MarkAsNonMovingAttachment()
+
+	local bodyGroupIndex1 = macgun.FindBodyGroup( "r101_sight_front_on" )
+	local bodyGroupIndex2 = macgun.FindBodyGroup( "r101_sight_rear_on" )
+
+	macgun.SetBodygroup( bodyGroupIndex1, 1 )
+	macgun.SetBodygroup( bodyGroupIndex2, 1 )
 
 	OnThreadEnd(
 		function() : ( node )
@@ -938,6 +950,12 @@ function EndAmbushAnim( node )
 	macgun.MarkAsNonMovingAttachment()
 	bliskgun.MarkAsNonMovingAttachment()
 	knife.MarkAsNonMovingAttachment()
+
+	local bodyGroupIndex1 = macgun.FindBodyGroup( "r101_sight_front_on" )
+	local bodyGroupIndex2 = macgun.FindBodyGroup( "r101_sight_rear_on" )
+
+	macgun.SetBodygroup( bodyGroupIndex1, 1 )
+	macgun.SetBodygroup( bodyGroupIndex2, 1 )
 
 	//camera setup
 	local anim 		= "mac_O2_finale_scene3_1"
