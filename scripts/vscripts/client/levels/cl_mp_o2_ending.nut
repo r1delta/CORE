@@ -443,6 +443,12 @@ function EndBadIdeaAnim( node )
 	Cl_SetParent( macgun, mac, "PROPGUN" )
 	macgun.MarkAsNonMovingAttachment()
 
+	local bodyGroupIndex1 = macgun.FindBodyGroup( "r101_sight_front_on" )
+	local bodyGroupIndex2 = macgun.FindBodyGroup( "r101_sight_rear_on" )
+
+	macgun.SetBodygroup( bodyGroupIndex1, 1 )
+	macgun.SetBodygroup( bodyGroupIndex2, 1 )
+
 	OnThreadEnd(
 		function() : ( node )
 		{
