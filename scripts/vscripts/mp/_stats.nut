@@ -5,6 +5,7 @@ function main() {
 
     file.playerDeathsPvp <- {}
     file.playerKillsPvp <- {}
+    file.playerRecentlyRodeoed <- {}
 
     AddCallback_OnPlayerRespawned(OnPlayerRespawned)
     AddCallback_PlayerOrNPCKilled(OnPlayerOrNPCKilled)
@@ -14,7 +15,7 @@ function main() {
     AddDamageCallback("npc_solider", OnDamaged)
     AddDamageCallback("npc_titan", OnDamaged)
     AddDamageCallback("npc_spectre", OnDamaged)
-    // AddCallback_OnRodeoStarted(OnRodeoStarted)
+    AddCallback_OnRodeoStarted(OnRodeoStarted)
     GM_AddEndRoundFunc( Stats_EndRound )
     AddCallback_OnWeaponAttack(OnWeaponAttack)
     Globalize(Stats_IncrementStat)
@@ -25,9 +26,42 @@ function UpdatePlayerStat(player,category,alias,amount = 1) {
     Stats_IncrementStat(player,category,alias,amount)
 }
 
-// function OnRodeoStarted(player) {
+function OnRodeoStarted( player )
+{
+    thread StatsOnRodeo_Think( player )
+}
 
-// }
+function StatsOnRodeo_Think( player )
+{
+    player.EndSignal( "RodeoOver" )
+    player.EndSignal( "OnDeath" )
+    player.EndSignal( "OnDestroy" )
+    player.EndSignal( "Disconnected" )
+
+    local titan = GetTitanBeingRodeoed( player )
+
+    while ( !IsValid( titan ) )
+    {
+        wait 0.1
+        titan = GetTitanBeingRodeoed( player )
+    }
+
+    if ( IsValid( titan ) )
+    {
+        foreach ( k, v in file.playerRecentlyRodeoed )
+        {
+            if ( k == player.GetEncodedEHandle() && v == titan.GetEncodedEHandle() )
+                return
+        }
+
+        if ( titan.GetTeam() == GetOtherTeam( player ) )
+        {
+            Stats_IncrementStat( player, "misc_stats", "rodeos", 1.0 )
+
+            file.playerRecentlyRodeoed[ player.GetEncodedEHandle() ] <- titan.GetEncodedEHandle()
+        }
+    }
+}
 
 function EntitiesDidLoad() {
     thread HandleDistanceAndTimeStats()
