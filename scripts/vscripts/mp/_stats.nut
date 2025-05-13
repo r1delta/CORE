@@ -1,6 +1,6 @@
 
 function main() {
-    if(IsLobby())
+    if( IsLobby() )
         return
 
     file.playerDeathsPvp <- {}
@@ -15,7 +15,7 @@ function main() {
     AddDamageCallback("npc_titan", OnDamaged)
     AddDamageCallback("npc_spectre", OnDamaged)
     // AddCallback_OnRodeoStarted(OnRodeoStarted)
-    GM_AddEndRoundFunc(Stats_EndRound)
+    GM_AddEndRoundFunc( Stats_EndRound )
     AddCallback_OnWeaponAttack(OnWeaponAttack)
     Globalize(Stats_IncrementStat)
     Globalize(UpdatePlayerStat)
@@ -33,41 +33,46 @@ function EntitiesDidLoad() {
     thread HandleDistanceAndTimeStats()
 }
 
-function Stats_EndRound() {
-
-    if(IsLobby())
+function Stats_EndRound()
+{
+    if( IsLobby() )
         return
 
-    if(!IsRoundBasedGameOver() && IsRoundBased())
+    if( !IsRoundBasedGameOver() && IsRoundBased() )
         return
 
-    foreach(player in GetPlayerArray()) {
-        if(!IsValid(player))
+    foreach( player in GetPlayerArray() )
+    {
+
+        if( !IsValid( player ) )
             continue
-        if(player.IsBot())
+
+        if( player.IsBot() )
             continue
+
         local killedTeam = player.GetTeam()
         local compareFunc = GetScoreboardCompareFunc()
 	    local playersArray = GetSortedPlayers( compareFunc, killedTeam )
 	    local playerPlacementOnTeam = GetIndexInArray( playersArray, player )
+
         Stats_IncrementStat(player,"game_stats","game_completed", 1.0)
         Stats_IncrementStat( player, "game_stats", "game_completed_total", 1.0 )
         Stats_IncrementStat( player, "game_stats", "mode_played", 1.0 )
+
         // check for mvp and top 3
-        if(playerPlacementOnTeam == 0) {
+        if(playerPlacementOnTeam == 0)
+         {
             Stats_IncrementStat(player,"game_stats","mvp",1.0)
             Stats_IncrementStat(player,"game_stats","mvp_total",1.0 )
         }
-        if(playerPlacementOnTeam <= 3) {
-            Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
-        }
 
-        if(GetCurrentWinner() == player.GetTeam()) {
+        if(playerPlacementOnTeam <= 3)
+            Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
+
+        if(GetCurrentWinner() == player.GetTeam())
             Stats_IncrementStat(player,"game_stats","game_won",1.0)
-        }
-        else {
+        else
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
-        }
 
         local playerKills = player.GetKillCount()
         local npcKills = player.GetNPCKillCount()
@@ -76,17 +81,15 @@ function Stats_EndRound() {
         local match_kd = 0.0
         if(playerDeaths > 0)
             match_kd = (playerKills + npcKills) / playerDeaths
-        else {
+        else
             match_kd = playerKills + npcKills
-        }
 
         local pvpMatchRatio = 0.0
 
         if(playerDeaths > 0)
             pvpMatchRatio = playerKills / playerDeaths
-        else {
+        else
             pvpMatchRatio = playerKills
-        }
 
         local totalDeaths = player.GetPersistentVar("deathStats.total").tofloat()
         local totalKills = player.GetPersistentVar("killStats.total").tofloat()
@@ -97,17 +100,15 @@ function Stats_EndRound() {
 
         if(totalDeaths > 0)
             lifetimeKdRatio = totalKills / totalDeaths
-        else {
+        else
             lifetimeKdRatio = totalKills
-        }
 
         local lifetimePvpRatio = 0.0
 
         if(totalPvpDeaths > 0)
             lifetimePvpRatio = totalPvpKills / totalPvpDeaths
-        else {
+        else
             lifetimePvpRatio = totalPvpKills
-        }
 
         local i = 0
         for ( i = NUM_GAMES_TRACK_KDRATIO - 2; i >= 0; --i )
@@ -120,9 +121,7 @@ function Stats_EndRound() {
         player.SetPersistentVar( "kdratiopvp_match[0]", pvpMatchRatio )
         player.SetPersistentVar( "kdratio_lifetime", lifetimeKdRatio )
         player.SetPersistentVar( "kdratiopvp_lifetime", lifetimePvpRatio )
-
-
-       }
+    }
 }
 
 function OnDamaged(ent,damageInfo) {
@@ -337,15 +336,14 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
     }
 }
 
-function Stats_IncrementStat( player, category, statName,value, weaponName = null ) {
+function Stats_IncrementStat( player, category, statName,value, weaponName = null )
+{
 
-    if (GetMapName() == "mp_npe") // disable stats on training
+    if ( GetMapName() == "mp_npe" ) // disable stats on training
 		return
 
     if ( player == null )
         return
-
-
 
     if(!IsValidStat( category, statName,weaponName ))
         return
@@ -355,36 +353,34 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
 
    local var = GetPersistentStatVar(category, statName, weaponName);
 
-    if ( var == null ) {
+    if ( var == null )
         return
-    }
-
 
 	local fixedSaveVar
 	local timesPlayed = 0
     local mapName = GetMapName()
     local gameMode = GameRules.GetGameMode()
+
 	fixedSaveVar = var
-    fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
-    fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
 
-    if(PersistenceGetEnumIndexForItemName( "gamemodes", gameMode ) == -1 && StringContains( var, "%gamemode%" ) ) {
-        // printt("Invalid game mode: " + gameMode)
-        return
-    }
-    if(PersistenceGetEnumIndexForItemName( "maps", mapName ) == -1 && StringContains( var, "%mapname%" ) ) {
-        // printt("Invalid map name: " + mapName)
-        return
-    }
+    local gameModeIndex = PersistenceGetEnumIndexForItemName( "gameModes", gameMode )
+    if(gameModeIndex != -1)
+        fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameModeIndex )
 
+    local mapNameIndex = PersistenceGetEnumIndexForItemName( "maps", mapName )
+    if(mapNameIndex != -1)
+        fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapNameIndex )
+
+    printt("fixedSaveVar: " + fixedSaveVar)
+
+    if( StringContains( fixedSaveVar, "%gamemode%" ) || StringContains( fixedSaveVar, "%mapname%" ) )
+        return
 
     local currentValue = player.GetPersistentVar(fixedSaveVar)
 
     player.SetPersistentVar(fixedSaveVar, currentValue + value)
 
-    UpdateChallengeData(player,category,statName,value,weaponName)
-
-
+    UpdateChallengeData( player, category, statName, value, weaponName )
 }
 
 function OnPlayerOrNPCKilled(victim, attacker, damageInfo) {
