@@ -62,14 +62,27 @@ function Mia_SetupHardpointMode() {
 	{
 		return
 	}
+
+	// See maps/mp_mia_script.ent for creation of these ents
 	local hardpointA = GetEnt("hardpoint_A")
 	local hardpointB = GetEnt("hardpoint_B")
 	local hardpointC = GetEnt("hardpoint_C")
 
 	// spots
-	hardpointA.SetOrigin(Vector( 3173, 3583, 64 ))
-	hardpointB.SetOrigin(Vector( 1021, 3583, 53 ))
-	hardpointC.SetOrigin(Vector( -1158, 3583, 64 ))
+	hardpointA.SetOrigin( Vector( 3173, 3583, 64 ) ) // IMC side
+	hardpointB.SetOrigin( Vector( 1021, 3583, 53 ) ) // Middle
+	hardpointC.SetOrigin( Vector( -1158, 3583, 64 ) ) // Militia side
+
+	// triggers
+	local triggerHardpointA = GetEnt("trigger_hardpoint_A_target")
+	local triggerHardpointA = GetEnt("trigger_hardpoint_B_target")
+	local triggerHardpointA = GetEnt("trigger_hardpoint_C_target")
+
+	// this placement is purely based on nothing btw
+	triggerHardpointA.SetOrigin( Vector( 3318, 3583, 64 ) )
+	triggerHardpointB.SetOrigin( Vector( 1021, 3663, 53 ) )
+	triggerHardpointC.SetOrigin( Vector( -1290, 3583, 64 ) )
+
 }
 
 function Mia_CreateSpawnPoints()
