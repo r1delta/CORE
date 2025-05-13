@@ -42,11 +42,34 @@ function EntitiesDidLoad()
 		Mia_CreateEvacNodes()
 	}
 
+	switch(GameRules.GetGameMode()) {
+		// Mode specifics setup
+		case "cp":
+			Mia_SetupHardpointMode()
+			break;
+	}
+
 	FlagWait( "ReadyToStartMatch" )
 	
 
 	thread Mia_SkyShowMain()
 	thread MatchProgressMilestones()
+}
+
+function Mia_SetupHardpointMode() {
+	// remove this when mode is playable
+	if( GetDeveloperLevel() < 1 )
+	{
+		return
+	}
+	local hardpointA = GetEnt("hardpoint_A")
+	local hardpointB = GetEnt("hardpoint_B")
+	local hardpointC = GetEnt("hardpoint_C")
+
+	// spots
+	hardpointA.SetOrigin(Vector( 3173, 3583, 64 ))
+	hardpointB.SetOrigin(Vector( 1021, 3583, 53 ))
+	hardpointC.SetOrigin(Vector( -1158, 3583, 64 ))
 }
 
 function Mia_CreateSpawnPoints()
