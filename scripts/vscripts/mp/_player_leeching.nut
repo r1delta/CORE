@@ -286,6 +286,15 @@ function LeechStartThread( player, target )
 		//this is called when the player leeches - not when the system is leeching other spectres
 		if ( target.IsSpectre() && level.propagateOnLeech )
 			LeechSurroundingSpectres( target.GetOrigin(), player )
+
+		if ( target.IsSpectre() )
+		{
+			local currentMap = GetMapName()
+			local mapID = PersistenceGetEnumIndexForItemName( "maps", currentMap )
+
+			Stats_IncrementStat( player, "misc_stats", "spectreLeeches", 1 )
+			Stats_IncrementStat( player, "misc_stats", "spectreLeechesByMap", 1 )
+		}
 	}
 	else
 	{

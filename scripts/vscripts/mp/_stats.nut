@@ -370,7 +370,7 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
     }
 }
 
-function Stats_IncrementStat( player, category, statName,value, weaponName = null )
+function Stats_IncrementStat( player, category, statName, value, weaponName = null )
 {
 
     if ( GetMapName() == "mp_npe" ) // disable stats on training
@@ -385,7 +385,7 @@ function Stats_IncrementStat( player, category, statName,value, weaponName = nul
     if(player.IsBot())
         return
 
-   local var = GetPersistentStatVar(category, statName, weaponName);
+    local var = GetPersistentStatVar(category, statName, weaponName);
 
     if ( var == null )
         return
