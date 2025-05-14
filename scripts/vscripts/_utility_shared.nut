@@ -35,6 +35,14 @@ function SetSkinForTeam( entity, team )
 		entity.SetSkin( 1 )
 }
 
+function SetWeaponSkinForTeam( entity, team )
+{
+	if ( team == TEAM_IMC )
+		entity.SetWeaponSkin( 0 )
+	else if( team == TEAM_MILITIA )
+		entity.SetWeaponSkin( 1 )
+}
+
 function TableDump( table, depth = 0 )
 {
 	if ( depth > 4 )
