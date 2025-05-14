@@ -199,9 +199,9 @@ function ShowMainMenu()
 	// if ( !AllDLCIsInstalled() )
 	// 	file.buttonData.append( { name = "#DLC_STORE", activateFunc = Bind( OnStoreButton_Activate ), updateFunc = Bind( ThreadUpdateStoreButton ), isNew = true } )
 
-	file.buttonData.append( { name = "#PLAY", activateFunc = Bind( OnFindMatchButton_Activate ) } )
-	file.buttonData.append( { name = "#CREATE_SERVER", activateFunc = Bind( OnHostButtonActivate ) } )
-	file.buttonData.append( { name = "#MAIN_MENU_TRAINING", activateFunc = Bind( function() { thread OnTrainingButtonActivate() } ) } )
+	file.buttonData.append( { name = "#PLAY", activateFunc = Bind( OnHostButtonActivate ) } )
+	file.buttonData.append( { name = "#INTRO", activateFunc = Bind( ThreadOnIntroButton_Activate ) } )
+	// file.buttonData.append( { name = "CHANGELOG", activateFunc = Bind( function() { thread OnTrainingButtonActivate() } ) } )
 	file.buttonData.append( { name = "#OPTIONS", activateFunc = Bind( OnOptionsButton_Activate ) } )
 	file.buttonData.append( { name = "#CREDITS", activateFunc = Bind( ThreadOnCreditsButton_Activate ) } )
 
@@ -559,6 +559,16 @@ function MainMenuButton_Activate( button )
 		file.buttonData[buttonID].activateFunc.call( this )
 }
 
+function ThreadOnIntroButton_Activate()
+{
+	thread OnIntroButton_Activate()
+}
+
+function OnIntroButton_Activate()
+{
+	PlayIntroVideo( true )
+}
+
 function ThreadOnPlayButton_Activate()
 {
 	thread OnPlayButton_Activate()
@@ -646,7 +656,18 @@ function Threaded_CreateLocalServer()
 
 	wait 1.5 // artificial wait so people can cancel
 
+	ClientCommand("hide_server 1")
 	ClientCommand("playlist private_match; map mp_lobby")
+
+	thread TryChangeLobbyType()
+}
+
+function TryChangeLobbyType()
+{
+	while ( uiGlobal.activeMenu != GetMenu( "LobbyMenu" ) )
+		wait 0.1
+
+	ClientCommand( "RequestServerChangeToLobbyType0" )
 }
 
 function Threaded_LaunchTraining()

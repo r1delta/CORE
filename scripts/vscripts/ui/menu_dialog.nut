@@ -291,7 +291,7 @@ function OpenChoiceDialog( dialogData, menu = null )
 		uiGlobal.choiceDialogData = newButtonData
 	else
 		uiGlobal.choiceDialogData = buttonData
-	
+
 	if (menu == GetMenu("ChoiceDialog2"))
 		uiGlobal.choice2DialogData = uiGlobal.choiceDialogData
 
@@ -595,7 +595,7 @@ function LeaveDialog()
 		}
 		else if ( isCoopMenu )
 		{
-			buttonData.append( { name = "#YES_LEAVE_LOBBY", func = CloseTopMenu } )	
+			buttonData.append( { name = "#YES_LEAVE_LOBBY", func = CloseTopMenu } )
 		}
 		else
 		{
@@ -612,7 +612,7 @@ function LeaveDialog()
 			if ( IsLobby() )
 			{
 				if ( isCoopMenu )
-					buttonData.append( { name = "#YES_LEAVE_LOBBY", func = CloseTopMenu } )	
+					buttonData.append( { name = "#YES_LEAVE_LOBBY", func = CloseTopMenu } )
 				else
 					buttonData.append( { name = "#YES_LEAVE_LOBBY", func = LeaveMatchSolo } )
 			}
@@ -765,6 +765,7 @@ function ShowPrivateMatchConnectDialog()
 
 function CancelPrivateMatchSearch()
 {
+	uiGlobal.cancelledPrivateMatch <- true
 	ClientCommand( "CancelPrivateMatchSearch" )
 	CloseDialog()
 }
@@ -861,7 +862,7 @@ function ShowPortForwardWarning( port = 27015 )
 	if ( GetActiveLevel() == "mp_npe" ) // do not show this on training, we aren't expecting more than one player to join.
 		return
     local isDefaultPort = (port == 27015)
-    local message = isDefaultPort ? 
+    local message = isDefaultPort ?
         "#PORT_FORWARD_WARNING_DEFAULT" :
         ["#PORT_FORWARD_WARNING_CUSTOMPORT", format("%d", port)]
 
