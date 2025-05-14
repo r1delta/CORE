@@ -481,6 +481,69 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     local player = null
     local damageSource = damageInfo.GetDamageSourceIdentifier()
     local playerPetTitan = null
+
+    if ( IsCoopMatch() )
+    {
+        if ( attacker.IsTurret() )
+        {
+            local bossPlayer = attacker.GetBossPlayer()
+
+            if ( !IsValid( bossPlayer ) )
+                return
+
+            Stats_IncrementStat( bossPlayer, "kills_stats", "coopChallenge_Turret_Kills", 1.0 )
+        }
+
+        if ( !attacker.IsPlayer() )
+            return
+
+        if ( IsSniperSpectre( victim ) )
+        {
+            switch(damageSource)
+            {
+                case eDamageSourceId.mp_weapon_sniper:
+                case eDamageSourceId.mp_weapon_dmr:
+                    Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_Sniper_Kills", 1.0 )
+            }
+        }
+
+        if ( victim.IsNPC() && victim.IsCloaked() )
+            Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_CloakDrone_Kills", 1.0 )
+
+        if ( victim.IsDropship() )
+            Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_Dropship_Kills", 1.0 )
+
+        if ( victim.IsTitan() )
+        {
+            if ( victim.GetSubclass() == eSubClass.empTitan )
+            {
+                local wasAffectedByTitanEmp = false
+
+                foreach( history in attacker.s.recentDamageHistory )
+                {
+                    if ( history.damageSourceId == eDamageSourceId.titanEmpField )
+                        wasAffectedByTitanEmp = true
+                }
+
+                if ( !wasAffectedByTitanEmp )
+                    Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_EmpTitan_Kills", 1.0 )
+            }
+
+            if ( victim.GetSubClass() == eSubClass.nukeTitan )
+            {
+                if ( damageSource == eDamageSourceId.nuclear_core )
+                    Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_NukeTitan_Kills", 1.0 )
+            }
+
+            if ( victim.GetSubClass() == eSubClass.mortarTitan )
+            {
+                local soul = victim.GetTitanSoul()
+                if ( Time() - soul.createTime <= 30 )
+                    Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_MortarTitan_Kills", 1.0 )
+            }
+        }
+    }
+
     if ( attacker.IsNPC() )
 	{
 		if ( !attacker.IsTitan() ) // Normal NPCs case

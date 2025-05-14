@@ -1287,7 +1287,12 @@ function EndOfWaveTeamScoreEvents(wasFinalWave, isCheckpointRestart, wasFlawless
 		PlayTeamScoreEvent(eCoopTeamScoreEvents.wave_complete)
 
 	if (wasFlawlessWave)
+	{
 		PlayTeamScoreEvent(eCoopTeamScoreEvents.flawless_wave)
+
+		foreach( player in GetPlayerArray() )
+			Stats_IncrementStat(player, "game_stats", "coop_perfect_waves", 1)
+	}
 
 	//Events will play in the order they're called.
 	if (wasFinalWave) {
