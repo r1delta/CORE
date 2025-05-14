@@ -160,7 +160,6 @@ function Stats_EndRound()
 
 function OnDamaged( ent, damageInfo )
 {
-
     local inflictor = damageInfo.GetInflictor()
 
     if( !IsValid( inflictor ) )
@@ -445,7 +444,8 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
     UpdateChallengeData( player, category, statName, value, weaponName )
 }
 
-function OnPlayerOrNPCKilled(victim, attacker, damageInfo) {
+function OnPlayerOrNPCKilled( victim, attacker, damageInfo )
+{
     if ( victim.IsPlayer() )
 		thread SetLastPosForDistanceStatValid( victim, false )
 
