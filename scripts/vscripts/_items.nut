@@ -253,30 +253,29 @@ function main()
 	unlockLevels[ "titan_ogre"]							<- 30
 
 
-    // FIXME: gruhhhhhh
 	if ( IsServer() && IsMultiplayer() )
 	{
-		// AddBurnCardLevelingPack( "burn_card_pack_1",
-		// 	[ "bc_stim_forever", "bc_stim_forever", "bc_super_stim", "bc_super_stim", "bc_fast_movespeed", "bc_shotgun_m2", "bc_defender_m2" ]
-		// 	)
+		AddBurnCardLevelingPack( "burn_card_pack_1",
+			[ "bc_stim_forever", "bc_stim_forever", "bc_super_stim", "bc_super_stim", "bc_fast_movespeed", "bc_shotgun_m2", "bc_defender_m2" ]
+			)
 
-		// AddBurnCardLevelingPack( "burn_card_pack_2",
-		// 	[ "bc_cloak_forever", "bc_cloak_forever", "bc_super_cloak", "bc_super_cloak", "bc_rematch", "bc_minimap_scan", "bc_prox_m2" ]
-		// 	)
+		AddBurnCardLevelingPack( "burn_card_pack_2",
+			[ "bc_cloak_forever", "bc_cloak_forever", "bc_super_cloak", "bc_super_cloak", "bc_rematch", "bc_minimap_scan", "bc_prox_m2" ]
+			)
 
-		// AddBurnCardLevelingPack( "burn_card_pack_3",
-		// 	[ "bc_minimap", "bc_minimap", "bc_minimap_scan", "bc_minimap_scan", "bc_mgl_m2", "bc_rocket_launcher_m2", "bc_smr_m2" ]
-		// 	)
+		AddBurnCardLevelingPack( "burn_card_pack_3",
+			[ "bc_minimap", "bc_minimap", "bc_minimap_scan", "bc_minimap_scan", "bc_mgl_m2", "bc_rocket_launcher_m2", "bc_smr_m2" ]
+			)
 
-		// AddBurnCardLevelingPack( "burn_card_pack_4",
-		// 	[ "bc_sonar_forever", "bc_sonar_forever", "bc_super_sonar", "bc_super_sonar", "bc_auto_sonar", "bc_dmr_m2", "bc_prox_m2" ]
-		// 	)
+		AddBurnCardLevelingPack( "burn_card_pack_4",
+			[ "bc_sonar_forever", "bc_sonar_forever", "bc_super_sonar", "bc_super_sonar", "bc_auto_sonar", "bc_dmr_m2", "bc_prox_m2" ]
+			)
 
-		// AddBurnCardLevelingPack( "burn_card_pack_5",
-		// 	[ "bc_summon_atlas", "bc_summon_ogre", "bc_summon_stryder", "bc_play_spectre", "bc_play_spectre", "bc_play_spectre" ]
-		// 	)
+		AddBurnCardLevelingPack( "burn_card_pack_5",
+			[ "bc_summon_atlas", "bc_summon_ogre", "bc_summon_stryder", "bc_play_spectre", "bc_play_spectre", "bc_play_spectre" ]
+			)
 
-		// InitBurncardPackLevels( 0, 5 ) // number of commons and rares to include in burn card packs
+		InitBurncardPackLevels( 0, 5 ) // number of commons and rares to include in burn card packs
 	}
 }
 
@@ -1696,7 +1695,7 @@ function IsItemLocked( ref, childRef = null, player = null )
 	//###############################################
 
 	local gameModesPlayed = {}
-	local numModes = 0	
+	local numModes = 0
 	if ( !IsServer() ) {
 		numModes = PersistenceGetEnumCount( "gameModesWithLoadouts" )
 	}

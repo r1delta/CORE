@@ -1043,7 +1043,3 @@ function TakeAwayTitanBCOnDeath( titan )
     WaitForever()
 }
 
-function AddBurnCardLevelingPack( cardPackName, cardPackArray )
-{
-    // printt( "Hit stubbed call to AddBurnCardLevelingPack" );
-}
