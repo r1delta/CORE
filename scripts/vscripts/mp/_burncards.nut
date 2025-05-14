@@ -3,7 +3,6 @@ function main()
     RegisterSignal("StartBurnCardEffect")
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
-    Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( BCPlayerRespawned )
     AddCallback_OnPlayerKilled( BCOnPlayerKilled )
     Globalize( ChangeOnDeckBurnCardToActive )
