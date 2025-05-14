@@ -103,9 +103,7 @@ function Stats_EndRound()
         if(playerPlacementOnTeam <= 3)
             Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
 
-        local currentGamemode = GameRules.GetGameMode()
-
-        switch( currentGameMode )
+        switch( GameRules.GetGameMode() )
         {
             case ATTRITION:
                 Stats_IncrementStat( player, "game_stats", "mode_played_at", 1.0 )
@@ -128,7 +126,7 @@ function Stats_EndRound()
             Stats_IncrementStat(player,"game_stats","game_won",1.0)
             local lastDailyWin = player.GetPersistentVar("lastDailyMatchVictory")
 
-            switch( currentGameMode )
+            switch( GameRules.GetGameMode() )
             {
                 case ATTRITION:
                     Stats_IncrementStat( player, "game_stats", "mode_won_at", 1.0 )
