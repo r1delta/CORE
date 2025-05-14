@@ -654,7 +654,7 @@ function Threaded_CreateLocalServer()
 
 	uiGlobal.ConfirmMenuDetails.SetText( "#LOADING_SERVER" )
 
-	wait 1.5 // artificial wait so people can cancel
+	wait 1 // artificial wait so people can cancel
 
 	ClientCommand("hide_server 1")
 	ClientCommand("playlist private_match; map mp_lobby")
