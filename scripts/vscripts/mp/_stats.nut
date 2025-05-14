@@ -493,12 +493,16 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
     if( !StringContains( fixedSaveVar, "%gamemode%" ) || !StringContains( fixedSaveVar, "%mapname%" ) )
     {
         local currentValue = player.GetPersistentVar( fixedSaveVar )
+        if ( currentValue == null )
+            currentValue = 0
         player.SetPersistentVar( fixedSaveVar, currentValue + value )
     }
 
     if( !StringContains( fixedSaveVarInt, "%gamemode%" ) || !StringContains( fixedSaveVarInt, "%mapname%" ) )
     {
         local currentValue = player.GetPersistentVar( fixedSaveVarInt )
+        if ( currentValue == null )
+            currentValue = 0
         player.SetPersistentVar( fixedSaveVarInt, currentValue + value )
     }
 
