@@ -519,7 +519,6 @@ function TrainingButton_ActivateOrStartDialog( button )
 	}
 	else
 	{
-		buttonData.append( { name = "#VIDEO_INTRO", func = function() { thread PlayIntroVideo( true ) } } )
 		buttonData.append( { name = "#TRAINING_CONTINUE_CLASSIC", func = Bind( LocalDialogChoice_Training_New ) } )
 		buttonData.append( { name = "#TRAINING_CONTINUE_CUSTOM", func = Bind( LocalDialogChoice_Training_Custom ) } )
 		buttonData.append( { name = "#CANCEL", func = null } )
