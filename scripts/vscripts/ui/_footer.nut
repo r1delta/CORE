@@ -9,6 +9,7 @@ function main()
 	Globalize( AppendPCInviteLabels )
 	Globalize( AppendGamepadInviteLabels )
 	Globalize( UpdateFooters )
+	Globalize( DelayedTryUpdateFooterButtonsWhy )
 }
 
 function InitFooterButtons()
@@ -228,6 +229,11 @@ function UpdateFooterButtons( menuName = null )
 			{
 				footerData.gamepad.append( { label = "#XBOX_SWITCH_TEAMS" } )
 				footerData.pc.append( { label = "#SWITCH_TEAMS", func = PCSwitchTeamsButton_Activate } )
+
+				if ( GetConVarBool( "hide_server" ) )
+					footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
+				else
+					footerData.pc.append( { label = "#SHOW_SERVER", func = ToggleHideServer } )
 			}
 
 			footerData.pc = AppendPCInviteLabels( footerData.pc )
@@ -237,7 +243,7 @@ function UpdateFooterButtons( menuName = null )
 				footerData.gamepad.append( { label = "#X_BUTTON_MUTE" } )
 				footerData.pc.append( { label = "#MOUSE1_MUTE" } )
 
-				footerData.pc.append( { label = "#MOUSE2_VIEW_PLAYER_PROFILE" } )
+				// footerData.pc.append( { label = "#MOUSE2_VIEW_PLAYER_PROFILE" } )
 			}
 
 			footerData.gamepad = AppendGamepadInviteLabels( footerData.gamepad )
@@ -533,6 +539,30 @@ function UpdateFooters( footerData )
 	}
 }
 
+function ToggleHideServer( button )
+{
+	local value = GetConVarBool( "hide_server" )
+	value = !value
+
+
+
+	if ( value )
+	    ClientCommand( "hide_server 1" )
+	else
+		ClientCommand( "hide_server 0" )
+
+	UpdateFooterButtons()
+
+	thread DelayedTryUpdateFooterButtonsWhy()
+}
+
+function DelayedTryUpdateFooterButtonsWhy()
+{
+	wait 0.1
+
+	UpdateFooterButtons( uiGlobal.activeMenu.GetName() )
+}
+
 function AppendGamepadInviteLabels( footerData )
 {
 	if ( Durango_IsDurango() )
@@ -733,13 +763,13 @@ function UpdateCanSetDataCenter()
 
 		if ( uiGlobal.canSetDataCenter != lastResult )
 		{
-			if ( uiGlobal.canSetDataCenter ) 
-			{	 
+			if ( uiGlobal.canSetDataCenter )
+			{
 				RegisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
 				RegisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )
 				RegisterButtonPressedCallback(BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
-			}  
-			else 
+			}
+			else
 			{
 				DeregisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
 				DeregisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )
