@@ -346,13 +346,18 @@ function HandleDistanceAndTimeStats() {
 }
 
 
-function UpdateChallengeData(player,category,statName,value,weaponName) {
-    foreach (ref in level.challengeData) {
-        if(ref.linkedStat && ref.linkedStat.category == category && ref.linkedStat.alias == statName && ref.linkedStat.weapon == weaponName) {
+function UpdateChallengeData(player,category,statName,value,weaponName)
+{
+    foreach (ref in level.challengeData)
+    {
+        if(ref.linkedStat && ref.linkedStat.category == category && ref.linkedStat.alias == statName && ref.linkedStat.weapon == weaponName)
+        {
             local id = ref.id
             local challRef = GetChallengeRefFromID(id)
+
             if(IsDailyChallenge(challRef) && !IsActiveDailyChallenge(challRef,player))
                 continue
+
             local shouldPopup = true
             local id = GetChallengeID(challRef)
             local challengeProgress = GetCurrentChallengeProgress( challRef, player )
@@ -365,9 +370,14 @@ function UpdateChallengeData(player,category,statName,value,weaponName) {
             local tier = GetChallengeTierForProgress(challRef, currentProgress)
             local goal = GetGoalForChallengeTier( challRef, tier )
             local newTier = GetChallengeTierForProgress(challRef, currentProgress)
-            if ( newTier > oldTier || (currentProgress > oldProgress && currentProgress == goal )) {
 
+            if ( newTier > oldTier || (currentProgress > oldProgress && currentProgress == goal ))
+            {
                 local xp = GetChallengeXPReward(challRef,tier,player)
+
+                if ( IsDailyChallenge(challRef) )
+                    AddCoins( player, xp, eCoinRewardType.DAILY_CHALLENGE )
+
                 AddPlayerScore(player,"ChallengeCompleted",null,xp)
 
                 local burncards = GetChallengeBurnCardRewards(challRef,tier,player)
