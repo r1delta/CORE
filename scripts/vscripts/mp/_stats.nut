@@ -158,32 +158,43 @@ function Stats_EndRound()
     }
 }
 
-function OnDamaged(ent,damageInfo) {
+function OnDamaged( ent, damageInfo )
+{
 
     local inflictor = damageInfo.GetInflictor()
-    if(inflictor == null)
+
+    if( !IsValid( inflictor ) )
         return
 
-    if(inflictor.IsPlayer()) {
-        local weapon = inflictor.GetActiveWeapon()
-        if(weapon == null)
-            return
-        local weaponName = weapon.GetClassname()
-        Stats_IncrementStat( inflictor, "weapon_stats", "shotsHit", 1.0, weaponName )
-        local critHit = false
-        local hitBox = damageInfo.GetHitBox()
-        local attacker = inflictor
-        local player = ent
-	    if ( CritWeaponInDamageInfo( damageInfo ) )
-		    critHit = IsCriticalHit( attacker, player, hitBox, damageInfo.GetDamage(), damageInfo.GetDamageType() )
+    local attacker = damageInfo.GetAttacker()
 
-        if ( critHit )
-            Stats_IncrementStat( inflictor, "weapon_stats", "critHits", 1.0, weaponName )
+    if ( !IsValid( attacker ) )
+        return
 
-        if(IsValidHeadShot(damageInfo,ent))
-            Stats_IncrementStat( inflictor, "weapon_stats", "headshots", 1.0, weaponName )
+    if ( !attacker.IsPlayer() )
+        return
 
-    }
+
+    local weapon = attacker.GetActiveWeapon()
+    if( !IsValid( weapon ) )
+        return
+
+    local weaponName = weapon.GetClassname()
+
+    Stats_IncrementStat( attacker, "weapon_stats", "shotsHit", 1.0, weaponName )
+
+    local critHit = false
+    local hitBox = damageInfo.GetHitBox()
+
+    if ( CritWeaponInDamageInfo( damageInfo ) )
+        critHit = IsCriticalHit( attacker, ent, hitBox, damageInfo.GetDamage(), damageInfo.GetDamageType() )
+
+    if ( critHit )
+        Stats_IncrementStat( attacker, "weapon_stats", "critHits", 1.0, weaponName )
+
+    if( IsValidHeadShot( damageInfo, ent ) )
+        Stats_IncrementStat( attacker, "weapon_stats", "headshots", 1.0, weaponName )
+
 }
 
 function AddCallback_OnWeaponAttack( callbackFunc)
