@@ -391,26 +391,39 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
         return
 
 	local fixedSaveVar
+    local fixedSaveVarInt
 	local timesPlayed = 0
     local mapName = GetMapName()
     local gameMode = GameRules.GetGameMode()
 
 	fixedSaveVar = var
+    fixedSaveVarInt = var
 
     local gameModeIndex = PersistenceGetEnumIndexForItemName( "gameModes", gameMode )
     if(gameModeIndex != -1)
-        fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameModeIndex )
+    {
+        fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
+        fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameModeIndex )
+    }
 
     local mapNameIndex = PersistenceGetEnumIndexForItemName( "maps", mapName )
     if(mapNameIndex != -1)
-        fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapNameIndex )
+    {
+        fixedSaveVar = StatStringReplace( fixedSaveVar, "%mapname%", mapName )
+        fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%mapname%", mapNameIndex )
+    }
 
-    if( StringContains( fixedSaveVar, "%gamemode%" ) || StringContains( fixedSaveVar, "%mapname%" ) )
-        return
+    if( !StringContains( fixedSaveVar, "%gamemode%" ) || !StringContains( fixedSaveVar, "%mapname%" ) )
+    {
+        local currentValue = player.GetPersistentVar( fixedSaveVar )
+        player.SetPersistentVar( fixedSaveVar, currentValue + value )
+    }
 
-    local currentValue = player.GetPersistentVar(fixedSaveVar)
-
-    player.SetPersistentVar(fixedSaveVar, currentValue + value)
+    if( !StringContains( fixedSaveVarInt, "%gamemode%" ) || !StringContains( fixedSaveVarInt, "%mapname%" ) )
+    {
+        local currentValue = player.GetPersistentVar( fixedSaveVarInt )
+        player.SetPersistentVar( fixedSaveVarInt, currentValue + value )
+    }
 
     UpdateChallengeData( player, category, statName, value, weaponName )
 }
