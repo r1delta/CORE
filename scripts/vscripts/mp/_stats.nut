@@ -311,6 +311,8 @@ function HandleDistanceAndTimeStats() {
                 Stats_IncrementStat( player, "time_stats", "hours_wallrunning", timeHours )
             else if (!IsAlive(player))
                 Stats_IncrementStat( player, "time_stats", "hours_dead", timeHours )
+            else if ( !player.IsOnGround() )
+			    Stats_IncrementStat( player, "time_stats", "hours_inAir", timeHours )
             local activeWeapon = player.GetActiveWeapon()
 
             if ( IsValid( activeWeapon ) ) {
