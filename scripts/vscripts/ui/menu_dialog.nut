@@ -682,9 +682,8 @@ function PenalizeRankedDisconnect()
 
 function LeaveMatchWithParty()
 {
-	ClientCommand( "disconnect" )
+	LeaveMatchSolo()
 
-	ShowLeavingDialog()
 }
 
 function LeaveMatchSolo()
@@ -695,14 +694,37 @@ function LeaveMatchSolo()
 	if ( Durango_IsDurango() )
 		Durango_LeaveParty()
 
-	ClientCommand( "disconnect" )
+	thread TryGoToPersonalLobby()
 
 	ShowLeavingDialog()
 }
 
+function TryGoToPersonalLobby()
+{
+	EndSignal( uiGlobal.signalDummy, "OnCancelConnect" )
+
+	uiGlobal.dialogCloseCallback =
+		function( canceled )
+		{
+			Signal( uiGlobal.signalDummy, "OnCancelConnect" )
+		}
+
+	wait 0.65
+
+	thread TryChangeLobbyType()
+
+	ClientCommand("playlist private_match; map mp_lobby")
+}
+
+function TryChangeLobbyType()
+{
+	WaitSignal( uiGlobal.signalDummy, "LevelFinishedLoading" )
+
+	ClientCommand( "RequestServerChangeToLobbyType0" )
+}
+
 function ShowLeavingDialog()
 {
-        Disconnect()
 	local buttonData = []
 	buttonData.append( { name = "#CANCEL_AND_QUIT_TO_MAIN_MENU", func = Disconnect } )
 
