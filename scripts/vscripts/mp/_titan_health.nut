@@ -269,7 +269,7 @@ function Titan_NPCTookDamage( titan, damageInfo )
 		damageType = damageType | DF_CRITICAL
 		damageInfo.SetCustomDamageType( damageType )
 	}
-	
+
 	PlayerOrNPCTitanTookDamage( titan, damageInfo )
 	local shieldDamage = ShieldHealthUpdate( titan, damageInfo, critHit )
 
@@ -389,7 +389,7 @@ function ShouldDoomTitan( entity, damageInfo, titanSoul )
 	// 크리티컬 공격이라면(약점 공격) 둠상태로 가지않고 바로 터지기때문에..
 	/*if (damageInfo.GetCustomDamageType() & DF_CRITICAL)
 		return false;*/
-	// !ky 테스트를 위해 둠 상태 스킵 비활성화 
+	// !ky 테스트를 위해 둠 상태 스킵 비활성화
 
 	return !( damageInfo.GetCustomDamageType() & DF_SKIPS_DOOMED_STATE )
 	//
@@ -423,13 +423,13 @@ function DoomedStateHealthUpdate( entity, damageInfo )
 
 		titanSoul.s.doomedStartTime <- Time()
 
-		//doomed state effect&sound start 
+		//doomed state effect&sound start
 		PlayFXOnEntity( TITAN_DOOMED_EFFECT, entity, "exp_torso_main" )
 
 		if ( !( "silentDeath" in entity.s ) )
 			EmitSoundOnEntity( entity, "titan_death_explode" )
-		
-		//doomed state effect&sound end		
+
+		//doomed state effect&sound end
 
 		return true
 	}
@@ -1057,8 +1057,6 @@ function ShieldModifyDamage( titan, damageInfo )
 	}
 
 	local newShieldHealth = shieldHealth - shieldDamage
-
-	printt( max( 0, newShieldHealth ) )
 
 	soul.SetShieldHealth( max( 0, newShieldHealth ) )
 

@@ -428,7 +428,7 @@ function EvacMain( chaseTeam ) //TODO: After doing some work on One Flag CTF and
 	if (chaseTeam == TEAM_UNASSIGNED )
 		return
 
-	local evacTeam = GetOtherTeam(chaseTeam)
+	local evacTeam = GetOtherTeam( chaseTeam )
 
 	if ( level.evacTeam == null )
 	{
@@ -471,7 +471,7 @@ function EvacMain( chaseTeam ) //TODO: After doing some work on One Flag CTF and
 	thread EvacShipInit( evacNode )
 
 	thread EvacObjective( level.evacTeam )
-	thread EvacVDU( level.evacTeam, GetTeamIndex(chaseTeam))
+	thread EvacVDU( level.evacTeam, chaseTeam )
 
 	AddDeathCallback( "player", OnPlayerDeath )
 	thread MonitorPlayers()

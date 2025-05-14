@@ -83,6 +83,8 @@ function main()
 	AddClientCommandCallback( "UpdatePrivateMatchSetting", ClientCommand_UpdatePrivateMatchSetting ) //
 	AddClientCommandCallback( "ResetMatchSettingsToDefault", ClientCommand_ResetMatchSettingsToDefault )
 	AddClientCommandCallback( "NewBlackMarketItemsViewed", ClientCommand_NewBlackMarketItemsViewed )
+	AddClientCommandCallback( "RequestServerChangeToLobbyType0", ClientCommand_RequestServerChangeToLobbyType0 )
+	AddCallback_OnClientConnected( Lobby_UpdateLobbyType )
 
 	GameRules.EnableGlobalChat( true )
 	IncludeFile("_burncards_shared")
@@ -2076,6 +2078,30 @@ function ClientCommand_NewBlackMarketItemsViewed( player )
 {
 	player.SetPersistentVar( "bm.newBlackMarketItems", false )
 	return true
+}
+
+function ClientCommand_RequestServerChangeToLobbyType0( player )
+{
+	if ( !IsLobby() )
+		return true
+
+	if ( GetPlayerArray().len() > 1 )
+		return true
+
+	ServerCommand( "sv_lobbyType 0")
+}
+
+// helpful on a direct connect
+function Lobby_UpdateLobbyType( player )
+{
+	if ( !IsLobby() )
+		return true
+
+	if ( GetConVarBool("sv_lobbyType") )
+		return true
+
+	if ( GetPlayerArray().len() > 1 )
+	    ServerCommand( "sv_lobbyType 1" )
 }
 
 function GetMappedValueFromPrivateMatchVar( pmVarName, pmVarSetting )

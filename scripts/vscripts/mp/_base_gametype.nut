@@ -894,7 +894,7 @@ function PostDeathThread( player, damageInfo )
 
 	local attacker = damageInfo.GetAttacker()
 	local methodOfDeath = damageInfo.GetDamageSourceIdentifier()
-	
+
 
 
 	local attackerViewIndex = attacker.GetIndexForEntity()
@@ -1021,7 +1021,7 @@ function PostDeathThread( player, damageInfo )
 	{
 		if ( IsValid( attacker ) && methodOfDeath == eDamageSourceId.titan_execution )
 			rematchOrigin = attacker.GetOrigin()
-		else 
+		else
 			rematchOrigin = player.GetOrigin()
 
 		if(IsValid(player)) {
@@ -2719,10 +2719,10 @@ function CodeCallback_OnClientConnectionCompleted( player )
 		// UpdateLoadouts( player )
 		local pilotIndex = player.GetPersistentVar("pilotSpawnLoadout.index")
 		local pilotIsCustom = player.GetPersistentVar("pilotSpawnLoadout.isCustom")
-		
+
 		local titanIndex = player.GetPersistentVar("titanSpawnLoadout.index")
 		local titanIsCustom = player.GetPersistentVar("titanSpawnLoadout.isCustom")
-	
+
 		SetPilotLoadout( player, pilotIsCustom, pilotIndex )
 		SetTitanLoadout( player, titanIsCustom, titanIndex )
 
@@ -3445,7 +3445,7 @@ function ShouldShowLossProtectionOnEOG( player )
 	if ( player.s.hasMatchLossProtection != true )
 		return false
 
-	if ( player.GetTeam() == GetTeamIndex(GetWinningTeam()) )
+	if ( player.GetTeam() == GetWinningTeam() )
 		return false
 
 	return true

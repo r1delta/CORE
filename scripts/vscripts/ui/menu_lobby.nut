@@ -75,6 +75,8 @@ function main()
 	Globalize( ViewStarsButton_Activated )
 	Globalize( UpdateLobbyAnnounceDialog )
 	Globalize( OnClickGameSummaryButton )
+	Globalize( OnPrivateMatchButtonThreaded )
+	Globalize( LaunchTraining )
 }
 
 function InitLobbyMenu( menu )
@@ -145,6 +147,7 @@ function InitLobbyMenu( menu )
 
 	file.displayedMap <- null
 	file.displayedMode <- null
+	uiGlobal.cancelledPrivateMatch <- false
 
 	file.nextMapNameLabel <- menu.GetChild( "NextMapName" )
 	file.nextGameModeLabel <- menu.GetChild( "NextGameModeName" )
@@ -451,42 +454,57 @@ function ServerCallback_EndTraining()
 	LeaveMatchWithParty()
 }
 
+function Threaded_LaunchTraining()
+{
+	ShowTrainingConnectDialog()
+
+	wait 2
+
+	if(uiGlobal.doTraining)
+	{
+		uiGlobal.doTraining = false // Just in case...
+		CloseDialog()
+		// respawn launches training on tdm gamemode in the vanilla game
+		ClientCommand("playlist tdm; mp_gamemode tdm; map mp_npe")
+	}
+	return
+}
+
+function LaunchTraining() {
+	thread Threaded_LaunchTraining()
+}
+
 function TrainingButton_ActivateOrStartDialog( button )
 {
 	local buttonData = []
-
 	local everStarted = GetTrainingHasEverBeenStartedUI()
 	local everFinished = GetTrainingHasEverFinished()
 	local resumeChoice = GetPlayerTrainingResumeChoiceUI()
 	local header = null
 	local desc = null
-
 	printt( "training everStarted?", everStarted, "everFinished?", everFinished, "resumeChoice=", resumeChoice )
-
 	if ( !everStarted || ( everStarted && !everFinished && resumeChoice < 0 ) )
 	{
-		printt( "TRAINING STARTING, player has never finished it." )
-		UI_DoTraining()
+		LaunchTraining()
 		return
 	}
 	else if ( everStarted && !everFinished && resumeChoice >= 0 )
 	{
-		buttonData.append( { name = "#TRAINING_CONTINUE", func = UI_DoTraining, nameData = GetTrainingNameForResumeChoice( resumeChoice ) } )
-		buttonData.append( { name = "#TRAINING_START_OVER", func = DialogChoice_RestartTraining } )
+		buttonData.append( { name = "#TRAINING_CONTINUE", func = Bind( LaunchTraining ), nameData = GetTrainingNameForResumeChoice( resumeChoice ) } )
+		buttonData.append( { name = "#TRAINING_START_OVER", func = Bind( LocalDialogChoice_RestartTraining ) } )
 		buttonData.append( { name = "#CANCEL", func = null } )
 		header = "#TRAINING_CONTINUE_PROMPT"
 		desc = "#TRAINING_CONTINUE_PROMPT_DESC"
 	}
 	else
 	{
-		buttonData.append( { name = "#TRAINING_FULL", func = DialogChoice_RestartTraining } )
-		buttonData.append( { name = "#TRAINING_PILOT_ONLY", func = DialogChoice_TrainPilotOnly } )
-		buttonData.append( { name = "#TRAINING_TITAN_ONLY", func = DialogChoice_TrainTitanOnly } )
+		buttonData.append( { name = "#VIDEO_INTRO", func = function() { thread PlayIntroVideo( true ) } } )
+		buttonData.append( { name = "#TRAINING_CONTINUE_CLASSIC", func = Bind( LocalDialogChoice_Training_New ) } )
+		buttonData.append( { name = "#TRAINING_CONTINUE_CUSTOM", func = Bind( LocalDialogChoice_Training_Custom ) } )
 		buttonData.append( { name = "#CANCEL", func = null } )
 		header = "#TRAINING_PLAYAGAIN_PROMPT"
-		desc = "#TRAINING_PLAYAGAIN_PROMPT_DESC"
+		desc = TranslateTokenToUTF8("#TRAINING_PLAYAGAIN_PROMPT_DESC") + " \n" + TranslateTokenToUTF8("#TRAINING_PLAYAGAIN_PROMPT_DESC2")
 	}
-
 	local dialogData = {}
 	dialogData.header <- header
 	dialogData.detailsMessage <- desc
@@ -1439,7 +1457,7 @@ function UpdateLobbyTitle()
 
 function BigPlayButton1_Activate( button )
 {
-	local handlerFunc = AdvanceMenuEventHandler( GetMenu( "ClassicMenu" ) )
+	local handlerFunc = AdvanceMenuEventHandler( GetMenu( "ServerBrowserMenu" ) )
 	handlerFunc( button )
 }
 
@@ -1898,12 +1916,24 @@ function OnSettingsButton_Activate( button )
 	AdvanceMenu( GetMenu( "MatchSettingsMenu" ) )
 }
 
+function OnPrivateMatchButtonThreaded()
+{
+	wait 1
+
+	if ( uiGlobal.cancelledPrivateMatch )
+	{
+		uiGlobal.cancelledPrivateMatch = false
+		return
+	}
+
+	ClientCommand( "playlist private_match" )
+	ClientCommand( "reload" )
+}
 
 function OnPrivateMatchButton_Activate( button )
 {
 	ShowPrivateMatchConnectDialog()
-	ClientCommand( "match_playlist private_match" )
-	ClientCommand( "StartPrivateMatchSearch" )
+	thread OnPrivateMatchButtonThreaded()
 }
 
 function OnStartMatchButton_Activate( button )

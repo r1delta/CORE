@@ -3,7 +3,6 @@ function main()
     RegisterSignal("StartBurnCardEffect")
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
-    Globalize( AddBurnCardLevelingPack );
     AddCallback_OnPlayerRespawned( BCPlayerRespawned )
     AddCallback_OnPlayerKilled( BCOnPlayerKilled )
     Globalize( ChangeOnDeckBurnCardToActive )
@@ -657,6 +656,13 @@ function BCLoadoutGrace_Think( player )
                 continue
             }
 
+            // don't burn rematch if you're alive
+            if ( cardRef == "bc_rematch" )
+            {
+                wait 0.1
+                continue
+            }
+
             cardData = GetBurnCardData( cardRef )
 
             local lastsUntil = GetBurnCardLastsUntil( cardRef )
@@ -682,12 +688,12 @@ function BurnCardPlayerRespawned_Threaded( player )
     while ( !IsValid( player ) )
         wait 0.1
 
-    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
-        player.WaitSignal( "CE_FLAGS_CHANGED" );
-
     // some missions in campaign do not use CE flags properly and rely on eGameState.Playing,
     if ( GetCinematicMode() )
         WaittillGameStateOrHigher( eGameState.Playing )
+
+    while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
+        player.WaitSignal( "CE_FLAGS_CHANGED" );
 
     printt( "BurnCardPlayerRespawned_Threaded" )
 
@@ -970,6 +976,9 @@ function ApplyTitanBurnCards_Threaded( titan )
         if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
             return
 
+        if ( GetBurnCardLastsUntil( ref ) != BC_NEXTTITANDROP && !isSpawning)
+            return
+
         ChangeOnDeckBurnCardToActive( player )
     }
     else
@@ -1038,7 +1047,3 @@ function TakeAwayTitanBCOnDeath( titan )
     WaitForever()
 }
 
-function AddBurnCardLevelingPack( cardPackName, cardPackArray )
-{
-    // printt( "Hit stubbed call to AddBurnCardLevelingPack" );
-}

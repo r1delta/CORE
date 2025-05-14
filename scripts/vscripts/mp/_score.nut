@@ -78,7 +78,7 @@ function AddPlayerScore( player, scoreEvent, targetEnt = null, pointValueOverrid
 	if ( eventType == scoreEventType.ASSAULT )
 		player.SetAssaultScore( player.GetAssaultScore() + pointValue )
 	else if ( eventType == scoreEventType.DEFENSE )
-		player.SetDefenseScore( player.GetDefenseScore() + pointValue )	
+		player.SetDefenseScore( player.GetDefenseScore() + pointValue )
 
 	AddTitanBuildPoint( player, scoreEvent )
 
@@ -255,7 +255,7 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 
 
 	titan.GetTitanSoul()
-	
+
 	local cardRef = GetPlayerActiveBurnCard(inflictor)
 	if(cardRef != null) {
 	local cardData = GetBurnCardData(cardRef);
@@ -796,6 +796,7 @@ function ScoreCheck_KillingSpree( attacker, killed )
 
 	if ( attacker.s.numberKillsSinceLastDeath >= KILLINGSPREE_KILL_REQUIREMENT )
 	{
+		Stats_IncrementStat( attacker, "misc_stats", "killingSprees", 1 )
 		AddPlayerScore( attacker, "KillingSpree" )
 		return
 	}

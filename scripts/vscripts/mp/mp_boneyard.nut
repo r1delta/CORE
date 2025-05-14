@@ -166,7 +166,7 @@ function ProgressStage_Early()
 
 	SetGlobalForcedDialogueOnly( true )
 
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 	if ( winningTeam == TEAM_MILITIA || winningTeam == TEAM_UNASSIGNED )
 	{
 		ForcePlayConversationToTeam( "Blurb_1_Militia_Lead", TEAM_MILITIA )
@@ -194,7 +194,7 @@ function ProgressStage_ForcedPulse()
 
 	SetGlobalForcedDialogueOnly( true )
 
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 	if ( winningTeam == TEAM_MILITIA || winningTeam == TEAM_UNASSIGNED )
 	{
 		ForcePlayConversationToTeam( "Blurb_2_Militia_Lead", TEAM_MILITIA )
@@ -221,7 +221,7 @@ function ProgressStage_Middle()
 	if ( level.devForcedWin )  //Don't announce progress if we force win
 		return
 
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 	if ( winningTeam == TEAM_MILITIA || winningTeam == TEAM_UNASSIGNED )
 	{
 		waitthread StopTowerIdle()	// stop the tower at the end of the idle
@@ -250,7 +250,7 @@ function ProgressStage_Late()
 	if ( level.devForcedWin )  //Don't announce progress if we force win
 		return
 
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 	if ( winningTeam == TEAM_MILITIA || winningTeam == TEAM_UNASSIGNED )
 	{
 		waitthread StopTowerIdle()	// stop the tower at the end of the idle
@@ -605,7 +605,7 @@ function EndRoundMain()
 	FlagSet( "Disable_MILITIA" )
 	level.ent.Signal( "EndFlyerPopulate" )
 
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 
 	if ( winningTeam == TEAM_IMC )
 		thread EndRoundIMCWin()
@@ -989,7 +989,7 @@ function LeviathanInterrupt( leviathan, var, resultTable )
 	if ( leviathan.s.interrupted )
 		return
 
-	if ( GetTeamIndex(GetWinningTeam()) == TEAM_IMC )
+	if ( GetWinningTeam() == TEAM_IMC )
 		return
 
 	// if var is a bool we are waiting so lets return true to end the wait thread

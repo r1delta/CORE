@@ -354,7 +354,7 @@ function _SetXP( player, amount, xpType = XP_TYPE.SPECIAL )
 
 function PlayerLeveledUp( player, newLevel )
 {
-	// TryBurnCardRewardForLevel( player, newLevel )
+	TryBurnCardRewardForLevel( player, newLevel )
 
 	// Max level achievement
 	if ( GetLevel( player ) == MAX_LEVEL )

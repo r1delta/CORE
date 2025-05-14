@@ -1757,7 +1757,7 @@ function CreatePilotSpawnPoint( origin, angles, team, name )
 	DispatchSpawn( ent )
 }
 
-// Spawnpoint for Pilots ( generic )
+// Spawnpoint for Titans ( generic )
 function CreateTitanPilotSpawnPoint( origin, angles, team, name )
 {
 	local ent = CreateEntity( "info_spawnpoint_titan" )
@@ -1772,12 +1772,12 @@ function CreateTitanPilotSpawnPoint( origin, angles, team, name )
 
 // Spawnpoint for Marvins
 
-// These have a "bodytype" option that selects which type of Marvin to spawn
-// 0 = regular Marvin
-// 1 = worker
-// 2 = Marvinone (???)
-// 3 = firefighter (seen in Demeter)
-function CreateMarvinSpawnPoint( origin, angles, team, name, marvinType = 0 )
+// These have a "bodytype" and "headType" options that select which type of Marvin to spawn
+// bodyType 1, headType 0 = regular marvin
+// bodyType 0, headType 4 = regular marvin with weird head (wargames)
+// bodyType 3, headType 0 = firefighter marvin (demeter)
+
+function CreateMarvinSpawnPoint( origin, angles, team, name, bodyType = 1, headType = 0 )
 {
 	local ent = CreateEntity( "info_spawnpoint_marvin" )
 	ent.SetName( name )
@@ -1785,16 +1785,8 @@ function CreateMarvinSpawnPoint( origin, angles, team, name, marvinType = 0 )
 	ent.SetAngles( angles )
 	ent.SetTeam( team )
 
-	if ( marvinType = 3 )
-	{
-		ent.kv.bodytype = marvinType
-		ent.kv.headtype = 0
-	}
-	else
-	{
-		ent.kv.bodytype = marvinType
-		ent.kv.headtype = 4
-	}
+	ent.kv.bodytype = bodyType
+	ent.kv.headtype = headType
 
 	DispatchSpawn( ent )
 }
@@ -1856,6 +1848,62 @@ function CreateFlagSpawnPoint( origin, angles, team, name )
 	ent.SetAngles( angles )
 	ent.SetTeam( team )
 	DispatchSpawn( ent )
+}
+
+// Create info_targets (used for evac nodes and some other stuff)
+function CreateInfoTarget( origin, angles, name, target = "" )
+{
+	local ent = CreateEntity( "info_target" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+
+	if ( target != "" )
+	{
+		ent.kv.target = target
+	}
+
+	DispatchSpawn( ent )
+}
+
+// Create info_frontlines (they tell npcs where they should go and shoot at eachother)
+// the "is[gamemode]" bools tell code if the frontline should be removed in that mode. 0 = gone
+// not entirely sure what "spectrepoint" does, so leave it off i guess
+function CreateInfoFrontline( origin, angles, team, name, group = "aaa", isTDM = 0, isLTS = 0, isCTF = 0, spectrepoint = 0 )
+{
+	local ent = CreateEntity( "info_frontline" )
+	ent.SetName( name )
+	ent.SetOrigin( origin )
+	ent.SetAngles( angles )
+	ent.kv.group = group
+
+	local boolSettings = [ team, isTDM, isLTS, isCTF, spectrepoint ]
+
+	foreach( setting in boolSettings )
+	{
+		Assert( setting >= 0 && setting <= 1, "Setting [" + setting + "] for info_frontline [" + name + "] should ALWAYS be either 0 or 1" )
+	}
+
+	ent.SetTeam( team )
+
+	ent.kv.gamemode_tdm = isTDM
+	ent.kv.gamemode_lts = isLTS
+	ent.kv.gamemode_ctf = isCTF
+	ent.kv.spectrepoint = spectrepoint
+
+	DispatchSpawn( ent )
+}
+
+// Debug thing
+function KillAllEntitiesOfType( name )
+{
+	//local entarray = GetEntArrayByClass_Expensive( "info_frontline" )
+	local entarray = GetEntArrayByClass_Expensive( name )
+
+	foreach( ent in entarray )
+	{
+		ent.Destroy()
+	}
 }
 
 // TODO: Could theoretically create hardpoint spawns like this as well

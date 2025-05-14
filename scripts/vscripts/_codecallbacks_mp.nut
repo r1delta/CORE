@@ -588,7 +588,7 @@ function SpawnDummyPilotOrTitan(isTitan)
 	}
 
 	local player = GetPlayerArray()[0]
-	local team = GetTeamIndex(GetOtherTeams(1 << player.GetTeam()))
+	local team = GetOtherTeam( player.GetTeam() )
 
 	if( team == TEAM_MILITIA)
 		ServerCommand( "bot_dummy -team 3" )

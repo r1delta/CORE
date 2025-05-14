@@ -646,7 +646,7 @@ function IntroMilitiaHerosDialogue( bish, mac, sara )
 {
 	mac.EndSignal( "OnDeath" )
 	mac.WaitSignal( "dialogue" )
-	//printt( "Jumping in 3…2…1…mark!" )
+	//printt( "Jumping in 3ï¿½2ï¿½1ï¿½mark!" )
 	EmitSoundOnEntity( mac, "diag_mcor_macallan_cmp_frac_prewarp_01" )
 }
 
@@ -1991,7 +1991,7 @@ function EndRoundMain()
 {
 	//RemoveCustomPlayerCinematicFunc( IMCPlayerSkyScale, TEAM_IMC )
 
-	local winningTeam = GetTeamIndex(GetWinningTeam())
+	local winningTeam = GetWinningTeam()
 
 	if ( EvacEnabled() )
 	{
