@@ -324,6 +324,10 @@ function HandleDistanceAndTimeStats() {
                 }
             }
 
+            local ordnanceWeapon = player.GetOffhandWeapon( OFFHAND_RIGHT )
+
+            if ( IsValid( ordnanceWeapon ) )
+                Stats_IncrementStat( player, "weapon_stats", "hoursUsed" ,timeHours, ordnanceWeapon )
         }
 
 		lastTickTime = Time()
