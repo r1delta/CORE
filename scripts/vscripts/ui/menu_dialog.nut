@@ -694,6 +694,9 @@ function LeaveMatchSolo()
 	if ( Durango_IsDurango() )
 		Durango_LeaveParty()
 
+	if ( IsTrainingLevel() )
+	    Disconnect()
+
 	thread TryGoToPersonalLobby()
 
 	ShowLeavingDialog()
