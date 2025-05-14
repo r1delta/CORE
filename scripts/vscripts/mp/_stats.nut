@@ -103,10 +103,25 @@ function Stats_EndRound()
         if(playerPlacementOnTeam <= 3)
             Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
 
+
         if(GetCurrentWinner() == player.GetTeam())
+        {
+            //lastDailyMatchVictory
             Stats_IncrementStat(player,"game_stats","game_won",1.0)
+            local lastDailyWin = player.GetPersistentVar("lastDailyMatchVictory")
+
+            if ( Daily_GetDay() > lastDailyWin )
+            {
+                AddCoins( player, COIN_REWARD_FIRST_WIN_OF_DAY, eCoinRewardType.FIRST_WIN_OF_DAY )
+                player.SetPersistentVar( "lastDailyMatchVictory", Daily_GetDay() )
+            } else
+                AddCoins( player, COIN_REWARD_MATCH_VICTORY + COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_VICTORY )
+        }
         else
+        {
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
+            AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
+        }
 
         local playerKills = player.GetKillCount()
         local npcKills = player.GetNPCKillCount()
