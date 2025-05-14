@@ -793,24 +793,6 @@ function OnTrainingButtonActivate()
 	OpenChoiceDialog( dialogData, GetMenu( "TrainingDialog" ) )
 }
 
-function LocalDialogChoice_RestartTraining()
-{
-	SetPlayerTrainingResumeChoice( -1 )
-	LaunchTraining()
-}
-
-function LocalDialogChoice_TrainPilotOnly()
-{
-	SetPlayerTrainingResumeChoice( -3 )
-	LaunchTraining()
-}
-
-function LocalDialogChoice_TrainTitanOnly()
-{
-	SetPlayerTrainingResumeChoice( -4 )
-	LaunchTraining()
-}
-
 function OnOptionsButton_Activate()
 {
 	AdvanceMenu( GetMenu( "OptionsMenu" ) )

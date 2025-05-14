@@ -79,6 +79,9 @@ function main()
 	Globalize( LaunchTraining )
 	Globalize( LocalDialogChoice_Training_New )
 	Globalize( LocalDialogChoice_Training_Custom )
+	Globalize( LocalDialogChoice_RestartTraining )
+	Globalize( LocalDialogChoice_TrainPilotOnly )
+	Globalize( LocalDialogChoice_TrainTitanOnly )
 }
 
 function InitLobbyMenu( menu )
@@ -493,6 +496,24 @@ function LocalDialogChoice_Training_New()
 	dialogData.buttonData <- buttonData
 
 	OpenChoiceDialog( dialogData, GetMenu( "TrainingDialog" ) )
+}
+
+function LocalDialogChoice_RestartTraining()
+{
+	SetPlayerTrainingResumeChoice( -1 )
+	LaunchTraining()
+}
+
+function LocalDialogChoice_TrainPilotOnly()
+{
+	SetPlayerTrainingResumeChoice( -3 )
+	LaunchTraining()
+}
+
+function LocalDialogChoice_TrainTitanOnly()
+{
+	SetPlayerTrainingResumeChoice( -4 )
+	LaunchTraining()
 }
 
 function TrainingButton_ActivateOrStartDialog( button )
