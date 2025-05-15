@@ -103,46 +103,10 @@ function Stats_EndRound()
         if(playerPlacementOnTeam <= 3)
             Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
 
-        switch( GameRules.GetGameMode() )
-        {
-            case ATTRITION:
-                Stats_IncrementStat( player, "game_stats", "mode_played_at", 1.0 )
-            case LAST_TITAN_STANDING:
-                Stats_IncrementStat( player, "game_stats", "mode_played_lts", 1.0 )
-            case CAPTURE_THE_FLAG:
-                Stats_IncrementStat( player, "game_stats", "mode_played_ctf", 1.0 )
-            case CAPTURE_POINT:
-                Stats_IncrementStat( player, "game_stats", "mode_played_cp", 1.0 )
-            case TEAM_DEATHMATCH:
-                Stats_IncrementStat( player, "game_stats", "mode_played_tdm", 1.0 )
-            case MARKED_FOR_DEATH:
-                Stats_IncrementStat( player, "game_stats", "mode_played_mfd", 1.0 )
-            case WINGMAN_LAST_TITAN_STANDING:
-                Stats_IncrementStat( player, "game_stats", "mode_played_wlts", 1.0 )
-        }
-
         if( GetCurrentWinner() == player.GetTeam() )
         {
             Stats_IncrementStat(player,"game_stats","game_won",1.0)
             local lastDailyWin = player.GetPersistentVar("lastDailyMatchVictory")
-
-            switch( GameRules.GetGameMode() )
-            {
-                case ATTRITION:
-                    Stats_IncrementStat( player, "game_stats", "mode_won_at", 1.0 )
-                case LAST_TITAN_STANDING:
-                    Stats_IncrementStat( player, "game_stats", "mode_won_lts", 1.0 )
-                case CAPTURE_THE_FLAG:
-                    Stats_IncrementStat( player, "game_stats", "mode_won_ctf", 1.0 )
-                case CAPTURE_POINT:
-                    Stats_IncrementStat( player, "game_stats", "mode_won_cp", 1.0 )
-                case TEAM_DEATHMATCH:
-                    Stats_IncrementStat( player, "game_stats", "mode_won_tdm", 1.0 )
-                case MARKED_FOR_DEATH:
-                    Stats_IncrementStat( player, "game_stats", "mode_won_mfd", 1.0 )
-                case WINGMAN_LAST_TITAN_STANDING:
-                    Stats_IncrementStat( player, "game_stats", "mode_won_wlts", 1.0 )
-            }
 
             if ( Daily_GetDay() > lastDailyWin )
             {
