@@ -35,7 +35,7 @@ if ( IsUI() )
 	function GetPerishable( index )
 	{
 		local perishable = NewBlackMarketPerishable()
-		local prefix = "bm.blackMarketPerishables[ " + index + "]"
+		local prefix = "bm.blackMarketPerishables[" + index + "]"
 		perishable.nextRestockDate  = GetPersistentVar( prefix + ".nextRestockDate" )
 		perishable.perishableType  	= GetPersistentVar( prefix + ".perishableType" )
 		perishable.cardRef  		= GetPersistentVar( prefix + ".cardRef" )
@@ -49,12 +49,14 @@ else
 	function GetPlayerPerishable( player, index )
 	{
 		local perishable = NewBlackMarketPerishable()
-		local prefix = "bm.blackMarketPerishables[ " + index + "]"
+		local prefix = "bm.blackMarketPerishables[" + index + "]"
+        printt("GetPlayerPerishable: " + prefix)
 		perishable.nextRestockDate  = player.GetPersistentVar( prefix + ".nextRestockDate" )
 		perishable.perishableType  	= player.GetPersistentVar( prefix + ".perishableType" )
 		perishable.cardRef  		= player.GetPersistentVar( prefix + ".cardRef" )
 		perishable.coinCost  		= player.GetPersistentVar( prefix + ".coinCost" )
 		perishable.new	  			= player.GetPersistentVar( prefix + ".new" )
-		return perishable
+		printt("GetPlayerPerishable: " + perishable.cardRef + " " + perishable.coinCost)
+        return perishable
 	}
 }
