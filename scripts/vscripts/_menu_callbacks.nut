@@ -540,6 +540,7 @@ function GiveLoadouts( player )
 				CreateTitanRocketPods( soul, soul.GetTitan() )
 				GiveTitanWeaponsForPlayer( player, player )
 				SetTitanOSForPlayer( player )
+				SetDecalForTitan( player )
 			}
 			else
 			{

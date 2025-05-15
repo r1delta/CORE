@@ -97,7 +97,7 @@ function SetupNPC_TitanTitle( npcTitan, player )
 }
 
 function SetUpNPCTitanCurrentMode( player, mode )
-{	
+{
 	printt( "SetUpNPCTitanCurrentMode: ",mode )
 	if( mode < eNPCTitanMode.FOLLOW || mode >= eNPCTitanMode.MODE_COUNT )
 		return;
@@ -531,7 +531,7 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 {
 	local team = player.GetTeam()
 	local settings = GetTitanForPlayer( player )
-	
+
 	Assert( settings != null, "No titan data for " + player )
 
 	local table = 	CreateSpawnNPCTitanTemplate( team, settings )
@@ -554,7 +554,7 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 		GiveTitanWeaponsForPlayer( player, npcTitan )
 
 	SetTitanOSForPlayer( player )
-
+	SetDecalForTitan( player )
 	// start a new titan building when the current titan dies
 	AddSoulDeathFunc( UpdateSoulDeath )
 
@@ -603,7 +603,7 @@ function SetModelSkinFromSettings( table, settings, team )
 	else
 		table.model = ATLAS_MODEL
 	table.skin = team == TEAM_MILITIA ? 1 : 0
-	
+
 }
 
 // Applies model and skin directly to an entity based on settings and team
@@ -654,7 +654,8 @@ function SpawnNPCTitan( table )
 	local hidden 	 = table.hidden
 	local settings   = table.settings
 	local skin       = table.skin
-	local weapon 	= table.weapon
+	local weapon 	 = table.weapon
+	local decal      = table.decal
 
 	if ( !settings )
 		settings = "titan_atlas"
