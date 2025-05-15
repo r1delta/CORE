@@ -68,6 +68,12 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
             player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
             local deck = GetPlayerBurnCardDeck( player )
 
+            if ( coinCount < coinCost )
+            {
+                printt("ClientCommand_ShopPurchaseRequest: " + string + " not enough coins")
+                return false
+            }
+
             foreach( card in cards ) {
                 deck.append( { cardRef = level.indexToBurnCard[card], new = true } )
             }
@@ -79,6 +85,22 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
             deck.append( { cardRef = cardRef, new = true } )
             FillBurnCardDeckFromArray( player, deck )
             break
+        case eShopItemType.TITAN_OS_VOICE_PACK:
+            local titanOS = level.shopInventoryData[ string ].itemID
+            local coinCount = player.GetPersistentVar( "bm.coinCount" )
+            local coinCost = level.shopInventoryData[ string ].coinCost
+
+            if ( coinCount < coinCost )
+            {
+                printt("ClientCommand_ShopPurchaseRequest: " + string + " not enough coins")
+                return false
+            }
+
+            player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
+            player.SetPersistentVar( "bm.blackMarketItemUnlocks[" + titanOS + "]", true )
+
+            Remote.CallFunction_UI(player,"ServerCallback_ShopPurchaseStatus", eShopResponseType.SUCCESS )
+            Remote.CallFunction_UI(player,"ServerCallback_ShopOpenGenericItem", level.shopInventoryData[ string ].itemIndex )
     }
 
     return true
