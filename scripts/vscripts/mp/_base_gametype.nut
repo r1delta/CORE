@@ -2957,10 +2957,7 @@ function FinalPlayerUpdate( player )
 		return
 	player.s.ranFinalPlayerUpdate <- true
 
-
-
 	SaveScoreForMapStars( player )
-
 }
 
 function WaitForDisconnectCompleted( player )
@@ -3529,6 +3526,14 @@ function SaveScoreForMapStars( player )
 		default:
 			Assert( 0, "Unhandled mode in SaveScoreForMapStars()" )
 			return
+	}
+
+	local bestScore = player.GetPersistentVar( "mapStars[" + GetMapName() + "].bestScore[" + GameRules.GetGameMode() + "]" )
+
+	if (score > bestScore)
+	{
+		player.SetPersistentVar( "mapStars[" + GetMapName() + "].previousBestScore[" + GameRules.GetGameMode() + "]", bestScore )
+		player.SetPersistentVar( "mapStars[" + GetMapName() + "].bestScore[" + GameRules.GetGameMode() + "]", score )
 	}
 }
 
