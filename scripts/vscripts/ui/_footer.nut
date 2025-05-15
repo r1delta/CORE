@@ -235,7 +235,7 @@ function UpdateFooterButtons( menuName = null )
 					footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
 				else if ( AmIPartyLeader() )
 					footerData.pc.append( { label = "#SHOW_SERVER", func = ToggleHideServer } )
-			} else
+			} else if ( GetConVarInt( "sv_lobbyType" ) == 0 )
 			{
 				if ( GetPersistentVar( "delta.everythingUnlocked") )
 				    footerData.pc.append( { label = "#DISABLE_EVERYTHINGUNLOCKED", func = ToggleProgression } )
