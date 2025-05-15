@@ -7,7 +7,7 @@
 
 	import	"titan_destroyer_tier0.set"
 	//import	"titan_destroyer_tier1.set"
-    import	"titan_atlas_training.set"
+	import	"titan_atlas_training.set"
 	import	"pilot_female_fastest.set"
 	import	"pilot_female_quickdraw.set"
 	import	"pilot_female_br.set"
@@ -26,6 +26,8 @@
 
 //	dev
 	import	"model_viewer.set"
+
+	import	"pilot_spectre_corporate.set"
 
 //	old
 //	import	"fireteam.set"
