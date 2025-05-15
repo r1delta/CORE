@@ -86,7 +86,8 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
             FillBurnCardDeckFromArray( player, deck )
             break
         case eShopItemType.TITAN_OS_VOICE_PACK:
-            local titanOS = level.shopInventoryData[ string ].itemID
+        case eShopItemType.TITAN_DECAL:
+            local item = level.shopInventoryData[ string ].itemID
             local coinCount = player.GetPersistentVar( "bm.coinCount" )
             local coinCost = level.shopInventoryData[ string ].coinCost
 
@@ -97,10 +98,11 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
             }
 
             player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
-            player.SetPersistentVar( "bm.blackMarketItemUnlocks[" + titanOS + "]", true )
+            player.SetPersistentVar( "bm.blackMarketItemUnlocks[" + item + "]", true )
 
             Remote.CallFunction_UI(player,"ServerCallback_ShopPurchaseStatus", eShopResponseType.SUCCESS )
             Remote.CallFunction_UI(player,"ServerCallback_ShopOpenGenericItem", level.shopInventoryData[ string ].itemIndex )
+            break
     }
 
     return true
