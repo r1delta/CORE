@@ -236,23 +236,12 @@ function OnBlackMarketConnect(player) {
             local cardRef = GetRandomBurnCard()
             MakeBlackMarketPerishable( player, cardRef, 1000, i )
         }
-        else
-        {
-        }
-
     }
-    // for(local i = 0; i < 9; i++)
-    // {
-    //     local cardRef = GetRandomBurnCard()
-    //     printt("OnBlackMarketConnect: " + cardRef)
-       
-    //     MakeBlackMarketPerishable( player, cardRef, 1000, i )
-    // }
 }
 
 // ShopPurchaseRequest
 function main()
 {
     AddClientCommandCallback( "ShopPurchaseRequest", ClientCommand_ShopPurchaseRequest ) //
-    AddCallback_OnClientConnected( OnBlackMarketConnect ) //
+    AddCallback_OnClientConnected( OnBlackMarketConnect ) 
 }
