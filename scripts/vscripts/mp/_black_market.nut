@@ -115,6 +115,13 @@ function MakeCardArrayForPack( minimumRares, totalCards, flags, allRare = false 
         local rarity = GetBurnCardRarity( cardRef )
         local cardFlags = GetBurnCardFlags( cardRef )
 
+        // no dice in packs apparently
+        if ( IsDiceCard( cardRef ) )
+        {
+            i--
+            continue
+        }
+
         if ( minimumRares == 0 && rarity == BURNCARD_RARE )
         {
             i--
@@ -217,24 +224,123 @@ function MakeBlackMarketPerishable( player, cardRef, coinCost,i )
 
 }
 
-function OnBlackMarketConnect(player) {
+function OnBlackMarketConnect(player)
+{
     local maxPerishables = PersistenceGetArrayCount( "bm.blackMarketPerishables" )
-    for(local i = 0; i < maxPerishables; i++)
+    local nextDiceCard = player.GetPersistentVar( "bm.nextDiceCardDate" )
+    local guaranteedDice = false
+    local unixTimeNow = Daily_GetCurrentTime()
+
+    if ( nextDiceCard == null || nextDiceCard < unixTimeNow )
+    {
+        nextDiceCard = Daily_GetCurrentTime() + ( 86400 * 3 ) // guaranteed every 3 days for now
+        player.SetPersistentVar( "bm.nextDiceCardDate", nextDiceCard  )
+        guaranteedDice = true
+    }
+
+    for( local i = 0; i < maxPerishables; i++ )
     {
         local perishable = GetPlayerPerishable( player, i )
+        local rolledDiceCard = false
+
+        printt( "OnBlackMarketConnect: " + i + " " + perishable.cardRef )
+
         if(perishable == null) {
-            // make a new one 
+            // make a new one
             local cardRef = GetRandomBurnCard()
-            MakeBlackMarketPerishable( player, cardRef, 1000, i )
+            local foundDuplicate = false
+
+            // can't have duplicates in the perishables
+            for ( local o = 0; o < maxPerishables; o++ )
+            {
+                local perishableRef = GetPlayerPerishable( player, o ).cardRef
+                if (perishableRef == cardRef)
+                {
+                    i--
+                    foundDuplicate = true
+                }
+            }
+
+            if( foundDuplicate )
+                continue
+
+            local multiplier = 1
+
+            if ( GetBurnCardRarity( cardRef ) == BURNCARD_RARE )
+                multiplier = 4
+
+            if ( rolledDiceCard && IsDiceCard( cardRef ) )
+            {
+                i--
+                continue
+            }
+
+            if ( IsDiceCard( cardRef ) )
+            {
+                multiplier = 100
+                rolledDiceCard = true
+            }
+
+            if ( i == maxPerishables - 1 && guaranteedDice && !rolledDiceCard )
+            {
+                cardRef = "bc_dice_ondeath"
+                multiplier = 100
+                rolledDiceCard = true
+            }
+
+            local coinCost = RandomInt( 100, 1000 ) * multiplier
+
+            MakeBlackMarketPerishable( player, cardRef, coinCost, i )
             continue
         }
 
-        local unixTimeNow = Daily_GetCurrentTime()
-        if ( perishable.nextRestockDate < unixTimeNow )
+        // if ( perishable.nextRestockDate < unixTimeNow )
+        if (true)
         {
             // make a new one
             local cardRef = GetRandomBurnCard()
-            MakeBlackMarketPerishable( player, cardRef, 1000, i )
+            local foundDuplicate = false
+
+            // can't have duplicates in the perishables
+            for ( local o = 0; o < maxPerishables; o++ )
+            {
+                local perishableRef = GetPlayerPerishable( player, o ).cardRef
+                if (perishableRef == cardRef)
+                {
+                    i--
+                    foundDuplicate = true
+                }
+            }
+
+            if( foundDuplicate )
+                continue
+
+            local multiplier = 1
+            if ( GetBurnCardRarity( cardRef ) == BURNCARD_RARE )
+                multiplier = 4
+
+            if ( rolledDiceCard && IsDiceCard( cardRef ) )
+            {
+                i--
+                continue
+            }
+
+            if ( IsDiceCard( cardRef ) )
+            {
+                multiplier = 100
+                rolledDiceCard = true
+            }
+
+            if ( i == maxPerishables - 1 && guaranteedDice && !rolledDiceCard )
+            {
+                cardRef = "bc_dice_ondeath"
+                multiplier = 100
+                rolledDiceCard = true
+            }
+
+            local coinCost = RandomInt( 100, 1000 ) * multiplier
+
+            MakeBlackMarketPerishable( player, cardRef, coinCost, i )
         }
     }
 }
@@ -243,5 +349,5 @@ function OnBlackMarketConnect(player) {
 function main()
 {
     AddClientCommandCallback( "ShopPurchaseRequest", ClientCommand_ShopPurchaseRequest ) //
-    AddCallback_OnClientConnected( OnBlackMarketConnect ) 
+    AddCallback_OnClientConnected( OnBlackMarketConnect )
 }
