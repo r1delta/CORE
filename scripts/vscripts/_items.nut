@@ -1590,6 +1590,9 @@ function IsItemLocked( ref, childRef = null, player = null )
 		if ( DevEverythingUnlocked() )
 			return false
 
+		if ( IsPlayerEverythingUnlocked( player ) )
+			return false
+
 		if ( ref in unlockLevels )
 		{
 			if ( ref == "burn_card_slot_1" || ref == "burn_card_slot_2" || ref == "burn_card_slot_3" )

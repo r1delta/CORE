@@ -1872,6 +1872,7 @@ function InitPersistence()
     AddPersistenceKey("mapStars.previousBestScore", "int")
 
     AddPersistenceKey("playlistAnnouncementSeen", "bool")
+	AddPersistenceKey("delta.everythingUnlocked", "bool")
 }
 InitPersistence()
 function IsDelta() {

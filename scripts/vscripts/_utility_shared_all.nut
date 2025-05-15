@@ -371,6 +371,19 @@ function DevEverythingUnlocked()
 	return EverythingUnlockedConVarEnabled()
 }
 
+function IsPlayerEverythingUnlocked( player = null )
+{
+	// assume this is uiscript
+	if ( player == null )
+	{
+		local value = GetPersistentVar( "delta.everythingUnlocked" )
+
+		return value ? true : false
+	}
+
+	return player.GetPersistentVar( "delta.everythingUnlocked" ) ? true : false
+}
+
 function MapIsValidForPersistence( mapName )
 {
 	return PersistenceEnumValueIsValid( "maps", mapName )
