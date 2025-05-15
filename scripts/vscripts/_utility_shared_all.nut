@@ -857,8 +857,12 @@ function IsPrivateMatch()
 
     // since vanilla will reload the playlists we can get away with using a bogus default value since it shouldn't exist
 	// this will 100% fall apart if we run loadPlaylists in mp_lobby, but should probably be fine since we always hit frontend when hosting
-	if ( GetCurrentPlaylistVarInt( "private_match", 0 ) == 1 && GetConVarBool( "sv_lobbyType" ) )
-		return true
-
-	return false
+	if( GetCurrentPlaylistVarInt( "private_match", 2 ) == 2)
+		return GetCurrentPlaylistName() == "private_match" && GetConVarInt("sv_lobbyType") == 1
+	if( IsLobby() )
+		return GetCurrentPlaylistName() == "private_match" && GetConVarInt("sv_lobbyType") == 1
+	else
+	{
+    	return ( GetCurrentPlaylistVarInt( "private_match", 0 ) == 1 ) && ( GetConVarInt("sv_lobbyType") == 1 )
+	}
 }
