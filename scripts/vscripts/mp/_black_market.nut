@@ -294,8 +294,7 @@ function OnBlackMarketConnect(player)
             continue
         }
 
-        // if ( perishable.nextRestockDate < unixTimeNow )
-        if (true)
+        if ( perishable.nextRestockDate < unixTimeNow )
         {
             // make a new one
             local cardRef = GetRandomBurnCard()
