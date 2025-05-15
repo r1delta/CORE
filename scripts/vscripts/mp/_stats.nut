@@ -6,7 +6,6 @@ function main() {
     file.playerDeathsPvp <- {}
     file.playerKillsPvp <- {}
     file.playerRecentlyRodeoed <- {}
-    file.alreadyDidEndRound <- false
 
     AddCallback_OnPlayerRespawned(OnPlayerRespawned)
     AddCallback_PlayerOrNPCKilled(OnPlayerOrNPCKilled)
@@ -70,12 +69,6 @@ function EntitiesDidLoad() {
 
 function Stats_EndRound()
 {
-    // this seems to be called twice for some reason
-    if ( file.alreadyDidEndRound )
-        return
-
-    file.alreadyDidEndRound = true
-
     if( IsLobby() )
         return
 
