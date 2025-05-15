@@ -103,6 +103,25 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
             Remote.CallFunction_UI(player,"ServerCallback_ShopPurchaseStatus", eShopResponseType.SUCCESS )
             Remote.CallFunction_UI(player,"ServerCallback_ShopOpenGenericItem", level.shopInventoryData[ string ].itemIndex )
             break
+        case eShopItemType.CHALLENGE_SKIP:
+            local coinCount = player.GetPersistentVar( "bm.coinCount" )
+            local coinCost = level.shopInventoryData[ string ].coinCost
+
+            if ( coinCount < coinCost )
+            {
+                printt("ClientCommand_ShopPurchaseRequest: " + string + " not enough coins")
+                return false
+            }
+
+            player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
+
+            local currentSkips = player.GetPersistentVar( "bm.challengeSkips" )
+
+            player.SetPersistentVar( "bm.challengeSkips", currentSkips + 1 )
+
+            Remote.CallFunction_UI(player,"ServerCallback_ShopPurchaseStatus", eShopResponseType.SUCCESS )
+            Remote.CallFunction_UI(player,"ServerCallback_ShopOpenGenericItem", level.shopInventoryData[ string ].itemIndex )
+            break
     }
 
     return true
