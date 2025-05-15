@@ -59,7 +59,8 @@ function InitShopInventory()
 	CreateShopItem( "shop_bc_weapons_pack",			eShopItemType.BURNCARD_PACK, 		"#SHOP_ITEM_BC_PACK_WEAPONS",				"#SHOP_ITEM_BC_PACK_WEAPONS_DESC",			"#SHOP_ITEM_BC_MIN_RARE_MAYBE", 	6,		1, 		"black_market/cardpack_weapons",				20000 )
 	CreateShopItem( "shop_bc_intel_pack",			eShopItemType.BURNCARD_PACK, 		"#SHOP_ITEM_BC_PACK_INTEL",					"#SHOP_ITEM_BC_PACK_INTEL_DESC",			"#SHOP_ITEM_BC_MIN_RARE_MAYBE", 	6,		1, 		"black_market/cardpack_intel",					20000 )
 	CreateShopItem( "shop_bc_pack_titan",			eShopItemType.BURNCARD_PACK, 		"#SHOP_ITEM_BC_PACK_TITAN_SMALL", 			"#SHOP_ITEM_BC_PACK_TITAN_SMALL_DESC", 		"#SHOP_ITEM_BC_MIN_RARE_MAYBE",		3,		1,		"black_market/cardpack_titan",					30000 )
-	CreateShopItem( "shop_bc_pack_team_defense",	eShopItemType.BURNCARD_PACK, 		"#SHOP_ITEM_BC_PACK_TEAM_DEFENSE", 			"#SHOP_ITEM_BC_PACK_TEAM_DEFENSE_DESC", 	"#SHOP_ITEM_BC_MIN_RARE_MAYBE",		6,		1,		"black_market/cardpack_pilot",					20000 )
+	// is this even real?
+	//CreateShopItem( "shop_bc_pack_team_defense",	eShopItemType.BURNCARD_PACK, 		"#SHOP_ITEM_BC_PACK_TEAM_DEFENSE", 			"#SHOP_ITEM_BC_PACK_TEAM_DEFENSE_DESC", 	"#SHOP_ITEM_BC_MIN_RARE_MAYBE",		6,		1,		"black_market/cardpack_pilot",					20000 )
 
 	// Titan Insignias
 	CreateShopItem( "titan_decals_blackmarket01",	eShopItemType.TITAN_DECAL, 			"#TITAN_DECAL_BLACKMARKET01_NAME",		"#TITAN_DECAL_BLACKMARKET01_DESC",			"", 	1,		0, 		"../models/titans/custom_decals/decal_pack_01/titan_decals_blackmarket01_menu",		5000 )
@@ -387,7 +388,7 @@ function IsBlackMarketUnlocked( player = null )
 	Assert ( level != null )
 	Assert ( gen != null )
 
-	if ( completedBurnCardStory >= BURNCARD_STORY_PROGRESS_COMPLETE && !IsDelta() )
+	if ( completedBurnCardStory >= BURNCARD_STORY_PROGRESS_COMPLETE && !IsPlayerEverythingUnlocked( player ) )
 	{
 		if ( level >= GetUnlockLevelReq( "burn_card_slot_3" ) )
 			return true
@@ -396,7 +397,7 @@ function IsBlackMarketUnlocked( player = null )
 			return true
 	}
 
-	if ( IsDelta() )
+	if ( IsPlayerEverythingUnlocked( player ) )
 		return true
 
 	return false

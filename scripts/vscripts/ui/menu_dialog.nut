@@ -39,18 +39,18 @@ function InitChoiceDialog2Menu( menu )
 
 function OnChoice2ListScrollUp_Activate(...)
 {
-	file.mapListScrollState--
-	if ( file.mapListScrollState < 0 )
-		file.mapListScrollState = 0
+	uiGlobal.trainingListScrollState--
+	if ( uiGlobal.trainingListScrollState < 0 )
+	uiGlobal.trainingListScrollState = 0
 
 	UpdateMapListScroll()
 }
 
 function OnChoice2ListScrollDown_Activate(...)
 {
-	file.mapListScrollState++
-	if ( file.mapListScrollState > file.numMapButtonsOffScreen )
-		file.mapListScrollState = file.numMapButtonsOffScreen
+	uiGlobal.trainingListScrollState++
+	if ( uiGlobal.trainingListScrollState > uiGlobal.numTrainingButtonsOffScreen )
+		uiGlobal.trainingListScrollState = uiGlobal.numTrainingButtonsOffScreen
 
 	UpdateMapListScroll()
 
@@ -63,13 +63,13 @@ function Choice2Button_Focused( button )
 	local buttonID = button.GetScriptID().tointeger()
 
 	// Update window scrolling if we highlight a map not in view
-	local minScrollState = clamp( buttonID - (CHOICE2_VISIBLE_ROWS - 1), 0, file.numMapButtonsOffScreen )
-	local maxScrollState = clamp( buttonID, 0, file.numMapButtonsOffScreen )
+	local minScrollState = clamp( buttonID - (CHOICE2_VISIBLE_ROWS - 1), 0, uiGlobal.numTrainingButtonsOffScreen )
+	local maxScrollState = clamp( buttonID, 0, uiGlobal.numTrainingButtonsOffScreen )
 
-	if ( file.mapListScrollState < minScrollState )
-		file.mapListScrollState = minScrollState
-	if ( file.mapListScrollState > maxScrollState )
-		file.mapListScrollState = maxScrollState
+	if ( uiGlobal.trainingListScrollState < minScrollState )
+		uiGlobal.trainingListScrollState = minScrollState
+	if ( uiGlobal.trainingListScrollState > maxScrollState )
+		uiGlobal.trainingListScrollState = maxScrollState
 
 	UpdateMapListScroll()
 }
@@ -82,9 +82,9 @@ function OnButtonsPanel_Activate(button)
 
 function UpdateMapListScroll()
 {
-	local buttons = file.buttons
+	local buttons = uiGlobal.choice2Buttons
 	local basePos = buttons[0].GetBasePos()
-	local offset = buttons[0].GetHeight() * file.mapListScrollState
+	local offset = buttons[0].GetHeight() * uiGlobal.trainingListScrollState
 
 	buttons[0].SetPos( basePos[0], basePos[1] - offset )
 }
@@ -377,10 +377,10 @@ function OpenChoiceDialog( dialogData, menu = null )
 
 		RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnChoice2ListScrollUp_Activate )
 		RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnChoice2ListScrollDown_Activate )
-		file.mapListScrollState <- 0
-		file.numMapButtonsOffScreen <- null
-		file.buttons <- GetElementsByClassname( menu, "ChoiceDialogButtonClass" )
-		file.numMapButtonsOffScreen = 14 + 1 - CHOICE2_VISIBLE_ROWS
+		uiGlobal.trainingListScrollState <- 0
+		uiGlobal.numTrainingButtonsOffScreen <- null
+		uiGlobal.choice2Buttons <- GetElementsByClassname( menu, "ChoiceDialogButtonClass" )
+		uiGlobal.numTrainingButtonsOffScreen = 14 + 1 - CHOICE2_VISIBLE_ROWS
 	}
 }
 
@@ -682,9 +682,8 @@ function PenalizeRankedDisconnect()
 
 function LeaveMatchWithParty()
 {
-	ClientCommand( "disconnect" )
+	LeaveMatchSolo()
 
-	ShowLeavingDialog()
 }
 
 function LeaveMatchSolo()
@@ -695,14 +694,40 @@ function LeaveMatchSolo()
 	if ( Durango_IsDurango() )
 		Durango_LeaveParty()
 
-	ClientCommand( "disconnect" )
+	if ( IsTrainingLevel() )
+	    Disconnect()
+
+	thread TryGoToPersonalLobby()
 
 	ShowLeavingDialog()
 }
 
+function TryGoToPersonalLobby()
+{
+	EndSignal( uiGlobal.signalDummy, "OnCancelConnect" )
+
+	uiGlobal.dialogCloseCallback =
+		function( canceled )
+		{
+			Signal( uiGlobal.signalDummy, "OnCancelConnect" )
+		}
+
+	wait 0.65
+
+	thread TryChangeLobbyType()
+
+	ClientCommand("playlist private_match; map mp_lobby")
+}
+
+function TryChangeLobbyType()
+{
+	WaitSignal( uiGlobal.signalDummy, "LevelFinishedLoading" )
+
+	ClientCommand( "RequestServerChangeToLobbyType0" )
+}
+
 function ShowLeavingDialog()
 {
-        Disconnect()
 	local buttonData = []
 	buttonData.append( { name = "#CANCEL_AND_QUIT_TO_MAIN_MENU", func = Disconnect } )
 

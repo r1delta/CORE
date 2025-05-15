@@ -623,7 +623,7 @@ function BurnCards_InGame_FooterData( footerData )
 		return
 
 	local progress = GetPersistentVar( "burncardStoryProgress" )
-	if ( UsingAlternateBurnCardPersistence() || IsDelta() )
+	if ( UsingAlternateBurnCardPersistence() || IsPlayerEverythingUnlocked() )
 		progress = BURNCARD_STORY_PROGRESS_COMPLETE
 
 	if ( progress == BURNCARD_STORY_PROGRESS_INTRO )
@@ -676,7 +676,7 @@ function TrackStoryProgressFooterChange()
 		if ( IsFullyConnected() )
 		{
 			progress = GetPersistentVar( "burncardStoryProgress" )
-			if ( UsingAlternateBurnCardPersistence() || IsDelta() )
+			if ( UsingAlternateBurnCardPersistence() || IsPlayerEverythingUnlocked() )
 				progress = BURNCARD_STORY_PROGRESS_COMPLETE
 
 			if ( progress > BURNCARD_STORY_PROGRESS_INTRO )
@@ -821,7 +821,7 @@ function UpdateEditBurnCardButtonText( buttonOverride = null )
 	local cards = GetTotalBurnCards()
 
 	local progress = GetPersistentVar( "burncardStoryProgress" )
-	if ( UsingAlternateBurnCardPersistence() || IsDelta() )
+	if ( UsingAlternateBurnCardPersistence() || IsPlayerEverythingUnlocked() )
 		progress = BURNCARD_STORY_PROGRESS_COMPLETE
 
 	switch ( progress )
@@ -945,7 +945,7 @@ function ShowCoins()
 function UpdateAutofill( forced = null )
 {
 	local progress = GetPersistentVar( "burncardStoryProgress" )
-	if ( UsingAlternateBurnCardPersistence() || IsDelta() )
+	if ( UsingAlternateBurnCardPersistence() || IsPlayerEverythingUnlocked() )
 		progress = BURNCARD_STORY_PROGRESS_COMPLETE
 
 	if ( UsingAlternateBurnCardPersistence() )

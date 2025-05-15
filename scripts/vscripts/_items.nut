@@ -1590,6 +1590,9 @@ function IsItemLocked( ref, childRef = null, player = null )
 		if ( DevEverythingUnlocked() )
 			return false
 
+		if ( IsPlayerEverythingUnlocked( player ) )
+			return false
+
 		if ( ref in unlockLevels )
 		{
 			if ( ref == "burn_card_slot_1" || ref == "burn_card_slot_2" || ref == "burn_card_slot_3" )
@@ -2738,7 +2741,7 @@ function UpdatePlayerDecalUnlocks( player, updatePersistence = true )
 	local decalItems = GetAllItemsOfType( itemType.TITAN_DECAL )
 	foreach( item in decalItems )
 	{
-		if ( player.GetPersistentVar( "decalsUnlocked[" + item.ref + "]" ) )
+		if ( !player.GetPersistentVar( "decalsUnlocked[" + item.ref + "]" ) )
 			continue
 
 		if ( IsDecalUnlocked( item.ref, player ) )

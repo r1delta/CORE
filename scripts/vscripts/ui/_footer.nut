@@ -9,6 +9,8 @@ function main()
 	Globalize( AppendPCInviteLabels )
 	Globalize( AppendGamepadInviteLabels )
 	Globalize( UpdateFooters )
+	Globalize( DelayedTryUpdateFooterButtonsWhy )
+	Globalize( SendProgressionChoice )
 }
 
 function InitFooterButtons()
@@ -228,6 +230,17 @@ function UpdateFooterButtons( menuName = null )
 			{
 				footerData.gamepad.append( { label = "#XBOX_SWITCH_TEAMS" } )
 				footerData.pc.append( { label = "#SWITCH_TEAMS", func = PCSwitchTeamsButton_Activate } )
+
+				if ( GetConVarBool( "hide_server" ) && AmIPartyLeader() )
+					footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
+				else if ( AmIPartyLeader() )
+					footerData.pc.append( { label = "#SHOW_SERVER", func = ToggleHideServer } )
+			} else if ( GetConVarInt( "sv_lobbyType" ) == 0 )
+			{
+				if ( GetPersistentVar( "delta.everythingUnlocked") )
+				    footerData.pc.append( { label = "#DISABLE_EVERYTHINGUNLOCKED", func = ToggleProgression } )
+				else
+				    footerData.pc.append( { label = "#ENABLE_EVERYTHINGUNLOCKED", func = ToggleProgression } )
 			}
 
 			footerData.pc = AppendPCInviteLabels( footerData.pc )
@@ -237,7 +250,7 @@ function UpdateFooterButtons( menuName = null )
 				footerData.gamepad.append( { label = "#X_BUTTON_MUTE" } )
 				footerData.pc.append( { label = "#MOUSE1_MUTE" } )
 
-				footerData.pc.append( { label = "#MOUSE2_VIEW_PLAYER_PROFILE" } )
+				// footerData.pc.append( { label = "#MOUSE2_VIEW_PLAYER_PROFILE" } )
 			}
 
 			footerData.gamepad = AppendGamepadInviteLabels( footerData.gamepad )
@@ -533,6 +546,63 @@ function UpdateFooters( footerData )
 	}
 }
 
+function ToggleHideServer( button )
+{
+	local value = GetConVarBool( "hide_server" )
+	value = !value
+
+	if ( value )
+	    ClientCommand( "hide_server 1" )
+	else
+		ClientCommand( "hide_server 0" )
+
+	UpdateFooterButtons()
+
+	thread DelayedTryUpdateFooterButtonsWhy()
+}
+
+function ToggleProgression( button )
+{
+	local value = GetPersistentVar( "delta.everythingUnlocked") ? 0 : 1
+
+	if ( value == 1 )
+	{
+		local buttonData = []
+		buttonData.append( { name = "#YES", func = SendProgressionChoice } )
+		buttonData.append( { name = "#NO", func = null } )
+
+		local footerData = []
+		footerData.append( { label = "#A_BUTTON_SELECT" } )
+		footerData.append( { label = "#B_BUTTON_CLOSE" } )
+
+		local dialogData = {}
+		dialogData.header <- "Disable Progression?"
+		dialogData.detailsMessage <- "This will unlock all loadout weapons, this is only recommended if you don't like fun."
+		dialogData.buttonData <- buttonData
+		dialogData.footerData <- footerData
+		OpenChoiceDialog( dialogData )
+	} else
+	{
+		SendProgressionChoice()
+	}
+}
+
+function SendProgressionChoice()
+{
+	local value = GetPersistentVar( "delta.everythingUnlocked") ? 0 : 1
+
+	ClientCommand( "UpdateProgressionOption " + value )
+
+	thread DelayedTryUpdateFooterButtonsWhy()
+}
+
+function DelayedTryUpdateFooterButtonsWhy()
+{
+	wait 0.15
+
+	UpdateFooterButtons( uiGlobal.activeMenu.GetName() )
+}
+
 function AppendGamepadInviteLabels( footerData )
 {
 	if ( Durango_IsDurango() )
@@ -733,13 +803,13 @@ function UpdateCanSetDataCenter()
 
 		if ( uiGlobal.canSetDataCenter != lastResult )
 		{
-			if ( uiGlobal.canSetDataCenter ) 
-			{	 
+			if ( uiGlobal.canSetDataCenter )
+			{
 				RegisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
 				RegisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )
 				RegisterButtonPressedCallback(BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
-			}  
-			else 
+			}
+			else
 			{
 				DeregisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
 				DeregisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )

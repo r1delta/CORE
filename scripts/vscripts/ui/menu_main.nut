@@ -654,7 +654,7 @@ function Threaded_CreateLocalServer()
 
 	uiGlobal.ConfirmMenuDetails.SetText( "#LOADING_SERVER" )
 
-	wait 1 // artificial wait so people can cancel
+	wait 0.65 // artificial wait so people can cancel
 
 	ClientCommand("hide_server 1")
 	ClientCommand("playlist private_match; map mp_lobby")
@@ -791,76 +791,6 @@ function OnTrainingButtonActivate()
 	dialogData.buttonData <- buttonData
 
 	OpenChoiceDialog( dialogData, GetMenu( "TrainingDialog" ) )
-}
-
-function LocalDialogChoice_RestartTraining()
-{
-	SetPlayerTrainingResumeChoice( -1 )
-	LaunchTraining()
-}
-
-function LocalDialogChoice_TrainPilotOnly()
-{
-	SetPlayerTrainingResumeChoice( -3 )
-	LaunchTraining()
-}
-
-function LocalDialogChoice_TrainTitanOnly()
-{
-	SetPlayerTrainingResumeChoice( -4 )
-	LaunchTraining()
-}
-
-function LocalDialogChoice_Training_New()
-{
-	local buttonData = []
-	buttonData.append( { name = "#TRAINING_FULL", func = Bind( LocalDialogChoice_RestartTraining ) } )
-	buttonData.append( { name = "#TRAINING_PILOT_ONLY", func = Bind( LocalDialogChoice_TrainPilotOnly ) } )
-	buttonData.append( { name = "#TRAINING_TITAN_ONLY", func = Bind( LocalDialogChoice_TrainTitanOnly ) } )
-	buttonData.append( { name = "#CANCEL", func = null } )
-
-	local header = "#TRAINING_PLAYAGAIN_PROMPT"
-	local desc = "#TRAINING_PLAYAGAIN_PROMPT_DESC"
-
-	local dialogData = {}
-	dialogData.header <- header
-	dialogData.detailsMessage <- desc
-	dialogData.buttonData <- buttonData
-
-	OpenChoiceDialog( dialogData, GetMenu( "TrainingDialog" ) )
-}
-
-function LocalDialogChoice_Training_Custom()
-{
-	CloseDialog(false)
-
-	local buttonData = []
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_1", func = Bind( function() { SetPlayerTrainingResumeChoice( 0 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_2", func = Bind( function() { SetPlayerTrainingResumeChoice( 1 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_3", func = Bind( function() { SetPlayerTrainingResumeChoice( 2 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_4", func = Bind( function() { SetPlayerTrainingResumeChoice( 3 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_5", func = Bind( function() { SetPlayerTrainingResumeChoice( 4 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_6", func = Bind( function() { SetPlayerTrainingResumeChoice( 5 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_7", func = Bind( function() { SetPlayerTrainingResumeChoice( 6 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_8", func = Bind( function() { SetPlayerTrainingResumeChoice( 7 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_9", func = Bind( function() { SetPlayerTrainingResumeChoice( 8 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_10", func = Bind( function() { SetPlayerTrainingResumeChoice( 9 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_11", func = Bind( function() { SetPlayerTrainingResumeChoice( 10 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_12", func = Bind( function() { SetPlayerTrainingResumeChoice( 11 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_13", func = Bind( function() { SetPlayerTrainingResumeChoice( 12 ); LaunchTraining() } ) } )
-	buttonData.append( { name = "#NPE_MODULE_MENU_DESC_14", func = Bind( function() { SetPlayerTrainingResumeChoice( 13 ); LaunchTraining() } ) } )
-
-	buttonData.append( { name = "#CANCEL", func = function() {} } )
-
-	local header = "#TRAINING_PLAYAGAIN_PROMPT_ADV_TITLE"
-	local desc = ""
-
-	local dialogData = {}
-	dialogData.header <- header
-	dialogData.detailsMessage <- desc
-	dialogData.buttonData <- buttonData
-
-	OpenChoiceDialog( dialogData, GetMenu( "ChoiceDialog2" ) )
 }
 
 function OnOptionsButton_Activate()

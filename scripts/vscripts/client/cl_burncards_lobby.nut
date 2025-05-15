@@ -542,7 +542,7 @@ function DisplayAnyMail( player )
 	)
 
 	local progress = player.GetPersistentVar( "burncardStoryProgress" )
-	if ( UsingAlternateBurnCardPersistence() || IsDelta() )
+	if ( UsingAlternateBurnCardPersistence() || IsPlayerEverythingUnlocked( player ) )
 		progress = BURNCARD_STORY_PROGRESS_COMPLETE
 
 	foreach ( elem in file.hudElemsIntro )

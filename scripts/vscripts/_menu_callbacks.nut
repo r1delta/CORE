@@ -31,6 +31,7 @@ AddClientCommandCallback("OpenBurnCardMenu", ClientCommand_OpenBurnCardMenu )
 		AddClientCommandCallback( "ToggleHUD", ClientCommand_ToggleHUD )
 		AddClientCommandCallback( "ToggleOffhandLowRecharge", ClientCommand_ToggleOffhandLowRecharge )
 	}
+	AddClientCommandCallback( "UpdateProgressionOption", ClientCommand_UpdateProgressionOption )
 
 	RegisterSignal( "EndGiveLoadouts" )
 	RegisterSignal( "NewPilotOrdnance" )
@@ -60,11 +61,22 @@ AddClientCommandCallback("OpenBurnCardMenu", ClientCommand_OpenBurnCardMenu )
 }
 
 
-function ClientCommand_OpenBurnCardMenu(player, ...) 
+function ClientCommand_OpenBurnCardMenu(player, ...)
 {
 	Remote.CallFunction_UI( player, "ServerCallback_OpenBurnCardMenu" )
 
 	return true
+}
+
+function ClientCommand_UpdateProgressionOption( player, ... )
+{
+	if ( vargc != 1 )
+		return false
+
+	if ( vargv[0] == "1" )
+		player.SetPersistentVar( "delta.everythingUnlocked", 1 )
+	else if ( vargv[0] == "0" )
+		player.SetPersistentVar( "delta.everythingUnlocked", 0 )
 }
 
 function ClientCommand_ActivateBurnCard(player, ...) {
@@ -82,7 +94,7 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 		SendHudMessage( player, "#BURN_CARD_IS_ACTIVE", -1, 0.4, 255, 255, 255, 255, 1.0, 2.0, 1.0 )
 		return false
 	}
-	
+
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
 	SetPlayerBurnCardOnDeckIndex(player, index)
@@ -528,6 +540,7 @@ function GiveLoadouts( player )
 				CreateTitanRocketPods( soul, soul.GetTitan() )
 				GiveTitanWeaponsForPlayer( player, player )
 				SetTitanOSForPlayer( player )
+				SetDecalForTitan( player )
 			}
 			else
 			{

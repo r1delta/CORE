@@ -17,6 +17,7 @@ function main()
 	Globalize( GiveHotDropTitanWeaponsForPlayer )
 	Globalize( GiveNPCTitanTacticalAbility )
 	Globalize( SetTitanOSForPlayer )
+	Globalize( SetDecalForTitan )
 
 	AddClientCommandCallback( "TitanEject", ClientCommand_TitanEject ) //
 }
@@ -299,4 +300,26 @@ function SetTitanOSForPlayer( player )
 	player.SetVoicePackIndex ( titanOSEnumIndex )
 }
 
+
+function SetDecalForTitan( player )
+{
+	local playerClassDataTable = GetPlayerClassDataTable( player, "titan" )
+	local titanLoadoutDecal = playerClassDataTable.decal
+	local team = player.GetTeam()
+	local skinIndex
+
+	if ( titanLoadoutDecal == null )
+		skinIndex = team == TEAM_MILITIA ? 1 : 0
+	else
+		skinIndex = GetDecalSkinForTeam( titanLoadoutDecal, team )
+
+	if ( player.IsTitan() )
+	    player.SetSkin( skinIndex )
+	else
+	{
+		local titan = player.GetPetTitan()
+		if ( IsValid( titan ) )
+			titan.SetSkin( skinIndex )
+	}
+}
 
