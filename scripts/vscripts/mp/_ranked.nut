@@ -1,13 +1,14 @@
 function main()
 {
+    AddClientCommandCallback("JoinRankedPlay", ClientCommand_JoinRankedPlay)
     AddClientCommandCallback("SetPlayRankedOn", ClientCommand_SetPlayRankedOn)
     AddClientCommandCallback("SetPlayRankedOff", ClientCommand_SetPlayRankedOff)
     // AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
     // AddCallback_OnPlayerRespawned(Ranked_OnPlayerSpawned)
     // AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
-    if(!IsLobby()) {
+    if(!IsLobby())
         SetOnScoreEventFunc(Leagues_OnScoreEvent)
-    }
+
     printt("Ranked is loaded")
 }
 
@@ -35,7 +36,10 @@ function ClientCommand_SetPlayRankedOff(player)
     return true
 }
 
-
+function ClientCommand_JoinRankedPlay( player )
+{
+    player.SetPersistentVar( "ranked.joinedRankedPlay", 1 )
+}
 
 function Leagues_OnScoreEvent(player,scoreEvent) {
     printt(player, "score event", scoreEvent)
