@@ -31,11 +31,8 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
         FillBurnCardDeckFromArray( player, deck )
         local unixTimeNow = Daily_GetCurrentTime()
         player.SetPersistentVar( "bm.blackMarketPerishables[" + index + "].nextRestockDate", unixTimeNow + 86400 )
-        player.SetPersistentVar( "bm.blackMarketPerishables[" + index + "].new", false )
-        player.SetPersistentVar( "bm.blackMarketPerishables[" + index + "].cardRef", null )
-        player.SetPersistentVar( "bm.blackMarketPerishables[" + index + "].coinCost", 0 )
         player.SetPersistentVar( "bm.blackMarketPerishables[" + index + "].perishableType", null )
-        player.SetPersistentVar( "bm.blackMarketPerishables[" + index + "].nextRestockDate", 0 )
+
         Remote.CallFunction_UI(player,"ServerCallback_ShopPurchaseStatus", eShopResponseType.SUCCESS_PERISHABLE)
         return true
     }
@@ -205,10 +202,11 @@ function GenerateRandomBurnCardPack( pack_data )
 function MakeBlackMarketPerishable( player, cardRef, coinCost,i )
 {
     local perishable = {}
-    perishable.nextRestockDate <- 0
+    perishable.nextRestockDate <- Daily_GetCurrentTime() + 86400
     perishable.perishableType <- "perishable_burncard"
     perishable.cardRef <- cardRef
     perishable.coinCost <- coinCost
+
     perishable.new <- true
     player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "]", perishable )
     player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "].nextRestockDate", perishable.nextRestockDate )
@@ -220,6 +218,29 @@ function MakeBlackMarketPerishable( player, cardRef, coinCost,i )
 }
 
 function OnBlackMarketConnect(player) {
+    local maxPerishables = PersistenceGetArrayCount( "bm.blackMarketPerishables" )
+    for(local i = 0; i < maxPerishables; i++)
+    {
+        local perishable = GetPlayerPerishable( player, i )
+        if(perishable == null) {
+            // make a new one 
+            local cardRef = GetRandomBurnCard()
+            MakeBlackMarketPerishable( player, cardRef, 1000, i )
+            continue
+        }
+
+        local unixTimeNow = Daily_GetCurrentTime()
+        if ( perishable.nextRestockDate < unixTimeNow )
+        {
+            // make a new one
+            local cardRef = GetRandomBurnCard()
+            MakeBlackMarketPerishable( player, cardRef, 1000, i )
+        }
+        else
+        {
+        }
+
+    }
     // for(local i = 0; i < 9; i++)
     // {
     //     local cardRef = GetRandomBurnCard()

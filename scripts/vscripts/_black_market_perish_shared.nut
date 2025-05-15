@@ -50,13 +50,11 @@ else
 	{
 		local perishable = NewBlackMarketPerishable()
 		local prefix = "bm.blackMarketPerishables[" + index + "]"
-        printt("GetPlayerPerishable: " + prefix)
 		perishable.nextRestockDate  = player.GetPersistentVar( prefix + ".nextRestockDate" )
 		perishable.perishableType  	= player.GetPersistentVar( prefix + ".perishableType" )
 		perishable.cardRef  		= player.GetPersistentVar( prefix + ".cardRef" )
 		perishable.coinCost  		= player.GetPersistentVar( prefix + ".coinCost" )
 		perishable.new	  			= player.GetPersistentVar( prefix + ".new" )
-		printt("GetPlayerPerishable: " + perishable.cardRef + " " + perishable.coinCost)
-        return perishable
+		return perishable
 	}
 }
