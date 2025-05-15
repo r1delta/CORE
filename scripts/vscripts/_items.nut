@@ -2741,7 +2741,7 @@ function UpdatePlayerDecalUnlocks( player, updatePersistence = true )
 	local decalItems = GetAllItemsOfType( itemType.TITAN_DECAL )
 	foreach( item in decalItems )
 	{
-		if ( player.GetPersistentVar( "decalsUnlocked[" + item.ref + "]" ) )
+		if ( !player.GetPersistentVar( "decalsUnlocked[" + item.ref + "]" ) )
 			continue
 
 		if ( IsDecalUnlocked( item.ref, player ) )
