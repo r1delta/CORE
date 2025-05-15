@@ -6,6 +6,7 @@ function main() {
     file.playerDeathsPvp <- {}
     file.playerKillsPvp <- {}
     file.playerRecentlyRodeoed <- {}
+    file.alreadyDidEndRound <- false
 
     AddCallback_OnPlayerRespawned(OnPlayerRespawned)
     AddCallback_PlayerOrNPCKilled(OnPlayerOrNPCKilled)
@@ -16,7 +17,7 @@ function main() {
     AddDamageCallback("npc_titan", OnDamaged)
     AddDamageCallback("npc_spectre", OnDamaged)
     AddCallback_OnRodeoStarted(OnRodeoStarted)
-    GM_AddEndRoundFunc( Stats_EndRound )
+    AddCallback_GameStateEnter(eGameState.WinnerDetermined, Stats_EndRound )
     AddCallback_OnWeaponAttack(OnWeaponAttack)
     Globalize(Stats_IncrementStat)
     Globalize(UpdatePlayerStat)
@@ -69,11 +70,19 @@ function EntitiesDidLoad() {
 
 function Stats_EndRound()
 {
+    // this seems to be called twice for some reason
+    if ( file.alreadyDidEndRound )
+        return
+
+    file.alreadyDidEndRound = true
+
     if( IsLobby() )
         return
 
     if( !IsRoundBasedGameOver() && IsRoundBased() )
         return
+
+    local currentGameMode = GameRules.GetGameMode()
 
     foreach( player in GetPlayerArray() )
     {
@@ -89,9 +98,11 @@ function Stats_EndRound()
 	    local playersArray = GetSortedPlayers( compareFunc, killedTeam )
 	    local playerPlacementOnTeam = GetIndexInArray( playersArray, player )
 
-        Stats_IncrementStat(player,"game_stats","game_completed", 1.0)
+        Stats_IncrementStat(player,"game_stats","game_completed", 1)
         Stats_IncrementStat( player, "game_stats", "game_completed_total", 1.0 )
-        Stats_IncrementStat( player, "game_stats", "mode_played", 1.0 )
+
+        local modePlayedStat = "mode_played_" + currentGameMode
+        Stats_IncrementStat( player, "game_stats", modePlayedStat, 1.0 )
 
         // check for mvp and top 3
         if(playerPlacementOnTeam == 0)
@@ -106,6 +117,10 @@ function Stats_EndRound()
         if( GetCurrentWinner() == player.GetTeam() )
         {
             Stats_IncrementStat(player,"game_stats","game_won",1.0)
+
+            local modeWonStat = "mode_won_" + currentGameMode
+            Stats_IncrementStat( player, "game_stats", modeWonStat, 1.0 )
+
             local lastDailyWin = player.GetPersistentVar("lastDailyMatchVictory")
 
             if ( Daily_GetDay() > lastDailyWin )
@@ -452,20 +467,29 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
         fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%mapname%", mapNameIndex )
     }
 
-    if( !StringContains( fixedSaveVar, "%gamemode%" ) || !StringContains( fixedSaveVar, "%mapname%" ) )
+    if ( fixedSaveVar == fixedSaveVarInt )
     {
         local currentValue = player.GetPersistentVar( fixedSaveVar )
         if ( currentValue == null )
             currentValue = 0
         player.SetPersistentVar( fixedSaveVar, currentValue + value )
-    }
-
-    if( !StringContains( fixedSaveVarInt, "%gamemode%" ) || !StringContains( fixedSaveVarInt, "%mapname%" ) )
+    } else
     {
-        local currentValue = player.GetPersistentVar( fixedSaveVarInt )
-        if ( currentValue == null )
-            currentValue = 0
-        player.SetPersistentVar( fixedSaveVarInt, currentValue + value )
+        if( !StringContains( fixedSaveVar, "%gamemode%" ) || !StringContains( fixedSaveVar, "%mapname%" ) )
+        {
+            local currentValue = player.GetPersistentVar( fixedSaveVar )
+            if ( currentValue == null )
+                currentValue = 0
+            player.SetPersistentVar( fixedSaveVar, currentValue + value )
+        }
+
+        if( !StringContains( fixedSaveVarInt, "%gamemode%" ) || !StringContains( fixedSaveVarInt, "%mapname%" ) )
+        {
+            local currentValue = player.GetPersistentVar( fixedSaveVarInt )
+            if ( currentValue == null )
+                currentValue = 0
+            player.SetPersistentVar( fixedSaveVarInt, currentValue + value )
+        }
     }
 
     UpdateChallengeData( player, category, statName, value, weaponName )
