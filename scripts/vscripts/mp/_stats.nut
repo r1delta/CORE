@@ -107,8 +107,32 @@ function Stats_EndRound()
         if(playerPlacementOnTeam <= 3)
             Stats_IncrementStat(player,"game_stats","top3OnTeam",1.0)
 
+        if ( GetCinematicMode() )
+        {
+            local levelIndex = GetCampaignLevelIndex( GetMapName() )
+
+            local team = killedTeam
+
+            if ( team == TEAM_IMC )
+                player.SetPersistentVar( "campaignMapFinishedIMC[" + levelIndex + "]", 1 )
+            else
+                player.SetPersistentVar( "campaignMapFinishedMCOR[" + levelIndex + "]", 1 )
+        }
+
         if( GetCurrentWinner() == player.GetTeam() )
         {
+            if ( GetCinematicMode() )
+            {
+                local levelIndex = GetCampaignLevelIndex( GetMapName() )
+
+                local team = killedTeam
+
+                if ( team == TEAM_IMC )
+                    player.SetPersistentVar( "campaignMapWonIMC[" + levelIndex + "]", 1 )
+                else
+                    player.SetPersistentVar( "campaignMapWonMCOR[" + levelIndex + "]", 1 )
+            }
+
             Stats_IncrementStat(player,"game_stats","game_won",1.0)
 
             local modeWonStat = "mode_won_" + currentGameMode
