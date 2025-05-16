@@ -628,6 +628,9 @@ function PlayerEmbarksTitan( player, titan, embark )
 	titan.Signal( "player_embarks_titan" )
 	player.Signal( "player_embarks_titan" )
 
+	// it's lazy to put this in shared code but whatever
+	Stats_IncrementStat( player, "misc_stats", "titanEmbarks", 1 )
+
 	if ( level.repeatEmbark )
 	{
 		player.Signal( "startembark" )
@@ -911,7 +914,7 @@ function TitanEmbark_PlayerEmbarks( player, titan, e )
 	local thirdPersonAudio
 	local firstPersonAudio
 
-	if(settings == "titan_destroyer") 
+	if(settings == "titan_destroyer")
 	{
 		settings = "titan_ogre"
 	}

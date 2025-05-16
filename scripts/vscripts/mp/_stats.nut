@@ -124,6 +124,9 @@ function Stats_EndRound()
                 player.SetPersistentVar( "campaignMapFinishedMCOR[" + levelIndex + "]", 1 )
         }
 
+        local winStreak = player.GetPersistentVar( "winStreak" )
+        local highestWinStreak = player.GetPersistentVar( "highestWinStreak" )
+
         if( GetCurrentWinner() == player.GetTeam() )
         {
             if ( GetCinematicMode() )
@@ -137,6 +140,11 @@ function Stats_EndRound()
                 else
                     player.SetPersistentVar( "campaignMapWonMCOR[" + levelIndex + "]", 1 )
             }
+
+            if ( winStreak == null )
+                winStreak = 0
+
+            winStreak += 1
 
             if ( killedTeam == TEAM_IMC )
                 Stats_IncrementStat( player, "game_stats", "games_won_as_imc", 1.0 )
@@ -160,9 +168,28 @@ function Stats_EndRound()
         }
         else
         {
+            local imcScore = GameRules.GetTeamScore( TEAM_IMC )
+            local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
+
+            if ( imcScore != militiaScore )
+            {
+                winStreak = 0
+                player.SetPersistentVar("winStreakIsDraws", 0)
+            }
+            else
+                player.SetPersistentVar("winStreakIsDraws", 1)
+
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
             AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
         }
+
+        if ( highestWinStreak == null )
+            highestWinStreak = 0
+
+        if ( winStreak > highestWinStreak )
+            player.SetPersistentVar( "highestWinStreak", winStreak )
+
+        player.SetPersistentVar( "winStreak", winStreak )
 
         local playerKills = player.GetKillCount()
         local npcKills = player.GetNPCKillCount()

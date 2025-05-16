@@ -716,6 +716,11 @@ function ScoreCheck_MultiKill( attacker, killed, currentTime )
 		{
 			AddPlayerScore( attacker, "Mayhem" )
 			//attacker.s.recentAllKilledTimes = []
+
+			local weapon = attacker.GetActiveWeapon()
+
+			if ( weapon.GetClassname() == "mp_titanweapon_arc_cannon" )
+				Stats_IncrementStat( attacker, "misc_stats", "arcCannonMultiKills", 1 )
 		}
 	}
 	if ( recentAllKilledLength == ONSLAUGHT_REQUIREMENT_KILLS )
