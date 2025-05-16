@@ -126,11 +126,11 @@ Resource/UI/LoadingProgress.res
         font					LoadScreenTip
         pin_to_sibling          WorkingAnim
         ypos 12
-        xpos 80
-        auto_wide_tocontents    1
+        xpos 60
 		pin_corner_to_sibling	0
 		pin_to_sibling_corner	2
         textAlignment           "east"
+        auto_wide_tocontents    1
         auto_tall_tocontents	1
 		labelText				""
         fgcolor_override 		"207 248 249 255"
