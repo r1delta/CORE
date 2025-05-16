@@ -700,6 +700,9 @@ function BurnCardPlayerRespawned_Threaded( player )
     cardIndex = GetPlayerBurnCardOnDeckIndex( player )
     cardRef = GetBurnCardFromSlot( player, cardIndex )
 
+    if ( GetActiveBurnCard( player ) )
+        cardRef = GetActiveBurnCard( player )
+
     if( cardRef )
     {
         if ( !IsBurnCardEdgeCaseUseValid( player, cardRef ) )
