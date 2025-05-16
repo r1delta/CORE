@@ -702,6 +702,10 @@ function CBasePlayer::GetPlayerIP() {
 	return getroottable().GetPlayerIP(this);
 }
 
+function CBasePlayer::GetUserId() {
+	return getroottable().GetPlayerUserId(this);
+}
+
 
 /*
 
