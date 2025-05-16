@@ -871,11 +871,11 @@ function BCOnPlayerKilled( player,attacker )
 
     local lastsUntil = GetBurnCardLastsUntil( cardRef )
 
-    if( IsRoundBased() && !GamePlayingOrSuddenDeath() )
-        return
-
     if ( GetActiveBurnCard( player ) )
         StopActiveBurnCard( player )
+
+    if( IsRoundBased() && !GamePlayingOrSuddenDeath() )
+        return
 
     BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
 
