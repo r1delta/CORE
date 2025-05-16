@@ -171,9 +171,12 @@ function RefillWeaponAmmo( player )
 		if ( offhand )
 		{
             local currentAmmo = offhand.GetWeaponPrimaryClipCount()
+            local maxAmmo = 2
 
+            if ( PlayerHasPassive( player, PAS_ORDNANCE_PACK))
+                maxAmmo = 3
 
-            if(currentAmmo != 2)
+            if(currentAmmo != maxAmmo)
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
 		}
 
