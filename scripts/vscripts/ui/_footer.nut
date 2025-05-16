@@ -576,8 +576,8 @@ function ToggleProgression( button )
 		footerData.append( { label = "#B_BUTTON_CLOSE" } )
 
 		local dialogData = {}
-		dialogData.header <- "Disable Progression?"
-		dialogData.detailsMessage <- "This will unlock all loadout weapons, this is only recommended if you don't like fun."
+		dialogData.header <- "#PROGRESSIONCHOICE_HEADER"
+		dialogData.detailsMessage <- "#PROGRESSIONCHOICE_DESC"
 		dialogData.buttonData <- buttonData
 		dialogData.footerData <- footerData
 		OpenChoiceDialog( dialogData )
