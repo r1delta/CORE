@@ -862,7 +862,7 @@ function BCAutoSonarLoop( player )
     }
 }
 
-function BCOnPlayerKilled( player,attacker )
+function BCOnPlayerKilled( player, damageInfo )
 {
     local cardRef = GetPlayerActiveBurnCard( player )
 
@@ -871,13 +871,13 @@ function BCOnPlayerKilled( player,attacker )
 
     local lastsUntil = GetBurnCardLastsUntil( cardRef )
 
-    if ( GetActiveBurnCard( player ) )
+    if( IsRoundBased() && GetActiveBurnCard( player ) && damageInfo.GetDamageSourceIdentifier() != eDamageSourceId.round_end )
         StopActiveBurnCard( player )
 
     if( IsRoundBased() && !GamePlayingOrSuddenDeath() )
         return
 
-    BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
+    BurnCardOnDeath( player, damageInfo, BC_NEXTDEATH )
 
     if ( cardRef == "bc_rematch" )
         StopActiveBurnCard( player )
