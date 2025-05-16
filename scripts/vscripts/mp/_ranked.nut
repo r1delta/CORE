@@ -10,7 +10,6 @@ function main()
         SetOnScoreEventFunc(Leagues_OnScoreEvent)
         AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
         AddCallback_GameStateEnter( eGameState.Playing, Ranked_EnableRankChipOnPlaying )
-        AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
     }
 
     printt("Ranked is loaded")
