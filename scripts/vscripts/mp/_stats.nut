@@ -97,6 +97,11 @@ function Stats_EndRound()
         local modePlayedStat = "mode_played_" + currentGameMode
         Stats_IncrementStat( player, "game_stats", modePlayedStat, 1.0 )
 
+        if ( killedTeam == TEAM_IMC )
+            Stats_IncrementStat( player, "game_stats", "games_completed_as_imc", 1.0 )
+        else
+            Stats_IncrementStat( player, "game_stats", "games_completed_as_militia", 1.0 )
+
         // check for mvp and top 3
         if(playerPlacementOnTeam == 0)
          {
@@ -132,6 +137,12 @@ function Stats_EndRound()
                 else
                     player.SetPersistentVar( "campaignMapWonMCOR[" + levelIndex + "]", 1 )
             }
+
+            if ( killedTeam == TEAM_IMC )
+                Stats_IncrementStat( player, "game_stats", "games_won_as_imc", 1.0 )
+            else
+                Stats_IncrementStat( player, "game_stats", "games_won_as_militia", 1.0 )
+
 
             Stats_IncrementStat(player,"game_stats","game_won",1.0)
 
