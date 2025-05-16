@@ -545,15 +545,17 @@ function AddCallback_OnClientChatMsg( callbackFunc )
 
 function CodeCallback_OnClientChatMsg( playerIndex, msg, isTeamChat )
 {
+    local primaryoutput = msg
 	foreach ( callbackInfo in level.onClientChatMsgCallbacks )
 	{
 		local text = callbackInfo.func.acall( [callbackInfo.scope, playerIndex, msg, isTeamChat] )
-		if ( text != null )
-			return text
+		if ( text == "" ) {
+			primaryoutput = ""} //if one callback wants to block the message, the message will always be blocked
+        else if (primaryoutput != "" && text != msg) {
+            primaryoutput = text // elsewise fight it out idk and hope for best?
+        }
 	}
-
-	// Default case
-	return msg
+	return primaryoutput
 }
 
 function AddCallback_OnOverrideLoadout( callbackFunc )
