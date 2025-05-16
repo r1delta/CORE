@@ -269,7 +269,7 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
         {
             try
             {
-                player.GiveWeapon(weaponData.weapon, weaponData.mods, true)
+                player.GiveWeapon(weaponData.weapon, weaponData.mods, false)
             } catch (e)
             {
                 wait 0.1
