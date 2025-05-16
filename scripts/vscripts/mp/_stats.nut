@@ -316,118 +316,122 @@ function OnWeaponAttack(player,weapon,weaponName,shotsFired) {
 }
 
 
-function HandleDistanceAndTimeStats() {
+function HandleDistanceAndTimeStats()
+{
     if(IsLobby())
         return
 
-    while(GetGameState() < eGameState.Playing )
+    while( GetGameState() < eGameState.Playing )
         wait 0
+
+    foreach(player in GetPlayerArray())
+        thread DistanceAndTimeStats_Think( player )
+}
+
+
+function DistanceAndTimeStats_Think( player )
+{
+    player.EndSignal( "Disconnected" )
 
     local lastTickTime = Time()
 
-    while(true) {
+    for(;;)
+    {
+        if(!IsValid(player))
+            continue
 
-        foreach(player in GetPlayerArray())
-        {
-            if(!IsValid(player))
-                continue
-            if ( !("lastPosForDistanceStatValid" in player.s) ) {
-                // Value hasn't been initialized yet, likely player just joined.
-                // Initialize it now or just skip this player for this tick.
-                // Initializing here might be safer:
-                player.s.lastPosForDistanceStatValid <- false
-                continue // Skip distance calculation for this tick
-            }
-
-            if ( player.s.lastPosForDistanceStatValid ) {
-                local distInches = Distance2D( player.s.lastPosForDistanceStat, player.GetOrigin() )
-				local distMiles = distInches / 63360.0
-                // printt("distMiles: " + distMiles)
-                Stats_IncrementStat( player, "distance_stats", "total", distMiles )
-                if(player.IsTitan()) {
-                    Stats_IncrementStat( player, "distance_stats", "asTitan", distMiles )
-	                local titanDataTable = GetPlayerClassDataTable( player, "titan" )
-	                local titanSettings = titanDataTable.playerSetFile
-		            titanSettings = titanSettings.slice( 0, 1 ).toupper() + titanSettings.slice( 1, titanSettings.len() )
-                    Stats_IncrementStat( player, "distance_stats", "as" + titanSettings, distMiles )
-                } else {
-                    Stats_IncrementStat( player, "distance_stats", "asPilot", distMiles )
-                }
-
-                if(player.IsWallRunning()) {
-                    Stats_IncrementStat( player, "distance_stats", "wallrunning", distMiles )
-                }
-                else if ( player.IsZiplining() )
-                    Stats_IncrementStat( player, "distance_stats", "ziplining", distMiles )
-				else if ( !player.IsOnGround() )
-					Stats_IncrementStat( player, "distance_stats", "inAir", distMiles )
-
-                // GetEnemyRodeoPlayer(titan)
-                // GetFriendlyRodeoPlayer(titan)
-
-                if ( IsValid( player.GetTitanSoulBeingRodeoed() ) && IsValid( player.GetTitanSoulBeingRodeoed().GetBossPlayer() ) )
-                {
-                    local soul = player.GetTitanSoulBeingRodeoed()
-                    local titan = soul.GetBossPlayer()
-                    if ( titan.GetTeam() == player.GetTeam() )
-                        Stats_IncrementStat( player, "distance_stats", "onFriendlyTitan", distMiles )
-                    else
-                        Stats_IncrementStat( player, "distance_stats", "onEnemyTitan", distMiles )
-                }
-            }
-            player.s.lastPosForDistanceStat = player.GetOrigin()
-            player.s.lastPosForDistanceStatValid = true
+        if ( !("lastPosForDistanceStatValid" in player.s) ) {
+            // Value hasn't been initialized yet, likely player just joined.
+            // Initialize it now or just skip this player for this tick.
+            // Initializing here might be safer:
+            player.s.lastPosForDistanceStatValid <- false
+            continue // Skip distance calculation for this tick
         }
-
 
         local timeSeconds = Time() - lastTickTime
 		local timeHours = timeSeconds / 3600.0
 
-        foreach(player in GetPlayerArray())
-		{
-			if ( timeSeconds <= 0 )
-				break
-            Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
-            Stats_IncrementStat( player, "time_stats", "hours_total", timeHours )
-            if(player.IsTitan()) {
-                Stats_IncrementStat( player, "time_stats", "hours_as_titan",  timeHours )
+        if ( player.s.lastPosForDistanceStatValid )
+        {
+            local distInches = Distance2D( player.s.lastPosForDistanceStat, player.GetOrigin() )
+            local distMiles = distInches / 63360.0
+            Stats_IncrementStat( player, "distance_stats", "total", distMiles )
+
+            if(player.IsTitan())
+            {
+                Stats_IncrementStat( player, "distance_stats", "asTitan", distMiles )
                 local titanDataTable = GetPlayerClassDataTable( player, "titan" )
                 local titanSettings = titanDataTable.playerSetFile
-                Stats_IncrementStat( player, "time_stats", "hours_as_" + titanSettings, timeHours )
+                titanSettings = titanSettings.slice( 0, 1 ).toupper() + titanSettings.slice( 1, titanSettings.len() )
+                Stats_IncrementStat( player, "distance_stats", "as" + titanSettings, distMiles )
+            } else {
+                Stats_IncrementStat( player, "distance_stats", "asPilot", distMiles )
             }
-            else
-                Stats_IncrementStat( player, "time_stats", "hours_as_pilot", timeHours )
-            local state = ""
-			if ( player.IsWallHanging() )
-				Stats_IncrementStat( player, "time_stats", "hours_wallhanging", timeHours )
-            else if(player.IsWallRunning())
-                Stats_IncrementStat( player, "time_stats", "hours_wallrunning", timeHours )
-            else if (!IsAlive(player))
-                Stats_IncrementStat( player, "time_stats", "hours_dead", timeHours )
+
+            if(player.IsWallRunning())
+                Stats_IncrementStat( player, "distance_stats", "wallrunning", distMiles )
+            else if ( player.IsZiplining() )
+                Stats_IncrementStat( player, "distance_stats", "ziplining", distMiles )
             else if ( !player.IsOnGround() )
-			    Stats_IncrementStat( player, "time_stats", "hours_inAir", timeHours )
-            local activeWeapon = player.GetActiveWeapon()
+                Stats_IncrementStat( player, "distance_stats", "inAir", distMiles )
 
-            if ( IsValid( activeWeapon ) ) {
-                local weaponName = activeWeapon.GetClassname()
-                Stats_IncrementStat( player, "weapon_stats", "hoursUsed" ,timeHours, weaponName )
-                foreach( weapon in player.GetMainWeapons() )
-				{
-                    Stats_IncrementStat( player, "weapon_stats", "hoursEquipped" ,timeHours, weaponName )
-                }
+            if ( IsValid( player.GetTitanSoulBeingRodeoed() ) && IsValid( player.GetTitanSoulBeingRodeoed().GetBossPlayer() ) )
+            {
+                local soul = player.GetTitanSoulBeingRodeoed()
+                local titan = soul.GetBossPlayer()
+
+                if ( titan.GetTeam() == player.GetTeam() )
+                    Stats_IncrementStat( player, "distance_stats", "onFriendlyTitan", distMiles )
+                else
+                    Stats_IncrementStat( player, "distance_stats", "onEnemyTitan", distMiles )
             }
-
-            local ordnanceWeapon = player.GetOffhandWeapon( OFFHAND_RIGHT )
-
-            if ( IsValid( ordnanceWeapon ) )
-                Stats_IncrementStat( player, "weapon_stats", "hoursUsed" ,timeHours, ordnanceWeapon )
         }
 
-		lastTickTime = Time()
+        if ( timeSeconds <= 0 )
+            break
+        Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
+        Stats_IncrementStat( player, "time_stats", "hours_total", timeHours )
+        if(player.IsTitan()) {
+            Stats_IncrementStat( player, "time_stats", "hours_as_titan",  timeHours )
+            local titanDataTable = GetPlayerClassDataTable( player, "titan" )
+            local titanSettings = titanDataTable.playerSetFile
+            Stats_IncrementStat( player, "time_stats", "hours_as_" + titanSettings, timeHours )
+        }
+        else
+            Stats_IncrementStat( player, "time_stats", "hours_as_pilot", timeHours )
+        local state = ""
+        if ( player.IsWallHanging() )
+            Stats_IncrementStat( player, "time_stats", "hours_wallhanging", timeHours )
+        else if(player.IsWallRunning())
+            Stats_IncrementStat( player, "time_stats", "hours_wallrunning", timeHours )
+        else if (!IsAlive(player))
+            Stats_IncrementStat( player, "time_stats", "hours_dead", timeHours )
+        else if ( !player.IsOnGround() )
+            Stats_IncrementStat( player, "time_stats", "hours_inAir", timeHours )
+        local activeWeapon = player.GetActiveWeapon()
+
+        if ( IsValid( activeWeapon ) ) {
+            local weaponName = activeWeapon.GetClassname()
+            Stats_IncrementStat( player, "weapon_stats", "hoursUsed" ,timeHours, weaponName )
+            foreach( weapon in player.GetMainWeapons() )
+            {
+                Stats_IncrementStat( player, "weapon_stats", "hoursEquipped" ,timeHours, weaponName )
+            }
+        }
+
+        local ordnanceWeapon = player.GetOffhandWeapon( OFFHAND_RIGHT )
+
+        if ( IsValid( ordnanceWeapon ) )
+            Stats_IncrementStat( player, "weapon_stats", "hoursUsed" ,timeHours, ordnanceWeapon )
+
+
+        player.s.lastPosForDistanceStat = player.GetOrigin()
+        player.s.lastPosForDistanceStatValid = true
+
         wait 0.25
+        lastTickTime = Time()
     }
 }
-
 
 function UpdateChallengeData(player,category,statName,value,weaponName)
 {
