@@ -621,7 +621,11 @@ function Threaded_CreateLocalServer()
 	// One of the places where we do this periodic check is when you press "PLAY"
 	if ( Durango_IsDurango() )
 		Durango_CheckPermissions()
-
+	
+	// Play the intro video at all costs if the user never saw it before (intended vanilla behavior)
+	if(!IsIntroViewed())
+		PlayIntroVideo( true )
+	
 	Signal( uiGlobal.signalDummy, "OnCancelConnect" )
 	EndSignal( uiGlobal.signalDummy, "OnCancelConnect" )
 
