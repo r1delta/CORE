@@ -3,12 +3,15 @@ function main()
     AddClientCommandCallback("JoinRankedPlay", ClientCommand_JoinRankedPlay)
     AddClientCommandCallback("SetPlayRankedOn", ClientCommand_SetPlayRankedOn)
     AddClientCommandCallback("SetPlayRankedOff", ClientCommand_SetPlayRankedOff)
-    AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
-    AddCallback_GameStateEnter( eGameState.Playing, Ranked_EnableRankChipOnPlaying )
     // AddCallback_OnPlayerRespawned(Ranked_OnPlayerSpawned)
-    // AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
-    if(!IsLobby())
+
+    if( !IsLobby() )
+    {
         SetOnScoreEventFunc(Leagues_OnScoreEvent)
+        AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
+        AddCallback_GameStateEnter( eGameState.Playing, Ranked_EnableRankChipOnPlaying )
+        AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
+    }
 
     printt("Ranked is loaded")
 
