@@ -4,12 +4,36 @@ function main()
     AddClientCommandCallback("SetPlayRankedOn", ClientCommand_SetPlayRankedOn)
     AddClientCommandCallback("SetPlayRankedOff", ClientCommand_SetPlayRankedOff)
     AddClientCommandCallback("SetPlayRankedOnInGame", ClientCommand_SetRankedPlayOnInGame)
+    AddCallback_GameStateEnter( eGameState.Playing, Ranked_EnableRankChipOnPlaying )
     // AddCallback_OnPlayerRespawned(Ranked_OnPlayerSpawned)
     // AddCallback_OnScoreEvent(Leagues_OnScoreEvent)
     if(!IsLobby())
         SetOnScoreEventFunc(Leagues_OnScoreEvent)
 
     printt("Ranked is loaded")
+
+    file.doneRankChipEnableFunc <- false
+}
+
+function Ranked_EnableRankChipOnPlaying()
+{
+    if( file.doneRankChipEnableFunc )
+        return
+
+    file.doneRankChipEnableFunc = true
+
+    foreach ( player in GetPlayerArray() )
+    {
+        if ( !IsValid(player) )
+            continue
+
+        if ( player.GetPersistentVar("ranked.isPlayingRanked") && !player.IsPlayingRanked() )
+        {
+            player.SetIsPlayingRanked( true )
+            Remote.CallFunction_NonReplay( player, "ServerCallback_ToggleRankedInGame", true )
+            Remote.CallFunction_Replay( player, "SCB_SetUserPerformance", 0 )
+        }
+    }
 }
 
 function ClientCommand_SetRankedPlayOnInGame( player, ... )
@@ -18,6 +42,9 @@ function ClientCommand_SetRankedPlayOnInGame( player, ... )
         return
 
     if ( !MatchSupportsRankedPlay( player ) )
+        return
+
+    if ( player.IsPlayingRanked() )
         return
 
     player.SetPersistentVar("ranked.isPlayingRanked", 1)
@@ -31,6 +58,9 @@ function ClientCommand_SetRankedPlayOnInGame( player, ... )
 //ServerCallback_ToggleRankedInGame to actually toggle the ranked state
 function ClientCommand_SetPlayRankedOn(player)
 {
+    if ( !IsLobby() )
+        return
+
     player.SetPersistentVar("ranked.isPlayingRanked",1)
     player.SetIsPlayingRanked(1)
     return true
@@ -38,6 +68,9 @@ function ClientCommand_SetPlayRankedOn(player)
 
 function ClientCommand_SetPlayRankedOff(player)
 {
+    if ( !IsLobby() )
+        return
+
     player.SetPersistentVar("ranked.isPlayingRanked",0)
     player.SetIsPlayingRanked(0)
     return true
