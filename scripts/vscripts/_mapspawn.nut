@@ -340,12 +340,12 @@
 	IncludeScript( "_cinematic_shared" )
 	IncludeFile( "_minimap_shared" )	// need to be after _remote_functions is included
 	IncludeFile( "_playlist" )
+	IncludeFile( "_ranked_shared" )
 
 	if ( IsMenuLevel() )
 	{
 		if ( IsLobby() )
 		{
-			IncludeFile( "_ranked_shared" )
 			IncludeFile( "_persistentdata" )
 			IncludeFile( "_xp" )
 			IncludeFile( "mp/_gamerules")
