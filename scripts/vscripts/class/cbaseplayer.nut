@@ -698,6 +698,10 @@ function CBasePlayer::SetIsPlayingRanked( isPlayingRanked )
 	getroottable().SetIsPlayingRanked(this,isPlayingRanked )
 }
 
+function CBasePlayer::GetPlayerIP() {
+	return getroottable().GetPlayerIP(this);
+}
+
 
 /*
 
