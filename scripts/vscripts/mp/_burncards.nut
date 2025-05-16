@@ -874,6 +874,9 @@ function BCOnPlayerKilled( player,attacker )
     if( IsRoundBased() && !GamePlayingOrSuddenDeath() )
         return
 
+    if ( GetActiveBurnCard( player ) )
+        StopActiveBurnCard( player )
+
     BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
 
     if ( cardRef == "bc_rematch" )
