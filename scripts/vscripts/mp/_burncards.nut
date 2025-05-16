@@ -697,9 +697,6 @@ function BurnCardPlayerRespawned_Threaded( player )
 
     printt( "BurnCardPlayerRespawned_Threaded" )
 
-    if ( GetPlayerActiveBurnCard( player ) )
-        return
-
     cardIndex = GetPlayerBurnCardOnDeckIndex( player )
     cardRef = GetBurnCardFromSlot( player, cardIndex )
 
@@ -960,29 +957,32 @@ function ApplyTitanBurnCards_Threaded( titan )
         }
     }
 
+    local ref
+
     if ( GetPlayerActiveBurnCard( player ) )
-        return
-
-    local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
-    local ref = GetBurnCardFromSlot( player, cardIndex )
-
-    if( ref )
     {
-        if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
-            return
+        local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+        ref = GetBurnCardFromSlot( player, cardIndex )
 
-        if ( GetBurnCardLastsUntil( ref ) != BC_NEXTTITANDROP && !isSpawning)
-            return
+        if( ref )
+        {
+            if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
+                return
 
-        ChangeOnDeckBurnCardToActive( player )
-    }
-    else
-    {
-        waitthread BCLoadoutGrace_Think( player )
+            if ( GetBurnCardLastsUntil( ref ) != BC_NEXTTITANDROP && !isSpawning)
+                return
 
-        cardIndex = GetPlayerBurnCardActiveSlotID( player )
-        ref = GetActiveBurnCard( player )
-    }
+            ChangeOnDeckBurnCardToActive( player )
+        }
+        else
+        {
+            waitthread BCLoadoutGrace_Think( player )
+
+            cardIndex = GetPlayerBurnCardActiveSlotID( player )
+            ref = GetActiveBurnCard( player )
+        }
+    } else
+        ref = GetPlayerActiveBurnCard( player )
 
     if ( !ref )
         return
