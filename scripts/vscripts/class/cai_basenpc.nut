@@ -111,6 +111,9 @@ function CAI_BaseNPC::SetTeam( team )
 
 	this.__SetTeam( team )
 
+	SetSkinForTeam( this, team )
+	ChangeWeaponSkin( this, team )
+
 	if ( this.GetModelName() == "" )
 		return
 
@@ -135,9 +138,6 @@ function CAI_BaseNPC::SetTeam( team )
 
 	if ( alreadyAssignedValidTeam && ( !( "swapTeamOnLeech" in modelTable.teamSkin ) ) )
 		return
-
-	SetSkinForTeam( this, team )
-	ChangeWeaponSkin( this, team )
 
 	//TODO : Satchel stuff for npc turrets. This doesn't quite work yet
 
