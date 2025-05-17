@@ -463,7 +463,10 @@ function UpdateChallengeData(player,category,statName,value,weaponName)
                 local xp = GetChallengeXPReward(challRef,tier,player)
 
                 if ( IsDailyChallenge(challRef) )
+                {
+                    Stats_IncrementStat( player, "misc_stats", "dailyChallengesCompleted", 1 )
                     AddCoins( player, COIN_REWARD_DAILY_CHALLENGE, eCoinRewardType.DAILY_CHALLENGE )
+                }
 
                 AddPlayerScore(player,"ChallengeCompleted",null,xp)
 
