@@ -691,9 +691,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     }
 
     if ( victim.IsPlayer() || victim.GetBossPlayer() )
-	{
 		Stats_IncrementStat( attacker, "kill_stats", "totalPVP", 1.0 )
-	}
 
     if ( attacker.IsPlayer() ) {
         Stats_IncrementStat( attacker, "kills_stats", "total",  1 )
@@ -914,8 +912,13 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0,source )
             }
-            if ( IsValidHeadShot(damageInfo,victim ) )
+            if ( IsValidHeadShot( damageInfo, victim ) )
+            {
+                if( victim.IsPlayer() )
+                    Stats_IncrementStat( attacker, "kill_stats", "pilot_headshots_total", 1.0 )
+
 		        Stats_IncrementStat( attacker, "weapon_stats", "headshots",  1.0, source )
+            }
         }
     }
 }
