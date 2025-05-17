@@ -704,7 +704,12 @@ function BurnCardPlayerRespawned_Threaded( player )
     cardRef = GetBurnCardFromSlot( player, cardIndex )
 
     if ( GetActiveBurnCard( player ) )
+    {
         cardRef = GetActiveBurnCard( player )
+
+        if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
+            return
+    }
 
     if( cardRef )
     {
@@ -989,6 +994,9 @@ function ApplyTitanBurnCards_Threaded( titan )
 
             cardIndex = GetPlayerBurnCardActiveSlotID( player )
             ref = GetActiveBurnCard( player )
+
+            if ( DoesPlayerHaveActiveNonTitanBurnCard( player ) )
+                return
         }
     } else
         ref = GetPlayerActiveBurnCard( player )
