@@ -2086,7 +2086,18 @@ function ClientCommand_RequestServerChangeToLobbyType0( player )
 		return true
 
 	if ( GetPlayerArray().len() > 1 )
-		return true
+	{
+		if ( !IsPrivateMatch() )
+			return
+
+		for( local i = 0; i < GetPlayerArray().len(); i++ )
+		{
+			if ( i == 0 )
+				continue
+
+			ServerCommand(format("kickid %d \"Server Shutting Down\"", GetPlayerArray()[i].GetUserId()))
+		}
+	}
 
 	ServerCommand( "sv_lobbyType 0")
 }
