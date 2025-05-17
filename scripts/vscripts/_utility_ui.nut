@@ -494,6 +494,8 @@ function GetMapStarScoreImage( gameMode )
 	}
 }
 
+// this has some drawbacks, if someone has the same name as the host their UI will act like their host.
+// this doesn't matter on the server since we check index 0 but we can't getplayerarray in ui
 ::AmIPartyLeader__ <- AmIPartyLeader
 function AmIPartyLeader()
 {
