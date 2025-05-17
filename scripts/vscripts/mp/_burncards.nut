@@ -718,7 +718,7 @@ function BurnCardPlayerRespawned_Threaded( player )
 
         cardData = GetBurnCardData(cardRef)
 
-        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP  )
+        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
             ChangeOnDeckBurnCardToActive( player )
     }
     else
