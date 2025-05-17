@@ -594,6 +594,23 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             Stats_IncrementStat( bossPlayer, "kills_stats", "coopChallenge_Turret_Kills", 1.0 )
         }
 
+        if ( IsSniperSpectre( attacker ) )
+        {
+            local damageHistory = attacker.s.recentDamageHistory
+
+            foreach( entry in damageHistory )
+            {
+                local attackerWeakRef = entry.attackerWeakRef
+
+                if ( !IsValid( attackerWeakRef ) )
+                    continue
+
+                if ( attackerWeakRef.IsPlayer() )
+                    Stats_IncrementStat( attackerWeakRef, "kills_stats", "coopChallenge_SuicideSpectre_Kills", 1.0 )
+            }
+        }
+
+
         if ( !attacker.IsPlayer() )
             return
 
@@ -607,7 +624,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             }
         }
 
-        if ( victim.IsNPC() && IsCloaked( victim ) )
+        if ( victim.IsNPC() && CloakedDroneIsSquadClaimed( victim.kv.squadname ) )
             Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_CloakDrone_Kills", 1.0 )
 
         if ( victim.IsDropship() )
