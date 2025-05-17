@@ -866,3 +866,17 @@ function IsPrivateMatch()
     	return ( GetCurrentPlaylistVarInt( "private_match", 0 ) == 1 ) && ( GetConVarInt("sv_lobbyType") == 1 )
 	}
 }
+
+function FNV1A( str )
+{
+	local hash = 2166136261
+	local prime = 16777619
+
+	for ( local i = 0; i < str.len(); i++ )
+	{
+		hash = hash ^ str[i]
+		hash *= prime
+	}
+
+	return hash
+}

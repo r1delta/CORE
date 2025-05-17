@@ -122,4 +122,5 @@ RegisterUIVar( "createamatch_isPrivate", false )
 RegisterUIVar( "penalizeDisconnect", true )
 RegisterUIVar( "rankedPenalizeDisconnect", false )
 RegisterUIVar( "rankEnableMode", eRankEnabledModes.NOT_ENOUGH_PEOPLE )
-
+RegisterUIVar( "isDedicatedServer", false )
+RegisterUIVar( "listenHostUsernameHash", null )

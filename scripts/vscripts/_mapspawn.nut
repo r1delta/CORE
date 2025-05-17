@@ -392,3 +392,31 @@
 		ServerCommand( "sv_kickPlayersTooFarInFuture 1" )
 		thread LobbyRestartThink()
 	}
+
+	level.ui.isDedicatedServer = IsDedicated()
+
+	function TryWaitForListenHostToFinishConnecting()
+	{
+		for(;;)
+		{
+			local players = GetPlayerArray()
+
+			if( players.len() > 0 )
+			{
+				local playerName = players[0].GetPlayerName()
+				local myName = GetConVarString( "name" )
+
+				if ( playerName == myName )
+				{
+					level.ui.listenHostUsernameHash = FNV1A( playerName )
+					printl( "Listen host is: " + playerName )
+					return
+				}
+			}
+
+			wait 0.1
+		}
+	}
+
+	if( !IsDedicated() )
+	    thread TryWaitForListenHostToFinishConnecting()
