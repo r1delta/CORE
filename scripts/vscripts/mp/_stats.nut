@@ -582,7 +582,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     local damageSource = damageInfo.GetDamageSourceIdentifier()
     local playerPetTitan = null
 
-    if ( IsCoopMatch() )
+    if ( GAMETYPE == COOPERATIVE )
     {
         if ( attacker.IsTurret() )
         {
@@ -607,7 +607,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             }
         }
 
-        if ( victim.IsNPC() && victim.IsCloaked() )
+        if ( victim.IsNPC() && IsCloaked( victim ) )
             Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_CloakDrone_Kills", 1.0 )
 
         if ( victim.IsDropship() )
