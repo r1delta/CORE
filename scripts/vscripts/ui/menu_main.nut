@@ -691,6 +691,7 @@ function TryChangeLobbyType()
 		wait 0.1
 
 	ClientCommand( "RequestServerChangeToLobbyType0" )
+	ClientCommand( "TryKickPlayersForPersonalLobby" )
 }
 
 function Threaded_LaunchTraining()

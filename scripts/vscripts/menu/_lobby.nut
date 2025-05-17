@@ -84,6 +84,7 @@ function main()
 	AddClientCommandCallback( "ResetMatchSettingsToDefault", ClientCommand_ResetMatchSettingsToDefault )
 	AddClientCommandCallback( "NewBlackMarketItemsViewed", ClientCommand_NewBlackMarketItemsViewed )
 	AddClientCommandCallback( "RequestServerChangeToLobbyType0", ClientCommand_RequestServerChangeToLobbyType0 )
+	AddClientCommandCallback( "TryKickPlayersForPersonalLobby", ClientCommand_TryKickPlayersForPersonalLobby )
 	AddCallback_OnClientConnected( Lobby_UpdateLobbyType )
 
 	GameRules.EnableGlobalChat( true )
@@ -2085,6 +2086,12 @@ function ClientCommand_RequestServerChangeToLobbyType0( player )
 	if ( !IsLobby() )
 		return true
 
+	if( IsDedicated() )
+		return true
+
+	if ( GetPlayerArray()[0] != player )
+		return true
+
 	if ( GetPlayerArray().len() > 1 )
 	{
 		if ( !IsPrivateMatch() )
@@ -2100,6 +2107,29 @@ function ClientCommand_RequestServerChangeToLobbyType0( player )
 	}
 
 	ServerCommand( "sv_lobbyType 0")
+}
+
+function ClientCommand_TryKickPlayersForPersonalLobby( player )
+{
+	if ( !IsLobby() )
+		return true
+
+	if( IsDedicated() )
+		return true
+
+	if ( GetPlayerArray()[0] != player )
+		return true
+
+	if ( GetPlayerArray().len() > 1 )
+	{
+		for( local i = 0; i < GetPlayerArray().len(); i++ )
+		{
+			if ( i == 0 )
+				continue
+
+			ServerCommand(format("kickid %d \"Server Shutting Down\"", GetPlayerArray()[i].GetUserId()))
+		}
+	}
 }
 
 // helpful on a direct connect

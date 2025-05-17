@@ -714,6 +714,14 @@ function TryGoToPersonalLobby()
 
 	wait 0.65
 
+	ClientCommand( "TryKickPlayersForPersonalLobby" )
+
+	// give this a little bit to process on the server just in case
+	wait 0.2
+
+	while ( level.ui.disconnectingArePlayersStillHere && level.ui.disconnectingPlayersIsValid )
+		wait 0.1
+
 	thread TryChangeLobbyType()
 
 	ClientCommand("playlist private_match; map mp_lobby")
@@ -724,6 +732,7 @@ function TryChangeLobbyType()
 	WaitSignal( uiGlobal.signalDummy, "LevelFinishedLoading" )
 
 	ClientCommand( "RequestServerChangeToLobbyType0" )
+	ClientCommand( "TryKickPlayersForPersonalLobby" )
 }
 
 function ShowLeavingDialog()
