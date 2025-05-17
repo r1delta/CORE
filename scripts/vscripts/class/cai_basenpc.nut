@@ -137,24 +137,7 @@ function CAI_BaseNPC::SetTeam( team )
 		return
 
 	SetSkinForTeam( this, team )
-
-	if ( this.IsTitan() )
-	{
-		//Set rocket pod skin correctly
-		if ( !HasSoul( this ) )
-		{
-			//printt( "No soul!" )
-			return
-		}
-
-		local soul = this.GetTitanSoul()
-		local leftRocketPod = soul.rocketPod.model
-		if ( IsValid( leftRocketPod ) )
-		{
-			//printt( "Setting team for npc left rocket pod" )
-			SetSkinForTeam( leftRocketPod, team )
-		}
-	}
+	ChangeWeaponSkin( this, team )
 
 	//TODO : Satchel stuff for npc turrets. This doesn't quite work yet
 
