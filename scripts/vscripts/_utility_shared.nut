@@ -35,6 +35,20 @@ function SetSkinForTeam( entity, team )
 		entity.SetSkin( 1 )
 }
 
+function ChangeWeaponSkin( entity, team )
+{
+	if ( HasSoul( entity ) )
+	{
+		local soul = entity.GetTitanSoul()
+		local leftRocketPod = soul.rocketPod.model
+		if ( IsValid( leftRocketPod ) )
+		{
+			//printt( "Setting team for left rocket pod" )
+			SetSkinForTeam( leftRocketPod, team )
+		}
+	}
+}
+
 function TableDump( table, depth = 0 )
 {
 	if ( depth > 4 )
