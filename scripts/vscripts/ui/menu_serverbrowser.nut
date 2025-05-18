@@ -215,6 +215,8 @@ function ShouldHideEmpty()
 
 function CompareSemver(versionA, versionB)
 {
+    printt("Comparing versions: " + versionA + " and " + versionB)
+
     local partsA = split( versionA, "." )
     local partsB = split( versionB, "." )
 
@@ -244,9 +246,10 @@ function FilterServerList()
             continue
 
         local r1dVersionFull = GetR1DVersion()
-        local r1dVersion = r1dVersionFull.slice(0, r1dVersionFull.find(" "))
 
-        if ( r1dVersion != "dev" )
+        local r1dVersion = r1dVersionFull.slice(r1dVersionFull.find(" ") - 1, r1dVersionFull.len())
+
+        if ( !StringContains( r1dVersionFull, "dev") || StringContains( server.version, "dev") )
             if( CompareSemver( server.version, r1dVersion ) < 0 )
                 continue
 
