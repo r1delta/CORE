@@ -774,8 +774,8 @@ function GetPersistentPilotLoadout( player, isCustom, loadoutIndex )
 			return pilotLoadouts[0] // Use default loadout if the player's persistent spawn loadout index no longer exists
 	}
 
-	if ( IsItemLocked( "pilot_custom_loadout_" + (loadoutIndex + 1), null, player ) )
-		return pilotLoadouts[0]
+	// if ( IsItemLocked( "pilot_custom_loadout_" + (loadoutIndex + 1), null, player ) )
+	// 	return pilotLoadouts[0]
 
 	local loadout = {}
 	loadout.name <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].name" )
@@ -817,8 +817,8 @@ function GetPersistentTitanLoadout( player, isCustom, loadoutIndex )
 			return titanLoadouts[0] // Use default loadout if the player's persistent spawn loadout index no longer exists
 	}
 
-	if ( IsItemLocked( "titan_custom_loadout_" + (loadoutIndex + 1), null, player ) )
-		return titanLoadouts[0]
+	// if ( IsItemLocked( "titan_custom_loadout_" + (loadoutIndex + 1), null, player ) )
+	// 	return titanLoadouts[0]
 
 	local loadout = {}
 	loadout.name <- player.GetPersistentVar( "titanLoadouts[" + loadoutIndex + "].name" )
