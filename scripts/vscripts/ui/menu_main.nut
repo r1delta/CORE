@@ -679,7 +679,6 @@ function Threaded_CreateLocalServer()
 
 	wait 0.65 // artificial wait so people can cancel
 
-	ClientCommand("hide_server 1")
 	ClientCommand("playlist private_match; map mp_lobby")
 
 	thread TryChangeLobbyType()
@@ -689,6 +688,12 @@ function TryChangeLobbyType()
 {
 	while ( uiGlobal.activeMenu != GetMenu( "LobbyMenu" ) )
 		wait 0.1
+
+	if( GetConVarInt("hide_server") == 0 )
+	{
+		ClientCommand( "hide_server 1" )
+		uiGlobal.setServerHiddenNextPrivateLobby <- true
+	}
 
 	ClientCommand( "RequestServerChangeToLobbyType0" )
 	ClientCommand( "TryKickPlayersForPersonalLobby" )
