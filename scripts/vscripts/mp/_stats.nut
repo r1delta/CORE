@@ -79,7 +79,6 @@ function Stats_EndRound()
 
     foreach( player in GetPlayerArray() )
     {
-
         if( !IsValid( player ) )
             continue
 
@@ -114,6 +113,8 @@ function Stats_EndRound()
 
         if ( GetCinematicMode() )
         {
+            Stats_IncrementStat( player, "game_stats", "game_completed_total_campaign", 1.0 )
+
             local levelIndex = GetCampaignLevelIndex( GetMapName() )
 
             local team = killedTeam
@@ -140,6 +141,8 @@ function Stats_EndRound()
                 else
                     player.SetPersistentVar( "campaignMapWonMCOR[" + levelIndex + "]", 1 )
             }
+
+            Stats_IncrementStat( player, "game_stats", "mode_won_" + GameRules.GetGameMode(), 1.0 )
 
             if ( winStreak == null )
                 winStreak = 0
@@ -179,6 +182,8 @@ function Stats_EndRound()
             else
                 player.SetPersistentVar("winStreakIsDraws", 1)
 
+            Stats_IncrementStat( player, "game_stats", "mode_played_" + GameRules.GetGameMode(), 1.0 )
+
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
             AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
         }
@@ -187,7 +192,7 @@ function Stats_EndRound()
             highestWinStreak = 0
 
         if ( winStreak > highestWinStreak )
-            player.SetPersistentVar( "highestWinStreak", winStreak )
+            player.SetPersistentVar( "highestWinStreakEver", winStreak )
 
         player.SetPersistentVar( "winStreak", winStreak )
 
@@ -238,6 +243,19 @@ function Stats_EndRound()
         player.SetPersistentVar( "kdratiopvp_match[0]", pvpMatchRatio )
         player.SetPersistentVar( "kdratio_lifetime", lifetimeKdRatio )
         player.SetPersistentVar( "kdratiopvp_lifetime", lifetimePvpRatio )
+
+        if( GameRules.GetGameMode() == ATTRITION && player.GetAssaultScore() >= 100 )
+        {
+            Stats_IncrementStat( player, "game_stats", "timesScored100AttritionPoints", playerKills )
+            Stats_IncrementStat( player, "game_stats", "timesScored100AttritionPoints_total", playerKills )
+        }
+
+        local totalKillCount = player.GetKillCount() + player.GetNPCKillCount()
+        if( totalKillCount > player.GetDeathCount() * 2 )
+            Stats_IncrementStat( player, "game_stats", "times_kd_2_to_1_by_mode", 1.0 )
+
+        if( player.GetKillCount() > player.GetDeathCount() * 2 )
+            Stats_IncrementStat( player, "game_stats", "times_kd_2_to_1_pvp_by_mode", 1.0 )
     }
 }
 
@@ -391,7 +409,8 @@ function DistanceAndTimeStats_Think( player )
             break
         Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
         Stats_IncrementStat( player, "time_stats", "hours_total", timeHours )
-        if(player.IsTitan()) {
+        if(player.IsTitan())
+        {
             Stats_IncrementStat( player, "time_stats", "hours_as_titan",  timeHours )
             local titanDataTable = GetPlayerClassDataTable( player, "titan" )
             local titanSettings = titanDataTable.playerSetFile
@@ -510,17 +529,14 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
     local fixedSaveVarInt
 	local timesPlayed = 0
     local mapName = GetMapName()
-    local gameMode = GameRules.GetGameMode()
+    local gameModeName = GameRules.GetGameMode()
+    local gameMode = PersistenceGetEnumIndexForItemName( "gameModes", gameModeName )
 
 	fixedSaveVar = var
     fixedSaveVarInt = var
 
-    local gameModeIndex = PersistenceGetEnumIndexForItemName( "gameModes", gameMode )
-    if(gameModeIndex != -1)
-    {
-        fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
-        fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameModeIndex )
-    }
+    fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
+    fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameMode )
 
     local mapNameIndex = PersistenceGetEnumIndexForItemName( "maps", mapName )
     if(mapNameIndex != -1)
@@ -693,7 +709,8 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     if ( victim.IsPlayer() || victim.GetBossPlayer() )
 		Stats_IncrementStat( attacker, "kill_stats", "totalPVP", 1.0 )
 
-    if ( attacker.IsPlayer() ) {
+    if ( attacker.IsPlayer() )
+    {
         Stats_IncrementStat( attacker, "kills_stats", "total",  1 )
         if(victim.IsPlayer())
             Stats_IncrementStat( attacker, "game_stats", "pvp_kills_by_mode", 1 )
@@ -707,7 +724,8 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             Stats_IncrementStat( attacker, "kills_stats", "spectres", 1 )
         if ( victim.IsSoldier() )
             Stats_IncrementStat( attacker, "kills_stats", "grunts", 1 )
-        if ( victim.IsTitan() ) {
+        if ( victim.IsTitan() )
+        {
             Stats_IncrementStat( attacker , "kills_stats", "titans", 1 )
             Stats_IncrementStat( attacker, "kills_stats", "totalTitans", 1 )
         }
@@ -720,13 +738,22 @@ function HandleKillStats( victim, attacker, damageInfo ) {
          if(GetActiveBurnCard( attacker ) != null)
             Stats_IncrementStat( attacker, "kills_stats", "totalWhileUsingBurnCard", 1.0 )
 
+        if( GetGameState() == eGameState.Epilogue )
+            Stats_IncrementStat( attacker, "kills_stats", "evacuatingEnemies", 1.0 )
 
+        if( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.nuclear_core && victim.IsPlayer() )
+            Stats_IncrementStat( attacker, "kills_stats", "nuclearCore", 1.0 )
     }
+
     local victimIsPilot = IsPilot( victim )
     local victimIsTitan = victim.IsTitan()
 
 
-    if(attacker.IsTitan()) {
+    if(attacker.IsTitan())
+    {
+        if( attacker.GetDoomedState() )
+            Stats_IncrementStat( attacker, "kills_stats", "totalTitansWhileDoomed", 1 )
+
         local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
         local titanSettings = titanDataTable.playerSetFile
         local titanName = StringReplaceAll( titanSettings, "titan_", "" )
@@ -810,7 +837,6 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 	// titanKillsAsTitan
 	if ( victimIsTitan && attacker.IsTitan() )
 		Stats_IncrementStat( player, "kills_stats", "titanKillsAsTitan",  1.0 )
-
 }
 
 function HandleDeathStats( victim, attacker, damageInfo ) {
@@ -891,6 +917,8 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
 			    Stats_IncrementStat( attacker, "weapon_kill_stats", "spectres", 1.0 ,source)
 		    if ( victim.IsSoldier() )
 			    Stats_IncrementStat( attacker, "weapon_kill_stats", "grunts", 1.0,source )
+            if ( victim.IsMarvin() )
+                Stats_IncrementStat( attacker, "weapon_kill_stats", "marvins", 1.0,source )
 
             if (IsPilot(victim) && victim.pilotEjecting )
 		        Stats_IncrementStat( attacker, "weapon_kill_stats", "ejecting_pilots", 1.0,source )

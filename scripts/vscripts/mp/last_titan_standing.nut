@@ -90,6 +90,34 @@ function SecondsPlayerOrNPCKilled( entity, attacker, damageInfo )
 	if ( GetGameState() != eGameState.Playing && GetGameState() != eGameState.WinnerDetermined)
 		return
 
+	local imcAlive = 0
+	foreach( player in GetPlayerArrayOfTeam( TEAM_IMC ) )
+	{
+		if ( IsAlive( player ) )
+			imcAlive++
+	}
+
+	if( imcAlive == 1 )
+	{
+		local imcPlayer = GetPlayerArrayOfTeam( TEAM_IMC )[0]
+		if ( IsAlive( imcPlayer ) )
+		    Stats_IncrementStat( imcPlayer, "misc_stats", "timesLastTitanRemaining", 1 )
+	}
+
+	local militiaAlive = 0
+	foreach( player in GetPlayerArrayOfTeam( TEAM_MILITIA ) )
+	{
+		if ( IsAlive( player ) )
+			militiaAlive++
+	}
+
+	if( militiaAlive == 1 )
+	{
+		local militiaPlayer = GetPlayerArrayOfTeam( TEAM_MILITIA )[0]
+		if ( IsAlive( militiaPlayer ) )
+		    Stats_IncrementStat( militiaPlayer, "misc_stats", "timesLastTitanRemaining", 1 )
+	}
+
 	local isComplete = CheckEliminationModeWinner()
 	if ( isComplete )
 	{
