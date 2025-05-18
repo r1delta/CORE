@@ -1118,9 +1118,6 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 	if ( childRef && !TMPHasSubitem( ref, childRef ) )
 		return false
 
-	if ( IsItemLocked( ref, childRef, player ) && validateLocked )
-		return false
-
 	return true
 }
 
