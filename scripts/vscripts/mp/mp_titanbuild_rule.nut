@@ -133,6 +133,9 @@ function TryHandleTitanETA( player )
 	if( GetRemain( player ) <= 0)
 		return
 
+	if ( GetGameState() > eGameState.Epilogue )
+		return
+
 	if( ( GetRemain( player ) < ETA2MinUpperBound && GetRemain( player ) > ETA2MinLowerBound ) && ETACanNagPlayer( player ) )
 	{
 		if ( player.titansBuilt )
