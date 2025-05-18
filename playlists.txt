@@ -2975,6 +2975,12 @@
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"Tu servidor no será visible en el navegador porque el puerto %s1 (UDP) no está abierto. Es posible que se esté ejecutando otra instancia del juego."
 				"DELTA_PATCH_HEADER"	"^CDEBFF00¡Bienvenido a ^f4433600R1Delta^CDEBFF00!"
 				"TOGGLE_FULLSCREEN_MINIMAP"	"Mostrar/Cerrar minimapa a pantalla completa"
+        		"HIDE_SERVER"                                        "Visibilidad: Oculto"
+        		"SHOW_SERVER"                                        "Visibilidad: Publico"
+        		"PROGRESSIONCHOICE_HEADER"                            "Deshabilitar progresión?"
+        		"PROGRESSIONCHOICE_DESC"                            "Esto desbloqueará todas las armas y equipamiento. Recomendado si no te gusta la diversión"
+        		"DISABLE_EVERYTHINGUNLOCKED"                        "Progresión: Deshabilitada"
+        		"ENABLE_EVERYTHINGUNLOCKED"                            "Progresión: Habilitada"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"Una batalla a larga escala se ha desatado entre la IMC y la Milicia en las afueras de Demeter."
