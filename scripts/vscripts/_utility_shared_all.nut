@@ -465,7 +465,7 @@ function GetAllModesAndMapsCompleteData( player = null )
 
 	local currentMap = null
 	local currentMode = null
-	if ( !IsLobby() )
+	if ( !IsLobby() && !IsUI() )
 	{
 		currentMap = GetMapName()
 		currentMode = GameRules.GetGameMode()
