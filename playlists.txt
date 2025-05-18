@@ -2732,6 +2732,12 @@
 				"PORT_FORWARD_WARNING_DEFAULT"	"您的伺服器將不會在伺服器瀏覽器中可見，因為連接埠 27015（UDP）未在您的路由器上正確轉送。請在#help 中尋求協助。"
 				"PORT_FORWARD_WARNING_CUSTOMPORT"	"您的伺服器將不會在伺服器瀏覽器中可見，因為連接埠 %s1（UDP）未在您的路由器上正確轉送。另一個遊戲實例可能正在運行。"
 				"DELTA_PATCH_HEADER"	"^CDEBFF00歡迎來到 ^f4433600R1Delta^CDEBFF00！"
+				"HIDE_SERVER"                                        "可見度：隱藏"
+        		"SHOW_SERVER"                                        "可見度：公開"
+        		"PROGRESSIONCHOICE_HEADER"                            "停用進度系統？"
+        		"PROGRESSIONCHOICE_DESC"                            "這將解鎖所有裝備武器，僅建議不喜歡樂趣的玩家使用。"
+        		"DISABLE_EVERYTHINGUNLOCKED"                        "進度系統：已停用"
+        		"ENABLE_EVERYTHINGUNLOCKED"                            "進度系統：已啟用"
 				// map specific
 				"MP_MIA"	"M.I.A"
 				"MP_MIA_CLASSIC_DESC"	"IMC與民兵在德墨忒爾郊外爆發了大規模戰鬥。"
