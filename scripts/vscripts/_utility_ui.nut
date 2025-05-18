@@ -350,6 +350,8 @@ function ShouldShowEOGSummary()
 
 function ShouldJumpToCoopPartyMenu()
 {
+    if ( IsPrivateMatch() )
+        return false
 	if ( (uiGlobal.previousPlaylist == null) || (uiGlobal.previousPlaylist != "coop") )
 		return false
 	if ( (uiGlobal.previousLevel == null) || (uiGlobal.previousLevel == "mp_lobby") || (uiGlobal.previousLevel == "mp_npe") )
