@@ -142,7 +142,7 @@ function main()
 	uiGlobal.starsPanelVisible <- false
 	uiGlobal.ui_ChallengeProgress <- {}
 	uiGlobal.doTraining <- false
-	uiGlobal.setServerHiddenNextPrivateLobby <- false
+	uiGlobal.setServerPublicNextPrivateLobby <- false
 
 	RegisterSignal( "LevelShutdown" )
 	RegisterSignal( "CleanupInGameMenus" )
@@ -583,9 +583,9 @@ function UICodeCallback_LevelLoadingFinished( error )
 	if ( !IsLobby() )
 		InitRankGracePeriodEndTime()
 
-	if( uiGlobal.setServerHiddenNextPrivateLobby )
+	if( uiGlobal.setServerPublicNextPrivateLobby )
 	{
-		uiGlobal.setServerHiddenNextPrivateLobby <- false
+		uiGlobal.setServerPublicNextPrivateLobby <- false
 		ClientCommand( "hide_server 0" )
 	}
 

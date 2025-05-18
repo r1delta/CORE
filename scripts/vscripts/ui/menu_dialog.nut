@@ -728,7 +728,7 @@ function TryChangeLobbyType()
 	if( GetConVarInt("hide_server") == 0 )
 	{
 		ClientCommand( "hide_server 1" )
-		uiGlobal.setServerHiddenNextPrivateLobby <- true
+		uiGlobal.setServerPublicNextPrivateLobby <- true
 	}
 
 	ClientCommand( "RequestServerChangeToLobbyType0" )
