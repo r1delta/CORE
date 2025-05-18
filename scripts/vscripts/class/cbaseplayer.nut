@@ -695,7 +695,7 @@ function CBasePlayer::SetIsPlayingRanked( isPlayingRanked )
 {
 	printt("SetActiveBurnCardIndex " + isPlayingRanked )
 
-	getroottable().SetIsPlayingRanked(this,isPlayingRanked )
+	// getroottable().SetIsPlayingRanked(this,isPlayingRanked )
 }
 
 function CBasePlayer::GetPlayerIP() {
