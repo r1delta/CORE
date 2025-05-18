@@ -807,13 +807,13 @@ function UpdateCanSetDataCenter()
 			{
 				RegisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
 				RegisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )
-				RegisterButtonPressedCallback(BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
+				// RegisterButtonPressedCallback(BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
 			}
 			else
 			{
 				DeregisterButtonPressedCallback(BUTTON_X, OpenDiscordLink )
 				DeregisterButtonPressedCallback(BUTTON_Y, OnAddonButton_Activate )
-				DeregisterButtonPressedCallback( BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
+				// DeregisterButtonPressedCallback( BUTTON_DPAD_UP, OpenOfflineNameDialogButton_Activate )
 			}
 		}
 
