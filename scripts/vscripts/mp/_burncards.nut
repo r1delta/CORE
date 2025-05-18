@@ -973,7 +973,7 @@ function ApplyTitanBurnCards_Threaded( titan )
 
     local ref
 
-    if ( GetPlayerActiveBurnCard( player ) )
+    if ( !GetPlayerActiveBurnCard( player ) )
     {
         local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
         ref = GetBurnCardFromSlot( player, cardIndex )
@@ -998,8 +998,7 @@ function ApplyTitanBurnCards_Threaded( titan )
             if ( DoesPlayerHaveActiveNonTitanBurnCard( player ) )
                 return
         }
-    } else
-        ref = GetPlayerActiveBurnCard( player )
+    }
 
     if ( !ref )
         return
