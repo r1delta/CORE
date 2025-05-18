@@ -6,10 +6,10 @@ function main()
     AddCallback_OnClientConnected( ClientConnect )
     AddCallback_OnClientDisconnected( OnClientDisconnect )
 
-    
+
     // Start initial heartbeat with random delay (0-5s)
     thread DelayedFirstHeartbeat()
-    
+
     // Start repeating heartbeat thread
     thread HeartbeatLoop()
 }
@@ -22,7 +22,7 @@ function DelayedFirstHeartbeat()
 function HeartbeatLoop()
 {
     level.ent.EndSignal( "StopHeartbeat" )
-    
+
     while(1)
     {
         wait 0
@@ -31,7 +31,7 @@ function HeartbeatLoop()
 }
 
 function ClientConnect(player) {
-    SendServerHeartbeat(); 
+    SendServerHeartbeat();
     local xp = player.GetPersistentVar("xp")
     player.SetPersistentVar("previousXP",xp)
     InitXP(player)
@@ -54,8 +54,8 @@ function SendServerHeartbeat() {
     local game_mode = GameRules.GetGameMode();
 	local data_table = {}
     local players = []
-    
-    foreach(player in GetPlayerArray()){
+
+    foreach(player in GetConnectingAndConnectedPlayerArray()){
         if(player.IsBot()) {
             continue; // Skip bots
         }
@@ -74,6 +74,6 @@ function SendServerHeartbeat() {
     data_table.playlist_display_name <- GetCurrentPlaylistVar("name","")
     data_table.players <- players;
     data_table.max_players <- maxPlayers
-    
+
     SendDataToCppServer(data_table);
 }
