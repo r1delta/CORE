@@ -1587,10 +1587,7 @@ function IsItemLocked( ref, childRef = null, player = null )
 
 	if ( !ItemDefined( ref ) )
 	{
-		if ( DevEverythingUnlocked() )
-			return false
-
-		if ( IsPlayerEverythingUnlocked( player ) )
+		if ( DevEverythingUnlocked() || IsPlayerEverythingUnlocked( player )  )
 			return false
 
 		if ( ref in unlockLevels )
@@ -1657,8 +1654,8 @@ function IsItemLocked( ref, childRef = null, player = null )
 	local levelReq = GetItemLevelReq( ref, childRef )
 
 	// Dev flag to unlock everything except what is disabled
-	if ( DevEverythingUnlocked() )
-		return GetItemDevLocked( ref, childRef )
+	if ( DevEverythingUnlocked() || IsPlayerEverythingUnlocked( player ) )
+		return GetItemDevLocked( ref, player, childRef )
 
 	//###############################################
 	// TITAN CHASSIS UNLOCK FROM CAMPAIGN COMPLETION
@@ -1848,9 +1845,9 @@ function IsItemLocked( ref, childRef = null, player = null )
 	return false
 }
 
-function GetItemDevLocked( ref, childRef = null )
+function GetItemDevLocked( ref, player, childRef = null )
 {
-	if ( !DevEverythingUnlocked() )
+	if ( !DevEverythingUnlocked() || !IsPlayerEverythingUnlocked( player )  )
 		return false
 
 	local data
