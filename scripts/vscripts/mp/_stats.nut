@@ -613,7 +613,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             Stats_IncrementStat( bossPlayer, "kills_stats", "coopChallenge_Turret_Kills", 1.0 )
         }
 
-        if ( IsSniperSpectre( attacker ) )
+        if ( attacker.IsNPC() && IsSniperSpectre( attacker ) )
         {
             local damageHistory = attacker.s.recentDamageHistory
 
