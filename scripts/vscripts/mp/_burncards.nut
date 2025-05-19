@@ -698,6 +698,12 @@ function BurnCardPlayerRespawned_Threaded( player )
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" );
 
+    if ( GAMETYPE == COOPERATIVE)
+    {
+        while( ArrayContains( level.dropshipSpawnPlayerList[level.nv.attackingTeam], player ) )
+            wait 0.1
+    }
+
     printt( "BurnCardPlayerRespawned_Threaded" )
 
     cardIndex = GetPlayerBurnCardOnDeckIndex( player )
