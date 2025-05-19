@@ -920,7 +920,7 @@ function PostDeathThread( player, damageInfo )
 	if ( Time() - player.connectTime <= replayTime || Time() - attacker.connectTime <= replayTime )
     {
         print( "PostDeathThread(): Not doing a replay because the player is not old enough.\n" )
-        return false
+        return
     }
 
 	local replayTracker = {}
