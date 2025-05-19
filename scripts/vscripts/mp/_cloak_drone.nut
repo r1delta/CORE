@@ -15,6 +15,8 @@ function main()
 	level.cloakedDronesManagedEntArrayID <- CreateScriptManagedEntArray()
 	level.cloakedDroneClaimedSquadList <- {}
 
+	Globalize( CloakedDroneIsSquadClaimed )
+
 	RegisterSignal( "DroneCleanup" )
 }
 
