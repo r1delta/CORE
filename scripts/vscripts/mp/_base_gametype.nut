@@ -914,7 +914,7 @@ function PostDeathThread( player, damageInfo )
 	local replayTime = CalculateLengthOfKillReplay( player, methodOfDeath )
 	player.watchingKillreplayEndTime = Time() + replayTime
 
-	local shouldDoReplay = ShouldDoReplay( player, attacker, replayTime )
+	local shouldDoReplay = ShouldDoReplay( player, attacker )
 
 	//Bad things happen if we try to do a kill replay that lasts longer than the player/attacker entity existing on the server
 	if ( Time() - player.connectTime <= replayTime || Time() - attacker.connectTime <= replayTime )
