@@ -287,8 +287,8 @@ function UpdateShownPage()
 
         local trimmed_hostname = server.host_name
 
-        if ( server.host_name.len() > 42 )
-            trimmed_hostname = server.host_name.slice(0, 42) + "..."
+        // if ( server.host_name.len() > 42 )
+        //     trimmed_hostname = server.host_name.slice(0, 42) + "..."
 
         if ( StringContains( server.host_name, "#" ) )
         {
