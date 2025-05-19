@@ -914,9 +914,10 @@ function PostDeathThread( player, damageInfo )
 	local replayTime = CalculateLengthOfKillReplay( player, methodOfDeath )
 	player.watchingKillreplayEndTime = Time() + replayTime
 
-	local shouldDoReplay = ShouldDoReplay( player, attacker )
+	local shouldDoReplay = ShouldDoReplay( player, attacker, replayTime )
 
-	if ( Time() - player.connectTime <= replayTime ) //Bad things happen if we try to do a kill replay that lasts longer than the player entity existing on the server
+	//Bad things happen if we try to do a kill replay that lasts longer than the player/attacker entity existing on the server
+	if ( Time() - player.connectTime <= replayTime || Time() - attacker.connectTime <= replayTime )
     {
         print( "PostDeathThread(): Not doing a replay because the player is not old enough.\n" )
         return false
