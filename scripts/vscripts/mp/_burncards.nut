@@ -895,6 +895,9 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
     local weaponData = GetBurnCardWeapon(cardRef)
     local weapons = titan.GetMainWeapons()
 
+    if ( !( cardData.ctFlags & CT_TITAN_WPN ) )
+        return
+
     while( weaponToTake == null )
     {
         foreach( weapon in weapons )
