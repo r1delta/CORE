@@ -916,12 +916,25 @@ function PostDeathThread( player, damageInfo )
 
 	local shouldDoReplay = ShouldDoReplay( player, attacker )
 
+	// need to test this with IsValid but I don't want to risk it since this is a common crash
+	// CBasePlayer.connnectTime is null sometimes
+	try
+	{
+		if ( Time() - player.connectTime <= replayTime || Time() - attacker.connectTime <= replayTime )
+    	{
+    	    print( "PostDeathThread(): Not doing a replay because the player is not old enough.\n" )
+    	    shouldDoReplay = false
+    	}
+	}
+	catch(e)
+	{
+		print( "PostDeathThread(): Exception in replay time check: " + e )
+
+		shouldDoReplay = false
+	}
+
 	//Bad things happen if we try to do a kill replay that lasts longer than the player/attacker entity existing on the server
-	if ( Time() - player.connectTime <= replayTime || Time() - attacker.connectTime <= replayTime )
-    {
-        print( "PostDeathThread(): Not doing a replay because the player is not old enough.\n" )
-        return
-    }
+
 
 	local replayTracker = {}
 	replayTracker.validTime <- null
