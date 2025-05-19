@@ -917,7 +917,7 @@ function PostDeathThread( player, damageInfo )
 	local shouldDoReplay = ShouldDoReplay( player, attacker )
 
 	// need to test this with IsValid but I don't want to risk it since this is a common crash
-	// CBasePlayer.connnectTime is null sometimes
+	// CBasePlayer.connnectTime does not exist sometimes
 	try
 	{
 		if ( Time() - player.connectTime <= replayTime || Time() - attacker.connectTime <= replayTime )
