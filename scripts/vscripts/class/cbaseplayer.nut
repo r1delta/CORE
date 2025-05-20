@@ -77,7 +77,8 @@ function CBasePlayer::SetPersistentVar(key, value) {
     local serializedValue = (value == null) ? "pdata_null" : value
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
-
+	 if(value == "") {
+        serializedValue = "pdata_null"
     if (serializedValue != "pdata_null") {
         if (type == "int") {
             serializedValue = value.tostring()
