@@ -2074,6 +2074,14 @@ function GetPropertyNameFromItemType( type )
 			propertyName = "primaryMod"
 			break
 
+		case itemType.PILOT_SIDEARM_MOD:
+			propertyName = "sidearmMod"
+			break
+
+		case itemType.PILOT_SECONDARY_MOD:
+			propertyName = "secondaryMod"
+			break
+
 		case itemType.RACE:
 			propertyName = "race"
 			break
@@ -2301,7 +2309,7 @@ function PopulateNewUnlockTable( newUnlockTable, arrayName, enumName )
 			continue
 
 		Assert( !(ref in newUnlockTable), "ref already defined " + ref )
-
+		
 		local isNew = GetPersistentVar( arrayName + "[" + ref+ "]" )
 
 		newUnlockTable[ ref ] <- {}

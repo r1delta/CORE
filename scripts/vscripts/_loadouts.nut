@@ -434,6 +434,7 @@ function InitPresetLoadouts()
 	loadout.primaryMod <- null
 	loadout.secondary <- "mp_weapon_rocket_launcher"
 	loadout.sidearm <- "mp_weapon_semipistol"
+	loadout.sidearmMod <- null
 	loadout.special <- "mp_ability_cloak"
 	loadout.ordnance <- "mp_weapon_frag_grenade"
 	loadout.race <- "race_human_male"
@@ -451,6 +452,7 @@ function InitPresetLoadouts()
 	loadout.primaryMod <- "silencer"
 	loadout.secondary <- "mp_weapon_smr"
 	loadout.sidearm <- "mp_weapon_autopistol"
+	loadout.sidearmMod <- null
 	loadout.special <- "mp_ability_cloak"
 	loadout.ordnance <- "mp_weapon_frag_grenade"
 	loadout.race <- "race_human_female"
@@ -467,6 +469,7 @@ function InitPresetLoadouts()
 	loadout.primaryMod <- null
 	loadout.secondary <- "mp_weapon_smr"
 	loadout.sidearm <- "mp_weapon_semipistol"
+	loadout.sidearmMod <- null
 	loadout.special <- "mp_ability_cloak"
 	loadout.ordnance <- "mp_weapon_frag_grenade"
 	loadout.race <- "race_human_male"
@@ -565,6 +568,8 @@ function InitCustomLoadouts()
 		loadout.ordnance <- GetPersistentVar( "pilotLoadouts[" + i + "].ordnance" )
 		loadout.primaryMod <- GetPersistentVar( "pilotLoadouts[" + i + "].primaryMod" )
 		loadout.primaryAttachment <- GetPersistentVar( "pilotLoadouts[" + i + "].primaryAttachment" )
+		loadout.sidearmMod <- GetPersistentVar( "pilotLoadouts[" + i + "].sidearmMod" )
+		loadout.secondaryMod <- GetPersistentVar( "pilotLoadouts[" + i + "].secondaryMod" )
 		loadout.passive1 <- GetPersistentVar( "pilotLoadouts[" + i + "].passive1" )
 		loadout.passive2 <- GetPersistentVar( "pilotLoadouts[" + i + "].passive2" )
 		loadout.race <- GetPersistentVar( "pilotLoadouts[" + i + "].race" )

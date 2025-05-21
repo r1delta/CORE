@@ -199,8 +199,12 @@ function SetBotPilotLoadout( player )
 	table.sidearmWeapon <- loadout.sidearm
 	table.sidearmWeaponMods <- []
 	if ( loadout.sidearmMods.len() != 0 )
-		table.sidearmWeaponMods = loadout.sidearmMods
-
+	{
+		foreach( mod in loadout.sidearmMods )
+		{
+			table.sidearmWeaponMods.append(mod)
+		}
+	}
 
 	if ( "offhandWeapons" in table && loadout.ordnance != table.offhandWeapons[0].weapon )
 		player.Signal( "NewPilotOrdnance" )
@@ -655,10 +659,20 @@ function SetPilotLoadout( player, isCustom, loadoutIndex )
 
 	table.secondaryWeaponMods <- []
 	table.sidearmWeaponMods <- []
+	
 
 	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
 	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
 
+	TableDump(loadout)
+	// loadout.sidearmMod <- null
+	if (loadout.sidearmMod)
+		table.sidearmWeaponMods.append( loadout.sidearmMod )
+
+	// if (loadout.secondaryMod)
+	// 	table.secondaryWeaponMods.append( loadout.secondaryMod )
+
+	
 	// TODO: Add support for offhand mods
 	//table.offhandWeapons[0].append( { weapon = null, mods = [] } )
 	//table.offhandWeapons[0].append( { weapon = null, mods = [] } )
@@ -786,6 +800,7 @@ function GetPersistentPilotLoadout( player, isCustom, loadoutIndex )
 	loadout.ordnance <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].ordnance" )
 	loadout.primaryMod <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primaryMod" )
 	loadout.primaryAttachment <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primaryAttachment" )
+	loadout.sidearmMod <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].sidearmMod" )
 	loadout.passive1 <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].passive1" )
 	loadout.passive2 <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].passive2" )
 	loadout.race <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].race" )
@@ -884,6 +899,8 @@ function IsValidPilotLoadoutProperty( property )
 		case "ordnance":
 		case "primaryAttachment":
 		case "primaryMod":
+		case "sidearmMod":
+		case "secondaryMod":
 		case "passive1":
 		case "passive2":
 		case "race":
@@ -1012,10 +1029,10 @@ function SetLoadoutName( player, loadoutType, loadoutIndex, name )
 
 function SetLoadoutProperty( player, loadoutType, loadoutIndex, property, value )
 {
-	// printt( "=======================================================================================" )
-	// printt( "loadoutType:", loadoutType, "loadoutIndex:", loadoutIndex, "property:" , property, "value:", value )
-	// printl( "script GetPlayerArray()[0].SetPersistentVar( \"" + loadoutType + "Loadouts[" + loadoutIndex + "]." + property + "\", \"" + value + "\" )" )
-	// printt( "=======================================================================================" )
+	printt( "=======================================================================================" )
+	printt( "loadoutType:", loadoutType, "loadoutIndex:", loadoutIndex, "property:" , property, "value:", value )
+	printl( "script GetPlayerArray()[0].SetPersistentVar( \"" + loadoutType + "Loadouts[" + loadoutIndex + "]." + property + "\", \"" + value + "\" )" )
+	printt( "=======================================================================================" )
 
 	if ( !property )
 	{
@@ -1029,7 +1046,7 @@ function SetLoadoutProperty( player, loadoutType, loadoutIndex, property, value 
 	{
 		if ( !IsValidPilotLoadoutProperty( loadoutProperty ) )
 		{
-			CodeWarning( "Invalid property parameter to SetLoadoutProperty: " + loadoutProperty )
+			printt( "Invalid property parameter to SetLoadoutProperty: " + loadoutProperty )
 			return
 		}
 
@@ -1039,7 +1056,7 @@ function SetLoadoutProperty( player, loadoutType, loadoutIndex, property, value 
 	{
 		if ( !IsValidTitanLoadoutProperty( loadoutProperty ) )
 		{
-			CodeWarning( "Invalid property parameter to SetLoadoutProperty: " + loadoutProperty )
+			printt( "Invalid property parameter to SetLoadoutProperty: " + loadoutProperty )
 			return
 		}
 
@@ -1047,31 +1064,32 @@ function SetLoadoutProperty( player, loadoutType, loadoutIndex, property, value 
 	}
 	else
 	{
-		CodeWarning( "Invalid loadoutType parameter to SetLoadoutProperty: " + loadoutType )
+		printt( "Invalid loadoutType parameter to SetLoadoutProperty: " + loadoutType )
 		return
 	}
 
 	if ( loadoutIndex == null || loadoutIndex.tointeger() >= PersistenceGetArrayCount( loadoutType + "Loadouts" ) )
 	{
-		CodeWarning( "Invalid loadoutIndex parameter to SetLoadoutProperty: " + loadoutIndex )
+		printt( "Invalid loadoutIndex parameter to SetLoadoutProperty: " + loadoutIndex )
 		return
 	}
 
 	if ( value && !IsRefValid( value ) )
 	{
-		CodeWarning( "Invalid ref value parameter to SetLoadoutProperty: " + value )
+		printt( "Invalid ref value parameter to SetLoadoutProperty: " + value )
 		return
 	}
 
 	if ( !loadoutPropertyEnum || !value )
 	{
+		printt( "SetLoadoutProperty: " + loadoutType + "Loadouts[" + loadoutIndex + "]." + loadoutProperty + " = " + value )
 	}
 	else if ( !PersistenceEnumValueIsValid( loadoutPropertyEnum, value ) )
 	{
 		CodeWarning( "Invalid ref value parameter for property " + loadoutProperty + " in SetLoadoutProperty: " + value )
 		return
 	}
-//    printt("DEBUG:", player, loadoutType, loadoutIndex, loadoutProperty, value)
+   printt("DEBUG:", player, loadoutType, loadoutIndex, loadoutProperty, value)
 	if ( !ValidateLoadoutProperty( player, loadoutType, loadoutIndex, loadoutProperty, value ) )
 		return
 
@@ -1189,7 +1207,7 @@ function ClientCommand_ClearNewStatus( player, ... )
 	}
 	else
 	{
-		CodeWarning( "ClientCommand_ClearNewStatus: invalid ref " + ref )
+		printt( "ClientCommand_ClearNewStatus: invalid ref " + ref )
 		return false
 	}
 
