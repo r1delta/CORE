@@ -562,7 +562,7 @@ function InitPersistence()
 	    ["mp_weapon_r97_holosight"] = 94, // <- Add a comma if you re-enable the mods below
 		// Disabled for now
 	    ["mp_weapon_autopistol_extended_ammo"] = 95,
-	    ["mp_weapon_autopistol_starburst"] = 96,
+	    ["mp_weapon_autopistol_silencer"] = 96,
 
 	    ["mp_weapon_semipistol_extended_ammo"] = 97,
 	    ["mp_weapon_semipistol_silencer"] = 98,
