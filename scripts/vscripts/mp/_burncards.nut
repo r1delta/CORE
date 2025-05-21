@@ -362,6 +362,9 @@ function RunBurnCardFunctions( player, cardRef )
 
 function ApplyAmpedTactical( player, cardRef )
 {
+    if( player.IsTitan() )
+        player.WaitSignal("OnLeftTitan"); wait 0.5
+
     local mods = []
 
     switch( cardRef )
