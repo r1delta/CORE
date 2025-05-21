@@ -1130,12 +1130,26 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 			//local type = pdef_keys[unpackedKey]
 			//printt("DEBUG: ", value, unpackedKey, type)
 			break
+		case "sidearmMod":
+			childRef = ref
+			ref = player.GetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "].sidearm" )
+			break
 	}
 
 	// invalid attachment
 	if ( childRef && !TMPHasSubitem( ref, childRef ) )
 		return false
 
+	
+	if(childRef) {
+		local itemData = GetSubitemData( ref, childRef )
+		if ( itemData == null )
+			return false
+		
+		if(itemData.displayInMenu == false)
+			return false
+
+	}
 	return true
 }
 
