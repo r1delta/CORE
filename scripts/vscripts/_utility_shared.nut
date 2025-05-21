@@ -438,8 +438,25 @@ function DrawArrow( origin, angles = null, time = 5, scale = 50, rgb = null )
 	}
 }
 
-function ShouldDoReplay( player, attacker )
+function ShouldDoReplay( player, attacker, replayTime )
 {
+	local minimumReplayTime = replayTime + 15
+
+	if ( !IsValid( player ) )
+		return false
+
+	if ( !IsValid( attacker ) )
+		return false
+
+	if ( attacker == player )
+		return false
+
+	if ( !( "connectTime" in player ) || !( "connectTime" in attacker ) )
+		return false
+
+	if ( Time() - player.connectTime <= minimumReplayTime || Time() - attacker.connectTime <= minimumReplayTime )
+		return false
+
 	if ( level.nv.replayDisabled )
 		return false
 
@@ -770,13 +787,13 @@ function GetOtherTeam( guy )
 	local team
 	if(GAMETYPE == FFA) {
 		return 2
-	} 
+	}
 	if ( typeof guy == "integer" )
 		team = guy
 	else
 		team = guy.GetTeam()
 
-	
+
 
 	if ( team == 2 )
 		return 3
@@ -3476,7 +3493,7 @@ function GetTeamIndex(team)
 function GetOtherTeams( guy )
 {
 	local team
-	
+
 	if ( typeof guy == "integer" )
 		team = guy
 	else
