@@ -406,10 +406,15 @@
 				local playerName = players[0].GetPlayerName()
 				local myName = GetConVarString( "name" )
 
-				if ( playerName == myName )
+				local cleanedName = StringReplaceAll( myName, "#", "" )
+
+				if( cleanedName.len() > 32 )
+					cleanedName = cleanedName.slice( 0, 32 )
+
+				if ( playerName == cleanedName )
 				{
-					level.ui.listenHostUsernameHash = FNV1A( playerName )
-					printl( "Listen host is: " + playerName )
+					level.ui.listenHostUsernameHash = FNV1A( cleanedName )
+					printl( "Listen host is: " + cleanedName )
 					return
 				}
 			}

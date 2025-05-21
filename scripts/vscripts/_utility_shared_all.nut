@@ -880,3 +880,33 @@ function FNV1A( str )
 
 	return hash
 }
+
+function StringReplaceAll(original, find, replace)
+{
+    local result = ""
+    local pos = 0
+    local find_len = find.len()
+
+    if (find_len == 0)
+        return original
+
+
+    while (true)
+    {
+        local index = original.find(find, pos)
+
+        if (index == null)
+        {
+            local remaining = original.slice(pos, original.len())
+            result += remaining
+            break
+        }
+
+        local before = original.slice(pos, index);
+        result += before + replace;
+
+        pos = index + find_len;
+    }
+
+    return result;
+}
