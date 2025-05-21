@@ -894,9 +894,6 @@ function PostDeathThread( player, damageInfo )
 
 	local attacker = damageInfo.GetAttacker()
 	local methodOfDeath = damageInfo.GetDamageSourceIdentifier()
-
-
-
 	local attackerViewIndex = attacker.GetIndexForEntity()
 
 	local timeSinceAttackerSpawned = attacker.GetTimeSinceSpawning()
@@ -914,27 +911,7 @@ function PostDeathThread( player, damageInfo )
 	local replayTime = CalculateLengthOfKillReplay( player, methodOfDeath )
 	player.watchingKillreplayEndTime = Time() + replayTime
 
-	local shouldDoReplay = ShouldDoReplay( player, attacker )
-
-	// need to test this with IsValid but I don't want to risk it since this is a common crash
-	// CBasePlayer.connnectTime does not exist sometimes
-	try
-	{
-		if ( Time() - player.connectTime <= replayTime || Time() - attacker.connectTime <= replayTime )
-    	{
-    	    print( "PostDeathThread(): Not doing a replay because the player is not old enough.\n" )
-    	    shouldDoReplay = false
-    	}
-	}
-	catch(e)
-	{
-		print( "PostDeathThread(): Exception in replay time check: " + e )
-
-		shouldDoReplay = false
-	}
-
-	//Bad things happen if we try to do a kill replay that lasts longer than the player/attacker entity existing on the server
-
+	local shouldDoReplay = ShouldDoReplay( player, attacker, replayTime )
 
 	local replayTracker = {}
 	replayTracker.validTime <- null

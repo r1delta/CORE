@@ -1495,17 +1495,22 @@ function GetLobbyTypeScript()
 	}
 	else
 	{
-		if ( AmIPartyLeader() )
+		if ( !IsDelta() )
 		{
-			if ( IsPlayerAlone() )
-				return eLobbyType.SOLO
+			if ( AmIPartyLeader() )
+			{
+				if ( IsPlayerAlone() )
+					return eLobbyType.SOLO
+				else
+					return eLobbyType.PARTY_LEADER
+			}
 			else
-				return eLobbyType.PARTY_LEADER
+			{
+				return eLobbyType.PARTY_MEMBER
+			}
 		}
 		else
-		{
-			return eLobbyType.PARTY_MEMBER
-		}
+			return eLobbyType.SOLO
 	}
 }
 

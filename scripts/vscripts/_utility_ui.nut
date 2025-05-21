@@ -514,7 +514,12 @@ function AmIPartyLeader()
 
     local myName = GetConVarString( "name" )
 
-    if ( FNV1A( myName ) == privateMatchLeaderNameHash )
+	local cleanedName = StringReplaceAll( myName, "#", "" )
+
+	if( cleanedName.len() > 32 )
+		cleanedName = cleanedName.slice( 0, 32 )
+
+    if ( FNV1A( cleanedName ) == privateMatchLeaderNameHash )
         return true
 
     return false
