@@ -199,8 +199,12 @@ function SetBotPilotLoadout( player )
 	table.sidearmWeapon <- loadout.sidearm
 	table.sidearmWeaponMods <- []
 	if ( loadout.sidearmMods.len() != 0 )
-		table.sidearmWeaponMods = loadout.sidearmMods
-
+	{
+		foreach( mod in loadout.sidearmMods )
+		{
+			table.sidearmWeaponMods.append(mod)
+		}
+	}
 
 	if ( "offhandWeapons" in table && loadout.ordnance != table.offhandWeapons[0].weapon )
 		player.Signal( "NewPilotOrdnance" )
@@ -660,11 +664,13 @@ function SetPilotLoadout( player, isCustom, loadoutIndex )
 	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
 	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
 
+	TableDump(loadout)
+	// loadout.sidearmMod <- null
 	if (loadout.sidearmMod)
 		table.sidearmWeaponMods.append( loadout.sidearmMod )
 
-	if (loadout.secondaryMod)
-		table.secondaryWeaponMods.append( loadout.secondaryMod )
+	// if (loadout.secondaryMod)
+	// 	table.secondaryWeaponMods.append( loadout.secondaryMod )
 
 	
 	// TODO: Add support for offhand mods

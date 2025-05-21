@@ -2309,8 +2309,7 @@ function PopulateNewUnlockTable( newUnlockTable, arrayName, enumName )
 			continue
 
 		Assert( !(ref in newUnlockTable), "ref already defined " + ref )
-		printt( "ref: " + ref )
-		printt( "arrayName: " + arrayName )
+		
 		local isNew = GetPersistentVar( arrayName + "[" + ref+ "]" )
 
 		newUnlockTable[ ref ] <- {}
