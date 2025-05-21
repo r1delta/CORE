@@ -1145,8 +1145,11 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 		local itemData = GetSubitemData( ref, childRef )
 		if ( itemData == null )
 			return false
+
+		if(itemData.type == itemType.PILOT_PRIMARY_MOD && itemData.displayInMenu == false)
+			return false
 		
-		if(itemData.displayInMenu == false)
+		if(itemData.type == itemType.PILOT_SIDEARM_MOD && itemData.displayInMenu == false)
 			return false
 
 	}
