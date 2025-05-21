@@ -440,7 +440,7 @@ function DrawArrow( origin, angles = null, time = 5, scale = 50, rgb = null )
 
 function ShouldDoReplay( player, attacker, replayTime )
 {
-	local minimumReplayTime = replayTime + 15
+	local minimumReplayTime = replayTime * 2
 
 	if ( !IsValid( player ) )
 		return false
