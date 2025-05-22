@@ -29,6 +29,8 @@ function InitOptionsMenu( menu )
 	AddEventHandlerToButtonClass( menu, "AdvancedVideoSettingsButtonClass", UIE_GET_FOCUS, AdvancedVideoSettings_Focused )
 	AddEventHandlerToButtonClass( menu, "HelpAndSupportButtonClass", UIE_GET_FOCUS, HelpAndSupportButton_Focused )
 	AddEventHandlerToButtonClass( menu, "PCFooterButtonClass", UIE_GET_FOCUS, PCFooterButtonClass_Focused )
+
+	AddEventHandlerToButtonClass( menu, "HoldToRodeoSwitchClass", UIE_GET_FOCUS, HoldToRodeo_Focused )
 }
 
 function OnOpenOptionsMenu( menu )
@@ -45,6 +47,12 @@ function OnOpenOptionsMenu( menu )
 
 function OnCloseOptionsMenu()
 {
+	if ( IsConnected() )
+	{
+		local holdToRodeoState = GetConVarInt( "cl_hold_to_rodeo_enable" )
+		ClientCommand( "HoldToRodeo " + holdToRodeoState )
+	}
+
 	SavePlayerSettings()
 }
 
@@ -135,4 +143,10 @@ function PCFooterButtonClass_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "" )
+}
+
+function HoldToRodeo_Focused( button )
+{
+	local menu = GetMenu( "OptionsMenu" )
+	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_HOLD_TO_RODEO_DESC" )
 }
