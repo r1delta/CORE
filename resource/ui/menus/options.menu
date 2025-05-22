@@ -1,0 +1,547 @@
+resource/ui/menus/options.menu
+{
+	OptionsMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+	    MenuCommon
+	    {
+		    ControlName				CNestedPanel
+		    xpos					0
+		    ypos					0
+			wide					f0
+			tall					f0
+		    visible					1
+		    controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+	    }
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		//ImgGuide
+		//{
+		//	ControlName				ImagePanel
+		//	xpos					0
+		//	ypos					0
+		//	wide					f0
+		//	tall					f0
+		//	image 					"../ui/guide"
+		//	visible					1
+		//	scaleImage				1
+		//}
+
+		Title
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#OPTIONS"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		LblMenuItemDescription
+		{
+			ControlName				Label
+			InheritProperties		OptionMenuTooltip
+			classname 				MenuItemDescriptionClass
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ImgControlsSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					14
+		}
+		LblControlsSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgControlsSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#CONTROLS"
+		}
+
+		BtnMouseKeyboardControls [!$GAMECONSOLE]
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		WideButton
+			classname 				MouseKeyboardControlsButtonClass
+			pin_to_sibling			ImgControlsSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					SwchSafeArea
+			navDown					BtnGamepadControls
+			tabPosition				1
+			labelText				"#MOUSE_KEYBOARD_CONTROLS"
+		}
+
+		// Mouse/Keyboard options
+		BtnGamepadControls
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		WideButton
+			classname 				GamepadControlsButtonClass
+			pin_to_sibling			BtnMouseKeyboardControls [!$GAMECONSOLE]
+			pin_to_sibling			ImgControlsSubheaderBackground [$GAMECONSOLE]
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					0 [!$GAMECONSOLE]
+			xpos					10 [$GAMECONSOLE]
+			navUp					BtnMouseKeyboardControls [!$GAMECONSOLE]
+			navUp					BtnHelpAndSupport [$GAMECONSOLE]
+			navDown					SwchAutoSprint
+			tabPosition				1 [$GAMECONSOLE]
+			labelText				"#GAMEPAD_CONTROLS"
+		}
+
+		SwchAutoSprint
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname 				AutoSprintSwitchClass
+			style					DialogListButton
+			pin_to_sibling			BtnGamepadControls
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnGamepadControls
+			navDown					SwchHoldToRodeo [!$GAMECONSOLE]
+			navDown					SldMasterVolume [$GAMECONSOLE]
+			labelText				"#MENU_AUTOMATIC_SPRINT"
+			ConVar					"autosprint"
+			list
+			{
+				"#MENU_AUTOMATIC_SPRINT_NEVER"			0
+				"#MENU_AUTOMATIC_SPRINT_DELAYED"		1
+				"#MENU_AUTOMATIC_SPRINT_ALWAYS"			2
+			}
+		}
+
+		SwchHoldToRodeo
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname 				HoldToRodeoSwitchClass
+			style					DialogListButton
+			pin_to_sibling			SwchAutoSprint
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchAutoSprint
+			navDown					BtnAudioSettings [!$GAMECONSOLE]
+			navDown					SldMasterVolume [$GAMECONSOLE]
+			labelText				"#MENU_HOLD_TO_RODEO"
+			ConVar					"cl_hold_to_rodeo_enable"
+			list
+			{
+				"#SETTING_OFF"			0
+				"#SETTING_ON"			1
+				"#SETTING_FRIENDLY"		2
+			}
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Audio/Video subheader
+		ImgAudioVideoSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			xpos					54
+			ypos					195 [!$GAMECONSOLE] //+20
+			ypos					180 [$GAMECONSOLE]
+		}
+		LblAudioVideoSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgAudioVideoSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#AUDIO_VIDEO" [$GAMECONSOLE]
+			labelText				"#AUDIO" [!$GAMECONSOLE]
+		}
+
+		// Audio/Video options
+		BtnAudioSettings [!$GAMECONSOLE]
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		WideButton
+			classname 				AudioSettingsButtonClass
+			pin_to_sibling			ImgAudioVideoSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					SwchHoldToRodeo
+			navDown					SldMasterVolume
+			labelText				"#MENU_AUDIO_SETTINGS"
+		}
+
+		SldMasterVolume
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			classname 				MasterVolumeSliderClass
+			pin_to_sibling			BtnAudioSettings [!$GAMECONSOLE]
+			pin_to_sibling			ImgAudioVideoSubheaderBackground [$GAMECONSOLE]
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					0 [!$GAMECONSOLE]
+			xpos					10 [$GAMECONSOLE]
+			navUp					BtnAudioSettings [!$GAMECONSOLE]
+			navUp					SwchAutoSprint [$GAMECONSOLE]
+			navDown					SldMusicVolume [$GAMECONSOLE]
+			navDown					SldVoiceChatVolume [!$GAMECONSOLE]
+			conCommand				"sound_volume"
+			minValue				0.0
+			maxValue				1.0
+			stepSize				0.05
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				MasterVolumeSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#MASTER_VOLUME"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		SldVoiceChatVolume [!$GAMECONSOLE]
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			classname 				VoiceChatSliderClass
+			pin_to_sibling			SldMasterVolume
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SldMasterVolume
+			navDown					SldMusicVolume
+			conCommand				"sound_volume_voice"
+			minValue				0.0
+			maxValue				1.0
+			stepSize				0.05
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				VoiceChatSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#VOICE_CHAT_VOLUME"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		SldMusicVolume
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			classname 				MusicVolumeSliderClass
+			pin_to_sibling			SldMasterVolume [$GAMECONSOLE]
+			pin_to_sibling			SldVoiceChatVolume [!$GAMECONSOLE]
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SldMasterVolume [$GAMECONSOLE]
+			navUp					SldVoiceChatVolume [!$GAMECONSOLE]
+			navDown					SldLobbyMusicVolume
+			conCommand				"sound_volume_music_game"
+			minValue				0.0
+			maxValue				1.0
+			stepSize				0.05
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				MusicVolumeSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#MENU_MUSIC_VOLUME_CLASSIC"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		SldLobbyMusicVolume
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			classname 				LobbyMusicVolumeSliderClass
+			pin_to_sibling			SldMusicVolume
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SldMusicVolume
+			navDown					SwchMusicSettingClassicMP [$GAMECONSOLE]
+			navDown					BtnAdvancedVideo [!$GAMECONSOLE]
+			conCommand				"sound_volume_music_lobby"
+			minValue				0.0
+			maxValue				1.0
+			stepSize				0.05
+			inverseFill				0
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				LobbyMusicVolumeSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					1
+				enabled					1
+				labelText				"#MENU_LOBBY_MUSIC_VOLUME"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+		SwchMusicSettingClassicMP [$GAMECONSOLE]
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname 				MusicSettingClassicMPSwitchClass
+			style					DialogListButton
+			pin_to_sibling			SldLobbyMusicVolume
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SldLobbyMusicVolume
+			navDown					SwchSubtitles
+			labelText				"#MENU_MUSIC_SETTING_CLASSIC"
+			ConVar					"sound_musicReduced"
+			list
+			{
+				"#MENU_MUSIC_SETTING_CLASSIC_FULL"		0
+				"#MENU_MUSIC_SETTING_CLASSIC_REDUCED"	1
+			}
+		}
+		SwchSubtitles [$GAMECONSOLE]
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname 				SubtitlesSwitchClass
+			style					DialogListButton
+			pin_to_sibling			SwchMusicSettingClassicMP
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchMusicSettingClassicMP
+			navDown					SwchColorBlindMode
+			labelText				"#SUBTITLES"
+			ConVar					"closecaption"
+			list
+			{
+				// If we enable hearing impaired captions, rather than use "cc_subtitles", "closecaption" should support a 3rd value
+				"#SETTING_OFF"	0
+				"#SETTING_ON"	1
+			}
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Video subheader
+		ImgVideoSubheaderBackground [!$GAMECONSOLE]
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			xpos					54
+			ypos					325 //+20
+			ypos					200 [$GAMECONSOLE]
+		}
+		LblVideoSubheaderText [!$GAMECONSOLE]
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgVideoSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#VIDEO"
+		}
+
+		BtnAdvancedVideo [!$GAMECONSOLE]
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		WideButton
+			classname 				AdvancedVideoSettingsButtonClass
+			pin_to_sibling			ImgVideoSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					SldLobbyMusicVolume
+			navDown					SwchColorBlindMode
+			labelText				"#MENU_VIDEO_SETTINGS"
+		}
+
+		SwchColorBlindMode
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ColorBlindModeClass
+			style					DialogListButton
+			pin_to_sibling			BtnAdvancedVideo [!$GAMECONSOLE]
+			pin_to_sibling			SwchSubtitles [$GAMECONSOLE]
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnAdvancedVideo [!$GAMECONSOLE]
+			navUp					SwchSubtitles [$GAMECONSOLE]
+			navDown					SwchSafeArea
+			labelText				"#COLORBLIND_MODE"
+			ConVar					"colorblind_mode"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_PROTANOPIA"		3
+				"#SETTING_DEUTERANOPIA"		1
+				"#SETTING_TRITANOPIA"		2
+			}
+		}
+
+		SwchSafeArea
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname 				SafeAreaSwitchClass
+			style					DialogListButton
+			pin_to_sibling			SwchColorBlindMode
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchColorBlindMode
+			navDown					BtnMouseKeyboardControls [!$GAMECONSOLE]
+			navDown					BtnHelpAndSupport [$GAMECONSOLE]
+			labelText				"#SAFEAREA"
+			ConVar					"cl_safearea"
+			list
+			{
+				"#SAFEAREA_DISABLED"	0
+				"#SAFEAREA_ENABLED"		1
+			}
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Help subheader
+		ImgHelpAndSupportSubheaderBackground [$GAMECONSOLE]
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			xpos					54
+			ypos					328
+		}
+		LblHelpAndSupportSubheaderText [$GAMECONSOLE]
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgHelpAndSupportSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#MENU_HELP_AND_SUPPORT"
+		}
+
+		BtnHelpAndSupport [$GAMECONSOLE]
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		WideButton
+			classname 				HelpAndSupportButtonClass
+			pin_to_sibling			ImgHelpAndSupportSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					SwchSafeArea
+			navDown					BtnGamepadControls
+			labelText				"#MENU_GAME_MANUAL"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

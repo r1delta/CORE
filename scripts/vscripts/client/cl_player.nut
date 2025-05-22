@@ -193,6 +193,14 @@ function main()
 	level.onPlayerDisconnectedFuncs <- {}
 
 	level.hasMatchLossProtection <- false
+
+	RegisterConCommandTriggeredCallback( "+useAndReload", PlayerPressed_Rodeo )
+	RegisterConCommandTriggeredCallback( "+use", PlayerPressed_Rodeo )
+
+	RegisterConCommandTriggeredCallback( "-useAndReload", PlayerReleased_Rodeo )
+	RegisterConCommandTriggeredCallback( "-use", PlayerReleased_Rodeo )
+
+	AddCreateCallback( "player", ClRodeo_OnClientScriptInit )
 }
 
 function EntitiesDidLoad()
@@ -3520,4 +3528,34 @@ function UpdateScreenFade()
 function ServerCallback_GiveMatchLossProtection()
 {
 	level.hasMatchLossProtection = true
+}
+
+function ClRodeo_OnClientScriptInit( player, isRecreate )
+{
+	if ( isRecreate )
+		return
+
+	player.ClientCommand( "HoldToRodeo " + HoldToRodeoState( player ) )
+
+	if ( !( "rodeoPressed" in player.s ) )
+	{
+		player.s.rodeoPressed <- false
+	}
+}
+Globalize( ClRodeo_OnClientScriptInit )
+
+function PlayerPressed_Rodeo( player )
+{
+	if ( !IsAlive( player ) )
+		return
+
+	player.s.rodeoPressed = true
+}
+
+function PlayerReleased_Rodeo( player )
+{
+	if ( !IsAlive( player ) )
+		return
+
+	player.s.rodeoPressed = false
 }
