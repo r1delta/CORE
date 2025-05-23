@@ -88,6 +88,8 @@ function GetFogHeight()
 	lethalFogHeights[ "mp_wargames" ] <- 64.0
 	lethalFogHeights[ "mp_switchback" ] <- 840.0
 
+	lethalFogHeights[ "mp_mia" ] <- -128.0
+
 	if ( mapName in lethalFogHeights )
 		return lethalFogHeights[ mapName ]
 
