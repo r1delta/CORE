@@ -773,7 +773,12 @@ function RunSpawnBurnCard( player, cardRef )
 
             local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
             local pilotSettings = pilotDataTable.playerSetFile
-            pilotSettings = "pilot_spectre"
+
+			if ( GetMapName() == "mp_corporate" )
+				pilotSettings = "pilot_spectre_corporate"
+			else
+				pilotSettings = "pilot_spectre"
+
             player.SetPlayerSettings( pilotSettings )
             player.SetPlayerPilotSettings( pilotSettings )
             break

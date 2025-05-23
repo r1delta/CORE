@@ -1,0 +1,13 @@
+#base "pilot_spectre.set"
+
+"pilot_spectre_corporate"
+{
+	"global"
+	{
+		model				"models/Robots/spectre/spectre_corporate_pilot.mdl"
+		bodymodel_imc		"models/Robots/spectre/spectre_corporate_pilot.mdl"
+		bodymodel_militia	"models/Robots/spectre/spectre_corporate_pilot.mdl"
+		armsmodel_imc		"models/weapons/arms/pov_spectre_corporate.mdl"
+		armsmodel_militia	"models/weapons/arms/pov_spectre_corporate.mdl"
+	}
+}
