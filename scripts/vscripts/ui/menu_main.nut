@@ -564,9 +564,28 @@ function ThreadOnIntroButton_Activate()
 	thread OnIntroButton_Activate()
 }
 
+function PlayIntroVideoAndHideWatermark()
+{
+	thread HideWatermarkForIntro()
+	PlayIntroVideo( true )
+}
+
 function OnIntroButton_Activate()
 {
-	PlayIntroVideo( true )
+	PlayIntroVideoAndHideWatermark()
+}
+
+function HideWatermarkForIntro()
+{
+	local watermarkEnabled = GetConVarInt( "delta_watermark" ) == 1
+
+	if( watermarkEnabled )
+		ClientCommand( "delta_watermark 0" )
+
+	WaitSignal( uiGlobal.signalDummy, "PlayVideoEnded" )
+
+	if ( watermarkEnabled )
+		ClientCommand( "delta_watermark 1" )
 }
 
 function ThreadOnPlayButton_Activate()
@@ -577,7 +596,7 @@ function ThreadOnPlayButton_Activate()
 function OnPlayButton_Activate()
 {
 	if ( !IsIntroViewed() )
-		PlayIntroVideo( true )
+		PlayIntroVideoAndHideWatermark()
 
 	if ( !Durango_IsDurango() || Durango_IsSignedIn() ) // Check user is still signed in
 		thread StartMatchmakingIntoEmptyServer( "" )
@@ -622,6 +641,10 @@ function Threaded_CreateLocalServer()
 	if ( Durango_IsDurango() )
 		Durango_CheckPermissions()
 
+	// Play the intro video at all costs if the user never saw it before (intended vanilla behavior)
+	if(!IsIntroViewed())
+		PlayIntroVideoAndHideWatermark()
+
 	Signal( uiGlobal.signalDummy, "OnCancelConnect" )
 	EndSignal( uiGlobal.signalDummy, "OnCancelConnect" )
 
@@ -656,7 +679,6 @@ function Threaded_CreateLocalServer()
 
 	wait 0.65 // artificial wait so people can cancel
 
-	ClientCommand("hide_server 1")
 	ClientCommand("playlist private_match; map mp_lobby")
 
 	thread TryChangeLobbyType()
@@ -667,7 +689,14 @@ function TryChangeLobbyType()
 	while ( uiGlobal.activeMenu != GetMenu( "LobbyMenu" ) )
 		wait 0.1
 
+	if( GetConVarInt("hide_server") == 0 )
+	{
+		ClientCommand( "hide_server 1" )
+		uiGlobal.setServerPublicNextPrivateLobby <- true
+	}
+
 	ClientCommand( "RequestServerChangeToLobbyType0" )
+	ClientCommand( "TryKickPlayersForPersonalLobby" )
 }
 
 function Threaded_LaunchTraining()
@@ -764,7 +793,7 @@ function OnTrainingButtonActivate()
 	{
 		printt( "TRAINING STARTING, player has never finished it." )
 		if(!IsIntroViewed())
-			PlayIntroVideo( true )
+			PlayIntroVideoAndHideWatermark()
 		LaunchTraining()
 		return
 	}
@@ -778,7 +807,7 @@ function OnTrainingButtonActivate()
 	}
 	else
 	{
-		buttonData.append( { name = "#VIDEO_INTRO", func = function() { thread PlayIntroVideo( true ) } } )
+		buttonData.append( { name = "#VIDEO_INTRO", func = function() { thread PlayIntroVideoAndHideWatermark() } } )
 		buttonData.append( { name = "#TRAINING_CONTINUE_CLASSIC", func = Bind( LocalDialogChoice_Training_New ) } )
 		buttonData.append( { name = "#TRAINING_CONTINUE_CUSTOM", func = Bind( LocalDialogChoice_Training_Custom ) } )
 		buttonData.append( { name = "#CANCEL", func = null } )

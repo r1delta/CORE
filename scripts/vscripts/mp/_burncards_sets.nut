@@ -38,7 +38,9 @@ function TryBurnCardRewardForLevel( player, newLevel )
             return
     }
 
-    ArrayAppend( deck, cardPack )
+    foreach( card in cardPack )
+        deck.append( { cardRef = card, new = true } )
+
     FillBurnCardDeckFromArray( player, deck )
 }
 

@@ -554,7 +554,9 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 		GiveTitanWeaponsForPlayer( player, npcTitan )
 
 	SetTitanOSForPlayer( player )
-	SetDecalForTitan( player )
+
+	if ( !IsTrainingLevel())
+		SetDecalForTitan( player )
 	// start a new titan building when the current titan dies
 	AddSoulDeathFunc( UpdateSoulDeath )
 

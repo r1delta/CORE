@@ -861,6 +861,8 @@ function HardpointVO_Think( hardpoint )
 			// completed capturing hardpoint
 			HardpointVO_Captured( hardpoint )
 
+			foreach( player in hardpoint.s.teamPlayersTouching[ newTeam ] )
+				Stats_IncrementStat( player, "misc_stats", "hardspointsCaptured", 1 )
 		}
 		else if ( oldState == CAPTURE_POINT_STATE_CAPPING && newState == CAPTURE_POINT_STATE_CAPPING )
 		{
@@ -998,8 +1000,8 @@ function CapturePoint_AwardTeamOwnedPoints( hardpoint )
 /*
 	// 하드포인트에 가장 먼저 진입한 player 가 titan 탑승 상태일 때와 아닌 경우 포인트 다르게.
 	// 하드포인트에 가장 먼저 진한 플레이어 찾는 코드 추가.
-	// 단 파일럿 상태로 진입 후 캡쳐 진행 도중 타이탄 소환 및 탑승 시 
-	// 타이탄 상태로 점령한 포인트로 올라간다. 
+	// 단 파일럿 상태로 진입 후 캡쳐 진행 도중 타이탄 소환 및 탑승 시
+	// 타이탄 상태로 점령한 포인트로 올라간다.
 	// 원래는 capture point 는 없고 hold 포인트만 1씩 올려주고 있다.
 	// Find the player who was in the trigger first
 	local earliestPlayer = null
@@ -1642,16 +1644,16 @@ function CapturePointKillScoreEvent( victim, player )
 }
 
 //////////////////////////////////////////////////////////
-function CapturePointVO_Allowed()
+function CapturePointVO_Allowed( player )
 {
-	return GetGameState() == eGameState.Playing
+	return ( GetGameState() == eGameState.Playing && player.s.hasDoneTryGameModeAnnouncement )
 }
 
 
 //////////////////////////////////////////////////////////
 function CapturePointVO_Approaching( player, hardpoint, distance )
 {
-	if ( !CapturePointVO_Allowed() )
+	if ( !CapturePointVO_Allowed( player ) )
 		return
 
 	local team = player.GetTeam()
@@ -1704,7 +1706,7 @@ function CapturePointVO_Approaching( player, hardpoint, distance )
 //////////////////////////////////////////////////////////
 function CapturePointVO_Nag( player )
 {
-	if ( !CapturePointVO_Allowed() )
+	if ( !CapturePointVO_Allowed( player ) )
 		return
 
 	Assert( player.IsPlayer() )

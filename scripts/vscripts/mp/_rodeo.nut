@@ -203,7 +203,7 @@ function HumanRodeoViewCone( human, titanType )
 		human.PlayerCone_SetMinPitch( GetPlayerSettingsFieldForClassName(titanName, "RodeoViewCone_MinPitch") )
 		human.PlayerCone_SetMaxPitch( GetPlayerSettingsFieldForClassName(titanName, "RodeoViewCone_MaxPitch") )
 	}
-	
+
 	switch ( titanType )
 	{
 		case "atlas":
@@ -303,6 +303,9 @@ function PlayerBeginsRodeo( player, rodeoPackage, titan )
 
 	local e = {}
 	e.zapped <- false
+
+	if ( playerWasEjecting )
+		Stats_IncrementStat( player, "misc_stats", "rodeosFromEject", 1 )
 
 	player.Signal( "RodeoStarted" )
 
@@ -469,8 +472,8 @@ function PlayerLerpsIntoTitanRodeo( player, titan, package, doHatchRip = false, 
 	player.EndSignal( "OnDeath" )
 	player.EndSignal( "Disconnected" )
 	local soul = titan.GetTitanSoul()
-	soul.EndSignal( "OnTitanDeath" ) 
-	soul.EndSignal( "OnDestroy" )	
+	soul.EndSignal( "OnTitanDeath" )
+	soul.EndSignal( "OnDestroy" )
 
 	OnThreadEnd(
 		function() : ( player )

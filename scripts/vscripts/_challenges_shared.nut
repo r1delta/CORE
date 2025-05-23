@@ -1118,20 +1118,19 @@ function SetChallengeNameTextOnLabel( label, name )
 
 function GetNumberRegenChallengesRemaining( player = null )
 {
-	// local remaining = 0
-	// local gen = IsUI() ? GetGen() : player.GetGen()
+	local remaining = 0
+	local gen = IsUI() ? GetGen() : player.GetGen()
 
-	// if ( ( gen + 1 ) in level.regenChallenges )
-	// {
-	// 	foreach( challengeRef in level.regenChallenges[ gen + 1 ] )
-	// 	{
-	// 		if ( !IsChallengeComplete( challengeRef, player ) )
-	// 			remaining++
-	// 	}
-	// }
+	if ( ( gen + 1 ) in level.regenChallenges )
+	{
+		foreach( challengeRef in level.regenChallenges[ gen + 1 ] )
+		{
+			if ( !IsChallengeComplete( challengeRef, player ) )
+				remaining++
+		}
+	}
 
-	// return remaining
-	return 0
+	return remaining
 }
 
 function IsRegenRequirement( challengeRef, player = null )

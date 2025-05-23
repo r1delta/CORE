@@ -1894,6 +1894,21 @@ function CreateInfoFrontline( origin, angles, team, name, group = "aaa", isTDM =
 	DispatchSpawn( ent )
 }
 
+function CreateAssaultPointFromArray( locationArray, name = "assaultpoint", isNear = false ) {
+	local ENT_ASSAULTPOINT_COUNT = GetEntArrayByClass_Expensive("assault_assaultpoint").len()
+	foreach( idx, location in locationArray ) {
+		local assaultPoint = CreateAssaultPoint()
+		if( isNear ) {
+			assaultPoint.SetName(name + "_near_ass_" + (ENT_ASSAULTPOINT_COUNT+1))
+		} else {
+			assaultPoint.SetName(name + "_ass_" + (ENT_ASSAULTPOINT_COUNT+1))
+		}
+		assaultPoint.SetOrigin(location.origin)
+		assaultPoint.SetAngles(location.angles)
+		ENT_ASSAULTPOINT_COUNT++
+	}
+}
+
 // Debug thing
 function KillAllEntitiesOfType( name )
 {

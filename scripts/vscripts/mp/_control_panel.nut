@@ -294,8 +294,8 @@ function PlayerProgramsControlPanel( panel, player )
 						// we should change how this works for R2
 						local gameMode = GameRules.GetGameMode()
 
-						// if (IsTrainingLevel())
-						 	// panel.SetUsableValue( e.panelUsableValue )
+						if (IsTrainingLevel())
+						 	panel.SetUsableValue( e.panelUsableValue )
 					}
 
 				}

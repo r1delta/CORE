@@ -142,6 +142,7 @@ function main()
 	uiGlobal.starsPanelVisible <- false
 	uiGlobal.ui_ChallengeProgress <- {}
 	uiGlobal.doTraining <- false
+	uiGlobal.setServerPublicNextPrivateLobby <- false
 
 	RegisterSignal( "LevelShutdown" )
 	RegisterSignal( "CleanupInGameMenus" )
@@ -581,6 +582,12 @@ function UICodeCallback_LevelLoadingFinished( error )
 
 	if ( !IsLobby() )
 		InitRankGracePeriodEndTime()
+
+	if( uiGlobal.setServerPublicNextPrivateLobby )
+	{
+		uiGlobal.setServerPublicNextPrivateLobby <- false
+		ClientCommand( "hide_server 0" )
+	}
 
 	uiGlobal.loadingLevel = null
 	Signal( uiGlobal.signalDummy, "LevelFinishedLoading" )
@@ -2067,6 +2074,14 @@ function GetPropertyNameFromItemType( type )
 			propertyName = "primaryMod"
 			break
 
+		case itemType.PILOT_SIDEARM_MOD:
+			propertyName = "sidearmMod"
+			break
+
+		case itemType.PILOT_SECONDARY_MOD:
+			propertyName = "secondaryMod"
+			break
+
 		case itemType.RACE:
 			propertyName = "race"
 			break
@@ -2294,7 +2309,7 @@ function PopulateNewUnlockTable( newUnlockTable, arrayName, enumName )
 			continue
 
 		Assert( !(ref in newUnlockTable), "ref already defined " + ref )
-
+		
 		local isNew = GetPersistentVar( arrayName + "[" + ref+ "]" )
 
 		newUnlockTable[ ref ] <- {}

@@ -171,9 +171,12 @@ function RefillWeaponAmmo( player )
 		if ( offhand )
 		{
             local currentAmmo = offhand.GetWeaponPrimaryClipCount()
+            local maxAmmo = 2
 
+            if ( PlayerHasPassive( player, PAS_ORDNANCE_PACK))
+                maxAmmo = 3
 
-            if(currentAmmo != 2)
+            if(currentAmmo != maxAmmo)
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
 		}
 
@@ -266,7 +269,7 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
         {
             try
             {
-                player.GiveWeapon(weaponData.weapon, weaponData.mods, true)
+                player.GiveWeapon(weaponData.weapon, weaponData.mods, false)
             } catch (e)
             {
                 wait 0.1
@@ -359,6 +362,9 @@ function RunBurnCardFunctions( player, cardRef )
 
 function ApplyAmpedTactical( player, cardRef )
 {
+    if( player.IsTitan() )
+        player.WaitSignal("OnLeftTitan"); wait 0.5
+
     local mods = []
 
     switch( cardRef )
@@ -695,13 +701,24 @@ function BurnCardPlayerRespawned_Threaded( player )
     while ( HasCinematicFlag( player, CE_FLAG_INTRO ) || HasCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING ) || HasCinematicFlag( player, CE_FLAG_WAVE_SPAWNING ) )
         player.WaitSignal( "CE_FLAGS_CHANGED" );
 
-    printt( "BurnCardPlayerRespawned_Threaded" )
+    if ( GAMETYPE == COOPERATIVE)
+    {
+        while( ArrayContains( level.dropshipSpawnPlayerList[level.nv.attackingTeam], player ) )
+            wait 0.1
+    }
 
-    if ( GetPlayerActiveBurnCard( player ) )
-        return
+    printt( "BurnCardPlayerRespawned_Threaded" )
 
     cardIndex = GetPlayerBurnCardOnDeckIndex( player )
     cardRef = GetBurnCardFromSlot( player, cardIndex )
+
+    if ( GetActiveBurnCard( player ) )
+    {
+        cardRef = GetActiveBurnCard( player )
+
+        if ( DoesPlayerHaveActiveTitanBurnCard( player ) )
+            return
+    }
 
     if( cardRef )
     {
@@ -710,7 +727,7 @@ function BurnCardPlayerRespawned_Threaded( player )
 
         cardData = GetBurnCardData(cardRef)
 
-        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP  )
+        if ( GetBurnCardLastsUntil( cardRef ) != BC_NEXTTITANDROP )
             ChangeOnDeckBurnCardToActive( player )
     }
     else
@@ -864,7 +881,7 @@ function BCAutoSonarLoop( player )
     }
 }
 
-function BCOnPlayerKilled( player,attacker )
+function BCOnPlayerKilled( player, damageInfo )
 {
     local cardRef = GetPlayerActiveBurnCard( player )
 
@@ -873,10 +890,13 @@ function BCOnPlayerKilled( player,attacker )
 
     local lastsUntil = GetBurnCardLastsUntil( cardRef )
 
+    if( IsRoundBased() && GetActiveBurnCard( player ) && damageInfo.GetDamageSourceIdentifier() != eDamageSourceId.round_end )
+        StopActiveBurnCard( player )
+
     if( IsRoundBased() && !GamePlayingOrSuddenDeath() )
         return
 
-    BurnCardOnDeath( player, attacker, BC_NEXTDEATH )
+    BurnCardOnDeath( player, damageInfo, BC_NEXTDEATH )
 
     if ( cardRef == "bc_rematch" )
         StopActiveBurnCard( player )
@@ -888,6 +908,9 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
     local weaponToTake = null
     local weaponData = GetBurnCardWeapon(cardRef)
     local weapons = titan.GetMainWeapons()
+
+    if ( !( cardData.ctFlags & CT_TITAN_WPN ) )
+        return
 
     while( weaponToTake == null )
     {
@@ -965,28 +988,33 @@ function ApplyTitanBurnCards_Threaded( titan )
         }
     }
 
-    if ( GetPlayerActiveBurnCard( player ) )
-        return
+    local ref
 
-    local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
-    local ref = GetBurnCardFromSlot( player, cardIndex )
-
-    if( ref )
+    if ( !GetPlayerActiveBurnCard( player ) )
     {
-        if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
-            return
+        local cardIndex = GetPlayerBurnCardOnDeckIndex(player)
+        ref = GetBurnCardFromSlot( player, cardIndex )
 
-        if ( GetBurnCardLastsUntil( ref ) != BC_NEXTTITANDROP && !isSpawning)
-            return
+        if( ref )
+        {
+            if ( !IsBurnCardEdgeCaseUseValid( player, ref ) )
+                return
 
-        ChangeOnDeckBurnCardToActive( player )
-    }
-    else
-    {
-        waitthread BCLoadoutGrace_Think( player )
+            if ( GetBurnCardLastsUntil( ref ) != BC_NEXTTITANDROP && !isSpawning)
+                return
 
-        cardIndex = GetPlayerBurnCardActiveSlotID( player )
-        ref = GetActiveBurnCard( player )
+            ChangeOnDeckBurnCardToActive( player )
+        }
+        else
+        {
+            waitthread BCLoadoutGrace_Think( player )
+
+            cardIndex = GetPlayerBurnCardActiveSlotID( player )
+            ref = GetActiveBurnCard( player )
+
+            if ( DoesPlayerHaveActiveNonTitanBurnCard( player ) )
+                return
+        }
     }
 
     if ( !ref )

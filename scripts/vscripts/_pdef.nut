@@ -445,6 +445,8 @@ function InitPersistence()
     AddPersistenceKey("pilotLoadouts.ordnance", "loadoutItems")
     AddPersistenceKey("pilotLoadouts.primaryAttachment", "pilotMod")
     AddPersistenceKey("pilotLoadouts.primaryMod", "pilotMod")
+	AddPersistenceKey("pilotLoadouts.secondaryMod", "pilotMod")
+	AddPersistenceKey("pilotLoadouts.sidearmMod", "pilotMod")
     AddPersistenceKey("pilotLoadouts.passive1", "pilotPassive")
     AddPersistenceKey("pilotLoadouts.passive2", "pilotPassive")
     AddPersistenceKey("pilotLoadouts.race", "pilotRace")
@@ -557,18 +559,17 @@ function InitPersistence()
 
 		// R1 Delta custom stuff
 	    ["mp_weapon_car_holosight"] = 93,
-	    ["mp_weapon_r97_holosight"] = 94 // <- Add a comma if you re-enable the mods below
-
+	    ["mp_weapon_r97_holosight"] = 94, // <- Add a comma if you re-enable the mods below
 		// Disabled for now
-/*
-	    mp_weapon_autopistol_extended_ammo = 95,
-	    mp_weapon_autopistol_starburst = 96,
+	    ["mp_weapon_autopistol_extended_ammo"] = 95,
+	    ["mp_weapon_autopistol_silencer"] = 96,
 
-	    mp_weapon_semipistol_extended_ammo = 97,
-	    mp_weapon_semipistol_silencer = 98,
+	    ["mp_weapon_semipistol_extended_ammo"] = 97,
+	    ["mp_weapon_semipistol_silencer"] = 98,
 
-	    mp_weapon_wingman_silencer = 99
-*/
+	    ["mp_weapon_wingman_silencer"] = 99,
+	    ["mp_weapon_smr_tank_buster"] = 100
+
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)

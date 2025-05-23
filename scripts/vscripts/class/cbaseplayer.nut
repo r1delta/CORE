@@ -77,7 +77,9 @@ function CBasePlayer::SetPersistentVar(key, value) {
     local serializedValue = (value == null) ? "pdata_null" : value
     local unpackedKey = UnpackKey(key)
     local type = pdef_keys[unpackedKey]
-
+	 if(value == "") 
+        serializedValue = "pdata_null"
+	 
     if (serializedValue != "pdata_null") {
         if (type == "int") {
             serializedValue = value.tostring()
@@ -695,7 +697,15 @@ function CBasePlayer::SetIsPlayingRanked( isPlayingRanked )
 {
 	printt("SetActiveBurnCardIndex " + isPlayingRanked )
 
-	getroottable().SetIsPlayingRanked(this,isPlayingRanked )
+	// getroottable().SetIsPlayingRanked(this,isPlayingRanked )
+}
+
+function CBasePlayer::GetPlayerIP() {
+	return getroottable().GetPlayerIP(this);
+}
+
+function CBasePlayer::GetUserId() {
+	return getroottable().GetPlayerUserId(this);
 }
 
 

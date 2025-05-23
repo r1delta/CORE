@@ -714,6 +714,8 @@ function TryGoToPersonalLobby()
 
 	wait 0.65
 
+	ClientCommand( "TryKickPlayersForPersonalLobby" )
+
 	thread TryChangeLobbyType()
 
 	ClientCommand("playlist private_match; map mp_lobby")
@@ -723,7 +725,14 @@ function TryChangeLobbyType()
 {
 	WaitSignal( uiGlobal.signalDummy, "LevelFinishedLoading" )
 
+	if( GetConVarInt("hide_server") == 0 )
+	{
+		ClientCommand( "hide_server 1" )
+		uiGlobal.setServerPublicNextPrivateLobby <- true
+	}
+
 	ClientCommand( "RequestServerChangeToLobbyType0" )
+	ClientCommand( "TryKickPlayersForPersonalLobby" )
 }
 
 function ShowLeavingDialog()

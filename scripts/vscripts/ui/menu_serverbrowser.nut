@@ -243,12 +243,10 @@ function FilterServerList()
         if ( server.version == "" )
             continue
 
-        local r1dVersionFull = GetR1DVersion()
-        local r1dVersion = r1dVersionFull.slice(0, r1dVersionFull.find(" "))
+        local r1dVersion = GetMinimumR1DVersion()
 
-        if ( r1dVersion != "dev" )
-            if( CompareSemver( server.version, r1dVersion ) < 0 )
-                continue
+        if( CompareSemver( server.version, r1dVersion ) < 0 )
+            continue
 
         if (file.useSearch)
         {
@@ -289,8 +287,8 @@ function UpdateShownPage()
 
         local trimmed_hostname = server.host_name
 
-        if ( server.host_name.len() > 42 )
-            trimmed_hostname = server.host_name.slice(0, 42) + "..."
+        // if ( server.host_name.len() > 42 )
+        //     trimmed_hostname = server.host_name.slice(0, 42) + "..."
 
         if ( StringContains( server.host_name, "#" ) )
         {

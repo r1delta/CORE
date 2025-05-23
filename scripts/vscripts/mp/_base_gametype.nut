@@ -894,9 +894,6 @@ function PostDeathThread( player, damageInfo )
 
 	local attacker = damageInfo.GetAttacker()
 	local methodOfDeath = damageInfo.GetDamageSourceIdentifier()
-
-
-
 	local attackerViewIndex = attacker.GetIndexForEntity()
 
 	local timeSinceAttackerSpawned = attacker.GetTimeSinceSpawning()
@@ -914,7 +911,7 @@ function PostDeathThread( player, damageInfo )
 	local replayTime = CalculateLengthOfKillReplay( player, methodOfDeath )
 	player.watchingKillreplayEndTime = Time() + replayTime
 
-	local shouldDoReplay = ShouldDoReplay( player, attacker )
+	local shouldDoReplay = ShouldDoReplay( player, attacker, replayTime )
 
 	local replayTracker = {}
 	replayTracker.validTime <- null

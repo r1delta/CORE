@@ -465,7 +465,7 @@ function GetAllModesAndMapsCompleteData( player = null )
 
 	local currentMap = null
 	local currentMode = null
-	if ( !IsLobby() )
+	if ( !IsLobby() && !IsUI() )
 	{
 		currentMap = GetMapName()
 		currentMode = GameRules.GetGameMode()
@@ -865,4 +865,48 @@ function IsPrivateMatch()
 	{
     	return ( GetCurrentPlaylistVarInt( "private_match", 0 ) == 1 ) && ( GetConVarInt("sv_lobbyType") == 1 )
 	}
+}
+
+function FNV1A( str )
+{
+	local hash = 2166136261
+	local prime = 16777619
+
+	for ( local i = 0; i < str.len(); i++ )
+	{
+		hash = hash ^ str[i]
+		hash *= prime
+	}
+
+	return hash
+}
+
+function StringReplaceAll(original, find, replace)
+{
+    local result = ""
+    local pos = 0
+    local find_len = find.len()
+
+    if (find_len == 0)
+        return original
+
+
+    while (true)
+    {
+        local index = original.find(find, pos)
+
+        if (index == null)
+        {
+            local remaining = original.slice(pos, original.len())
+            result += remaining
+            break
+        }
+
+        local before = original.slice(pos, index);
+        result += before + replace;
+
+        pos = index + find_len;
+    }
+
+    return result;
 }

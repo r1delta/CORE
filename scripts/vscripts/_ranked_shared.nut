@@ -81,7 +81,7 @@ function main()
 		if ( IsServer() )
 		{
 			IncludeFile( "mp/_ranked" )
-			// IncludeFile( "mp/_ranked_gamemodes" )
+			IncludeFile( "mp/_ranked_gamemodes" )
 
 		}
 

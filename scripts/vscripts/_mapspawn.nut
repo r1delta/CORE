@@ -340,12 +340,12 @@
 	IncludeScript( "_cinematic_shared" )
 	IncludeFile( "_minimap_shared" )	// need to be after _remote_functions is included
 	IncludeFile( "_playlist" )
+	IncludeFile( "_ranked_shared" )
 
 	if ( IsMenuLevel() )
 	{
 		if ( IsLobby() )
 		{
-			IncludeFile( "_ranked_shared" )
 			IncludeFile( "_persistentdata" )
 			IncludeFile( "_xp" )
 			IncludeFile( "mp/_gamerules")
@@ -392,3 +392,36 @@
 		ServerCommand( "sv_kickPlayersTooFarInFuture 1" )
 		thread LobbyRestartThink()
 	}
+
+	level.ui.isDedicatedServer = IsDedicated()
+
+	function TryWaitForListenHostToFinishConnecting()
+	{
+		for(;;)
+		{
+			local players = GetPlayerArray()
+
+			if( players.len() > 0 )
+			{
+				local playerName = players[0].GetPlayerName()
+				local myName = GetConVarString( "name" )
+
+				local cleanedName = StringReplaceAll( myName, "#", "" )
+
+				if( cleanedName.len() > 32 )
+					cleanedName = cleanedName.slice( 0, 32 )
+
+				if ( playerName == cleanedName )
+				{
+					level.ui.listenHostUsernameHash = FNV1A( cleanedName )
+					printl( "Listen host is: " + cleanedName )
+					return
+				}
+			}
+
+			wait 0.1
+		}
+	}
+
+	if( !IsDedicated() )
+	    thread TryWaitForListenHostToFinishConnecting()

@@ -695,15 +695,15 @@ function InitItems()
 	// "those are probably fine but compared to pistol perks, pistol probably shouldn't have pekrs"
 	// "Probably not on the main game experience, but would be nice to have it as a mod. just for fun"
 
-/*
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_spectre_kills", 		1, 		"mp_weapon_autopistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 10, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_pilot_kills", 		1, 		"mp_weapon_autopistol",		"starburst",					"#MOD_STARBURST_NAME",			"#MOD_STARBURST_DESC",				"#MOD_STARBURST_LONGDESC",				0, -5, 0, 10, 0, 		"../ui/menu/items/mod_icons/starburst", 			"../ui/menu/items/mod_icons/starburst" )
 
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_spectre_kills", 		1, 		"mp_weapon_semipistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_kills", 				1, 		"mp_weapon_semipistol",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, -5, -2, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_spectre_kills", 		1, 		"mp_weapon_autopistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 10, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_kills", 		        1, 		"mp_weapon_autopistol",		"silencer",					"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				0, -5, 0, 10, 0, 		"../ui/menu/items/mod_icons/silencer", 			"../ui/menu/items/mod_icons/silencer" )
 
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_wingman_kills", 				1, 		"mp_weapon_wingman",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-10, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
-*/
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_spectre_kills", 		1, 		"mp_weapon_semipistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_kills", 				1, 		"mp_weapon_semipistol",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, -5, -2, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
+
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_wingman_kills", 				1, 		"mp_weapon_wingman",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-10, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
+
 
 	// Sort some items based on unlock level
 	itemsOfType[itemType.PILOT_PRIMARY].sort( SortByUnlockReq )
@@ -1587,10 +1587,7 @@ function IsItemLocked( ref, childRef = null, player = null )
 
 	if ( !ItemDefined( ref ) )
 	{
-		if ( DevEverythingUnlocked() )
-			return false
-
-		if ( IsPlayerEverythingUnlocked( player ) )
+		if ( DevEverythingUnlocked() || IsPlayerEverythingUnlocked( player )  )
 			return false
 
 		if ( ref in unlockLevels )
@@ -1657,8 +1654,8 @@ function IsItemLocked( ref, childRef = null, player = null )
 	local levelReq = GetItemLevelReq( ref, childRef )
 
 	// Dev flag to unlock everything except what is disabled
-	if ( DevEverythingUnlocked() )
-		return GetItemDevLocked( ref, childRef )
+	if ( DevEverythingUnlocked() || IsPlayerEverythingUnlocked( player ) )
+		return GetItemDevLocked( ref, player, childRef )
 
 	//###############################################
 	// TITAN CHASSIS UNLOCK FROM CAMPAIGN COMPLETION
@@ -1848,9 +1845,9 @@ function IsItemLocked( ref, childRef = null, player = null )
 	return false
 }
 
-function GetItemDevLocked( ref, childRef = null )
+function GetItemDevLocked( ref, player, childRef = null )
 {
-	if ( !DevEverythingUnlocked() )
+	if ( !DevEverythingUnlocked() || !IsPlayerEverythingUnlocked( player )  )
 		return false
 
 	local data

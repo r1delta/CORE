@@ -129,6 +129,8 @@ function InitLobbyMenu( menu )
 
 	RegisterUIVarChangeCallback( "coopLobbyMap", CoopLobbyMap_Changed )
 
+	RegisterUIVarChangeCallback( "listenHostUsernameHash", ListenHostUsernameHash_Changed )
+
 	file.searchIconElems <- GetElementsByClassnameForMenus( "SearchIconClass", uiGlobal.allMenus )
 	file.searchTextElems <- GetElementsByClassnameForMenus( "SearchTextClass", uiGlobal.allMenus )
 	file.matchStartCountdownElems <- GetElementsByClassnameForMenus( "MatchStartCountdownClass", uiGlobal.allMenus )
@@ -398,6 +400,7 @@ function OnOpenLobbyMenu()
 	Privatematch_map_Changed()
 	Privatematch_mode_Changed()
 	CoopLobbyMap_Changed()
+	ListenHostUsernameHash_Changed()
 
 	thread UpdateLobbyUI()
 }
@@ -856,6 +859,14 @@ function CoopLobbyMap_Changed()
 		local mapName = GetPrivateMatchMapNameForEnum( level.ui.coopLobbyMap )
 		SetDisplayedMapAndMode( mapName, "coop" )
 	}
+}
+
+function ListenHostUsernameHash_Changed()
+{
+	if ( level.ui.listenHostUsernameHash == null )
+		return
+
+	UpdateFooterButtons()
 }
 
 function SetMapInfo( mapName )
@@ -1484,17 +1495,22 @@ function GetLobbyTypeScript()
 	}
 	else
 	{
-		if ( AmIPartyLeader() )
+		if ( !IsDelta() )
 		{
-			if ( IsPlayerAlone() )
-				return eLobbyType.SOLO
+			if ( AmIPartyLeader() )
+			{
+				if ( IsPlayerAlone() )
+					return eLobbyType.SOLO
+				else
+					return eLobbyType.PARTY_LEADER
+			}
 			else
-				return eLobbyType.PARTY_LEADER
+			{
+				return eLobbyType.PARTY_MEMBER
+			}
 		}
 		else
-		{
-			return eLobbyType.PARTY_MEMBER
-		}
+			return eLobbyType.SOLO
 	}
 }
 
