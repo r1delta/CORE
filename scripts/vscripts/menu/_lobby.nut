@@ -2072,6 +2072,8 @@ function ClientCommand_UpdatePrivateMatchSetting( player, ... )
 			break
 	}
 
+	SetPlaylistVarOverride( "private_match", "1" )
+
 	return true
 }
 
