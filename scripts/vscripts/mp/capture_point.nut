@@ -1644,16 +1644,16 @@ function CapturePointKillScoreEvent( victim, player )
 }
 
 //////////////////////////////////////////////////////////
-function CapturePointVO_Allowed()
+function CapturePointVO_Allowed( player )
 {
-	return GetGameState() == eGameState.Playing
+	return ( GetGameState() == eGameState.Playing && player.s.hasDoneTryGameModeAnnouncement )
 }
 
 
 //////////////////////////////////////////////////////////
 function CapturePointVO_Approaching( player, hardpoint, distance )
 {
-	if ( !CapturePointVO_Allowed() )
+	if ( !CapturePointVO_Allowed( player ) )
 		return
 
 	local team = player.GetTeam()
@@ -1706,7 +1706,7 @@ function CapturePointVO_Approaching( player, hardpoint, distance )
 //////////////////////////////////////////////////////////
 function CapturePointVO_Nag( player )
 {
-	if ( !CapturePointVO_Allowed() )
+	if ( !CapturePointVO_Allowed( player ) )
 		return
 
 	Assert( player.IsPlayer() )

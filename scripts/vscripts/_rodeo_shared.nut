@@ -209,7 +209,12 @@ function main()
 
 	level.debugRodeoAnim <- eRodeoAnim.DUMMY
 
+	if ( IsServer() )
+	{
+		AddClientCommandCallback( "HoldToRodeo", ClientCommand_HoldToRodeo )
 
+		AddCallback_OnClientConnected( Rodeo_OnClientConnected )
+	}
 }
 
 function CodeCallback_OnRodeoAttach( player, titan )
@@ -231,11 +236,45 @@ function CodeCallback_OnRodeoAttach( player, titan )
 	return sequence
 }
 
+const HOLD_RODEO_DISABLED = 0
+const HOLD_RODEO_ALL = 1
+const HOLD_RODEO_FRIENDLY = 2
+
 function CodeCallback_IsValidRodeoTarget( player, titan )
 {
 	if ( "isDisembarking" in player.s )
 		return false
 
+	local holdToRodeoState = HoldToRodeoState( player )
+
+	if ( holdToRodeoState != HOLD_RODEO_DISABLED )
+	{
+		if ( holdToRodeoState != HOLD_RODEO_FRIENDLY || titan.GetTeam() == player.GetTeam() )
+		{
+			if ( IsClient() )
+			{
+				if ( !player.s.rodeoPressed )
+					return false
+			}
+
+			if ( IsServer() )
+			{
+				// This doesnt work properly so disabling it for now
+
+				//if ( IsValidTitanRodeoTarget( player, titan ) )
+				//	HoldToRodeoUpdate( player, titan )
+
+				if ( !ButtonPressed( player, "use" ) && !ButtonPressed( player, "useandreload" ) )
+					return false
+			}
+		}
+	}
+
+	return IsValidTitanRodeoTarget( player, titan )
+}
+
+function IsValidTitanRodeoTarget( player, titan )
+{
 	if ( !HasSoul( titan ) )
 		return false
 
@@ -266,8 +305,9 @@ function CodeCallback_IsValidRodeoTarget( player, titan )
 		}
 	}
 
-	return true;
+	return true
 }
+Globalize( IsValidTitanRodeoTarget )
 
 function FindPlayerJumponSpot( player, titan )
 {
@@ -1197,4 +1237,63 @@ function SpectreFallingOntoTitan( spectre, titan )
 		return false
 
 	return true
+}
+
+function HoldToRodeoEnabled( player )
+{
+	if ( IsServer() )
+	{
+		return player.s.holdToRodeoState > 0
+	}
+	else if ( IsClient() )
+	{
+		return GetConVarInt( "cl_hold_to_rodeo_enable " ) > 0
+	}
+
+	return false
+}
+Globalize( HoldToRodeoEnabled )
+
+function HoldToRodeoState( player )
+{
+	if ( IsServer() )
+	{
+		return player.s.holdToRodeoState
+	}
+	else if ( IsClient() )
+	{
+		return GetConVarInt( "cl_hold_to_rodeo_enable" )
+	}
+
+	return false
+}
+Globalize( HoldToRodeoState )
+
+if ( IsServer() )
+{
+	function HoldToRodeoUpdate( player, titan )
+	{
+		if ( !( "SetUsePrompts" in titan.s ) )
+		{
+			titan.SetUsePrompts( "#HINT_RODEO", "#HINT_RODEO" )
+			titan.s.SetUsePrompts <- true
+		}
+	}
+
+	function Rodeo_OnClientConnected( player )
+	{
+		if ( !( "holdToRodeoState" in player.s ) )
+			player.s.holdToRodeoState <- 0
+	}
+
+	function ClientCommand_HoldToRodeo( player, args )
+	{
+		local holdToRodeoState = args.tointeger()
+		if ( holdToRodeoState < 0 || holdToRodeoState > 2)
+			return true
+	
+		player.s.holdToRodeoState = holdToRodeoState
+	
+		return true
+	}
 }
