@@ -1,0 +1,184 @@
+	/////
+	//R1
+	/////
+
+
+game_sounds_manifest
+{
+	"precache_file"		"scripts/r1_soundscape_aliases.txt"
+	"precache_file"		"scripts/r1_game_sounds_ambient.txt"
+//	"precache_file"		"scripts/r1_game_sounds_scripted.txt"
+	"precache_file"		"scripts/r1_game_sounds_weapons.txt"
+
+	"precache_file"		"scripts/audio/menu.txt"
+
+//	"precache_file"		"scripts/audio/AI_IMC.txt"
+	"precache_file"		"scripts/audio/vehicles.txt"
+	"precache_file"		"scripts/audio/ai_weapon.txt"
+//	"precache_file"		"scripts/audio/ai_titan.txt"
+	"precache_file"		"scripts/audio/ai_marvin.txt"
+//	"precache_file"		"scripts/audio/ai_drone.txt"
+	"precache_file"		"scripts/audio/ai_soldier.txt"
+
+	"precache_file"		"scripts/audio/exo.txt"
+//	"precache_file"		"scripts/audio/scav_test.txt"
+//	"precache_file"		"scripts/audio/leviathan.txt"
+//	"precache_file"		"scripts/audio/droppod.txt"
+//	"precache_file"		"scripts/audio/player_whoosh.txt"
+//	"precache_file"		"scripts/audio/titanclimb.txt"
+	"precache_file"		"scripts/audio/player_damage.txt"
+	"precache_file"		"scripts/audio/player_ui.txt"
+//	"precache_file"		"scripts/audio/ai_personalshield.txt"
+
+	"precache_file"		"scripts/audio/player_movement.txt"
+	"precache_file"		"scripts/audio/footsteps_human.txt"
+	"precache_file"		"scripts/audio/footsteps_human_stealth.txt"
+	"precache_file"		"scripts/audio/footsteps_ogre.txt"
+	"precache_file"		"scripts/audio/footsteps_robot.txt"
+	"precache_file"		"scripts/audio/footsteps_stryder.txt"
+	"precache_file"		"scripts/audio/footsteps_atlas.txt"
+	"precache_file"		"scripts/audio/footsteps_grunt.txt"
+
+//	"precache_file"		"scripts/audio/gatlingtower.txt"
+
+	"precache_file"		"scripts/audio/surface_materials.txt"
+
+//	"precache_file"		"scripts/audio/mp_supers.txt"
+	"precache_file"		"scripts/audio/mp_music.txt"
+//	"precache_file"		"scripts/audio/mp_global.txt"
+
+//	"precache_file"		"scripts/audio/mp_rooftops.txt"
+	"precache_file"		"scripts/audio/mp_fracture.txt"
+	"precache_file"		"scripts/audio/mp_o2.txt"
+
+	"precache_file"		"scripts/audio/mp_boneyard.txt"
+	"precache_file"		"scripts/audio/mp_outpost207.txt"
+	"precache_file"		"scripts/audio/mp_corporate.txt"
+//	"precache_file"		"scripts/audio/mp_trainer.txt"
+
+	"precache_file"		"scripts/audio/mp_lobby.txt"
+//	"precache_file"		"scripts/audio/ai_skits.txt"
+	"precache_file"		"scripts/audio/ai_scripted.txt"
+//	"precache_file"		"scripts/audio/ai_movement.txt"
+	"precache_file"		"scripts/audio/player_flyin.txt"
+	"precache_file"		"scripts/audio/mp_angelcity.txt"
+	"precache_file"		"scripts/audio/mp_colony.txt"
+	"precache_file"		"scripts/audio/mp_airbase.txt"
+	"precache_file"		"scripts/audio/mp_training_ground.txt"
+	"precache_file"		"scripts/audio/mp_nexus.txt"
+	"precache_file"		"scripts/audio/mp_lagoon.txt"
+	"precache_file"		"scripts/audio/mp_relic.txt"
+	"precache_file"		"scripts/audio/mp_rise.txt"
+	"precache_file"		"scripts/audio/mp_smugglerscove.txt"
+	"precache_file"		"scripts/audio/mp_overlook.txt"
+	"precache_file"		"scripts/audio/mp_NPE.txt"
+	"precache_file"		"scripts/audio/mp_wargames_dlc1.txt"
+	"precache_file"		"scripts/audio/mp_swampland_dlc1.txt"
+	"precache_file"		"scripts/audio/mp_runoff_dlc1.txt"
+	
+	"precache_file"		"scripts/audio/mp_switchback_dlc2.txt"
+	"precache_file"		"scripts/audio/mp_digsite_dlc2.txt"
+	"precache_file"		"scripts/audio/mp_haven_dlc2.txt"
+	
+	"precache_file"		"scripts/audio/mp_sandtrap_dlc3.txt"
+	"precache_file"		"scripts/audio/mp_zone18_dlc3.txt"
+	"precache_file"		"scripts/audio/mp_backwater_dlc3.txt"
+	
+	"precache_file"		"scripts/audio/mp_coop.txt"
+
+	
+	//NOTE:  mp_airbase.txt also contains temp dialogue hooks
+
+	
+	
+	
+///////////////////////////
+// DIALOGUE PRECACHE FILES:
+///////////////////////////
+
+	"precache_file"		"scripts/audio/ai_titanos.txt"
+	"precache_file"		"scripts/audio/mp_cinematics.txt"
+
+	"precache_file"		"scripts/audio/mp_diag_cmp_airbase.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_angelcity.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_Boneyard.txt"
+//	"precache_file"		"scripts/audio/mp_diag_cmp_Boneyard_grunts.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_colony.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_Corporate.txt"
+//	"precache_file"		"scripts/audio/mp_diag_cmp_Corporate_grunts.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_fracture.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_lobby.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_o2.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_relic.txt"
+	"precache_file"		"scripts/audio/mp_diag_global_gs.txt"
+	"precache_file"		"scripts/audio/mp_diag_gm_ctf.txt"
+	"precache_file"		"scripts/audio/mp_diag_cmp_outpost207.txt"
+	"precache_file"		"scripts/audio/mp_diag_npe.txt"
+	"precache_file"		"scripts/audio/mp_diag_coop.txt"
+
+	"precache_file"		"scripts/audio/mp_diag_Spectre.txt"
+
+	"precache_file"		"scripts/audio/mp_gamestates.txt"
+	"precache_file"		"scripts/audio/mp_gamestatesExtra.txt"
+	"precache_file"		"scripts/audio/mp_globaldiag.txt"
+	"precache_file"		"scripts/audio/mp_hardpoint_diag.txt"
+	"precache_file"		"scripts/audio/mp_hardpoints.txt"
+	"precache_file"		"scripts/audio/mp_killcalls.txt"
+	"precache_file"		"scripts/audio/mp_tdm.txt"
+	"precache_file"		"scripts/audio/mp_titanstates.txt"
+//	"precache_file"		"scripts/audio/mp_tutorial.txt"
+	"precache_file"		"scripts/audio/mp_diag_limbo.txt"
+	
+
+	// NEW GRUNT COMMENT DIALOGUE:
+	"precache_file"		"scripts/audio/mp_diag_imc_lvlcom_g1.txt"
+	"precache_file"		"scripts/audio/mp_diag_imc_lvlcom_g2.txt"
+	"precache_file"		"scripts/audio/mp_diag_imc_lvlcom_g3.txt"
+	"precache_file"		"scripts/audio/mp_diag_imc_lvlcom_g4.txt"
+	"precache_file"		"scripts/audio/mp_diag_mcor_lvlcom_g1.txt"
+	"precache_file"		"scripts/audio/mp_diag_mcor_lvlcom_g2.txt"
+	"precache_file"		"scripts/audio/mp_diag_mcor_lvlcom_g3.txt"
+	"precache_file"		"scripts/audio/mp_diag_mcor_lvlcom_g4.txt"
+
+	// NEW GRUNT Battlechatter DIALOGUE:
+	"precache_file"		"scripts/audio/mp_diag_imc_bchatter_g3.txt"
+	"precache_file"		"scripts/audio/mp_diag_imc_bchatter_g4.txt"
+	"precache_file"		"scripts/audio/mp_diag_mcor_bchatter_g3.txt"
+	"precache_file"		"scripts/audio/mp_diag_mcor_bchatter_g4.txt"
+	
+	
+	//DLC1: New Additions
+	"precache_file"		"scripts/audio/mp_dlc1_diag_wargames.txt"
+	
+
+	//Titan OS Updates Post Launch
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_NavEuro.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_Butler.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_Prototype.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_Breathy.txt"
+	
+//			INTENDED FOR CU7:
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_intl_BettyEN.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_intl_BettyDE.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_intl_BettyES.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_intl_BettyFR.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_intl_BettyIT.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_intl_BettyJP.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_titanos_intl_BettyRU.txt"
+//			END INTENDED FOR CU7
+	
+	
+	//CU Post-Launch Updates: Game Modes
+	"precache_file"		"scripts/audio/mp_cu_diag_gm.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_gm_8v8.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_gm_ctt.txt"
+	"precache_file"		"scripts/audio/mp_cu_diag_gm_mfdp.txt"
+	
+	
+	
+//  THESE BELOW CONTAIN TEMP CONTENT AND MUST NOT BE INCLUDED IN FINAL RELEASE:
+
+// EXPERIMENTAL:
+	"precache_file"		"scripts/audio/mp_cu_diag_gm_ranked.txt"
+}
