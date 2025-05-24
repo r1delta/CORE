@@ -50,7 +50,7 @@ WeaponData
 	// Sound
 	"fire_sound_1_player_1p"							"Weapon_bulletCasings.Bounce"
 	"fire_sound_1_player_3p"							"Weapon_bulletCasings.Bounce"
-	"fire_sound_first_shot"							"Weapon_RE45Auto_Fire"
+	"fire_sound_2"									"Weapon_RE45Auto_Fire"
 	"looping_sounds"								"1"
 
 	// Network
@@ -323,8 +323,7 @@ WeaponData
 		}
 		silencer
 		{
-			"fire_sound_2"						"Weapon_SmartPistol.SuppressedFire_Layer1"
-			"fire_sound_first_shot"				""
+			"fire_sound_2"						"" //Weapon_SmartPistol.SuppressedFire_Layer1
 			"bodygroup1_set"					"1"
 			"damage_near_value"   				"25"
 			"damage_far_value"					"15" //Keeping the same because it's so low already.
@@ -352,7 +351,7 @@ WeaponData
 		}
 		starburst
 		{
-			"fire_sound_first_shot"							""
+			"fire_sound_2"									""
 			"burst_fire_sound_start"						"Weapon_RE45Auto_Fire"
 			"burst_fire_sound_middle"						"Weapon_RE45Auto_Fire"
 			"burst_fire_sound_end"							"Weapon_RE45Auto_Fire"
@@ -432,32 +431,13 @@ WeaponData
 				"material"					"hud/crosshairs/standard_plus_shadow"
 			}
 		}
-		Burn_Mod //Match BaseWeapon + default color change until override setting.
+		BurnCardMod //Match BaseWeapon + default color change until override setting.
 		{
+			"inherit_data_from"				"BaseWeapon"
+
 			DefaultElementBehavior
 			{
-				"rotation"					"90"
-				"size_x"					"44"
-				"size_y"					"44"
-				"fade_into_zooming_end"		"0.5"
-				"fade_out_of_zooming_begin"	"0.20"
-				"scale_ads"					"0.5"
-				"fade_while_reloading"		"1"
-				"fade_while_sprinting"		"1"
-				"draw_while_ads"			"0"
-				"draw_while_hip"			"1"
-				"fade_while_zooming"		"1"
 				"default_color"				"246 134 40 255"
-			}
-			Element0
-			{
-				"type"						"spread"
-				"material"					"hud/crosshairs/standard_plus"
-			}
-			Element1
-			{
-				"type"						"spread"
-				"material"					"hud/crosshairs/standard_plus_shadow"
 			}
 		}
 	}

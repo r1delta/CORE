@@ -181,4 +181,9 @@ game_sounds_manifest
 
 // EXPERIMENTAL:
 	"precache_file"		"scripts/audio/mp_cu_diag_gm_ranked.txt"
+
+// R1Delta
+// DO NOT move this file up! Its intentionally placed down here so it can override sounds in the files above, if needed
+
+	"precache_file"		"scripts/r1_delta_sounds.txt"
 }
