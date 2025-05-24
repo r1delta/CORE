@@ -26,8 +26,8 @@ function OnWeaponActivate( activateParams )
 {
 	if ( self.HasMod( "silencer" ) )
 	{
-		SetLoopingWeaponSound_1p3p( "Weapon_RE45Auto_FirstShot_1P", "Weapon_RE45Auto_FireLoop_1P", "Weapon_RE45Auto_LoopEnd_1P",
-		                            "Weapon_RE45Auto_FirstShot_3P", "Weapon_RE45Auto_FireLoop_3P", "Weapon_RE45Auto_LoopEnd_3P" )
+		SetLoopingWeaponSound_1p3p( "Weapon_RE45Auto_FirstShotSuppressed_1P", "Weapon_RE45Auto_FireLoopSuppressed_1P", "Weapon_RE45Auto_LoopEndSuppressed_1P",
+		                            "Weapon_RE45Auto_FirstShotSuppressed_3P", "Weapon_RE45Auto_FireLoopSuppressed_3P", "Weapon_RE45Auto_LoopEndSuppressed_3P" )
 	}
 	else
 	{
