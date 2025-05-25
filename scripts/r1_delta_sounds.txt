@@ -1,0 +1,414 @@
+
+// RE-45 Supressor (WIP)
+
+"Weapon_RE45Auto_FirstShotSuppressed_1P"
+{
+	"mixgroup"		"weapons,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed,SFX_Weapons_Pilot_1P_GunfireSuppressed_RE45"
+	"volumescale"			".65"
+	"flags"				"layered"
+
+	"rndwave"
+	{
+	"volume"			".8"
+	"pitch"				"90,110"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed__2ch_v2_01.wav"
+//	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed__2ch_v2_02.wav"
+//	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed__2ch_v2_03.wav"
+//	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed__2ch_v2_04.wav"
+//	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed__2ch_v2_05.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"5"
+	"limit"				"1"
+	"pitch"				"70,90"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed_Thump_2ch_v2_01.wav"
+//	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed_Thump_2ch_v2_02.wav"
+//	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_FirstShot_Suppressed_Thump_2ch_v2_03.wav"
+	}
+
+//3P ASSETS//////
+
+	"rndwave"
+	{
+	"volume"			"1"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"		"200"
+
+	"startDistance"     		"10"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"2000"
+ 	"falloffCurve"      		"6"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_01.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_02.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_03.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_04.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"1"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"10"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"6"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_01.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_02.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_03.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_04.wav"
+	}
+}
+
+"Weapon_RE45Auto_FireLoopSuppressed_1P"
+{
+	"mixgroup"		"weapons,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed,SFX_Weapons_Pilot_1P_GunfireSuppressed_RE45"
+	"volumescale"		".65"
+	"flags"			"loop,layered,mobile"
+
+	"rndwave"
+	{
+	"volume"		"3"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+	"pitch"			"93,108"
+		"ducks"				"SFX_Weapons_AI,0.5a:0,1000,0,0"
+		"ducks"				"SFX_AMB,0.5a:0,1000,0,0"
+		"ducks"				"Music,0.3a:0,1000,0,0"
+		//"ducks"				"DIAL_AI,0.3a:0,1000,0,0"
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"1000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_Loop_Suppressed_2ch_v2_01.wav"
+
+	}
+
+
+//3P ASSETS//////
+
+	"rndwave"
+	{
+	"volume"			"2"
+	"pitch"				"85,115"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"		"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"2500"
+ 	"falloffCurve"      		"7"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Loop_Suppressed_Close_2ch_v2_01.wav"
+
+	}
+
+	"rndwave"
+	{
+	"volume"			"1.5"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"		"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"5"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"1500"
+ 	"falloffCurve"      		"7"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Loop_Suppressed_Mid_2ch_v2_01.wav"
+	}
+}
+
+"Weapon_RE45Auto_LoopEndSuppressed_1P"
+{
+	"mixgroup"		"weapons,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed,SFX_Weapons_Pilot_1P_GunfireSuppressed_RE45"
+	"volumescale"		".65"
+	"pitch"			"100,140"
+	"flags"			"layered"
+
+
+	"rndwave"
+	{
+	"volume"		"2"
+	"limit"				"3"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Tail_Suppressed_Mid_2ch_v2_01.wav"
+
+	}
+
+//3P ASSETS//////
+
+	"rndwave"
+	{
+	"volume"			"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"10"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Tail_Close_2ch_v1_01.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"4"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"10"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"1500"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Tail_Suppressed_Mid_2ch_v2_01.wav"
+	}
+}
+
+
+"Weapon_RE45Auto_FirstShotSuppressed_3P"
+{
+	"mixgroup"		"weapons,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed,SFX_Weapons_Pilot_1P_GunfireSuppressed_RE45"
+	"volumescale"			".65"
+	"flags"				"layered"
+
+//3P ASSETS//////
+
+	"rndwave"
+	{
+	"volume"			"1"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"		"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"2000"
+ 	"falloffCurve"      		"6"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_01.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_02.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_03.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Close_2ch_v2_04.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"1"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"6"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_01.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_02.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_03.wav"
+//	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_04.wav"
+	}
+}
+
+"Weapon_RE45Auto_FireLoopSuppressed_3P"
+{
+	"mixgroup"		"weapons,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed,SFX_Weapons_Pilot_1P_GunfireSuppressed_RE45"
+	"volumescale"		".65"
+	"flags"			"loop,layered,mobile"
+
+	"rndwave"
+	{
+	"volume"		"3"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+	"pitch"			"93,108"
+		"ducks"				"SFX_Weapons_AI,0.5a:0,1000,0,0"
+		"ducks"				"SFX_AMB,0.5a:0,1000,0,0"
+		"ducks"				"Music,0.3a:0,1000,0,0"
+		//"ducks"				"DIAL_AI,0.3a:0,1000,0,0"
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"1000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_1p_WpnFire_Loop_Suppressed_2ch_v2_01.wav"
+
+	}
+
+
+//3P ASSETS//////
+
+	"rndwave"
+	{
+	"volume"			"2"
+	"pitch"				"85,115"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"		"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"2500"
+ 	"falloffCurve"      		"7"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Loop_Suppressed_Close_2ch_v2_01.wav"
+
+	}
+
+	"rndwave"
+	{
+	"volume"			"1.5"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"		"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"1500"
+ 	"falloffCurve"      		"7"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Loop_Suppressed_Mid_2ch_v2_01.wav"
+	}
+}
+
+"Weapon_RE45Auto_LoopEndSuppressed_3P"
+{
+	"mixgroup"		"weapons,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed,SFX_Weapons_Pilot_1P_GunfireSuppressed_RE45"
+	"volumescale"		".65"
+	"pitch"			"100,140"
+	"flags"			"layered"
+
+//3P ASSETS//////
+
+	"rndwave"
+	{
+	"volume"			"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Tail_Close_2ch_v1_01.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"4"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"1500"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Tail_Suppressed_Mid_2ch_v2_01.wav"
+	}
+}
