@@ -5438,6 +5438,12 @@ function RandomizeBotLoadout( table, isTitan = false )
 	ref = items[ rand() % items.len() ].ref
 	table.offhandWeapons[1].weapon = ref
 	table.offhandWeapons[1].mods = []
+
+	// Setfile
+	refType = isTitan ? itemType.TITAN_SETFILE : itemType.PILOT_SETFILE
+	items = GetAllItemsOfType( refType )
+	ref = items[ rand() % items.len() ].ref
+	table.playerSetFile = ref
 }
 
 function FindItemByName( type, itemName )
