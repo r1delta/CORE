@@ -1029,7 +1029,7 @@ function PostDeathThread( player, damageInfo )
 	}
 
 
-	if( player.IsBot() )
+	if( player.IsBot() && GetConVarBool( "bot_kick_on_death" ) )
 	{
 		wait 5.0
 		// 봇은 죽으면 kick
