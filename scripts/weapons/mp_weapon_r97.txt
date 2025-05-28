@@ -436,6 +436,13 @@ WeaponData
 			"anim_alt_idleAttack" 							"1"
 			"zoom_fov"										"45"
 		}
+		aog
+		{
+			"bodygroup2_set"		"1"
+			"bodygroup1_set"		"0"
+			"anim_alt_idleAttack"	"3"
+			"zoom_fov"				"30"
+		}
 	}
 
 	CrosshairData
@@ -467,28 +474,11 @@ WeaponData
 		}
 		Burn_Mod //Match BaseWeapon + default color change until override setting.
 		{
+			"inherit_data_from"				"BaseWeapon"
+
 			DefaultElementBehavior
 			{
-				"rotation"					"90"
-				"size_x"					"44"
-				"size_y"					"44"
-				"scale_ads"					"0.5"
-				"fade_while_sprinting"		"1"
-				"fade_while_reloading"		"1"
-				"draw_while_ads"			"0"
-				"draw_while_hip"			"1"
-				"fade_while_zooming"		"1"
 				"default_color"				"246 134 40 255"
-			}
-			Element0
-			{
-				"type"						"spread"
-				"material"					"hud/crosshairs/standard_plus"
-			}
-			Element1
-			{
-				"type"						"spread"
-				"material"					"hud/crosshairs/standard_plus_shadow"
 			}
 		}
 	}
