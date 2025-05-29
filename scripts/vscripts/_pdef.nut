@@ -559,17 +559,17 @@ function InitPersistence()
 
 		// R1 Delta custom stuff
 	    ["mp_weapon_car_holosight"] = 93,
-	    ["mp_weapon_r97_holosight"] = 94, // <- Add a comma if you re-enable the mods below
-		// Disabled for now
-	    ["mp_weapon_autopistol_extended_ammo"] = 95,
-	    ["mp_weapon_autopistol_silencer"] = 96,
+	    ["mp_weapon_r97_holosight"] = 94,
+	    ["mp_weapon_car_aog"] = 95,
+	    ["mp_weapon_r97_aog"] = 96,
 
-	    ["mp_weapon_semipistol_extended_ammo"] = 97,
-	    ["mp_weapon_semipistol_silencer"] = 98,
+	    ["mp_weapon_autopistol_extended_ammo"] = 97,
+	    ["mp_weapon_autopistol_silencer"] = 98,
 
-	    ["mp_weapon_wingman_silencer"] = 99,
-	    ["mp_weapon_smr_tank_buster"] = 100
+	    ["mp_weapon_semipistol_extended_ammo"] = 99,
+	    ["mp_weapon_semipistol_silencer"] = 100,
 
+	    ["mp_weapon_wingman_silencer"] = 101
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
