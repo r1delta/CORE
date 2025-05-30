@@ -300,26 +300,28 @@ function SetTitanOSForPlayer( player )
 	player.SetVoicePackIndex ( titanOSEnumIndex )
 }
 
-
 function SetDecalForTitan( player )
 {
-	local playerClassDataTable = GetPlayerClassDataTable( player, "titan" )
-	local titanLoadoutDecal = playerClassDataTable.decal
-	local team = player.GetTeam()
-	local skinIndex
+    local playerClassDataTable = GetPlayerClassDataTable( player, "titan" )
+    local titanLoadoutDecal
 
-	if ( titanLoadoutDecal == null )
-		skinIndex = team == TEAM_MILITIA ? 1 : 0
-	else
-		skinIndex = GetDecalSkinForTeam( titanLoadoutDecal, team )
+    if( ( "decal" in playerClassDataTable ) )
+        titanLoadoutDecal = playerClassDataTable.decal
 
-	if ( player.IsTitan() )
-	    player.SetSkin( skinIndex )
-	else
-	{
-		local titan = player.GetPetTitan()
-		if ( IsValid( titan ) )
-			titan.SetSkin( skinIndex )
-	}
+    local team = player.GetTeam()
+    local skinIndex
+
+    if ( titanLoadoutDecal == null )
+        skinIndex = team == TEAM_MILITIA ? 1 : 0
+    else
+        skinIndex = GetDecalSkinForTeam( titanLoadoutDecal, team )
+
+    if ( player.IsTitan() )
+        player.SetSkin( skinIndex )
+    else
+    {
+        local titan = player.GetPetTitan()
+        if ( IsValid( titan ) )
+            titan.SetSkin( skinIndex )
+    }
 }
-

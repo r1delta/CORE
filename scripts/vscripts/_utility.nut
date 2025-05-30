@@ -5439,9 +5439,6 @@ function RandomizeBotLoadout( table, isTitan = false )
 	table.offhandWeapons[1].weapon = ref
 	table.offhandWeapons[1].mods = []
 
-	if(isTitan) {
-		table.decal <- null
-	}
 }
 
 function FindItemByName( type, itemName )
