@@ -83,6 +83,7 @@ function main()
 	file.betty.BC_TITAN_SHIELD_WALL_M2 <- { prefix = "diag_gs_titan", suffix = "_def_ampedShieldWall_grp" }
 	file.betty.BC_EXTRA_DASH <- { prefix = "diag_gs_titan", suffix = "_def_ampedDash_grp" }
 
+	// "_def_ampedSlaved_grp" just says "Titan Burn Card enabled.", so if we add any new titan burn cards in the future, use that one
 	file.betty.BC_TITAN_SHOTGUN_M2 <- { prefix = "diag_gs_titan", suffix = "_def_ampedSlaved_grp" }
 
 	foreach ( eventName, dialogInfo in file.betty )
