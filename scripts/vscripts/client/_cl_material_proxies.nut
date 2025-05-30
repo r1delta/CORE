@@ -35,18 +35,20 @@ function VMTCallback_DefenderCrosshair( player )
 
 function VMTCallback_TitanShotgunCrosshair( player )
 {
+	local weapon = player.GetActiveWeapon()
 	local currentAmmo = player.GetActiveWeaponPrimaryAmmoLoaded()
+	local numOfFrames = player.GetWeaponAmmoMaxLoaded( weapon ) // max clip ammo (9 normal, 12 extended)
 	local frame
 
-	Assert( currentAmmo <= 9 )
+	Assert( currentAmmo <= numOfFrames )
 
-	if ( currentAmmo > 9 )
-		return 1;
+	if ( currentAmmo > numOfFrames )
+		return 1
 
 	if ( currentAmmo == 0 )
 		frame = 0
 	else
-		frame = ( 10 - currentAmmo )
+		frame = ( ( numOfFrames + 1 ) - currentAmmo )
 
 	return frame
 }
