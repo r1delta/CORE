@@ -83,6 +83,8 @@ function main()
 	file.betty.BC_TITAN_SHIELD_WALL_M2 <- { prefix = "diag_gs_titan", suffix = "_def_ampedShieldWall_grp" }
 	file.betty.BC_EXTRA_DASH <- { prefix = "diag_gs_titan", suffix = "_def_ampedDash_grp" }
 
+	file.betty.BC_TITAN_SHOTGUN_M2 <- { prefix = "diag_gs_titan", suffix = "_def_ampedSlaved_grp" }
+
 	foreach ( eventName, dialogInfo in file.betty )
 	{
 		dialogInfo.eventType <- eventName
@@ -167,6 +169,8 @@ function main()
 	file.events["bc_titan_electric_smoke_m2"] <- { priority = 0.2, debounce = 3.0 }
 	file.events["bc_titan_shield_wall_m2"] <- { priority = 0.2, debounce = 3.0 }
 	file.events["bc_extra_dash"] <- { priority = 0.2, debounce = 3.0 }
+
+	file.events["bc_titan_shotgun_m2"] <- { priority = 0.2, debounce = 3.0 }
 
 	//Add defaults for alwaysAnnounce and doomed
 	foreach( event in file.events )
@@ -526,6 +530,10 @@ function TitanCockpit_PlayDialogInternal( player, eventType )
 			break
 		case "bc_extra_dash":
 			player.s.titanCockpitDialogAliasList = [ file.betty.BC_EXTRA_DASH ]
+			break
+
+		case "bc_titan_shotgun_m2":
+			player.s.titanCockpitDialogAliasList = [ file.betty.BC_TITAN_SHOTGUN_M2 ]
 			break
 
 		default:
