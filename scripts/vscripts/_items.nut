@@ -277,6 +277,8 @@ function main()
 
 		InitBurncardPackLevels( 0, 5 ) // number of commons and rares to include in burn card packs
 	}
+
+	unlockLevels[ "mp_titanweapon_shotgun" ]				<- 36
 }
 
 function InitItems()
@@ -749,6 +751,18 @@ function CreateR1DeltaItems()
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_kills", 				1, 		"mp_weapon_semipistol",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, -5, -2, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
 
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_wingman_kills", 				1, 		"mp_weapon_wingman",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-10, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
+
+	////////////////////
+	//TITAN WEAPON DATA
+	////////////////////
+	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_titanweapon_shotgun", 				"../ui/menu/items/titanweapon_shotgun" )
+
+	////////////////////
+	//TITAN MOD DATA
+	////////////////////
+	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_titan_shotgun_kills", 					1, 		"mp_titanweapon_shotgun",				"extended_ammo",		"#MOD_EXTENDED_MAG_NAME",			"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
+
+	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_shotgun",				"burn_mod_titan_shotgun", 					"#BC_TITAN_SHOTGUN_M2",				"#BC_TITAN_SHOTGUN_M2_FLYOUT_DESC",				"#BC_TITAN_SHOTGUN_M2_FLYOUT_DESC",				0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 }
 
 function CreateWeaponData( type, dev_enabled, levelReq, challengeReq, challengeTier, ref, image, icon = null, altImage = null )

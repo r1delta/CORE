@@ -50,6 +50,7 @@ level.weaponCategories.append( eChallengeCategory.WEAPON_TITAN_SNIPER )
 level.weaponCategories.append( eChallengeCategory.WEAPON_ARC_CANNON )
 level.weaponCategories.append( eChallengeCategory.WEAPON_ROCKET_LAUNCHER )
 level.weaponCategories.append( eChallengeCategory.WEAPON_TRIPLE_THREAT )
+level.weaponCategories.append( eChallengeCategory.WEAPON_TITAN_SHOTGUN )
 level.weaponCategories.append( eChallengeCategory.WEAPON_SALVO_ROCKETS )
 level.weaponCategories.append( eChallengeCategory.WEAPON_HOMING_ROCKETS )
 level.weaponCategories.append( eChallengeCategory.WEAPON_DUMBFIRE_ROCKETS )
@@ -550,6 +551,7 @@ function CreateChallenges()
 									eChallengeCategory.WEAPON_TITAN_SNIPER,
 									eChallengeCategory.WEAPON_ARC_CANNON,
 									eChallengeCategory.WEAPON_TRIPLE_THREAT,
+									eChallengeCategory.WEAPON_TITAN_SHOTGUN,
 								]
 	SetChallengeCategory( eChallengeCategory.TITAN_PRIMARY, "#CHALLENGE_CATEGORY_TITAN_PRIMARY", "#CHALLENGE_CATEGORY_DESC_TITAN_PRIMARY", "edit_titans", linkedCategories )
 
@@ -823,6 +825,50 @@ function CreateChallenges()
 	AddChallenge( "ch_triple_threat_hours_used", "#CHALLENGE_WEAPON_HOURS_USED", "#CHALLENGE_WEAPON_HOURS_USED_DESC", ICON_TIME_PLAYED, weaponRef, true )
 		SetChallengeStat( "weapon_stats", "hoursUsed", weaponRef )
 		SetChallengeTiers( goals_hours_used )
+
+	//------------------
+	// 	 Titan Shotgun
+	//------------------
+
+	local weaponRef = "mp_titanweapon_shotgun"
+	SetChallengeCategory( eChallengeCategory.WEAPON_TITAN_SHOTGUN, "#WPN_TITAN_SHOTGUN", "", weaponRef )
+
+	AddChallenge( "ch_titan_shotgun_kills", "#CHALLENGE_WEAPON_KILLS", "#CHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
+		SetChallengeTiers( [ 5, 15, 25, 50, 100 ] )
+
+	AddChallenge( "ch_titan_shotgun_pilot_kills", "#CHALLENGE_WEAPON_PILOT_KILLS", "#CHALLENGE_WEAPON_PILOT_KILLS_DESC", ICON_PILOT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "pilots", weaponRef )
+		SetChallengeTiers( [ 1, 5, 10, 15, 25 ] )
+		SetChallengeTierBurnCards( 2, ["bc_hunt_pilot"] )
+		SetChallengeTierBurnCards( 3, ["bc_hunt_pilot"] )
+		SetChallengeTierBurnCards( 4, ["bc_hunt_pilot"] )
+
+	AddChallenge( "ch_titan_shotgun_titan_kills", "#CHALLENGE_WEAPON_TITAN_KILLS", "#CHALLENGE_WEAPON_TITAN_KILLS_DESC", ICON_TITAN, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "titansTotal", weaponRef )
+		SetChallengeTiers( goals_titan_kills )
+		SetChallengeTierBurnCards( 2, ["bc_hunt_titan"] )
+		SetChallengeTierBurnCards( 3, ["bc_hunt_titan"] )
+		SetChallengeTierBurnCards( 4, ["bc_hunt_titan"] )
+
+	AddChallenge( "ch_titan_shotgun_spectre_kills", "#CHALLENGE_WEAPON_SPECTRE_KILLS", "#CHALLENGE_WEAPON_SPECTRE_KILLS_DESC", ICON_SPECTRE, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "spectres", weaponRef )
+		SetChallengeTiers( [ 5, 15, 20, 30, 50 ] )
+		SetChallengeTierBurnCards( 2, ["bc_hunt_spectre"] )
+		SetChallengeTierBurnCards( 3, ["bc_hunt_spectre"] )
+		SetChallengeTierBurnCards( 4, ["bc_hunt_spectre"] )
+
+	AddChallenge( "ch_titan_shotgun_grunt_kills", "#CHALLENGE_WEAPON_GRUNT_KILLS", "#CHALLENGE_WEAPON_GRUNT_KILLS_DESC", ICON_GRUNT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
+		SetChallengeTiers( [ 5, 15, 25, 50, 100 ] )
+
+	AddChallenge( "ch_titan_shotgun_hours_used", "#CHALLENGE_WEAPON_HOURS_USED", "#CHALLENGE_WEAPON_HOURS_USED_DESC", ICON_TIME_PLAYED, weaponRef, true )
+		SetChallengeStat( "weapon_stats", "hoursUsed", weaponRef )
+		SetChallengeTiers( goals_hours_used )
+
+	AddChallenge( "ch_titan_shotgun_crits", "#CHALLENGE_WEAPON_CRITS", "#CHALLENGE_WEAPON_CRITS_DESC", ICON_CRITICAL_HIT, weaponRef )
+		SetChallengeStat( "weapon_stats", "critHits", weaponRef )
+		SetChallengeTiers( [ 5, 10, 20, 30, 50 ] )
 
 	/*##################################################################################
 					######## #### ########    ###    ##    ##
@@ -2531,6 +2577,34 @@ function CreateChallenges()
 	AddChallenge( "ch_daily_triple_threat_grunt_kills", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS_DESC", ICON_GRUNT, weaponRef )
 		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
 		SetChallengeTiers( [ 15 ] )
+
+	//------------------
+	// 	 Titan Shotgun
+	//------------------
+
+	local weaponRef = "mp_titanweapon_shotgun"
+
+	AddChallenge( "ch_daily_titan_shotgun_kills", "#DAILYCHALLENGE_WEAPON_KILLS", "#DAILYCHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
+		SetChallengeTiers( [ 30 ] )
+
+	AddChallenge( "ch_daily_titan_shotgun_pilot_kills", "#DAILYCHALLENGE_WEAPON_PILOT_KILLS", "#DAILYCHALLENGE_WEAPON_PILOT_KILLS_DESC", ICON_PILOT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "pilots", weaponRef )
+		SetChallengeTiers( [ 10 ] )
+		SetChallengeTierBurnCards( 0, ["bc_hunt_pilot"] )
+
+	AddChallenge( "ch_daily_titan_shotgun_titan_kills", "#DAILYCHALLENGE_WEAPON_TITAN_KILLS", "#DAILYCHALLENGE_WEAPON_TITAN_KILLS_DESC", ICON_TITAN, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "titansTotal", weaponRef )
+		SetChallengeTiers( [ 10 ] )
+		SetChallengeTierBurnCards( 0, ["bc_hunt_titan"] )
+
+	AddChallenge( "ch_daily_titan_shotgun_grunt_kills", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS_DESC", ICON_GRUNT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
+		SetChallengeTiers( [ 20 ] )
+
+	AddChallenge( "ch_daily_titan_shotgun_crits", "#DAILYCHALLENGE_WEAPON_CRITS", "#DAILYCHALLENGE_WEAPON_CRITS_DESC", ICON_CRITICAL_HIT, weaponRef )
+		SetChallengeStat( "weapon_stats", "critHits", weaponRef )
+		SetChallengeTiers( [ 10 ] )
 
 	//------------------
 	// Salvo Rockets

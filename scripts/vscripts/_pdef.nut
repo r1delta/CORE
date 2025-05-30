@@ -146,6 +146,8 @@ function InitPersistence()
 	    mp_ability_cloak = 36
 	    mp_ability_heal = 37
 	    mp_ability_sonar = 38
+
+	    mp_titanweapon_shotgun = 39
     }
 
     AddPersistenceEnum("loadoutItems", loadoutItems)
@@ -246,6 +248,8 @@ function InitPersistence()
 	    overcharge = 24
 	    quick_shot = 25
 	    rapid_fire_missiles = 26
+
+	    burn_mod_titan_shotgun = 27
     }
 
     AddPersistenceEnum("titanMod", titanMod)
@@ -569,7 +573,9 @@ function InitPersistence()
 	    ["mp_weapon_semipistol_extended_ammo"] = 99,
 	    ["mp_weapon_semipistol_silencer"] = 100,
 
-	    ["mp_weapon_wingman_silencer"] = 101
+	    ["mp_weapon_wingman_silencer"] = 101,
+
+	    ["mp_titanweapon_shotgun_extended_ammo"] = 102
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)

@@ -328,7 +328,7 @@ enum eModSourceId
 	burn_mod_rspn101
 	burn_mod_satchel
 	burn_mod_semipistol
-    burn_mod_smart_pistol
+	burn_mod_smart_pistol
 	burn_mod_smr
 	burn_mod_sniper
 	burn_mod_rocket_launcher
@@ -377,6 +377,7 @@ enum eModSourceId
 	starburst
 	titanhammer
 	burn_mod_wingman
+	burn_mod_titan_shotgun
 }
 
 //Attachments intentionally left off. This prevents them from displaying in kill cards.
@@ -439,3 +440,4 @@ modNameStrings[ eModSourceId.stabilizer ]					<- "#MOD_STABILIZER_NAME"
 modNameStrings[ eModSourceId.starburst ] 					<- "#MOD_STARBURST_NAME"
 modNameStrings[ eModSourceId.titanhammer ] 					<- "#MOD_TITANHAMMER_NAME"
 modNameStrings[ eModSourceId.burn_mod_wingman ] 	<- "#BC_WINGMAN_M2"
+modNameStrings[ eModSourceId.burn_mod_titan_shotgun ] 			<- "#BC_TITAN_SHOTGUN_M2"

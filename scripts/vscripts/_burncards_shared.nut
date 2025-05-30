@@ -355,6 +355,9 @@ function CreateAllBurnCards()
 	CreateBurnCardSrvFlag( "bc_titan_melee_m2", 				BURNCARD_RARE, 		BCGROUP_SPEED, 		CT_TITAN_WPN 									, "burncards/amped_melee", 				BC_NEXTTITANDROP, "#BC_TITAN_MELEE_M2" 	   				, "#BC_TITAN_MELEE_M2_DESC" 			, "#BC_TITAN_MELEE_M2_FLAVOR" 	   			, "#BC_FLAVOR_BISH",			SFLAG_BC_EXPLOSIVE_PUNCH,			null,							null,			null						)
 	CreateBurnCardSrvFlag( "bc_extra_dash", 					BURNCARD_COMMON, 	BCGROUP_SPEED, 		CT_TITAN 										, "burncards/amped_dash", 				BC_NEXTTITANDROP, "#BC_EXTRA_DASH" 	   					, "#BC_EXTRA_DASH_DESC" 				, "#BC_EXTRA_DASH_FLAVOR" 	   				, "#BC_FLAVOR_BISH",			SFLAG_BC_DASH_CAPACITY,				null,							null,			null						)
 
+	// TODO: enable when we can think of something good for it
+	//CreateBurnCardWeapon( "bc_titan_shotgun_m2",					BURNCARD_RARE, 		BCGROUP_WEAPON, 	CT_TITAN_WPN	| CT_PRIMARY					, "burncards/amped_titan_railgun", 		BC_NEXTTITANDROP, "#BC_TITAN_SHOTGUN_M2"					, "#BC_TITAN_SHOTGUN_M2_DESC"			, "#BC_TITAN_SHOTGUN_M2_FLAVOR"				, "#BC_FLAVOR_IMC_RESEARCH",	"mp_titanweapon_shotgun",				"burn_mod_titan_shotgun", 				"TITAN_PRIMARY"		)
+
 	if ( IsServer() )
 	{
 		//GenerateBurnCardPacks()

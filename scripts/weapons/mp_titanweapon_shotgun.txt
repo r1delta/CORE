@@ -32,8 +32,8 @@ WeaponData
     "impact_effect_table"                             "titan_bullet"
     //"vortex_absorb_effect"                            "wpn_vortex_projectile_shotgun_FP"
     //"vortex_absorb_effect_third_person"                "wpn_vortex_projectile_shotgun"
-    "vortex_absorb_effect"                          "wpn_vortex_projectile_frag_FP"
-    "vortex_absorb_effect_third_person"             "wpn_vortex_projectile_frag"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_40mm_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_40mm"
     
     "vortex_drain"                                    ".015"
     "adjust_to_gun_barrel"                            "1"
@@ -237,29 +237,9 @@ WeaponData
     "viewdrift_ads_air_scale_yaw"                     "0.075"
     "viewdrift_ads_speed_pitch"                       "0.6"
     "viewdrift_ads_speed_yaw"                         "1.22"
-    "fade_while_sprinting"                            "1"
-    "fade_while_reloading"                            "1"
-    "type"                                            "static"
-    "material"                                        "hud/crosshairs/titan_shotgun"
-    "size_x"                                          "154"
-    "size_y"                                          "154"
-    "scale_ads"                                       "1.5"
-    "type"                                            "static"
-    "material"                                        "hud/crosshairs/titan_shotgun_anim/titan_shotgun_anim"
-    "size_x"                                          "256"
-    "size_y"                                          "256"
-    "draw_while_zooming"                              "0"
-    "draw_while_ads"                                  "0"
-    "draw_while_reloading"                            "0"
-    "type"                                            "static"
-    "material"                                        "hud/crosshairs/titan_shotgun_ads/titan_shotgun_ads"
-    "size_x"                                          "256"
-    "size_y"                                          "256"
-    "draw_while_hip"                                  "0"
-    "draw_while_reloading"                            "0"
 
     // Crosshair
-    "red_crosshair_range"                             "750" //"1500"
+    "red_crosshair_range"                             "1500"
 
     // vs titans
     "damage_near_value_titanarmor"                    "300"
@@ -316,6 +296,22 @@ WeaponData
             "explosionradius"                               "32"
             "impulse_force"                                 "1000"
         }
+
+		extended_ammo
+		{
+			"crosshair_index"								"1"
+
+			"ammo_stockpile_max"							"1500"
+			"ammo_clip_size"   								"12"
+			"ammo_default_total"							"1500"
+		}
+		burn_mod_titan_shotgun
+		{
+			// TODO
+
+			"crosshair_index"								"2"
+			"is_burn_mod"									"1"
+		}
     }
 
     CrosshairData
@@ -325,7 +321,8 @@ WeaponData
             DefaultElementBehavior
             {
                 "fade_while_sprinting"      "1"
-                "draw_while_reloading"      "0"
+				"fade_while_reloading"		"1"
+                //"draw_while_reloading"      "0"
             }
             Element0
             {
@@ -338,33 +335,66 @@ WeaponData
             Element1
             {
                 "type"                      "static"
-                "material"                  "hud/crosshairs/titan_shotgun_ads/titan_shotgun_ads"
+                "material"                  "hud/crosshairs/titan_shotgun_ads"
                 "size_x"                    "176"
                 "size_y"                    "176"
             }
         }
-    }
+		Extended_Ammo
+		{
+			"inherit_data_from"			"BaseWeapon"
 
-    TextureData
-    {
-        "crosshair"
-        {
-            "file"                                    "vgui/hud/crosshairs/titan_shotgun"
-            "x"                                       "0"
-            "y"                                       "0"
-            "width"                                   "154"
-            "height"                                  "154"
-        }
-        "crosshair_zoom"
-        {
-            "file"                                    "vgui/hud/crosshairs/titan_shotgun"
-            "x"                                       "0"
-            "y"                                       "0"
-            "width"                                   "154"
-            "height"                                  "154"
-        }
-        "autoaim"
-        {
-        }
+            Element1
+            {
+                "material"                  "hud/crosshairs/titan_shotgun_ads_extended"
+            }
+		}
+		Burn_Mod //Match BaseWeapon + default color change until override setting.
+		{
+			"inherit_data_from"			"BaseWeapon"
+
+			DefaultElementBehavior
+			{
+				"default_color"			"243 134 40 255"
+			}
+		}
     }
 }
+
+/*
+        BaseWeapon
+        {
+            DefaultElementBehavior
+            {
+                "fade_while_sprinting"      "1"
+                "draw_while_reloading"      "1"
+            }
+            Element0
+            {
+				"type"                                            "static"
+				"material"                                        "hud/crosshairs/titan_shotgun"
+				"size_x"                                          "154"
+				"size_y"                                          "154"
+				"scale_ads"                                       "1.5"
+			}
+	        Element1
+            {		
+				"type"                                            "static"
+				"material"                                        "hud/crosshairs/titan_shotgun_anim/titan_shotgun_anim"
+				"size_x"                                          "256"
+				"size_y"                                          "256"
+				"draw_while_zooming"                              "0"
+				"draw_while_ads"                                  "0"
+				"draw_while_reloading"                            "0"
+			}
+	        Element2
+            {
+				"type"                                            "static"
+				"material"                                        "hud/crosshairs/titan_shotgun_ads/titan_shotgun_ads"
+				"size_x"                                          "256"
+				"size_y"                                          "256"
+				"draw_while_hip"                                  "0"
+				"draw_while_reloading"                            "0"
+			}
+		}
+*/
