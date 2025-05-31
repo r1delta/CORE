@@ -1,0 +1,9 @@
+"Patch"
+{
+	"Include"			"materials/vgui/hud/crosshairs/titan_shotgun_ads.vmt"
+
+	"Insert"
+	{
+		"$baseTexture"	"vgui/hud/crosshairs/titan_shotgun_ads_extended"
+	}
+}

@@ -1,0 +1,9 @@
+"Basic"
+{
+	"$basetexture" "vgui/hud/crosshairs/titan_shotgun_expanded"
+	"$additive" "1"
+	"$translucent" "1"
+	"$vertexcolor" "1"
+	"$vertexalpha" "1"
+	"$ignorez"     "1"
+}
