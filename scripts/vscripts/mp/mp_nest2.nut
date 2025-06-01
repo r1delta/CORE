@@ -266,7 +266,7 @@ function EntitiesDidLoad()
 
 	FlagWait( "ReadyToStartMatch" ) // maaaaybe it just works here as well?
 
-	GM_SetObserverFunc( ObserverFunc )
+	//GM_SetObserverFunc( ObserverFunc )
 	BBPanelCamSetup()
 }
 
