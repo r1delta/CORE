@@ -290,45 +290,48 @@ function ObserverFunc( player )
 {
 	printt( "player: ", player.GetName() )
 
-	if( IsBigBrotherPanelHacked() && IsMyTeamElimination( player ) )
-	{
-		local HackedPanelIndex = GetHackedBBPanelIndex()
+	// Reenable this when big brother gets added back
 
-		Assert( HackedPanelIndex != 0 )
+//	if( IsBigBrotherPanelHacked() && IsMyTeamElimination( player ) )
+//	{
+//		local HackedPanelIndex = GetHackedBBPanelIndex()
+//
+//		Assert( HackedPanelIndex != 0 )
+//
+//		local deathCam
+//		if( GetHackedBBPanelIndex() == 1 )
+//		{
+//			deathCam = level.DeathCamEnt1
+//		}
+//		else
+//		{
+//			deathCam = level.DeathCamEnt2
+//		}
+//
+//		// player 및 같은 팀 플레이어의 옵저버 모드를 바꿈.
+//		local playerArray = GetPlayerArrayOfTeam( player.GetTeam() )
+//		foreach ( guy in playerArray )
+//		{
+//			guy.SetObserverModeStaticPosition( deathCam.GetOrigin() )
+//			guy.SetObserverModeStaticAngles( deathCam.GetAngles() )
+//
+//			guy.StartObserverMode( OBS_MODE_STATIC_LOCKED )
+//			guy.SetObserverTarget( null )
+//
+//			// SpectatorSelectButton Hide.
+//			Remote.CallFunction_NonReplay( guy, "ServerCallback_HideSpectatorSelectButtons" )
+//		}
+//
+//		/*
+//		player.SetObserverModeStaticPosition( deathCam.GetOrigin() )
+//		player.SetObserverModeStaticAngles( deathCam.GetAngles() )
+//
+//		player.StartObserverMode( OBS_MODE_STATIC_LOCKED )
+//		player.SetObserverTarget( null )
+//		*/
+//	}
+//	else
 
-		local deathCam
-		if( GetHackedBBPanelIndex() == 1 )
-		{
-			deathCam = level.DeathCamEnt1
-		}
-		else
-		{
-			deathCam = level.DeathCamEnt2
-		}
-
-		// player 및 같은 팀 플레이어의 옵저버 모드를 바꿈.
-		local playerArray = GetPlayerArrayOfTeam( player.GetTeam() )
-		foreach ( guy in playerArray )
-		{
-			guy.SetObserverModeStaticPosition( deathCam.GetOrigin() )
-			guy.SetObserverModeStaticAngles( deathCam.GetAngles() )
-
-			guy.StartObserverMode( OBS_MODE_STATIC_LOCKED )
-			guy.SetObserverTarget( null )
-
-			// SpectatorSelectButton Hide.
-			Remote.CallFunction_NonReplay( guy, "ServerCallback_HideSpectatorSelectButtons" )
-		}
-
-		/*
-		player.SetObserverModeStaticPosition( deathCam.GetOrigin() )
-		player.SetObserverModeStaticAngles( deathCam.GetAngles() )
-
-		player.StartObserverMode( OBS_MODE_STATIC_LOCKED )
-		player.SetObserverTarget( null )
-		*/
-	}
-	else
 	{
 		player.StartObserverMode( OBS_MODE_CHASE )
 		player.SetObserverTarget( null )
