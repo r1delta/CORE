@@ -85,7 +85,10 @@ function Mia_SetupHardpointMode() {
 
 	// Set assault points for hardpoints
 	// P7 [TODO]: Angles do matter here?
-	//// Test assault points, purely based on nothing as well
+	//// Test assault points, purely based on nothing as well for testing how the thing behaves
+	//// You'd preferably choose assault points that can be reached by grunts
+	//// ...unless you want a script error splattered on your face.
+	//// DO CHANGE THESE FOR PROPER ONES WHEN THE MODE GETS PLAYABLE
 	local MIA_ASSAULTPOINTS_A = [
 		{ origin = Vector( 3196, 2825, -62 ), angles = Vector( 0, 0, 0 ) },
 		{ origin = Vector( 2737, 2841, -307 ), angles = Vector( 0, 0, 0 ) }
@@ -116,56 +119,19 @@ function Mia_SetupHardpointMode() {
 		// Militia cabin, right door
 		{ origin = Vector( -1336, 3226, 64 ), angles = Vector( 0, 0, 0 ) },
 	]
-	foreach(idx, location in MIA_ASSAULTPOINTS_A) {
-		local assaultPoint = CreateAssaultPoint()
-		assaultPoint.SetName("hardpoint_A_ass_" + idx)
-		assaultPoint.SetOrigin(location.origin)
-		assaultPoint.SetAngles(location.angles)
-	}
-	foreach(idx, location in MIA_ASSAULTPOINTS_B) {
-		local assaultPoint = CreateAssaultPoint()
-		assaultPoint.SetName("hardpoint_B_ass_" + idx)
-		assaultPoint.SetOrigin(location.origin)
-		assaultPoint.SetAngles(location.angles)
-	}
-	foreach(idx, location in MIA_ASSAULTPOINTS_C) {
-		local assaultPoint = CreateAssaultPoint()
-		assaultPoint.SetName("hardpoint_C_ass_" + idx)
-		assaultPoint.SetOrigin(location.origin)
-		assaultPoint.SetAngles(location.angles)
-	}
-	foreach(idx, location in MIA_ASSAULTPOINTS_NEAR_A) {
-		local assaultPoint = CreateAssaultPoint()
-		assaultPoint.SetName("hardpoint_A_near_ass_" + idx)
-		assaultPoint.SetOrigin(location.origin)
-		assaultPoint.SetAngles(location.angles)
-	}
-	foreach(idx, location in MIA_ASSAULTPOINTS_NEAR_B) {
-		local assaultPoint = CreateAssaultPoint()
-		assaultPoint.SetName("hardpoint_B_near_ass_" + idx)
-		assaultPoint.SetOrigin(location.origin)
-		assaultPoint.SetAngles(location.angles)
-	}
-	foreach(idx, location in MIA_ASSAULTPOINTS_NEAR_C) {
-		local assaultPoint = CreateAssaultPoint()
-		assaultPoint.SetName("hardpoint_C_near_ass_" + idx)
-		assaultPoint.SetOrigin(location.origin)
-		assaultPoint.SetAngles(location.angles)
-	}
+	CreateAssaultPointFromArray(MIA_ASSAULTPOINTS_A, "hardpoint_A", false)
+	CreateAssaultPointFromArray(MIA_ASSAULTPOINTS_B, "hardpoint_B", false)
+	CreateAssaultPointFromArray(MIA_ASSAULTPOINTS_C, "hardpoint_C", false)
+	CreateAssaultPointFromArray(MIA_ASSAULTPOINTS_NEAR_A, "hardpoint_A", true)
+	CreateAssaultPointFromArray(MIA_ASSAULTPOINTS_NEAR_B, "hardpoint_B", true)
+	CreateAssaultPointFromArray(MIA_ASSAULTPOINTS_NEAR_C, "hardpoint_C", true)
 }
 
 function Mia_CreateSpawnPoints()
 {
-	local ENT_STARTSPAWNPILOT_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_human_start").len()
-	local ENT_STARTSPAWNTITAN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_titan_start").len()
-	local ENT_SPAWNPILOT_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_human").len()
-	local ENT_SPAWNTITAN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_titan").len()
-
-	local ENT_STARTSPAWNDROPPOD_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_droppod_start").len()
-	local ENT_SPAWNDROPPOD_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_droppod").len()
-
-	local ENT_SPAWNDROSHIP_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_dropship").len()
-	local ENT_SPAWNMARVIN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_marvin").len()
+	// P7 [TODO?] Check if we need these in map later
+	//local ENT_SPAWNDROSHIP_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_dropship").len()
+	//local ENT_SPAWNMARVIN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_marvin").len()
 
 	// Generic spawns
 	// Basically each team on their respective cabin side on the ship
@@ -348,68 +314,34 @@ function Mia_CreateSpawnPoints()
 			imcFlag.SetOrigin( Vector( 3173, 3583, 64 ) )
 			militiaFlag.SetOrigin( Vector( -1158, 3583, 64 ) )
 			// CTF spawn setup
-			foreach(location in MIA_CTF_PILOT_SPAWNSTART_MILITIA) {
-				CreatePilotStartSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_human_start_" + (ENT_STARTSPAWNPILOT_COUNT+1))
-				ENT_STARTSPAWNPILOT_COUNT++
-			}
-			foreach(location in MIA_CTF_PILOT_SPAWNSTART_IMC) {
-				CreatePilotStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_human_start_" + (ENT_STARTSPAWNPILOT_COUNT+1))
-				ENT_STARTSPAWNPILOT_COUNT++
-			}
-			// P7 [TODO?] Maybe merge these loops later since they're all to unassigned teams anyway, check previous comment
-			foreach(location in MIA_CTF_PILOT_SPAWN_MILITIA) {
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
-				ENT_SPAWNPILOT_COUNT++
-			}
-			foreach(location in MIA_CTF_PILOT_SPAWN_IMC) {
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
-				ENT_SPAWNPILOT_COUNT++
-			}
+			CreatePilotStartSpawnPointFromArray(MIA_CTF_PILOT_SPAWNSTART_MILITIA, TEAM_MILITIA)
+			CreatePilotStartSpawnPointFromArray(MIA_CTF_PILOT_SPAWNSTART_IMC, TEAM_IMC)
+
+			// P7 [TODO?] Maybe merge these pilot spawn arrays later since they're all to unassigned teams anyway, check previous comment
+			CreatePilotSpawnPointFromArray(MIA_CTF_PILOT_SPAWN_MILITIA, TEAM_UNASSIGNED)
+			CreatePilotSpawnPointFromArray(MIA_CTF_PILOT_SPAWN_IMC, TEAM_UNASSIGNED)
 			break
 		default:
 			// Generic pilot spawnpoints for the rest of gamemodes that might require them
 			// At the moment, start spawns will also be spawns when you die, would this go wrong? absolutely (not (probably))
-			foreach(location in MIA_GENERIC_PILOT_SPAWNSTART_MILITIA) {
-				CreatePilotStartSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_human_start_" + (ENT_STARTSPAWNPILOT_COUNT+1))
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
-				ENT_STARTSPAWNPILOT_COUNT++
-				ENT_SPAWNPILOT_COUNT++
-			}
-			foreach(location in MIA_GENERIC_PILOT_SPAWNSTART_IMC) {
-				CreatePilotStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_human_start_" + (ENT_STARTSPAWNPILOT_COUNT+1))
-				CreatePilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_human_" + (ENT_SPAWNPILOT_COUNT+1))
-				ENT_STARTSPAWNPILOT_COUNT++
-				ENT_SPAWNPILOT_COUNT++
-			}
+			CreatePilotStartSpawnPointFromArray(MIA_GENERIC_PILOT_SPAWNSTART_MILITIA, TEAM_MILITIA)
+			CreatePilotSpawnPointFromArray(MIA_GENERIC_PILOT_SPAWNSTART_MILITIA, TEAM_UNASSIGNED)
+			CreatePilotStartSpawnPointFromArray(MIA_GENERIC_PILOT_SPAWNSTART_IMC, TEAM_MILITIA)
+			CreatePilotSpawnPointFromArray(MIA_GENERIC_PILOT_SPAWNSTART_IMC, TEAM_UNASSIGNED)
 			break
 	}
 	// Titan spawn setup (for LTS/WLTS) also provided by xFrann
 	// At the moment, these will be the spawns when starting and respawning for every mode that might require it
-	foreach(location in MIA_TITAN_SPAWNSTART_MILITIA) {
-		CreateTitanPilotStartSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_titan_start_" + (ENT_STARTSPAWNTITAN_COUNT+1))
-		CreateTitanPilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_titan_" + ENT_SPAWNTITAN_COUNT+1)
-		ENT_STARTSPAWNTITAN_COUNT++
-		ENT_SPAWNTITAN_COUNT++
-	}
-	foreach(location in MIA_TITAN_SPAWNSTART_IMC) {
-		CreateTitanPilotStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_titan_start_" + (ENT_STARTSPAWNTITAN_COUNT+1))
-		CreateTitanPilotSpawnPoint(location.origin, location.angles, TEAM_UNASSIGNED, "info_spawnpoint_titan_" + (ENT_SPAWNTITAN_COUNT+1))
-		ENT_STARTSPAWNTITAN_COUNT++
-		ENT_SPAWNTITAN_COUNT++
-	}
+	CreateTitanPilotStartSpawnPointFromArray(MIA_TITAN_SPAWNSTART_MILITIA, TEAM_MILITIA)
+	CreateTitanPilotSpawnPointFromArray(MIA_TITAN_SPAWNSTART_MILITIA, TEAM_UNASSIGNED)
+	CreateTitanPilotStartSpawnPointFromArray(MIA_TITAN_SPAWNSTART_IMC, TEAM_IMC)
+	CreateTitanPilotSpawnPointFromArray(MIA_TITAN_SPAWNSTART_IMC, TEAM_UNASSIGNED)
 
-	foreach(location in MIA_DROPPOD_SPAWN_MILITIA) {
-		CreateDropPodStartSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_droppod_start_" + (ENT_STARTSPAWNDROPPOD_COUNT+1))
-		CreateDropPodSpawnPoint(location.origin, location.angles, TEAM_MILITIA, "info_spawnpoint_droppod_" + (ENT_SPAWNDROPPOD_COUNT+1))
-		ENT_STARTSPAWNDROPPOD_COUNT++
-		ENT_SPAWNDROPPOD_COUNT++
-	}
-	foreach(location in MIA_DROPPOD_SPAWN_IMC) {
-		CreateDropPodStartSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_droppod_start_" + (ENT_STARTSPAWNDROPPOD_COUNT+1))
-		CreateDropPodSpawnPoint(location.origin, location.angles, TEAM_IMC, "info_spawnpoint_droppod_" + (ENT_SPAWNDROPPOD_COUNT+1))
-		ENT_STARTSPAWNDROPPOD_COUNT++
-		ENT_SPAWNDROPPOD_COUNT++
-	}
+	// droppod setup
+	CreateDropPodStartSpawnPointFromArray(MIA_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA)
+	CreateDropPodSpawnPointFromArray(MIA_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA)
+	CreateDropPodStartSpawnPointFromArray(MIA_DROPPOD_SPAWN_IMC, TEAM_IMC)
+	CreateDropPodSpawnPointFromArray(MIA_DROPPOD_SPAWN_IMC, TEAM_IMC)
 
 /*
 	foreach(location in MIA_DROPSHIP_SPAWN) {
