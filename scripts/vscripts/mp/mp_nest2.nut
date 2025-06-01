@@ -266,8 +266,7 @@ function EntitiesDidLoad()
 
 	FlagWait( "ReadyToStartMatch" ) // maaaaybe it just works here as well?
 
-	// Reenable this when big brother gets added back
-	//GM_SetObserverFunc( ObserverFunc )
+	GM_SetObserverFunc( ObserverFunc )
 	BBPanelCamSetup()
 }
 
@@ -291,6 +290,8 @@ function ObserverFunc( player )
 {
 	printt( "player: ", player.GetName() )
 
+	// Reenable this when big brother gets added back
+/*
 	if( IsBigBrotherPanelHacked() && IsMyTeamElimination( player ) )
 	{
 		local HackedPanelIndex = GetHackedBBPanelIndex()
@@ -330,6 +331,7 @@ function ObserverFunc( player )
 		*/
 	}
 	else
+*/
 	{
 		player.StartObserverMode( OBS_MODE_CHASE )
 		player.SetObserverTarget( null )
