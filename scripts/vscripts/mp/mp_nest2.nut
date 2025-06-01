@@ -266,6 +266,7 @@ function EntitiesDidLoad()
 
 	FlagWait( "ReadyToStartMatch" ) // maaaaybe it just works here as well?
 
+	// Reenable this when big brother gets added back
 	//GM_SetObserverFunc( ObserverFunc )
 	BBPanelCamSetup()
 }
