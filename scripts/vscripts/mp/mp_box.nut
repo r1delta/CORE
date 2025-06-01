@@ -11,6 +11,8 @@ function EntitiesDidLoad() {
             SetupHardpointMode()
             break
     }
+
+    FlagWait( "ReadyToStartMatch" )
 }
 
 function SetupHardpointMode() {
@@ -69,7 +71,6 @@ function SetupHardpointMode() {
     CreateAssaultPointFromArray(BOX_ASSAULTPOINTS_NEAR_B, "hardpoint_B", true)
     CreateAssaultPointFromArray(BOX_ASSAULTPOINTS_NEAR_C, "hardpoint_C", true)
 
-    FlagWait( "ReadyToStartMatch" )
 }
 
 main()
