@@ -1909,6 +1909,54 @@ function CreateAssaultPointFromArray( locationArray, name = "assaultpoint", isNe
 	}
 }
 
+function CreatePilotStartSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_human_start" ) {
+	local ENT_STARTSPAWNPILOT_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_human_start").len()
+	foreach( idx, location in locationArray) {
+		CreatePilotStartSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_STARTSPAWNPILOT_COUNT+1))
+		ENT_STARTSPAWNPILOT_COUNT++
+	}
+}
+
+function CreatePilotSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_human" ) {
+	local ENT_SPAWNPILOT_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_human").len()
+	foreach( idx, location in locationArray) {
+		CreatePilotSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_SPAWNPILOT_COUNT+1))
+		ENT_SPAWNPILOT_COUNT++
+	}
+}
+
+function CreateTitanPilotStartSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_titan_start" ) {
+	local ENT_STARTSPAWNTITAN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_titan_start").len()
+	foreach( idx, location in locationArray) {
+		CreateTitanPilotStartSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_STARTSPAWNTITAN_COUNT+1))
+		ENT_STARTSPAWNTITAN_COUNT++
+	}
+}
+
+function CreateTitanPilotSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_titan" ) {
+	local ENT_SPAWNTITAN_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_titan").len()
+	foreach( idx, location in locationArray) {
+		CreateTitanPilotSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_SPAWNTITAN_COUNT+1))
+		ENT_SPAWNTITAN_COUNT++
+	}
+}
+
+function CreateDropPodStartSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_droppod_start" ) {
+	local ENT_STARTSPAWNDROPPOD_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_droppod_start").len()
+	foreach( idx, location in locationArray) {
+		CreateDropPodStartSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_STARTSPAWNDROPPOD_COUNT+1))
+		ENT_STARTSPAWNDROPPOD_COUNT++
+	}
+}
+
+function CreateDropPodSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_droppod" ) {
+	local ENT_SPAWNDROPPOD_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_droppod").len()
+	foreach( idx, location in locationArray) {
+		CreateDropPodSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_SPAWNDROPPOD_COUNT+1))
+		ENT_SPAWNDROPPOD_COUNT++
+	}
+}
+
 // Debug thing
 function KillAllEntitiesOfType( name )
 {
