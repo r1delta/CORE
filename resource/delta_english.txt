@@ -3,7 +3,6 @@
 	"Language" "english" 
 	"Tokens"
 	{
-        "FIND_SERVERS" "Find Fish"
 		"R1DELTA"				"R1DELTA"	
 		"SERVER_BROWSER" 		"SERVER BROWSER"	
 		"FIND_SERVERS"			"FIND SERVERS"
