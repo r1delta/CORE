@@ -1395,7 +1395,15 @@ function InitPersistence()
 	    ch_coop_bubble_shield_grunts = 207,
 	    ch_coop_cloak_drones = 208,
 	    ch_coop_dropships = 209,
-	    ch_coop_snipers = 210
+	    ch_coop_snipers = 210,
+
+		ch_titan_shotgun_kills = 211,
+		ch_titan_shotgun_pilot_kills = 212,
+		ch_titan_shotgun_titan_kills = 213,
+		ch_titan_shotgun_spectre_kills = 214,
+		ch_titan_shotgun_grunt_kills = 215,
+		ch_titan_shotgun_hours_used = 216,
+		ch_titan_shotgun_crits = 217,
     }
 
     AddPersistenceEnum("challenge", challenge)
