@@ -383,15 +383,15 @@
 	}
 
 	// Lobby specific convar settings and restart timer
-	if ( IsLobby() )
-	{
-		ServerCommand( "sv_kickPlayersTooFarInFuture 0" )
-	}
-	else
-	{
-		ServerCommand( "sv_kickPlayersTooFarInFuture 1" )
-		thread LobbyRestartThink()
-	}
+	// if ( IsLobby() )
+	// {
+	// 	ServerCommand( "sv_kickPlayersTooFarInFuture 0" )
+	// }
+	// else
+	// {
+	// 	ServerCommand( "sv_kickPlayersTooFarInFuture 1" )
+	// 	thread LobbyRestartThink()
+	// }
 
 	level.ui.isDedicatedServer = IsDedicated()
 
