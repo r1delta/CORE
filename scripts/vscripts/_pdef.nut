@@ -248,7 +248,6 @@ function InitPersistence()
 	    overcharge = 24
 	    quick_shot = 25
 	    rapid_fire_missiles = 26
-
 	    burn_mod_titan_shotgun = 27
     }
 
@@ -1632,6 +1631,12 @@ function InitPersistence()
 	    ch_daily_win_wlts = 182,
 	    ch_daily_win_mfd = 183,
 	    ch_daily_win_coop = 184,
+
+		ch_daily_titan_shotgun_kills = 185,
+		ch_daily_titan_shotgun_pilot_kills = 186,
+		ch_daily_titan_shotgun_titan_kills = 187
+		ch_daily_titan_shotgun_grunt_kills = 188,
+		ch_daily_titan_shotgun_crits = 189,
     }
 
     AddPersistenceEnum("dailychallenge", dailychallenge)
