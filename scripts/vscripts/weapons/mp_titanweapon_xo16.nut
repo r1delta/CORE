@@ -1,8 +1,7 @@
 
-AMMO_BODYGROUP_COUNT <- 6
-
 function OnWeaponActivate( activateParams )
 {
+	AMMO_BODYGROUP_COUNT <- min( self.GetWeaponModSetting( "ammo_clip_size" ), 6 )
 	UpdateViewmodelAmmo()
 
 	if ( IsServer() )
@@ -26,6 +25,11 @@ function OnWeaponDeactivate( deactivateParams )
 		self.s.deactivationTime = Time()
 
 	self.ClearLoopingWeaponSound()
+}
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
 }
 
 function OnWeaponPrimaryAttack( attackParams )
