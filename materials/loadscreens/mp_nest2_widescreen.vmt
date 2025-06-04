@@ -1,0 +1,14 @@
+"Basic"
+{
+	"$basetexture" "loadscreens/mp_nest2_widescreen"
+	"$vertexcolor" 1
+	"$vertexalpha" 1
+	"$ignorez" 1
+	"$no_fullbright" "1"
+	"$nolod" "1"
+//	"%noToolTexture" 1
+
+
+	"$SHADERSRGBREAD360" 1
+
+}
