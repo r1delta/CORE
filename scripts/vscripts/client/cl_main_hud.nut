@@ -778,8 +778,8 @@ function UpdateDashBarColor( player )
 
 	local col = dashBar.GetBaseColor()
 	local col_FG = dashBarFG.GetBaseColor()
-	local a = dashBar.GetBaseAlpha()
-	local a_FG = dashBarFG.GetBaseAlpha()
+	local alpha = dashBar.GetBaseAlpha()
+	local alpha_FG = dashBarFG.GetBaseAlpha()
 
 	if ( PlayerHasPassive( player, PAS_FUSION_CORE ) )
 	{
@@ -787,8 +787,8 @@ function UpdateDashBarColor( player )
 		col_FG = [ SHIELD_BOOST_R, SHIELD_BOOST_G, SHIELD_BOOST_B ]
 	}
 
-	dashBar.ColorOverTime( col[0], col[1], col[2], a, 0.5, INTERPOLATOR_DEACCEL )
-	dashBarFG.ColorOverTime( col_FG[0], col_FG[1], col_FG[2], a_FG, 0.5, INTERPOLATOR_DEACCEL )
+	dashBar.ColorOverTime( col[0], col[1], col[2], alpha, 0.5, INTERPOLATOR_DEACCEL )
+	dashBarFG.ColorOverTime( col_FG[0], col_FG[1], col_FG[2], alpha_FG, 0.5, INTERPOLATOR_DEACCEL )
 }
 Globalize( UpdateDashBarColor )
 
