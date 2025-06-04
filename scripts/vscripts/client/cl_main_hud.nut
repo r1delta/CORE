@@ -754,7 +754,10 @@ function UpdateTitanShieldColor( player )
 
 function UpdateDashBarColor( player )
 {
-	if ( !IsValid( player ) || !IsAlive( player ) )
+	if ( !IsValid( player ) )
+		return
+
+	if ( !IsAlive( player ) )
 		return
 
 	local soul = player.GetTitanSoul()
