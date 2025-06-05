@@ -289,7 +289,9 @@ function DoSummonTitanBurnCard( player, cardRef )
 {
     local cardData = GetBurnCardData(cardRef)
 
-    if ( cardData.ctFlags & CT_TITAN && cardData.group != BCGROUP_BONUS )
+    local titans = [ "bc_summon_atlas", "bc_summon_ogre", "bc_summon_stryder" ]
+
+    if( !ArrayContains( titans, cardRef ) )
         return
 
     StartTitanBuildProgress( player, true )
@@ -312,7 +314,9 @@ function DoSummonTitanBurnCard( player, cardRef )
 
     player.WaitSignal("CalledInReplacementTitan")
     StopActiveBurnCard( player )
-    if (oldSetFile) {
+
+    if ( oldSetFile )
+    {
         player.WaitSignal("titan_impact")
         // printt("Setting titan data table back to: " + oldSetFile)
         titanDataTable.playerSetFile = oldSetFile
