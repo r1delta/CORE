@@ -49,7 +49,7 @@ function InitPilotLoadoutsMenu( menu )
 		button.SetParentMenu( menu ) // TMP: should be code
 
 		button.AddEventHandler( UIE_GET_FOCUS, OnPilotLoadoutButton_Focused )
-		button.AddEventHandler( UIE_LOSE_FOCUS, OnPilotLoadoutButton_LostFocus ) 
+		button.AddEventHandler( UIE_LOSE_FOCUS, OnPilotLoadoutButton_LostFocus )
 		button.AddEventHandler( UIE_CLICK, OnPilotLoadoutButton_Activate )
 	}
 
@@ -163,8 +163,8 @@ function UpdatePilotLoadoutElems( menu, loadout, button = null )
 	foreach ( element in menu.classElements[PILOT_PRIMARY_ATTACHMENT_NAME] )
 		SetTextFromSubitemName( element, loadout.primary, loadout.primaryAttachment, GetDefaultAttachmentName( loadout.primary ) )
 
-	foreach ( element in menu.classElements[PILOT_SIDEARM_MOD_NAME] )
-		SetTextFromSubitemName( element, loadout.sidearm, loadout.sidearmMod, "#MOD_SELECT_STOCK" )
+	// foreach ( element in menu.classElements[PILOT_SIDEARM_MOD_NAME] )
+	// 	SetTextFromSubitemName( element, loadout.sidearm, loadout.sidearmMod, "#MOD_SELECT_STOCK" )
 
 	foreach ( element in menu.classElements[PILOT_PRIMARY_MOD_NAME] )
 		SetTextFromSubitemName( element, loadout.primary, loadout.primaryMod, "#MOD_SELECT_STOCK" )
