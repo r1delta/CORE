@@ -29,6 +29,7 @@ WeaponData
 
     // Effects
     "tracer_effect"                                   "weapon_tracers_xo_shotgun"
+    "tracer_effect_first_person"                      "weapon_tracers_xo_shotgun"
     "impact_effect_table"                             "titan_bullet"
     //"vortex_absorb_effect"                            "wpn_vortex_projectile_shotgun_FP"
     //"vortex_absorb_effect_third_person"                "wpn_vortex_projectile_shotgun"
