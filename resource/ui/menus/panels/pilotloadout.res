@@ -409,13 +409,16 @@
 
 	ImgPilotSidearmModIcon
 	{
+		wide					15
+		tall					15
+
 		ControlName				ImagePanel
 		InheritProperties		WeaponModIcon
 		classname				"PilotSidearmModIcon HideWhenLocked"
 		pin_to_sibling			ImgPilotSidearmBG
 		pin_corner_to_sibling	2
 		pin_to_sibling_corner	2
-		xpos 					-106
+		xpos 					-115
 	}
 	LblPilotSidearmModName
 	{
