@@ -1,3 +1,4 @@
+AMMO_BODYGROUP_COUNT <- 0
 
 function OnWeaponActivate( activateParams )
 {
