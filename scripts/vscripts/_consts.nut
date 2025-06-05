@@ -1562,7 +1562,10 @@ enum eMaps
 	mp_switchback,
 	mp_zone_18,
 	mp_backwater,
-	mp_sandtrap
+	mp_sandtrap,
+	mp_box,
+	mp_nest2,
+	mp_mia
 }
 
 enum ePrivateMatchMaps
@@ -1590,7 +1593,10 @@ enum ePrivateMatchMaps
 	mp_switchback,
 	mp_backwater,
 	mp_sandtrap,
-	mp_zone_18
+	mp_zone_18,
+	mp_box,
+	mp_nest2,
+	mp_mia
 }
 
 enum ePrivateMatchModes

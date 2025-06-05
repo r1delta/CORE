@@ -889,7 +889,12 @@ function SetMapInfo( mapName )
 
 	SmartGlass_SetGameStateProperty( SMARTGLASS_PROP_NEXTLEVEL, mapName )
 
-	local mapImage = "../ui/menu/lobby/lobby_image_" + mapName
+	local mapImage
+	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" )
+		mapImage = "../loadscreens/" + mapName + "_widescreen"
+	else
+		mapImage = "../ui/menu/lobby/lobby_image_" + mapName
+
 	nextMapImage.SetImage( mapImage )
 	nextMapImage.Show()
 
