@@ -872,10 +872,10 @@ function ComputeSizeForAttachments( ent, bottomLeftID, topRightID, viewmodelNoFo
 }
 
 
-function GetEntityScreenHeight( entity, padding = 0 )
+function GetEntityScreenHeight( player, entity, padding = 0 )
 {
 	local bounds = player.GetEntScreenSpaceBounds( entity, padding )
-	return (bounds[3] - bounds[1])
+	return ( bounds[3] - bounds[1] )
 }
 
 
