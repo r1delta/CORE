@@ -651,6 +651,7 @@ function UpdateCoreFX( player )
 		return
 
 	UpdateTitanShieldColor( player )
+	UpdateDashBarColor( player )
 
 	local cockpit = player.GetCockpit()
 	if ( !cockpit )
@@ -750,6 +751,49 @@ function UpdateTitanShieldColor( player )
 
 	shieldBar.ColorOverTime( r, g, b, 255, 0.5, INTERPOLATOR_DEACCEL )
 }
+
+function UpdateDashBarColor( player )
+{
+	if ( !IsValid( player ) )
+		return
+
+	if ( !IsAlive( player ) )
+		return
+
+	local soul = player.GetTitanSoul()
+	if ( IsValid( soul ) && GetSoulTitanType( soul ) != "stryder" )
+		return
+
+	// its a titan only passive. Pilot doesn't even have dash bar anyway.
+	if ( !player.IsTitan() )
+		return
+
+	local cockpit = player.GetCockpit()
+	if ( !IsValid( cockpit ) )
+		return
+
+	local mainVGUI = cockpit.GetMainVGUI()
+	if ( !mainVGUI )
+		return
+
+	local dashBar = cockpit.s.dashBar
+	local dashBarFG = cockpit.s.dashBarFG
+
+	local col = dashBar.GetBaseColor()
+	local col_FG = dashBarFG.GetBaseColor()
+	local alpha = dashBar.GetBaseAlpha()
+	local alpha_FG = dashBarFG.GetBaseAlpha()
+
+	if ( PlayerHasPassive( player, PAS_FUSION_CORE ) )
+	{
+		col = [ SHIELD_BOOST_R, SHIELD_BOOST_G, SHIELD_BOOST_B ]
+		col_FG = [ SHIELD_BOOST_R, SHIELD_BOOST_G, SHIELD_BOOST_B ]
+	}
+
+	dashBar.ColorOverTime( col[0], col[1], col[2], alpha, 0.5, INTERPOLATOR_DEACCEL )
+	dashBarFG.ColorOverTime( col_FG[0], col_FG[1], col_FG[2], alpha_FG, 0.5, INTERPOLATOR_DEACCEL )
+}
+Globalize( UpdateDashBarColor )
 
 // TMP.. there are more efficient ways to do this like HudAnimations.txt... but they take too long to setup right now
 function TitanShieldBarPulseThink( cockpit, player )
