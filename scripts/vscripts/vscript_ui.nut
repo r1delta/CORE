@@ -2305,11 +2305,11 @@ function PopulateNewUnlockTable( newUnlockTable, arrayName, enumName )
 	{
 		local ref = PersistenceGetEnumItemNameForIndex( enumName, index )
 
-		if ( ref == "" )
+		if ( ref == "" || ref == null )
 			continue
 
 		Assert( !(ref in newUnlockTable), "ref already defined " + ref )
-		
+
 		local isNew = GetPersistentVar( arrayName + "[" + ref+ "]" )
 
 		newUnlockTable[ ref ] <- {}

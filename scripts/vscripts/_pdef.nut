@@ -207,6 +207,7 @@ function InitPersistence()
 	    stabilized_warhead = 51
 	    tank_buster = 52
 	    burn_mod_wingman = 53
+		explosive_rounds = 54
     }
 
     AddPersistenceEnum("pilotMod", pilotMod)
@@ -575,6 +576,12 @@ function InitPersistence()
 	    ["mp_weapon_wingman_silencer"] = 101,
 
 	    ["mp_titanweapon_shotgun_extended_ammo"] = 102
+
+		mp_weapon_wingman_explosive_rounds = 103,
+		mp_weapon_semipistol_match_trigger = 104,
+		mp_weapon_autopistol_starburst = 105,
+		mp_weapon_autopistol_scatterfire = 106
+		mp_weapon_autopistol_recoil_compensator = 106
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)

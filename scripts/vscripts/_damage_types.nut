@@ -378,6 +378,7 @@ enum eModSourceId
 	titanhammer
 	burn_mod_wingman
 	burn_mod_titan_shotgun
+	explosive_rounds
 }
 
 //Attachments intentionally left off. This prevents them from displaying in kill cards.
@@ -441,3 +442,4 @@ modNameStrings[ eModSourceId.starburst ] 					<- "#MOD_STARBURST_NAME"
 modNameStrings[ eModSourceId.titanhammer ] 					<- "#MOD_TITANHAMMER_NAME"
 modNameStrings[ eModSourceId.burn_mod_wingman ] 	<- "#BC_WINGMAN_M2"
 modNameStrings[ eModSourceId.burn_mod_titan_shotgun ] 			<- "#BC_TITAN_SHOTGUN_M2"
+modNameStrings[ eModSourceId.explosive_rounds ] 			<- "#MOD_EXPLOSIVE_ROUNDS_NAME"
