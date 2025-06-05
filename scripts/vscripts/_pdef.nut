@@ -581,7 +581,7 @@ function InitPersistence()
 		mp_weapon_semipistol_match_trigger = 104,
 		mp_weapon_autopistol_starburst = 105,
 		mp_weapon_autopistol_scatterfire = 106
-		mp_weapon_autopistol_recoil_compensator = 106
+		mp_weapon_autopistol_recoil_compensator = 107
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
