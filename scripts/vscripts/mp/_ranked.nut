@@ -31,9 +31,9 @@ function Ranked_EnableRankChipOnPlaying()
 
         if ( player.GetPersistentVar("ranked.isPlayingRanked") && !player.IsPlayingRanked() )
         {
-            player.SetIsPlayingRanked( true )
-            Remote.CallFunction_NonReplay( player, "ServerCallback_ToggleRankedInGame", true )
-            Remote.CallFunction_Replay( player, "SCB_SetUserPerformance", 0 )
+            // player.SetIsPlayingRanked( true )
+            // Remote.CallFunction_NonReplay( player, "ServerCallback_ToggleRankedInGame", true )
+            // Remote.CallFunction_Replay( player, "SCB_SetUserPerformance", 0 )
         }
     }
 }
@@ -49,10 +49,10 @@ function ClientCommand_SetRankedPlayOnInGame( player, ... )
     if ( player.IsPlayingRanked() )
         return
 
-    player.SetPersistentVar("ranked.isPlayingRanked", 1)
-    player.SetIsPlayingRanked(1)
-    Remote.CallFunction_NonReplay(player, "ServerCallback_ToggleRankedInGame", true)
-    Remote.CallFunction_Replay(player, "SCB_SetUserPerformance",0)
+    // player.SetPersistentVar("ranked.isPlayingRanked", 1)
+    // player.SetIsPlayingRanked(1)
+    // Remote.CallFunction_NonReplay(player, "ServerCallback_ToggleRankedInGame", true)
+    // Remote.CallFunction_Replay(player, "SCB_SetUserPerformance",0)
     printt("Set ranked play on in game: " + player.IsPlayingRanked())
     return true
 }
