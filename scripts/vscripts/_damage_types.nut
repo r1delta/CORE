@@ -379,6 +379,7 @@ enum eModSourceId
 	burn_mod_wingman
 	burn_mod_titan_shotgun
 	explosive_rounds
+	long_fuse
 }
 
 //Attachments intentionally left off. This prevents them from displaying in kill cards.

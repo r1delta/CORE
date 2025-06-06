@@ -1135,6 +1135,10 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 			childRef = ref
 			ref = player.GetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "].sidearm" )
 			break
+		case "secondaryMod":
+			childRef = ref
+			ref = player.GetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "].secondary" )
+			break
 	}
 
 	// invalid attachment

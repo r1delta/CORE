@@ -587,7 +587,7 @@ function InitPersistence()
 		mp_weapon_smr_tank_buster = 107,
 		mp_weapon_smr_stabilized_warhead = 108,
 		mp_weapon_rocket_launcher_guided_missile = 109,
-		mp_weapon_mgl_long_fuse = 110,
+		mp_weapon_mgl_long_fuse = 110
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
