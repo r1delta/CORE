@@ -339,6 +339,30 @@
 		ypos 					12
 	}
 
+	ImgPilotSecondaryModIcon
+	{
+		ControlName				ImagePanel
+		InheritProperties		WeaponModIcon
+		classname				"PilotSecondaryModIcon HideWhenLocked"
+		pin_to_sibling			ImgPilotSecondaryBG
+		pin_corner_to_sibling	2
+		pin_to_sibling_corner	2
+		xpos 					-175
+	}
+	LblPilotSecondaryModName
+	{
+		ControlName				Label
+		InheritProperties		ItemPropertyValue
+		classname				"PilotSecondaryModName HideWhenLocked"
+		pin_to_sibling			ImgPilotSecondaryModIcon
+		pin_corner_to_sibling	7
+		pin_to_sibling_corner	5
+		xpos					4
+		ypos					0
+		labelText				""
+	}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	ImgPilotSidearmTitleBG

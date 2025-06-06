@@ -7,6 +7,7 @@ const PILOT_PRIMARY_NAME = "PilotPrimaryName"
 const PILOT_PRIMARY_ATTACHMENT_NAME = "PilotPrimaryAttachmentName"
 const PILOT_PRIMARY_MOD_NAME = "PilotPrimaryModName"
 const PILOT_SIDEARM_MOD_NAME = "PilotSidearmModName"
+const PILOT_SECONDARY_MOD_NAME = "PilotSecondaryModName"
 
 const PILOT_SECONDARY_NAME = "PilotSecondaryName"
 
@@ -21,6 +22,7 @@ const PILOT_PRIMARY_ATTACHMENT_ICON = "PilotPrimaryAttachmentIcon"
 
 const PILOT_PRIMARY_MOD_ICON = "PilotPrimaryModIcon"
 const PILOT_SIDEARM_MOD_ICON = "PilotSidearmModIcon"
+const PILOT_SECONDARY_MOD_ICON = "PilotSecondaryModIcon"
 const PILOT_SPECIAL_ICON = "PilotSpecialIcon"
 const PILOT_ORDNANCE_ICON = "PilotOrdnanceIcon"
 const PILOT_PASSIVE1_ICON = "PilotPassive1Icon"
@@ -63,6 +65,7 @@ function InitPilotLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, PILOT_PRIMARY_MOD_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SIDEARM_MOD_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SECONDARY_NAME )
+	AddMenuElementsByClassname( menu, PILOT_SECONDARY_MOD_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SIDEARM_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SPECIAL_NAME )
 	AddMenuElementsByClassname( menu, PILOT_ORDNANCE_NAME )
@@ -73,6 +76,7 @@ function InitPilotLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, PILOT_PRIMARY_ATTACHMENT_ICON )
 	AddMenuElementsByClassname( menu, PILOT_PRIMARY_MOD_ICON )
 	AddMenuElementsByClassname( menu, PILOT_SIDEARM_MOD_ICON )
+	AddMenuElementsByClassname( menu, PILOT_SECONDARY_MOD_ICON )
 	AddMenuElementsByClassname( menu, PILOT_SPECIAL_ICON )
 	AddMenuElementsByClassname( menu, PILOT_ORDNANCE_ICON )
 	AddMenuElementsByClassname( menu, PILOT_PASSIVE1_ICON )
@@ -109,6 +113,7 @@ function InitEditPilotLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, PILOT_PRIMARY_MOD_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SIDEARM_MOD_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SECONDARY_NAME )
+	AddMenuElementsByClassname( menu, PILOT_SECONDARY_MOD_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SIDEARM_NAME )
 	AddMenuElementsByClassname( menu, PILOT_SPECIAL_NAME )
 	AddMenuElementsByClassname( menu, PILOT_ORDNANCE_NAME )
@@ -119,6 +124,7 @@ function InitEditPilotLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, PILOT_PRIMARY_ATTACHMENT_ICON )
 	AddMenuElementsByClassname( menu, PILOT_PRIMARY_MOD_ICON )
 	AddMenuElementsByClassname( menu, PILOT_SIDEARM_MOD_ICON )
+	AddMenuElementsByClassname( menu, PILOT_SECONDARY_MOD_ICON )
 	AddMenuElementsByClassname( menu, PILOT_SPECIAL_ICON )
 	AddMenuElementsByClassname( menu, PILOT_ORDNANCE_ICON )
 	AddMenuElementsByClassname( menu, PILOT_PASSIVE1_ICON )
@@ -166,6 +172,9 @@ function UpdatePilotLoadoutElems( menu, loadout, button = null )
 	// foreach ( element in menu.classElements[PILOT_SIDEARM_MOD_NAME] )
 	// 	SetTextFromSubitemName( element, loadout.sidearm, loadout.sidearmMod, "#MOD_SELECT_STOCK" )
 
+	// foreach ( element in menu.classElements[PILOT_SECONDARY_MOD_NAME] )
+	// 	SetTextFromSubitemName( element, loadout.sidearm, loadout.sidearmMod, "#MOD_SELECT_STOCK" )
+
 	foreach ( element in menu.classElements[PILOT_PRIMARY_MOD_NAME] )
 		SetTextFromSubitemName( element, loadout.primary, loadout.primaryMod, "#MOD_SELECT_STOCK" )
 
@@ -199,6 +208,9 @@ function UpdatePilotLoadoutElems( menu, loadout, button = null )
 
 	foreach ( element in menu.classElements[PILOT_SIDEARM_MOD_ICON] )
 		SetImageFromSubitemIcon( element, loadout.sidearm, loadout.sidearmMod, MOD_ICON_NONE )
+
+	foreach ( element in menu.classElements[PILOT_SECONDARY_MOD_ICON] )
+		SetImageFromSubitemIcon( element, loadout.secondary, loadout.secondaryMod, MOD_ICON_NONE )
 
 	foreach ( element in menu.classElements[PILOT_SPECIAL_ICON] )
 		SetImageFromItemIcon( element, loadout.special )

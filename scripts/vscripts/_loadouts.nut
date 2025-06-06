@@ -433,6 +433,7 @@ function InitPresetLoadouts()
 	loadout.primaryAttachment <- "hcog"
 	loadout.primaryMod <- null
 	loadout.secondary <- "mp_weapon_rocket_launcher"
+	loadout.secondaryMod <- null
 	loadout.sidearm <- "mp_weapon_semipistol"
 	loadout.sidearmMod <- null
 	loadout.special <- "mp_ability_cloak"
@@ -451,6 +452,7 @@ function InitPresetLoadouts()
 	loadout.primaryAttachment <- null
 	loadout.primaryMod <- "silencer"
 	loadout.secondary <- "mp_weapon_smr"
+	loadout.secondaryMod <- null
 	loadout.sidearm <- "mp_weapon_autopistol"
 	loadout.sidearmMod <- null
 	loadout.special <- "mp_ability_cloak"
@@ -468,6 +470,7 @@ function InitPresetLoadouts()
 	loadout.primaryAttachment <- null
 	loadout.primaryMod <- null
 	loadout.secondary <- "mp_weapon_smr"
+	loadout.secondaryMod <- null
 	loadout.sidearm <- "mp_weapon_semipistol"
 	loadout.sidearmMod <- null
 	loadout.special <- "mp_ability_cloak"

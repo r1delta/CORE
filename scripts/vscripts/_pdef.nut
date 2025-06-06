@@ -583,6 +583,11 @@ function InitPersistence()
 		mp_weapon_semipistol_match_trigger = 104,
 		mp_weapon_autopistol_starburst = 105,
 		mp_weapon_autopistol_recoil_compensator = 106
+
+		mp_weapon_smr_tank_buster = 107,
+		mp_weapon_smr_stabilized_warhead = 108,
+		mp_weapon_rocket_launcher_guided_missile = 109,
+		mp_weapon_mgl_long_fuse = 110,
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)

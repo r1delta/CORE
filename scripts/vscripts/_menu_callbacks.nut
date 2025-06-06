@@ -659,7 +659,7 @@ function SetPilotLoadout( player, isCustom, loadoutIndex )
 
 	table.secondaryWeaponMods <- []
 	table.sidearmWeaponMods <- []
-	
+
 
 	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
 	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
@@ -669,10 +669,10 @@ function SetPilotLoadout( player, isCustom, loadoutIndex )
 	if (loadout.sidearmMod)
 		table.sidearmWeaponMods.append( loadout.sidearmMod )
 
-	// if (loadout.secondaryMod)
-	// 	table.secondaryWeaponMods.append( loadout.secondaryMod )
+	if (loadout.secondaryMod)
+		table.secondaryWeaponMods.append( loadout.secondaryMod )
 
-	
+
 	// TODO: Add support for offhand mods
 	//table.offhandWeapons[0].append( { weapon = null, mods = [] } )
 	//table.offhandWeapons[0].append( { weapon = null, mods = [] } )
@@ -795,6 +795,7 @@ function GetPersistentPilotLoadout( player, isCustom, loadoutIndex )
 	loadout.name <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].name" )
 	loadout.primary <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primary" )
 	loadout.secondary <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].secondary" )
+	loadout.secondaryMod <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].secondaryMod" )
 	loadout.sidearm <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].sidearm" )
 	loadout.special <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].special" )
 	loadout.ordnance <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].ordnance" )
@@ -1140,7 +1141,7 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 	if ( childRef && !TMPHasSubitem( ref, childRef ) )
 		return false
 
-	
+
 	if(childRef) {
 		local itemData = GetSubitemData( ref, childRef )
 		if ( itemData == null )
@@ -1148,7 +1149,7 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 
 		if(itemData.type == itemType.PILOT_PRIMARY_MOD && itemData.displayInMenu == false)
 			return false
-		
+
 		if(itemData.type == itemType.PILOT_SIDEARM_MOD && itemData.displayInMenu == false)
 			return false
 
