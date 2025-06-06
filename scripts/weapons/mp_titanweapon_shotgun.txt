@@ -329,16 +329,16 @@ WeaponData
             {
                 "type"                      "static"
                 "material"                  "hud/crosshairs/titan_shotgun"
-                "size_x"                    "138"
-                "size_y"                    "138"
+                "size_x"                    "115" //138
+                "size_y"                    "115"
                 "scale_ads"                 "0.7"
             }
             Element1
             {
                 "type"                      "static"
                 "material"                  "hud/crosshairs/titan_shotgun_ads"
-                "size_x"                    "176"
-                "size_y"                    "176"
+                "size_x"                    "146" //176
+                "size_y"                    "146"
             }
         }
 		Extended_Ammo
