@@ -6,8 +6,8 @@
 	"$selfillummask" "models\weapons\attachments\ammo_counter_rounds_ilm"
 	"$translucent" "1"
 	//"$selfillum" "1"
-	"$decal" 1 
-	"$decalscale" 0.25
+	//"$decal" 1 
+	//"$decalscale" 0.25
 
 	"$ammo" "0"
 	"$maxClipAmmo" "0"
@@ -16,7 +16,11 @@
 	"$atlasFrames" "[64 1]"
 	"$atlasFrameStart" "[0 0]"
 	"$atlasFrameCount" "[1 1]"
-	
+
+/////////////////////////////////////////////
+
+	"$row_index" "0"
+
 	"Proxies"
 	{
 		"ClipAmmo"
@@ -40,7 +44,7 @@
 		{
 			"tickCount"					"$ammo"
 			"rowLength"					"$rowLength"
-			"rowIndex"					"0"
+			"rowIndex"					"$row_index"
 			"atlasFrameSize"			"$atlasFrames[0]"
 			
 			"resultAtlasFrameStartVar"	"$atlasFrameStart[0]"

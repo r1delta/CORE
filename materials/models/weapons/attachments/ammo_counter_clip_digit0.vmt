@@ -6,13 +6,17 @@
 	"$selfillummask" "models\weapons\attachments\ammo_counter_numbers_ilm"
 	"$translucent" "1"
 	//"$selfillum" "1"
-	"$decal" 1 
-	"$decalscale" 0.25
+	//"$decal" 1 
+	//"$decalscale" 0.25
 
 	"$ammo" "0"
 	"$atlasFrames" "[16 1]"
 	"$atlasFrameStart" "[0 0]"
-	
+
+/////////////////////////////////////////////
+
+	"$digit_index" "0"
+
 	"Proxies"
 	{
 		"ClipAmmo"
@@ -23,7 +27,7 @@
 		"NumericCounterAtlasFrame"
 		{
 			"value"						"$ammo"
-			"digitIndex"				"0"
+			"digitIndex"				"$digit_index"
 			"resultAtlasFrameIndexVar"	"$atlasFrameStart[0]"
 		}
 	

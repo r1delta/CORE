@@ -24,6 +24,20 @@ UnlitTwoTexture
 	
 	"Proxies"
 	{
+		//Horizontal movement speed
+		"UniformNoise"
+		{
+			"minVal" 0.5
+			"maxVal" 1
+			"resultVar" "$scroll[0]"
+		}
+		//Vertical movement speed
+		"UniformNoise"
+		{
+			"minVal" 0.5
+			"maxVal" 1
+			"resultVar" "$scroll[1]"
+		}
 		//Move the 2nd texture using horiz and vert speed
 		"TextureTransform"
 		{
