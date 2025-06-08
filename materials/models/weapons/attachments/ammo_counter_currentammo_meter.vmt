@@ -1,0 +1,39 @@
+"Basic"
+{
+	"$surfaceprop" "default"
+
+	"$basetexture" "models\weapons\attachments\ammo_counter_meter_col"
+	"$selfillummask" "models\weapons\attachments\ammo_counter_meter_ilm"
+	"$translucent" "1"
+	//"$selfillum" "1"
+	"$decal" 1 
+	"$decalscale" 0.25
+	
+	"$ammo" "0"
+	"$maxClipAmmo" "0"
+	
+	"Proxies"
+	{
+		"ClipAmmo"
+		{
+			"resultVar" "$ammo"
+		}
+		
+		"MaxClipAmmo"
+		{
+			"resultVar" "$maxClipAmmo"
+		}
+		
+		"ProgressBar"
+		{
+			"value"			"$ammo"
+			"max"			"$maxClipAmmo"
+			"resultVar"		"$basetexturetransform"
+		}
+
+		"ClipAmmoColor"
+		{
+			"resultVar"			"$color"
+		}
+	}
+}
