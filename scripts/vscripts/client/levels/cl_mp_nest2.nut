@@ -9,6 +9,8 @@ function main()
 	level.musicEnabled = true //Turn off all music in this level
 	
 	SetFullscreenMinimapParameters( 3, 0, 0, 90 )
+	if ( GAMETYPE == COOPERATIVE )
+		SetCustomMinimapZoom( 2 )
 
 	IncludeFileAllowMultipleLoads( "client/objects/cl_ai_turret" )
 	// IncludeFileAllowMultipleLoads( "client/objects/cl_ai_turret_bb" )
