@@ -55,6 +55,8 @@ function main()
 	level.forcedMusicOnly 		= true
 	level.classMusicEnabled 	= false
 	level.gameStateMusicEnabled = false
+
+	file.turretRotation <- 0
 }
 
 function CoopTD_Client_GameStateChangedCallback()
@@ -1226,6 +1228,9 @@ function ButtonCallback_InitTurretPlacement( player )
 	RegisterConCommandTriggeredCallback( "+weaponPickupAndCycle", ButtonCallback_AbortTurretPlacement )
 	RegisterConCommandTriggeredCallback( "+scriptCommand1", ButtonCallback_AbortTurretPlacement )
 
+	RegisterConCommandTriggeredCallback( "+reload", ButtonCallback_RotateTurret )
+	RegisterConCommandTriggeredCallback( "+useAndReload", ButtonCallback_RotateTurret )
+
 	// this will holster the weapon of the player on the server.
 	player.ClientCommand( "InitSentryTurretPlacement" )
 
@@ -1249,8 +1254,13 @@ function TurretPlacementCleanupThread( player )
 			DeregisterConCommandTriggeredCallback( "+weaponPickupAndCycle", ButtonCallback_AbortTurretPlacement )
 			DeregisterConCommandTriggeredCallback( "+scriptCommand1", ButtonCallback_AbortTurretPlacement )
 
+			DeregisterConCommandTriggeredCallback( "+reload", ButtonCallback_RotateTurret )
+			DeregisterConCommandTriggeredCallback( "+useAndReload", ButtonCallback_RotateTurret )
+
 			TurretPlacementHintVisiblity( false )
 			TurretPlacementHintInvalid( false )
+
+			file.turretRotation = 0
 		}
 	)
 
@@ -1285,6 +1295,17 @@ function ButtonCallback_PlaceTurret( player )
 		UpdateEquipmentHud( cockpit, player )
 
 	player.Signal( "DestroyTurretProjection" )
+}
+
+function ButtonCallback_RotateTurret( player )
+{
+	if ( !IsValid( player ) )
+		return
+
+	file.turretRotation += 45
+
+	if ( file.turretRotation >= 360 )
+		file.turretRotation = 0
 }
 
 function ButtonCallback_AbortTurretPlacement( player )
@@ -1406,6 +1427,9 @@ function TurretPlacementHintInvalid( show )
 
 function CalculateTurretLocation( player, newTrace = true )
 {
+	local turretRotation = GetTurretRotation()
+	local turretRotationVector = Vector( 0, turretRotation, 0 )
+
 	local vector = player.GetViewVector()
 	vector.z = 0 // flatten the vector
 	vector.Norm()
@@ -1413,7 +1437,7 @@ function CalculateTurretLocation( player, newTrace = true )
 	local traceOffsetZ = 32
 	local offset = vector * 48 + Vector( 0,0, traceOffsetZ )
 	local origin = player.GetOrigin() + offset
-	local angles = Vector( 0, vector.GetAngles().y, 0 )
+	local angles = Vector( 0, vector.GetAngles().y + turretRotation, 0 )
 
 	local prevHullTraceID = file.turretHullTraceID
 	local prevLineTraceID = file.turretLineTraceID
@@ -1450,6 +1474,8 @@ function CalculateTurretLocation( player, newTrace = true )
 	if ( success == true )
 	{
 		angles = AnglesOnSurface( result.surfaceNormal, vector )
+		angles = angles + turretRotationVector
+
 		origin = origin - Vector( 0, 0, traceHeight * frac )
 	}
 	else
@@ -1471,6 +1497,12 @@ function GetSlope( angles )
 
 	return ( x + z )
 }
+
+function GetTurretRotation()
+{
+	return file.turretRotation
+}
+Globalize( GetTurretRotation )
 
 function ServerCallback_CoopMusicPlay( musicID, doForcedLoop = false )
 {
