@@ -1,0 +1,5 @@
+"Patch"
+{
+	// Why does this even exist? Its an exact copy of hcog_reticle_field_emitter
+	"Include" 				"materials/models/weapons/attachments/hcog_reticle_field_emitter.vmt"
+}

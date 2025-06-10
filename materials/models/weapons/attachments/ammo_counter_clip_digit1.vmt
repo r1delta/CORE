@@ -1,0 +1,9 @@
+"Patch"
+{
+	"Include" 				"materials/models/weapons/attachments/ammo_counter_clip_digit0.vmt"
+	
+	"Insert"
+	{
+		"$digit_index"		"1"
+	}
+}

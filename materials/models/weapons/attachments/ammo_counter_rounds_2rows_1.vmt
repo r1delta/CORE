@@ -1,0 +1,9 @@
+"Patch"
+{
+	"Include" 				"materials/models/weapons/attachments/ammo_counter_rounds_2rows_0.vmt"
+	
+	"Insert"
+	{
+		"$row_index"		"1"
+	}
+}
