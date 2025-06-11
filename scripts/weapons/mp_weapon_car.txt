@@ -6,7 +6,7 @@ WeaponData
 	"description" 									"#WPN_CAR_DESC"
 	"longdesc"										"#WPN_CAR_LONGDESC"
 	"weaponClass" 									"human"
-	"body_type"										"battle_rifle"
+	"body_type"										"close_quarters"
 	"fire_mode"   									"auto"
 	"server_vscript"  								"weapons/mp_weapon_car"
 	"client_vscript"  								"weapons/mp_weapon_car"
