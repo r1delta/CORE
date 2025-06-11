@@ -156,6 +156,12 @@ function Flyout_ShowWeapon( weaponRef, modRefs )
 
 	local useBurnColor = false
 
+	local weaponRefName = GetItemName( weaponRef )
+	local weaponRefDesc = GetItemDescription( weaponRef )
+
+	local modRefNames = []
+	local modRefDescs = []
+
 	foreach ( modRef in modRefs )
 	{
 		if ( modRef in level.burnCardWeaponModList )
@@ -163,10 +169,14 @@ function Flyout_ShowWeapon( weaponRef, modRefs )
 
 		// TEMP prevent error for unknown mods
 		if ( TMPHasSubitem( weaponRef, modRef ) )
+		{
+			modRefNames.append( Flyout_GetModInfo( weaponRef, modRef, false ) )
+			modRefDescs.append( Flyout_GetModInfo( weaponRef, modRef, true ) )
 			continue
+		}
 
-		modRefs = []
-		break
+		//modRefs = []
+		//break
 	}
 
 	/* // GEN check?  The problem is these numbers are wrong because we don't tell the client about their challenge progress mid-match
@@ -190,26 +200,26 @@ function Flyout_ShowWeapon( weaponRef, modRefs )
 	file.flyoutFadingOut = false
 	file.flyoutShowStartTime = Time()
 
-	switch ( modRefs.len() )
+	switch ( modRefNames.len() )
 	{
 		case 0:
-			file.flyoutTitleElems.SetText( "#HUD_WEAPON_FLYOUT", GetItemName( weaponRef ) )
-			file.flyoutDescElems.SetText( "#HUD_WEAPON_FLYOUT", GetItemDescription( weaponRef ) )
+			file.flyoutTitleElems.SetText( "#HUD_WEAPON_FLYOUT", weaponRefName )
+			file.flyoutDescElems.SetText( "#HUD_WEAPON_FLYOUT", weaponRefDesc )
 			file.flyoutDesc2Elems.SetText( "" )
 			break
 		case 1:
-			file.flyoutTitleElems.SetText( "#HUD_WEAPON_FLYOUT_MODX1", GetItemName( weaponRef ), GetSubitemName( weaponRef, modRefs[0] ) )
-			file.flyoutDescElems.SetText( "#HUD_WEAPON_FLYOUT", GetSubitemDescription( weaponRef, modRefs[0] ) )
+			file.flyoutTitleElems.SetText( "#HUD_WEAPON_FLYOUT_MODX1", weaponRefName, modRefNames[0] )
+			file.flyoutDescElems.SetText( "#HUD_WEAPON_FLYOUT", modRefDescs[0] )
 			file.flyoutDesc2Elems.SetText( "" )
 			break
 		default:
-			file.flyoutTitleElems.SetText( "#HUD_WEAPON_FLYOUT_MODX2", GetItemName( weaponRef ), GetSubitemName( weaponRef, modRefs[0] ), GetSubitemName( weaponRef, modRefs[1] )  )
-			file.flyoutDescElems.SetText( "#HUD_WEAPON_FLYOUT", GetSubitemDescription( weaponRef, modRefs[0] ) )
+			file.flyoutTitleElems.SetText( "#HUD_WEAPON_FLYOUT_MODX2", weaponRefName, modRefNames[0], modRefNames[1] )
+			file.flyoutDescElems.SetText( "#HUD_WEAPON_FLYOUT", modRefDescs[0] )
 			file.flyoutDesc2Elems.SetText( "" )
 			break
 	}
 
-	if( useBurnColor )
+	if ( useBurnColor )
 	{
 		file.flyoutTitleElems.SetColor( BURN_CARD_WEAPON_HUD_COLOR )
 		file.flyoutDescElems.SetColor( BURN_CARD_WEAPON_HUD_COLOR )
@@ -237,6 +247,30 @@ function Flyout_ShowWeapon( weaponRef, modRefs )
 	Flyout_Hide( false )
 }
 
+function Flyout_GetModInfo( weaponRef, modRef, isDesc )
+{
+	local info = GetSubitemName( weaponRef, modRef )
+	if ( isDesc )
+		info = GetSubitemDescription( weaponRef, modRef )
+
+/*
+	// A mods name/description can be overriden here if needed
+	switch ( info )
+	{
+		case "#MOD_EXTENDED_MAG_NAME":
+			info = "Ext. Mag"
+			break
+
+		case "#MOD_EXTENDED_DRUM_NAME":
+			info = "#SOME_OTHER_STRING"
+			break
+	
+		default:
+			break
+	}
+*/
+	return info
+}
 
 function Flyout_ShowWeaponChallenge( weaponRef, challengeRef )
 {
