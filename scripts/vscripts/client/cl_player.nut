@@ -1216,11 +1216,14 @@ function PlayerWeaponFlyout( player )
 	if ( !ItemDefined( weaponRef ) )
 		return
 
-	foreach ( modRef in modRefs )
-	{
-		if ( !SubitemDefined( weaponRef, modRef ) )
-			return
-	}
+// Dont enable, breaks flyout if the weapon has unknown mods
+// Proper check is now done in Flyout_ShowWeapon()
+
+//	foreach ( modRef in modRefs )
+//	{
+//		if ( !SubitemDefined( weaponRef, modRef ) )
+//			return
+//	}
 
 	thread Flyout_ShowWeapon( weaponRef, modRefs )
 }
