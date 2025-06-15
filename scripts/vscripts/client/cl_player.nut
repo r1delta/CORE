@@ -996,18 +996,28 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	local distanceFromAttackOrigin = params.distanceFromAttackOrigin
 
 	local playHitSound = true
-	local playKillSound = damageType & DF_KILLSHOT
 	local attacker = GetLocalViewPlayer()
 	local showCrosshairHitIndicator = true
 	local hitIneffective = false
 	local hitWeakpoint = false
 
+	local isCritShot = (damageType & DF_CRITICAL) ? true : false
+	local isHeadShot = (damageType & DF_HEADSHOT) ? true : false
+	local isKillShot = (damageType & DF_KILLSHOT) ? true : false
+	local isMelee = (damageType & DF_MELEE) ? true : false
+	local isExplosion = (damageType & DF_EXPLOSION) ? true : false
+	local isBullet = (damageType & DF_BULLET) ? true : false
+	local isShotgun = (damageType & DF_SHOTGUN) ? true : false
+
+	local isMaxRangeHit = (damageType & DF_MAX_RANGE) ? true : false
+
+	local playKillSound = isKillShot
 	local victimIsTitan
 
 	if ( IsValid( victim ) )
 	{
 		// Hit indicator hud icon
-		if ( (damageType & DF_CRITICAL) )
+		if ( isCritShot || isHeadShot )
 			hitWeakpoint = true
 
 		victimIsTitan = victim.IsTitan()
@@ -1018,7 +1028,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 		}
 		else if ( !victimIsTitan && !attacker.IsTitan() )
 		{
-			if ( (damageType & DF_BULLET && damageType & DF_MAX_RANGE) )
+			if ( isBullet && isMaxRangeHit )
 				hitIneffective = true
 		}
 
@@ -1026,7 +1036,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 			player.Signal( "UpdateSniperVGUI", { hitGroup = hitGroup } )
 	}
 
-	if ( damageType & DF_MAX_RANGE && damageType & DF_BULLET )
+	if ( isBullet && isMaxRangeHit )
 		playHitSound = false
 
 	if ( damageType & DF_TITAN_STEP )
@@ -1035,7 +1045,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 		playKillSound = false
 	}
 
-	if ( damageType & DF_MELEE )
+	if ( isMelee )
 	{
 		playHitSound = false
 		playKillSound = false
@@ -1080,7 +1090,6 @@ function ClientCodeCallback_PlayerDidDamage( params )
 
 	if ( IsValid( victim ) && playKillSound )
 	{
-		local isHeadShot = ( damageType & DF_HEADSHOT ) > 0
 		PlayKillShotSound( attacker, victim, damageType, isHeadShot )
 	}
 
