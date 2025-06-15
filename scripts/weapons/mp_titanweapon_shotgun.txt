@@ -33,8 +33,8 @@ WeaponData
     "impact_effect_table"                             "titan_bullet"
     //"vortex_absorb_effect"                            "wpn_vortex_projectile_shotgun_FP"
     //"vortex_absorb_effect_third_person"                "wpn_vortex_projectile_shotgun"
-	"vortex_absorb_effect"                            "wpn_vortex_projectile_40mm_FP"
-	"vortex_absorb_effect_third_person"               "wpn_vortex_projectile_40mm"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_40mm_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_40mm"
     
     "vortex_drain"                                    ".015"
     "adjust_to_gun_barrel"                            "1"
@@ -61,8 +61,8 @@ WeaponData
     "damage_near_value"                              "215"
     "damage_far_value"                               "60"
     "damage_falloff_type"                            "inverse"
-    "damage_inverse_distance"                        "350"
-    "damage_near_value_titanarmor"                   "1000"
+    "damage_inverse_distance"                        "350" //"350"
+    "damage_near_value_titanarmor"                   "1000" //"1000"
     "damage_far_value_titanarmor"                    "250" //"550"
     
 
@@ -74,8 +74,8 @@ WeaponData
     "npc_damage_far_distance"                         "2000" //"1200"
     "npc_damage_near_value"                           "180"
     "npc_damage_far_value"                            "60"
-    "npc_damage_near_value_titanarmor"                "100" //"1050" //basically have to neuter them because they deal a SHIT ton of damage
-    "npc_damage_far_value_titanarmor"                 "100" //"400"
+    "npc_damage_near_value_titanarmor"                "1050"
+    "npc_damage_far_value_titanarmor"                 "300" //"400"
 
 
     // Ammo
@@ -84,7 +84,7 @@ WeaponData
     "ammo_default_total"                              "360"
 
     // Behavior
-    "fire_rate"                                       "5.5"
+    "fire_rate"                                       "5.5" //"5.5"
     "burst_fire_count"								  "3"
 	"burst_fire_delay"								  "1.0" //"0.6"
     "zoom_time_in"                                    "0.1"
@@ -134,8 +134,8 @@ WeaponData
     "viewkick_roll_softScale"                         "0.2"
     "viewkick_roll_hardScale"                         "1.0"
 
-    "viewkick_hipfire_weaponFraction"                 "0.35"
-    "viewkick_hipfire_weaponFraction_vmScale"         "0.4"
+    "viewkick_hipfire_weaponFraction"                 "0.35" //"0.35"
+    "viewkick_hipfire_weaponFraction_vmScale"         "0.4" //"0.4"
     "viewkick_ads_weaponFraction"                     "0.35"
     "viewkick_ads_weaponFraction_vmScale"             "0.5"
 
@@ -213,10 +213,10 @@ WeaponData
 
     "npc_min_range"                                   "0" //"1100"
     "npc_max_range"                                   "1500"
-	"npc_min_burst"                                   "3" //"1"
-	"npc_max_burst"                                   "3"
-	"rest_time_between_bursts_min"                    "1.5" //"0.5"
-	"rest_time_between_bursts_max"                    "2.2" //"1"
+    "npc_min_burst"                                   "1"
+    "npc_max_burst"                                   "3"
+    "rest_time_between_bursts_min"                    "0.5"
+    "rest_time_between_bursts_max"                    "1"
 
     // WeaponED Unhandled Key/Values and custom script Key/Values
     "vortex_absorb_sound"                             "Vortex_Shield_AbsorbBulletLarge"
@@ -241,6 +241,15 @@ WeaponData
 
     // Crosshair
     "red_crosshair_range"                             "1500"
+
+    // vs titans
+    "damage_near_value_titanarmor"                    "300"
+    "damage_far_value_titanarmor"                     "120"
+
+    // vs pilots/grunts
+    "damage_near_value"                               "58"
+    "damage_far_value"                                "10"
+
 
     Mods
     {
