@@ -93,6 +93,11 @@ function StartVortex()
 	else
 		self.s.shotgunPelletsToIgnore <- 0
 
+	if ( "titanShotgunPelletsToIgnore" in self.s )
+		self.s.titanShotgunPelletsToIgnore = 0
+	else
+		self.s.titanShotgunPelletsToIgnore <- 0
+
 	Vortex_SetBulletCollectionOffset( self, Vector( 110, -28, -22.0 ) )
 
 	local sphereRadius = 150

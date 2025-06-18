@@ -19,6 +19,7 @@ const VORTEX_ELECTRIC_DAMAGE_CHARGE_DRAIN_MAX = 0.3
 //The shotgun spams a lot of pellets that deal too much damage if they return full damage.
 const VORTEX_SHOTGUN_DAMAGE_RATIO = 0.25
 
+const VORTEX_TITAN_SHOTGUN_DAMAGE_RATIO = 0.25
 
 const SHIELD_WALL_BULLET_FX = "P_impact_xo_shield_cp"
 PrecacheParticleSystem( SHIELD_WALL_BULLET_FX )
@@ -528,6 +529,10 @@ function TryVortexAbsorb( vortexSphere, attacker, origin, damageSourceID, weapon
 	local maxShotgunPelletsToIgnore = VORTEX_BULLET_ABSORB_COUNT_MAX * ( 1 - VORTEX_SHOTGUN_DAMAGE_RATIO )
 	if ( weaponName == "mp_weapon_shotgun" && ( vortexWeapon.s.shotgunPelletsToIgnore + 1 ) <  maxShotgunPelletsToIgnore )
 			vortexWeapon.s.shotgunPelletsToIgnore += ( 1 - VORTEX_SHOTGUN_DAMAGE_RATIO )
+
+	local maxTitanShotgunPelletsToIgnore = VORTEX_BULLET_ABSORB_COUNT_MAX * ( 1 - VORTEX_TITAN_SHOTGUN_DAMAGE_RATIO )
+	if ( weaponName == "mp_titanweapon_shotgun" && ( vortexWeapon.s.titanShotgunPelletsToIgnore + 1 ) <  maxTitanShotgunPelletsToIgnore )
+			vortexWeapon.s.titanShotgunPelletsToIgnore += ( 1 - VORTEX_TITAN_SHOTGUN_DAMAGE_RATIO )
 
 	if ( reflect )
 	{
@@ -1265,6 +1270,9 @@ function Vortex_FireBackBullets( vortexWeapon, attackParams )
 	//Defensive Check - Couldn't repro error.
 	if ( "shotgunPelletsToIgnore" in vortexWeapon.s )
 		bulletCount = ceil( bulletCount - vortexWeapon.s.shotgunPelletsToIgnore )
+
+	if ( "titanShotgunPelletsToIgnore" in vortexWeapon.s )
+		bulletCount = ceil( bulletCount - vortexWeapon.s.titanShotgunPelletsToIgnore )
 
 	if ( bulletCount )
 	{
