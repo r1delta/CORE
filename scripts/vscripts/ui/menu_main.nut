@@ -753,7 +753,7 @@ function AuthDialog() {
 	if ( GetConVarString( "delta_persistent_master_auth_token" ) != "" )
 		return
 
-	if(GetConvarInt("delta_online_auth_enable") != 1)
+	if(GetConVarInt("delta_online_auth_enable") != 1)
 		return
 
 	local buttonData = []
