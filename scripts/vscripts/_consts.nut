@@ -203,6 +203,8 @@ const IMC_FEMALE_CQ 	= "models/humans/pilot/female_cq/pilot_female_cq.mdl"
 const MILITIA_FEMALE_DM = "models/humans/pilot/female_dm/pilot_female_dm.mdl"
 const IMC_FEMALE_DM 	= "models/humans/pilot/female_dm/pilot_female_dm.mdl"
 
+const PILOT_SPECTRE_CORPORATE = "models/Robots/spectre/spectre_corporate_pilot.mdl"
+
 //militia hero models
 const MAC_MODEL = "models/humans/mcor_hero/macallan/mcor_hero_macallan.mdl"
 const SARAH_MODEL = "models/humans/mcor_hero/sarah/mcor_hero_sarah.mdl"
