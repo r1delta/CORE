@@ -886,6 +886,7 @@ function GetCharacterFaceImage( player )
 			return "HUD/coop/coop_char_stryder"
 		case IMC_SPECTRE_MODEL:
 		case MILITIA_SPECTRE_MODEL:
+		case PILOT_SPECTRE_CORPORATE:
 			return "HUD/coop/coop_char_spectre"
 
 		default:
