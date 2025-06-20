@@ -568,6 +568,7 @@ function SpawnDropshipAndPlayers( team, initialTime, origin, angles, idleAnims, 
 		EmitSoundOnEntity( ship, "Crow_MCOR_ClassicMP_FlyAway" )
 	}
 
+	robotAssistant.SetTeam( team )
 
 	ship.WaittillAnimDone()
 }
