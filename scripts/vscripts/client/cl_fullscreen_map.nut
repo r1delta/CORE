@@ -130,3 +130,12 @@ function SetFullscreenMinimapParameters( zoomAmount, xPos, yPos, rotation )
 	file.fullscreenMinimapRotation = rotation
 }
 Globalize( SetFullscreenMinimapParameters )
+
+function PrintFullscreenMinimapParameters()
+{
+	printt( file.fullscreenMinimapZoomAmount )
+	printt( file.fullscreenMinimapXPos )
+	printt( file.fullscreenMinimapYPos )
+	printt( file.fullscreenMinimapRotation )
+}
+Globalize( PrintFullscreenMinimapParameters )
