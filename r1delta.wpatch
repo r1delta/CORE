@@ -467,7 +467,7 @@ engine.dll,text,0x1DAB0,40,C3
 ; NOP out CheckCRCs
 engine.dll,text,0x559D0,40,C3
 ; discord id for status and id string
-engine.dll,text,0x00D5436,8B 81 FC 02 00 00 83 E0 01 89 42 14 8B 81 FC 02 00 00 D1 E8 89 42 10,48 8B 81 FC 02 00 00 48 89 42 08 90 90 90 90 90 90 90 90 90 90 90 90
+;engine.dll,text,0x00D5436,8B 81 FC 02 00 00 83 E0 01 89 42 14 8B 81 FC 02 00 00 D1 E8 89 42 10,48 8B 81 FC 02 00 00 48 89 42 08 90 90 90 90 90 90 90 90 90 90 90 90
 
 ;net_writeStatsFile always write to net_stats.txt instead of arbitrary file
 engine.dll,text,0x130843,74 0C ,90 90
