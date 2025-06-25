@@ -344,6 +344,9 @@ function OnServerButtonClicked(button)
     dialogData.detailsMessage <- "#ENTER_PASSWORD_MESSAGE"
     // DeregisterButtonPressedCallback( BUTTON_X, RefreshServerList)
     // DeregisterButtonPressedCallback( BUTTON_Y, OpenDirectConnectDialog_Activate)
+     if( server.has_auth ) {
+        ClientCommand("delta_online_auth_enable 1")
+     }
     if( server.has_password )
         OpenChoiceDialog( dialogData, GetMenu( "EnterPasswordDialog" ) )
     else {
