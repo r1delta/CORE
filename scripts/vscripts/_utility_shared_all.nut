@@ -910,3 +910,9 @@ function StringReplaceAll(original, find, replace)
 
     return result;
 }
+
+function WaitFrame()
+{
+	//Don't use wait 0 since it doesn't actually wait a game frame. For example, if you have a client loop that does wait 0 even if the game is paused the loop will still run
+	wait 0.0001
+}
