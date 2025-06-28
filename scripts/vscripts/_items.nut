@@ -1373,7 +1373,7 @@ function ItemSupportsAttachments( ref )
 {
 	local type = GetItemType( ref )
 
-	if ( type == itemType.PILOT_PRIMARY || type == itemType.PILOT_SECONDARY || type == itemType.PILOT_SIDEARM )
+	if ( type == itemType.PILOT_PRIMARY )
 		return true
 
 	return false
@@ -1559,7 +1559,7 @@ function ItemTypeSupportsMods( type )
 
 function ItemTypeSupportsAttachments( type )
 {
-	if ( type == itemType.PILOT_PRIMARY || itemType.PILOT_SECONDARY || type == itemType.PILOT_SIDEARM )
+	if ( type == itemType.PILOT_PRIMARY )
 		return true
 
 	return false
