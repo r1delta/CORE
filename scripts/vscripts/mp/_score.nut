@@ -418,7 +418,6 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 		        Remote.CallFunction_Replay( rodeoTitan, "SCB_TitanDialogue", eTitanVO.RODEO_RAKE )
 			if ( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.titan_melee && !awardedEliminationScore )
 			{	AddPlayerScore( attacker, "RodeoRake", player )
-				Stats_IncrementStat( attacker, "kills_stats","rodeo_total",1.0)
 			}else if ( !awardedEliminationScore )
 				AddPlayerScore( attacker, "SavedFromRodeo", player )
 		}
