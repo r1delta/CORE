@@ -759,7 +759,13 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         local titanName = StringReplaceAll( titanSettings, "titan_", "" )
         Stats_IncrementStat( attacker, "kills_stats", "asTitan_" +titanName, 1.0 )
     }
-
+    if(victim.IsTitan()) {
+        printt("victim is titan")
+        local flags = damageInfo.GetCustomDamageType()
+	    if(flags & DF_RODEO) {
+            Stats_IncrementStat( attacker, "kills_stats", "rodeo_total", 1.0 )
+        }
+    }
     	// ejectingPilots
 	if ( victimIsPilot && victim.pilotEjecting )
 		Stats_IncrementStat( player, "kills_stats", "ejectingPilots", 1.0 )
