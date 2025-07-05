@@ -649,7 +649,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         if ( victim.IsDropship() )
             Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_Dropship_Kills", 1.0 )
 
-        if ( victim.IsTitan() )
+        if ( victim.IsTitan() && victim.IsNPC() )
         {
             if ( victim.GetSubclass() == eSubClass.empTitan )
             {
