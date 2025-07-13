@@ -10,6 +10,7 @@ function main()
 	Globalize( AppendGamepadInviteLabels )
 	Globalize( UpdateFooters )
 	Globalize( DelayedTryUpdateFooterButtonsWhy )
+	Globalize( ToggleProgression )
 	Globalize( SendProgressionChoice )
 }
 
@@ -235,12 +236,19 @@ function UpdateFooterButtons( menuName = null )
 					footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
 				else if ( AmIPartyLeader() )
 					footerData.pc.append( { label = "#SHOW_SERVER", func = ToggleHideServer } )
-			} else if ( GetConVarInt( "sv_lobbyType" ) == 0 )
+			}
+			else if ( GetConVarInt( "sv_lobbyType" ) == 0 )
 			{
 				if ( GetPersistentVar( "delta.everythingUnlocked") )
+				{
+					footerData.gamepad.append( { label = "#DISABLE_EVERYTHINGUNLOCKED_GAMEPAD" } )
 				    footerData.pc.append( { label = "#DISABLE_EVERYTHINGUNLOCKED", func = ToggleProgression } )
+				}
 				else
+				{
+					footerData.gamepad.append( { label = "#ENABLE_EVERYTHINGUNLOCKED_GAMEPAD" } )
 				    footerData.pc.append( { label = "#ENABLE_EVERYTHINGUNLOCKED", func = ToggleProgression } )
+				}
 			}
 
 			footerData.pc = AppendPCInviteLabels( footerData.pc )

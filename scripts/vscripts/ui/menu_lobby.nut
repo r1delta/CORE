@@ -179,6 +179,8 @@ function InitLobbyMenu( menu )
 	AddEventHandlerToButton( menu, "DLCButton3", UIE_CLICK, DLCButton_Activate )
 
 	file.haveShownDLCAnnounce <- false
+
+	file.progressionKeybindRegistered <- false
 }
 
 function SetDLCHaveLabel( parentButton, haveDLC )
@@ -970,6 +972,11 @@ function SetStarInfo( mapName, gameMode )
 			file.starsButtonRegistered = false
 		}
 
+		if ( !file.progressionKeybindRegistered )
+		{
+			RegisterButtonPressedCallback( BUTTON_Y, ToggleProgression )
+			file.progressionKeybindRegistered = true
+		}
 		return
 	}
 
@@ -989,6 +996,12 @@ function SetStarInfo( mapName, gameMode )
 	{
 		RegisterButtonPressedCallback( BUTTON_Y, ViewStarsButton_Activated )
 		file.starsButtonRegistered = true
+	}
+
+	if ( file.progressionKeybindRegistered )
+	{
+		DeregisterButtonPressedCallback( BUTTON_Y, ToggleProgression )
+		file.progressionKeybindRegistered = false
 	}
 }
 
