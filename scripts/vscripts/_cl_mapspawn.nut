@@ -111,6 +111,8 @@ function Cl_MapspawnMain()
 	level.titanHudCallbacks <- []
 	level.onModelChangedCallbacks <- []
 
+	level.onLocalPlayerDidDamageCallbacks <- []
+
 	buttonPressedCallbacks <- {}
 	buttonReleaseCallbacks <- {}
 	stickCallbacks <- {}

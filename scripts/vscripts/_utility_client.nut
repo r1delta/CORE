@@ -714,6 +714,18 @@ function AddOnModelChangedCallback( callbackFunc )
 	level.onModelChangedCallbacks.append( callbackInfo )
 }
 
+function AddLocalPlayerDidDamageCallback( callbackFunc )
+{
+	Assert( "onLocalPlayerDidDamageCallbacks" in level )
+	Assert( type( this ) == "table", "AddLocalPlayerDidDamageCallback can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 2, "attacker, params" )
+
+	local callbackInfo = {}
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onLocalPlayerDidDamageCallbacks.append( callbackInfo )
+}
 
 function PlayerProgressionAllowed( player = null )
 {

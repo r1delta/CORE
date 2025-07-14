@@ -1112,6 +1112,11 @@ function ClientCodeCallback_PlayerDidDamage( params )
 
 	if ( level.rankedPlayEnabled )
 		TryRankedHudHighlight( player, victimIsTitan )
+
+	foreach ( callbackInfo in level.onLocalPlayerDidDamageCallbacks )
+	{
+		callbackInfo.func.acall( [callbackInfo.scope, attacker, params] )
+	}
 }
 
 function PlayKillShotSound( attacker, victim, damageType, isHeadShot )
