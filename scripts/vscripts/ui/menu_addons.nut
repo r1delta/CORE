@@ -123,6 +123,7 @@ function UpdateAddonPaths( button )
 	ClientCommand( "uiscript_reset" )
 	ClientCommand( "reload_localization")
 	ClientCommand( "loadPlaylists" )
+	ClientCommand( "hud_reloadscheme" )
 }
 
 function OpenAddonFolder( button )
