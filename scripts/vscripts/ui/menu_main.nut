@@ -283,6 +283,13 @@ function ShowMainMenu()
 
 	uiGlobal.mainMenuFocus = focus
 	AuthDialog()
+
+	local uid = GetConVarString( "platform_user_id" )
+	if(uid == "0") {
+		local randomID = RandomInt( 0, 999999999 ).tostring()
+		ClientCommand( "platform_user_id " + randomID )
+	}
+
 	ClientCommand("hostname \"" + username + "'s R1Delta Server\"")
 	ClientCommand("loadPlaylists")
 
