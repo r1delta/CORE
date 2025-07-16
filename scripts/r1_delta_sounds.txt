@@ -1,5 +1,7 @@
 
+///////////////////////////////////
 // RE-45 Supressor (WIP)
+///////////////////////////////////
 
 "Weapon_RE45Auto_FirstShotSuppressed_1P"
 {
@@ -411,4 +413,1867 @@
 
 	"wave"			"weapons\R97\Wpn_R97_3p_WpnFire_Tail_Suppressed_Mid_2ch_v2_01.wav"
 	}
+}
+
+//////////////////////
+// SR_Valkyrie
+//////////////////////
+
+"SR_Valkyrie.Fire"
+{
+
+	"volumescale"			"0.7"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Gunfire_Sniper"
+	"pitch"				"90,110"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.7a:0,1000,0,0"
+		"ducks"				"SFX_AMB,0.7a:0,1000,0,0"
+		"ducks"				"Music,0.5a:0,1000,0,0"
+		//"ducks"				"DIAL_AI,0.5a:0,1000,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+
+	}
+
+	"rndwave"
+   	{
+	"volume"			"5.5"
+	"pitch"				"90,110"
+	"limit"				"1"
+	"delay"				"0"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+			// TODO: Replace with real sounds when custom sounds become a thing
+
+			"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Reduced_6ch_01.wav"
+			"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Reduced_6ch_02.wav"
+			"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Reduced_6ch_03.wav"
+			"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Reduced_6ch_04.wav"
+			"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Reduced_6ch_05.wav"
+
+           //"wave"                                  "weapons\Valkyrie\Wpn_Valkyrie_1p_WpnFire_Reduced_2ch_01.wav"
+           //"wave"                                  "weapons\Valkyrie\Wpn_Valkyrie_1p_WpnFire_Reduced_2ch_02.wav"
+
+	}
+
+//3P Assets
+
+///// 1000
+
+	"rndwave"
+   	{
+	"volume"			"5"
+	"pitch"				"98,103"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"1000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_03.wav"
+	}
+
+///// 2000
+
+	"rndwave"
+   	{
+	"volume"			"5"
+	"pitch"				"90,110"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"30"
+ 	"falloffEnd"        		"2000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_02.wav"
+
+	}
+
+/////////// LEAVE THESE
+
+	"rndwave"
+   	{
+	"volume"			"4"
+	"pitch"				"90,110"
+	"limit"				"1"
+	"delay"				"60"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"30"
+ 	"falloffEnd"        		"4000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_03.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_04.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_05.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_06.wav"
+	}
+
+	"rndwave"
+   	{
+	"volume"			"1.8"
+	"pitch"				"130,160"
+	"limit"				"1"
+	"delay"				"60"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"100"
+ 	"peakDistance"     		"1500"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"1500"
+ 	"falloffEnd"        		"5000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_03.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_04.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_05.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_06.wav"
+	}
+
+	"rndwave"
+   	{
+	"volume"			"4.5"
+	"pitch"				"80,115"
+	"limit"				"1"
+	"delay"				"220"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"6000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_03.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_04.wav"
+
+	}
+
+}
+
+
+
+"SR_Valkyrie.Fire_NPC"
+{
+
+	"volumescale"			"1"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Gunfire_Sniper"
+	"pitch"				"90,110"
+	"flags"				"layered"
+
+
+//3P Assets
+
+///// 1000
+
+	"rndwave"
+   	{
+	"volume"			"5"
+	"pitch"				"98,103"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"1000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_03.wav"
+	}
+
+///// 2000
+
+	"rndwave"
+   	{
+	"volume"			"5"
+	"pitch"				"90,110"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"30"
+ 	"falloffEnd"        		"2000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_02.wav"
+
+	}
+
+/////////// LEAVE THESE
+
+	"rndwave"
+   	{
+	"volume"			"4.5"
+	"pitch"				"90,110"
+	"limit"				"1"
+	"delay"				"60"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"30"
+ 	"falloffEnd"        		"4000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_03.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_04.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_05.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_06.wav"
+	}
+
+	"rndwave"
+   	{
+	"volume"			"2.5"
+	"pitch"				"130,160"
+	"limit"				"1"
+	"delay"				"60"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"100"
+ 	"peakDistance"     		"1500"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"1500"
+ 	"falloffEnd"        		"5000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_03.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_04.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_05.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_06.wav"
+	}
+
+	"rndwave"
+   	{
+	"volume"			"5.5"
+	"pitch"				"80,115"
+	"limit"				"1"
+	"delay"				"220"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"6000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_03.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_04.wav"
+
+	}
+
+}
+
+"SR_Valkyrie.Fire_Suppressed"
+{
+
+	"volumescale"			"1"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed_Sniper"
+	"pitch"				"90,110"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.5a:0,1500,0,0"
+		"ducks"				"SFX_AMB,0.5a:0,1500,0,0"
+		"ducks"				"Music,0.3a:0,1500,0,0"
+		//"ducks"				"DIAL_AI,0.3a:0,1500,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"500"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+
+	}
+
+	"rndwave"
+   	{
+	"limit"				"1"
+		"volume"			"2"
+		"pitch"				"200"
+		"delay"				"0"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+		"channels"
+		{
+			"1"		"L,1.0"
+			"1"		"LFE,2.0"
+			"2"		"R,1.0"
+		}
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_WpnFire_AirMechBass_2ch_v1_01.wav"
+//	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_WpnFire_AirMechBass_2ch_v1_02.wav"
+//	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_WpnFire_AirMechBass_2ch_v1_03.wav"
+	}
+
+
+	"rndwave"
+   	{
+	"volume"			"6"
+	"pitch"				"130"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Servo_2ch_v1_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Servo_2ch_v1_02.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Servo_2ch_v1_03.wav"
+	}
+
+
+	"rndwave"
+   	{
+	"volume"			"1.6"
+	"pitch"				"150"
+	"limit"				"1"
+	"delay"				"60"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"30"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Pop_2ch_v1_01.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Pop_2ch_v1_02.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Pop_2ch_v1_03.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Pop_2ch_v1_04.wav"
+
+	}
+
+
+	"rndwave"
+   	{
+	"volume"			"1"
+	"pitch"				"98,103"
+	"limit"				"1"
+	"delay"				"220"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"500"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\DMR\Wpn_XO16_1p_WpnFire_Tail_MechRing_1ch_v1_01.wav"
+//	"wave"				"weapons\DMR\Wpn_XO16_1p_WpnFire_Tail_MechRing_1ch_v1_02.wav"
+	"wave"				"weapons\DMR\Wpn_XO16_1p_WpnFire_Tail_MechRing_1ch_v1_03.wav"
+
+	}
+
+	"rndwave"
+   	{
+	"volume"			"8"
+	"pitch"				"120,140"
+	"limit"				"1"
+	"delay"				"0"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+			"channels"
+		{
+			"1"		"C,1.0"
+		}
+
+	"wave"				"weapons\Hemlok\Wpn_Hemlok_1p_WpnFire_Trigger_1ch_v1_01.wav"
+
+	}
+
+	"rndwave"
+   	{
+	"volume"			"6"
+	"pitch"				"125,150"
+	"limit"				"1"
+	"delay"				"170"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"30"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+			"channels"
+		{
+			"1"		"C,1.0"
+		}
+
+	"wave"				"weapons\Hemlok\Wpn_Hemlok_Reload_PopMag_fr50_2ch_v1_01.wav"
+
+	}
+
+//3P Assets
+
+	"rndwave"
+   	{
+	"limit"				"1"
+		"volume"			"1"
+		"pitch"				"199"
+		"delay"				"0"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"20"
+ 	"peakDistance"     			"30"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"30"
+ 	"falloffEnd"        		"2000"
+ 	"falloffCurve"      		"6"
+ 	"clampVolume"       		"0"
+
+
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_WpnFire_AirMechBass_2ch_v1_01.wav"
+//	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_WpnFire_AirMechBass_2ch_v1_02.wav"
+//	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_WpnFire_AirMechBass_2ch_v1_03.wav"
+	}
+
+	"rndwave"
+   	{
+	"volume"			"6"
+	"pitch"				"99,101"
+	"limit"				"1"
+	"delay"				"0"
+
+	"startDistance"     		"20"
+ 	"peakDistance"     		"30"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"1000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Hemlok\Wpn_Hemlok_1p_WpnFire_Trigger_1ch_v1_01.wav"
+	}
+
+
+	"rndwave"
+   	{
+	"volume"			"3"
+	"pitch"				"48,52"
+	"limit"				"1"
+	"delay"				"60"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     		"0"
+ 	"startCurve"       		"0"
+ 	"falloffStart"      		"0"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_01.wav"
+	"wave"				"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_02.wav"
+//	"wave"				"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_03.wav"
+//	"wave"				"weapons\R97\Wpn_R97_3p_WpnFire_FirstShot_Suppressed_Mid_2ch_v2_04.wav"
+
+	}
+
+}
+
+"SR_Valkyrie.ADS_In"
+{
+
+
+	"volume"			"0.95"
+	"radius"			"400"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"volumeScale"		"2.5"
+	"pitch"				"110,120"
+
+	"rndwave"
+   	{
+//	"wave"				"weapons\Foley\Wpn_Sniper_ADS_In_LR_v2_1.wav"
+	"wave"				"weapons\Foley\Wpn_Sniper_ADS_In_LR_v2_2.wav"
+	"wave"				"weapons\Foley\Wpn_Sniper_ADS_In_LR_v2_3.wav"
+//	"wave"				"weapons\Foley\Wpn_Sniper_ADS_In_LR_v2_4.wav"
+//	"wave"				"weapons\Foley\Wpn_Sniper_ADS_In_LR_v2_5.wav"
+	}
+}
+
+"SR_Valkyrie.ADS_Out"
+{
+
+
+	"volume"			"0.95"
+	"radius"			"400"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"volumeScale"		"2.5"
+	"pitch"				"110,120"
+
+	"rndwave"
+   	{
+	"wave"				"weapons\Foley\Wpn_Sniper_ADS_Out_LR_v2_1.wav"
+	"wave"				"weapons\Foley\Wpn_Sniper_ADS_Out_LR_v2_2.wav"
+//	"wave"				"weapons\Foley\Wpn_Sniper_ADS_Out_LR_v2_3.wav"
+//	"wave"				"weapons\Foley\Wpn_Sniper_ADS_Out_LR_v2_4.wav"
+//	"wave"				"weapons\Foley\Wpn_Sniper_ADS_Out_LR_v2_5.wav"
+	}
+}
+
+"SR_Valkyrie.Draw"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"volumeScale"		"3"
+	"volume"			"0.95, 1.2"
+	"pitch"				"98,104"
+	"radius"			"0"
+	"rndwave"
+	{
+
+	"wave"				"weapons\Foley\Wpn_Sniper_Draw_LR_v1_1.wav"
+	"wave"				"weapons\Foley\Wpn_Sniper_Draw_LR_v1_2.wav"
+//	"wave"				"weapons\Foley\Wpn_Sniper_Draw_LR_v1_3.wav"
+
+	}
+}
+
+"SR_Valkyrie.Holster"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"volumeScale"		"3"
+	"volume"			"0.95, 1.2"
+	"pitch"				"98,104"
+	"radius"			"0"
+	"rndwave"
+	{
+
+	"wave"				"weapons\Foley\Wpn_Sniper_Holster_LR_v1_1.wav"
+	"wave"				"weapons\Foley\Wpn_Sniper_Holster_LR_v1_2.wav"
+//	"wave"				"weapons\Foley\Wpn_Sniper_Holster_LR_v1_3.wav"
+	}
+}
+
+"SR_Valkyrie.Reload_MagPull"
+
+{
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Sniper"
+	"volume"			"2.5"
+	"pitch"				"100,108"
+	"radius"			"400"
+	
+	"rndwave"
+	{
+	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagPull_fr14_2ch_v1_01.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagPull_fr14_2ch_v1_02.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagPull_fr14_2ch_v1_03.wav"
+
+	}
+}
+
+"SR_Valkyrie.Reload_MagGrab"
+
+{
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Sniper"
+	"volume"			"2.5"
+	"pitch"				"100,108"
+	"radius"			"400"
+
+	"rndwave"
+	{
+	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagGrab_fr26_2ch_v1_01.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagGrab_fr26_2ch_v1_02.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagGrab_fr26_2ch_v1_03.wav"
+	}
+}
+
+"SR_Valkyrie.Reload_MagInsert"
+
+{
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Sniper"
+	"volume"			"2.5"
+	"pitch"				"100,108"
+	"radius"			"400"
+
+	"rndwave"
+	{
+	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagInsert_fr40_2ch_v1_01.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagInsert_fr40_2ch_v1_02.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_MagInsert_fr40_2ch_v1_03.wav"
+	}
+}
+
+
+"SR_Valkyrie.Reload_HandRest"
+
+{
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Sniper"
+	"volume"			"2.5"
+	"pitch"				"100,108"
+	"radius"			"400"
+	"rndwave"
+	{
+	"wave"				"weapons\DMR\Wpn_DMR_Reload_HandRest_fr53_2ch_v1_01.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_HandRest_fr53_2ch_v1_02.wav"
+//	"wave"				"weapons\DMR\Wpn_DMR_Reload_HandRest_fr53_2ch_v1_03.wav"
+	}
+}
+
+
+"SR_Valkyrie.BoltBack"
+
+{
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Sniper"
+	"volume"			"4"
+	"pitch"				"93,106"
+	"radius"			"400"
+
+	"rndwave"
+	{
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_Reload_BoltBack_2ch_v1_01.wav"
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_Reload_BoltBack_2ch_v1_02.wav"
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_Reload_BoltBack_2ch_v1_03.wav"
+	}
+}
+
+"SR_Valkyrie.BoltForward"
+
+{
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Sniper"
+	"volume"			"4"
+	"pitch"				"93,106"
+	"radius"			"400"
+
+	"rndwave"
+	{
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_Reload_BoltForward_2ch_v1_01.wav"
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_Reload_BoltForward_2ch_v1_01.wav"
+	"wave"				"weapons\Sniper_Kraber\Wpn_KraberSniper_1P_Reload_BoltForward_2ch_v1_01.wav"
+	}
+}
+
+///////////////////////////////////
+// Twin_B_shotgun
+///////////////////////////////////
+// by codejun 16.04.28
+
+"SG_Twin_B.Fire"
+{
+
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Gunfire,SFX_Weapons_Pilot_1P_Gunfire_Shotgun"
+	"volumescale"			"1"
+	"pitch"				"95,105"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.7a:0,2000,0,0"
+		"ducks"				"SFX_AMB,0.7a:0,2000,0,0"
+		"ducks"				"Music,0.5a:0,2000,0,0"
+		//"ducks"				"DIAL_AI,0.5a:0,2000,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+
+	}
+
+	"rndwave"
+	{
+	"volume"			"5.5"
+	"limit"				"1"
+	"startDistance"     "0"
+    "peakDistance"      "0"
+    "startCurve"        "0"
+    "falloffStart"      "20"
+    "falloffEnd"        "30"
+    "falloffCurve"      "0"
+    "clampVolume"       "0"
+
+	"wave"				"weapons/shotgun/Wpn_Shotgun_1p_WpnFire_Reduced_6ch_01.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_1p_WpnFire_Reduced_6ch_02.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_1p_WpnFire_Reduced_6ch_03.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_1p_WpnFire_Reduced_6ch_04.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_1p_WpnFire_Reduced_6ch_05.wav"
+	}
+
+
+/// 3P ASSETS ///////
+
+
+	"rndwave"
+	{
+	"ducks"				"SFX,0.3a"
+	"ducks"				"Music,0.3a"
+	"volume"			"1.3"
+	"pitch"				"90,110"
+	"limit"				"1"
+
+	"delay"				"40"
+	"startDistance"     "20"
+    "peakDistance"      "20"
+    "startCurve"        "0"
+    "falloffStart"      "20"
+    "falloffEnd"        "2000"
+    "falloffCurve"      "5"
+    "clampVolume"       "0"
+
+	"wave"				"null.wav"
+
+	}
+
+	"rndwave"
+	{
+	"volume"			"5.5"
+	"pitch"				"90,110"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"delay"				"0"
+	"startDistance"     "20"
+    "peakDistance"      "20"
+    "startCurve"        "0"
+    "falloffStart"      "20"
+    "falloffEnd"        "2000"
+    "falloffCurve"      "0"
+    "clampVolume"       "0"
+
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Close_Reduced_2ch_01.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Close_Reduced_2ch_02.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Close_Reduced_2ch_03.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Close_Reduced_2ch_04.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Close_Reduced_2ch_05.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Close_Reduced_2ch_06.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"5.5"
+	"pitch"				"80,120"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     "20"
+    "peakDistance"      "20"
+    "startCurve"        "0"
+    "falloffStart"      "20"
+    "falloffEnd"        "5000"
+    "falloffCurve"      "0"
+    "clampVolume"       "0"
+
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Dist_Reduced_2ch_01.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Dist_Reduced_2ch_02.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Dist_Reduced_2ch_03.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Dist_Reduced_2ch_04.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_3p_WpnFire_Dist_Reduced_2ch_05.wav"
+
+	}
+}
+
+"SG_Twin_B.Fire_Suppressed"
+{
+
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_GunfireSuppressed,SFX_Weapons_Pilot_1P_GunfireSuppressed_SG"
+	"volumescale"			"1"
+	"pitch"				"95,105"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.5a:0,1000,0,0"
+		"ducks"				"SFX_AMB,0.5a:0,1000,0,0"
+		"ducks"				"Music,0.3a:0,1000,0,0"
+		//"ducks"				"DIAL_AI,0.3a:0,1000,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"500"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+
+	}
+
+	"rndwave"
+	{
+	"volume"			"3.5"
+	"limit"				"1"
+	"startDistance"     "0"
+    "peakDistance"      "0"
+    "startCurve"        "0"
+    "falloffStart"      "20"
+    "falloffEnd"        "1000"
+    "falloffCurve"      "5"
+    "clampVolume"       "0"
+
+	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_CenterMech_1ch_v1_01.wav"
+//	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_CenterMech_1ch_v1_02.wav"
+//	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_CenterMech_1ch_v1_03.wav"
+//	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_CenterMech_1ch_v1_04.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"limit"				"1"
+	"startDistance"     "0"
+    "peakDistance"      "0"
+    "startCurve"        "0"
+    "falloffStart"      "20"
+    "falloffEnd"        "30"
+    "falloffCurve"      "0"
+    "clampVolume"       "0"
+		"channels"
+		{
+			"1"				"LFE,1"
+		}
+	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LFEThump_1ch_v1_01.wav"
+	}
+
+	"rndwave"
+	{
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+	"volume"			"3"
+	"pitch"				"170"
+	"limit"				"1"
+	"startDistance"     "0"
+   	"peakDistance"      "0"
+ 	"startCurve"        "0"
+ 	"falloffStart"      "20"
+	"falloffEnd"        "2000"
+	"falloffCurve"      "0"
+	"clampVolume"       "0"
+
+
+	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LRKathump_2ch_v1_01.wav"
+//	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LRKathump_2ch_v1_02.wav"
+//	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LRKathump_2ch_v1_03.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LRKathump_2ch_v1_04.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"2"
+	"pitch"				"150,170"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     "0"
+    "peakDistance"      "0"
+    "startCurve"        "0"
+    "falloffStart"      "20"
+    "falloffEnd"        "2000"
+    "falloffCurve"      "0"
+    "clampVolume"       "0"
+
+	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LSRSSlapTail_2ch_v1_01.wav"
+	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LSRSSlapTail_2ch_v1_02.wav"
+//	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LSRSSlapTail_2ch_v1_03.wav"
+//	"wave"				"weapons/shotgun/Wpn_Shotgun_WpnFire_LSRSSlapTail_2ch_v1_04.wav"
+	}
+
+}
+
+"SG_Twin_B.Reload_Open"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Shotgun"
+	"volume"			"1"
+	"radius"			"400"
+	"pitch"				"80,90"
+
+	"rndwave"
+	{
+	"wave"				"weapons\Wingman\Wpn_Wingman_Reload_Open_fr7_2ch_v1_01.wav"
+	}
+
+}
+
+"SG_Twin_B.Reload_Eject"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Shotgun"
+	"volume"			"1.5"
+	"radius"			"400"
+	"pitch"				"90,110"
+
+	"rndwave"
+	{
+	"wave"				"weapons\Wingman\Wpn_Wingman_Reload_Eject_fr21_2ch_v1_01.wav"
+	}
+
+}
+
+"SG_Twin_B.Reload_InsertMag"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Shotgun"
+	"volume"			"1.5"
+	"radius"			"400"
+	"pitch"				"90,110"
+
+	"rndwave"
+	{
+	"wave"				"weapons\Wingman\Wpn_Wingman_Reload_InsertMag_fr47_2ch_v1_01.wav"
+	}
+
+}
+
+"SG_Twin_B.Reload_Close"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Shotgun"
+	"volume"			"1.5"
+	"radius"			"400"
+	"pitch"				"90,110"
+
+	"rndwave"
+	{
+	"wave"				"weapons\R101\Wpn_R101_FirstDraw_fr19_2ch_v1_02.wav"
+	}
+
+}
+
+"SG_Twin_B.Reload_HandGrab"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads,SFX_Weapons_Pilot_1P_Reloads_Shotgun"
+	"volume"			"1.5"
+	"radius"			"400"
+	"pitch"				"90,110"
+
+	"rndwave"
+	{
+	"wave"				"weapons\shotgun/Wpn_Shotgun_Reload_HandGrab_2ch_v1_01.wav"
+	}
+
+}
+
+"SG_Twin_B.shell_drop"
+{
+
+	"volume"			"0.65,1.0"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Reloads_Shotgun"
+	"radius"			"200"
+	"pitch"				"90,100"
+	"rndwave"
+	{
+		"limit"				"1"
+		"wave"				"weapons/shells/12_gauge_shotgun_shell_drop_01.wav"
+		"wave"				"weapons/shells/12_gauge_shotgun_shell_drop_02.wav"
+		"wave"				"weapons/shells/12_gauge_shotgun_shell_drop_03.wav"
+		"wave"				"weapons/shells/12_gauge_shotgun_shell_drop_04.wav"
+		"wave"				"weapons/shells/12_gauge_shotgun_shell_drop_05.wav"
+	}
+}
+
+"SG_twinB.ADS_In"
+{
+
+
+	"volume"			"0.95"
+	"radius"			"400"
+	"volumeScale"		"2.5"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"pitch"				"110,120"
+
+	"rndwave"
+   	{
+	"wave"				"weapons\R101\R101_1P_ADSIn_v2_1.wav"
+	"wave"				"weapons\R101\R101_1P_ADSIn_v2_2.wav"
+	"wave"				"weapons\R101\R101_1P_ADSIn_v2_3.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_4.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_5.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_6.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_7.wav"
+	}
+}
+
+"SG_twinB.ADS_Out"
+{
+
+
+	"volume"			"0.95"
+	"radius"			"400"
+	"volumeScale"		"2.5"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"pitch"				"110,120"
+
+	"rndwave"
+   	{
+	"wave"				"weapons\R101\R101_1P_ADSIn_v2_1.wav"
+	"wave"				"weapons\R101\R101_1P_ADSIn_v2_2.wav"
+	"wave"				"weapons\R101\R101_1P_ADSIn_v2_3.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_4.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_5.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_6.wav"
+//	"wave"				"weapons\R101\R101_1P_ADSIn_v2_7.wav"
+	}
+}
+
+"SG_twinB.Draw"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"volume"			"0.95, 1.2"
+	"volumeScale"		"3"
+	"pitch"				"98,104"
+	"radius"			"0"
+	"rndwave"
+	{
+
+	"wave"				"weapons\Foley\Wpn_Rifle_Draw_LR_v1_1.wav"
+//	"wave"				"weapons\Foley\Wpn_Rifle_Draw_LR_v1_2.wav"
+//	"wave"				"weapons\Foley\Wpn_Rifle_Draw_LR_v1_3.wav"
+
+	}
+}
+
+"SG_twinB.Holster"
+
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Handling"
+	"volume"			"0.95, 1.2"
+	"volumeScale"		"3"
+	"pitch"				"98,104"
+	"radius"			"0"
+	"rndwave"
+	{
+	"wave"				"weapons\Foley\Wpn_Rifle_Holster_LR_v1_1.wav"
+//	"wave"				"weapons\Foley\Wpn_Rifle_Holster_LR_v1_2.wav"
+//	"wave"				"weapons\Foley\Wpn_Rifle_Holster_LR_v1_3.wav"
+	}
+}
+
+///////////////
+// Titan Charge Cannon
+///////////////
+
+"Weapon_Charge_Cannon_Level_1"
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volumescale"			"1.4"
+	"pitch"				"91,107"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.7a:0,1000,0,0"
+		"ducks"				"SFX_AMB,0.7a:0,1000,0,0"
+		"ducks"				"Music,0.5a:0,1000,0,0"
+		//"ducks"				"DIAL_AI,0.5a:0,1000,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"5.5"
+	"pitch"				"95,110"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"80"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level1_Reduced_6ch_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level1_Reduced_6ch_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level1_Reduced_6ch_03.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level1_Reduced_6ch_04.wav"
+	}
+
+
+///// 3P ASSETS ///////
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_03.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"pitch"				"80,110"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"5000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_03.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"2.1"
+	"pitch"				"60,90"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"6000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_01.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_02.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_03.wav"
+	}
+
+}
+
+"Weapon_Charge_Cannon_Level_2"
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volumescale"			"1.3"
+	"pitch"				"91,107"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.7a:0,2000,0,0"
+		"ducks"				"SFX_AMB,0.7a:0,2000,0,0"
+		"ducks"				"Music,0.5a:0,2000,0,0"
+		//"ducks"				"DIAL_AI,0.5a:0,2000,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"5.5"
+	"pitch"				"95,110"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"80"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_03.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_04.wav"
+	}
+
+///// 3P ASSETS ///////
+
+
+		"rndwave"
+	{
+	"volume"			"3"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_03.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"pitch"				"60,90"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"6000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_01.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_02.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_03.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"pitch"				"60,90"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"5000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_03.wav"
+	}
+
+}
+
+"Weapon_Charge_Cannon_Level_3"
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volumescale"			"1.2"
+	"pitch"				"91,107"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.7a:0,2000,0,0"
+		"ducks"				"SFX_AMB,0.7a:0,2000,0,0"
+		"ducks"				"Music,0.5a:0,2000,0,0"
+		//"ducks"				"DIAL_AI,0.5a:0,2000,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"5.5"
+	"pitch"				"95,110"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"80"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_03.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level3_Reduced_6ch_04.wav"
+	}
+
+///// 3P ASSETS ///////
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"pitch"				"100"
+	"delay"				"100"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"4000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Med_Energy_2ch_v1_01.wav"
+	}
+
+		"rndwave"
+	{
+	"volume"			"3"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_03.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"pitch"				"60,90"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"6000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_01.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_02.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Dist_Ballistic_2ch_v1_03.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"pitch"				"60,90"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"5000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_03.wav"
+	}
+
+}
+
+"Weapon_Charge_Cannon_Level_4"
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volumescale"			"1.4"
+	"pitch"				"100"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+		"ducks"				"SFX_Weapons_AI,0.7a:0,2000,0,0"
+		"ducks"				"SFX_AMB,0.7a:0,2000,0,0"
+		"ducks"				"Music,0.5a:0,2000,0,0"
+		//"ducks"				"DIAL_AI,0.5a:0,2000,0,0"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"20"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"null.wav"
+
+	}
+
+	"rndwave"
+	{
+	"volume"			"5.5"
+	"pitch"				"95,110"
+	"limit"				"1"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"70"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level4_Reduced_6ch_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level4_Reduced_6ch_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level4_Reduced_6ch_03.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_1p_WpnFire_Level4_Reduced_6ch_04.wav"
+	}
+
+
+///// 3P ASSETS ///////
+
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Ballistic_2ch_v1_01.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Ballistic_2ch_v1_02.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Med_Ballistic_2ch_v1_03.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_High_BallisticSweetener_2ch_v1_01.wav"
+	}
+
+		"rndwave"
+	{
+	"volume"			"3"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"3000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Energy_2ch_v1_03.wav"
+	}
+
+
+	"rndwave"
+	{
+	"volume"			"2.6"
+	"limit"				"1"
+	"delay"				"120"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"6000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_High_Energy_2ch_v1_01.wav"
+//	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_High_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_High_Energy_2ch_v1_03.wav"
+	}
+
+	"rndwave"
+	{
+	"volume"			"3"
+	"pitch"				"60,90"
+	"delay"				"0"
+	"limit"				"1"
+	"flags"				"spatialized"
+	"panWidth"			"45"
+	"folddownDistance"	"200"
+	"startDistance"     		"70"
+ 	"peakDistance"     			"70"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"70"
+ 	"falloffEnd"        		"5000"
+ 	"falloffCurve"      		"5"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_01.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_02.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniper_3p_WpnFire_Low_Dist_Energy_2ch_v1_03.wav"
+	}
+
+}
+
+
+"Weapon_Charge_Cannon_ChargeStart"
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volume"			"4"
+	"pitch"				"100"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+	"limit"				"2"
+	"panwidth"			"45"
+
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"100"
+ 	"falloffEnd"        		"200"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniperRifle_1p_ChargeUp_LR_v3_A.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniperRifle_1p_ChargeUp_LR_v3_B.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniperRifle_1p_ChargeUp_LR_v3_C.wav"
+	}
+
+	"rndwave"
+   	{
+	"limit"				"2"
+	"flags"				"spatialized"
+	"panwidth"			"45"
+	"folddownDistance"	"200"
+
+	"startDistance"     		"50"
+ 	"peakDistance"     			"75"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"150"
+ 	"falloffEnd"        		"2000"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniperRifle_1p_ChargeUp_LR_v3_A.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniperRifle_1p_ChargeUp_LR_v3_B.wav"
+	"wave"				"weapons\Titan_Sniper\Wpn_TitanSniperRifle_1p_ChargeUp_LR_v3_C.wav"
+	}
+}
+
+"Weapon_Titan_Charge_Cannon_Loop"
+{
+   "mixgroup"                             "weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Gunfire,SFX_Weapons_Pilot_1P_Gunfire_ChargeRifle"
+   "volume"                                "6"
+   "pitch"                                  "100"
+   "radius"                      			"500"
+   "flags"                                  "loop"
+
+   "rndwave"
+   {
+	"limit"                                   "1"
+   "channels"
+   {
+   	  "1"				                      "C,1"
+   }
+   	"wave"                                   "weapons/Titan_Charge_Cannon/Wpn_ChargeCannon_1p_Idle_EnergyLoop_2ch_v1_01.wav"
+   }
+}
+
+
+"Weapon_Charge_Cannon_LevelTick_1"
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volume"			"6"
+	"pitch"				"100"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+	"limit"				"2"
+		"channels"
+		{
+			"1"				"C,1"
+		}
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"60"
+ 	"falloffEnd"        		"60"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons/Titan_Sniper/Wpn_TitanSniper_1p_BulletTick1_2ch_v1_01.wav"
+	}
+}
+
+
+"Weapon_Charge_Cannon_LevelTick_2"
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volume"			"6"
+	"pitch"				"110"
+	"flags"				"layered"
+
+	"rndwave"
+   	{
+	"limit"				"2"
+		"channels"
+		{
+			"1"				"C,1"
+		}
+	"startDistance"     		"0"
+ 	"peakDistance"     			"0"
+ 	"startCurve"       			"0"
+ 	"falloffStart"      		"60"
+ 	"falloffEnd"        		"60"
+ 	"falloffCurve"      		"0"
+ 	"clampVolume"       		"0"
+
+	"wave"				"weapons/Titan_Sniper/Wpn_TitanSniper_1p_BulletTick1_2ch_v1_01.wav"
+	}
+}
+
+
+"Weapon_Charge_Cannon_LevelTick_Final"
+{
+	"mixgroup"                   "weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+           "volume"                                "6"
+           "pitch"                                  "100"
+           "flags"                                   "layered"
+
+           "rndwave"
+           {
+           "limit"                                   "2"
+                     "channels"
+                     {
+                                "1"                                       "C,1"
+                     }
+           "startDistance"                         "0"
+          "peakDistance"                                   "0"
+          "startCurve"                                       "0"
+          "falloffStart"                 "60"
+          "falloffEnd"                             "60"
+          "falloffCurve"                           "0"
+          "clampVolume"                        "0"
+
+	// TODO: Replace with real sound when custom sounds become a thing
+
+	"wave"		"null.wav"
+   //"wave"                                  "weapons/Titan_Charge_Cannon/Wpn_ChargeCannon_1p_Trigger_2ch_v1_01.wav"
+   }
+}
+
+
+"Weapon_chargecannon.Fire" //not used sound
+{
+	"mixgroup"		"weapon,SFX,SFX_Weapons,SFX_Weapons_Titan_1P,SFX_Weapons_Titan_1P_Gunfire,SFX_Weapons_Titan_1P_Gunfire_TitanSniper"
+	"volume"			"1.0"
+	"radius"			"4000"
+
+	"pitch"				"91,107"
+	"rndwave"
+	{
+	"wave"				"@weapons/player_titan_sniper_1.wav"
+	"wave"				"@weapons/player_titan_sniper_2.wav"
+	"wave"				"@weapons/player_titan_sniper_3.wav"
+	"wave"				"@weapons/player_titan_sniper_4.wav"
+	}
+
 }
