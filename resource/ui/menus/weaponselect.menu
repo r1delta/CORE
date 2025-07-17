@@ -62,7 +62,7 @@ resource/ui/menus/weaponselect.menu
 			scriptID				0
 			xpos					4
 			ypos					-10
-			navUp					Button11
+			navUp					Button19
 			navDown					Button1
 			tabPosition				1
 			pin_to_sibling			MenuPanel
@@ -199,6 +199,103 @@ resource/ui/menus/weaponselect.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			navUp					Button10
+			navDown					Button12
+		}
+
+		Button12
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				12
+			pin_to_sibling			Button11
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button11
+			navDown					Button13
+		}
+		Button13
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				13
+			pin_to_sibling			Button12
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button12
+			navDown					Button14
+		}
+		Button14
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				14
+			pin_to_sibling			Button13
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button13
+			navDown					Button15
+		}
+		Button15
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				15
+			pin_to_sibling			Button14
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button14
+			navDown					Button16
+		}
+		Button16
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				16
+			pin_to_sibling			Button15
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button15
+			navDown					Button17
+		}
+		Button17
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				17
+			pin_to_sibling			Button16
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button16
+			navDown					Button18
+		}
+		Button18
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				18
+			pin_to_sibling			Button17
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button17
+			navDown					Button19
+		}
+		Button19
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				PageClass
+			scriptID				19
+			pin_to_sibling			Button18
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					Button18
 			navDown					Button0
 		}
 
@@ -848,6 +945,45 @@ resource/ui/menus/weaponselect.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Tried to add this but i just couldnt figure it out
+
+//		PCScrollUpButton
+//		{
+//			ControlName					BaseModHybridButton
+//			InheritProperties			MenuArrowButtonUp
+//			classname					WeaponListScrollUpClass
+//
+//			pin_to_sibling				MenuPanel
+//			pin_corner_to_sibling		6
+//			pin_to_sibling_corner		4
+//
+//			ypos						-2
+//
+//			navUp						Button16
+//			navDown						Button0
+//		}
+//
+//		PCScrollDownButton
+//		{
+//			ControlName					BaseModHybridButton
+//			InheritProperties			MenuArrowButtonDown
+//			classname 					WeaponListScrollDownClass
+//
+//			pin_to_sibling				MenuPanel
+//			pin_corner_to_sibling		4
+//			pin_to_sibling_corner		6
+//
+//			ypos						-18
+//
+//			navUp						Button16
+//			navDown						Button0
+//		}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		FooterButtons
 		{
