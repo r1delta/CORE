@@ -3774,7 +3774,7 @@ function ShouldShowXPBar( player )
 	if ( GetLevel( player ) >= MAX_LEVEL )
 		return false
 
-	if ( !PlayerProgressionAllowed( player ) )
+	if ( IsPrivateMatch() && !IsDelta() )
 		return false
 
 	return true
