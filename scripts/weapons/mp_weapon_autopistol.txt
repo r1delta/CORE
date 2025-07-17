@@ -250,15 +250,16 @@ WeaponData
 	"sway_rotate_attach_blend_time_zoomed"			"0.2"
 	"sway_rotate_gain_zoomed"						"12"
 
-	"sway_min_yaw_zoomed"							"-0.14"
-	"sway_max_yaw_zoomed"							"0.14"
-	"sway_turn_left_rotate_yaw_zoomed"				"-0.19"
-	"sway_turn_right_rotate_yaw_zoomed"				"0.19"
+	// New values copied over from the p2011
+	"sway_min_yaw_zoomed"							"-0.053" //-0.14
+	"sway_max_yaw_zoomed"							"0.053" //0.14
+	"sway_turn_left_rotate_yaw_zoomed"				"-0.0585" //-0.19
+	"sway_turn_right_rotate_yaw_zoomed"				"0.0585" //0.19
 
-	"sway_min_pitch_zoomed"  						"-0.12"
-	"sway_max_pitch_zoomed"  						"0.12"
-	"sway_turn_up_rotate_pitch_zoomed"				"0.19"
-	"sway_turn_down_rotate_pitch_zoomed"			"-0.19"
+	"sway_min_pitch_zoomed"  						"-0.051" //-0.12
+	"sway_max_pitch_zoomed"  						"0.051" //0.12
+	"sway_turn_up_rotate_pitch_zoomed"				"0.059" //0.19
+	"sway_turn_down_rotate_pitch_zoomed"			"-0.059" //-0.19
 
 	// NPC
 	"proficiency_poor_spreadscale"					"7.0"
