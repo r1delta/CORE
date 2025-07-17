@@ -3060,7 +3060,8 @@ function ObserverEntities( player )
 	player.SetObserverTarget( null ) // makes code look for a player to chase
 }
 
-
+// This doesnt even do anything as far as i can tell
+/*
 if ( !reloadingScripts )
 {
 	level.megaMaps <- {}
@@ -3082,16 +3083,17 @@ if ( !reloadingScripts )
 	level.megaMaps[ "mp_weapon_mega15" ] <- "mp_titanweapon_arc_cannon"
 	level.megaMaps[ "mp_weapon_mega16" ] <- "mp_titanweapon_40mm"
 }
+*/
 
 function CodeCallback_GetWeaponDamageSourceId( weapon )
 {
 	local classname = weapon.GetClassname()
 
 	//Assert( classname in getconsttable().eDamageSourceId, classname + " not added to eDamageSourceId enum" )
-	if ( classname in level.megaMaps )
-	{
-		classname = level.megaMaps[ classname ]
-	}
+	//if ( classname in level.megaMaps )
+	//{
+	//	classname = level.megaMaps[ classname ]
+	//}
 	local damageSourceInt = getconsttable().eDamageSourceId[ classname ]
 
 	Assert( damageSourceInt in damageSourceStrings, classname + " not added to damageSourceStrings table" )
