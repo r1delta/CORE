@@ -3738,7 +3738,7 @@ else
 		if ( lvl != player.cv.lastLevel )
 		{
 			cockpit.s.xpBar.pastFill.Hide()
-			if ( lvl == MAX_LEVEL || !PlayerProgressionAllowed( player ) )
+			if ( lvl == MAX_LEVEL || ( IsPrivateMatch() && !IsDelta() ) ) //!PlayerProgressionAllowed( player )
 				cockpit.s.xpBarGroup.Hide()
 
 			cockpit.s.xpBar.fill.SetBarProgressRemap( GetLevelProgressStart( player ), GetLevelProgressEnd( player ), 0, 1 )
