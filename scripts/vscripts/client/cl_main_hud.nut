@@ -3738,7 +3738,7 @@ else
 		if ( lvl != player.cv.lastLevel )
 		{
 			cockpit.s.xpBar.pastFill.Hide()
-			if ( lvl == MAX_LEVEL || ( IsPrivateMatch() && !IsDelta() ) ) //!PlayerProgressionAllowed( player )
+			if ( lvl == MAX_LEVEL || IsNonDeltaPrivateMatch() ) //!PlayerProgressionAllowed( player )
 				cockpit.s.xpBarGroup.Hide()
 
 			cockpit.s.xpBar.fill.SetBarProgressRemap( GetLevelProgressStart( player ), GetLevelProgressEnd( player ), 0, 1 )
@@ -3774,7 +3774,7 @@ function ShouldShowXPBar( player )
 	if ( GetLevel( player ) >= MAX_LEVEL )
 		return false
 
-	if ( IsPrivateMatch() && !IsDelta() )
+	if ( IsNonDeltaPrivateMatch() )
 		return false
 
 	return true
