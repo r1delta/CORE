@@ -379,14 +379,6 @@ function PlayerProgressionAllowed( player = null )
 	return true
 }
 
-function IsNonDeltaPrivateMatch()
-{
-	if ( IsPrivateMatch() && !IsDelta() )
-		return true
-
-	return false
-}
-
 function UpdateStarPanelData( panel, mapName, modeName )
 {
 	local gameModeListCount = 7
