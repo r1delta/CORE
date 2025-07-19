@@ -43,6 +43,10 @@ function OnOpenOptionsMenu( menu )
 
 	foreach ( button in buttons )
 		button.SetEnabled( enable )
+
+	local elements = GetElementsByClassname( menu, "MenuItemDescriptionClass" )
+	foreach ( element in elements )
+		element.EnableKeyBindingIcons()
 }
 
 function OnCloseOptionsMenu()
