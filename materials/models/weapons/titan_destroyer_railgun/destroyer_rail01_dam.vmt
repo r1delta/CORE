@@ -1,0 +1,38 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+
+	"$surfaceprop" "metal"
+	"$basetexture" "models\weapons\titan_destroyer_railgun\destroyer_rail01_dam_col"
+	"$bumpmap" "models\weapons\titan_destroyer_railgun\destroyer_rail01_dam_nml"
+	"$envmap" "env_cubemap"
+	"$reflectiontint" "models\weapons\titan_destroyer_railgun\destroyer_rail01_dam_spc"
+	"$reflectiontintshininess" "models\weapons\titan_destroyer_railgun\destroyer_rail01_dam_spc"
+	"$reflectiontintcolor" "1"
+	"$fresnelamount" "1"
+	"$fresnelintensity" "10"
+	"$fresnelcurvesharpness" "1"
+	"$envmapfresnel" "1"
+	"$envmapLambertian" "3"
+	"$envmaptint" "[1 1 1.2]"
+	"$EnvmapSharpnessBias" "-10"
+	"$specularboost" "5"
+	"$speculartint" "[1 1 1.5]"
+	"$shininess" "models\weapons\titan_destroyer_railgun\destroyer_rail01_dam_exp"
+	"$rimlight" "1"
+	"$rimlighttint" "[1 1 1]"
+	"$rimlightintensity" "1"
+	"$selfillum" "1"
+	"$selfillummask" "models\weapons\titan_destroyer_railgun\destroyer_rail01_ilm"
+	//Start of freehand input from reVaMpT//
+
+	Proxies
+	{
+		EntityIDLightColor
+		{
+			isTitan		1
+			resultvar	$selfillumtint
+		}
+	}
+}

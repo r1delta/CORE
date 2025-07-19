@@ -1,0 +1,49 @@
+"Basic"
+{
+	"$surfaceprop" "default"
+
+	"$basetexture" "models\weapons\attachments\ammo_counter_meter_col"
+	"$selfillummask" "models\weapons\attachments\ammo_counter_meter_ilm"
+	"$translucent" "1"
+	//"$selfillum" "1"
+	
+	"$ammo" "0"
+	"$maxClipAmmo" "0"
+
+	"$colfrachigh" "{133 231 255}"
+	"$colfraclow" "{255 75 66}"
+
+	"$valueone" "1"
+
+	"Proxies"
+	{
+		"ClipAmmo"
+		{
+			"resultVar" "$ammo"
+		}
+		"MaxClipAmmo"
+		{
+			"resultVar" "$maxClipAmmo"
+		}
+
+		"Subtract"
+		{
+			"srcVar1"		"$maxClipAmmo"
+			"srcVar2"		"$valueone"
+			"resultVar"		"$maxClipAmmo"
+		}
+
+		//	if ( srcVar1 > srcVar2 )
+		//		resultVar = greaterVar
+		//	else
+		//		resultVar = LessEqualVar
+		"LessOrEqual"
+		{
+			"lessEqualVar"	"$colfraclow"
+			"greaterVar"	"$colfrachigh"
+			"srcVar1"		"$ammo"
+			"srcVar2"		"$maxClipAmmo"
+			"resultVar"		"$color"
+		}
+	}
+}

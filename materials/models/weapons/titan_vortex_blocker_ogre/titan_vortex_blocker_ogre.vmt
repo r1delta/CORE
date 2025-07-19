@@ -1,0 +1,41 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+
+	"$surfaceprop" "metal"
+	"$basetexture" "Models\Weapons\titan_vortex_blocker_ogre\titan_vortex_blocker_ogre_col"
+	"$bumpmap" "Models\Weapons\titan_vortex_blocker_ogre\titan_vortex_blocker_ogre_nml"
+	"$reflectiontintshininess" "Models\Weapons\titan_vortex_blocker_ogre\titan_vortex_blocker_ogre_spc"
+	"$shininess" "Models\Weapons\titan_vortex_blocker_ogre\titan_vortex_blocker_ogre_exp"
+	"$envmap" "env_cubemap"
+	"$reflectiontint" "Models\Weapons\titan_vortex_blocker_ogre\titan_vortex_blocker_ogre_spc"
+	"$reflectiontintcolor" "1"
+	"$fresnelamount" "1"
+	"$fresnelintensity" "20"
+	"$fresnelcurvesharpness" "1"
+	"$envmapfresnel" "1"
+	"$envmapLambertian" "3"
+	"$envmaptint" "[1 1 1]"
+	"$EnvmapSharpnessBias" "0"
+	"$specularboost" "2"
+	"$speculartint" "[1 1 1]"
+	"$selfillum" "1"
+	"$selfillumtint" "[1 1 7]"
+	"$selfillummask" "Models\Weapons\titan_vortex_blocker_ogre\titan_vortex_blocker_ogre_glw"
+	//Start of freehand input from reVaMpT//
+
+	// TFO shit im pretty sure
+	// dont think they do anything here but still disabling them just in case
+
+	//"$liverymap" ""
+	//"$livery" "1"
+	//"$liveryColor0" "[0.176 0.408 0.282]"
+	//"$liveryColor1" "[0.224 0.235 1.0]"
+	//"$liveryColor2" "[0.569 0.259 0.114]"
+	//"$liverySpecular" "1.00"
+	//"$liveryReflection" "0.001"
+	//"$liveryOpThreshold" "-0.2"
+	//"$seconduvset" "1"
+
+}

@@ -1,0 +1,19 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"Basic"
+{
+	"$vertexcolor" "1"
+	"$vertcoloristint" "1"
+	"$vertexalpha" "1"
+	"$additive" "1"
+
+	"$surfaceprop" "default"
+	"$basetexture" "vgui\HUD\dpad_call_in_charge_cannon"
+	"$translucent" "1"
+	//Start of freehand input from reVaMpT//
+
+	
+	            
+	                "$detailscale" "8"     
+	                "$vertexalpha" "1"
+}

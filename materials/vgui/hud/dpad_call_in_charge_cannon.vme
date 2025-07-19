@@ -1,0 +1,80 @@
+comboBox_mat_type, Basic
+comboBox_surface, default
+comboBox_alpha, Blend
+opacPath, 
+color1Path, C:\Depot\r1dev\content\r1\materialsrc\vgui\HUD\dpad_call_in_charge_cannon.tga
+txt_field_path, vgui\HUD\
+txt_field_name, dpad_call_in_charge_cannon
+checkBox_oppCopy, False
+normal1Path, 
+comboBox_normal_comp, default - 4bpp
+checkBox_phong_boost, 1
+spcMaskPath, 
+spcMaskColor, False
+textBox_envSharpMult, 0
+tintPickEnvR, 1
+tintPickEnvG, 1
+tintPickEnvB, 1
+tintPickPhongR, 1
+tintPickPhongG, 1
+tintPickPhongB, 1
+textBox_env_boost, 1
+checkBox_tintShare, True
+checkBoxFresnel, True
+textBoxFresnel, 1
+trackBarFrenselSharpness, 1
+trackBarLambertian, 200
+checkBox_simple_exp, True
+textBox_simple_exp, 1
+expPath, 
+tintPickRimR, 1
+tintPickRimG, 1
+tintPickRimB, 1
+checkBox_rim, False
+textBox_rimIntensity, 1
+envSharpMult, 0
+checkBox_envmapLightScale, False
+textBox_envmapLightScale, .95
+blendmapPath, 
+textBox_vme1Stats, 
+textBox_vme2Stats, 
+textBox_vme1, 
+textBox_vme2, 
+checkBox_xformTex2, False
+textBox_xform2_centerU, .5
+textBox_xform2_centerV, .5
+textBox_xform2_scaleU, 1
+textBox_xform2_scaleV, 1
+textBox_xform2_xlateU, 0
+textBox_xform2_xlateV, 0
+textBox_xform2_rot, 0
+checkBox_xformBlend2Tex2, False
+checkBox_illum, False
+detailScale, 8
+detailColorPath, 
+detailNormalPath, 
+illumPath, 
+tintPickIlmR, 1
+tintPickIlmG, 1
+tintPickIlmB, 1
+checkBox_illum_tint, False
+textBox_selfIllumBoost, 1
+textBox_free_edit, <{r}><{n}>            <{r}><{n}>                "$detailscale" "8"     <{r}><{n}>                "$vertexalpha" "1"
+checkBox_nocull, False
+comboBox_vertexColor, vertex color as tint
+comboBox_mips, no mip
+checkBox_noLod, True
+checkBox_clampHorz, False
+checkBox_clampVert, False
+checkBox_decal, False
+textBox_decalScale, .25
+checkBox_additive, True
+checkBox_pseudotranslucent, False
+checkBox_nofog, False
+checkBox_ignoreZ, False
+checkBox_noDecal, False
+checkBox_bulletPass, False
+checkBox_godray, False
+textBox_MinFadeDist, 5
+textBox_MaxFadeDist, 15
+

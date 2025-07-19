@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/items/titanweapon_minigun"
+	$translucent		1
+	$vertexalpha		1
+}

@@ -1,0 +1,27 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+	"$vertexcolor" "1"
+	//"$vertexalpha" "1"
+
+	"$surfaceprop" "metal"
+	"$basetexture" "models\weapons\twinBshotgun\twinBshotgun_col"
+	"$bumpmap" "models\weapons\twinBshotgun\twinBshotgun_nml"
+	"$envmap" "env_cubemap"
+	"$reflectiontint" "models\weapons\twinBshotgun\twinBshotgun_spc"
+	"$reflectiontintshininess" "models\weapons\twinBshotgun\twinBshotgun_spc"
+	"$reflectiontintcolor" "1"
+	"$fresnelamount" "2"
+	"$fresnelintensity" "15"
+	"$fresnelcurvesharpness" "1"
+	"$envmapfresnel" "1"
+	"$envmapLambertian" "2"
+	"$envmaptint" "[1 1 1]"
+	"$EnvmapSharpnessBias" "-4"
+	"$specularboost" "1"
+	"$speculartint" "[1 1 1]"
+	"$shininess" "models\weapons\twinBshotgun\twinBshotgun_exp"
+	"$selfillum" "1"
+	"$selfillummask" "models\weapons\twinBshotgun\twinBshotgun_ilm"
+}

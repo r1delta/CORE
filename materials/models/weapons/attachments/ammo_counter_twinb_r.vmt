@@ -1,0 +1,17 @@
+"Basic"
+{
+	"$surfaceprop" "default"
+
+	"$basetexture" "models\weapons\attachments\ammo_counter_meter_col"
+	"$selfillummask" "models\weapons\attachments\ammo_counter_meter_ilm"
+	"$translucent" "1"
+	//"$selfillum" "1"
+
+	"Proxies"
+	{
+		"ClipAmmoColor"
+		{
+			"resultVar"			"$color"
+		}
+	}
+}

@@ -1,0 +1,10 @@
+"Patch"
+{
+	"Include" "materials/models/weapons/twinbshotgun/shotgun_bullet.vmt"
+
+	"Insert"
+	{
+		// Looks kinda shit, but itll do for now
+		"$basetexture" "models/weapons/twinBshotgun/shotgun_bullet_spent_col"
+	}
+}
