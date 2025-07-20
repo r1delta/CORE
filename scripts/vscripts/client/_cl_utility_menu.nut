@@ -1275,6 +1275,33 @@ function EventNotification( eventID, entity, eventVal = null )
 			SetTimedEventNotification( 5.0, "#ROUND_WINNING_KILL_REPLAY_CANCELLED", null, null, EN_SHOW_OVER_SCREENFADE )
 			break
 
+		case eEventNotifications.TeammateAutobalanced:
+				local announcement = CAnnouncement( "" )
+				announcement.SetSubText( "#TEAMMATE_AUTOBALANCED" )
+				announcement.SetPurge( false )
+				AnnouncementFromClass( player, announcement )
+			break
+
+		case eEventNotifications.EnemyAutobalanced:
+				local announcement = CAnnouncement( "" )
+				announcement.SetSubText( "#ENEMY_AUTOBALANCED" )
+				announcement.SetPurge( false )
+				AnnouncementFromClass( player, announcement )
+			break
+
+		case eEventNotifications.YouWereAutobalanced:
+				local announcement = CAnnouncement( "" )
+				announcement.SetSubText( "#YOU_WERE_AUTOBALANCED" )
+				announcement.SetPurge( false )
+				AnnouncementFromClass( player, announcement )
+			break
+
+		case eEventNotifications.YouWillBeAutobalanced:
+				local announcement = CAnnouncement( "" )
+				announcement.SetSubText( "#YOU_WILL_BE_AUTOBALANCED" )
+				announcement.SetPurge( false )
+				AnnouncementFromClass( player, announcement )
+			break
 
 		default:
 			ClearEventNotification()

@@ -1668,6 +1668,10 @@ enum eEventNotifications
 	PlayerLeftTheTitan,
 	PlayerFirstStrike,
 	RoundWinningKillReplayCancelled,
+	TeammateAutobalanced,
+	EnemyAutobalanced,
+	YouWereAutobalanced,
+	YouWillBeAutobalanced,
 }
 
 enum ePrivateMatchStartState

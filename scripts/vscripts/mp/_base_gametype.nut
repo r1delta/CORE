@@ -2297,6 +2297,15 @@ function CodeCallback_OnPlayerRespawned( player )
 	// --- End Autobalance on Respawn ---
 }
 
+function AutobalancePlayer_Delayed( player, delay, forceSwitch = false )
+{
+	// TODO:
+	//MessageToPlayer( player, eEventNotifications.YouWillBeAutobalanced, null, delay )
+	wait delay
+
+	AutobalancePlayer( player, forceSwitch )
+}
+
 function AutobalancePlayer( player, forceSwitch = false )
 {
 	local currentTeam = player.GetTeam()
@@ -2994,6 +3003,18 @@ function NotifyClientsOfTeamChange( player, oldTeam, newTeam )
 	{
 		//if ( ent != player )
 		Remote.CallFunction_Replay( ent, "ServerCallback_PlayerChangedTeams", playerEHandle, oldTeam, newTeam )
+
+		if ( player != ent )
+		{
+			if ( ent.GetTeam() == oldTeam )
+				MessageToPlayer( ent, eEventNotifications.TeammateAutobalanced, null, null )
+			else if ( ent.GetTeam() == newTeam )
+				MessageToPlayer( ent, eEventNotifications.EnemyAutobalanced, null, null )
+		}
+		else
+		{
+			MessageToPlayer( ent, eEventNotifications.YouWereAutobalanced, null, null )
+		}
 	}
 }
 
