@@ -58,6 +58,8 @@ function main()
 	SetGameLostAnnouncement( "LostAnnouncementShort" )
 
 	thread FixStartSpawns()
+
+	Globalize( MFD_Pro_PlayerAutobalanced )
 }
 
 function FixStartSpawns()
@@ -136,6 +138,35 @@ function MFD_Pro_PlayerDisconnected( player )
 			SetWinner( otherTeam )
 		}
 
+	}
+
+	UpdateMarkedPlayers()
+}
+
+function MFD_Pro_PlayerAutobalanced( player, oldTeam, newTeam )
+{
+	if ( player == GetPendingMarked( oldTeam ) )
+	{
+		//printt( "Pending marked player auto-balanced" )
+		ClearPendingMarkedPlayers()
+		MessageToAll( eEventNotifications.MarkedForDeathMarkedAutobalanced )
+		level.ent.Signal( "PendingMarkedDisconnected" )
+		thread DelayUpdateMarkedPlayers() //Necessary due to timing issues
+		return
+	}
+	else if ( player == GetMarked( oldTeam ) )
+	{
+		//printt( "Marked player auto-balanced" )
+		ClearMarkedPlayers()
+		TellClientsMarkedChanged()
+		MessageToAll( eEventNotifications.MarkedForDeathMarkedAutobalanced )
+	}
+	else
+	{
+		if ( player.GetTeam() == oldTeam )
+			MessageToPlayer( player, eEventNotifications.TeammateAutobalanced, null, null )
+		else if ( player.GetTeam() == newTeam )
+			MessageToPlayer( player, eEventNotifications.EnemyAutobalanced, null, null )
 	}
 
 	UpdateMarkedPlayers()

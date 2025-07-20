@@ -1672,6 +1672,7 @@ enum eEventNotifications
 	EnemyAutobalanced,
 	YouWereAutobalanced,
 	YouWillBeAutobalanced,
+	MarkedForDeathMarkedAutobalanced,
 }
 
 enum ePrivateMatchStartState

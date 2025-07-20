@@ -35,6 +35,8 @@ function main()
 	AddCallback_OnPilotBecomesTitan( UpdateMinimapForMarkedOnClassChange )
 
 	GM_AddEndRoundFunc( MFD_RoundEnd )
+
+	Globalize( MFD_PlayerAutobalanced )
 }
 
 function SpawnMarkerEnt( ent )
@@ -130,6 +132,35 @@ function MARKED_FOR_DEATH_PlayerDisconnected( player )
 		ClearMarkedPlayers()
 		TellClientsMarkedChanged()
 		MessageToAll( eEventNotifications.MarkedForDeathMarkedDisconnected )
+	}
+
+	UpdateMarkedPlayers()
+}
+
+function MFD_PlayerAutobalanced( player, oldTeam, newTeam )
+{
+	if ( player == GetPendingMarked( oldTeam ) )
+	{
+		//printt( "Pending marked player auto-balanced" )
+		ClearPendingMarkedPlayers()
+		MessageToAll( eEventNotifications.MarkedForDeathMarkedAutobalanced )
+		level.ent.Signal( "PendingMarkedDisconnected" )
+		thread DelayUpdateMarkedPlayers() //Necessary due to timing issues
+		return
+	}
+	else if ( player == GetMarked( oldTeam ) )
+	{
+		//printt( "Marked player auto-balanced" )
+		ClearMarkedPlayers()
+		TellClientsMarkedChanged()
+		MessageToAll( eEventNotifications.MarkedForDeathMarkedAutobalanced )
+	}
+	else
+	{
+		if ( player.GetTeam() == oldTeam )
+			MessageToPlayer( player, eEventNotifications.TeammateAutobalanced, null, null )
+		else if ( player.GetTeam() == newTeam )
+			MessageToPlayer( player, eEventNotifications.EnemyAutobalanced, null, null )
 	}
 
 	UpdateMarkedPlayers()

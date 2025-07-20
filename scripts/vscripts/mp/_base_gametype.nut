@@ -2290,17 +2290,20 @@ function CodeCallback_OnPlayerRespawned( player )
 		}
 	}
 	// Standard autobalance for other modes
-	else if ( GetConVarBool( "delta_autoBalanceTeams" ) && GamePlayingOrSuddenDeath() && GAMETYPE != FFA && player.s.respawnCount > 1 )
+	else if ( GetConVarBool( "delta_autoBalanceTeams" ) )
 	{
 		AutobalancePlayer( player )
 	}
 	// --- End Autobalance on Respawn ---
 }
 
+// TODO: dont use this yet, its still missing a lot of checks for if the player is still alive and doing something
 function AutobalancePlayer_Delayed( player, delay, forceSwitch = false )
 {
-	// TODO:
-	//MessageToPlayer( player, eEventNotifications.YouWillBeAutobalanced, null, delay )
+	player.EndSignal( "OnDeath" )
+	player.EndSignal( "OnDestroy" )
+
+	MessageToPlayer( player, eEventNotifications.YouWillBeAutobalanced, null, Time() + delay )
 	wait delay
 
 	AutobalancePlayer( player, forceSwitch )
@@ -2308,6 +2311,9 @@ function AutobalancePlayer_Delayed( player, delay, forceSwitch = false )
 
 function AutobalancePlayer( player, forceSwitch = false )
 {
+	if ( !ShouldAutobalancePlayer( player ) )
+		return
+
 	local currentTeam = player.GetTeam()
 	local otherTeam = GetOtherTeam( currentTeam )
 	local currentTeamCount = GetTeamPlayerCount( currentTeam )
@@ -2323,6 +2329,18 @@ function AutobalancePlayer( player, forceSwitch = false )
 
 		// Store pet titan before switching
 		local petTitan = player.GetPetTitan()
+
+		// Prevent player from automatically picking up the flag right after dropping it
+		if ( !( "forceDisableFlagTouch" in player.s ) )
+			player.s.forceDisableFlagTouch <- true
+		else
+			player.s.forceDisableFlagTouch = true
+
+		// Drop flag if the player has it
+		if ( ( GameRules.GetGameMode() == CAPTURE_THE_FLAG || GameRules.GetGameMode() == CAPTURE_THE_FLAG_PRO ) && PlayerHasEnemyFlag( player ) )
+		{
+			DropFlag( player )
+		}
 
 		// Switch player team
 		player.TrueTeamSwitch()
@@ -2390,7 +2408,51 @@ function AutobalancePlayer( player, forceSwitch = false )
 		}
 
 		NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
+
+		if ( GameRules.GetGameMode() == MARKED_FOR_DEATH )
+		{
+			MFD_PlayerAutobalanced( player, currentTeam, newTeam )
+		}
+		else if ( GameRules.GetGameMode() == MARKED_FOR_DEATH_PRO )
+		{
+			MFD_Pro_PlayerAutobalanced( player, currentTeam, newTeam )
+		}
+
+		thread PostAutobalanceThink( player )
 	}
+}
+
+function ShouldAutobalancePlayer( player )
+{
+	if ( !GamePlayingOrSuddenDeath() )
+		return false
+
+	if ( GetGameState() >= eGameState.Postmatch )
+		return false
+
+	if ( GameRules.GetGameMode() == COOPERATIVE )
+		return false
+
+	if ( GAMETYPE == FFA )
+		return false
+
+	if ( player.s.respawnCount < 1 )
+		return false
+
+	// TODO: if a player gets autobalanced while in a titan, they turn into a pilot with titan abilities
+	// Remove when thats fixed
+	if ( player.IsTitan() )
+		return false
+
+	return true
+}
+
+function PostAutobalanceThink( player )
+{
+	wait 2
+
+	if ( player )
+		player.s.forceDisableFlagTouch = false
 }
 
 function GetEmbarkPlayer( titan )
@@ -3003,6 +3065,9 @@ function NotifyClientsOfTeamChange( player, oldTeam, newTeam )
 	{
 		//if ( ent != player )
 		Remote.CallFunction_Replay( ent, "ServerCallback_PlayerChangedTeams", playerEHandle, oldTeam, newTeam )
+
+		if ( GameRules.GetGameMode() == MARKED_FOR_DEATH || GameRules.GetGameMode() == MARKED_FOR_DEATH_PRO )
+			return
 
 		if ( player != ent )
 		{

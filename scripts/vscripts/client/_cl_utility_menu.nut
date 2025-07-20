@@ -1297,10 +1297,15 @@ function EventNotification( eventID, entity, eventVal = null )
 			break
 
 		case eEventNotifications.YouWillBeAutobalanced:
-				local announcement = CAnnouncement( "" )
-				announcement.SetSubText( "#YOU_WILL_BE_AUTOBALANCED" )
-				announcement.SetPurge( false )
-				AnnouncementFromClass( player, announcement )
+				if ( eventVal - Time() > 2.0 )
+				{
+					thread MarkedForDeathCountdownSound( eventVal, "UI_InGame_MarkedForDeath_CountdownToYouAreMarked" )
+					SetTimedEventNotificationHATT( ( eventVal - Time() ) - 1.0, "#YOU_WILL_BE_AUTOBALANCED", HATT_GAME_COUNTDOWN_SECONDS, eventVal )
+				}
+			break
+
+		case eEventNotifications.MarkedForDeathMarkedAutobalanced:
+			SetTimedEventNotification( 3.0, "#MARKED_FOR_DEATH_MARKED_AUTOBALANCED" )
 			break
 
 		default:

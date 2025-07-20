@@ -259,6 +259,9 @@ function CodeCallback_OnTouchHealthKit( player, flag )
 	if ( !level.titanFlagInteraction && player.IsTitan() )
 		return false
 
+	if ( ( "forceDisableFlagTouch" in player.s ) && player.s.forceDisableFlagTouch == true )
+		return false
+
 	local flagTeam = flag.GetTeam()
 	local otherFlagTeam = GetOtherTeam(flagTeam)
 	local playerTeam = player.GetTeam()
