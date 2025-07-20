@@ -2321,6 +2321,8 @@ function AutobalancePlayer( player, forceSwitch = false )
 	local totalPlayers = currentTeamCount + otherTeamCount
 	local targetPerTeam = ceil( totalPlayers / 2.0 )
 
+	local isTitan = player.IsTitan()
+
 	// Check if current team is over target and other team is under target
 	// TODO: potentially check the players KDR and autobalance them if its too crazy?
 	if ( forceSwitch || ( currentTeamCount > targetPerTeam && otherTeamCount < targetPerTeam ) )
@@ -2362,12 +2364,18 @@ function AutobalancePlayer( player, forceSwitch = false )
 			}
 		}
 
+		local neededClass = level.pilotClass
+		if ( isTitan )
+			neededClass = "titan"
+
 		// Update player model based on new team
-		local pilotDataTable = GetPlayerClassDataTable( player, level.pilotClass )
-		if ( pilotDataTable.playerSetFile )
+		local classDataTable = GetPlayerClassDataTable( player, neededClass )
+		if ( classDataTable.playerSetFile )
 		{
-			player.SetPlayerSettings( pilotDataTable.playerSetFile ) // Re-apply settings to potentially trigger model updates
-			player.SetPlayerPilotSettings( pilotDataTable.playerSetFile )
+			player.SetPlayerSettings( classDataTable.playerSetFile ) // Re-apply settings to potentially trigger model updates
+
+			if ( !isTitan )
+				player.SetPlayerPilotSettings( classDataTable.playerSetFile )
 
 			local modelFieldName
 			if ( newTeam == TEAM_MILITIA )
@@ -2379,14 +2387,14 @@ function AutobalancePlayer( player, forceSwitch = false )
 				modelFieldName = "bodymodel_imc"
 			}
 
-			local correctModelName = GetPlayerSettingsFieldForClassName( pilotDataTable.playerSetFile, modelFieldName )
+			local correctModelName = GetPlayerSettingsFieldForClassName( classDataTable.playerSetFile, modelFieldName )
 			if ( correctModelName != null && correctModelName != "" )
 			{
-				printt( "Autobalance: Setting model for player " + player + " (New Team: " + newTeam + ") using " + modelFieldName + " from " + pilotDataTable.playerSetFile + " -> " + correctModelName )
+				printt( "Autobalance: Setting model for player " + player + " (New Team: " + newTeam + ") using " + modelFieldName + " from " + classDataTable.playerSetFile + " -> " + correctModelName )
 				player.SetModel( correctModelName )
 
 				local skin = 0
-				if ( pilotDataTable.playerSetFile.find("female") != null )
+				if ( classDataTable.playerSetFile.find("female") != null || isTitan )
 					skin = newTeam == TEAM_MILITIA ? 1 : 0
 				else
 					skin = 0 // Assuming non-female models use skin 0 regardless of team, adjust if needed
@@ -2395,7 +2403,7 @@ function AutobalancePlayer( player, forceSwitch = false )
 				printt("Autobalance: SET SKIN " + skin)
 
 				local head = 0 // Reset head based on skin logic
-				if ( pilotDataTable.playerSetFile.find("female") != null )
+				if ( classDataTable.playerSetFile.find("female") != null )
 					head = newTeam == TEAM_MILITIA ? 1 : 0
 				else
 					head = 0
@@ -2403,7 +2411,7 @@ function AutobalancePlayer( player, forceSwitch = false )
 			}
 			else
 			{
-				printt( "Autobalance: WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + pilotDataTable.playerSetFile + "' and field '" + modelFieldName + "'" )
+				printt( "Autobalance: WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + classDataTable.playerSetFile + "' and field '" + modelFieldName + "'" )
 			}
 		}
 
@@ -2437,11 +2445,6 @@ function ShouldAutobalancePlayer( player )
 		return false
 
 	if ( player.s.respawnCount < 1 )
-		return false
-
-	// TODO: if a player gets autobalanced while in a titan, they turn into a pilot with titan abilities
-	// Remove when thats fixed
-	if ( player.IsTitan() )
 		return false
 
 	return true
