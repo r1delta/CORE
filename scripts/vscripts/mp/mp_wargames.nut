@@ -1372,11 +1372,13 @@ function Intro_PlayersHearPodVO()
 	local modeAliases = {}
 	modeAliases[ ATTRITION ] 					<- "diag_dlc1_WG136_01_01_neut_tutai"  // "Attrition."
 	modeAliases[ TEAM_DEATHMATCH ] 				<- "diag_dlc1_WG137_01_01_neut_tutai"  // "Pilot Hunter."
+	modeAliases[ SCAVENGER ] 					<- "diag_dlc1_WG137_01_01_neut_tutai"
 	modeAliases[ CAPTURE_POINT ] 				<- "diag_dlc1_WG138_01_01_neut_tutai"  // "Hardpoint Domination."
 	modeAliases[ LAST_TITAN_STANDING ] 			<- "diag_dlc1_WG139_01_01_neut_tutai"  // "Last Titan Standing."
 	modeAliases[ "lts_ffa" ]		 			<- "diag_dlc1_WG139_01_01_neut_tutai"  // "Last Titan Standing."
 	modeAliases[ WINGMAN_LAST_TITAN_STANDING ] 	<- "diag_dlc1_WG142_01_01_neut_tutai"  // "Wingman Last Titan Standing."
 	modeAliases[ CAPTURE_THE_FLAG ] 			<- "diag_dlc1_WG140_01_01_neut_tutai"  // "Capture The Flag."
+	modeAliases[ CAPTURE_THE_FLAG_PRO ] 		<- "diag_dlc1_WG140_01_01_neut_tutai"
 	modeAliases[ PILOT_SKIRMISH ] 				<- "diag_dlc1_WG232_01_01_neut_tutai"
 	modeAliases[ MARKED_FOR_DEATH ] 			<- "diag_dlc1_WG236_01_01_neut_tutai"
 	modeAliases[ MARKED_FOR_DEATH_PRO ] 		<- "diag_dlc1_WG237_01_01_neut_tutai"
