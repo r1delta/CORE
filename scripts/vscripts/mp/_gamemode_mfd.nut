@@ -19,6 +19,8 @@ function main()
 	GM_AddEndRoundFunc( MARKED_FOR_DEATH_EndRoundFunc )
 	AddCallback_OnClientDisconnected( MARKED_FOR_DEATH_PlayerDisconnected )
 
+	AddCallback_OnPostPlayerAutoBalanced( MFD_PlayerAutoBalanced )
+
 	AddSpawnCallback( "npc_spectre", MFDSpawnMinion )
 	AddSpawnCallback( "npc_soldier", MFDSpawnMinion )
 
@@ -35,8 +37,6 @@ function main()
 	AddCallback_OnPilotBecomesTitan( UpdateMinimapForMarkedOnClassChange )
 
 	GM_AddEndRoundFunc( MFD_RoundEnd )
-
-	Globalize( MFD_PlayerAutobalanced )
 }
 
 function SpawnMarkerEnt( ent )
@@ -137,7 +137,7 @@ function MARKED_FOR_DEATH_PlayerDisconnected( player )
 	UpdateMarkedPlayers()
 }
 
-function MFD_PlayerAutobalanced( player, oldTeam, newTeam )
+function MFD_PlayerAutoBalanced( player, oldTeam, newTeam )
 {
 	if ( player == GetPendingMarked( oldTeam ) )
 	{
@@ -154,13 +154,6 @@ function MFD_PlayerAutobalanced( player, oldTeam, newTeam )
 		ClearMarkedPlayers()
 		TellClientsMarkedChanged()
 		MessageToAll( eEventNotifications.MarkedForDeathMarkedAutobalanced )
-	}
-	else
-	{
-		if ( player.GetTeam() == oldTeam )
-			MessageToPlayer( player, eEventNotifications.TeammateAutobalanced, null, null )
-		else if ( player.GetTeam() == newTeam )
-			MessageToPlayer( player, eEventNotifications.EnemyAutobalanced, null, null )
 	}
 
 	UpdateMarkedPlayers()

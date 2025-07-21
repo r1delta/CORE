@@ -37,6 +37,8 @@ function main()
 	AddCallback_OnClientDisconnected( DropFlagOnDisconnect )
 	AddCallback_OnClientConnected( UpdateClientFlagInfo )
 
+	AddCallback_OnPrePlayerAutoBalanced( DropFlagOnAutoBalance )
+
 	AddCallback_GameStateEnter( eGameState.Playing, CTFRoundStart )
 	AddCallback_GameStateEnter( eGameState.WinnerDetermined, CTFRoundEnd ) // should be a "leave" callback
 	AddCallback_GameStateEnter( eGameState.SwitchingSides, CTFRoundEnd )
@@ -477,6 +479,17 @@ function DropFlagOnDisconnect( player )
 function DropFlagOnDeath( player, damageInfo )
 {
 	DropFlag( player, damageInfo )
+}
+
+function DropFlagOnAutoBalance( player, currentTeam, otherTeam )
+{
+	// Prevent player from automatically picking up the flag right after dropping it
+	if ( !( "forceDisableFlagTouch" in player.s ) )
+		player.s.forceDisableFlagTouch <- true
+	else
+		player.s.forceDisableFlagTouch = true
+
+	DropFlag( player )
 }
 
 function DropFlag( player, damageInfo = null )

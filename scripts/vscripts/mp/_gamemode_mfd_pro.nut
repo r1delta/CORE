@@ -22,7 +22,8 @@ function main()
 	AddCallback_OnClientConnected( MARKED_FOR_DEATH_AddPlayer )
 	GM_AddEndRoundFunc( MARKED_FOR_DEATH_EndRoundFunc )
 	AddCallback_OnClientDisconnected( MFD_Pro_PlayerDisconnected )
-	
+
+	AddCallback_OnPostPlayerAutoBalanced( MFD_Pro_PlayerAutoBalanced )
 
 	AddSpawnCallback( "npc_spectre", MFDSpawnMinion )
 	AddSpawnCallback( "npc_soldier", MFDSpawnMinion )
@@ -58,8 +59,6 @@ function main()
 	SetGameLostAnnouncement( "LostAnnouncementShort" )
 
 	thread FixStartSpawns()
-
-	Globalize( MFD_Pro_PlayerAutobalanced )
 }
 
 function FixStartSpawns()
@@ -143,7 +142,7 @@ function MFD_Pro_PlayerDisconnected( player )
 	UpdateMarkedPlayers()
 }
 
-function MFD_Pro_PlayerAutobalanced( player, oldTeam, newTeam )
+function MFD_Pro_PlayerAutoBalanced( player, oldTeam, newTeam )
 {
 	if ( player == GetPendingMarked( oldTeam ) )
 	{
@@ -160,13 +159,6 @@ function MFD_Pro_PlayerAutobalanced( player, oldTeam, newTeam )
 		ClearMarkedPlayers()
 		TellClientsMarkedChanged()
 		MessageToAll( eEventNotifications.MarkedForDeathMarkedAutobalanced )
-	}
-	else
-	{
-		if ( player.GetTeam() == oldTeam )
-			MessageToPlayer( player, eEventNotifications.TeammateAutobalanced, null, null )
-		else if ( player.GetTeam() == newTeam )
-			MessageToPlayer( player, eEventNotifications.EnemyAutobalanced, null, null )
 	}
 
 	UpdateMarkedPlayers()

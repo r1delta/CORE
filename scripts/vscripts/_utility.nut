@@ -5849,3 +5849,32 @@ function GetPlayerSettingsFieldForClassName(className, field)
 function IsCoopMatch() {
 	return GetConVarInt("sv_lobbytype") == 1 && GetCurrentPlaylistName() == "coop"
 }
+
+// This runs when the player is 100% about to get auto-balanced, but before that actually happens
+// So, for example, if the player is carrying the CTF flag, they drop it *before* changing teams and completely messing up the flag entity
+function AddCallback_OnPrePlayerAutoBalanced( callbackFunc )
+{
+	Assert( "onPreAutoBalanceCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnPrePlayerAutoBalanced can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 3, "player, currentTeam, otherTeam" )
+
+	local callbackInfo = {}
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onPreAutoBalanceCallbacks.append( callbackInfo )
+}
+
+// Runs *after* the player is auto-balanced
+function AddCallback_OnPostPlayerAutoBalanced( callbackFunc )
+{
+	Assert( "onPostAutoBalanceCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnPostPlayerAutoBalanced can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 3, "player, oldTeam, newTeam" )
+
+	local callbackInfo = {}
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onPostAutoBalanceCallbacks.append( callbackInfo )
+}

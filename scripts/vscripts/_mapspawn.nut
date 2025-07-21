@@ -199,6 +199,9 @@
 
 	level.hardpointModeInitialized <- false
 
+	level.onPreAutoBalanceCallbacks <- [] // Runs when the player is 100% about to get auto-balanced, but *before* that actually happens
+	level.onPostAutoBalanceCallbacks <- [] // Runs *after* the player is auto-balanced
+
 	// global flag functions
 	IncludeFile( "_flag" )
 	IncludeFile( "_flags_shared" ) // flags shared by sp and mp

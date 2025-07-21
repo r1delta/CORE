@@ -2292,13 +2292,13 @@ function CodeCallback_OnPlayerRespawned( player )
 	// Standard autobalance for other modes
 	else if ( GetConVarBool( "delta_autoBalanceTeams" ) )
 	{
-		AutobalancePlayer( player )
+		AutoBalancePlayer( player )
 	}
 	// --- End Autobalance on Respawn ---
 }
 
 // TODO: dont use this yet, its still missing a lot of checks for if the player is still alive and doing something
-function AutobalancePlayer_Delayed( player, delay, forceSwitch = false )
+function AutoBalancePlayer_Delayed( player, delay, forceSwitch = false )
 {
 	player.EndSignal( "OnDeath" )
 	player.EndSignal( "OnDestroy" )
@@ -2306,12 +2306,12 @@ function AutobalancePlayer_Delayed( player, delay, forceSwitch = false )
 	MessageToPlayer( player, eEventNotifications.YouWillBeAutobalanced, null, Time() + delay )
 	wait delay
 
-	AutobalancePlayer( player, forceSwitch )
+	AutoBalancePlayer( player, forceSwitch )
 }
 
-function AutobalancePlayer( player, forceSwitch = false )
+function AutoBalancePlayer( player, forceSwitch = false )
 {
-	if ( !ShouldAutobalancePlayer( player ) )
+	if ( !ShouldAutoBalancePlayer( player ) )
 		return
 
 	local currentTeam = player.GetTeam()
@@ -2329,20 +2329,14 @@ function AutobalancePlayer( player, forceSwitch = false )
 	{
 		printt( "AutoBalancing player " + player.GetPlayerName() + " from team " + currentTeam + " to team " + otherTeam )
 
+		// For things like dropping the CTF flag before switching teams
+		foreach ( callbackInfo in level.onPreAutoBalanceCallbacks )
+		{
+			callbackInfo.func.acall( [callbackInfo.scope, player, currentTeam, otherTeam ] )
+		}
+
 		// Store pet titan before switching
 		local petTitan = player.GetPetTitan()
-
-		// Prevent player from automatically picking up the flag right after dropping it
-		if ( !( "forceDisableFlagTouch" in player.s ) )
-			player.s.forceDisableFlagTouch <- true
-		else
-			player.s.forceDisableFlagTouch = true
-
-		// Drop flag if the player has it
-		if ( ( GameRules.GetGameMode() == CAPTURE_THE_FLAG || GameRules.GetGameMode() == CAPTURE_THE_FLAG_PRO ) && PlayerHasEnemyFlag( player ) )
-		{
-			DropFlag( player )
-		}
 
 		// Switch player team
 		player.TrueTeamSwitch()
@@ -2417,20 +2411,16 @@ function AutobalancePlayer( player, forceSwitch = false )
 
 		NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
 
-		if ( GameRules.GetGameMode() == MARKED_FOR_DEATH )
-		{
-			MFD_PlayerAutobalanced( player, currentTeam, newTeam )
-		}
-		else if ( GameRules.GetGameMode() == MARKED_FOR_DEATH_PRO )
-		{
-			MFD_Pro_PlayerAutobalanced( player, currentTeam, newTeam )
-		}
-
 		thread PostAutobalanceThink( player )
+
+		foreach ( callbackInfo in level.onPostAutoBalanceCallbacks )
+		{
+			callbackInfo.func.acall( [callbackInfo.scope, player, currentTeam, newTeam ] )
+		}
 	}
 }
 
-function ShouldAutobalancePlayer( player )
+function ShouldAutoBalancePlayer( player )
 {
 	if ( !GamePlayingOrSuddenDeath() )
 		return false
@@ -3068,9 +3058,6 @@ function NotifyClientsOfTeamChange( player, oldTeam, newTeam )
 	{
 		//if ( ent != player )
 		Remote.CallFunction_Replay( ent, "ServerCallback_PlayerChangedTeams", playerEHandle, oldTeam, newTeam )
-
-		if ( GameRules.GetGameMode() == MARKED_FOR_DEATH || GameRules.GetGameMode() == MARKED_FOR_DEATH_PRO )
-			return
 
 		if ( player != ent )
 		{
