@@ -1027,6 +1027,7 @@ function AddColumnsForGameMode( scoreboard )
 			break
 
 		case CAPTURE_THE_FLAG:
+		case CAPTURE_THE_FLAG_PRO:
 			// added RIGHT to LEFT
 			AddColumnLabel( scoreboard, "deaths", SCOREBOARD_MATERIAL_DEATHS, "#SCOREBOARD_DEATHS", 0, false, UpdateDeaths )
 			AddColumnLabel( scoreboard, "titanKills", SCOREBOARD_MATERIAL_TITAN_KILLS, "#SCOREBOARD_TITAN_KILLS", 0, false, UpdateTitanKills )
