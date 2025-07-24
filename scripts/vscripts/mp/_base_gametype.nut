@@ -2311,7 +2311,7 @@ function AutoBalancePlayer_Delayed( player, delay, forceSwitch = false )
 
 function AutoBalancePlayer( player, forceSwitch = false )
 {
-	if ( !ShouldAutoBalancePlayer( player ) )
+	if ( !ShouldAutoBalancePlayer( player, forceSwitch ) )
 		return
 
 	local currentTeam = player.GetTeam()
@@ -2332,7 +2332,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 		// For things like dropping the CTF flag before switching teams
 		foreach ( callbackInfo in level.onPreAutoBalanceCallbacks )
 		{
-			callbackInfo.func.acall( [callbackInfo.scope, player, currentTeam, otherTeam ] )
+			callbackInfo.func.acall( [ callbackInfo.scope, player, currentTeam, otherTeam ] )
 		}
 
 		// Store pet titan before switching
@@ -2411,21 +2411,21 @@ function AutoBalancePlayer( player, forceSwitch = false )
 
 		NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
 
-		thread PostAutobalanceThink( player )
+		thread PostAutoBalanceThink( player )
 
 		foreach ( callbackInfo in level.onPostAutoBalanceCallbacks )
 		{
-			callbackInfo.func.acall( [callbackInfo.scope, player, currentTeam, newTeam ] )
+			callbackInfo.func.acall( [ callbackInfo.scope, player, currentTeam, newTeam ] )
 		}
 	}
 }
 
-function ShouldAutoBalancePlayer( player )
+function ShouldAutoBalancePlayer( player, forceSwitch )
 {
 	if ( !GamePlayingOrSuddenDeath() )
 		return false
 
-	if ( GetGameState() >= eGameState.Postmatch )
+	if ( GetGameState() >= eGameState.Epilogue )
 		return false
 
 	if ( GameRules.GetGameMode() == COOPERATIVE )
@@ -2437,10 +2437,17 @@ function ShouldAutoBalancePlayer( player )
 	if ( player.s.respawnCount < 1 )
 		return false
 
+	if ( !forceSwitch )
+	{
+		// Game is about to end anyways
+		if ( GetMatchProgress() >= 90 )
+			return false
+	}
+
 	return true
 }
 
-function PostAutobalanceThink( player )
+function PostAutoBalanceThink( player )
 {
 	wait 2
 
