@@ -2306,7 +2306,8 @@ function AutoBalancePlayer_Delayed( player, delay, forceSwitch = false )
 	MessageToPlayer( player, eEventNotifications.YouWillBeAutobalanced, null, Time() + delay )
 	wait delay
 
-	AutoBalancePlayer( player, forceSwitch )
+	if ( IsValid( player ) )
+		AutoBalancePlayer( player, forceSwitch )
 }
 
 function AutoBalancePlayer( player, forceSwitch = false )
@@ -2333,6 +2334,20 @@ function AutoBalancePlayer( player, forceSwitch = false )
 		foreach ( callbackInfo in level.onPreAutoBalanceCallbacks )
 		{
 			callbackInfo.func.acall( [ callbackInfo.scope, player, currentTeam, otherTeam ] )
+		}
+
+		// If the player is rodeoing someone, friendly or not, kick them out
+		if ( GetTitanSoulBeingRodeoed( player ) != null )
+			player.Signal( "RodeoOver" )
+
+		if ( isTitan )
+		{
+			local rodeoEnt = GetPlayerRodeoing( player )
+
+			// If someone is rodeoing that player, kick them out too
+			// Should also works with Spectres
+			if ( rodeoEnt != null )
+				rodeoEnt.Signal( "RodeoOver" )
 		}
 
 		// Store pet titan before switching
