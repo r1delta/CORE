@@ -23,7 +23,7 @@ function main()
 	GM_AddEndRoundFunc( MARKED_FOR_DEATH_EndRoundFunc )
 	AddCallback_OnClientDisconnected( MFD_Pro_PlayerDisconnected )
 
-	AddCallback_OnPostPlayerAutoBalanced( MFD_Pro_PlayerAutoBalanced )
+	AddCallback_OnPostAutoBalancePlayer( MFD_Pro_PlayerAutoBalanced )
 
 	AddSpawnCallback( "npc_spectre", MFDSpawnMinion )
 	AddSpawnCallback( "npc_soldier", MFDSpawnMinion )

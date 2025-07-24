@@ -37,7 +37,7 @@ function main()
 	AddCallback_OnClientDisconnected( DropFlagOnDisconnect )
 	AddCallback_OnClientConnected( UpdateClientFlagInfo )
 
-	AddCallback_OnPrePlayerAutoBalanced( DropFlagOnAutoBalance )
+	AddCallback_OnPreAutoBalancePlayer( DropFlagOnAutoBalance )
 
 	AddCallback_GameStateEnter( eGameState.Playing, CTFRoundStart )
 	AddCallback_GameStateEnter( eGameState.WinnerDetermined, CTFRoundEnd ) // should be a "leave" callback
