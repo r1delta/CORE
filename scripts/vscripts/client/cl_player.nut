@@ -861,13 +861,14 @@ function ServerCallback_PlayerChangedTeams( player_eHandle, oldTeam, newTeam )
 
 	local playerName = player.GetPlayerName()
 	local playerNameColor = OBITUARY_COLOR_ENEMY
+	local changedString = Localize( "#PLAYER_CHANGED_TEAMS_TO" )
 	local teamString = Localize(newTeam == TEAM_IMC ? "#TEAM_IMC" : "#TEAM_MCOR")
 	if ( newTeam == GetLocalViewPlayer().GetTeamNumber() )
 	{
 		playerNameColor = OBITUARY_COLOR_FRIENDLY
 	}
 
-	Obituary_Print( playerName, "CHANGED TEAMS TO", teamString, playerNameColor, OBITUARY_COLOR_WEAPON, playerNameColor )
+	Obituary_Print( playerName, changedString, teamString, playerNameColor, OBITUARY_COLOR_WEAPON, playerNameColor )
 	//"Switching " + player.GetPlayerName() + " from " + GetTeamStr( team1 ) + " to " + GetTeamStr( team2 )
 }
 
