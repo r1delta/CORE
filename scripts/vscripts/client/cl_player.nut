@@ -859,6 +859,9 @@ function ServerCallback_PlayerChangedTeams( player_eHandle, oldTeam, newTeam )
 	Assert( oldTeam != null )
 	Assert( newTeam != null )
 
+	// Update the team icon on the hud for the player that just got autobalanced
+	UpdatePlayerStatusCounts()
+
 	local playerName = player.GetPlayerName()
 	local playerNameColor = OBITUARY_COLOR_ENEMY
 	local changedString = Localize( "#PLAYER_CHANGED_TEAMS_TO" )

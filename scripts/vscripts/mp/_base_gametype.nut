@@ -2464,6 +2464,17 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 
 function PostAutoBalanceThink( player )
 {
+	// Only these two NPCs use the overhead teammate indicator
+	local ai = GetNPCArrayByClass( "npc_soldier" )
+	ai.extend( GetNPCArrayByClass( "npc_spectre" ) )
+
+	foreach( npc in ai )
+	{
+		local eHandle = npc.GetEncodedEHandle()
+
+		Remote.CallFunction_Replay( player, "ServerCallback_UpdateOverheadIconForNPC", eHandle )
+	}
+
 	wait 2
 
 	if ( player )
