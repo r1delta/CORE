@@ -90,7 +90,7 @@ function GiveNPCTitanTacticalAbility( titan )
 			break
 
 		case "mp_titanability_smoke":
-		case "mp_titanweapon_charge_cannon": //added by kwanyongjung
+		case "mp_weapon_mega4": //added by kwanyongjung
 			abilityType = TTA_SMOKE
 			break
 
