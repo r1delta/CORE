@@ -1,11 +1,10 @@
 WeaponData
 {
-	
 	// General
-	"printname"   									"#WPN_P_SG_TWINBSHOTGUN"
-	"shortprintname"								"#WPN_P_SG_TWINBSHOTGUN_SHORT"
-	"description" 									"#WPN_P_SG_TWINBSHOTGUN_DESC"
-	"longdesc" 										"#WPN_P_SG_TWINBSHOTGUN_LONGDESC"
+	"printname"   									"#WPN_TWINB_SHOTGUN"
+	"shortprintname"								"#WPN_TWINB_SHOTGUN_SHORT"
+	"description" 									"#WPN_TWINB_SHOTGUN_DESC"
+	"longdesc" 										"#WPN_TWINB_SHOTGUN_LONGDESC"
 	"weaponClass" 									"human"
 	"body_type"										"close_quarters"
 	"fire_mode"   									"semi-auto"
@@ -29,6 +28,7 @@ WeaponData
 
 	// Effects
 	"tracer_effect"   								"weapon_tracers_shotgun"
+	"tracer_effect_first_person"   					"weapon_tracers_shotgun"
 	"impact_effect_table" 							"inc_bullet"
 	"vortex_absorb_effect"							"wpn_vortex_projectile_shotgun_FP"
 	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_shotgun"
@@ -37,6 +37,8 @@ WeaponData
 
 	// Sounds
 	"sound_dryfire"									"shotgun_dryfire"
+	"sound_trigger_pull"							"shotgun_dryfire"
+	"sound_trigger_release"							"shotgun_dryfire"
 	"fire_sound_1"									"SG_Twin_B.Fire" // 기존 샷건은 소음기, 번카드 모드에 따라서 사운드가 달라짐 vscripts에 있음
 
 	"fx_shell_eject_view"							"wpn_shelleject_shotshell_FP"
@@ -281,8 +283,12 @@ WeaponData
 	"bodygroup2_set"	"0"
 	"bodygroup3_name"	"sight_holo"
 	"bodygroup3_set"	"0"
+	"bodygroup4_name"	"suppressor_cyl_sm"
+	"bodygroup4_set"	"0"
+	"bodygroup5_name"	"suppressor_sq_sm"
+	"bodygroup5_set"	"0"
 
-    "clip_bodygroup"						"twinbshotgun_magazine"
+    "clip_bodygroup"						"twinbshotgun_shells"
     "clip_bodygroup_index_shown"			"0"
     "clip_bodygroup_index_hidden"			"1"
     "clip_bodygroup_show_for_milestone_0"	"1"
@@ -290,12 +296,8 @@ WeaponData
     "clip_bodygroup_show_for_milestone_2"	"1"
     "clip_bodygroup_show_for_milestone_3"	"1"
 
-
-	"use_mod_table"     			"0" 
-
 	Mods
 	{
-
 		// "slammer"					"41061"
 		// "integrated_gyro"			"41052"
 		// "match_trigger"				"41532" // TB
@@ -303,6 +305,66 @@ WeaponData
 		// "pas_fast_reload"			"41501"
 		// "pas_run_and_gun"			"41511"
 
+		pas_fast_reload
+		{
+			"reload_time"								"*0.7"
+			"reload_time_late1"							"*0.7"
+			"reloadempty_time"							"*0.7"
+			"reloadempty_time_late1"					"*0.7"
+		}
+		silencer
+		{
+			"bodygroup4_set"								"1"
+			"viewkick_pitch_base" 							"*0.7"
+			"viewkick_pitch_random"   						"*0.7"
+			"viewkick_yaw_base"   							"*0.7"
+			"viewkick_yaw_random" 							"*0.7"
+
+			"damage_near_distance"							"250"
+			"damage_near_value"   							"210"
+			"damage_far_value"								"28"
+
+			"fire_sound_1"									"SG_Twin_B.Fire_Suppressed"
+
+			//"rumble"  									"4"
+			//"tracer_effect"   							"weapon_tracers_pistol"
+			"minimap_reveal_distance"						"1"
+
+			"fx_muzzle_flash_view"							"wpn_muzzleflash_pistol_sup_FP"
+			"fx_muzzle_flash_world"							"wpn_muzzleflash_pistol_sup"
+			"fx_muzzle_flash_attach"						"muzzle_flash_suppressor_cyl"
+		}
+		spread_increase_sg
+		{
+			"spread_stand_hip" 								"10"
+			"spread_stand_hip_run" 							"10"
+			"spread_stand_hip_sprint"                       "10"
+			"spread_stand_ads"  							"10"
+			"spread_crouch_hip"								"10"
+			"spread_crouch_ads"  							"10"
+			"spread_air_hip"	   							"10"
+			"spread_air_ads"   								"10"
+			"damage_near_value"   							"/1.2"
+			"damage_far_value"								"/1.2"
+		}
+		pas_run_and_gun
+		{
+			"primary_fire_does_not_block_sprint"			"1"
+			"crosshair_force_sprint_fade_disabled"          "1"
+		}
+		burn_mod_twinb
+		{
+			"crosshair_index"								"1"
+
+			"is_burn_mod"		"1"
+		}
+
+		dev_10shells
+		{
+			"ammo_stockpile_max"							"400"
+			"ammo_clip_size"   								"10"
+			"ammo_default_total"							"400"
+		}
 	}
 
 	CrosshairData // 중심 확인을 편의를 위한 점 추가
@@ -314,12 +376,13 @@ WeaponData
 				"size_x"					"36"
 				"size_y"					"36"
 				"rotation"					"180"
-				"fade_into_zooming_end"		"0.1"
-				"fade_out_of_zooming_begin"	"0.1"
+				//"fade_into_zooming_end"		"0.1"
+				//"fade_out_of_zooming_begin"	"0.1"
 				"fade_while_sprinting"		"1"
 				"fade_while_reloading"		"1"
 				"fade_while_zooming"		"1"
 				"draw_while_ads"			"0"
+				"draw_while_hip"			"1"
 			}
 			Element0
 			{
@@ -350,24 +413,14 @@ WeaponData
 				"size_y"					"28"
 			}
 		}
+		Burn_Mod //Match BaseWeapon + default color change until override setting.
+		{
+			"inherit_data_from"				"BaseWeapon"
 
-	}
-
-	TextureData
-	{
-		"crosshair"
-		{
-			"file"									"vgui/hud/crosshairs/crosshair_pilot_shotgun_outer_ring_arc"
-			"x"   									"0"
-			"y"   									"0"
-			"width"   								"72"
-			"height"  								"72"
-		}
-		"crosshair_zoom"
-		{
-		}
-		"autoaim"
-		{
+			DefaultElementBehavior
+			{
+				"default_color"				"246 134 40 255"
+			}
 		}
 	}
 }

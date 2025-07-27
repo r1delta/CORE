@@ -31,6 +31,6 @@ function OnProjectileCollision( hitParams )
 	printt( "hitParams.hitent: ",hitParams.hitent )	
 	local distanceToTarget = Distance( self.GetOwner().GetOrigin(), hitParams.hitent.GetOrigin() )
 
-	hitParams.hitent.TakeDamage( extraDamage, self.GetOwner(), self, { scriptType = (DF_GIB | DF_BULLET | DF_ELECTRICAL), damageSourceId=eDamageSourceId.mp_titanweapon_charge_cannon, hitbox = hitParams.hitbox, distFromAttOrign = distanceToTarget } )
+	hitParams.hitent.TakeDamage( extraDamage, self.GetOwner(), self, { scriptType = (DF_GIB | DF_BULLET | DF_ELECTRICAL), damageSourceId=eDamageSourceId.mp_weapon_mega4, hitbox = hitParams.hitbox, distFromAttOrign = distanceToTarget } )
 	//printt( "HIT WITH", self.s.bulletsToFire, "BULLETS FOR", extraDamage, "ADDITIONAL DAMAGE" )
 }

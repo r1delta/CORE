@@ -1,10 +1,10 @@
 WeaponData
 {
 	// General
-	"printname"   									"#WPN_P_SR_VALKYRIE"
-	"shortprintname"								"#WPN_P_SR_VALKYRIE_SHORT"
-	"description" 									"#WPN_P_SR_VALKYRIE_DESC"
-	"longdesc"										"#WPN_P_SR_VALKYRIE_LONGDESC"
+	"printname"   									"#WPN_VALKYRIE"
+	"shortprintname"								"#WPN_VALKYRIE_SHORT"
+	"description" 									"#WPN_VALKYRIE_DESC"
+	"longdesc"										"#WPN_VALKYRIE_LONGDESC"
 	"weaponClass" 									"human"
 	"body_type"										"designated_marksman"
 	"fire_mode"   									"semi-auto"
@@ -30,7 +30,7 @@ WeaponData
 
 	// Effects
 	"tracer_effect"   								"weapon_tracers_sniper"
-	// "tracer_effect_first_person"  				"weapon_tracers_sniper"
+	"tracer_effect_first_person"  					"weapon_tracers_sniper"
 	"impact_effect_table" 							"titan_bullet"
 	// "projectile_trail_effect_0" 					"garand_trail_smoke"
 	"projectile_do_predict_impact_effects"			"0"
@@ -41,6 +41,8 @@ WeaponData
 
 	//Sounds
 	"sound_dryfire"									"rifle_dryfire"
+	"sound_trigger_pull"							"rifle_dryfire"
+	"sound_trigger_release"							"rifle_dryfire"
 	"fire_sound_1"									"SR_Valkyrie.Fire"
 	"fire_sound_1_npc"								"SR_Valkyrie.Fire_NPC"
 
@@ -68,7 +70,7 @@ WeaponData
 	"damage_leg_scale"								"1.0"
 
 	"critical_hit_damage_scale"						"1.0"
-	"critical_hit"									"0"
+	"critical_hit"									"1"
 
 	// Crosshair
 	"red_crosshair_range" 							"4000"
@@ -90,7 +92,7 @@ WeaponData
 
 	// Behavior
 	"fire_rate"   									"2"
-	"zoom_fire_type"								"1" // 0 : 줌 유지 1 : 격발 후 줌 해제.
+	"zoom_fire_type"								"0" // Broken, setting to 0 		// 0 : 줌 유지 1 : 격발 후 줌 해제.
 	"zoom_time_in"									"0.4"
 	"zoom_time_out"   								"0.1" // 0.2
 	"zoom_fire_time_in"								"0.1" // 현재 사용 안 되고 있음
@@ -276,7 +278,7 @@ WeaponData
 
 	// WeaponED Unhandled Key/Values and custom script Key/Values
 	"sprintcycle_time"								".55"
-	"is_anti_titan"  							    "0"
+	"is_anti_titan"  								"0"
 
 	// Bodygroups:
 	"bodygroup1_name"	"sight_aog04"
@@ -294,83 +296,101 @@ WeaponData
 
 	"anim_alt_idleAttack"	"1"
 
-    "clip_bodygroup"						"valkyrie_magazine"
-    "clip_bodygroup_index_shown"			"0"
-    "clip_bodygroup_index_hidden"			"1"
-    "clip_bodygroup_show_for_milestone_0"	"1"
-    "clip_bodygroup_show_for_milestone_1"	"0"
-    "clip_bodygroup_show_for_milestone_2"	"1"
-    "clip_bodygroup_show_for_milestone_3"	"1"
-
-    // depth of field 
-	"near_focus"							"0.07" // 0.01
-	"near_blur"								"-0.03" // 0.001
-	// aog, scope_4x, scope_6x
-	"zoom_in_near_focus"					"0.05" 	// 0.1
-	"zoom_in_near_blur"						"0.001" // 0.001
-
-    "use_mod_table"			"1"
+	"clip_bodygroup"						"valkyrie_magazine"
+	"clip_bodygroup_index_shown"			"0"
+	"clip_bodygroup_index_hidden"			"1"
+	"clip_bodygroup_show_for_milestone_0"	"1"
+	"clip_bodygroup_show_for_milestone_1"	"0"
+	"clip_bodygroup_show_for_milestone_2"	"1"
+	"clip_bodygroup_show_for_milestone_3"	"1"
 
 	Mods
 	{
+		aog
+		{
+			"bodygroup1_set"		"1"
+			"bodygroup3_set"		"0"
+			"anim_alt_idleAttack"	"2"
+			"zoom_fov"				"30"
 
-		"aog"						"40033"
-		"scope_4x"					"40041"
-		"scope_6x"					"40051"
+			"ads_fov_zoomfrac_start"	"0.0"
+			"ads_fov_zoomfrac_end"		"1.0"
+			"aimassist_disable_ads"		"0"
+			"gamepad_use_yaw_speed_for_pitch_ads"	"0"
+			"zoom_angle_shift_pitch"	"0"
+			"zoom_angle_shift_yaw"		"0"
+		}
+		scope_4x
+		{
+			"anim_alt_idleAttack"	"0"
+			"bodygroup3_set"		"0"
+			"bodygroup2_set"		"1"
+			"ads_fov_zoomfrac_start"	"0.0"
+			"ads_fov_zoomfrac_end"		"1.0"
+			"aimassist_disable_ads"		"0"
+			"gamepad_use_yaw_speed_for_pitch_ads"	"0"
+			"zoom_angle_shift_pitch"	"0"
+			"zoom_angle_shift_yaw"		"0"
+			"zoom_fov"				"17.68" //4.5 zoom
+		}
+		scope_6x
+		{
+		}
 
-		"silencer"					"41009"
-		"extended_ammo"				"41022" 
-		"stabilizer"				"41071"
+		extended_ammo
+		{
+			"ammo_stockpile_max"				"96"
+			"ammo_clip_size"   					"8"
+			"ammo_default_total"				"96"
+		}
 
-		"fast_hand_x05"				"41081"
-		"pas_fast_reload"			"42001"
+		silencer
+		{
+			"bodygroup4_set"					"0"
+			"bodygroup5_set"					"1"
+			"fire_sound_1"						"SR_Valkyrie.Fire_Suppressed"
 
-		//survival test mod
-		"damage_x15"				"41101"
-		"damage_x2"					"41102"	
+			"damage_near_value"   				"110"
+			"damage_far_value"					"110"
 
-		// dummy
-		"sniper_assist"				"49018"
+			//"rumble"  						"4"
+			"tracer_effect"   					"weapon_tracers_pistol"
+			"tracer_effect_first_person"   		"weapon_tracers_pistol"
+			"minimap_reveal_distance"			"1"
 
-		// aog
-		// {
-		// 	"bodygroup1_set"		"1"
-		// 	"bodygroup3_set"		"0"
-		// 	"anim_alt_idleAttack"	"2"
-		// 	"zoom_fov"				"30"
+			"fx_muzzle_flash_view"				"wpn_muzzleflash_pistol_sup_FP"
+			"fx_muzzle_flash_world"				"wpn_muzzleflash_pistol_sup"
+			"fx_muzzle_flash_attach"			"muzzle_flash_suppressor_cyl"
+		}
 
-		// 	"ads_fov_zoomfrac_start"	"0.0"
-		// 	"ads_fov_zoomfrac_end"		"1.0"
-		// 	"aimassist_disable_ads"		"0"
-		// 	"gamepad_use_yaw_speed_for_pitch_ads"	"0"
-		// 	"zoom_angle_shift_pitch"	"0"
-		// 	"zoom_angle_shift_yaw"		"0"
-		// }
+		pas_fast_reload
+		{
+			"reload_time"								"*0.7"
+			"reload_time_late1"							"*0.7"
+			"reloadempty_time"							"*0.7"
+			"reloadempty_time_late1"					"*0.7"
+		}
 
-		// extended_ammo
-		// {
-		// 	"ammo_stockpile_max"				"96"
-		// 	"ammo_clip_size"   					"8"
-		// 	"ammo_default_total"				"96"
-		// }
+		stabilizer
+		{
+			"viewdrift_ads_stand_scale_pitch" 				"*0.5"
+			"viewdrift_ads_crouch_scale_pitch"				"*0.5"
+			"viewdrift_ads_air_scale_pitch"   				"*0.5"
+			"viewdrift_ads_air_scale_yaw" 					"*0.5"
+			"viewdrift_ads_stand_scale_yaw"   				"*0.5"
+			"viewdrift_ads_crouch_scale_yaw"  				"*0.5"
+			"viewdrift_ads_speed_pitch"   					"*0.5"
+			"viewdrift_ads_speed_yaw" 						"*0.5"
+		}
 
-		// silencer
-		// {
-		// 	"bodygroup5_set"					"1"
-		// 	"fire_sound_1"						"SR_Valkyrie.Fire_Suppressed"
+		// Quickbolt
+		burn_mod_valkyrie
+		{
+			"crosshair_index"								"1"
+			"rechamber_time"  								"*0.7"
 
-		// 	"damage_near_value"   				"110"
-		// 	"damage_far_value"					"110"
-
-		// 	//"rumble"  						"4"
-		// 	"tracer_effect"   					"weapon_tracers_pistol"
-		// 	"minimap_reveal_distance"			"1"
-
-		// 	"fx_muzzle_flash_view"				"wpn_muzzleflash_pistol_sup_FP"
-		// 	"fx_muzzle_flash_world"				"wpn_muzzleflash_pistol_sup"
-		// 	"fx_muzzle_flash_attach"			"muzzle_flash_suppressor_cyl"
-		// }
-
+			"is_burn_mod"		"1"
+		}
 	}
 
 	CrosshairData

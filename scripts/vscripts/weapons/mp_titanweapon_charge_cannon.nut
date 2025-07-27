@@ -1,5 +1,10 @@
+
 const SNIPER_PROJECTILE_SPEED				= 10000
 const DEBUG_DRAW_PATH 			= false
+
+// mp_weapon_charge_cannon
+const LAUNCHER_CHARGE_TIME = 15.0
+const LAUNCHER_MAX_CHARGES = 1
 
 RegisterSignal( "RegenAmmo" )
 RegisterSignal( "UpdateWeapons" )
@@ -91,10 +96,10 @@ function OnWeaponChargeEnd( chargeParams )
 	if ( IsClient() && InPrediction() && !IsFirstTimePredicted() )
 		return
 
-	local firstChargeEnd = chargeParams["firstChargeEnd"]
-
-	if (firstChargeEnd == false)
-		return
+//	local firstChargeEnd = chargeParams["firstChargeEnd"]
+//
+//	if (firstChargeEnd == false)
+//		return
 
 	local chargeFraction = self.GetWeaponChargeFraction()
 	local seekFrac = chargeDownSoundDuration * chargeFraction

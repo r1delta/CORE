@@ -106,7 +106,7 @@ WeaponData
 	"charge_cooldown_time"							"15.0" 	// 사용 후 재충전 시간
 	"charge_cooldown_delay"   						"0.1"  	// charge_cooldown_time 적용되기까지의 딜레이
 	
-	"charge_end_forces_fire"						"0" 	// 1 : 충전 완료 시 강제 격발, 0 : 충전 완료 유지 가능
+	"charge_end_forces_fire"						"1" 	// 1 : 충전 완료 시 강제 격발, 0 : 충전 완료 유지 가능
 
 	"fire_anim_rate"								"1"
 
@@ -207,7 +207,6 @@ WeaponData
 		tier_2_mod
 		{
 			// 1인칭 외형 변경 확인
-			"bodygroup2_name"	"tier2"
 			"bodygroup2_set"	"1"	
 
 			// // 약점 배율
@@ -224,6 +223,10 @@ WeaponData
 			// "damage_additional_bullets_titanarmor"			"2500"	// 2000
 		}
 
+		burn_mod_charge_cannon
+		{
+			"crosshair_index"								"1"
+		}
 	}
 
     // Crosshair
@@ -287,9 +290,14 @@ WeaponData
 				"stationary"				"1"
 			}
 		}
+		Burn_Card_Mod
+		{
+			"inherit_data_from"			"BaseWeapon"
 
-	
+			DefaultElementBehavior
+			{
+				"default_color"			"243 134 40 255"
+			}
+		}
 	}
-
-
 }

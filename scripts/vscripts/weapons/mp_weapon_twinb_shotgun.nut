@@ -20,6 +20,14 @@ function OnClientAnimEvent( name )
 	{
 		thread DelayedCasingsSound( 0.6 )
 	}
+	else if ( name == "ammo_update_twinb" )
+	{
+		HACK_TwinbUpdateViewmodelAmmo()
+	}
+	else if ( name == "ammo_full_twinb" )
+	{
+		HACK_TwinbUpdateViewmodelAmmo( true )
+	}
 }
 
 function DelayedCasingsSound( delayTime )
@@ -30,6 +38,29 @@ function DelayedCasingsSound( delayTime )
 		return
 
 	self.EmitWeaponSound( "SG_Twin_B.shell_drop" )
+}
+
+// HACK	because index 0 for bodygroup "ammo" MUST be blank, so it disappears when event AE_WPN_CLIPBODYGROUP_HIDE happens
+// but that completely messes up the ordering for the rest of the indexes, so we gotta add +1
+function HACK_TwinbUpdateViewmodelAmmo( forceFull = false )
+{
+	if ( !IsClient() )
+		return
+
+	if ( !IsValid( self ) )
+		return
+
+	if ( !IsLocalViewPlayer( self.GetWeaponOwner() ) )
+		return
+
+	local rounds = self.GetWeaponPrimaryClipCount()
+	if ( forceFull || ( rounds > AMMO_BODYGROUP_COUNT ) )
+		rounds = AMMO_BODYGROUP_COUNT
+
+	rounds += 1
+
+	//printt( "Updating for rounds: " + rounds );
+	self.SetViewmodelAmmoModelIndex( rounds )
 }
 
 function OnWeaponBulletHit( hitParams )
@@ -48,5 +79,6 @@ function OnWeaponStartZoomOut()
 
 function OnWeaponActivate( activateParams )
 {
-
+	AMMO_BODYGROUP_COUNT <- min( self.GetWeaponModSetting( "ammo_clip_size" ), 2 )
+	HACK_TwinbUpdateViewmodelAmmo()
 }

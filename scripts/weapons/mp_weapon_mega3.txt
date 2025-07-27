@@ -354,9 +354,13 @@ WeaponData
 			//"new_titan_knockback_per_hit"					"50"
 		}
 
+		burn_mod_thunderbolt
+		{
+			"crosshair_index"								"1"
+		}
 	}
 
-CrosshairData
+	CrosshairData
 	{
 		BaseWeapon
 		{
@@ -414,34 +418,6 @@ CrosshairData
 			{
 				"default_color"			"243 134 40 255"
 			}
-		}
-	}
-
-	TextureData
-	{
-		"crosshair"
-		{
-			"file"									"vgui/hud/crosshairs/titan_xo16"
-			"x"   									"0"
-			"y"   									"0"
-			"width"   								"96"
-			"height"  								"96"
-		}
-		"crosshair_zoom"
-		{
-			"file"									"vgui/hud/crosshairs/titan_xo16"
-			"x"   									"0"
-			"y"   									"0"
-			"width"   								"96"
-			"height"  								"96"
-		}
-		"autoaim"
-		{
-			"file"									"sprites/crosshairs"
-			"x"   									"0"
-			"y"   									"48"
-			"width"   								"24"
-			"height"  								"24"
 		}
 	}
 }
