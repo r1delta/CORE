@@ -84,7 +84,7 @@ function main()
 	file.betty.BC_EXTRA_DASH <- { prefix = "diag_gs_titan", suffix = "_def_ampedDash_grp" }
 
 	// "_def_ampedSlaved_grp" just makes them say "Titan Burn Card enabled.", so if we add any new titan burn cards in the future, use that one
-	file.betty.BC_TITAN_SHOTGUN_M2 <- { prefix = "diag_gs_titan", suffix = "_def_ampedSlaved_grp" }
+	file.betty.BC_TITAN_GENERIC <- { prefix = "diag_gs_titan", suffix = "_def_ampedSlaved_grp" }
 
 	foreach ( eventName, dialogInfo in file.betty )
 	{
@@ -172,6 +172,8 @@ function main()
 	file.events["bc_extra_dash"] <- { priority = 0.2, debounce = 3.0 }
 
 	file.events["bc_titan_shotgun_m2"] <- { priority = 0.2, debounce = 3.0 }
+	file.events["bc_thunderbolt_m2"] <- { priority = 0.2, debounce = 3.0 }
+	file.events["bc_titan_charge_cannon_m2"] <- { priority = 0.2, debounce = 3.0 }
 
 	//Add defaults for alwaysAnnounce and doomed
 	foreach( event in file.events )
@@ -534,7 +536,9 @@ function TitanCockpit_PlayDialogInternal( player, eventType )
 			break
 
 		case "bc_titan_shotgun_m2":
-			player.s.titanCockpitDialogAliasList = [ file.betty.BC_TITAN_SHOTGUN_M2 ]
+		case "bc_thunderbolt_m2":
+		case "bc_titan_charge_cannon_m2"
+			player.s.titanCockpitDialogAliasList = [ file.betty.BC_TITAN_GENERIC ]
 			break
 
 		default:
