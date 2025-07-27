@@ -355,9 +355,14 @@ function CreateAllBurnCards()
 	CreateBurnCardSrvFlag( "bc_titan_melee_m2", 				BURNCARD_RARE, 		BCGROUP_SPEED, 		CT_TITAN_WPN 									, "burncards/amped_melee", 				BC_NEXTTITANDROP, "#BC_TITAN_MELEE_M2" 	   				, "#BC_TITAN_MELEE_M2_DESC" 			, "#BC_TITAN_MELEE_M2_FLAVOR" 	   			, "#BC_FLAVOR_BISH",			SFLAG_BC_EXPLOSIVE_PUNCH,			null,							null,			null						)
 	CreateBurnCardSrvFlag( "bc_extra_dash", 					BURNCARD_COMMON, 	BCGROUP_SPEED, 		CT_TITAN 										, "burncards/amped_dash", 				BC_NEXTTITANDROP, "#BC_EXTRA_DASH" 	   					, "#BC_EXTRA_DASH_DESC" 				, "#BC_EXTRA_DASH_FLAVOR" 	   				, "#BC_FLAVOR_BISH",			SFLAG_BC_DASH_CAPACITY,				null,							null,			null						)
 
-	// TODO: enable when we can think of something good for it
-	//CreateBurnCardWeapon( "bc_titan_shotgun_m2",					BURNCARD_RARE, 		BCGROUP_WEAPON, 	CT_TITAN_WPN	| CT_PRIMARY					, "burncards/amped_titan_railgun", 		BC_NEXTTITANDROP, "#BC_TITAN_SHOTGUN_M2"					, "#BC_TITAN_SHOTGUN_M2_DESC"			, "#BC_TITAN_SHOTGUN_M2_FLAVOR"				, "#BC_FLAVOR_IMC_RESEARCH",	"mp_titanweapon_shotgun",				"burn_mod_titan_shotgun", 				"TITAN_PRIMARY"		)
-
+/*
+	// TODO: enable when we can think of something good for them
+	CreateBurnCardWeapon( "bc_valkyrie_m2",						BURNCARD_COMMON, 	BCGROUP_WEAPON, 	CT_WEAPON	| CT_SNIPER							, "burncards/amped_valkyrie",	BC_NEXTDEATH, 		"#BC_VALKYRIE_M2"			, "#BC_VALKYRIE_M2_DESC"		, "#BC_VALKYRIE_M2_FLAVOR"				, "#BC_FLAVOR_SKYFISH", 		"mp_weapon_mega1",			"burn_mod_valkyrie",						"PRIMARY"		)
+	CreateBurnCardWeapon( "bc_twinb_m2",						BURNCARD_COMMON, 	BCGROUP_WEAPON, 	CT_WEAPON	| CT_SMG							, "burncards/amped_twinb",		BC_NEXTDEATH, 		"#BC_TWINB_M2"				, "#BC_TWINB_M2_DESC"			, "#BC_TWINB_M2_FLAVOR"					, "#BC_FLAVOR_SKYFISH",			"mp_weapon_mega2",			"burn_mod_twinb",							"PRIMARY"		)
+	CreateBurnCardWeapon( "bc_titan_shotgun_m2",				BURNCARD_RARE, 		BCGROUP_WEAPON, 	CT_TITAN_WPN	| CT_PRIMARY					, "burncards/amped_titan_shotgun", 		BC_NEXTTITANDROP, "#BC_TITAN_SHOTGUN_M2"				, "#BC_TITAN_SHOTGUN_M2_DESC"			, "#BC_TITAN_SHOTGUN_M2_FLAVOR"				, "#BC_FLAVOR_IMC_RESEARCH",	"mp_titanweapon_shotgun",				"burn_mod_titan_shotgun", 				"TITAN_PRIMARY"		)
+	CreateBurnCardWeapon( "bc_thunderbolt_m2",					BURNCARD_RARE, 		BCGROUP_WEAPON, 	CT_TITAN_WPN	| CT_PRIMARY					, "burncards/amped_thunderbolt", 		BC_NEXTTITANDROP, "#BC_TITAN_MINIGUN_M2"				, "#BC_TITAN_MINIGUN_M2_DESC"			, "#BC_TITAN_MINIGUN_M2_FLAVOR"				, "#BC_FLAVOR_SKYFISH",			"mp_weapon_mega3",						"burn_mod_thunderbolt", 				"TITAN_PRIMARY"		)
+	CreateBurnCardWeapon( "bc_titan_charge_cannon_m2",			BURNCARD_RARE, 		BCGROUP_WEAPON, 	CT_TITAN_WPN	| CT_TACTICAL					, "burncards/amped_charge_cannon", 		BC_NEXTTITANDROP, "#BC_TITAN_CHARGE_CANNON_M2"			, "#BC_TITAN_CHARGE_CANNON_M2_DESC"		, "#BC_TITAN_CHARGE_CANNON_M2_FLAVOR"		, "#BC_FLAVOR_SKYFISH",			"mp_weapon_mega4",						"burn_mod_titan_charge_cannon,			"TITAN_OFFHAND1"	)
+*/
 	if ( IsServer() )
 	{
 		//GenerateBurnCardPacks()

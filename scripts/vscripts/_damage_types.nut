@@ -138,6 +138,17 @@ enum eDamageSourceId
 	// development
 	weapon_cubemap
 
+	mp_weapon_mega1
+	mp_weapon_mega2
+	mp_weapon_mega3
+	mp_weapon_mega4
+	mp_weapon_mega5
+	mp_weapon_mega6
+	mp_weapon_mega7
+	mp_weapon_mega8
+	mp_weapon_mega9
+	mp_weapon_mega10
+
 	//damageSourceId=eDamageSourceId.xxxxx
 	//fireteam
 	//marvin
@@ -302,7 +313,10 @@ else
 	damageSourceStrings[ eDamageSourceId.stuck ]		 				<- "#DEATH_GENERIC_KILLED"
 }
 
-
+damageSourceStrings[ eDamageSourceId.mp_weapon_mega1 ] 					<- "#WPN_VALKYRIE"
+damageSourceStrings[ eDamageSourceId.mp_weapon_mega2 ] 					<- "#WPN_TWINB_SHOTGUN"
+damageSourceStrings[ eDamageSourceId.mp_weapon_mega3 ] 					<- "#WPN_TITAN_MINIGUN"
+damageSourceStrings[ eDamageSourceId.mp_weapon_mega4 ] 					<- "#WPN_TITAN_CHARGE_CANNON"
 
 //When adding new mods, they need to be added below and to persistent_player_data_version_N.pdef in r1/cfg/server.
 //Then when updating that file, save a new one and increment N.
@@ -380,6 +394,10 @@ enum eModSourceId
 	burn_mod_titan_shotgun
 	explosive_rounds
 	long_fuse
+	burn_mod_valkyrie
+	burn_mod_twinb
+	burn_mod_thunderbolt
+	burn_mod_charge_cannon
 }
 
 //Attachments intentionally left off. This prevents them from displaying in kill cards.
@@ -444,3 +462,7 @@ modNameStrings[ eModSourceId.titanhammer ] 					<- "#MOD_TITANHAMMER_NAME"
 modNameStrings[ eModSourceId.burn_mod_wingman ] 	<- "#BC_WINGMAN_M2"
 modNameStrings[ eModSourceId.burn_mod_titan_shotgun ] 			<- "#BC_TITAN_SHOTGUN_M2"
 modNameStrings[ eModSourceId.explosive_rounds ] 			<- "#MOD_EXPLOSIVE_ROUNDS_NAME"
+modNameStrings[ eModSourceId.burn_mod_valkyrie ] 			<- "#BC_VALKYRIE_M2"
+modNameStrings[ eModSourceId.burn_mod_twinb ] 				<- "#BC_TWINB_SHOTGUN_M2"
+modNameStrings[ eModSourceId.burn_mod_thunderbolt ] 		<- "#BC_TITAN_MINIGUN_M2"
+modNameStrings[ eModSourceId.burn_mod_charge_cannon] 		<- "#BC_TITAN_CHARGE_CANNON_M2"
