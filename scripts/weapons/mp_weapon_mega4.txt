@@ -1,0 +1,295 @@
+//for destroyer only
+WeaponData
+{
+	// General
+	"printname"   									"#WPN_TITAN_CHARGE_CANNON"
+	"shortprintname"								"#WPN_TITAN_CHARGE_CANNON_SHORT"
+	"description" 									"#WPN_TITAN_CHARGE_CANNON_DESC"
+	"longdesc"										"#WPN_TITAN_CHARGE_CANNON_LONGDESC"
+	"weaponClass" 									"titan"
+	"fire_mode"   									"offhand"
+	"alwaysShow"									"true"
+	"server_vscript"  								"weapons/mp_titanweapon_charge_cannon"
+	"client_vscript"  								"weapons/mp_titanweapon_charge_cannon"
+	"projectile_vscript"  							"weapons/mp_projectile_titanweapon_charge_cannon"
+	"minimap_reveal_distance"						"32000"
+
+	// Menu Stats
+	"stat_damage" 									"70"
+	"stat_range"  									"50"
+	"stat_accuracy"   								"50"
+	"stat_rof"										"65"
+
+	// Models
+	"viewmodel"   									"models/weapons/titan_destroyer_railgun/atpov_destro_railgun.mdl"
+	//"playermodel" 									"models/weapons/titan_destroyer_railgun/titan_destroyer_railgun_tier0.mdl"
+	"playermodel" 									"models/weapons/titan_destroyer_railgun/w_destro_railgun.mdl"
+	"lobbymodel"									"models/weapons/titan_destroyer_railgun/atpov_destro_railgun.mdl"
+	"anim_prefix" 									"ar2"
+
+	"projectilemodel" 								"models/weapons/bullets/projectile_shotgun.mdl"
+
+
+	// Effects
+	
+	//"projectile_trail_effect_0" 					"P_titan_sniper2"
+	//"projectile_trail_effect_1" 					"P_titan_sniper3"
+	//"projectile_trail_effect_2" 					"P_titan_sniper3"
+	//"projectile_trail_attachment" 					"exhaust"
+
+	"tracer_effect"   								"P_wpn_charge_cannon_beam"
+	"tracer_effect_first_person"  					"P_wpn_charge_cannon_beam"
+	"impact_effect_table" 							"exp_defender" 
+
+	"fx_muzzle_flash_view"							"wpn_muzzleflash_xo_sniper_FP"
+	"fx_muzzle_flash_world"							"wpn_muzzleflash_xo_sniper"
+	"fx_muzzle_flash_attach"						"muzzle_flash"
+	
+	//"titan_sniper"
+	//"vortex_absorb_effect"						"wpn_vortex_projectile_rocket_FP"
+	//"vortex_absorb_effect_third_person"			"wpn_vortex_projectile_rocket"
+	//"vortex_absorb_sound"							"Vortex_Shield_AbsorbRocket"
+	//"adjust_to_gun_barrel"						"1"
+
+	"sound_dryfire"									"titan_dryfire"
+
+	// Damage - When Used by Players
+	"damage_type" 									"bullet"
+	"damage_near_distance"							"1500"
+	"damage_far_distance" 							"3000"
+	"damage_near_value"   							"200"
+	"damage_far_value"								"200"
+	"damage_near_value_titanarmor"					"1500"
+	"damage_far_value_titanarmor" 					"1500"
+
+	"critical_hit_damage_scale"						"2.5"
+	"critical_hit"  								"1"
+
+	"damage_additional_bullets"						"200"		// damage_xxx_value에 차지 레벨 증가에 따라서 + 되는 수치
+	"damage_additional_bullets_titanarmor"			"1500"		// damage_xxx_value_titanarmor에 차지 레벨 증가에 따라서 + 되는 수치
+
+	// Damage - When Used by NPCs
+	"npc_damage_near_distance"						"800"
+	"npc_damage_far_distance" 						"1200"
+	"npc_damage_near_value"   						"250"
+	"npc_damage_far_value"							"250"
+	"impulse_force"   								"10000"
+
+	// Ammo
+	"ammo_stockpile_max"							"1023"
+	"ammo_clip_size"   								"1"
+	"ammo_default_total"							"1023"
+
+	// Behavior
+	"fire_rate"   									"1.5"
+
+	"reload_time" 									"0"
+	"holster_time"									"0.3"
+	"deploy_time" 									"0.5"
+	"lower_time"  									"0.3"
+	"raise_time"  									"0.3"
+	"vortex_drain"									".15"
+	"allow_empty_fire"								"0"
+	"reload_enabled"  								"1"
+	"allow_empty_click"   							"1"
+	"empty_reload_only"   							"1"
+	"trigger_snipercam"   							"1"
+	"allow_headshots" 								"0"
+
+	"play_offhand_charging_anim"  					"1"
+	"offhand_blocks_sprint"							"1"
+
+	// Charge
+	"charge_time" 									"3" 	//?차지 캐논 충전 시간
+	"charge_levels"									"3" 	// charge_time/charge_levels
+	"charge_level_limit"							"3" 	// 최대 몇레벨 제한
+	"charge_cooldown_time"							"15.0" 	// 사용 후 재충전 시간
+	"charge_cooldown_delay"   						"0.1"  	// charge_cooldown_time 적용되기까지의 딜레이
+	
+	"charge_end_forces_fire"						"0" 	// 1 : 충전 완료 시 강제 격발, 0 : 충전 완료 유지 가능
+
+	"fire_anim_rate"								"1"
+
+	"move_speed_modifier" 							"0.30"//Bug with move speed > 1.0, temporary work around.
+
+	// Spread
+	"spread_stand_hip"  							"0"
+	"spread_stand_ads"   							"0"
+	"spread_npc"  									"0"
+
+	// View Kick
+	"viewkick_spring" 								"titan_railgun"
+
+	"viewkick_pitch_base" 							"-3.5"
+	"viewkick_pitch_random"   						"1.0"
+	"viewkick_pitch_softScale"						"0.5"
+	"viewkick_pitch_hardScale"						"2.0"
+
+	"viewkick_yaw_base"   							"0.25"
+	"viewkick_yaw_random" 							"1.5"
+	"viewkick_yaw_softScale"  						"1.5"
+	"viewkick_yaw_hardScale"  						"1.5"
+
+	"viewkick_roll_base"  							"-1.2"
+	"viewkick_roll_randomMin" 						"0.7"
+	"viewkick_roll_randomMax" 						"0.9"
+	"viewkick_roll_softScale" 						"0.2"
+	"viewkick_roll_hardScale" 						"1.8"
+
+	"viewkick_hipfire_weaponFraction" 				"0.5"
+	"viewkick_hipfire_weaponFraction_vmScale" 		"0.4"
+	"viewkick_ads_weaponFraction" 					"0.5"
+	"viewkick_ads_weaponFraction_vmScale" 			"0.4"
+
+	// Bob
+	"bob_cycle_time"  								".7"
+	"bob_vert_dist"   								"1"
+	"bob_horz_dist"   								"1"
+	"bob_max_speed"   								"300"
+
+	// View Drift
+	"viewdrift_hipfire_stand_scale_pitch" 			"0"
+	"viewdrift_hipfire_crouch_scale_pitch"			"0"
+	"viewdrift_hipfire_air_scale_pitch"   			"0"
+	"viewdrift_hipfire_stand_scale_yaw"   			"0"
+	"viewdrift_hipfire_crouch_scale_yaw"  			"0"
+	"viewdrift_hipfire_air_scale_yaw" 				"0"
+	"viewdrift_hipfire_speed_pitch"   				"0"
+	"viewdrift_hipfire_speed_yaw" 					"0"
+
+	// Rumble
+	"fire_rumble"									"titan_sniper"
+
+	// Sway
+
+	// NPC
+	"proficiency_poor_spreadscale"					"7.0"
+	"proficiency_poor_bias"   						"0.75"
+	"proficiency_average_spreadscale" 				"5.0"
+	"proficiency_average_bias"						"0.9"
+	"proficiency_good_spreadscale"					"3.33333"
+	"proficiency_good_bias"   						"0.9"
+	"proficiency_very_good_spreadscale"   			"1.66667"
+	"proficiency_very_good_bias"  					"0.9"
+	"proficiency_perfect_spreadscale" 				"1.0"
+	"proficiency_perfect_bias"						"1.0"
+
+	"npc_min_range"   								"0"
+	"npc_max_range"   								"3000"
+	"npc_min_range_secondary" 						"0"
+	"npc_max_range_secondary" 						"2500"
+	"npc_min_burst"   								"1"
+	"npc_max_burst"   								"1"
+	"rest_time_between_bursts_min"					"0.2"
+	"rest_time_between_bursts_max"					"0.3"
+
+	// Icon
+	"hud_icon"										"HUD/dpad_call_in_charge_cannon"
+
+	// Crosshair
+	"red_crosshair_range" 							"3000"
+
+	// Bodygroups:
+	"bodygroup1_name"	"tier0"
+	"bodygroup1_set"	"0"	
+	"bodygroup2_name"	"tier2"
+	"bodygroup2_set"	"0"	
+
+	Mods
+	{
+		
+		pas_defensive_core
+		{
+			"charge_cooldown_time"							"*0.8" // *0.75
+		}
+
+
+		tier_2_mod
+		{
+			// 1인칭 외형 변경 확인
+			"bodygroup2_name"	"tier2"
+			"bodygroup2_set"	"1"	
+
+			// // 약점 배율
+			// "critical_hit_damage_scale"						"3.0"  // 2.5
+			
+			// // 기본 공격력
+			// "damage_near_value"   							"300"  // 200
+			// "damage_far_value"								"300"  // 200
+			// "damage_near_value_titanarmor"					"2500"  // 2000
+			// "damage_far_value_titanarmor" 					"2500"  // 2000
+
+			// // 차지 레벨 단계 별 공격력 증가
+			// "damage_additional_bullets"						"300"	// 200	
+			// "damage_additional_bullets_titanarmor"			"2500"	// 2000
+		}
+
+	}
+
+    // Crosshair
+	CrosshairData
+	{
+		BaseWeapon
+		{
+			
+			DefaultElementBehavior
+			{
+				"fade_while_sprinting"	"1"
+				"fade_while_reloading"	"1"
+			}			
+			
+			Element0
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/vortex_crosshair_arc_fragments"
+				"offset_y"					"1"
+				"size_x"					"64"
+				"size_y"					"64"
+
+				"default_color"				"255 255 255 255"				
+			}			
+
+			Element1
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/titan_shotgun_circle_single"
+				"size_x"					"20"
+				"size_y"					"20"
+				"scale_ads"					"2.2"
+			}
+
+
+			Element2
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/3shot/3shot"
+				"size_x"					"40"
+				"size_y"					"80"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"1"
+				"draw_while_zooming"		"1"
+				"stationary"				"1"
+				"fixed_color"				"255 255 255 255"
+			}
+			Element3
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/3shot/3Shot_Shadow"
+				"size_x"					"40"
+				"size_y"					"80"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"1"
+				"draw_while_zooming"		"1"
+				"stationary"				"1"
+			}
+		}
+
+	
+	}
+
+
+}

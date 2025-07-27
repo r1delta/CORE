@@ -1,0 +1,373 @@
+WeaponData
+{
+	
+	// General
+	"printname"   									"#WPN_P_SG_TWINBSHOTGUN"
+	"shortprintname"								"#WPN_P_SG_TWINBSHOTGUN_SHORT"
+	"description" 									"#WPN_P_SG_TWINBSHOTGUN_DESC"
+	"longdesc" 										"#WPN_P_SG_TWINBSHOTGUN_LONGDESC"
+	"weaponClass" 									"human"
+	"body_type"										"close_quarters"
+	"fire_mode"   									"semi-auto"
+	"server_vscript"  								"weapons/mp_weapon_twinb_shotgun"
+	"client_vscript"  								"weapons/mp_weapon_twinb_shotgun"
+	"pickup_hold_prompt"  							"Hold [USE] [WEAPONNAME]"
+	"pickup_press_prompt" 							"[USE] [WEAPONNAME]"
+	"minimap_reveal_distance"						"32000"
+
+	// Menu Stats
+	"stat_damage" 									"50"
+	"stat_range"  									"70"
+	"stat_accuracy"   								"65"
+	"stat_rof"										"30"
+
+	// Models
+	"viewmodel"   									"models/weapons/twinbshotgun/ptpov_twinbshotgun.mdl"
+	"playermodel" 									"models/weapons/twinbshotgun/w_twinbshotgun.mdl"
+	"lobbymodel"									"models/weapons/twinbshotgun/ptpov_twinbshotgun.mdl"
+	"activitymodifier"								"twinb"
+
+	// Effects
+	"tracer_effect"   								"weapon_tracers_shotgun"
+	"impact_effect_table" 							"inc_bullet"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_shotgun_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_shotgun"
+	"vortex_absorb_sound"							"Vortex_Shield_AbsorbBulletSmall"
+	"adjust_to_gun_barrel"							"1"
+
+	// Sounds
+	"sound_dryfire"									"shotgun_dryfire"
+	"fire_sound_1"									"SG_Twin_B.Fire" // 기존 샷건은 소음기, 번카드 모드에 따라서 사운드가 달라짐 vscripts에 있음
+
+	"fx_shell_eject_view"							"wpn_shelleject_shotshell_FP"
+	"fx_shell_eject_world"							"wpn_shelleject_shotshell"
+	"fx_shell_eject_attach"							"shell"
+
+	"fx_muzzle_flash_view"							"mflash_shotgun_fp_FULL"
+	"fx_muzzle_flash_world"							"mflash_shotgun_FULL"
+	"fx_muzzle_flash_attach"						"muzzle_flash"
+
+	// Damage - When Used by Players
+	"damage_type" 									"buckshot"
+	"damage_near_distance"							"300"
+	"damage_far_distance" 							"700"
+	"damage_near_value"   							"220"
+	"damage_far_value"								"25"
+	"damage_falloff_type"							"inverse"
+	"damage_inverse_distance"						"130"
+	"damage_near_value_titanarmor"					"130"
+	"damage_far_value_titanarmor" 					"10"
+	"damage_rodeo" 									"700"
+
+	// Damage - When Used by NPCs
+	"npc_damage_near_distance"						"100"
+	"npc_damage_far_distance" 						"1200"
+	"npc_damage_near_value"   						"40"
+	"npc_damage_far_value"							"20"
+	"npc_damage_near_value_titanarmor"				"40"
+	"npc_damage_far_value_titanarmor" 				"0"
+
+	"impulse_force"   								"800"
+
+	"critical_hit_damage_scale"						"2.0"
+	"critical_hit"									"1"
+
+	// Ammo
+	"ammo_stockpile_max"							"40"
+	"ammo_clip_size"   								"2"
+	"ammo_default_total"							"40"
+
+	// Behavior
+	"fire_rate"   									"2.5"
+	"zoom_time_in"									"0.2"
+	"zoom_time_out"   								"0.2"
+	"zoom_fov"										"55"
+	"reload_time" 									"1.85"
+	"reload_time_late1" 							"1.15"
+	"reloadempty_time"								"1.85"
+	"reloadempty_time_late1"						"1.15"
+	"holster_time"									"0.5"  // 무기 스왑 시 넣는 모션
+	"deploy_time" 									"0.66" // 무기 스왑 시 꺼내는 모션
+	"lower_time"  									"0.25" //  수류탄 투쳑, 파쿠르 시 넣는 모션
+	"raise_time"  									"0.3"  // 수류탄 투쳑, 파쿠르 시 꺼내는 모션
+	"vortex_refire_behavior"  						"bullet"
+	"allow_empty_fire"								"0"
+	"reload_enabled"  								"1"  // 탄약 소진 시 자동 재장전 여부
+	"allow_empty_click"   							"1"  
+	"empty_reload_only"   							"0"	 // 탄약 소진 시에만 장전 가능
+	"trigger_snipercam"   							"0"
+	"allow_headshots" 								"0"
+	"primary_fire_does_not_block_sprint"			"0"
+	"ads_move_speed_scale"							"0.75" // 사격 시 이동 수준을 권총,SMG 수준으로 상향
+	"aimassist_disable_hipfire"						"0"
+	"aimassist_disable_ads"							"0"
+	"aimassist_disable_hipfire_titansonly"			"1"
+	"aimassist_disable_ads_titansonly"				"1"
+	"move_speed_modifier" 							"1.00"//Bug with move speed > 1.0, temporary work around.
+
+	// Spread 일반 샷건 대비 집탄을 넓힘(7.5->8.5) 근거리 교전 유도
+	"spread_stand_hip" 								"8.5"
+	"spread_stand_hip_run" 							"8.5"
+	"spread_stand_hip_sprint"                       "8.5"
+	"spread_stand_ads"  							"8.5"
+	"spread_crouch_hip"								"8.5"
+	"spread_crouch_ads"  							"8.5"
+	"spread_air_hip"	   							"8.5"
+	"spread_air_ads"   								"8.5"
+
+	// Spread on NPCs affects their initial shooting direction
+	// Don't make this a large number or the damage/tracers won't be even remotely parallel to their barrel
+	"spread_npc"  									"2"
+
+	// View Kick 근거리 교전이 용이하도록 일반 샷건 번카드 수준으로 반동을 낮춤
+	"viewkick_spring" 								"shotgun"
+
+	"viewkick_pitch_base" 							"-1.75"
+	"viewkick_pitch_random"   						"0.75"
+	"viewkick_pitch_softScale"						"0.3"
+	"viewkick_pitch_hardScale"						"1.5"
+
+	"viewkick_yaw_base"   							"-0.65"
+	"viewkick_yaw_random" 							"0.38"
+	"viewkick_yaw_softScale"  						"0.38"
+	"viewkick_yaw_hardScale"  						"1.5"
+
+	"viewkick_roll_base"  							"0"
+	"viewkick_roll_randomMin" 						"0.6"
+	"viewkick_roll_randomMax" 						"0.8"
+	"viewkick_roll_softScale" 						"0.2"
+	"viewkick_roll_hardScale" 						"2.75"
+
+	"viewkick_hipfire_weaponFraction" 				"0.1"
+	"viewkick_hipfire_weaponFraction_vmScale" 		"0.0"
+	"viewkick_ads_weaponFraction" 					"0.35"
+	"viewkick_ads_weaponFraction_vmScale" 			"0.25"
+
+	"viewkick_perm_pitch_base" 						"-0.5"
+	"viewkick_perm_pitch_random"   					"1.1"
+	"viewkick_perm_pitch_random_innerexclude"		"0.5"
+	"viewkick_perm_yaw_base"   						"0.0"
+	"viewkick_perm_yaw_random" 						"1.5"
+	"viewkick_perm_yaw_random_innerexclude" 		"0.5"
+
+	//
+	"viewmodel_shake_forward"						"0.5"
+	"viewmodel_shake_up"							"0.2"
+	"viewmodel_shake_right"							"0.0"
+
+	// Bob
+	"bob_cycle_time"  								"0.45"
+	"bob_vert_dist"   								"0.1"
+	"bob_horz_dist"   								"0.1"
+	"bob_max_speed"   								"150"
+	"bob_pitch"   									"0.75"
+	"bob_yaw" 										"0.5"
+	"bob_roll"										"-0.75"
+
+	// View Drift
+	"viewdrift_hipfire_stand_scale_pitch" 			"0.325"
+	"viewdrift_hipfire_crouch_scale_pitch"			"0.275"
+	"viewdrift_hipfire_air_scale_pitch"   			"0.5"
+	"viewdrift_hipfire_stand_scale_yaw"   			"0.12"
+	"viewdrift_hipfire_crouch_scale_yaw"  			"0.10"
+	"viewdrift_hipfire_air_scale_yaw" 				"0.22"
+	"viewdrift_hipfire_speed_pitch"   				"0.6"
+	"viewdrift_hipfire_speed_yaw" 					"1.22"
+
+	"viewdrift_ads_stand_scale_pitch" 				"0.3"
+	"viewdrift_ads_crouch_scale_pitch"				"0.3"
+	"viewdrift_ads_air_scale_pitch"   				"0.3"
+	"viewdrift_ads_stand_scale_yaw"   				"0.12"
+	"viewdrift_ads_crouch_scale_yaw"  				"0.12"
+	"viewdrift_ads_air_scale_yaw" 					"0.12"
+	"viewdrift_ads_speed_pitch"   					"0.6"
+	"viewdrift_ads_speed_yaw" 						"1.22"
+
+	// Rumble
+	"fire_rumble"									"pilot_singleshot_strong_fire"
+
+	// Sway
+	"sway_rotate_attach"  							"SWAY_ROTATE"
+	"sway_min_x"  									"-0.3"
+	"sway_min_y"  									"-0.5"
+	"sway_min_z"  									"-0.5"
+	"sway_max_x"  									"0.3"
+	"sway_max_y"  									"0.5"
+	"sway_max_z"  									"0.1"
+	"sway_min_pitch"  								"-3"
+	"sway_min_yaw"									"-3.5"
+	"sway_min_roll"   								"-2"
+	"sway_max_pitch"  								"3"
+	"sway_max_yaw"									"3.5"
+	"sway_max_roll"   								"3"
+	"sway_translate_gain" 							"10"
+	"sway_rotate_gain"								"12"
+	"sway_move_forward_translate_x"   				"0"
+	"sway_move_forward_translate_z"   				"-0.5"
+	"sway_move_back_translate_x"  					"-2"
+	"sway_move_back_translate_z"  					"-1"
+	"sway_move_left_translate_y"  					"-1"
+	"sway_move_left_translate_z"  					"-0.5"
+	"sway_move_left_rotate_roll"  					"-2"
+	"sway_move_right_translate_y" 					"1"
+	"sway_move_right_translate_z" 					"-0.5"
+	"sway_move_right_rotate_roll" 					"4"
+	"sway_move_up_translate_z"						"-1"
+	"sway_move_down_translate_z"  					"1"
+	"sway_turn_left_rotate_yaw"   					"-1"
+	"sway_turn_right_rotate_yaw"  					"1"
+	"sway_turn_up_rotate_pitch"   					"1"
+	"sway_turn_down_rotate_pitch" 					"-1"
+
+	// Zoomed Sway
+	"sway_rotate_attach_zoomed"						"SWAY_ROTATE_ZOOMED"
+	"sway_rotate_attach_blend_time_zoomed"			"0.2"
+	"sway_rotate_gain_zoomed"						"12"
+
+	"sway_min_yaw_zoomed"							"-0.03"
+	"sway_max_yaw_zoomed"							"0.03"
+	"sway_turn_left_rotate_yaw_zoomed"				"-0.085"
+	"sway_turn_right_rotate_yaw_zoomed"				"0.085"
+
+	"sway_min_pitch_zoomed"  						"-0.01"
+	"sway_max_pitch_zoomed"  						"0.01"
+	"sway_turn_up_rotate_pitch_zoomed"				"0.09"
+	"sway_turn_down_rotate_pitch_zoomed"			"-0.09"
+
+	// NPC
+	"proficiency_poor_spreadscale"					"7.0"
+	"proficiency_poor_bias"   						"0.75"
+	"proficiency_average_spreadscale" 				"5.0"
+	"proficiency_average_bias"						"0.9"
+	"proficiency_good_spreadscale"					"3.33333"
+	"proficiency_good_bias"   						"0.9"
+	"proficiency_very_good_spreadscale"   			"3.66667"
+	"proficiency_very_good_bias"  					"0.9"
+	"proficiency_perfect_spreadscale" 				"1.0"
+	"proficiency_perfect_bias"						"1.0"
+
+	"npc_min_range"   								"0"
+	"npc_max_range"   								"768"
+
+	"npc_min_burst"									"1"
+	"npc_max_burst"									"1"
+	"rest_time_between_bursts_min"					"0.5"
+	"rest_time_between_bursts_max"					"0.5"
+
+
+	"bob_tilt_angle"  								"0.5"
+	"sway_turn_angle_factor"  						"-0.5"
+	"sway_turn_origin_factor" 						"0"
+	"sway_turn_angle_factor_zoomed"   				"0"
+	"sway_turn_origin_factor_zoomed"  				"0.05"
+	"sway_move_angle_factor"  						"0.15"
+	"sway_move_origin_factor" 						"0.15"
+	"sway_move_angle_factor_zoomed"   				"0"
+	"sway_move_origin_factor_zoomed"  				"0.03"
+	"sway_gain"   									"10.0"
+
+	"deployfirst_time"								"1.25"
+	"deploycatch_time"								"1.33"
+	"sprintcycle_time"								".55"
+	"is_anti_titan"  							    "0"
+
+	// Crosshair
+	"red_crosshair_range" 							"700"
+
+	// Bodygroups:
+	"bodygroup1_name"	"sight_aog04"
+	"bodygroup1_set"	"0"
+	"bodygroup2_name"	"sight_hcog"
+	"bodygroup2_set"	"0"
+	"bodygroup3_name"	"sight_holo"
+	"bodygroup3_set"	"0"
+
+    "clip_bodygroup"						"twinbshotgun_magazine"
+    "clip_bodygroup_index_shown"			"0"
+    "clip_bodygroup_index_hidden"			"1"
+    "clip_bodygroup_show_for_milestone_0"	"1"
+    "clip_bodygroup_show_for_milestone_1"	"0"
+    "clip_bodygroup_show_for_milestone_2"	"1"
+    "clip_bodygroup_show_for_milestone_3"	"1"
+
+
+	"use_mod_table"     			"0" 
+
+	Mods
+	{
+
+		// "slammer"					"41061"
+		// "integrated_gyro"			"41052"
+		// "match_trigger"				"41532" // TB
+
+		// "pas_fast_reload"			"41501"
+		// "pas_run_and_gun"			"41511"
+
+	}
+
+	CrosshairData // 중심 확인을 편의를 위한 점 추가
+	{
+		BaseWeapon
+		{
+			DefaultElementBehavior
+			{
+				"size_x"					"36"
+				"size_y"					"36"
+				"rotation"					"180"
+				"fade_into_zooming_end"		"0.1"
+				"fade_out_of_zooming_begin"	"0.1"
+				"fade_while_sprinting"		"1"
+				"fade_while_reloading"		"1"
+				"fade_while_zooming"		"1"
+				"draw_while_ads"			"0"
+			}
+			Element0
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/crosshair_pilot_shotgun_outer_ring_arc"
+				"spread_initial_angle"		"45"
+				"spread_initial_offset"		"-3"
+			}
+			Element1
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/crosshair_pilot_shotgun_outer_ring_arc_shadow"
+				"spread_initial_angle"		"45"
+				"spread_initial_offset"		"-3"
+			}
+			Element2
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/b3wingman"
+				"size_x"					"28"
+				"size_y"					"28"
+			}
+			Element3
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/b3wingman_shadow"
+				"size_x"					"28"
+				"size_y"					"28"
+			}
+		}
+
+	}
+
+	TextureData
+	{
+		"crosshair"
+		{
+			"file"									"vgui/hud/crosshairs/crosshair_pilot_shotgun_outer_ring_arc"
+			"x"   									"0"
+			"y"   									"0"
+			"width"   								"72"
+			"height"  								"72"
+		}
+		"crosshair_zoom"
+		{
+		}
+		"autoaim"
+		{
+		}
+	}
+}
