@@ -1614,12 +1614,7 @@ function CanWeaponShootWhileRunning( weapon )
 //A and B control which direction it charges and how quickly.
 function DisplayChargeAmmoBar( weapon, weaponOwner, a = 0, b = 1.0, cockpit = null )
 {
-	if( IsValid( cockpit ) )
-	{
-		cockpit.s.weaponAmmoCount.Hide()
-		cockpit.s.weaponMagsLabel.Hide()
-		cockpit.s.weaponMags[0].Hide()
-	}
+	HideWeaponAmmoUI( cockpit )
 
 	weaponOwner.s.weaponUpdateData = { weapon = weapon, a = a, b = b }
 }
@@ -1628,6 +1623,16 @@ function HideChargeAmmoBar( weapon, weaponOwner )
 {
 	weaponOwner.s.weaponUpdateData = {}
 	weaponOwner.Signal( "ResetWeapons" )
+}
+
+function HideWeaponAmmoUI( cockpit )
+{
+	if ( IsValid( cockpit ) )
+	{
+		cockpit.s.weaponAmmoCount.Hide()
+		cockpit.s.weaponMagsLabel.Hide()
+		cockpit.s.weaponMags[0].Hide()
+	}
 }
 
 function DebugDrawWeapon( weapon )
