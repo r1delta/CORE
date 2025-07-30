@@ -188,6 +188,10 @@ function GiveTitanRandomTacticalAbility( titan )
 			GiveTitanTacticalAbility( titan, TAC_ABILITY_SMOKE )
 			break
 
+//		case 3:
+//			GiveTitanTacticalAbility( titan, TAC_ABILITY_RAILGUN )
+//			break
+
 		default:
 			GiveTitanTacticalAbility( titan, TAC_ABILITY_VORTEX )
 			break
@@ -217,6 +221,13 @@ function GiveTitanTacticalAbility( titan, tacAbility )
 		case TAC_ABILITY_VORTEX:
 			titan.SetTacticalAbility( titan.GetOffhandWeapon( TAC_ABILITY_VORTEX ), TTA_VORTEX )
 			break
+
+		case TAC_ABILITY_RAILGUN:
+			if ( !IsValid( tac ) )
+				titan.GiveOffhandWeapon( "mp_weapon_mega4", TAC_ABILITY_RAILGUN )
+			titan.SetTacticalAbility( titan.GetOffhandWeapon( TAC_ABILITY_RAILGUN ), TTA_SMOKE )
+			break
+
 		default:
 			Assert( 0, "tac ability index" + tacAbility + " not valid" )
 			break

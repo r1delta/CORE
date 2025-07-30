@@ -1919,6 +1919,7 @@ const GENERATOR_DAMAGE_MORTAR_ROCKET_MULTIPLIER	= 0.8 // increased the value sin
 const TAC_ABILITY_VORTEX 	= 1
 const TAC_ABILITY_WALL		= 2
 const TAC_ABILITY_SMOKE		= 3
+const TAC_ABILITY_RAILGUN	= 4
 
 const SCOREBOARD_MATERIAL_COOP_TITAN 			= "HUD/coop/coop_titan"
 const SCOREBOARD_MATERIAL_COOP_EMP_TITAN		= "HUD/coop/coop_emp_titan_square"
