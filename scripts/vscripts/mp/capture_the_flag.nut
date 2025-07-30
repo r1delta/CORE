@@ -261,7 +261,7 @@ function CodeCallback_OnTouchHealthKit( player, flag )
 	if ( !level.titanFlagInteraction && player.IsTitan() )
 		return false
 
-	if ( ( "forceDisableFlagTouch" in player.s ) && player.s.forceDisableFlagTouch == true )
+	if ( player.s.forceDisableFlagTouch == true )
 		return false
 
 	local flagTeam = flag.GetTeam()
@@ -484,10 +484,7 @@ function DropFlagOnDeath( player, damageInfo )
 function DropFlagOnAutoBalance( player, currentTeam, otherTeam )
 {
 	// Prevent player from automatically picking up the flag right after dropping it
-	if ( !( "forceDisableFlagTouch" in player.s ) )
-		player.s.forceDisableFlagTouch <- true
-	else
-		player.s.forceDisableFlagTouch = true
+	player.s.forceDisableFlagTouch = true
 
 	DropFlag( player )
 }

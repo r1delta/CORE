@@ -2676,6 +2676,8 @@ function CodeCallback_OnClientConnectionStarted( player )
 
 	player.s.lastNagTime <- 0
 
+	player.s.forceDisableFlagTouch <- false
+
 	Assert( !player._entityVars )
 	InitEntityVars( player )
 
