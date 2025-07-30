@@ -31,25 +31,14 @@ WeaponData
 
 
 	// Effects
-	
-	//"projectile_trail_effect_0" 					"P_titan_sniper2"
-	//"projectile_trail_effect_1" 					"P_titan_sniper3"
-	//"projectile_trail_effect_2" 					"P_titan_sniper3"
-	//"projectile_trail_attachment" 					"exhaust"
-
-	"tracer_effect"   								"P_wpn_charge_cannon_beam"
-	"tracer_effect_first_person"  					"P_wpn_charge_cannon_beam"
+	"tracer_effect"   								"P_wpn_defender_beam" //P_wpn_charge_cannon_beam
+	"tracer_effect_first_person"  					"P_wpn_defender_beam" //P_wpn_charge_cannon_beam
 	"impact_effect_table" 							"exp_defender" 
+	"adjust_to_gun_barrel"							"1"
 
 	"fx_muzzle_flash_view"							"wpn_muzzleflash_xo_sniper_FP"
 	"fx_muzzle_flash_world"							"wpn_muzzleflash_xo_sniper"
 	"fx_muzzle_flash_attach"						"muzzle_flash"
-	
-	//"titan_sniper"
-	//"vortex_absorb_effect"						"wpn_vortex_projectile_rocket_FP"
-	//"vortex_absorb_effect_third_person"			"wpn_vortex_projectile_rocket"
-	//"vortex_absorb_sound"							"Vortex_Shield_AbsorbRocket"
-	//"adjust_to_gun_barrel"						"1"
 
 	"sound_dryfire"									"titan_dryfire"
 
@@ -161,6 +150,38 @@ WeaponData
 	"fire_rumble"									"titan_sniper"
 
 	// Sway
+	"sway_rotate_attach"  							"PROPGUN" //SWAY_ROTATE
+	"sway_min_x"  									"-0.3"
+	"sway_min_y"  									"-0.5"
+	"sway_min_z"  									"-0.5"
+	"sway_max_x"  									"0.3"
+	"sway_max_y"  									"0.5"
+	"sway_max_z"  									"0.1"
+	"sway_min_pitch"  								"-3"
+	"sway_min_yaw"									"-3.5"
+	"sway_min_roll"   								"-1"
+	"sway_max_pitch"  								"3"
+	"sway_max_yaw"									"3.5"
+	"sway_max_roll"   								"2"
+	"sway_translate_gain" 							"10"
+	"sway_rotate_gain"								"12"
+	"sway_move_forward_translate_x"   				"0"
+	"sway_move_forward_translate_z"   				"-0.5"
+	"sway_move_back_translate_x"  					"-2"
+	"sway_move_back_translate_z"  					"-1"
+	"sway_move_left_translate_y"  					"-1"
+	"sway_move_left_translate_z"  					"-0.5"
+	"sway_move_left_rotate_roll"  					"-1"
+	"sway_move_right_translate_y" 					"1"
+	"sway_move_right_translate_z" 					"-0.5"
+	"sway_move_right_rotate_roll" 					"2"
+	"sway_move_up_translate_z"						"-1"
+	"sway_move_down_translate_z"  					"1"
+	"sway_turn_left_rotate_yaw"   					"-1"
+	"sway_turn_right_rotate_yaw"  					"1"
+	"sway_turn_up_rotate_pitch"   					"1"
+	"sway_turn_down_rotate_pitch" 					"-1"
+	"sway_enable_zoomed"							"0" // Actually does the opposite lmao
 
 	// NPC
 	"proficiency_poor_spreadscale"					"7.0"

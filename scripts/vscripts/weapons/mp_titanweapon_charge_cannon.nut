@@ -10,12 +10,16 @@ RegisterSignal( "RegenAmmo" )
 RegisterSignal( "UpdateWeapons" )
 chargeDownSoundDuration <- 1.0 //"charge_cooldown_time"
 
+const CHARGE_FX = "P_wpn_defender_charge" //"P_wpn_charge_cannon_charge"
+const CHARGE_FX_FP = "P_wpn_defender_charge_FP" //"P_wpn_charge_cannon_charge_FP"
+
 function LauncherPrecache( weapon )
 {
 	if ( WeaponIsPrecached( self ) )
 		return
 
-	PrecacheParticleSystem( "P_wpn_charge_cannon_charge_FP" )
+	PrecacheParticleSystem( CHARGE_FX )
+	PrecacheParticleSystem( CHARGE_FX_FP )
 	PrecacheParticleSystem( "defender_charge_CH_dlight" )
 
 	PrecacheParticleSystem( "wpn_muzzleflash_arc_cannon_fp" )
@@ -74,7 +78,7 @@ function OnWeaponChargeBegin( chargeParams )
 
 	printt("------------charge begin------------")
 
-	self.PlayWeaponEffect( "P_wpn_charge_cannon_charge_FP", "P_wpn_charge_cannon_charge_FP", "muzzle_flash" )
+	self.PlayWeaponEffect( CHARGE_FX_FP, CHARGE_FX_FP, "muzzle_flash" )
 	self.PlayWeaponEffect( null, "defender_charge_CH_dlight", "muzzle_flash" )	
 }
 
@@ -87,7 +91,7 @@ function OnWeaponCustomActivityStart()
 
 	StopSoundOnEntity( self, "Weapon_Titan_Charge_Cannon_Loop" )
 
-	self.StopWeaponEffect( "P_wpn_charge_cannon_charge_FP", "P_wpn_charge_cannon_charge_FP" )
+	self.StopWeaponEffect( CHARGE_FX_FP, CHARGE_FX_FP )
 	self.StopWeaponEffect( "defender_charge_CH_dlight", "defender_charge_CH_dlight" )
 }
 
@@ -254,7 +258,7 @@ function OnWeaponChargeLevelIncreased()
 
 	if (IsServer())
 	{
-		self.StopWeaponEffect( "P_wpn_charge_cannon_charge_FP", "P_wpn_charge_cannon_charge" )
+		self.StopWeaponEffect( CHARGE_FX_FP, CHARGE_FX )
 		self.StopWeaponEffect( "defender_charge_CH_dlight", "defender_charge_CH_dlight" )
 	}
 
@@ -323,7 +327,7 @@ function FireChargeCannon( weapon, attackParams, playerFired)
 {
 	StopSoundOnEntity( self, "Weapon_Titan_Charge_Cannon_Loop" )
 
-	self.StopWeaponEffect( "P_wpn_charge_cannon_charge_FP", "P_wpn_charge_cannon_charge_FP" )
+	self.StopWeaponEffect( CHARGE_FX_FP, CHARGE_FX_FP )
 	self.StopWeaponEffect( "defender_charge_CH_dlight", "defender_charge_CH_dlight" )
 
 	local chargeLevel = GetTitanSniperChargeLevel( weapon )
