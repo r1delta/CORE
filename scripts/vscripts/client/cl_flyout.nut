@@ -488,7 +488,11 @@ function GetViewmodelBoneLocation()
 	local viewmodel = GetLocalViewPlayer().GetViewModelEntity()
 	local screenSize = Hud.GetScreenSize()
 
-	local attachIndex = viewmodel.LookupAttachment( "shell" )
+	local attachIndex = viewmodel.LookupAttachment( "flyout" )
+
+	if ( attachIndex == 0 )
+		attachIndex = viewmodel.LookupAttachment( "shell" )
+
 	if ( attachIndex && attachIndex >= 0 )
 	{
 		local worldCoord = viewmodel.GetAttachmentOrigin( attachIndex )
