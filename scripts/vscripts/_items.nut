@@ -2818,7 +2818,7 @@ function GetDefaultAttachmentName( itemRef )
 	{
 		case "mp_weapon_dmr":
 		case "mp_weapon_sniper":
-		case "mp_weapon_mega1"
+		case "mp_weapon_mega1":
 			return "#MOD_SCOPE_6X_NAME"
 
 		default:
