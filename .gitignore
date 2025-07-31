@@ -21,6 +21,5 @@ materials/vgui/addons/*/
 screenshots/*
 .vscode/*
 
-sound
 sound_xma
 bin_delta
