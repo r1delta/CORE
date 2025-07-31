@@ -150,6 +150,10 @@ function InitPersistence()
 	    mp_ability_sonar = 38
 
 	    mp_titanweapon_shotgun = 39
+	    mp_weapon_mega1 = 40 // Valkyrie
+	    mp_weapon_mega2 = 41 // Twin-B
+	    mp_weapon_mega3 = 42 // Thunderbolt (minigun)
+	    mp_weapon_mega4 = 43 // Charge Cannon
     }
 
     AddPersistenceEnum("loadoutItems", loadoutItems)
@@ -209,7 +213,9 @@ function InitPersistence()
 	    stabilized_warhead = 51
 	    tank_buster = 52
 	    burn_mod_wingman = 53
-		explosive_rounds = 54
+	    explosive_rounds = 54
+	    burn_mod_valkyrie = 55
+	    burn_mod_twinb = 56
     }
 
     AddPersistenceEnum("pilotMod", pilotMod)
@@ -252,6 +258,8 @@ function InitPersistence()
 	    quick_shot = 25
 	    rapid_fire_missiles = 26
 	    burn_mod_titan_shotgun = 27
+	    burn_mod_thunderbolt = 28
+	    burn_mod_charge_cannon = 29
     }
 
     AddPersistenceEnum("titanMod", titanMod)
@@ -587,7 +595,22 @@ function InitPersistence()
 		mp_weapon_smr_tank_buster = 107,
 		mp_weapon_smr_stabilized_warhead = 108,
 		mp_weapon_rocket_launcher_guided_missile = 109,
-		mp_weapon_mgl_long_fuse = 110
+		mp_weapon_mgl_long_fuse = 110,
+
+		mp_weapon_mega1_aog = 111,
+		mp_weapon_mega1_scope_4x = 112,
+		mp_weapon_mega1_scope_6x = 113,
+		mp_weapon_mega1_extended_ammo = 114,
+		mp_weapon_mega1_silencer = 115,
+		mp_weapon_mega1_stabilizer = 116,
+		mp_weapon_mega1_burn_mod_valkyrie = 117,
+
+		mp_weapon_mega2_spread_increase_sg = 118,
+		mp_weapon_mega2_silencer = 119,
+		mp_weapon_mega2_burn_mod_twinb = 120,
+
+		mp_weapon_mega3_burn_mod_thunderbolt = 121,
+		mp_weapon_mega4_burn_mod_charge_cannon = 122
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
@@ -1416,6 +1439,18 @@ function InitPersistence()
 		ch_titan_shotgun_grunt_kills = 215,
 		ch_titan_shotgun_hours_used = 216,
 		ch_titan_shotgun_crits = 217,
+
+		ch_valkyrie_kills = 218,
+		ch_valkyrie_pilot_kills = 219,
+		ch_valkyrie_spectre_kills = 220,
+		ch_valkyrie_grunt_kills = 221,
+		ch_valkyrie_hours_used = 222,
+
+		ch_twinb_kills = 223,
+		ch_twinb_pilot_kills = 224,
+		ch_twinb_spectre_kills = 225,
+		ch_twinb_grunt_kills = 226,
+		ch_twinb_hours_used = 227,
     }
 
     AddPersistenceEnum("challenge", challenge)
@@ -1650,6 +1685,16 @@ function InitPersistence()
 		ch_daily_titan_shotgun_titan_kills = 187
 		ch_daily_titan_shotgun_grunt_kills = 188,
 		ch_daily_titan_shotgun_crits = 189,
+
+		ch_daily_valkyrie_kills = 190,
+		ch_daily_valkyrie_pilot_kills = 191,
+		ch_daily_valkyrie_spectre_kills = 192,
+		ch_daily_valkyrie_grunt_kills = 193,
+
+		ch_daily_twinb_kills = 194,
+		ch_daily_twinb_pilot_kills = 195,
+		ch_daily_twinb_spectre_kills = 196,
+		ch_daily_twinb_grunt_kills = 197,
     }
 
     AddPersistenceEnum("dailychallenge", dailychallenge)

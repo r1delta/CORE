@@ -4932,7 +4932,7 @@ function Play3PHarvesterImpactSounds(generator, damageInfo) {
 		soundAlias = "HarvesterShield.MeleeImpact_3P_vs_3P"
 	else if (damageSource == eDamageSourceId.mp_titanweapon_arc_cannon || damageSource == eDamageSourceId.mp_weapon_defender)
 		soundAlias = "HarvesterShield.Energy.BulletImpact_3P_vs_3P"
-	else if (damageSource = eDamageSourceId.mp_titanweapon_xo16 && damageType & DF_ELECTRICAL)
+	else if ((damageSource = eDamageSourceId.mp_titanweapon_xo16 || damageSource = eDamageSourceId.mp_weapon_mega3) && damageType & DF_ELECTRICAL)
 		soundAlias = "HarvesterShield.AmpedXO16.BulletImpact_3P_vs_3P"
 	else if (damageType & DF_EXPLOSION)
 		soundAlias = "HarvesterShield.Explosive.BulletImpact_3P_vs_3P"

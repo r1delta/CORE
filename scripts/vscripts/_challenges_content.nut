@@ -65,6 +65,8 @@ level.weaponCategories.append( eChallengeCategory.WEAPON_HEMLOK )
 level.weaponCategories.append( eChallengeCategory.WEAPON_G2 )
 level.weaponCategories.append( eChallengeCategory.WEAPON_DMR )
 level.weaponCategories.append( eChallengeCategory.WEAPON_SNIPER )
+level.weaponCategories.append( eChallengeCategory.WEAPON_VALKYRIE )
+level.weaponCategories.append( eChallengeCategory.WEAPON_TWINB )
 level.weaponCategories.append( eChallengeCategory.WEAPON_SMR )
 level.weaponCategories.append( eChallengeCategory.WEAPON_MGL )
 level.weaponCategories.append( eChallengeCategory.WEAPON_ARCHER )
@@ -1041,7 +1043,9 @@ function CreateChallenges()
 									eChallengeCategory.WEAPON_HEMLOK,
 									eChallengeCategory.WEAPON_G2,
 									eChallengeCategory.WEAPON_DMR,
-									eChallengeCategory.WEAPON_SNIPER
+									eChallengeCategory.WEAPON_SNIPER,
+									eChallengeCategory.WEAPON_VALKYRIE,
+									eChallengeCategory.WEAPON_TWINB
 								]
 	SetChallengeCategory( eChallengeCategory.PILOT_PRIMARY, "#CHALLENGE_CATEGORY_PILOT_PRIMARY", "#CHALLENGE_CATEGORY_DESC_PILOT_PRIMARY", "edit_pilots", linkedCategories )
 
@@ -1570,6 +1574,100 @@ function CreateChallenges()
 		SetChallengeTierBurnCards( 2, ["bc_sniper_m2"] )
 		SetChallengeTierBurnCards( 3, ["bc_sniper_m2"] )
 		SetChallengeTierBurnCards( 4, ["bc_sniper_m2"] )
+
+	//------------------
+	//		Valkyrie
+	//------------------
+
+	local weaponRef = "mp_weapon_mega1"
+	SetChallengeCategory( eChallengeCategory.WEAPON_VALKYRIE, "#WPN_VALKYRIE", "", weaponRef )
+
+	AddChallenge( "ch_valkyrie_kills", "#CHALLENGE_WEAPON_KILLS", "#CHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
+		SetChallengeTiers( [ 5, 15, 25, 50, 100 ] )
+//		SetChallengeTierBurnCards( 1, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_valkyrie_m2"] )
+
+	AddChallenge( "ch_valkyrie_pilot_kills", "#CHALLENGE_WEAPON_PILOT_KILLS", "#CHALLENGE_WEAPON_PILOT_KILLS_DESC", ICON_PILOT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "pilots", weaponRef )
+		SetChallengeTiers( [ 1, 5, 10, 15, 25 ] )
+//		SetChallengeTierBurnCards( 1, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_valkyrie_m2"] )
+
+	AddChallenge( "ch_valkyrie_spectre_kills", "#CHALLENGE_WEAPON_SPECTRE_KILLS", "#CHALLENGE_WEAPON_SPECTRE_KILLS_DESC", ICON_SPECTRE, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "spectres", weaponRef )
+		SetChallengeTiers( [ 1, 5, 10, 15, 25 ] )
+//		SetChallengeTierBurnCards( 1, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_valkyrie_m2"] )
+
+	AddChallenge( "ch_valkyrie_grunt_kills", "#CHALLENGE_WEAPON_GRUNT_KILLS", "#CHALLENGE_WEAPON_GRUNT_KILLS_DESC", ICON_GRUNT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
+		SetChallengeTiers( [ 5, 15, 25, 35, 50 ] )
+//		SetChallengeTierBurnCards( 1, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_valkyrie_m2"] )
+
+	AddChallenge( "ch_valkyrie_hours_used", "#CHALLENGE_WEAPON_HOURS_USED", "#CHALLENGE_WEAPON_HOURS_USED_DESC", ICON_TIME_PLAYED, weaponRef, true )
+		SetChallengeStat( "weapon_stats", "hoursUsed", weaponRef )
+		SetChallengeTiers( goals_hours_used )
+//		SetChallengeTierBurnCards( 1, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_valkyrie_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_valkyrie_m2"] )
+
+	//------------------
+	// 	   Twin-B
+	//------------------
+
+	local weaponRef = "mp_weapon_mega2"
+	SetChallengeCategory( eChallengeCategory.WEAPON_TWINB, "#WPN_TWINB", "", weaponRef )
+
+	AddChallenge( "ch_twinb_kills", "#CHALLENGE_WEAPON_KILLS", "#CHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
+		SetChallengeTiers( goals_kills )
+//		SetChallengeTierBurnCards( 1, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_twinb_m2"] )
+
+	AddChallenge( "ch_twinb_pilot_kills", "#CHALLENGE_WEAPON_PILOT_KILLS", "#CHALLENGE_WEAPON_PILOT_KILLS_DESC", ICON_PILOT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "pilots", weaponRef )
+		SetChallengeTiers( goals_pilot_kills )
+//		SetChallengeTierBurnCards( 1, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_twinb_m2"] )
+
+	AddChallenge( "ch_twinb_spectre_kills", "#CHALLENGE_WEAPON_SPECTRE_KILLS", "#CHALLENGE_WEAPON_SPECTRE_KILLS_DESC", ICON_SPECTRE, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "spectres", weaponRef )
+		SetChallengeTiers( goals_spectre_kills )
+//		SetChallengeTierBurnCards( 1, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_twinb_m2"] )
+
+	AddChallenge( "ch_twinb_grunt_kills", "#CHALLENGE_WEAPON_GRUNT_KILLS", "#CHALLENGE_WEAPON_GRUNT_KILLS_DESC", ICON_GRUNT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
+		SetChallengeTiers( goals_grunt_kills )
+//		SetChallengeTierBurnCards( 1, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_twinb_m2"] )
+
+	AddChallenge( "ch_twinb_hours_used", "#CHALLENGE_WEAPON_HOURS_USED", "#CHALLENGE_WEAPON_HOURS_USED_DESC", ICON_TIME_PLAYED, weaponRef, true )
+		SetChallengeStat( "weapon_stats", "hoursUsed", weaponRef )
+		SetChallengeTiers( goals_hours_used )
+//		SetChallengeTierBurnCards( 1, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 2, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 3, ["bc_twinb_m2"] )
+//		SetChallengeTierBurnCards( 4, ["bc_twinb_m2"] )
 
 	/*##################################################################################
 						########  #### ##        #######  ########
@@ -2969,6 +3067,59 @@ function CreateChallenges()
 		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
 		SetChallengeTiers( [ 15 ] )
 		SetChallengeTierBurnCards( 0, ["bc_sniper_m2"] )
+
+	//------------------
+	//		Valkyrie
+	//------------------
+
+	local weaponRef = "mp_weapon_mega1"
+
+	AddChallenge( "ch_daily_valkyrie_kills", "#DAILYCHALLENGE_WEAPON_KILLS", "#DAILYCHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
+		SetChallengeTiers( [ 20 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_valkyrie_m2"] )
+
+	AddChallenge( "ch_daily_valkyrie_pilot_kills", "#DAILYCHALLENGE_WEAPON_PILOT_KILLS", "#DAILYCHALLENGE_WEAPON_PILOT_KILLS_DESC", ICON_PILOT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "pilots", weaponRef )
+		SetChallengeTiers( [ 5 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_valkyrie_m2"] )
+
+	AddChallenge( "ch_daily_valkyrie_spectre_kills", "#DAILYCHALLENGE_WEAPON_SPECTRE_KILLS", "#DAILYCHALLENGE_WEAPON_SPECTRE_KILLS_DESC", ICON_SPECTRE, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "spectres", weaponRef )
+		SetChallengeTiers( [ 5 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_valkyrie_m2"] )
+
+	AddChallenge( "ch_daily_valkyrie_grunt_kills", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS_DESC", ICON_GRUNT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
+		SetChallengeTiers( [ 15 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_valkyrie_m2"] )
+
+
+	//------------------
+	// 	   Twin-B
+	//------------------
+
+	local weaponRef = "mp_weapon_mega2"
+
+	AddChallenge( "ch_daily_twinb_kills", "#DAILYCHALLENGE_WEAPON_KILLS", "#DAILYCHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
+		SetChallengeTiers( [ 20 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_twinb_m2"] )
+
+	AddChallenge( "ch_daily_twinb_pilot_kills", "#DAILYCHALLENGE_WEAPON_PILOT_KILLS", "#DAILYCHALLENGE_WEAPON_PILOT_KILLS_DESC", ICON_PILOT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "pilots", weaponRef )
+		SetChallengeTiers( [ 10 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_twinb_m2"] )
+
+	AddChallenge( "ch_daily_twinb_spectre_kills", "#DAILYCHALLENGE_WEAPON_SPECTRE_KILLS", "#DAILYCHALLENGE_WEAPON_SPECTRE_KILLS_DESC", ICON_SPECTRE, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "spectres", weaponRef )
+		SetChallengeTiers( [ 10 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_twinb_m2"] )
+
+	AddChallenge( "ch_daily_twinb_grunt_kills", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS", "#DAILYCHALLENGE_WEAPON_GRUNT_KILLS_DESC", ICON_GRUNT, weaponRef )
+		SetChallengeStat( "weapon_kill_stats", "grunts", weaponRef )
+		SetChallengeTiers( [ 15 ] )
+//		SetChallengeTierBurnCards( 0, ["bc_twinb_m2"] )
 
 	//------------------
 	//		SMR

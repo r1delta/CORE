@@ -299,6 +299,7 @@ function UpdateCategoryButtons( category )
 											eChallengeCategory.WEAPON_ARC_CANNON,
 											eChallengeCategory.WEAPON_TRIPLE_THREAT,
 											eChallengeCategory.WEAPON_TITAN_SHOTGUN,
+											eChallengeCategory.WEAPON_THUNDERBOLT,
 										 ] )
 			break
 
@@ -322,6 +323,8 @@ function UpdateCategoryButtons( category )
 											eChallengeCategory.WEAPON_G2,
 											eChallengeCategory.WEAPON_DMR,
 											eChallengeCategory.WEAPON_SNIPER,
+											eChallengeCategory.WEAPON_VALKYRIE,
+											eChallengeCategory.WEAPON_TWINB,
 										 ] )
 			break
 
