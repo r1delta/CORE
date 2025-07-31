@@ -2,8 +2,6 @@ const TD_DROPSHIP_HEALTH = 3900 //7800 = default
 const MINIMAP_CLOAKED_DRONE_SCALE = 0.070
 const MINIMAP_GENERATOR_SCALE = 0.125
 const SNIPERLOSENEMYTIMEOUT = 10
-const SPECTRE_GRENADE_OUT = "diag_spectre_gs_GrenadeOut_01_1"
-const GRUNT_GRENADE_OUT = "diag_imc_grunt_gs_grenadecallout"
 const MORTAR_TITAN_ABORT_ATTACK_HEALTH_FRAC = 0.90 // will stop mortar attack if he's health gets below 90% of his current health.
 const MORTAR_TITAN_POSITION_SEARCH_RANGE = 3072 // How far away from his spawn point a mortar titan will look for positions to mortar from.
 const MORTAR_TITAN_ENGAGE_DELAY = 3.0 // How long before a mortar titan start to attack the generator if he's taken damage getting to his mortar position.
@@ -33,7 +31,6 @@ function main() {
 	FlagInit("CoopPlayerConnectionMessagingEnabled")
 
 	RegisterSignal("StopGeneratorBeam")
-	RegisterSignal("Stop_SimulateGrenadeThink")
 	RegisterSignal("AssaultTimeOut")
 	RegisterSignal("SniperTimeRelocate")
 	RegisterSignal("SniperAssaultGenerator")
@@ -4586,7 +4583,7 @@ function CoopTD_TryPlayerDeathVO() {
 
 function CoopTD_OnSoldierOrSpectreSpawn(npc) {
 	if (RandomInt(100) < 20)
-		thread SimulateGrenadeThink(npc)
+		SimulateGrenadeThrowing( npc )
 }
 
 //HACK! -> DO NOT SHIP - this should be in code
@@ -4628,108 +4625,6 @@ function SimulateRodeoThread(spectre) {
 		return
 	}
 }
-
-// Somewhat hacky way to get AI to throw grenades. Good enough for now.
-function SimulateGrenadeThink(npc) {
-	npc.EndSignal("OnDestroy")
-	npc.EndSignal("OnDeath")
-	npc.EndSignal("Stop_SimulateGrenadeThink")
-
-	OnThreadEnd(
-		function(): (npc) {
-			if (IsAlive(npc))
-				DeleteAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
-		}
-	)
-
-	AddAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
-
-	if (RandomInt(100) < 50)
-		npc.GiveOffhandWeapon("mp_weapon_frag_grenade", 0)
-	else
-		npc.GiveOffhandWeapon("mp_weapon_grenade_emp", 0)
-
-	local npcRadius = 2000
-	local npcRadiusSqr = npcRadius * npcRadius
-
-	for (;;) {
-		wait RandomFloat(4.5, 5.5)
-
-		local npcPos = npc.GetWorldSpaceCenter()
-		local grenadeTargets = GetPlayerArray()
-		grenadeTargets.extend(GetNPCArrayEx("npc_turret_sentry", level.nv.attackingTeam, npcPos, npcRadius))
-		foreach(target in grenadeTargets) {
-			if (!IsAlive(target))
-				continue
-
-			local targetPosition
-			if (target.IsPlayer())
-				targetPosition = target.EyePosition()
-			else
-				targetPosition = target.GetWorldSpaceCenter()
-
-			if (DistanceSqr(targetPosition, npcPos) > npcRadiusSqr)
-				continue
-			//Intent is to use this as a rooftop deterent, not normal combat.
-			if (targetPosition.z - npcPos.z < 75)
-				continue
-
-			if (npc.IsInterruptable() == false)
-				continue
-
-			if (npc.CanSee(target) && npc.GetEnemy() == target) {
-				npc.Anim_ScriptedAllowPain(true)
-				npc.Anim_ScriptedPlay("coop_grenade_throw")
-				npc.WaittillAnimDone()
-				npc.Anim_ScriptedAllowPain(false)
-				npc.AssaultPointEnt(npc.s.assaultPoint)
-				npc.Signal("Stop_SimulateGrenadeThink")
-			}
-			wait 0
-		}
-	}
-}
-
-function NPCGrenadeThrow(npc) {
-	Assert(IsValid(npc))
-
-	local id = npc.LookupAttachment("R_HAND")
-	local npcPos = npc.GetAttachmentOrigin(id)
-	local weapon = npc.GetOffhandWeapon(0)
-
-	local enemy = npc.GetEnemy()
-
-	if (!IsValid(weapon) || !IsValid(enemy))
-		return
-
-	local throwPosition
-	if (enemy.IsPlayer())
-		throwPosition = enemy.EyePosition()
-	else
-		throwPosition = enemy.GetWorldSpaceCenter()
-
-	throwPosition += Vector(RandomFloat(-64, 64), RandomFloat(-64, 64), RandomFloat(-32, 32))
-
-	local vel = GetVelocityForDestOverTime(npcPos, throwPosition, 2.0)
-
-	if (weapon.GetClassname() == "mp_weapon_grenade_emp") {
-		// magic multipliers to get the EMP grenade to travel the same distance as the frag.
-		vel.x *= 2.0
-		vel.y *= 2.0
-		vel.z *= 1.25
-	}
-	local frag = weapon.FireWeaponGrenade(npcPos, vel, Vector(0, 0, 0), 3.0, damageTypes.GibBullet | DF_IMPACT | DF_EXPLOSION | DF_SPECTRE_GIB, DF_EXPLOSION | DF_RAGDOLL | DF_SPECTRE_GIB, PROJECTILE_NOT_PREDICTED, false, false)
-
-	frag.SetOwner(npc)
-	Grenade_Init(frag, weapon)
-	thread TrapExplodeOnDamage(frag, 20, 0.0, 0.0)
-
-	if (npc.IsSpectre())
-		EmitSoundOnEntity(npc, SPECTRE_GRENADE_OUT)
-	else
-		EmitSoundOnEntity(npc, GRUNT_GRENADE_OUT)
-}
-
 
 /************************************************************************************************\
 

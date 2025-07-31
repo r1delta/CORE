@@ -31,6 +31,8 @@ COOP_AT_WEAPON_RATES[ "mp_weapon_rocket_launcher" ] <- 0.5
 COOP_AT_WEAPON_RATES[ "mp_weapon_smr" ] <- 0.4
 COOP_AT_WEAPON_RATES[ "mp_weapon_mgl" ] <- 0.1
 
+const SPECTRE_GRENADE_OUT = "diag_spectre_gs_GrenadeOut_01_1"
+
 function main()
 {
 	PrecacheModel( TEAM_IMC_GRUNT_MDL )
@@ -133,6 +135,8 @@ function main()
 	}
 
 	InitCaptainNames()
+
+	RegisterSignal("Stop_SimulateGrenadeThink")
 }
 
 function ClientCommand_SpawnViewGrunt( player, team )
@@ -1795,3 +1799,111 @@ function GiveMinionWeapon( npc, weapon )
 	npc.GiveWeapon( weapon )
 }
 Globalize( GiveMinionWeapon )
+
+// Somewhat hacky way to get AI to throw grenades. Good enough for now.
+function SimulateGrenadeThrowing( npc )
+{
+	thread SimulateGrenadeThink( npc )
+}
+Globalize( SimulateGrenadeThrowing )
+
+function SimulateGrenadeThink(npc) {
+	npc.EndSignal("OnDestroy")
+	npc.EndSignal("OnDeath")
+	npc.EndSignal("Stop_SimulateGrenadeThink")
+
+	OnThreadEnd(
+		function(): (npc) {
+			if (IsAlive(npc))
+				DeleteAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
+		}
+	)
+
+	AddAnimEvent(npc, "grenade_throw", NPCGrenadeThrow)
+
+	if (RandomInt(100) < 50)
+		npc.GiveOffhandWeapon("mp_weapon_frag_grenade", 0)
+	else
+		npc.GiveOffhandWeapon("mp_weapon_grenade_emp", 0)
+
+	local npcRadius = 2000
+	local npcRadiusSqr = npcRadius * npcRadius
+
+	for (;;) {
+		wait RandomFloat(4.5, 5.5)
+
+		local npcPos = npc.GetWorldSpaceCenter()
+		local grenadeTargets = GetPlayerArray()
+		grenadeTargets.extend(GetNPCArrayEx("npc_turret_sentry", GetOtherTeam( npc.GetTeam() ), npcPos, npcRadius))
+		foreach(target in grenadeTargets) {
+			if (!IsAlive(target))
+				continue
+
+			local targetPosition
+			if (target.IsPlayer())
+				targetPosition = target.EyePosition()
+			else
+				targetPosition = target.GetWorldSpaceCenter()
+
+			if (DistanceSqr(targetPosition, npcPos) > npcRadiusSqr)
+				continue
+			//Intent is to use this as a rooftop deterent, not normal combat.
+			if (targetPosition.z - npcPos.z < 75)
+				continue
+
+			if (npc.IsInterruptable() == false)
+				continue
+
+			if (npc.CanSee(target) && npc.GetEnemy() == target) {
+				npc.Anim_ScriptedAllowPain(true)
+				npc.Anim_ScriptedPlay("coop_grenade_throw")
+				npc.WaittillAnimDone()
+				npc.Anim_ScriptedAllowPain(false)
+				npc.AssaultPointEnt(npc.s.assaultPoint)
+				npc.Signal("Stop_SimulateGrenadeThink")
+			}
+			wait 0
+		}
+	}
+}
+
+function NPCGrenadeThrow(npc) {
+	Assert(IsValid(npc))
+
+	local id = npc.LookupAttachment("R_HAND")
+	local npcPos = npc.GetAttachmentOrigin(id)
+	local weapon = npc.GetOffhandWeapon(0)
+
+	local enemy = npc.GetEnemy()
+
+	if (!IsValid(weapon) || !IsValid(enemy))
+		return
+
+	local throwPosition
+	if (enemy.IsPlayer())
+		throwPosition = enemy.EyePosition()
+	else
+		throwPosition = enemy.GetWorldSpaceCenter()
+
+	throwPosition += Vector(RandomFloat(-64, 64), RandomFloat(-64, 64), RandomFloat(-32, 32))
+
+	local vel = GetVelocityForDestOverTime(npcPos, throwPosition, 2.0)
+
+	if (weapon.GetClassname() == "mp_weapon_grenade_emp") {
+		// magic multipliers to get the EMP grenade to travel the same distance as the frag.
+		vel.x *= 2.0
+		vel.y *= 2.0
+		vel.z *= 1.25
+	}
+	local frag = weapon.FireWeaponGrenade(npcPos, vel, Vector(0, 0, 0), 3.0, damageTypes.GibBullet | DF_IMPACT | DF_EXPLOSION | DF_SPECTRE_GIB, DF_EXPLOSION | DF_RAGDOLL | DF_SPECTRE_GIB, PROJECTILE_NOT_PREDICTED, false, false)
+
+	frag.SetOwner(npc)
+	Grenade_Init(frag, weapon)
+	thread TrapExplodeOnDamage(frag, 20, 0.0, 0.0)
+
+	if (npc.IsSpectre())
+		EmitSoundOnEntity(npc, SPECTRE_GRENADE_OUT)
+	else
+		PlaySquadConversationToAll( "aichat_grenade_incoming", npc )
+		//EmitSoundOnEntity(npc, GRUNT_GRENADE_OUT)
+}
