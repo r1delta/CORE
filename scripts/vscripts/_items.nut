@@ -279,6 +279,8 @@ function main()
 	}
 
 	unlockLevels[ "mp_titanweapon_shotgun" ]				<- 36
+	unlockLevels[ "mp_weapon_mega1" ]						<- 30
+	unlockLevels[ "mp_weapon_mega2" ]						<- 35
 }
 
 function InitItems()
