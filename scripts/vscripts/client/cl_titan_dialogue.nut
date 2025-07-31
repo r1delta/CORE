@@ -537,7 +537,7 @@ function TitanCockpit_PlayDialogInternal( player, eventType )
 
 		case "bc_titan_shotgun_m2":
 		case "bc_thunderbolt_m2":
-		case "bc_titan_charge_cannon_m2"
+		case "bc_titan_charge_cannon_m2":
 			player.s.titanCockpitDialogAliasList = [ file.betty.BC_TITAN_GENERIC ]
 			break
 
