@@ -299,7 +299,7 @@ function UpdateCategoryButtons( category )
 											eChallengeCategory.WEAPON_ARC_CANNON,
 											eChallengeCategory.WEAPON_TRIPLE_THREAT,
 											eChallengeCategory.WEAPON_TITAN_SHOTGUN,
-											eChallengeCategory.WEAPON_THUNDERBOLT,
+											//eChallengeCategory.WEAPON_THUNDERBOLT,
 										 ] )
 			break
 

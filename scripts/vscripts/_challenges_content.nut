@@ -553,7 +553,7 @@ function CreateChallenges()
 									eChallengeCategory.WEAPON_TITAN_SNIPER,
 									eChallengeCategory.WEAPON_ARC_CANNON,
 									eChallengeCategory.WEAPON_TRIPLE_THREAT,
-									eChallengeCategory.WEAPON_TITAN_SHOTGUN,
+									eChallengeCategory.WEAPON_TITAN_SHOTGUN
 								]
 	SetChallengeCategory( eChallengeCategory.TITAN_PRIMARY, "#CHALLENGE_CATEGORY_TITAN_PRIMARY", "#CHALLENGE_CATEGORY_DESC_TITAN_PRIMARY", "edit_titans", linkedCategories )
 
