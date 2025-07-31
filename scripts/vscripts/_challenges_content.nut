@@ -1627,7 +1627,7 @@ function CreateChallenges()
 	//------------------
 
 	local weaponRef = "mp_weapon_mega2"
-	SetChallengeCategory( eChallengeCategory.WEAPON_TWINB, "#WPN_TWINB", "", weaponRef )
+	SetChallengeCategory( eChallengeCategory.WEAPON_TWINB, "#WPN_TWINB_SHOTGUN", "", weaponRef )
 
 	AddChallenge( "ch_twinb_kills", "#CHALLENGE_WEAPON_KILLS", "#CHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
 		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
