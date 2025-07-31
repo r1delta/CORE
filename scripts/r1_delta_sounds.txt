@@ -444,7 +444,6 @@
  	"clampVolume"       		"0"
 
 	"wave"				"null.wav"
-   // "wave"                                  "weapons\Valkyrie\Wpn_Valkyrie_1p_WpnFire_Reduced_2ch_01.wav"
 
 	}
 
@@ -497,9 +496,9 @@
  	"falloffCurve"      		"5"
  	"clampVolume"       		"0"
 
-	// "wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_01.wav"
-	// "wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_02.wav"
-	// "wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_03.wav"
+	 "wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_01.wav"
+	 "wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Close_Reduced_2ch_03.wav"
 	"wave"                                  "weapons\Valkyrie\Wpn_Valkyrie_1p_WpnFire_Reduced_2ch_01.wav"
 
 	}
@@ -523,8 +522,8 @@
  	"falloffCurve"      		"5"
  	"clampVolume"       		"0"
 
-	// "wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_01.wav"
-	// "wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_3p_WpnFire_Dist_Reduced_2ch_02.wav"
 	"wave"                                  "weapons\Valkyrie\Wpn_Valkyrie_1p_WpnFire_Reduced_2ch_01.wav"
 
 	}
@@ -549,9 +548,9 @@
  	"falloffCurve"      		"0"
  	"clampVolume"       		"0"
 
-	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_01.wav"
-	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_02.wav"
-	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_03.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_01.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_02.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_03.wav"
 //	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_04.wav"
 //	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_05.wav"
 //	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_06.wav"
@@ -578,9 +577,9 @@
 	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_01.wav"
 	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_02.wav"
 	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_03.wav"
-//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_04.wav"
-//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_05.wav"
-//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_06.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_04.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_05.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_Crack_2ch_v1_06.wav"
 	}
 
 	"rndwave"
@@ -601,10 +600,10 @@
  	"falloffCurve"      		"0"
  	"clampVolume"       		"0"
 
-	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_01.wav"
-	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_02.wav"
-	// "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_03.wav"
-//	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_04.wav"
+	 "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_01.wav"
+	 "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_02.wav"
+	 "wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_03.wav"
+	"wave"				"weapons\DMR\Wpn_DMR_1p_WpnFire_TailLR_2ch_v2_04.wav"
 
 	}
 
