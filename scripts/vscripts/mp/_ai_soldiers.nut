@@ -5,6 +5,7 @@
 
 PrecacheModel( IMC_SPECTRE_MODEL )
 PrecacheModel( MILITIA_SPECTRE_MODEL )
+PrecacheModel( NEUTRAL_SPECTRE_MODEL )
 PrecacheSprite( "sprites/glow_05.vmt" )
 FlagInit( "disable_npcs" )
 FlagInit( "Disable_IMC" )
@@ -110,17 +111,97 @@ function main()
 	AddDeathCallback( "npc_soldier", CommonDeath )
 
 	Globalize( ClientCommand_SpawnViewGrunt )
-	if ( GetDeveloperLevel() > 0 )
+	Globalize( ClientCommand_SpawnViewCaptainGrunt )
+	Globalize( ClientCommand_SpawnViewShieldGrunt )
+	Globalize( ClientCommand_SpawnViewSpectre )
+	Globalize( ClientCommand_SpawnViewShieldSpectre )
+
+//	Globalize( ClientCommand_SpawnViewSuicideSpectre )
+//	Globalize( ClientCommand_SpawnViewSniperSpectre )
+
+//	if ( GetDeveloperLevel() > 0 )
+	{
 		AddClientCommandCallback( "SpawnViewGrunt", ClientCommand_SpawnViewGrunt )
+		AddClientCommandCallback( "SpawnViewCaptainGrunt", ClientCommand_SpawnViewCaptainGrunt )
+		AddClientCommandCallback( "SpawnViewShieldGrunt", ClientCommand_SpawnViewShieldGrunt )
+
+		AddClientCommandCallback( "SpawnViewSpectre", ClientCommand_SpawnViewSpectre )
+		AddClientCommandCallback( "SpawnViewShieldSpectre", ClientCommand_SpawnViewShieldSpectre )
+
+//		AddClientCommandCallback( "SpawnViewSuicideSpectre", ClientCommand_SpawnViewSuicideSpectre )
+//		AddClientCommandCallback( "SpawnViewSniperSpectre", ClientCommand_SpawnViewSniperSpectre )
+	}
 
 	InitCaptainNames()
 }
 
 function ClientCommand_SpawnViewGrunt( player, team )
 {
-	if ( GetDeveloperLevel() < 1 )
+	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
 
+	SpawnViewMinion( player, team, SpawnGrunt )
+	return true
+}
+
+function ClientCommand_SpawnViewShieldGrunt( player, team )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	SpawnViewMinion( player, team, SpawnBubbleShieldGrunt_Signal )
+	return true
+}
+
+function ClientCommand_SpawnViewCaptainGrunt( player, team )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	SpawnViewMinion( player, team, SpawnGruntCaptain )
+	return true
+}
+
+function ClientCommand_SpawnViewSpectre( player, team )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	SpawnViewMinion( player, team, SpawnSpectre )
+	return true
+}
+
+function ClientCommand_SpawnViewShieldSpectre( player, team )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	SpawnViewMinion( player, team, SpawnBubbleShieldSpectre_Signal )
+	return true
+}
+
+/*
+function ClientCommand_SpawnViewSuicideSpectre( player, team )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	SpawnViewMinion( player, team, SpawnSuicideSpectre )
+	return true
+}
+
+function ClientCommand_SpawnViewSniperSpectre( player, team )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	SpawnViewMinion( player, team, SpawnSniperSpectre )
+	return true
+}
+*/
+
+function SpawnViewMinion( player, team, spawnFunc )
+{
 	local origin = player.EyePosition()
 	local angles = player.EyeAngles()
 	local forward = angles.AnglesToForward()
@@ -128,10 +209,10 @@ function ClientCommand_SpawnViewGrunt( player, team )
 	angles.x = 0
 	angles.z = 0
 
-	SpawnGrunt( team, "squad" + team + RandomInt(100), result.endPos, angles )
+	spawnFunc( team, "squad" + team + RandomInt(100), result.endPos, angles )
+
 	return true
 }
-
 
 function GetFreeSquadName( team )
 {
@@ -461,6 +542,12 @@ function SpawnBubbleShieldGrunt( team, squadName, origin, angles)
 }
 Globalize( SpawnBubbleShieldGrunt )
 
+function SpawnBubbleShieldGrunt_Signal( team, squadName, origin, angles)
+{
+	local grunt = SpawnBubbleShieldGrunt( team, squadName, origin, angles )
+	grunt.Signal( "npc_deployed" )
+	return grunt
+}
 
 function SpawnBubbleShieldSpectre( team, squadName, origin, angles )
 {
@@ -470,6 +557,12 @@ function SpawnBubbleShieldSpectre( team, squadName, origin, angles )
 }
 Globalize( SpawnBubbleShieldSpectre )
 
+function SpawnBubbleShieldSpectre_Signal( team, squadName, origin, angles )
+{
+	local spectre = SpawnBubbleShieldSpectre( team, squadName, origin, angles )
+	spectre.Signal( "npc_deployed" )
+	return spectre
+}
 
 function CreateBubbleShieldMinion( guy )
 {
@@ -480,7 +573,11 @@ function CreateBubbleShieldMinion( guy )
 	}
 	else
 	{
-		guy.SetModel( TEAM_IMC_CAPTAIN_MDL )
+		if ( guy.GetTeam() == TEAM_MILITIA )
+			guy.SetModel( TEAM_MILITIA_CAPTAIN_MDL )
+		else
+			guy.SetModel( TEAM_IMC_CAPTAIN_MDL )
+
 		guy.SetSubclass( eSubClass.bubbleShieldGrunt )
 	}
 
@@ -612,8 +709,9 @@ function GetGruntModel( team, captain = false )
 
 	if ( team == TEAM_IMC )
 	{
-		//if ( captain )
-		//	return TEAM_IMC_CAPTAIN_MDL
+		if ( captain )
+			return TEAM_IMC_CAPTAIN_MDL
+
 		if ( prob < 0.3  )
 			return TEAM_IMC_ROCKET_GRUNT_MDL
 		else
@@ -621,8 +719,9 @@ function GetGruntModel( team, captain = false )
 	}
 	else
 	{
-		//if ( captain )
-		//	return TEAM_MILITIA_CAPTAIN_MDL
+		if ( captain )
+			return TEAM_MILITIA_CAPTAIN_MDL
+
 		if ( prob < 0.3  )
 			return TEAM_MILITIA_ROCKET_GRUNT_MDL
 		else
@@ -1139,6 +1238,8 @@ function GetPlayerSpectreSquadName( player )
 //////////////////////////////////////////////////////////
 function SpawnSpectre( team, squadName, origin, angles, alert = true, weapon = null, hidden = false )
 {
+	team = GetProperTeamValue( team )
+
 	local model
 	local alertVal = alert ? 1 : 0
 
