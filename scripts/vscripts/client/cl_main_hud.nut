@@ -2815,7 +2815,8 @@ function ClientCodeCallback_OnSelectedWeaponChanged( selectedWeapon )
 			break
 
 		case "mp_weapon_mega3":
-			HideWeaponAmmoUI( cockpit )
+			DisplayChargeAmmoBar( selectedWeapon, player, 1, 0, cockpit )
+//			HideWeaponAmmoUI( cockpit )
 			break
 
 		default:
