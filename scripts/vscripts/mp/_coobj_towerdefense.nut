@@ -112,7 +112,7 @@ function main() {
 	AddDeathCallback("player", CoopTD_PlayerDeathCallback)
 	AddSpawnCallback("npc_soldier", CoopTD_OnSoldierOrSpectreSpawn)
 	AddSpawnCallback("npc_spectre", CoopTD_OnSoldierOrSpectreSpawn)
-	AddSpawnCallback("npc_spectre", SimulateRodeo)
+	AddSpawnCallback("npc_spectre", CoopTD_EnableSpectreRodeo)
 
 	AddDamageCallback("prop_dynamic", GeneratorTookDamage)
 
@@ -4586,44 +4586,8 @@ function CoopTD_OnSoldierOrSpectreSpawn(npc) {
 		SimulateGrenadeThrowing( npc )
 }
 
-//HACK! -> DO NOT SHIP - this should be in code
-function SimulateRodeo(spectre) {
-	thread SimulateRodeoThread(spectre)
-}
-
-function SimulateRodeoThread(spectre) {
-	spectre.EndSignal("OnDestroy")
-	spectre.EndSignal("OnDeath")
-	spectre.EndSignal("OnLeeched")
-
-	wait 1.0
-	if (IsSuicideSpectre(spectre))
-		return
-	if (IsSniperSpectre(spectre))
-		return
-	if (IsBubbleShieldMinion(spectre))
-		return
-
-	while (1) {
-		wait 1.0
-
-		local enemy = spectre.GetEnemy()
-		if (!IsAlive(enemy))
-			continue
-
-		if (!enemy.IsTitan())
-			continue
-
-		local titan = spectre.GetEnemy()
-		Assert(titan.IsTitan())
-		Assert(IsAlive(titan))
-
-		if (!CanSpectreRodeo(spectre, titan))
-			continue
-
-		thread SpectreRodeo(spectre, titan)
-		return
-	}
+function CoopTD_EnableSpectreRodeo(spectre) {
+	SimulateSpectreRodeo(spectre)
 }
 
 /************************************************************************************************\

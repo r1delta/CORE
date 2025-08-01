@@ -118,8 +118,10 @@ function main()
 	Globalize( ClientCommand_SpawnViewSpectre )
 	Globalize( ClientCommand_SpawnViewShieldSpectre )
 
-//	Globalize( ClientCommand_SpawnViewSuicideSpectre )
-//	Globalize( ClientCommand_SpawnViewSniperSpectre )
+	Globalize( ClientCommand_SpawnViewSuicideSpectre )
+	Globalize( ClientCommand_SpawnViewSniperSpectre )
+
+	Globalize( SpawnViewMinion )
 
 //	if ( GetDeveloperLevel() > 0 )
 	{
@@ -130,8 +132,8 @@ function main()
 		AddClientCommandCallback( "SpawnViewSpectre", ClientCommand_SpawnViewSpectre )
 		AddClientCommandCallback( "SpawnViewShieldSpectre", ClientCommand_SpawnViewShieldSpectre )
 
-//		AddClientCommandCallback( "SpawnViewSuicideSpectre", ClientCommand_SpawnViewSuicideSpectre )
-//		AddClientCommandCallback( "SpawnViewSniperSpectre", ClientCommand_SpawnViewSniperSpectre )
+		AddClientCommandCallback( "SpawnViewSuicideSpectre", ClientCommand_SpawnViewSuicideSpectre )
+		AddClientCommandCallback( "SpawnViewSniperSpectre", ClientCommand_SpawnViewSniperSpectre )
 	}
 
 	InitCaptainNames()
@@ -184,7 +186,6 @@ function ClientCommand_SpawnViewShieldSpectre( player, team )
 	return true
 }
 
-/*
 function ClientCommand_SpawnViewSuicideSpectre( player, team )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
@@ -202,7 +203,6 @@ function ClientCommand_SpawnViewSniperSpectre( player, team )
 	SpawnViewMinion( player, team, SpawnSniperSpectre )
 	return true
 }
-*/
 
 function SpawnViewMinion( player, team, spawnFunc )
 {
@@ -1906,4 +1906,46 @@ function NPCGrenadeThrow(npc) {
 	else
 		PlaySquadConversationToAll( "aichat_grenade_incoming", npc )
 		//EmitSoundOnEntity(npc, GRUNT_GRENADE_OUT)
+}
+
+//HACK! -> DO NOT SHIP - this should be in code
+function SimulateSpectreRodeo( spectre )
+{
+	thread SimulateSpectreRodeoThink( spectre )
+}
+Globalize( SimulateSpectreRodeo )
+
+function SimulateSpectreRodeoThink(spectre) {
+	spectre.EndSignal("OnDestroy")
+	spectre.EndSignal("OnDeath")
+	spectre.EndSignal("OnLeeched")
+
+	wait 1.0
+	if (IsSuicideSpectre(spectre))
+		return
+	if (IsSniperSpectre(spectre))
+		return
+	if (IsBubbleShieldMinion(spectre))
+		return
+
+	while (1) {
+		wait 1.0
+
+		local enemy = spectre.GetEnemy()
+		if (!IsAlive(enemy))
+			continue
+
+		if (!enemy.IsTitan())
+			continue
+
+		local titan = spectre.GetEnemy()
+		Assert(titan.IsTitan())
+		Assert(IsAlive(titan))
+
+		if (!CanSpectreRodeo(spectre, titan))
+			continue
+
+		thread SpectreRodeo(spectre, titan)
+		return
+	}
 }
