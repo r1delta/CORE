@@ -2461,6 +2461,7 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 
 	return true
 }
+Globalize( ShouldAutoBalancePlayer )
 
 function PostAutoBalanceThink( player )
 {
