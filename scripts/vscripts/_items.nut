@@ -1194,7 +1194,7 @@ function GetItemForTypeIndex( type, index )
 	return typeArray[index]
 }
 
-function CreateAttachmentData( type, dev_enabled, levelReq, challengeReq, challengeTier, parentRef, childRef, name, desc, longdesc, image, icon = null )
+function CreateAttachmentData( type, dev_enabled, levelReq, challengeReq, challengeTier, parentRef, childRef, name, desc, longdesc, image, icon = null, displayInMenu = true )
 {
 	childRef = childRef.tolower()
 	parentRef = parentRef.tolower()
@@ -1224,21 +1224,25 @@ function CreateAttachmentData( type, dev_enabled, levelReq, challengeReq, challe
 	attachmentData.dev_enabled <- dev_enabled
 	attachmentData.challengeReq <- challengeReq
 	attachmentData.challengeTier <- challengeTier
+	attachmentData.displayInMenu <- displayInMenu
 
 	itemData[parentRef].subitems[childRef] <- attachmentData
 	combinedModData[parentRef + "_" + childRef] <- attachmentData
 
-	if ( !( parentRef in attachmentsOfType ) )
-		attachmentsOfType[parentRef] <- []
-	attachmentsOfType[parentRef].append( childRef )
+	if ( displayInMenu )
+	{
+		if ( !( parentRef in attachmentsOfType ) )
+			attachmentsOfType[parentRef] <- []
+		attachmentsOfType[parentRef].append( childRef )
 
-	if ( !( type in itemsOfType ) )
-		itemsOfType[type] <- []
-	itemsOfType[type].append( childRef )
+		if ( !( type in itemsOfType ) )
+			itemsOfType[type] <- []
+		itemsOfType[type].append( childRef )
 
-	allItems.append( { ref = parentRef, childRef = childRef, type = type } )
+		allItems.append( { ref = parentRef, childRef = childRef, type = type } )
 
-	UpdateChallengeRewardItems( parentRef, childRef, type, challengeReq, challengeTier )
+		UpdateChallengeRewardItems( parentRef, childRef, type, challengeReq, challengeTier )
+	}
 }
 
 function CreateModData( type, dev_enabled, levelReq, challengeReq, challengeTier, parentRef, childRef, name, desc, longdesc, statDamage, statAccuracy, statRange, statFireRate, statClipSize, image, icon = null, displayInMenu = true )
