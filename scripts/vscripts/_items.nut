@@ -785,8 +785,8 @@ function CreateR1DeltaItems()
 	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_titanweapon_shotgun", 				"../ui/menu/items/titanweapon_shotgun" )
 
 	// DEV_DISABLED for now, theyre not balanced at all
-	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega3", 				"../ui/menu/items/titanweapon_minigun" )
-	CreateWeaponData( itemType.TITAN_SPECIAL,		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega4", 				"../ui/menu/items/ability_icons/charge_cannon",				"../ui/menu/items/ability_icons/charge_cannon" )
+	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega3", 				"../ui/menu/items/titanweapon_minigun", null, null, HideFromMenus )
+	CreateWeaponData( itemType.TITAN_SPECIAL,		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega4", 				"../ui/menu/items/ability_icons/charge_cannon",				"../ui/menu/items/ability_icons/charge_cannon", null, HideFromMenus )
 
 	////////////////////
 	//TITAN MOD DATA
@@ -800,7 +800,7 @@ function CreateR1DeltaItems()
 	CreateModData( itemType.TITAN_SPECIAL_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega4",			"burn_mod_charge_cannon", 			"#BC_TITAN_CHARGE_CANNON_M2",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 }
 
-function CreateWeaponData( type, dev_enabled, levelReq, challengeReq, challengeTier, ref, image, icon = null, altImage = null )
+function CreateWeaponData( type, dev_enabled, levelReq, challengeReq, challengeTier, ref, image, icon = null, altImage = null, displayInMenu = true )
 {
 	ref = ref.tolower()
 	Assert( !( ref in itemData ), "ref " + ref + " being redefined!" )
@@ -838,20 +838,24 @@ function CreateWeaponData( type, dev_enabled, levelReq, challengeReq, challengeT
 	itemData[ref].dev_enabled <- dev_enabled
 	itemData[ref].challengeReq <- challengeReq
 	itemData[ref].challengeTier <- challengeTier
+	itemData[ref].displayInMenu <- displayInMenu
 
-	if ( !( type in itemsOfType ) )
-		itemsOfType[type] <- []
-	itemsOfType[type].append( ref )
+	if ( displayInMenu )
+	{
+		if ( !( type in itemsOfType ) )
+			itemsOfType[type] <- []
+		itemsOfType[type].append( ref )
 
-	allItems.append( { ref = ref, childRef = null, type = type } )
+		allItems.append( { ref = ref, childRef = null, type = type } )
 
-	UpdateChallengeRewardItems( ref, null, type, challengeReq, challengeTier )
+		UpdateChallengeRewardItems( ref, null, type, challengeReq, challengeTier )
 
-	// Register the item type so the "bot_loadout" console command auto-complete
-	// knows about it. Client only. If this auto-complete breaks then the item
-	// type enum may be desynced between .nut and C++ source code. See Glenn.
-	if ( IsClient() )
-		RegisterItemType( type, ref )
+		// Register the item type so the "bot_loadout" console command auto-complete
+		// knows about it. Client only. If this auto-complete breaks then the item
+		// type enum may be desynced between .nut and C++ source code. See Glenn.
+		if ( IsClient() )
+			RegisterItemType( type, ref )
+	}
 }
 
 function GetUnlockLevelReq( ref, defaultReq = 0 )
