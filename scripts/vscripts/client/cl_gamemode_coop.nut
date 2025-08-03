@@ -25,8 +25,6 @@ function main()
 	level.enemyAnnounceHeaderCard 			<- null
 	level.enemyAnnounceFooterCard 			<- null
 
-	level.lastRodeoWarningAlias <- ""
-
 	level.lastGeneratorShieldHealth <- 0
 	RegisterServerVarChangeCallback( "TDGeneratorShieldHealth", TDGeneratorShieldHealthChange )
 	RegisterConCommandTriggeredCallback( "+scriptCommand1", ButtonCallback_InitTurretPlacement )
@@ -49,8 +47,6 @@ function main()
 
 	Globalize( ServerCallback_GiveSentryTurret )
 	Globalize( SentryTurretPlacementNag )
-
-	TimerInit( "Nag_SpectreRodeo", 15.0 )
 
 	level.forcedMusicOnly 		= true
 	level.classMusicEnabled 	= false
@@ -1512,20 +1508,3 @@ function ServerCallback_CoopMusicPlay( musicID, doForcedLoop = false )
 		thread ForcePlayMusic( musicID )
 }
 Globalize( ServerCallback_CoopMusicPlay )
-
-
-function CoopTD_TrySpectreRodeoWarning()
-{
-	if ( !TimerCheck( "Nag_SpectreRodeo" ) )
-		return
-
-	local voAlias = "CoopTD_SpectreRodeoWarning"
-	if ( voAlias == level.lastRodeoWarningAlias )
-		voAlias = "CoopTD_SpectreRodeoWarning_Short"
-
-	PlayConversationToLocalClient( voAlias )
-	level.lastRodeoWarningAlias = voAlias
-
-	TimerReset( "Nag_SpectreRodeo" )
-}
-Globalize( CoopTD_TrySpectreRodeoWarning )

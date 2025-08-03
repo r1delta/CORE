@@ -187,6 +187,9 @@ function main()
 	}
 
 	RegisterSignal( "TitanCockpit_PlayDialogInternal" )
+
+	level.lastRodeoWarningAlias <- ""
+	TimerInit( "Nag_SpectreRodeo", 15.0 )
 }
 
 function TitanCockpit_PlayDialogDelayed( player, delay, eventType )
@@ -583,7 +586,7 @@ function TitanCockpit_PlayDialogInternal( player, eventType )
 	}
 
 	// HACK
-	if ( GAMETYPE == COOPERATIVE && eventType == "rodeo_enemy_spectre_attach" )
+	if ( player.GetTeam() == TEAM_MILITIA && eventType == "rodeo_enemy_spectre_attach" )
 		thread CoopTD_TrySpectreRodeoWarning()
 }
 
@@ -678,4 +681,19 @@ function ServerCallback_TitanDialogueBurnCardVO()
 	}
 }
 
+function CoopTD_TrySpectreRodeoWarning()
+{
+	if ( !TimerCheck( "Nag_SpectreRodeo" ) )
+		return
+
+	local voAlias = "CoopTD_SpectreRodeoWarning"
+	if ( voAlias == level.lastRodeoWarningAlias )
+		voAlias = "CoopTD_SpectreRodeoWarning_Short"
+
+	PlayConversationToLocalClient( voAlias )
+	level.lastRodeoWarningAlias = voAlias
+
+	TimerReset( "Nag_SpectreRodeo" )
+}
+Globalize( CoopTD_TrySpectreRodeoWarning )
 

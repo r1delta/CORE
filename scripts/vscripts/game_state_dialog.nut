@@ -62,6 +62,8 @@ function main()
 			GameMode_RunSharedDialogueScripts( GAMETYPE )
 
 	}
+
+	RegisterMovedCoopConversations()
 }
 
 function RegisterGameStateConversations()
@@ -555,12 +557,12 @@ function RegisterGameStateConversations()
 	/**************************  CloseScoreMatchMid  *****************************/
 	/**************************        MILITIA        *****************************/
 
-	AddVDULineForBish( "CloseScoreMatchMid", "diag_mcor_bish_gs_milReachM2_Tied_01" ) // Bish: Man…this fight's too close to call but there's still plenty of time to bury the IMC - team, let's step it up.
+	AddVDULineForBish( "CloseScoreMatchMid", "diag_mcor_bish_gs_milReachM2_Tied_01" ) // Bish: Manï¿½this fight's too close to call but there's still plenty of time to bury the IMC - team, let's step it up.
 
 	/************************** WinningScoreSmallMarginMatchLate *****************************/
 	/**************************        MILITIA        *****************************/
 
-	AddVDULineForBish( "WinningScoreSmallMarginMatchLate", "diag_mcor_bish_gs_milReachM3_LeadSlight_01" ) // Bish: Ok team, the mission's almost over. The IMC aren’t far behind though. Keep at it!
+	AddVDULineForBish( "WinningScoreSmallMarginMatchLate", "diag_mcor_bish_gs_milReachM3_LeadSlight_01" ) // Bish: Ok team, the mission's almost over. The IMC arenï¿½t far behind though. Keep at it!
 	AddVDULineForBish( "WinningScoreSmallMarginMatchLate", "diag_mcor_bish_gs_milReachM3_LeadSlight_02" ) // Bish: There's not much time left in the mission, but the IMC aren't far behind. Let's stay on top and end this fight.
 
 	/**************************  WinningScoreBigMarginMatchLate  *****************************/
@@ -621,7 +623,7 @@ function RegisterGameStateConversations()
 
 	AddVDULineForBish( "LosingScoreBigMarginMatchMid", "diag_mcor_bish_gs_imcReachM2_LeadGreat_01" ) // Bish: Bad news boss. The IMC are way ahead of us! There's still some time to catch up though.
 	AddVDUAnimWithEmbeddedAudioForBish( "LosingScoreBigMarginMatchMid", "diag_gs_mcor_bish_biglosing_01" ) // Bish: Boss, we're seriously losing this fight, you gotta step it up out there!
-	AddVDULineForBish( "LosingScoreBigMarginMatchMid", "diag_mcor_bish_gs_imcReachM2_LeadGreat_03" ) // Bish: We're losing man… we gotta turn this fight around, and I mean right now.
+	AddVDULineForBish( "LosingScoreBigMarginMatchMid", "diag_mcor_bish_gs_imcReachM2_LeadGreat_03" ) // Bish: We're losing manï¿½ we gotta turn this fight around, and I mean right now.
 
 	/************************** LosingScoreSmallMarginMatchLate *****************************/
 	/**************************        MILITIA       *****************************/
@@ -634,7 +636,7 @@ function RegisterGameStateConversations()
 	/**************************        MILITIA       *****************************/
 
 	AddVDULineForBish( "LosingScoreBigMarginMatchLate", "diag_mcor_bish_gs_imcReachM3_LeadGreat_01" ) // Bish: Hey man, this is not looking good - we're way behind, and we're running out of time!
-	AddVDULineForBish( "LosingScoreBigMarginMatchLate", "diag_mcor_bish_gs_imcReachM3_LeadGreat_02" ) // Bish: Pilots…its looking pretty grim…we don't have much time left for a comeback! Pull it together!
+	AddVDULineForBish( "LosingScoreBigMarginMatchLate", "diag_mcor_bish_gs_imcReachM3_LeadGreat_02" ) // Bish: Pilotsï¿½its looking pretty grimï¿½we don't have much time left for a comeback! Pull it together!
 
 	/**************************  LostAnnouncement  *****************************/
 	/**************************      MILITIA       *****************************/
@@ -817,7 +819,7 @@ function RegisterCalloutConversations()
 	/************************ Rodeo Rake ***************************/
 	AddVDULineForBlisk( "RodeoRake", "diag_imc_blisk_kc_rakerodeoguy_01" ) //Blisk: Way to watch their back!
 	AddVDULineForBlisk( "RodeoRake", "diag_imc_blisk_kc_rakerodeoguy_02" ) //Blisk: Nice save!
-	AddVDULineForBlisk( "RodeoRake", "diag_imc_blisk_kc_rakerodeoguy_03" ) //Blisk: He's gonna owe you’re a drink or two.
+	AddVDULineForBlisk( "RodeoRake", "diag_imc_blisk_kc_rakerodeoguy_03" ) //Blisk: He's gonna owe youï¿½re a drink or two.
 
 	/************************ Pilot Kill Stryder ***************************/
 	AddVDULineForBlisk( "KillStryder", "diag_imc_blisk_kc_pilotkillstryder_03" ) //Blisk: That's a Stryder down.
@@ -1058,19 +1060,19 @@ function RegisterDebugVDUConversations()
 	//Yes, everyone in the universe wants beer
 
 	local convRef = AddConversation( "SpyglassVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "spyglass", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "spyglass", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "SpyglassVDU", TEAM_IMC )
-	AddVDURadio( convRef, "spyglass", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "spyglass", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
 	local convRef = AddConversation( "GravesVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "graves", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "graves", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "GravesVDU", TEAM_IMC )
-	AddVDURadio( convRef, "graves", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "graves", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
 	local convRef = AddConversation( "BliskVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "blisk", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "blisk", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "BliskVDU", TEAM_IMC )
-	AddVDURadio( convRef, "blisk", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "blisk", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
 	//diag_vdu_default for Sarah has her standing up, so we use a different one
 	local convRef = AddConversation( "SarahVDU", TEAM_MILITIA )
@@ -1079,28 +1081,43 @@ function RegisterDebugVDUConversations()
 	AddVDURadio( convRef, "sarah", null, "diag_mcor_sarah_firsttitan_01" )
 
 	local convRef = AddConversation( "MacVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "mac", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "mac", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "MacVDU", TEAM_IMC )
-	AddVDURadio( convRef, "mac", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "mac", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
 	local convRef = AddConversation( "BishVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "bish", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "bish", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "BishVDU", TEAM_IMC )
-	AddVDURadio( convRef, "bish", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "bish", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
 	local convRef = AddConversation( "MCORGruntBattleRifleVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "grunt", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "grunt", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "MCORGruntBattleRifleVDU", TEAM_IMC )
-	AddVDURadio( convRef, "grunt", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "grunt", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
 	local convRef = AddConversation( "MCORGruntAntiTitanVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "grunt_at", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "grunt_at", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "MCORGruntAntiTitanVDU", TEAM_IMC )
-	AddVDURadio( convRef, "grunt_at", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "grunt_at", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
 	local convRef = AddConversation( "IMCSoldierBattleRifleVDU", TEAM_MILITIA )
-	AddVDURadio( convRef, "imc2", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "imc2", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 	local convRef = AddConversation( "IMCSoldierBattleRifleVDU", TEAM_IMC )
-	AddVDURadio( convRef, "imc2", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllan’s hair and buy time for the survivors to escape. Let’s move out!
+	AddVDURadio( convRef, "imc2", "diag_modeAnnc_RC104_01_01_mcor_bish", "diag_vdu_default" )			// BISH: All right guys, this is a battle of attrition. Keep the IMC out of MacAllanï¿½s hair and buy time for the survivors to escape. Letï¿½s move out!
 
+}
+
+function RegisterMovedCoopConversations()
+{
+	RegisterConversation( "CoopTD_SpectreRodeoWarning", 			VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player- HACK the priority is super high so players will hear it
+	RegisterConversation( "CoopTD_SpectreRodeoWarning_Short", 		VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player (short duration variant)
+
+	if ( IsServer() )
+		return
+
+	// Spectre rodeoing player
+	AddVDULineForSarah( "CoopTD_SpectreRodeoWarning", "diag_gm_coop_spectreRodeo_mcor_Sarah" )
+
+	// Spectre rodeoing player (short duration variant)
+	AddVDULineForSarah( "CoopTD_SpectreRodeoWarning_Short", "diag_gm_coop_spectreRodeoShort_mcor_Sarah" )
 }

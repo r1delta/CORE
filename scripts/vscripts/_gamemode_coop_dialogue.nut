@@ -107,10 +107,6 @@ function RegisterCoopConversations()
 
 	RegisterConversation( "CoopTD_GeneratorThreat_Infantry", 		VO_PRIORITY_GAMEMODE )  // lots of infantry near generator damaging it
 
-	RegisterConversation( "CoopTD_SpectreRodeoWarning", 			VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player- HACK the priority is super high so players will hear it
-	RegisterConversation( "CoopTD_SpectreRodeoWarning_Short", 		VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player (short duration variant)
-
-
 	if ( IsServer() )
 		return
 
@@ -302,12 +298,6 @@ function RegisterCoopConversations()
 
 	// lots of infantry near generator damaging it
 	AddVDULineForSarah( "CoopTD_GeneratorThreat_Infantry", "diag_gm_coop_nagKillInfantry_mcor_Sarah" )
-
-	// Spectre rodeoing player
-	AddVDULineForSarah( "CoopTD_SpectreRodeoWarning", "diag_gm_coop_spectreRodeo_mcor_Sarah" )
-
-	// Spectre rodeoing player (short duration variant)
-	AddVDULineForSarah( "CoopTD_SpectreRodeoWarning_Short", "diag_gm_coop_spectreRodeoShort_mcor_Sarah" )
 }
 
 main()
