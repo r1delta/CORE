@@ -366,6 +366,8 @@
 		}
 	}
 
+	IncludeFile( "_custom_command_callbacks" )
+
 	// NOTE this should run after level scripts get a chance to override default behavior
 	if ( IsMultiplayer() && GetClassicMPMode() && !IsLobby() )
 		ClassicMP_TryDefaultIntroSetup()
