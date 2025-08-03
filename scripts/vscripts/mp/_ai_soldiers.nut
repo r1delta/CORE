@@ -1801,13 +1801,13 @@ function GiveMinionWeapon( npc, weapon )
 Globalize( GiveMinionWeapon )
 
 // Somewhat hacky way to get AI to throw grenades. Good enough for now.
-function SimulateGrenadeThrowing( npc )
+function SimulateGrenadeThrowing( npc, onlyRooftopCombat = true, targetGrunts = false )
 {
-	thread SimulateGrenadeThink( npc )
+	thread SimulateGrenadeThink( npc, onlyRooftopCombat, targetGrunts )
 }
 Globalize( SimulateGrenadeThrowing )
 
-function SimulateGrenadeThink(npc) {
+function SimulateGrenadeThink(npc, onlyRooftopCombat, targetGrunts) {
 	npc.EndSignal("OnDestroy")
 	npc.EndSignal("OnDeath")
 	npc.EndSignal("Stop_SimulateGrenadeThink")
@@ -1833,8 +1833,15 @@ function SimulateGrenadeThink(npc) {
 		wait RandomFloat(4.5, 5.5)
 
 		local npcPos = npc.GetWorldSpaceCenter()
+		local enemyTeam = GetOtherTeam( npc.GetTeam() )
 		local grenadeTargets = GetPlayerArray()
-		grenadeTargets.extend(GetNPCArrayEx("npc_turret_sentry", GetOtherTeam( npc.GetTeam() ), npcPos, npcRadius))
+		grenadeTargets.extend(GetNPCArrayEx("npc_turret_sentry", enemyTeam, npcPos, npcRadius))
+
+		if (targetGrunts) {
+			grenadeTargets.extend(GetNPCArrayEx("npc_soldier", enemyTeam, npcPos, npcRadius))
+			grenadeTargets.extend(GetNPCArrayEx("npc_spectre", enemyTeam, npcPos, npcRadius))
+		}
+
 		foreach(target in grenadeTargets) {
 			if (!IsAlive(target))
 				continue
@@ -1848,7 +1855,7 @@ function SimulateGrenadeThink(npc) {
 			if (DistanceSqr(targetPosition, npcPos) > npcRadiusSqr)
 				continue
 			//Intent is to use this as a rooftop deterent, not normal combat.
-			if (targetPosition.z - npcPos.z < 75)
+			if (onlyRooftopCombat && targetPosition.z - npcPos.z < 75)
 				continue
 
 			if (npc.IsInterruptable() == false)
@@ -1889,12 +1896,15 @@ function NPCGrenadeThrow(npc) {
 
 	local vel = GetVelocityForDestOverTime(npcPos, throwPosition, 2.0)
 
+	// Doesnt work properly anymore, disabling
+/*
 	if (weapon.GetClassname() == "mp_weapon_grenade_emp") {
 		// magic multipliers to get the EMP grenade to travel the same distance as the frag.
 		vel.x *= 2.0
 		vel.y *= 2.0
 		vel.z *= 1.25
 	}
+*/
 	local frag = weapon.FireWeaponGrenade(npcPos, vel, Vector(0, 0, 0), 3.0, damageTypes.GibBullet | DF_IMPACT | DF_EXPLOSION | DF_SPECTRE_GIB, DF_EXPLOSION | DF_RAGDOLL | DF_SPECTRE_GIB, PROJECTILE_NOT_PREDICTED, false, false)
 
 	frag.SetOwner(npc)
