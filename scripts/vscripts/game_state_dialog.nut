@@ -54,7 +54,6 @@ function main()
 		case BIG_BROTHER:
 		case HEIST:
 		case UPLINK:
-		case EXFILTRATION:
 		case TITAN_TAG:
 			break
 

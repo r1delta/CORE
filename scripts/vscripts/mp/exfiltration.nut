@@ -1,5 +1,6 @@
 const EXFIL_GRACEPERIOD = 60.0
 
+// TODO: evac ship is broken (you cant evac)
 function main()
 {
 	Assert( !GetCinematicMode(), "Cannot play exfil in cinematic mode" )
@@ -8,12 +9,12 @@ function main()
 	FlagSet( "PilotBot" )
 	FlagSet( "ForceStartSpawn" )
 	SetRoundBased( true )
+	SetAttackDefendBased( true )
 
-	GM_AddPlayingThinkFunc( ExfilPlayingThink )
+	AddCallback_GameStateEnter( eGameState.Playing, ExfilPlaying )
+
 	GM_AddStartRoundFunc( ExfilRoundStart )
 	GM_AddEndRoundFunc( ExfilRoundEnd )
-
-	SetGameModeAnnouncement( "GameModeAnnounce_TDM" ) 	//TODO: Change to real value when it is ready
 
 	level.exfilPanels <- []
 	level.nv.attackingTeam = TEAM_IMC
@@ -127,6 +128,10 @@ function ExfilPanelThink( panel )
 	}
 }
 
+function ExfilPlaying()
+{
+	thread ExfilPlayingThink()
+}
 
 function ExfilPlayingThink()
 {
@@ -135,7 +140,7 @@ function ExfilPlayingThink()
 		level.nv.exfilState = true
 		level.nv.secondsTitanCheckTime = null
 
-		thread ExfiltrationEvacMain( TEAM_MILITIA )
+		//thread ExfiltrationEvacMain( TEAM_MILITIA )
 	}
 }
 
@@ -162,10 +167,6 @@ function ExfilRoundStart()
 	FlagClear( "EvacFinished" )
 	FlagClear( "PlayPostEvacDialogue" )
 	FlagClear( "EvacKillProximityConversationThread" )
-
-	// meh defensive
-	ClearTeamActiveObjective( TEAM_IMC )
-	ClearTeamActiveObjective( TEAM_MILITIA )
 }
 
 function ExfilRoundEnd()

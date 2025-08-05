@@ -83,9 +83,6 @@ function IncludeGameModeServerScripts()
 		case UPLINK:
 			IncludeFile( "mp/uplink" )
 			break
-		case EXFILTRATION:
-			IncludeFile( "mp/exfiltration" )
-			break
 		case ELIMINATION:
 			IncludeFile( "mp/elimination" )
 			break

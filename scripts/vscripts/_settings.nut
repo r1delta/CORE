@@ -200,7 +200,7 @@ if ( IsClient() )
 	GameMode_SetName( SCAVENGER, "#GAMEMODE_SCAVENGER" )
 	GameMode_SetGameModeAnnouncement( SCAVENGER, "GameModeAnnounce_TDM" )
 	GameMode_SetDesc( SCAVENGER, "#GAMEMODE_SCAVENGER_HINT" )
-	//GameMode_SetIcon( SCAVENGER, "../ui/menu/playlist/cp" ) //Need own icon
+	GameMode_SetIcon( SCAVENGER, "../ui/menu/playlist/tdm" ) //Need own icon
 	GameMode_AddServerScript( SCAVENGER, "mp/_gamemode_scavenger" )
 	GameMode_AddClientScript( SCAVENGER, "client/cl_gamemode_scavenger" )
 	GameMode_SetDefaultScoreLimits( SCAVENGER, 125, 0 )
@@ -253,6 +253,18 @@ if ( IsClient() )
 	//GameMode_AddServerScript( COOPERATIVE, "mp/_gamemode_coop")
 	//GameMode_AddClientScript( COOPERATIVE, "client/cl_gamemode_coop" )
 	//GameMode_AddSharedScript( COOPERATIVE, "_gamemode_coop_shared" )
+
+	GameMode_Create( EXFILTRATION )
+	GameMode_SetName( EXFILTRATION, "#GAMEMODE_EXFILTRATION" )
+	GameMode_SetGameModeAttackAnnouncement( EXFILTRATION, "GameModeAnnounce_TDM" )
+	GameMode_SetGameModeDefendAnnouncement( EXFILTRATION, "GameModeAnnounce_TDM" )
+	GameMode_SetDesc( EXFILTRATION, "#GAMEMODE_EXFILTRATION_HINT" )
+	GameMode_SetAttackDesc( EXFILTRATION, "#GAMEMODE_EXFILTRATION_ATTACK_HINT" )
+	GameMode_SetDefendDesc( EXFILTRATION, "#GAMEMODE_EXFILTRATION_DEFEND_HINT" )
+	GameMode_SetIcon( EXFILTRATION, "../ui/menu/playlist/tdm" ) //Need own icon
+	GameMode_AddServerScript( EXFILTRATION, "mp/exfiltration" )
+	GameMode_AddClientScript( EXFILTRATION, "client/cl_exfiltration" )
+	//GameMode_SetDefaultScoreLimits( EXFILTRATION, 125, 0 )
 
 // Don't remove items from this list once the game is in production
 // Durango online analytics needs the numbers for each mode to stay the same

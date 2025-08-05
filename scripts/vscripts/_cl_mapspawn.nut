@@ -655,10 +655,6 @@ function IncludeGameModeClientScripts()
 			IncludeFile( "client/cl_uplink" )
 			break
 
-		case "exfil":
-			IncludeFile( "client/cl_exfiltration" )
-			break
-
 		case BIG_BROTHER:
 			IncludeFile( "client/cl_big_brother" )
 			break
