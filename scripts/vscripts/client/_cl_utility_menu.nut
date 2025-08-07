@@ -1299,7 +1299,7 @@ function EventNotification( eventID, entity, eventVal = null )
 		case eEventNotifications.YouWillBeAutobalanced:
 				if ( eventVal - Time() > 2.0 )
 				{
-					thread MarkedForDeathCountdownSound( eventVal, "UI_InGame_MarkedForDeath_CountdownToYouAreMarked" )
+					thread LoopSoundForDuration( eventVal, "UI_InGame_MarkedForDeath_CountdownToYouAreMarked" )
 					SetTimedEventNotificationHATT( ( eventVal - Time() ) - 1.0, "#YOU_WILL_BE_AUTOBALANCED", HATT_GAME_COUNTDOWN_SECONDS, eventVal )
 				}
 			break
@@ -1853,6 +1853,18 @@ function AnnouncementMessage_DisplayOnHud( vgui, announcement )
 	vgui.s.eventNotification.MoveOverTime( 0, baseY, notificationMoveTime, INTERPOLATOR_DEACCEL )
 }
 
+function LoopSoundForDuration( endCountdownTime, soundAlias = "" )
+{
+	//player.EndSignal( "OnDestroy" ) //Don't end signal on destroy because if you are watching kill replay while counting down to marked, we don't want this thread to end
+
+	while( endCountdownTime - Time() > 0 )
+	{
+		local player = GetLocalClientPlayer() //Keep getting handle to local player because we want to keep playing this sound throughout kill replay
+		EmitSoundOnEntity( player, soundAlias )
+		wait 1.0
+	}
+}
+Globalize ( LoopSoundForDuration )
 
 class CAnnouncement
 {
