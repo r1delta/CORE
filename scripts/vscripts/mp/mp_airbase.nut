@@ -1516,11 +1516,4 @@ function RunToAnimStartForcedTimeOut( guy, animation_name, reference = null, opt
 	waitthread RunToAnimStartForced( guy, animation_name, reference, optionalTag )
 }
 
-function SetSignalDelayed( npc, signal, delay )
-{
-	wait delay
-	if ( IsValid( npc ) )
-		npc.Signal( signal )
-}
-
 main()

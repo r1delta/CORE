@@ -4630,14 +4630,6 @@ function TriggerOn(value) {
 	}
 }
 
-function SetSignalDelayed(ent, signal, delay) {
-	ent.EndSignal(signal) // so that if we call this again with the same signal on the same ent we won't get multiple signal events.
-
-	wait delay
-	if (IsValid(ent))
-		Signal(ent, signal)
-}
-
 function DevSpectreRodeo() {
 	local player = GetPlayerArray()[0]
 	local vec = player.GetAngles().AnglesToForward()

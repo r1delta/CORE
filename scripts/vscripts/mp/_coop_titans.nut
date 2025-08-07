@@ -786,10 +786,3 @@ function GetFakedAttackParams( weapon, enemySoul )
 
 	return attackParams
 }
-
-function SetSignalDelayed( ent, signal, delay )
-{
-	wait delay
-	if ( IsValid( ent ) )
-		Signal( ent, signal )
-}

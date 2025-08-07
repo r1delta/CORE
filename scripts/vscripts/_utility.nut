@@ -5878,3 +5878,12 @@ function AddCallback_OnPostAutoBalancePlayer( callbackFunc )
 
 	level.onPostAutoBalanceCallbacks.append( callbackInfo )
 }
+
+function SetSignalDelayed( entity, signal, delay )
+{
+	entity.EndSignal( signal ) // so that if we call this again with the same signal on the same ent we won't get multiple signal events.
+
+	wait delay
+	if ( IsValid( entity ) )
+		Signal( entity, signal )
+}

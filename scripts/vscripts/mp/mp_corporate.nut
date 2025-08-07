@@ -1886,13 +1886,6 @@ function ClearParentAndStopAnim( npc )
 	//PlayAnimGravity( npc, "pt_zipline_land", npc.GetOrigin(), npc.GetAngles() )
 }
 
-function SetSignalDelayed( npc, signal, delay )
-{
-	wait delay
-	if ( IsValid( npc ) )
-		npc.Signal( signal )
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 function SpectreIntroReset( spectre )
 {
