@@ -149,19 +149,23 @@ function CodeCallback_OnPrecache()
 	}
 
 	//Scavenger ore models. Need to precache here instead of in gamemode scripts for vpk builds
-    //Removing for build
-	/*level.scavengerSmallRocks <- [
-		"models/rocks/rock_01_sandstone.mdl"
+	//Removing for build
+
+	// The rest of these models werent shipped!
+	// TODO: create new ones?
+	level.scavengerSmallRocks <- [
+		"models/rocks/single_rock_01.mdl"
+		//"models/rocks/rock_01_sandstone.mdl"
 		//"models/rocks/rock_02_sandstone.mdl"
 		//"models/rocks/rock_03_sandstone.mdl"
-		//"models/rocks/single_rock_01.mdl"
 		//"models/rocks/single_rock_02.mdl"
 		//"models/rocks/single_rock_03.mdl"
 		//"models/rocks/single_rock_04.mdl"
 	]
 
 	level.scavengerLargeRocks <- [
-		"models/rocks/rock_boulder_large_01.mdl"
+		"models/rocks/single_rock_01.mdl"
+		//"models/rocks/rock_boulder_large_01.mdl"
 		//"models/rocks/sandstone_rock01.mdl"
 		//"models/rocks/sandstone_rock02.mdl"
 		//"models/rocks/sandstone_rock03.mdl"
@@ -177,7 +181,7 @@ function CodeCallback_OnPrecache()
 	foreach ( model in level.scavengerLargeRocks )
 	{
 		PrecacheModel( model )
-	}*/
+	}
 
 	const SOLDIER_SOUND_PAIN = "npc_grunt_pain"
 

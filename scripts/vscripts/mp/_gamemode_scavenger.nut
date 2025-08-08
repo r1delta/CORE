@@ -24,8 +24,6 @@ function main()
 {
 	level.spawnRatingFunc_Pilot = RateFrontLinePlayerSpawnpoint
 	level.spawnRatingFunc_Generic = RateFrontLinePlayerSpawnpoint
-	PrecacheModel( "models/rocks/single_rock_01.mdl" )
-	level.scavengerSmallRocks  <- [ "models/rocks/single_rock_01.mdl" ]
 	file.totalOre <- {}
 	file.totalOre[ oreTypes.RANDOM ] <- 0
 	file.totalOre[ oreTypes.ROOF ] <- 0
@@ -243,7 +241,7 @@ function SpawnStartOres()
 		ArrayRandomize( level.spectreJumpTraverseNodes )
 		for ( local i = 0; i < level.spectreJumpTraverseNodes.len(); i++ ) //Makes the minimum of totalNodeCount or totalRoofOre (12.5), roof ores
 		{
-			if ( TrySpawnOreOnSpectreTraverseNode( level.spectreJumpTraverseNodes[ i ], level.scavengerSmallRocks ) )
+			if ( TrySpawnOreOnSpectreTraverseNode( level.spectreJumpTraverseNodes[ i ], oreTypes.ROOF, level.scavengerSmallRocks ) )
 			{
 				totalRoofOre--  //Doesn't strictly count down to 0?
 
@@ -261,7 +259,7 @@ function SpawnStartOres()
 		for ( local i = 0; i < level.titanSpawnPointNodes.len(); i++ ) //Makes the minimum of totalNodeCount or totalRoofOre (47.5), roof ores
 		{
 
-			if ( TrySpawnTitanOreOnTitanSpawnpointNode( level.titanSpawnPointNodes[ i ],  level.scavengerSmallRocks ) )
+			if ( TrySpawnTitanOreOnTitanSpawnpointNode( level.titanSpawnPointNodes[ i ], oreTypes.TITAN, level.scavengerLargeRocks ) )
 			{
 				totalTitanOre--
 
@@ -305,13 +303,13 @@ function TrySpawnOreOnNode( nodeIndex, oreType, oreModels )
 	if ( NodeNearOreDumpSpot( nodePos, ORE_DISTANCE_SQUARED_FROM_DUMP_SPOT ) )
 		return false
 
-	SpawnOreNugget( nodeIndex, nodePos, oreModels, oreType )
+	SpawnRandomOreNugget( nodeIndex, nodePos, oreModels, oreType )
 
 	return true
 
 }
 
-function TrySpawnOreOnSpectreTraverseNode( node, oreModels )
+function TrySpawnOreOnSpectreTraverseNode( node, oreType, oreModels )
 {
 	/*if ( node.GetEntIndex() in level.spectreJumpTraverseNodesInUse ) //Not true at first
 			return false*/
@@ -325,7 +323,7 @@ function TrySpawnOreOnSpectreTraverseNode( node, oreModels )
 	/*if ( NodeNearOreDumpSpot( nodePos, ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT ) )
 		return false*/
 
-	SpawnSpectreJumpTraverseOreNugget( node, oreModels )
+	SpawnSpectreJumpTraverseOreNugget( nodePos, oreModels, oreType )
 
 	return true
 
@@ -340,7 +338,7 @@ function TrySpawnOreOnSpectreTraverseNode( node, oreModels )
 	}*/
 }
 
-function TrySpawnTitanOreOnTitanSpawnpointNode( node, oreModels )
+function TrySpawnTitanOreOnTitanSpawnpointNode( node, oreType, oreModels )
 {
 	local nodePos = node.GetOrigin()
 
@@ -351,7 +349,7 @@ function TrySpawnTitanOreOnTitanSpawnpointNode( node, oreModels )
 	/*if ( NodeNearOreDumpSpot( nodePos, ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT ) )
 		return false*/
 
-	SpawnTitanSpawnpointOreNugget( node, oreModels )
+	SpawnTitanSpawnpointOreNugget( nodePos, oreModels, oreType )
 
 	return true
 
@@ -399,66 +397,22 @@ function DrawNodePos( nodePos )
 	DebugDrawLine( nodePos, nodePos + Vector(0,0,32), 255, 125, 0, false, 60 )
 }
 
-function SpawnOreNugget( nodeID, nodePos, models, oreType )
+function SpawnRandomOreNugget( nodeID, nodePos, models, oreType )
 {
-	local model = Random( models )
-
-	local oreNugget = CreateEntity( "item_healthcore" )
-	oreNugget.kv.rendercolor = "255 120 90 255"
-
-	oreNugget.SetOrigin( nodePos )
-
-	local angles = Vector( 0, RandomInt( 360 ), 0 )
-	oreNugget.SetAngles( angles )
-//	oreNugget.SetTeam( team )
-	oreNugget.MarkAsNonMovingAttachment()
-	DispatchSpawn( oreNugget, true )
-
-	oreNugget.SetModel( model )
-
-	level.nodesInUse[ nodeID ] <- true
-	//printt( "ore: created with id: " + nodeID )
-	oreNugget.s.oreType <- oreType
+	local oreNugget = SpawnOreNugget( nodePos, models, oreType )
 	oreNugget.s.nodeID <- nodeID
-	file.totalOre[ oreType ]++
-
-	oreNugget.StopPhysics()
-
-	/*if ( GamePlaying() )
-	{
-		printt( "playing spawn sound" )
-		EmitSoundOnEntity( oreNugget, "Menu_BurnCard_InspectMultipleCards" )
-
-	}*/
 
 	//Debug info:
 	//level.nodeInfo[ nodeID ] <- oreNugget
+	level.nodesInUse[ nodeID ] <- true
 
 	DisplayOreNuggetOnMinimap( oreNugget )
 }
 
-function SpawnSpectreJumpTraverseOreNugget( traverseNode, models )
+function SpawnSpectreJumpTraverseOreNugget( nodePos, models, oreType )
 {
-	local model = Random( models )
+	local oreNugget = SpawnOreNugget( nodePos, models, oreType )
 
-	local oreNugget = CreateEntity( "item_healthcore" )
-	//oreNugget.kv.model = model //TODO: Need to do this AND setModel?
-	oreNugget.kv.rendercolor = "255 120 90 255" //orange
-
-	oreNugget.SetOrigin( traverseNode.GetOrigin() )
-
-	local angles = Vector( 0, RandomInt( 360 ), 0 )
-	oreNugget.SetAngles( angles )
-//	oreNugget.SetTeam( team )
-	oreNugget.MarkAsNonMovingAttachment()
-	DispatchSpawn( oreNugget, true )
-
-	oreNugget.SetModel( model )
-
-	file.totalOre[ oreTypes.ROOF ]++
-	oreNugget.StopPhysics()
-
-	oreNugget.s.oreType <- oreTypes.ROOF
 	//local traverseNodeEntIndex = traverseNode.GetEntIndex()
 	//oreNugget.s.nodeEntIndex <- traverseNodeEntIndex
 	//level.spectreJumpTraverseNodesInUse[ traverseNodeEntIndex ] <- true
@@ -466,32 +420,16 @@ function SpawnSpectreJumpTraverseOreNugget( traverseNode, models )
 	DisplayOreNuggetOnMinimap( oreNugget )
 }
 
-function SpawnTitanSpawnpointOreNugget( node, models )
+function SpawnTitanSpawnpointOreNugget( nodePos, models, oreType )
 {
-	local model = Random( models )
+	local oreNugget = SpawnOreNugget( nodePos, models, oreType )
+	oreNugget.kv.rendercolor = "120 90 255 255" //purple
 
-	local oreNugget = CreateEntity( "item_healthcore" )
-	//oreNugget.kv.model = model //TODO: Need to do this AND setModel?
-	 oreNugget.kv.rendercolor = "120 90 255 255" //purple
-
-	oreNugget.SetOrigin( node.GetOrigin() )
-
-	local angles = Vector( 0, RandomInt( 360 ), 0 )
-	oreNugget.SetAngles( angles )
-	oreNugget.MarkAsNonMovingAttachment()
-	DispatchSpawn( oreNugget, true )
-
-	oreNugget.SetModel( model )
-
-	file.totalOre[ oreTypes.TITAN ]++
-	oreNugget.StopPhysics()
-
-	oreNugget.s.oreType <- oreTypes.TITAN
 	//local traverseNodeEntIndex = traverseNode.GetEntIndex()
 	//oreNugget.s.nodeEntIndex <- traverseNodeEntIndex
 	//level.spectreJumpTraverseNodesInUse[ traverseNodeEntIndex ] <- true
 
-	thread DisplayMegaOreNuggetOnMinimap( oreNugget )
+	DisplayOreNuggetOnMinimap( oreNugget, "vgui/HUD/minimap_goal_enemy", true )
 
 }
 
@@ -510,8 +448,9 @@ function SpawnThrownOreNugget( deadEntity, damageInfo ) //TODO: Make this worth 
 		deadEntity.Minimap_DisplayDefault(GetOtherTeam(deadEntity), null ) //Take away always being on map once dead
 	}
 
-	if (  IsSuicide( damageInfo.GetAttacker(), deadEntity, damageInfo.GetDamageSourceIdentifier() ) )
-		return
+	// ??????
+	//if (  IsSuicide( damageInfo.GetAttacker(), deadEntity, damageInfo.GetDamageSourceIdentifier() ) )
+	//	return
 
 	local origin = deadEntity.GetOrigin()
 
@@ -525,24 +464,9 @@ function SpawnThrownOreNugget( deadEntity, damageInfo ) //TODO: Make this worth 
 
 	for ( local i = 0; i < totalThrownOreGenerated; ++i )
 	{
-		//local model = Random( models )
-		local model = "models/rocks/single_rock_01.mdl"
+		local oreNugget = SpawnOreNugget( origin, level.scavengerSmallRocks, oreTypes.THROWN )
 
-		local oreNugget = CreateEntity( "item_healthcore" )
-		oreNugget.kv.rendercolor = "255 120 90 255"
-
-		oreNugget.SetOrigin( origin )
-
-		local angleOrientation = Vector( 0, RandomInt( 360 ), 0 )
-		oreNugget.SetAngles( angleOrientation )
-	//	oreNugget.SetTeam( team )
-		oreNugget.MarkAsNonMovingAttachment()
-		DispatchSpawn( oreNugget, true )
-
-		oreNugget.SetModel( model )
-		oreNugget.s.oreType <- oreTypes.THROWN
 		oreNugget.SetTeam( deadEntity.GetTeam() )
-		file.totalOre[ oreTypes.THROWN ]++
 
 		local angleThrown = Vector( 0, angleStep * i, 0 )
 		oreNugget.SetVelocity( ( angleThrown.AnglesToForward() + Vector( 0,0,1.25 ) ) * 400  )
@@ -557,7 +481,40 @@ function SpawnThrownOreNugget( deadEntity, damageInfo ) //TODO: Make this worth 
 
 Globalize( SpawnThrownOreNugget )
 
-function DisplayOreNuggetOnMinimap( oreNugget, oreNuggetMaterial = "vgui/HUD/minimap_goal_friendly"  )
+function SpawnOreNugget( nodePos, models, oreType )
+{
+	local model = Random( models )
+
+	local oreNugget = CreateEntity( "item_healthcore" )
+	oreNugget.kv.rendercolor = "255 120 90 255" //orange
+
+	oreNugget.SetOrigin( nodePos )
+
+	local angles = Vector( 0, RandomInt( 360 ), 0 )
+	oreNugget.SetAngles( angles )
+//	oreNugget.SetTeam( team )
+	oreNugget.MarkAsNonMovingAttachment()
+	DispatchSpawn( oreNugget, true )
+
+	oreNugget.SetModel( model )
+
+	//printt( "ore: created with id: " + nodeID )
+	oreNugget.s.oreType <- oreType
+	file.totalOre[ oreType ]++
+
+	oreNugget.StopPhysics()
+
+	/*if ( GamePlaying() )
+	{
+		printt( "playing spawn sound" )
+		EmitSoundOnEntity( oreNugget, "Menu_BurnCard_InspectMultipleCards" )
+
+	}*/
+
+	return oreNugget
+}
+
+function DisplayOreNuggetOnMinimap( oreNugget, oreNuggetMaterial = "vgui/HUD/minimap_goal_friendly", playIdleSound = false )
 {
 	oreNugget.Minimap_SetDefaultMaterial( oreNuggetMaterial)
 	oreNugget.Minimap_SetAlignUpright( true )
@@ -568,26 +525,19 @@ function DisplayOreNuggetOnMinimap( oreNugget, oreNuggetMaterial = "vgui/HUD/min
 	oreNugget.Minimap_AlwaysShow( TEAM_MILITIA, null )
 	oreNugget.Minimap_SetFriendlyHeightArrow( true )
 	oreNugget.Minimap_SetEnemyHeightArrow( true )
+
+	if ( playIdleSound )
+		thread PlayOreIdleSound( oreNugget, oreNuggetMaterial )
 
 }
 
-function DisplayMegaOreNuggetOnMinimap( oreNugget, oreNuggetMaterial = "vgui/HUD/minimap_goal_enemy" )
+function PlayOreIdleSound( oreNugget, oreNuggetMaterial, idleSound = "TEMP_Scavenger_Titan_Ore_Ping" )
 {
-	oreNugget.Minimap_SetDefaultMaterial( oreNuggetMaterial)
-	oreNugget.Minimap_SetAlignUpright( true )
-	oreNugget.Minimap_SetObjectScale( 0.08 )
-	oreNugget.Minimap_SetClampToEdge( false )
-	oreNugget.Minimap_SetZOrder( 100 )
-	oreNugget.Minimap_AlwaysShow( TEAM_IMC, null )
-	oreNugget.Minimap_AlwaysShow( TEAM_MILITIA, null )
-	oreNugget.Minimap_SetFriendlyHeightArrow( true )
-	oreNugget.Minimap_SetEnemyHeightArrow( true )
-
 	oreNugget.EndSignal( "OnDestroy" )
 
 	while ( true )
 	{
-		EmitSoundOnEntity( oreNugget, "TEMP_Scavenger_Titan_Ore_Ping" )
+		EmitSoundOnEntity( oreNugget, idleSound )
 
 		local pingCount = 5
 
@@ -601,8 +551,6 @@ function DisplayMegaOreNuggetOnMinimap( oreNugget, oreNuggetMaterial = "vgui/HUD
 
 		wait 7.0
 	}
-
-
 }
 
 function CodeCallback_OnTouchHealthKit( player, oreNugget )
