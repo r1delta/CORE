@@ -9,15 +9,15 @@ enum oreTypes
 	ORE_DUMP_SPOT,
 }
 
-const randomOreSpawned = 20
-const roofOreSpawned = 15
+const randomOreSpawned = 13
+const roofOreSpawned = 13
 const titanOreSpawned = 1 //TODO: Can't actually have more than 1 right now because no way to mark that a spawnpoint is used!
 const oreEffectThreshold = 5
-const ORE_DISTANCE_SQUARED_FROM_DUMP_SPOT =  6250000 //UPDATE IF CHANGED: 6250000 = 2500 * 2500
-const ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT =  2250000 //UPDATE IF CHANGED: 2250000 = 1500 * 1500
+const ORE_DISTANCE_SQUARED_FROM_DUMP_SPOT =  4500000 //UPDATE IF CHANGED: 4500000 = 2122 * 2122 //PREV: 6250000 = 2500 * 2500
+const ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT =  4500000 //UPDATE IF CHANGED: 4500000 = 2122 * 2122 //PREV: 2250000 = 1500 * 1500
 const ORE_DISTANCE_SQUARED_FROM_PLAYER = 75625 //UPDATE IF CHANGED: 75625 = 275 * 275
 const ORE_BUILD_TIME = 5
-const ORE_SPAWN_DELAY = 25
+const ORE_SPAWN_DELAY = 20
 
 
 function main()
