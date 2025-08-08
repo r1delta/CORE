@@ -86,7 +86,7 @@ function ClientCommand_GiveAllAmmo( player, ... )
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
 
-	player.RefillAllAmmo()
+	RestockPlayerAmmo( player )
 	EmitSoundOnEntity( player, "Coop_AmmoBox_AmmoRefill" )
 
 	return true
