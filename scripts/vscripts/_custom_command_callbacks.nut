@@ -9,7 +9,7 @@ function main()
 	AddClientCommandCallback( "god", ClientCommand_ToggleDemigod )
 	AddClientCommandCallback( "kill", ClientCommand_Kill )
 	AddClientCommandCallback( "explode", ClientCommand_Explode )
-	AddClientCommandCallback( "pinkmist", ClientCommand_Pinkmist )
+	AddClientCommandCallback( "pinkmist", ClientCommand_Explode )
 	AddClientCommandCallback( "dissolve", ClientCommand_Dissolve )
 
 	AddClientCommandCallback( "giveallammo", ClientCommand_GiveAllAmmo )
@@ -20,10 +20,12 @@ function ClientCommand_ToggleNotarget( player, ... )
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
 
+	local name = player.GetPlayerName()
+
 	if ( player.GetNoTarget() )
-		print( player + " TOGGLED NOTARGET OFF" )
+		printt( name + " TOGGLED NOTARGET OFF" )
 	else
-		print( player + " TOGGLED NOTARGET ON" )
+		printt( name + " TOGGLED NOTARGET ON" )
 
 	player.SetNoTarget( !player.GetNoTarget() )
 	player.SetNoTargetSmartAmmo( player.GetNoTarget() )
@@ -36,15 +38,17 @@ function ClientCommand_ToggleDemigod( player, ... )
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
 
+	local name = player.GetPlayerName()
+
 	if ( player.IsDemigod() )
 	{
 		player.DisableDemigod()
-		print( player + " TOGGLED DEMIGOD OFF" )
+		printt( name + " TOGGLED DEMIGOD OFF" )
 	}
 	else
 	{
 		player.EnableDemigod()
-		print( player + " TOGGLED DEMIGOD ON" )
+		printt( name + " TOGGLED DEMIGOD ON" )
 	}
 
 	return true
@@ -61,15 +65,7 @@ function ClientCommand_Kill( player, ... )
 function ClientCommand_Explode( player, ... )
 {
 	if ( IsAlive( player ) && !player.IsTitan() )
-		player.Die( null, null, { scriptType = DF_GIB } )
-
-	return true
-}
-
-function ClientCommand_Pinkmist( player, ... )
-{
-	if ( IsAlive( player ) && !player.IsTitan() )
-		player.Dissolve( ENTITY_DISSOLVE_PINKMIST, Vector( 0 , 0, 0 ), 500 )
+		player.Die( null, null, { scriptType = DF_GIB | DF_DISSOLVE } )
 
 	return true
 }
@@ -78,8 +74,8 @@ function ClientCommand_Dissolve( player, ... )
 {
 	if ( IsAlive( player ) && !player.IsTitan() )
 	{
-		EmitSoundAtPosition( player.GetOrigin(), "Object_Dissolve" )
 		player.Dissolve( ENTITY_DISSOLVE_CHAR, Vector( 0, 0, 0 ), 0 )
+		EmitSoundAtPosition( player.GetOrigin(), "Object_Dissolve" )
 	}
 
 	return true
