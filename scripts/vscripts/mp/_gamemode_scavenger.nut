@@ -390,7 +390,7 @@ function SpawnRandomOreNugget( nodeID, nodePos, models, oreType )
 function SpawnSpectreJumpTraverseOreNugget( nodePos, models, oreType )
 {
 	local oreNugget = SpawnOreNugget( nodePos, models, oreType )
-	oreNugget.kv.rendercolor = "255 242 0 255" //gray (test)
+	oreNugget.kv.rendercolor = "127 127 127 255" //gray (test)
 
 	//local traverseNodeEntIndex = traverseNode.GetEntIndex()
 	//oreNugget.s.nodeEntIndex <- traverseNodeEntIndex

@@ -186,7 +186,7 @@ function ShowScoreboard()
 		scoreboardValueNames.append( { var = "score_kills", highlight = false } )
 		scoreboardValueNames.append( { var = "score_assault", highlight = true } )
 	}
-	else if ( storedModeString == CAPTURE_THE_FLAG )
+	else if ( storedModeString == CAPTURE_THE_FLAG || storedModeString == CAPTURE_THE_FLAG_PRO )
 	{
 		// added RIGHT to LEFT
 		ShowScoreboardColumn( 6, "deaths" )
@@ -234,6 +234,22 @@ function ShowScoreboard()
 		scoreboardValueNames.append( { var = "score_kills", highlight = false } )
 		scoreboardValueNames.append( { var = "score_deaths", highlight = false } )
 		scoreboardValueNames.append( { var = "score_titanKills", highlight = true } )
+	}
+	else if ( storedModeString == SCAVENGER )
+	{
+		// added RIGHT to LEFT
+		ShowScoreboardColumn( 6, "deaths" )
+		ShowScoreboardColumn( 5, "titanKills" )
+		ShowScoreboardColumn( 4, "pilotKills" )
+		ShowScoreboardColumn( 3, "score_generic", true )
+		ShowScoreboardColumn( 2, null )
+		ShowScoreboardColumn( 1, null )
+		ShowScoreboardColumn( 0, null )
+
+		scoreboardValueNames.append( { var = "score_deaths", highlight = false } )
+		scoreboardValueNames.append( { var = "score_titanKills", highlight = false } )
+		scoreboardValueNames.append( { var = "score_kills", highlight = false } )
+		scoreboardValueNames.append( { var = "score_assault", highlight = true } )
 	}
 	else
 	{
@@ -499,6 +515,11 @@ function ShowScoreboardColumn( index, varType, highlight = false )
 		case "mfd_marksOutlasted":
 			descLabel.SetText( "#SCOREBOARD_MFD_MARKS_OUTLASTED" )
 			icon.SetImage( SCOREBOARD_MATERIAL_DEFENSE )
+			break
+
+		case "score_generic":
+			descLabel.SetText( "#SCOREBOARD_SCORE" )
+			icon.SetImage( SCOREBOARD_MATERIAL_FLAG_CAPTURE )
 			break
 
 		default:
