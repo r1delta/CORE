@@ -3631,6 +3631,8 @@ function SaveScoreForMapStars( player )
 		case ATTRITION:
 		case CAPTURE_THE_FLAG:
 		case MARKED_FOR_DEATH:
+		case CAPTURE_THE_FLAG_PRO:
+		case SCAVENGER:
 			score = player.GetAssaultScore()
 			break
 

@@ -47,6 +47,7 @@ function InitPersistence()
         mfdp = 7
         coop = 8
         ps = 9
+        scv = 10
     }
 
     AddPersistenceEnum("gameModes", gameModes)
@@ -71,6 +72,7 @@ function InitPersistence()
 	    lts = 4
 	    mfd = 5
 	    coop = 6
+	    scv = 7
     }
 
     AddPersistenceEnum("gameModesWithStars", gameModesWithStars)

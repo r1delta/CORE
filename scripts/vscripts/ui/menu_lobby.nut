@@ -972,7 +972,9 @@ function SetStarInfo( mapName, gameMode )
 			file.starsButtonRegistered = false
 		}
 
-		if ( !file.progressionKeybindRegistered )
+		// TODO: this doesnt fully fix the issue of controller players trying to edit their loadouts
+		// And opening the progression menu
+		if ( !IsFullyConnected() && !file.progressionKeybindRegistered )
 		{
 			RegisterButtonPressedCallback( BUTTON_Y, ToggleProgression )
 			file.progressionKeybindRegistered = true

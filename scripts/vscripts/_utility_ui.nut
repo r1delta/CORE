@@ -381,6 +381,8 @@ function PlayerProgressionAllowed( player = null )
 
 function UpdateStarPanelData( panel, mapName, modeName )
 {
+ 	// Raise to include other custom gamemodes like scavenger
+ 	// Also needs extra buttons in its .res file
 	local gameModeListCount = 7
 	local numStars = 3
 
@@ -484,6 +486,7 @@ function GetMapStarScoreImage( gameMode )
 		case "at":
 			return SCOREBOARD_MATERIAL_VICTORY_CONTRIBUTION
 		case "ctf":
+		case "scv":
 			return SCOREBOARD_MATERIAL_FLAG_CAPTURE
 		case "lts":
 			return SCOREBOARD_MATERIAL_TITAN_KILLS
