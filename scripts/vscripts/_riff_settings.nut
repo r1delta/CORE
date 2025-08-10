@@ -22,6 +22,7 @@ function main()
 
 	Globalize( Riff_ForceSetSpawnAsTitan )
 	Globalize( Riff_ForceTitanAvailability )
+	Globalize( Riff_ForceTitanExitEnabled )
 
 	local spawnAsTitan = GetCurrentPlaylistVarInt( "riff_spawn_as_titan", eSpawnAsTitan.Default )
 	Assert( spawnAsTitan < eSpawnAsTitan.LastSpawnAsTitan )
@@ -118,6 +119,13 @@ function Riff_ForceTitanAvailability( eState )
 {
 	Assert( eState < eTitanAvailability.LastTitanAvailability )
 	level.nv.titanAvailability = eState
+}
+
+
+function Riff_ForceTitanExitEnabled( eState )
+{
+	Assert( eState < eTitanExitEnabled.LastTitanExit )
+	level.nv.titanExitEnabled = eState
 }
 
 
