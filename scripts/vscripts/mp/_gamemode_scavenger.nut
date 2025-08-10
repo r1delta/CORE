@@ -201,7 +201,7 @@ function GetFlagSpawnPoint( team ) //Taken from CTF script file...
 function SpawnStartOres()
 {
 	//wait 5.0
-	PrintFunc()
+	//PrintFunc()
 	local nodes = GetNodeCount()
 
 	local totalRandomOre = randomOreSpawned - file.totalOre[ oreTypes.RANDOM ]

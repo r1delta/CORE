@@ -16,11 +16,14 @@ function main()
 function CreateScavengerOre( ore, isRecreate )
 {
 	ore.SetFadeDistance( 10000 )
-	if ( ore.GetModelName() != CTF_FLAG_BASE_MODEL ) //TODO: Hacky! Making ore dump spot a healthpack too instead of a separate thing
-		return
-
-	OnOreDumpSpotCreatedCreated( ore, isRecreate )
-
+	if ( ore.GetModelName() == CTF_FLAG_BASE_MODEL ) //TODO: Hacky! Making ore dump spot a healthpack too instead of a separate thing
+	{
+		OnOreDumpSpotCreatedCreated( ore, isRecreate )
+	}
+	else
+	{
+		thread ScavengerOreSparks( ore )
+	}
 }
 
 function InitPreviousDefenseScore( player, isRecreate )
@@ -54,18 +57,16 @@ function ScavengerOreSparks( ore )
 	for ( ;; )
 	{
 		OreSparkFunc( ore, fxID, origin, angles )
+		wait ( RandomFloat( 3.0, 6.0 ) )
 	}
 }
 
 function OreSparkFunc( ore, fxID, origin, angles )
 {
 	local newAngles = angles.AnglesCompose( Vector(90,0,0) )
-	if ( RandomInt( 100 ) > 85 )
-	{
-		StartParticleEffectInWorld( fxID, origin, newAngles )
-	}
+
+	StartParticleEffectInWorld( fxID, origin, newAngles )
 	EmitSoundOnEntity( ore, "titan_damage_spark" )
-	wait 0.2
 }
 
 function Scavenger_InitPlayerScripts( player )
