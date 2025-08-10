@@ -652,7 +652,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
         if ( victim.IsTitan() && victim.IsNPC() )
         {
-            if ( victim.GetSubclass() == eSubClass.empTitan )
+            if ( IsEMPTitan( victim ) )
             {
                 local wasAffectedByTitanEmp = false
 
@@ -666,13 +666,13 @@ function HandleKillStats( victim, attacker, damageInfo ) {
                     Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_EmpTitan_Kills", 1.0 )
             }
 
-            if ( victim.GetSubClass() == eSubClass.nukeTitan )
+            if ( IsNukeTitan( victim ) )
             {
                 if ( damageSource == eDamageSourceId.nuclear_core )
                     Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_NukeTitan_Kills", 1.0 )
             }
 
-            if ( victim.GetSubClass() == eSubClass.mortarTitan )
+            if ( IsMortarTitan( victim ) )
             {
                 local soul = victim.GetTitanSoul()
                 if ( Time() - soul.createTime <= 30 )
