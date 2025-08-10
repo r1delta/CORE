@@ -23,6 +23,7 @@ function main()
 	RegisterSignal( "Rumble_Right_End" )
 	RegisterSignal( "EMP" )
 	RegisterSignal( "Ejecting" )
+	RegisterSignal( "MonitorPlayerEjectAnimBeingStuck" )
 
 	if ( IsMultiplayer() && !IsMenuLevel() )
 		IncludeFile( "client/cl_titan_enemy_tracker" )
@@ -538,31 +539,71 @@ function PlayerPressed_Eject( player )
 	if ( player.s.ejectPressCount < 3 || cockpit.s.ejectStartTime )
 		return
 
+	PlayerEjects( player, cockpit )
+}
+
+
+function PlayerEjects( player, cockpit )
+{
+	// prevent animation from playing if player is in the middle of execution
+	if ( player.ContextAction_IsActive() && !player.ContextAction_IsBusy() )
+		return
+
 	player.Signal( "Ejecting" )
 
 	SmartGlass_SendEvent( "playerEject", "", "", "" )
 
 	local ejectAlarmSound
+	local animationName
 
 	cockpit.s.ejectStartTime = Time()
 	if ( GetNuclearPayload( player ) > 0 )
 	{
-		cockpit.Anim_NonScriptedPlay( "atpov_cockpit_eject_nuclear" )
+		animationName = "atpov_cockpit_eject_nuclear"
+
+		cockpit.Anim_NonScriptedPlay( animationName )
 		if ( cockpit.s.body )
-			cockpit.s.body.Anim_NonScriptedPlay( "atpov_cockpit_eject_nuclear" )
+			cockpit.s.body.Anim_NonScriptedPlay( animationName )
+
 		ejectAlarmSound = TITAN_NUCLEAR_DEATH_ALARM
 	}
 	else
 	{
-		cockpit.Anim_NonScriptedPlay( "atpov_cockpit_eject" )
+		animationName = "atpov_cockpit_eject"
+
+		cockpit.Anim_NonScriptedPlay( animationName )
 		if ( cockpit.s.body )
-			cockpit.s.body.Anim_NonScriptedPlay( "atpov_cockpit_eject" )
+			cockpit.s.body.Anim_NonScriptedPlay( animationName )
 
 		ejectAlarmSound = TITAN_ALARM_SOUND
 	}
-	thread LightingUpdateAfterOpeningCockpit()
 
+	thread LightingUpdateAfterOpeningCockpit()
 	thread EjectAudioThink( player, ejectAlarmSound  )
+
+	local animDuration = cockpit.GetSequenceDuration( animationName )
+
+	thread MonitorPlayerEjectAnimBeingStuck( player, animDuration )
+}
+
+function MonitorPlayerEjectAnimBeingStuck( player, duration )
+{
+	player.Signal( "MonitorPlayerEjectAnimBeingStuck" )
+	player.EndSignal( "MonitorPlayerEjectAnimBeingStuck" )
+	player.EndSignal( "OnDeath" )
+	player.EndSignal( "OnDestroy" )
+	player.EndSignal( "SettingsChanged" )
+
+
+	wait duration + 2.0 // 1s as a buffer
+
+	if ( player.IsTitan() )
+	{
+		local cockpit = player.GetCockpit()
+		cockpit.Anim_NonScriptedPlay( "atpov_cockpit_hatch_close_idle" )
+		if ( cockpit.s.body )
+			cockpit.s.body.Anim_NonScriptedPlay( "atpov_cockpit_hatch_close_idle" )
+	}
 }
 
 function ServerCallback_EjectConfirmed()
@@ -576,29 +617,7 @@ function ServerCallback_EjectConfirmed()
 	if ( !cockpit || !IsTitanCockpitModelName( cockpit.GetModelName() ) )
 		return
 
-	player.Signal( "Ejecting" )
-
-	local ejectAlarmSound
-
-	cockpit.s.ejectStartTime = Time()
-	if ( GetNuclearPayload( player ) > 0 )
-	{
-		cockpit.Anim_NonScriptedPlay( "atpov_cockpit_eject_nuclear" )
-		if ( cockpit.s.body )
-			cockpit.s.body.Anim_NonScriptedPlay( "atpov_cockpit_eject_nuclear" )
-		ejectAlarmSound = TITAN_NUCLEAR_DEATH_ALARM
-	}
-	else
-	{
-		cockpit.Anim_NonScriptedPlay( "atpov_cockpit_eject" )
-		if ( cockpit.s.body )
-			cockpit.s.body.Anim_NonScriptedPlay( "atpov_cockpit_eject" )
-
-		ejectAlarmSound = TITAN_ALARM_SOUND
-	}
-	thread LightingUpdateAfterOpeningCockpit()
-
-	thread EjectAudioThink( player, ejectAlarmSound  )
+	PlayerEjects( player, cockpit )
 }
 
 function EjectAudioThink( player, ejectAlarmSound = TITAN_ALARM_SOUND )
