@@ -478,9 +478,14 @@ function ParentEntJumpJetsActive( player )
 		}
 	}
 
+	local attachIndexLeft = player.LookupAttachment( "vent_left" )
+	local attachIndexRight = player.LookupAttachment( "vent_right" )
 
-	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_left" ) )
-	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_right" ) )
+	if ( attachIndexLeft == 0 || attachIndexRight == 0 )
+		return
+
+	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexLeft )
+	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexRight )
 
 	local particleEffects = [ leftJumpJet, rightJumpJet ]
 
@@ -488,7 +493,7 @@ function ParentEntJumpJetsActive( player )
 
 	if ( lightID )
 	{
-		jumpJetLight = StartParticleEffectOnEntity( player, lightID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_right" ) )
+		jumpJetLight = StartParticleEffectOnEntity( player, lightID, FX_PATTACH_POINT_FOLLOW, attachIndexRight )
 		particleEffects.append( jumpJetLight )
 
 	}
@@ -2247,15 +2252,21 @@ function OnHumanJumpJet( player )
 		}
 	}
 
-	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_left" ) )
-	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_right" ) )
+	local attachIndexLeft = player.LookupAttachment( "vent_left" )
+	local attachIndexRight = player.LookupAttachment( "vent_right" )
+
+	if ( attachIndexLeft == 0 || attachIndexRight == 0 )
+		return
+
+	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexLeft )
+	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexRight )
 
 	local jumpJetEffectsArray = [ leftJumpJet, rightJumpJet ]
 
 	local jumpJetLight
 	if ( lightID  )
 	{
-		jumpJetLight = StartParticleEffectOnEntity( player, lightID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_right" ) )
+		jumpJetLight = StartParticleEffectOnEntity( player, lightID, FX_PATTACH_POINT_FOLLOW, attachIndexRight )
 		jumpJetEffectsArray.append( jumpJetLight )
 	}
 
@@ -2290,8 +2301,12 @@ function OnHumanJumpJetLeft( player )
 		}
 	}
 
+	local attachIndexLeft = player.LookupAttachment( "vent_left" )
 
-	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_left" ) )
+	if ( attachIndexLeft == 0 )
+		return
+
+	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexLeft )
 	thread CleanUpJumpJetParticleEffect( player, [ leftJumpJet ] )
 }
 
@@ -2324,7 +2339,12 @@ function OnHumanJumpJetRight( player )
 		}
 	}
 
-	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_right" ) )
+	local attachIndexRight = player.LookupAttachment( "vent_right" )
+
+	if ( attachIndexRight == 0 )
+		return
+
+	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexRight )
 
 	thread CleanUpJumpJetParticleEffect( player, [ rightJumpJet ] )
 }
@@ -2357,8 +2377,14 @@ function OnHumanJumpJetDBL( player )
 		}
 	}
 
-	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_left" ) )
-	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_right" ) )
+	local attachIndexLeft = player.LookupAttachment( "vent_left" )
+	local attachIndexRight = player.LookupAttachment( "vent_right" )
+
+	if ( attachIndexLeft == 0 || attachIndexRight == 0 )
+		return
+
+	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexLeft )
+	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexRight )
 
 	//No need to thread this off since it is a one time effect unlike wallrun and normal jumpjet effects which are looping
 	//thread CleanUpJumpJetParticleEffect( player, [ leftJumpJet, rightJumpJet ] )
@@ -2391,7 +2417,12 @@ function OnHumanJumpJetWallRun_Left( player )
 		}
 	}
 
-	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_left_out" ) )
+	local attachIndexLeft = player.LookupAttachment( "vent_left_out" )
+
+	if ( attachIndexLeft == 0 )
+		return
+
+	local leftJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexLeft )
 	thread CleanUpJumpJetParticleEffect( player, [ leftJumpJet ] )
 }
 
@@ -2423,7 +2454,12 @@ function OnHumanJumpJetWallRun_Right( player )
 		}
 	}
 
-	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, player.LookupAttachment( "vent_right_out" ) )
+	local attachIndexRight = player.LookupAttachment( "vent_right_out" )
+
+	if ( attachIndexRight == 0 )
+		return
+
+	local rightJumpJet = StartParticleEffectOnEntity( player, fxID, FX_PATTACH_POINT_FOLLOW, attachIndexRight )
 	thread CleanUpJumpJetParticleEffect( player, [ rightJumpJet ] )
 }
 
