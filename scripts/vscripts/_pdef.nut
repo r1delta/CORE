@@ -819,9 +819,9 @@ function InitPersistence()
     AddPersistenceArray("currentBurnCardOffset", 3)
     AddPersistenceKey("currentBurnCardOffset", "int")
 
-    AddPersistenceArray("burnCardDeck", 5000)
+    AddPersistenceArray("burnCardDeck", 1000)
     AddPersistenceKey("burnCardDeck", "burnCard")
-    AddPersistenceArray("pm_burnCardDeck", 5000)
+    AddPersistenceArray("pm_burnCardDeck", 1000)
     AddPersistenceKey("pm_burnCardDeck", "burnCard")
 
     AddPersistenceKey("bc.blackMarketTimeUntilBurnCardUpgradeReset", "int")
