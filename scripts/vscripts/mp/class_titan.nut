@@ -256,10 +256,16 @@ function PlayerCanEject( player )
 	if ( !player.IsTitan() )
 		return false
 
+	if ( Riff_TitanExitEnabled() == eTitanExitEnabled.Never )
+		return false
+
 //	if ( "embarkingTitan" in player.s )
 //		return false
 
 	if ( "isDisembarking" in player.s )
+		return false
+
+	if ( TitanEjectIsDisabled() )
 		return false
 
 	return true

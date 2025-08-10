@@ -1160,6 +1160,9 @@ function PlayerCanDisembarkTitan( player )
 	if ( !IsAlive( player ) )
 		return false
 
+	if ( Riff_TitanExitEnabled() == eTitanExitEnabled.Never )
+		return false
+
 	if ( IsServer() )
 	{
 		// client doesn't know these things

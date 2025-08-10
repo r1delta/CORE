@@ -3550,3 +3550,8 @@ function GetTitanBuildRule()
 {
 	return 0
 }
+
+function TitanEjectIsDisabled()
+{
+	return ( Riff_TitanExitEnabled() != eTitanExitEnabled.Default && Riff_TitanExitEnabled() != eTitanExitEnabled.Always )
+}

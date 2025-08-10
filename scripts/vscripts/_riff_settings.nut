@@ -11,6 +11,8 @@ function main()
 	Globalize( Riff_AmmoLimit )
 	Globalize( Riff_EliminationMode )
 
+	Globalize( Riff_TitanExitEnabled )
+
 	if ( !IsServer() )
 		return
 
@@ -57,6 +59,10 @@ function main()
 	Assert( floorIsLava < eFloorIsLava.LastFloorIsLava )
 	level.nv.floorIsLava = floorIsLava
 
+	local titanExitEnabled = GetCurrentPlaylistVarInt( "riff_titan_exit_enabled", eTitanExitEnabled.Default )
+	Assert( titanExitEnabled < eTitanExitEnabled.LastTitanExit )
+	level.nv.titanExitEnabled = titanExitEnabled
+
 	level.titanAvailabilityCheck <- function( player ) { return false }
 
 	switch ( aiLethality )
@@ -71,6 +77,11 @@ function main()
 			NPCSetAimConeFocusParams( 2, 0.2 )
 			NPCSetAimPatternFocusParams( 0.5, 0.3, 2 )
 			break
+	}
+
+	if ( !IsLobby() )
+	{
+		AddCallback_OnPilotBecomesTitan( RiffSettings_PilotBecomesTitan )
 	}
 }
 
@@ -208,6 +219,20 @@ function ShouldIntroSpawnAsTitan()
 	return ( Riff_SpawnAsTitan() == eSpawnAsTitan.Always || Riff_SpawnAsTitan() == eSpawnAsTitan.Once )
 }
 Globalize( ShouldIntroSpawnAsTitan )
+
+function Riff_TitanExitEnabled()
+{
+	return GetServerVar( "titanExitEnabled" )
+}
+
+function RiffSettings_PilotBecomesTitan( player, titan )
+{
+	if ( Riff_TitanExitEnabled() != eTitanExitEnabled.Default && Riff_TitanExitEnabled() != eTitanExitEnabled.Always )
+	{
+		if ( PlayerHasPassive( player, PAS_AUTO_EJECT ) )
+			TakePassive( player.GetTitanSoul(), PAS_AUTO_EJECT )
+	}
+}
 
 function AddDamageModifierForAiLethality( id, aiLethality, classname, multiplier )
 {

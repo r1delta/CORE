@@ -296,6 +296,7 @@ if ( IsMultiplayer() )
 	RegisterServerVar( "ammoLimit", null )
 	RegisterServerVar( "eliminationMode", null )
 	RegisterServerVar( "floorIsLava", null )
+	RegisterServerVar( "titanExitEnabled", null )
 
 	// MFD
 	RegisterServerVar( "mfdOverheadPingDelay", 0 )

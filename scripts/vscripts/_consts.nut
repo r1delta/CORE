@@ -1488,6 +1488,16 @@ enum eEliminationMode
 	LastEliminationMode
 }
 
+enum eTitanExitEnabled
+{
+	Default,
+	Always,
+	Never,
+	DisembarkOnly,
+
+	LastTitanExit
+}
+
 /*
 	pistols only
 	loadout from titan only (pistols only implied)

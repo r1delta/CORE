@@ -493,6 +493,9 @@ function DisplayEjectInterface( player )
 	if ( !player.GetDoomedState() && Time() - player.s.ejectEnableTime > EJECT_FADE_TIME )
 		return false
 
+	if ( Riff_TitanExitEnabled() == eTitanExitEnabled.Never || Riff_TitanExitEnabled() == eTitanExitEnabled.DisembarkOnly )
+		return false
+
 	return true
 }
 
@@ -827,6 +830,16 @@ RegisterSignal( "EjectHintUpdate" )
 function PlayerPressed_EjectEnable( player )
 {
 	if ( !player.IsTitan() )
+		return
+
+	if ( TitanEjectIsDisabled() )
+	{
+		EmitSoundOnEntity( player, "titan_dryfire" )
+		SetTimedEventNotification( 1.5, "#NOTIFY_EJECT_DISABLED" )
+		return
+	}
+
+	if ( Riff_TitanExitEnabled() == eTitanExitEnabled.Never || 	Riff_TitanExitEnabled() == eTitanExitEnabled.DisembarkOnly )
 		return
 
 	if ( player.ContextAction_IsMeleeExecution() ) //Could just check for ContextAction_IsActive() if we need to be more general
