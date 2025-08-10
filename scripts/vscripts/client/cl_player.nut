@@ -1090,6 +1090,12 @@ function ClientCodeCallback_PlayerDidDamage( params )
 		showCrosshairHitIndicator = false
 	}
 
+	params.playHitSound 				<- playHitSound
+	params.playKillSound				<- playKillSound
+	params.showCrosshairHitIndicator	<- showCrosshairHitIndicator
+	params.hitIneffective				<- hitIneffective
+	params.hitWeakpoint 				<- hitWeakpoint
+
 	if ( showCrosshairHitIndicator )
 	{
 		Tracker_PlayerAttackedTarget( player, victim )
