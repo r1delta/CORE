@@ -175,6 +175,12 @@ function OnOpenBlackMarketMenu( menu )
 			level.shopMenu.burnCardStashStatus.Hide()
 			level.shopMenu.burnCardStashStatusIcon.Hide()
 			break
+		case eShopItemType.BURNCARD_UPGRADE:
+			level.shopMenu.title.SetText( "#SHOP_TITLE_BURNCARD_UPGRADE" )
+			level.shopMenu.decalBackground.Show()
+			level.shopMenu.burnCardStashStatus.Hide()
+			level.shopMenu.burnCardStashStatusIcon.Hide()
+			break
 		default:
 			Assert(0, "invalid " + uiGlobal.blackMarketItemType )
 			break

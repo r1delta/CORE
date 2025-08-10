@@ -83,7 +83,7 @@ function InitShopInventory()
 	CreateShopItem( "titanos_bettyru",			eShopItemType.TITAN_OS_VOICE_PACK, 		"#TITAN_OS_BETTYRU_NAME",				"#TITAN_OS_BETTYRU_LONGDESC",							"", 	1,		0, 		"../ui/menu/voice_personality_icons/betty_ru_voice_icon",		20000 )
 
 	CreateShopItem( "challenge_skip", eShopItemType.CHALLENGE_SKIP, "#SHOP_ITEM_CHALLENGE_SKIP_NAME", "#SHOP_ITEM_CHALLENGE_SKIP_DESC", "", 1, 0, "black_market/forged_documents_object", 100000 )
-
+	CreateShopItem( "forged_documents", eShopItemType.BURNCARD_UPGRADE, "#SHOP_ITEM_FORGED_DOCUMENTS_NAME", "#SHOP_ITEM_FORGED_DOCUMENTS_DESC", "", 1, 0, "black_market/forged_documents_object", 100000 )
 	if ( IsUI() )
 	{
 		CreatePerishableItems()
@@ -168,7 +168,8 @@ function CanBuyItem( itemID, player = null )
 
 			case eShopItemType.CHALLENGE_SKIP:
 				break
-
+			case eShopItemType.BURNCARD_UPGRADE:
+				break
 			default:
 				Assert(0, "invalid " + level.shopInventoryData[ itemID ].itemType.tostring() )
 				break

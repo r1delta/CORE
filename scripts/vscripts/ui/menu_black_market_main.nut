@@ -76,6 +76,9 @@ function InitCategoryItemButtons()
 	challengeSkipBtns[0].s.itemType <- eShopItemType.CHALLENGE_SKIP
 	challengeSkipBtns[0].AddEventHandler( UIE_GET_FOCUS, ShopCategoryButtonFocused )
 
+    local burnCardUpgradeBtns = GetElementsByClassname( level.shopMainMenu.menu, "BtnBurnCardUpgrade" )
+    burnCardUpgradeBtns[0].s.itemType <- eShopItemType.BURNCARD_UPGRADE
+    burnCardUpgradeBtns[0].AddEventHandler( UIE_GET_FOCUS, ShopCategoryButtonFocused )
 
 
 	//burnCardPacksBtns[0].AddEventHandler( UIE_LOSE_FOCUS, ShopCategoryButtonLoseFocus )
@@ -124,6 +127,11 @@ function ShopCategoryButtonFocused( button )
 			break
 
 		case eShopItemType.BURNCARD_UPGRADE:
+            level.shopMainMenu.categoryKeyArt.SetImage( "burncards/special_items_art" )
+            level.shopMainMenu.categoryDesc.SetText( "#SHOP_ITEM_DESC_BURNCARD_UPGRADE" )
+            level.shopMainMenu.categoryKeyArt.Show()
+            level.shopMainMenu.categoryDesc.Show()
+            break
 		default:
 			level.shopMainMenu.categoryKeyArt.Hide()
 			level.shopMainMenu.categoryDesc.Hide()

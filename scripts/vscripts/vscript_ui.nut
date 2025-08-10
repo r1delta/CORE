@@ -1226,7 +1226,7 @@ function InitMenus()
 	AddEventHandlerToButtonClass( menu, "BtnTitanDecals", UIE_CLICK, BlackMarketTitanDecalsMenuHandler )
 	AddEventHandlerToButtonClass( menu, "BtnTitanOSVoices", UIE_CLICK, BlackMarketTitanOSVoicesMenuHandler )
 	AddEventHandlerToButtonClass( menu, "BtnChallengeSkips", UIE_CLICK, BlackMarketChallengeSkipMenuHandler )
-
+	AddEventHandlerToButtonClass( menu, "BtnBurnCardUpgrade", UIE_CLICK, BlackMarketUpgradeBurnCardMenuHandler )
 	// Regen
 	local menu = GetMenu( "Generation_Respawn" )
 	AddEventHandlerToButtonClass( menu, "GenerationRespawnButtonClass", UIE_CLICK, OnRegenButtonClick )
@@ -1309,6 +1309,12 @@ function BlackMarketTitanDecalsMenuHandler(...)
 function BlackMarketChallengeSkipMenuHandler(...)
 {
 	uiGlobal.blackMarketItemType = eShopItemType.CHALLENGE_SKIP
+	AdvanceMenu( GetMenu( "BlackMarketMenu" ) )
+}
+
+function BlackMarketUpgradeBurnCardMenuHandler(...)
+{
+	uiGlobal.blackMarketItemType = eShopItemType.BURNCARD_UPGRADE
 	AdvanceMenu( GetMenu( "BlackMarketMenu" ) )
 }
 

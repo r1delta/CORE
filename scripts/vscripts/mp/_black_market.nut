@@ -122,6 +122,21 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
             Remote.CallFunction_UI(player,"ServerCallback_ShopPurchaseStatus", eShopResponseType.SUCCESS )
             Remote.CallFunction_UI(player,"ServerCallback_ShopOpenGenericItem", level.shopInventoryData[ string ].itemIndex )
             break
+        case eShopItemType.BURNCARD_UPGRADE:
+            local coinCount = player.GetPersistentVar( "bm.coinCount" )
+            local coinCost = level.shopInventoryData[ string ].coinCost
+            if ( coinCount < coinCost )
+            {
+                printt("ClientCommand_ShopPurchaseRequest: " + string + " not enough coins")
+                return false
+            }
+            player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
+            // change the deck size
+            local currentUpgrades = player.GetPersistentVar( "bm.burnCardUpgrades" )
+            player.SetPersistentVar( "bm.burnCardUpgrades", currentUpgrades + 1 )
+            Remote.CallFunction_UI(player,"ServerCallback_ShopPurchaseStatus", eShopResponseType.SUCCESS)
+            Remote.CallFunction_UI(player,"ServerCallback_ShopOpenGenericItem", level.shopInventoryData[ string ].itemIndex )
+            break
     }
 
     return true

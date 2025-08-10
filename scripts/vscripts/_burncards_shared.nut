@@ -981,7 +981,7 @@ if ( !IsUI() )
 
 	function GetPlayerMaxStoredBurnCards( player )
 	{
-		return BurnCardLimitFunc( player.GetGen() )
+		return BurnCardLimitFunc( player )
 	}
 
 	function GetPlayerBurnCardsSpent( player )
@@ -1190,7 +1190,7 @@ else
 
 	function GetMaxStoredBurnCards()
 	{
-		return BurnCardLimitFunc( GetPersistentVar( "gen" ) )
+		return BurnCardLimitFunc( null )
 	}
 	Globalize( GetMaxStoredBurnCards )
 
@@ -1847,16 +1847,25 @@ function GetBurnCardNextPack_XPRemaining( xp )
 }
 Globalize( GetBurnCardNextPack_XPRemaining )
 
-function BurnCardLimitFunc( gen )
+function BurnCardLimitFunc( player )
 {
-	local limit = GetCurrentPlaylistVarInt( "bc_base_cards", 26 ) + gen * GetCurrentPlaylistVarInt( "bc_stash_bonus_per_gen", 0 )
+
+	if ( player == null )
+	{
+		local upgrades = GetPersistentVar( "bm.burnCardUpgrades" )
+		local gen = GetGen()
+		local limit = GetCurrentPlaylistVarInt( "bc_base_cards", 26 ) + gen * GetCurrentPlaylistVarInt( "bc_stash_bonus_per_gen", 0 ) + ( upgrades * GetCurrentPlaylistVarInt( "bc_stash_bonus_per_upgrade", 50 ) )
+		local max = PersistenceGetArrayCount( _GetBurnCardDeckPersDataPrefix() )
+		return clamp( limit, 0, max )
+	}
+
+	local gen = player.GetGen()
+	local upgrades = player.GetPersistentVar( "bm.burnCardUpgrades" )
+	// each upgrade adds 50 cards to the limit
+	local limit = GetCurrentPlaylistVarInt( "bc_base_cards", 26 ) + gen * GetCurrentPlaylistVarInt( "bc_stash_bonus_per_gen", 0 ) + ( upgrades * GetCurrentPlaylistVarInt( "bc_stash_bonus_per_upgrade", 50 ) )
 	local max = PersistenceGetArrayCount( _GetBurnCardDeckPersDataPrefix() )
 
-	if ( UsingAlternateBurnCardPersistence() )
-		limit = max
-
-	// return clamp( limit, 0, max )
-	return max
+	return clamp( limit, 0, max )
 }
 
 function GetBurnCardIndexByRef( cardRef )
