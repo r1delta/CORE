@@ -976,7 +976,7 @@ function SetStarInfo( mapName, gameMode )
 		// And opening the progression menu
 		if ( !IsFullyConnected() && !file.progressionKeybindRegistered )
 		{
-			RegisterButtonPressedCallback( BUTTON_Y, ToggleProgression )
+			//RegisterButtonPressedCallback( BUTTON_Y, ToggleProgression )
 			file.progressionKeybindRegistered = true
 		}
 		return
@@ -1002,7 +1002,7 @@ function SetStarInfo( mapName, gameMode )
 
 	if ( file.progressionKeybindRegistered )
 	{
-		DeregisterButtonPressedCallback( BUTTON_Y, ToggleProgression )
+		//DeregisterButtonPressedCallback( BUTTON_Y, ToggleProgression )
 		file.progressionKeybindRegistered = false
 	}
 }

@@ -241,12 +241,12 @@ function UpdateFooterButtons( menuName = null )
 			{
 				if ( GetPersistentVar( "delta.everythingUnlocked") )
 				{
-					footerData.gamepad.append( { label = "#DISABLE_EVERYTHINGUNLOCKED_GAMEPAD" } )
+					//footerData.gamepad.append( { label = "#DISABLE_EVERYTHINGUNLOCKED_GAMEPAD" } )
 				    footerData.pc.append( { label = "#DISABLE_EVERYTHINGUNLOCKED", func = ToggleProgression } )
 				}
 				else
 				{
-					footerData.gamepad.append( { label = "#ENABLE_EVERYTHINGUNLOCKED_GAMEPAD" } )
+					//footerData.gamepad.append( { label = "#ENABLE_EVERYTHINGUNLOCKED_GAMEPAD" } )
 				    footerData.pc.append( { label = "#ENABLE_EVERYTHINGUNLOCKED", func = ToggleProgression } )
 				}
 			}
