@@ -214,31 +214,14 @@ resource/ui/menus/blackmarket_main.menu
 			zpos					999
 			wide					235
 			textAlignment			west
-			navUp					BtnChallengeSkips
-			navDown					BtnBurnCardUpgrade
+			navUp					BtnBurnCardUpgrade
+			navDown					BtnTitanDecals
 			tabPosition				1
 			labelText				"#SHOP_TITLE_BURN_CARD_PACKS"
 
 			pin_to_sibling			ItemMenuPanel
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	0
-		}
-
-		BtnBurnCardUpgrade
-		{
-			ControlName				BaseModHybridButton
-			InheritProperties		DefaultButton
-			InheritProperties		DefaultButton
-			classname				BtnBurnCardUpgrade
-			navUp					BtnBurnCardPacks
-			navDown					BtnTitanDecals
-			zpos					999
-			wide					235
-			labelText				"#SHOP_TITLE_BURNCARD_UPGRADE"
-
-			pin_to_sibling			BtnBurnCardPacks
-			pin_corner_to_sibling	0
-			pin_to_sibling_corner	2
 		}
 
 		BtnTitanDecals
@@ -250,10 +233,10 @@ resource/ui/menus/blackmarket_main.menu
 			zpos					999
 			wide					235
 			labelText				"#SHOP_TITLE_TITAN_DECALS"
-			navUp					BtnBurnCardUpgrade
+			navUp					BtnBurnCardPacks
 			navDown					BtnPerishables
 
-			pin_to_sibling			BtnBurnCardUpgrade
+			pin_to_sibling			BtnBurnCardPacks
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 		}
@@ -305,13 +288,30 @@ resource/ui/menus/blackmarket_main.menu
 			wide					235
 			textAlignment			west
 			navUp					BtnTitanOSVoices
-			navDown					BtnBurnCardPacks
+			navDown					BtnBurnCardUpgrade
 			labelText				"#SHOP_TITLE_CHALLENGE_SKIP"
 
 			pin_to_sibling			BtnTitanOSVoices
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 
+		}
+
+		BtnBurnCardUpgrade
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			InheritProperties		DefaultButton
+			classname				BtnBurnCardUpgrade
+			navUp					BtnChallengeSkips
+			navDown					BtnBurnCardPacks
+			zpos					999
+			wide					235
+			labelText				"#SHOP_TITLE_BURNCARD_UPGRADE"
+
+			pin_to_sibling			BtnChallengeSkips
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
 		}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -2046,10 +2046,10 @@ enum eShopItemType
 {
 	PERISHABLE,
 	BURNCARD_PACK,
-	BURNCARD_UPGRADE,
 	TITAN_OS_VOICE_PACK,
 	TITAN_DECAL,
 	CHALLENGE_SKIP,
+	BURNCARD_UPGRADE,
 }
 
 //--------------------------------------------------
