@@ -215,7 +215,7 @@ resource/ui/menus/blackmarket_main.menu
 			wide					235
 			textAlignment			west
 			navUp					BtnChallengeSkips
-			navDown					BtnTitanDecals
+			navDown					BtnBurnCardUpgrade
 			tabPosition				1
 			labelText				"#SHOP_TITLE_BURN_CARD_PACKS"
 
