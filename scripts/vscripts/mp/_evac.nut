@@ -1282,10 +1282,10 @@ function ShouldLetPilotBoardDropship( pilot )
 function PlayersOnGunPutAwayGuns( player, dropship )
 {
 	player.EndSignal( "Disconnected" )
-
+	printt( "PlayersOnGunPutAwayGuns" )
 	wait 1.0
 
-	player.s.doNotReturnWeaponViewModel <- true
+	player.s.doNotReturnWeaponViewModel <- false
 
 	if ( IsAlive( player ) )
 		player.DisableWeaponViewModel()
