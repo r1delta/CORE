@@ -48,6 +48,7 @@ function InitPersistence()
         coop = 8
         ps = 9
         scv = 10
+		exfil = 11
     }
 
     AddPersistenceEnum("gameModes", gameModes)
