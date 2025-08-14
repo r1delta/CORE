@@ -49,6 +49,7 @@ function InitPersistence()
         ps = 9
         scv = 10
 		exfil = 11
+		ctfp = 12
     }
 
     AddPersistenceEnum("gameModes", gameModes)
