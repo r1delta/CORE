@@ -22,7 +22,7 @@ function CreateScavengerOre( ore, isRecreate )
 	}
 	else
 	{
-		thread ScavengerOreSparks( ore )
+		//thread ScavengerOreSparks( ore )
 	}
 }
 
@@ -54,7 +54,7 @@ function ScavengerOreSparks( ore )
 	local origin = ore.GetOrigin() + Vector(0,0,16)
 	local angles = ore.GetAngles()
 
-	for ( ;; )
+	while( true )
 	{
 		OreSparkFunc( ore, fxID, origin, angles )
 		wait ( RandomFloat( 3.0, 6.0 ) )

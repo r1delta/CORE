@@ -125,6 +125,29 @@ function ExfilPanelThink( panel )
 
 		Evac_SetDropshipArrivalWaitTime( 30.0 )
 		thread ExfiltrationEvacMain(GetOtherTeam(level.nv.attackingTeam), panel.s.escapeNode )
+
+		local dropship = level.ent.WaitSignal( "EvacDropship" ).dropship
+
+		thread Exfil_EvacDropshipTriggerThink( dropship )  //TODO: Need to add winning/losing reasons in setwinner, called from _evac when flag EvacEndsMatch is not true
+
+	}
+}
+
+function Exfil_EvacDropshipTriggerThink( dropship ) //TODO: Will need to be integrated in gamestate think loop to avoid players falling through dropship due to low server frame rate
+{
+	if ( Flag( "EvacFinished" ) ) //Guys were killed before dropship got
+	{
+		//printt( "EvacFinished Flag Set before we run loop in CTF_Pro_EvacDropshipTriggerThink" )
+		return
+	}
+
+	dropship.EndSignal( "OnDeath" )
+	FlagEnd( "EvacFinished" )
+
+	while ( true )
+	{
+		EvacShipTriggerCheck( dropship )
+		wait 0
 	}
 }
 
