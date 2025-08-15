@@ -1,6 +1,5 @@
 const EXFIL_GRACEPERIOD = 60.0
 
-// TODO: evac ship is broken (you cant evac)
 function main()
 {
 	Assert( !GetCinematicMode(), "Cannot play exfil in cinematic mode" )

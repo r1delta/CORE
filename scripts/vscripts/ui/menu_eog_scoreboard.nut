@@ -106,10 +106,14 @@ function ShowScoreboard()
 	//########################################
 
 	local storedMode = GetPersistentVar( "savedScoreboardData.gameMode" )
-	local storedModeString = PersistenceGetEnumItemNameForIndex( "gameModes", storedMode )
-	local storedMap = GetPersistentVar( "savedScoreboardData.map" )
+	local storedModeString = "#HUD_UNKNOWN"
 
-	local storedMapString = "dev map"
+	if ( storedMode != -1 )
+		storedModeString = PersistenceGetEnumItemNameForIndex( "gameModes", storedMode )
+
+	local storedMap = GetPersistentVar( "savedScoreboardData.map" )
+	local storedMapString = "Dev map"
+
 	if ( storedMap != -1 )
 		storedMapString = PersistenceGetEnumItemNameForIndex( "maps", storedMap )
 
@@ -119,7 +123,10 @@ function ShowScoreboard()
 	else
 		mapName = GetMapDisplayName( storedMapString )
 
-	GetElem( menu, "GametypeAndMap" ).SetText( "#VAR_DASH_VAR", GAMETYPE_TEXT[ storedModeString ], mapName )
+	if ( storedMode != -1 )
+		GetElem( menu, "GametypeAndMap" ).SetText( "#VAR_DASH_VAR", GAMETYPE_TEXT[ storedModeString ], mapName )
+	else
+		GetElem( menu, "GametypeAndMap" ).SetText( "#VAR_DASH_VAR", storedModeString, mapName )
 	//GetElem( menu, "GametypeDesc" ).SetText( GAMETYPE_DESC[ storedModeString ] )
 
 	//########################################
