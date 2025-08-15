@@ -8,6 +8,7 @@ function main()
 	AddClientCommandCallback( "demigod", ClientCommand_ToggleDemigod )
 	AddClientCommandCallback( "god", ClientCommand_ToggleDemigod )
 	AddClientCommandCallback( "kill", ClientCommand_Kill )
+	AddClientCommandCallback( "die", ClientCommand_Kill )
 	AddClientCommandCallback( "explode", ClientCommand_Explode )
 	AddClientCommandCallback( "pinkmist", ClientCommand_Explode )
 	AddClientCommandCallback( "dissolve", ClientCommand_Dissolve )
@@ -57,7 +58,7 @@ function ClientCommand_ToggleDemigod( player, ... )
 function ClientCommand_Kill( player, ... )
 {
 	if ( IsAlive( player ) && !player.IsTitan() )
-		player.Die()
+		player.Die( null, null, { damageSourceId = eDamageSourceId.suicide } )
 
 	return true
 }
@@ -65,7 +66,7 @@ function ClientCommand_Kill( player, ... )
 function ClientCommand_Explode( player, ... )
 {
 	if ( IsAlive( player ) && !player.IsTitan() )
-		player.Die( null, null, { scriptType = DF_GIB | DF_DISSOLVE } )
+		player.Die( null, null, { scriptType = DF_GIB | DF_DISSOLVE, damageSourceId = eDamageSourceId.suicide } )
 
 	return true
 }
@@ -74,6 +75,7 @@ function ClientCommand_Dissolve( player, ... )
 {
 	if ( IsAlive( player ) && !player.IsTitan() )
 	{
+		player.Die( null, null, { damageSourceId = eDamageSourceId.suicide } )
 		player.Dissolve( ENTITY_DISSOLVE_CHAR, Vector( 0, 0, 0 ), 0 )
 		EmitSoundAtPosition( player.GetOrigin(), "Object_Dissolve" )
 	}
