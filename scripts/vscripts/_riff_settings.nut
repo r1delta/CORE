@@ -12,6 +12,8 @@ function main()
 	Globalize( Riff_EliminationMode )
 
 	Globalize( Riff_TitanExitEnabled )
+	Globalize( Riff_TitanEjectIsDisabled )
+	Globalize( Riff_TitanExitIsDisabled )
 
 	if ( !IsServer() )
 		return
@@ -233,12 +235,33 @@ function Riff_TitanExitEnabled()
 	return GetServerVar( "titanExitEnabled" )
 }
 
+function Riff_TitanEjectIsDisabled()
+{
+	return Riff_TitanExitEnabled() != eTitanExitEnabled.Default
+}
+
+function Riff_TitanExitIsDisabled()
+{
+	return Riff_TitanExitEnabled() == eTitanExitEnabled.Never
+}
+
 function RiffSettings_PilotBecomesTitan( player, titan )
 {
-	if ( Riff_TitanExitEnabled() != eTitanExitEnabled.Default && Riff_TitanExitEnabled() != eTitanExitEnabled.Always )
+	if ( Riff_TitanEjectIsDisabled() )
 	{
-		if ( PlayerHasPassive( player, PAS_AUTO_EJECT ) )
-			TakePassive( player.GetTitanSoul(), PAS_AUTO_EJECT )
+		local soul = player.GetTitanSoul()
+
+		// If we cant eject, we dont need these
+		if ( PlayerHasPassive( player, PAS_NUCLEAR_CORE ) )
+		{
+			TakePassive( soul, PAS_NUCLEAR_CORE )
+			GivePassive( soul, PAS_SHIELD_REGEN )
+		}
+		else if ( PlayerHasPassive( player, PAS_AUTO_EJECT ) )
+		{
+			TakePassive( soul, PAS_AUTO_EJECT )
+			GivePassive( soul, PAS_DOOMED_TIME )
+		}
 	}
 }
 

@@ -1160,8 +1160,15 @@ function PlayerCanDisembarkTitan( player )
 	if ( !IsAlive( player ) )
 		return false
 
-	if ( Riff_TitanExitEnabled() == eTitanExitEnabled.Never )
+	if ( Riff_TitanExitIsDisabled() )
+	{
+		if ( IsClient() )
+		{
+			EmitSoundOnEntity( player, "titan_dryfire" )
+			SetTimedEventNotification( 1.5, "#NOTIFY_DISEMBARK_DISABLED" )
+		}
 		return false
+	}
 
 	if ( IsServer() )
 	{

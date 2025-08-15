@@ -1491,7 +1491,6 @@ enum eEliminationMode
 enum eTitanExitEnabled
 {
 	Default,
-	Always,
 	Never,
 	DisembarkOnly,
 
