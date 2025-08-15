@@ -132,7 +132,8 @@ function TitanHud_InitEjectHint( cockpit, player )
 	if ( IsWatchingKillReplay() )
 		cockpit.s.dashGroup.Hide()
 
-	thread TitanHud_EjectHintThink( cockpit, player )
+	if ( !Riff_TitanEjectIsDisabled() )
+		thread TitanHud_EjectHintThink( cockpit, player )
 }
 Globalize( TitanHud_InitEjectHint )
 
@@ -613,17 +614,25 @@ function TitanCockpit_WarningAudio( cockpit, player )
 		}
 		else
 		{
+			local ejectIsDisabled = Riff_TitanEjectIsDisabled()
+			local doomedVO = ejectIsDisabled ? "doomed_noeject" : "doomed"
+
 			if ( !wasDoomed )
 			{
 				if ( PlayerHasPassive( player, PAS_AUTO_EJECT ) )
 					TitanCockpit_PlayDialog( player, "autoeject" )
 				else
-					TitanCockpit_PlayDialog( player, "doomed" )
+					TitanCockpit_PlayDialog( player, doomedVO )
 				wasDoomed = true
 			}
 
 			if ( healthFrac <= 0.5 )
-				TitanCockpit_PlayDialog( player, "suggest_eject" )
+			{
+				if ( ejectIsDisabled )
+					TitanCockpit_PlayDialog( player, doomedVO )
+				else
+					TitanCockpit_PlayDialog( player, "suggest_eject" )
+			}
 
 			EmitSoundOnEntity( player, "titan_eject_beeps" )
 			duration = ejectBeepDuration

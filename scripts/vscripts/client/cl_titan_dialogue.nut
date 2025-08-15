@@ -171,6 +171,7 @@ function main()
 	file.events["bc_titan_shield_wall_m2"] <- { priority = 0.2, debounce = 3.0 }
 	file.events["bc_extra_dash"] <- { priority = 0.2, debounce = 3.0 }
 
+	file.events["doomed_noeject"] <- { priority = 5.0, debounce = 0.0, doomed = true }
 	file.events["bc_titan_shotgun_m2"] <- { priority = 0.2, debounce = 3.0 }
 	file.events["bc_thunderbolt_m2"] <- { priority = 0.2, debounce = 3.0 }
 	file.events["bc_titan_charge_cannon_m2"] <- { priority = 0.2, debounce = 3.0 }
@@ -536,6 +537,12 @@ function TitanCockpit_PlayDialogInternal( player, eventType )
 			break
 		case "bc_extra_dash":
 			player.s.titanCockpitDialogAliasList = [ file.betty.BC_EXTRA_DASH ]
+			break
+
+		// Copy of "doomed" without HALFDOOMSTATE (eject, eject, eject)
+		case "doomed_noeject":
+			player.s.titanCockpitDialogAliasList.append( file.betty.ALARM )
+			player.s.titanCockpitDialogAliasList.append( file.betty.DOOMSTATE )
 			break
 
 		case "bc_titan_shotgun_m2":
