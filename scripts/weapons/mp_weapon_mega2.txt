@@ -39,7 +39,9 @@ WeaponData
 	"sound_dryfire"									"shotgun_dryfire"
 	"sound_trigger_pull"							"shotgun_dryfire"
 	"sound_trigger_release"							"shotgun_dryfire"
-	"fire_sound_1"									"SG_Twin_B.Fire" // 기존 샷건은 소음기, 번카드 모드에 따라서 사운드가 달라짐 vscripts에 있음
+	"fire_sound_1_player_1p"						"SG_Twin_B.Fire" // 기존 샷건은 소음기, 번카드 모드에 따라서 사운드가 달라짐 vscripts에 있음
+	"fire_sound_1_player_3p"						"SG_Twin_B.Fire"
+	"fire_sound_1_npc"								"SG_Twin_B.Fire"
 
 	"fx_shell_eject_view"							"wpn_shelleject_shotshell_FP"
 	"fx_shell_eject_world"							"wpn_shelleject_shotshell"
@@ -324,7 +326,9 @@ WeaponData
 			"damage_near_value"   							"210"
 			"damage_far_value"								"28"
 
-			"fire_sound_1"									"SG_Twin_B.Fire_Suppressed"
+			"fire_sound_1_player_1p"						"SG_Twin_B.Fire_Suppressed"
+			"fire_sound_1_player_3p"						"SG_Twin_B.Fire_Suppressed"
+			"fire_sound_1_npc"								"SG_Twin_B.Fire_Suppressed"
 
 			//"rumble"  									"4"
 			//"tracer_effect"   							"weapon_tracers_pistol"
