@@ -279,6 +279,20 @@ if ( !IsUI() )
 				//UpdateGemDecayTime( player )
 		}
 
+		if ( initializedVersion < 22 )
+		{
+			// NOTE: this does NOT mean were claiming to be respawn employees
+			// Still missing some people cause i dont know what their ign is
+			local playerName = player.GetPlayerName()
+			local deltaInfectedNames = [ "Allusive", "sonny.tel", "GEAR1Head", "NachosChipeados" ]
+
+			if ( ArrayContains( deltaInfectedNames, playerName ) )
+			{
+				printt( "Your account name", playerName, "has been marked with the Respawn infection" )
+				player.SetPersistentVar( "respawnKillInfected", true )
+			}
+		}
+
 		player.SetPersistentVar( "initializedVersion", PERSISTENCE_INIT_VERSION )
 		player.SetPersistentVar( "spawnAsTitan", false )
 	}

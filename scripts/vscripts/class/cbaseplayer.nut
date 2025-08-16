@@ -693,6 +693,10 @@ function CBasePlayer::SetIsPlayingRanked( isPlayingRanked )
 }
 
 function CBasePlayer::GetPlayerIP() {
+	// HACK probably
+	if(this.IsBot())
+		return 0
+
 	return getroottable().GetPlayerIP(this);
 }
 
