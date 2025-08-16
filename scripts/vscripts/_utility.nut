@@ -5887,3 +5887,46 @@ function SetSignalDelayed( entity, signal, delay )
 	if ( IsValid( entity ) )
 		Signal( entity, signal )
 }
+
+function SetWeaponSkinForTeam( weapon, team )
+{
+	if ( team == TEAM_MILITIA )
+		weapon.SetWeaponSkin( 1 )
+	else
+		weapon.SetWeaponSkin( 0 )
+}
+
+function ChangeWeaponSkin( entity, team )
+{
+	if ( HasSoul( entity ) )
+	{
+		local soul = entity.GetTitanSoul()
+
+		local leftRocketPod = soul.rocketPod.model
+		if ( IsValid( leftRocketPod ) )
+		{
+			//printt( "Setting team for left rocket pod" )
+			SetSkinForTeam( leftRocketPod, team )
+		}
+
+		local shouldTurret = soul.shoulderTurret.model
+		if ( IsValid( shouldTurret ) )
+		{
+			//printt( "Setting team for shoulder turret" )
+			SetSkinForTeam( shouldTurret, team )
+		}
+	}
+/*
+	local weaponsArray = entity.GetMainWeapons()
+	weaponsArray.extend( entity.GetOffhandWeapons() )
+
+	foreach( weapon in weaponsArray )
+	{
+		if ( weapon )
+		{
+			//printt( "Setting team for weapon models" )
+			SetWeaponSkinForTeam( weapon, team )
+		}
+	}
+*/
+}

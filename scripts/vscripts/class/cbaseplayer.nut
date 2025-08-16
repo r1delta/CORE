@@ -538,16 +538,8 @@ CBasePlayer.__SetTeam <- CBasePlayer.SetTeam
 function CBasePlayer::SetTeam( team )
 {
 	this.__SetTeam( team )
-	if ( HasSoul( this ) )
-	{
-		local soul = this.GetTitanSoul()
-		local leftRocketPod = soul.rocketPod.model
-		if ( IsValid( leftRocketPod ) )
-		{
-			//printt( "Setting team for left rocket pod" )
-			SetSkinForTeam( leftRocketPod, team )
-		}
-	}
+
+	ChangeWeaponSkin( this, team )
 }
 
 

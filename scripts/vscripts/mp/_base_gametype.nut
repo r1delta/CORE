@@ -2374,6 +2374,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 			{
 				local settings = GetSoulPlayerSettings(soul)
 				ApplyModelSkinToEntity( petTitan, settings, newTeam ) // Use the entity-applying function
+				ChangeWeaponSkin( petTitan, newTeam )
 			}
 		}
 
@@ -2421,6 +2422,8 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				else
 					head = 0
 				SelectHead(player, head)
+
+				ChangeWeaponSkin( player, newTeam )
 			}
 			else
 			{
