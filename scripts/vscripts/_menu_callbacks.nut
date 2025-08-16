@@ -232,7 +232,9 @@ function InitPilotLoadoutFromPreset( player, loadoutIndex, presetIndex )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primaryMod", null/*pilotLoadouts[presetIndex].primaryMod*/ )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].primaryAttachment", null/*pilotLoadouts[presetIndex].primaryAttachment*/ )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].secondary", pilotLoadouts[presetIndex].secondary )
+	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].secondaryMod", null )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].sidearm", pilotLoadouts[presetIndex].sidearm )
+	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].sidearmMod", null )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].special", pilotLoadouts[presetIndex].special )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].ordnance", pilotLoadouts[presetIndex].ordnance )
 	player.SetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].passive1", pilotLoadouts[presetIndex].passive1 )
@@ -660,17 +662,17 @@ function SetPilotLoadout( player, isCustom, loadoutIndex )
 	table.secondaryWeaponMods <- []
 	table.sidearmWeaponMods <- []
 
-
-	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
-	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
-
-	TableDump(loadout)
 	// loadout.sidearmMod <- null
 	if (loadout.sidearmMod)
 		table.sidearmWeaponMods.append( loadout.sidearmMod )
 
 	if (loadout.secondaryMod)
 		table.secondaryWeaponMods.append( loadout.secondaryMod )
+
+	table.passive1 <- PassiveBitfieldFromEnum( loadout.passive1 )
+	table.passive2 <- PassiveBitfieldFromEnum( loadout.passive2 )
+
+	TableDump(loadout)
 
 
 	// TODO: Add support for offhand mods
@@ -1155,6 +1157,9 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 			return false
 
 		if(itemData.type == itemType.PILOT_SIDEARM_MOD && itemData.displayInMenu == false)
+			return false
+
+		if(itemData.type == itemType.PILOT_SECONDARY_MOD && itemData.displayInMenu == false)
 			return false
 
 	}
