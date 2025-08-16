@@ -1,0 +1,39 @@
+WeaponData
+{
+	// General
+	"printname"   									"Shoulder Turret"
+	"description" 									"Auto-Turret on your shoulder"
+	"longdesc"										"An auto-turret on your shoulder, shoots people"
+	"weaponClass" 									"titan"
+	"fire_mode"   									"offhand_instant"
+	"server_vscript"  								"weapons/mp_titanweapon_shoulder_turret"
+	"client_vscript"  								"weapons/mp_titanweapon_shoulder_turret"
+
+	"damage_type" 									"none"
+
+	// Ammo
+	"ammo_stockpile_max"									"200"
+	"ammo_clip_size"   									"200"
+	"ammo_default_total"									"200"
+
+	// Behavior
+	"fire_rate"   									"0.04"
+	"fire_duration"									"20.0"
+
+	"hud_icon"										"HUD/dpad_cloak"
+	// Crosshair
+
+
+	TextureData
+	{
+		"crosshair"
+		{
+		}
+		"crosshair_zoom"
+		{
+		}
+		"autoaim"
+		{
+		}
+	}
+}
