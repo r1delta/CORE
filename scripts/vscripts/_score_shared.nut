@@ -1644,9 +1644,9 @@ function ScoreEventForTitanEntityKilled( titan, inflictor, damageSourceId )
 
 		if ( IsPlayerControlledTurret( inflictor ) )
 		{
-			if ( IsAlive( inflictor.GetParent() ) )
-				return "AerialEscort_KillTitan"
-			else
+			//if ( IsAlive( inflictor.GetParent() ) )
+			//	return "AerialEscort_KillTitan"
+			//else
 				return "AutoTurret_KillTitan"
 		}
 	}
@@ -1732,9 +1732,9 @@ function ScoreEventForMethodOfDeath( player, damageInfo )
 
 		if ( IsPlayerControlledTurret( inflictor ) )
 		{
-			if ( IsAlive( inflictor.GetParent() ) )
-				return "AerialEscort_KillPilot"
-			else
+			//if ( IsAlive( inflictor.GetParent() ) )
+			//	return "AerialEscort_KillPilot"
+			//else
 				return "AutoTurret_KillPilot"
 		}
 	}
@@ -1948,9 +1948,9 @@ function ScoreEventForNPCKilled(npc, damageInfo)
 					if ( IsBubbleShieldMinion( npc ) )
 						return "Auto_Turret_Killed_Bubble_Shield_Grunt"
 				}
-				if ( IsAlive( inflictor.GetParent() ) )
-					return "AerialEscort_" + scoreEvent
-				else
+				//if ( IsAlive( inflictor.GetParent() ) )
+				//	return "AerialEscort_" + scoreEvent
+				//else
 					return "AutoTurret_" + scoreEvent
 			}
 
