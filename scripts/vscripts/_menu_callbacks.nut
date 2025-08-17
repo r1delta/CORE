@@ -1147,22 +1147,21 @@ function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, r
 	if ( childRef && !TMPHasSubitem( ref, childRef ) )
 		return false
 
+	local isTitanLoadout = loadoutType == "titan"
 
-	if(childRef) {
-		local itemData = GetSubitemData( ref, childRef )
-		if ( itemData == null )
+	local type = GetItemTypeFromPropertyName( property, isTitanLoadout )
+	if ( ItemTypeSupportsMods( type ) || ItemTypeIsMod( type ) || ItemTypeIsAttachment( type ) )
+	{
+		local itemData
+		if ( childRef != null )
+			itemData = GetSubitemData( ref, childRef )
+		else if ( ref != null )
+			itemData = GetItemData( ref )
+
+		if ( ( "displayInMenu" in itemData ) && itemData.displayInMenu == false )
 			return false
-
-		if(itemData.type == itemType.PILOT_PRIMARY_MOD && itemData.displayInMenu == false)
-			return false
-
-		if(itemData.type == itemType.PILOT_SIDEARM_MOD && itemData.displayInMenu == false)
-			return false
-
-		if(itemData.type == itemType.PILOT_SECONDARY_MOD && itemData.displayInMenu == false)
-			return false
-
 	}
+
 	return true
 }
 

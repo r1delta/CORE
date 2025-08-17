@@ -1030,6 +1030,9 @@ function ServerCallback_GiveSentryTurret()
 
 function TurretOnCreateCallback( turret, isRecreate )
 {
+	if ( IsShoulderTurret( turret ) )
+		return
+
 	if ( turret.GetBossPlayer() != GetLocalClientPlayer() )
 		return
 
@@ -1064,6 +1067,9 @@ function DismantleTurretThink( turret )
 
 function TurretOnDeathCallback( turret )
 {
+	if ( IsShoulderTurret( turret ) )
+		return
+
 	local player = turret.GetBossPlayer()
 	if ( !IsValid( player ) )
 		return

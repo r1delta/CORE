@@ -158,6 +158,7 @@ function InitPersistence()
 	    mp_weapon_mega2 = 41 // Twin-B
 	    mp_weapon_mega3 = 42 // Thunderbolt (minigun)
 	    mp_weapon_mega4 = 43 // Charge Cannon
+	    mp_titanweapon_shoulder_turret = 44
     }
 
     AddPersistenceEnum("loadoutItems", loadoutItems)

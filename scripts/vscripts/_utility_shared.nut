@@ -3550,3 +3550,17 @@ function GetTitanBuildRule()
 {
 	return 0
 }
+
+function IsShoulderTurret( ent )
+{
+	if ( IsServer() )
+	{
+		if ( "isShoulderTurret" in ent.s )
+			return true
+	}
+
+	if ( !IsTurret( ent ) )
+		return false
+
+	return ent.GetName().find( "turret_shoulder" ) != null
+}

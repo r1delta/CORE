@@ -20,7 +20,7 @@ WeaponData
 	"fire_rate"   									"0.04"
 	"fire_duration"									"20.0"
 
-	"hud_icon"										"HUD/dpad_cloak"
+	"hud_icon"										"HUD/coop/mini_turret_counter"
 	// Crosshair
 
 

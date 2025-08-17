@@ -331,7 +331,7 @@ function CreateShoulderTurret( turretModel )
 {
 	local npc_turret_sentry = CreateEntity( "npc_turret_sentry" )
 	npc_turret_sentry.kv.spawnflags = 0
-	npc_turret_sentry.SetName( "turret_sentry" )
+	npc_turret_sentry.SetName( UniqueString( "turret_shoulder" ) )
 	npc_turret_sentry.kv.model = turretModel
 	npc_turret_sentry.kv.solid = 8 // 0 = no collision, 2 = bounding box, 6 = use vPhysics, 8 = hitboxes only
 	npc_turret_sentry.kv.additionalequipment = "mp_weapon_yh803_bullet"
@@ -339,8 +339,13 @@ function CreateShoulderTurret( turretModel )
 	npc_turret_sentry.kv.WeaponProficiency = 4
 	npc_turret_sentry.kv.fadedist = -1
 	npc_turret_sentry.s.skipTurretFX <- true
+	npc_turret_sentry.s.isShoulderTurret <- true
 	npc_turret_sentry.SetAISettings( "turret_shoulder" )
+
 	DispatchSpawn( npc_turret_sentry )
+
+	npc_turret_sentry.SetTitle( " " )
+	npc_turret_sentry.SetShortTitle( " " ) //hack to stop the bossplayername from drawing through code
 	npc_turret_sentry.SetInvulnerable()
 
 	return npc_turret_sentry

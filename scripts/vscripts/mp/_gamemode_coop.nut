@@ -566,7 +566,12 @@ function HideAllSentryTurretsOnHud()
 {
 	local turrets = GetNPCArrayByClass( "npc_turret_sentry" )
 	foreach ( turret in turrets )
+	{
+		if ( IsShoulderTurret( turret ) )
+			continue
+
 		SentryTurret_HideOnHud( turret )
+	}
 }
 Globalize( HideAllSentryTurretsOnHud )
 
@@ -574,7 +579,12 @@ function ShowAllSentryTurretsOnHud()
 {
 	local turrets = GetNPCArrayByClass( "npc_turret_sentry" )
 	foreach ( turret in turrets )
+	{
+		if ( IsShoulderTurret( turret ) )
+			continue
+
 		SentryTurret_ShowOnHud( turret )
+	}
 }
 Globalize( ShowAllSentryTurretsOnHud )
 

@@ -184,6 +184,9 @@ function TDHudCallback_TitanDestroyed( titan )
 
 function TDHudCallback_SentryTurretSpawned( turret, isRecreate )
 {
+	if ( IsShoulderTurret( turret ) )
+		return
+
 	SetSentryTurretIcon( turret )
 
 	thread DelayedTurretHudUpdate()
@@ -191,6 +194,9 @@ function TDHudCallback_SentryTurretSpawned( turret, isRecreate )
 
 function TDHudCallback_SentryTurretDestroyed( turret )
 {
+	if ( IsShoulderTurret( turret ) )
+		return
+
 	ClearWorldIcon( turret, "CoopPlayerTurret" )
 
 	thread DelayedTurretHudUpdate()

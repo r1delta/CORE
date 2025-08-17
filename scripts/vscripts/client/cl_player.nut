@@ -3345,6 +3345,9 @@ function HealthBarOverlayHUD_GetEntity( player, entity )
 			return null
 	}
 
+	if ( IsShoulderTurret( entity ) )
+		return null
+
 	return entity
 }
 

@@ -91,6 +91,7 @@ function main()
 	Globalize( DidPlayerBuyItemFromBlackMarket )
 
 	Globalize( GetDisplayNameFromItemType )
+	Globalize( GetItemTypeFromPropertyName )
 
 	Globalize( UpdatePlayerDecalUnlocks )
 
@@ -787,6 +788,8 @@ function CreateR1DeltaItems()
 	// DEV_DISABLED for now, theyre not balanced at all
 	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega3", 				"../ui/menu/items/titanweapon_minigun", null, null, HideFromMenus )
 	CreateWeaponData( itemType.TITAN_SPECIAL,		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega4", 				"../ui/menu/items/ability_icons/charge_cannon",				"../ui/menu/items/ability_icons/charge_cannon", null, HideFromMenus )
+
+	CreateWeaponData( itemType.TITAN_ORDNANCE,		DEV_ENABLED,	0,		null, 	null, "mp_titanweapon_shoulder_turret", 	"../ui/menu/items/titanweapon_shoulder_rockets",		"HUD/coop/mini_turret_counter", 	"../ui/menu/items/titanweapon_shoulder_rockets", HideFromMenus )
 
 	////////////////////
 	//TITAN MOD DATA
@@ -2034,6 +2037,107 @@ function GetDisplayNameFromItemType( type )
 	}
 
 	return propertyName
+}
+
+function GetItemTypeFromPropertyName( property, isTitanProperty )
+{
+	local itemTypeName
+
+	switch ( property )
+	{
+		case "notLoadout":
+			itemTypeName = itemType.NOT_LOADOUT
+			break
+
+		case "primary":
+			if ( isTitanProperty )
+				itemTypeName = itemType.TITAN_PRIMARY
+			else
+				itemTypeName = itemType.PILOT_PRIMARY
+			break
+
+		case "secondary":
+			//if ( isTitanProperty )
+			//	itemTypeName = itemType.TITAN_SECONDARY
+			//else
+				itemTypeName = itemType.PILOT_SECONDARY
+			break
+
+		case "sidearm":
+			itemTypeName = itemType.PILOT_SIDEARM
+			break
+
+		case "special":
+			if ( isTitanProperty )
+				itemTypeName = itemType.TITAN_SPECIAL
+			else
+				itemTypeName = itemType.PILOT_SPECIAL
+			break
+
+		case "ordnance":
+			if ( isTitanProperty )
+				itemTypeName = itemType.TITAN_ORDNANCE
+			else
+				itemTypeName = itemType.PILOT_ORDNANCE
+			break
+
+		case "passive1":
+			if ( isTitanProperty )
+				itemTypeName = itemType.TITAN_PASSIVE1
+			else
+				itemTypeName = itemType.PILOT_PASSIVE1
+			break
+
+		case "passive2":
+			if ( isTitanProperty )
+				itemTypeName = itemType.TITAN_PASSIVE2
+			else
+				itemTypeName = itemType.PILOT_PASSIVE2
+			break
+
+		case "voiceChoice":
+			itemTypeName = itemType.TITAN_OS
+			break
+
+		case "setFile":
+			if ( isTitanProperty )
+				itemTypeName = itemType.TITAN_SETFILE
+			else
+				itemTypeName = itemType.PILOT_SETFILE
+			break
+
+		case "primaryAttachment":
+			itemTypeName = itemType.PILOT_PRIMARY_ATTACHMENT
+			break
+
+		case "primaryMod":
+			if ( isTitanProperty )
+				itemTypeName = itemType.TITAN_PRIMARY_MOD
+			else
+				itemTypeName = itemType.PILOT_PRIMARY_MOD
+			break
+
+		case "sidearmMod":
+			itemTypeName = itemType.PILOT_SIDEARM_MOD
+			break
+
+		case "secondaryMod":
+			//if ( isTitanProperty )
+			//	itemTypeName = itemType.TITAN_SECONDARY_MOD
+			//else
+				itemTypeName = itemType.PILOT_SECONDARY_MOD
+			break
+
+		case "race":
+			itemTypeName = itemType.RACE
+			break
+
+		case "decal":
+			itemTypeName = itemType.TITAN_DECAL
+			break
+	}
+
+	return itemTypeName
 }
 
 function SortByUnlockReq( ref1, ref2 )

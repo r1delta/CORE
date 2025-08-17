@@ -87,6 +87,9 @@ function IsValidShoulderTurretTarget( player, entity )
 	if ( !entity )
 		return false
 
+	if ( !IsAlive( entity ) )
+		return false
+
 	if ( !entity.IsPlayer() && !entity.IsNPC() )
 		return false
 
