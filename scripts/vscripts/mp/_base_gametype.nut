@@ -786,6 +786,12 @@ function PlayerOrNPCKilledByEnemy( entity, damageInfo )
 		}
 	}
 
+	if ( entity.IsPlayer() && attacker.IsPlayer() )
+	{
+		if ( entity.GetPersistentVar( "respawnKillInfected" ) && !attacker.GetPersistentVar( "respawnKillInfected" ) )
+			attacker.SetPersistentVar( "respawnKillInfected", true )
+	}
+
 	// ???: Why are we running score related functions before checking for friendly fire? Answer: Because they all check team internally
 	if ( entity.IsPlayer() )
 	{
