@@ -280,16 +280,6 @@ function CodeCallback_DamagePlayerOrNPC( ent, damageInfo )
 		printt( "    final damage done:", damageInfo.GetDamage() )
 }
 
-function ShouldGiveTimerCredit( attacker, victim )
-{
-	if ( attacker == victim )
-		return
-
-	if ( attacker.IsTitan() && attacker.GetDoomedState() )
-		return false
-
-	return true
-}
 
 function TitanDamageFlinch( ent, attacker, damageInfo )
 {

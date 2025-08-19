@@ -246,6 +246,9 @@ function ShouldGiveTimerCredit( player, victim )
 	if ( player.IsTitan() && player.GetDoomedState() )
 		return false
 
+	if (Riff_TitanAvailability() == eTitanAvailability.Never)
+		return false
+
 	return true
 }
 
