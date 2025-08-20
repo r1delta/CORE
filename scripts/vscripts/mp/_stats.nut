@@ -535,7 +535,7 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
 	fixedSaveVar = var
     fixedSaveVarInt = var
 
-    fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameMode )
+    fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameModeName )
     fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameMode )
 
     local mapNameIndex = PersistenceGetEnumIndexForItemName( "maps", mapName )
@@ -717,7 +717,15 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             Stats_IncrementStat( attacker, "game_stats", "pvp_kills_by_mode", 1 )
 
         if(IsPilot(victim))
-         Stats_IncrementStat( attacker, "kills_stats", "totalPilots", 1 )
+        {
+            Stats_IncrementStat( attacker, "kills_stats", "totalPilots", 1 )
+
+            if ( IsHealActive( attacker ) )
+                Stats_IncrementStat( attacker, "kills_stats", "pilotKillsWhileStimActive", 1.0 )
+
+            if ( attacker.GetCinematicEventFlags() & CE_FLAG_SONAR_ACTIVE )
+                Stats_IncrementStat( attacker, "kills_stats", "pilotKillsWhileUsingActiveRadarPulse", 1.0 )
+        }
 
         if(victim.IsNPC())
             Stats_IncrementStat( attacker, "kills_stats", "totalNPC", 1 )
@@ -734,7 +742,12 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMelee", 1.0 )
 
 	    if ( victim.IsPlayer() && damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.human_melee )
+        {
 		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMeleePilot", 1.0 )
+
+            if ( attacker.IsCloaked() )
+                Stats_IncrementStat( attacker, "kills_stats", "meleeWhileCloaked", 1.0 )
+        }
 
          if(GetActiveBurnCard( attacker ) != null)
             Stats_IncrementStat( attacker, "kills_stats", "totalWhileUsingBurnCard", 1.0 )
