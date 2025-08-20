@@ -708,7 +708,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
     }
 
     if ( victim.IsPlayer() || victim.GetBossPlayer() )
-		Stats_IncrementStat( attacker, "kill_stats", "totalPVP", 1.0 )
+		Stats_IncrementStat( attacker, "kills_stats", "totalPVP", 1.0 )
 
     if ( attacker.IsPlayer() )
     {
@@ -744,6 +744,9 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
         if( damageInfo.GetDamageSourceIdentifier() == eDamageSourceId.nuclear_core && victim.IsPlayer() )
             Stats_IncrementStat( attacker, "kills_stats", "nuclearCore", 1.0 )
+
+        if ( damageSource == eDamageSourceId.switchback_trap )
+            Stats_IncrementStat( attacker, "kills_stats", "exportTrapKills", 1.0 )
     }
 
     local victimIsPilot = IsPilot( victim )
@@ -910,9 +913,9 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
         if ( weapon != null ) {
             local source = GetNameFromDamageSourceID(damageInfo.GetDamageSourceIdentifier())
             if(source == "human_execution") {
-                Stats_IncrementStat(attacker,"kill_stats","pilotExecution",1.0)
+                Stats_IncrementStat(attacker,"kills_stats","pilotExecution",1.0)
                 if(IsPilot(victim)) {
-                    Stats_IncrementStat(attacker,"kill_stats","pilotExecutePilot",1.0)
+                    Stats_IncrementStat(attacker,"kills_stats","pilotExecutePilot",1.0)
                 }
                 return
             }
@@ -950,7 +953,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
             if ( IsValidHeadShot( damageInfo, victim ) )
             {
                 if( victim.IsPlayer() )
-                    Stats_IncrementStat( attacker, "kill_stats", "pilot_headshots_total", 1.0 )
+                    Stats_IncrementStat( attacker, "kills_stats", "pilot_headshots_total", 1.0 )
 
 		        Stats_IncrementStat( attacker, "weapon_stats", "headshots",  1.0, source )
             }

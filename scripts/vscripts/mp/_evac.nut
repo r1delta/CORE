@@ -934,7 +934,7 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 
 	foreach(player in GetPlayerArrayOfTeam( level.evacTeam ))
 	{
-		Stats_IncrementStat( player, "misc_stats", "evac_attempts",1.0 )
+		Stats_IncrementStat( player, "misc_stats", "evacsAttempted", 1.0 )
 	}
 
 	OnThreadEnd(
