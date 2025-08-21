@@ -3985,6 +3985,21 @@ function UpdateSubText2ForRiffs( announcement )
 	else if ( pilotHealth > 200 )
 		riffTexts.append( "#GAMESTATE_HIGH_PILOT_HEALTH" )
 
+	if ( level.nv.titanExitEnabled != eTitanExitEnabled.Default )
+	{
+		switch ( level.nv.titanExitEnabled )
+		{
+			case eTitanExitEnabled.Never:
+				riffTexts.append( "#GAMESTATE_NO_EJECT" )
+				//riffTexts.append( "#GAMESTATE_NO_DISEMBARK" )
+				break
+
+			case eTitanExitEnabled.DisembarkOnly:
+				riffTexts.append( "#GAMESTATE_NO_EJECT" )
+				break
+		}
+	}
+
 	switch ( riffTexts.len() )
 	{
 		case 1:
