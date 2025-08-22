@@ -85,6 +85,9 @@ function main()
 			break
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
+		case TITAN_BRAWL:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 			level.npcRespawnWait = 5
 			npcPerSide = GetCPULevelWrapper() == CPU_LEVEL_HIGHEND ? level.max_npc_per_side : 9
 			break
@@ -966,6 +969,9 @@ function GameModeRemoveFrontline( entArray )
 		case CAPTURE_THE_FLAG:
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
+		case TITAN_BRAWL:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 			break
 		default:
 			keepUndefined = true
@@ -1393,8 +1399,16 @@ function CreateTempFrontline()
 	printt( "************************************" )
 
 	local spawnpoints = SpawnPoints_GetPilotStart( TEAM_ANY )
-	if ( GameRules.GetGameMode() == LAST_TITAN_STANDING || GameRules.GetGameMode() == WINGMAN_LAST_TITAN_STANDING )
-		spawnpoints = SpawnPoints_GetTitanStart( TEAM_ANY )
+	switch( GameRules.GetGameMode() )
+	{
+		case LAST_TITAN_STANDING:
+		case WINGMAN_LAST_TITAN_STANDING:
+		case TITAN_BRAWL:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
+			spawnpoints = SpawnPoints_GetTitanStart( TEAM_ANY )
+			break
+	}
 
 	if ( spawnpoints.len() == 0 )
 		return []

@@ -75,6 +75,15 @@ function InitStatsTables()
 	AddPersistentStat( "game_stats", "times_kd_2_to_1_pvp_by_mode",			null,	"gameStats.timesKillDeathRatio2to1_pvp[%gamemode%]" )
 	AddPersistentStat( "game_stats", "coop_perfect_waves",					null,	"gameStats.coop_perfect_waves" )
 
+	AddPersistentStat( "game_stats", "mode_played_scv", 					null, 	"gameStats.mode_played_scv" )
+	AddPersistentStat( "game_stats", "mode_won_scv", 						null, 	"gameStats.mode_won_scv" )
+	AddPersistentStat( "game_stats", "mode_played_ttdm", 					null, 	"gameStats.mode_played_ttdm" )
+	AddPersistentStat( "game_stats", "mode_won_ttdm", 						null, 	"gameStats.mode_won_ttdm" )
+	AddPersistentStat( "game_stats", "mode_played_tmfd", 					null, 	"gameStats.mode_played_tmfd" )
+	AddPersistentStat( "game_stats", "mode_won_tmfd", 						null, 	"gameStats.mode_won_tmfd" )
+	AddPersistentStat( "game_stats", "mode_played_tmfdp", 					null, 	"gameStats.mode_played_tmfdp" )
+	AddPersistentStat( "game_stats", "mode_won_tmfdp", 						null, 	"gameStats.mode_won_tmfdp" )
+
 	//##############################################
 	// 					TIME STATS
 	//##############################################

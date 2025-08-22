@@ -1429,6 +1429,8 @@ function HideEventNotification( duration )
 
 			case MARKED_FOR_DEATH:
 			case MARKED_FOR_DEATH_PRO:
+			case TITAN_MFD:
+			case TITAN_MFD_PRO:
 				if ( GetMarked( player.GetTeam() ) == player && IsAlive( player ) )
 					SetEventNotification( "#MARKED_FOR_DEATH_YOU_ARE_MARKED_REMINDER" )
 				break

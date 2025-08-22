@@ -745,7 +745,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
         {
 		    Stats_IncrementStat( attacker, "kills_stats", "pilotKickMeleePilot", 1.0 )
 
-            if ( attacker.IsCloaked() )
+            if ( IsCloaked( attacker ) )
                 Stats_IncrementStat( attacker, "kills_stats", "meleeWhileCloaked", 1.0 )
         }
 

@@ -1069,6 +1069,22 @@ function AddColumnsForGameMode( scoreboard )
 			AddColumnLabel( scoreboard, "pilotKills", SCOREBOARD_MATERIAL_PILOT_KILLS, "#SCOREBOARD_PILOT_KILLS", 0, true, UpdateKills )
 			break
 
+		case TITAN_BRAWL:
+			AddColumnLabel( scoreboard, "assists", SCOREBOARD_MATERIAL_ASSISTS, "#SCOREBOARD_ASSISTS", 0, false, UpdateAssists )
+			AddColumnLabel( scoreboard, "deaths", SCOREBOARD_MATERIAL_DEATHS, "#SCOREBOARD_DEATHS", 0, true, UpdateDeaths )
+			AddColumnLabel( scoreboard, "titanKills", SCOREBOARD_MATERIAL_TITAN_KILLS, "#SCOREBOARD_TITAN_KILLS", 0, true, UpdateTitanKills )
+			break
+
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
+			// added RIGHT to LEFT
+			AddColumnLabel( scoreboard, "assists", SCOREBOARD_MATERIAL_ASSISTS, "#SCOREBOARD_ASSISTS", 0, false, UpdateAssists )
+			AddColumnLabel( scoreboard, "deaths", SCOREBOARD_MATERIAL_DEATHS, "#SCOREBOARD_DEATHS", 0, false, UpdateDeaths )
+			AddColumnLabel( scoreboard, "titanKills", SCOREBOARD_MATERIAL_TITAN_KILLS, "#SCOREBOARD_TITAN_KILLS", 0, false, UpdateTitanKills )
+			AddColumnLabel( scoreboard, "defense", SCOREBOARD_MATERIAL_DEFENSE, "#SCOREBOARD_MFD_MARKS_OUTLASTED", 0, false, UpdateDefense )
+			AddColumnLabel( scoreboard, "assault", SCOREBOARD_MATERIAL_MARKED_FOR_DEATH_TARGET_KILLS, "#SCOREBOARD_MFD_SCORE", 0, true, UpdateAssault )
+			break
+
 		default:
 			// added RIGHT to LEFT
 			AddColumnLabel( scoreboard, "assists", SCOREBOARD_MATERIAL_ASSISTS, "#SCOREBOARD_ASSISTS", 0, false, UpdateAssists )

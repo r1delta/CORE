@@ -258,6 +258,52 @@ function ShowScoreboard()
 		scoreboardValueNames.append( { var = "score_kills", highlight = false } )
 		scoreboardValueNames.append( { var = "score_assault", highlight = true } )
 	}
+	else if ( storedModeString == PILOT_SKIRMISH )
+	{
+		// added RIGHT to LEFT
+		ShowScoreboardColumn( 6, "assists" )
+		ShowScoreboardColumn( 5, "deaths" )
+		ShowScoreboardColumn( 4, "pilotKills", true )
+		ShowScoreboardColumn( 3, null )
+		ShowScoreboardColumn( 2, null )
+		ShowScoreboardColumn( 1, null )
+		ShowScoreboardColumn( 0, null )
+
+		scoreboardValueNames.append( { var = "score_assists", highlight = false } )
+		scoreboardValueNames.append( { var = "score_deaths", highlight = false } )
+		scoreboardValueNames.append( { var = "score_kills", highlight = true } )
+	}
+	else if ( storedModeString == TITAN_BRAWL )
+	{
+		// added RIGHT to LEFT
+		ShowScoreboardColumn( 6, "assists" )
+		ShowScoreboardColumn( 5, "deaths" )
+		ShowScoreboardColumn( 4, "titanKills", true )
+		ShowScoreboardColumn( 3, null )
+		ShowScoreboardColumn( 2, null )
+		ShowScoreboardColumn( 1, null )
+		ShowScoreboardColumn( 0, null )
+
+		scoreboardValueNames.append( { var = "score_assists", highlight = false } )
+		scoreboardValueNames.append( { var = "score_deaths", highlight = false } )
+		scoreboardValueNames.append( { var = "score_titanKills", highlight = true } )
+	}
+	else if ( storedModeString == TITAN_MFD || storedModeString == TITAN_MFD_PRO )
+	{
+		ShowScoreboardColumn( 6, "assists" )
+		ShowScoreboardColumn( 5, "deaths" )
+		ShowScoreboardColumn( 4, "titanKills" )
+		ShowScoreboardColumn( 3, "mfd_marksOutlasted" )
+		ShowScoreboardColumn( 2, "mfd_markedKills", true )
+		ShowScoreboardColumn( 1, null )
+		ShowScoreboardColumn( 0, null )
+
+		scoreboardValueNames.append( { var = "score_assists", highlight = false } )
+		scoreboardValueNames.append( { var = "score_deaths", highlight = false } )
+		scoreboardValueNames.append( { var = "score_titanKills", highlight = false } )
+		scoreboardValueNames.append( { var = "score_defense", highlight = false } )
+		scoreboardValueNames.append( { var = "score_assault", highlight = true } )
+	}
 	else
 	{
 		// added RIGHT to LEFT

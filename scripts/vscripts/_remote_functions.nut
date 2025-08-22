@@ -450,6 +450,8 @@ if ( !IsModelViewer() )
 	{
 		case MARKED_FOR_DEATH:
 		case MARKED_FOR_DEATH_PRO:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 			Remote.RegisterFunction( "SCB_MarkedChanged" )
 			break
 

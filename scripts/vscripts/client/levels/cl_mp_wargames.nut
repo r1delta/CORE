@@ -130,15 +130,21 @@ function DelayPlayActionMusic()
 
 	if ( GetGameState() != eGameState.Playing )
 		return
-		
-	if ( GameRules.GetGameMode() == LAST_TITAN_STANDING || GameRules.GetGameMode() == WINGMAN_LAST_TITAN_STANDING )
+
+	switch( GameRules.GetGameMode() )
 	{
-		printt( "Wargames post intro: playing LTS drop intro music" )
-		thread ForcePlayMusicToCompletion( eMusicPieceID.LEVEL_INTRO )
-	}
-	else
-	{
-		printt( "Wargames post intro: playing action music" )
-		PlayActionMusic()  // this can't get double called, there is a debounce time
+		case LAST_TITAN_STANDING:
+		case WINGMAN_LAST_TITAN_STANDING:
+		case TITAN_BRAWL:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
+			printt( "Wargames post intro: playing LTS drop intro music" )
+			thread ForcePlayMusicToCompletion( eMusicPieceID.LEVEL_INTRO )
+			break
+
+		default:
+			printt( "Wargames post intro: playing action music" )
+			PlayActionMusic()  // this can't get double called, there is a debounce time
+			break
 	}
 }

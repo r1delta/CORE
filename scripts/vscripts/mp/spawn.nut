@@ -163,6 +163,9 @@ function GameModeRemove( spawnpoint )
 
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
+		case TITAN_BRAWL:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 		//case MARKED_FOR_DEATH_PRO: //Uncomment to use LTS spawns for Titan variant
 			gameMode = LAST_TITAN_STANDING
 			break

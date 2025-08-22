@@ -1418,6 +1418,7 @@ function PlayPilotEliminationDialogue( IMCPlayersAlive, MilitiaPlayersAlive )
 		//LTS and Wingman LTS are both Pilot and Titan Elimination, but Titan elimination should take priority
 		case WINGMAN_LAST_TITAN_STANDING:
 		case LAST_TITAN_STANDING:
+		case TITAN_MFD_PRO:
 			return
 	}
 

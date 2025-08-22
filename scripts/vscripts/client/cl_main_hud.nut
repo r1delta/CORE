@@ -2440,6 +2440,8 @@ function MainHud_InitScoreBars( vgui, player, scoreGroup )
 
 		case MARKED_FOR_DEATH:
 		case MARKED_FOR_DEATH_PRO:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 			thread MarkedForDeathHudThink( vgui, player, scoreGroup )
 			break
 	}
@@ -2640,6 +2642,7 @@ function ShouldUsePlayerStatusCount()
 		case WINGMAN_LAST_TITAN_STANDING:
 		case MARKED_FOR_DEATH_PRO:
 		case CAPTURE_THE_FLAG_PRO:
+		case TITAN_MFD_PRO:
 			return true
 
 		default:

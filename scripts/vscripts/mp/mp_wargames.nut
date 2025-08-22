@@ -1382,6 +1382,9 @@ function Intro_PlayersHearPodVO()
 	modeAliases[ PILOT_SKIRMISH ] 				<- "diag_dlc1_WG232_01_01_neut_tutai"
 	modeAliases[ MARKED_FOR_DEATH ] 			<- "diag_dlc1_WG236_01_01_neut_tutai"
 	modeAliases[ MARKED_FOR_DEATH_PRO ] 		<- "diag_dlc1_WG237_01_01_neut_tutai"
+	modeAliases[ TITAN_BRAWL ] 					<- "diag_dlc1_WG137_01_01_neut_tutai"
+	modeAliases[ TITAN_MFD ] 					<- "diag_dlc1_WG236_01_01_neut_tutai"
+	modeAliases[ TITAN_MFD_PRO ] 					<- "diag_dlc1_WG237_01_01_neut_tutai"
 
 	// make sure we have VO for the game mode
 	local mode = GameRules.GetGameMode()

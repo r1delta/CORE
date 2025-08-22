@@ -3642,10 +3642,13 @@ function SaveScoreForMapStars( player )
 		case MARKED_FOR_DEATH:
 		case CAPTURE_THE_FLAG_PRO:
 		case SCAVENGER:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 			score = player.GetAssaultScore()
 			break
 
 		case LAST_TITAN_STANDING:
+		case TITAN_BRAWL:
 			score = player.GetTitanKillCount()
 			break
 

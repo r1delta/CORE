@@ -17,7 +17,7 @@ GAMETYPE_TEXT[ UPLINK ] 				<- "#GAMEMODE_UPLINK"
 GAMETYPE_TEXT[ EXFILTRATION ] 			<- "#GAMEMODE_EXFILTRATION"
 GAMETYPE_TEXT[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG"
 GAMETYPE_TEXT[ COOPERATIVE ] 			<- "#GAMEMODE_COOP"
-GAMETYPE_TEXT[ FFA ] 			<- "#GAMEMODE_FFA"
+GAMETYPE_TEXT[ FFA ] 					<- "#GAMEMODE_FFA"
 
 GAMETYPE_DESC <- {}
 GAMETYPE_DESC[ TEAM_DEATHMATCH ] 		<- "#GAMEMODE_PILOT_HUNTER_HINT"
@@ -28,7 +28,7 @@ GAMETYPE_DESC[ HEIST ]		 			<- "#GAMEMODE_HEIST_HINT"
 GAMETYPE_DESC[ UPLINK ] 				<- "#GAMEMODE_UPLINK_HINT"
 GAMETYPE_DESC[ EXFILTRATION ] 			<- "#GAMEMODE_EXFILTRATION_HINT"
 GAMETYPE_DESC[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG_HINT"
-GAMETYPE_DESC[ FFA ] 			<- "You against the world."
+GAMETYPE_DESC[ FFA ] 					<- "#GAMEMODE_FFA_HINT"
 
 GAMETYPE_ICON <- {}
 GAMETYPE_ICON[ TEAM_DEATHMATCH ] 		<- "../ui/menu/playlist/tdm"
@@ -43,7 +43,7 @@ GAMETYPE_ICON[ EXFILTRATION ] 			<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ TITAN_TAG ] 				<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ COOPERATIVE ] 			<- "../ui/menu/playlist/coop"
 GAMETYPE_ICON[ RANKED_PLAY ] 			<- "../ui/scoreboard_secret_logo"
-GAMETYPE_ICON[ FFA ] 			<- "../ui/scoreboard_secret_logo"
+GAMETYPE_ICON[ FFA ] 					<- "../ui/scoreboard_secret_logo"
 
 GAMETYPE_STAR_SCORE_REQUIREMENT <- {}
 GAMETYPE_STAR_SCORE_REQUIREMENT[ TEAM_DEATHMATCH ] 		<- [ 5, 10, 20 ]
@@ -267,6 +267,39 @@ if ( IsClient() )
 	GameMode_AddClientScript( EXFILTRATION, "client/cl_exfiltration" )
 	//GameMode_SetDefaultScoreLimits( EXFILTRATION, 125, 0 )
 
+	GameMode_Create( TITAN_BRAWL )
+	GameMode_SetName( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL" )
+	GameMode_SetGameModeAnnouncement( TITAN_BRAWL, "GameModeAnnounce_TDM" )
+	GameMode_SetDesc( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL_HINT" )
+	GameMode_SetIcon( TITAN_BRAWL, "../ui/menu/playlist/lts" )
+	GameMode_AddServerScript( TITAN_BRAWL, "mp/_gamemode_titan_brawl" )
+	GameMode_SetDefaultScoreLimits( TITAN_BRAWL, 30, 0 )
+	GameMode_SetDefaultTimeLimits( TITAN_BRAWL, 10, 0 )
+
+	GameMode_Create( TITAN_MFD )
+	GameMode_SetName( TITAN_MFD, "#GAMEMODE_TITAN_MFD" )
+	GameMode_SetGameModeAnnouncement( TITAN_MFD, "GameModeAnnounce_MFD" )
+	GameMode_SetDesc( TITAN_MFD, "#GAMEMODE_MARKED_FOR_DEATH_HINT" ) //GAMEMODE_TITAN_MFD_HINT
+	GameMode_SetIcon( TITAN_MFD, "../ui/menu/playlist/mfd" )
+	GameMode_AddServerScript( TITAN_MFD, "mp/_gamemode_titan_mfd" )
+	GameMode_AddClientScript( TITAN_MFD, "client/cl_gamemode_mfd" )
+	GameMode_AddSharedScript( TITAN_MFD, "_gamemode_mfd_shared" )
+	GameMode_AddSharedDialogueScript( TITAN_MFD, "_gamemode_mfd_dialogue" )
+	GameMode_SetDefaultScoreLimits( TITAN_MFD, 10, 0 )
+	GameMode_SetDefaultTimeLimits( TITAN_MFD, 10, 0 )
+
+	GameMode_Create( TITAN_MFD_PRO )
+	GameMode_SetName( TITAN_MFD_PRO, "#GAMEMODE_TITAN_MFD_PRO" )
+	GameMode_SetGameModeAnnouncement( TITAN_MFD_PRO, "GameModeAnnounce_MFD_PRO" )
+	GameMode_SetDesc( TITAN_MFD_PRO, "#GAMEMODE_MARKED_FOR_DEATH_HINT" ) //GAMEMODE_TITAN_MFD_PRO_HINT
+	GameMode_SetIcon( TITAN_MFD_PRO, "../ui/menu/playlist/mfd_pro" )
+	GameMode_AddServerScript( TITAN_MFD_PRO, "mp/_gamemode_titan_mfdp" )
+	GameMode_AddClientScript( TITAN_MFD_PRO, "client/cl_gamemode_mfd" )
+	GameMode_AddSharedScript( TITAN_MFD_PRO, "_gamemode_mfd_shared" )
+	GameMode_AddSharedDialogueScript( TITAN_MFD_PRO, "_gamemode_mfd_dialogue" )
+	GameMode_SetDefaultScoreLimits( TITAN_MFD_PRO, 0, 6)
+	GameMode_SetDefaultTimeLimits( TITAN_MFD_PRO, 0, 4 )
+
 // Don't remove items from this list once the game is in production
 // Durango online analytics needs the numbers for each mode to stay the same
 // DO NOT CHANGE THESE VALUES AFTER THEY HAVE GONE LIVE
@@ -294,8 +327,11 @@ enum eGameModes
 	COOPERATIVE_ID =					18,
 	SCAVENGER_ID =						19,
 	HEIST_ID =							20,
-	FFA_ID = 21,
-	CAMPAIGN_ID = 22
+	FFA_ID =							21,
+	CAMPAIGN_ID =						22,
+	TITAN_BRAWL_ID =					23,
+	TITAN_MFD_ID =						24,
+	TITAN_MFD_PRO_ID =					25
 }
 
 gameModesStringToIdMap <- {}
@@ -320,8 +356,11 @@ gameModesStringToIdMap[ TITAN_ESCORT ] 						<- eGameModes.TITAN_ESCORT_ID
 gameModesStringToIdMap[ WINGMAN_LAST_TITAN_STANDING ] 		<- eGameModes.WINGMAN_LAST_TITAN_STANDING_ID
 gameModesStringToIdMap[ MARKED_FOR_DEATH_PRO ] 				<- eGameModes.MARKED_FOR_DEATH_PRO_ID
 gameModesStringToIdMap[ CAPTURE_THE_FLAG_PRO ] 				<- eGameModes.CAPTURE_THE_FLAG_PRO_ID
-gameModesStringToIdMap[ FFA ] 				<- eGameModes.FFA_ID
-gameModesStringToIdMap[ CAMPAIGN ] 				<- eGameModes.CAMPAIGN_ID
+gameModesStringToIdMap[ FFA ]								<- eGameModes.FFA_ID
+gameModesStringToIdMap[ CAMPAIGN ]							<- eGameModes.CAMPAIGN_ID
+gameModesStringToIdMap[ TITAN_BRAWL ] 						<- eGameModes.TITAN_BRAWL_ID
+gameModesStringToIdMap[ TITAN_MFD ]							<- eGameModes.TITAN_MFD_ID
+gameModesStringToIdMap[ TITAN_MFD_PRO ]						<- eGameModes.TITAN_MFD_PRO_ID
 
 GameMode_VerifyModes()
 

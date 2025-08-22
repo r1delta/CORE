@@ -1951,16 +1951,22 @@ function ShouldRunEvac()
 	if ( level.privateMatchForcedEnd )
 		return false
 
-	if ( GameRules.GetGameMode() == "exfil" )
+	// If we cant exit titans, dont bother
+	if ( Riff_TitanExitIsDisabled() )
 		return false
 
-	if ( GameRules.GetGameMode() == MARKED_FOR_DEATH_PRO )
+	local gamemode = GameRules.GetGameMode()
+
+	if ( gamemode == EXFILTRATION )
 		return false
 
-	if ( GameRules.GetGameMode() == CAPTURE_THE_FLAG_PRO )
+	if ( gamemode == MARKED_FOR_DEATH_PRO )
 		return false
 
-	if ( GameRules.GetGameMode() == LAST_TITAN_STANDING || GameRules.GetGameMode() == WINGMAN_LAST_TITAN_STANDING )
+	if ( gamemode == CAPTURE_THE_FLAG_PRO )
+		return false
+
+	if ( gamemode == LAST_TITAN_STANDING || gamemode == WINGMAN_LAST_TITAN_STANDING )
 	{
 		if ( IsPilotEliminationBased() )
 			return false
@@ -2360,6 +2366,8 @@ function ScoreboardCompareFuncForGamemode( gamemode )
 			return CompareCP
 		case MARKED_FOR_DEATH:
 		case MARKED_FOR_DEATH_PRO:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 			return CompareMFD
 		case ATTRITION:
 		case COOPERATIVE:
@@ -2369,6 +2377,7 @@ function ScoreboardCompareFuncForGamemode( gamemode )
 			return CompareCTF
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
+		case TITAN_BRAWL:
 			return CompareLTS
 		case SCAVENGER:
 			return CompareScavenger

@@ -633,6 +633,8 @@ function ShouldShowFirstStrike()
 		case WINGMAN_LAST_TITAN_STANDING:
 		case MARKED_FOR_DEATH:
 		case MARKED_FOR_DEATH_PRO:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
 			return false
 
 		default:

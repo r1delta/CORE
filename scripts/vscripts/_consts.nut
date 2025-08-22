@@ -60,6 +60,9 @@ const SCAVENGER = "scv"
 const TITAN_ESCORT = "te"
 const DEVTEST = "devtest"
 const FFA = "ffa"
+const TITAN_BRAWL = "ttdm"
+const TITAN_MFD = "tmfd"
+const TITAN_MFD_PRO = "tmfdp"
 
 const MAX_TRACKED_CHALLENGES = 3
 
@@ -1623,6 +1626,10 @@ enum ePrivateMatchModes
 	mfd,
 	mfdp,
 	ps,
+	scv,
+	ttdm,
+	tmfd,
+	tmfdp
 }
 
 
@@ -2254,7 +2261,46 @@ pmSettingsMap["pm_score_limit"]["coop"] <- [
         500,
         750,
 ]
-
+pmSettingsMap["pm_score_limit"]["scv"] <- [
+	10,
+	20,
+	30,
+	40,
+	50,
+	60,
+	75,
+	100,
+]
+pmSettingsMap["pm_score_limit"]["ttdm"] <- [
+	10,
+	20,
+	30,
+	40,
+	50,
+	60,
+	75,
+	100,
+]
+pmSettingsMap["pm_score_limit"]["tmfd"] <- [
+	1,
+	3,
+	5,
+	7,
+	10,
+	20,
+	30,
+	50,
+]
+pmSettingsMap["pm_score_limit"]["tmfdp"] <- [
+	1,
+	3,
+	5,
+	7,
+	10,
+	20,
+	30,
+	50,
+]
 pmSettingsMap["pm_score_limit"]["campaign_carousel"] <- [0]
 
 pmSettingsMap["pm_pilot_health"] <- [

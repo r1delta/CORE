@@ -48,8 +48,11 @@ function InitPersistence()
         coop = 8
         ps = 9
         scv = 10
-		exfil = 11
-		ctfp = 12
+        exfil = 11
+        ctfp = 12
+        ttdm = 13
+        tmfd = 14
+        tmfdp = 15
     }
 
     AddPersistenceEnum("gameModes", gameModes)
@@ -919,6 +922,15 @@ function InitPersistence()
     AddPersistenceKey("gameStats.mode_won_coop", "int")
     AddPersistenceKey("gameStats.coop_perfect_waves", "int")
 
+    AddPersistenceKey("gameStats.mode_played_scv", "int")
+    AddPersistenceKey("gameStats.mode_won_scv", "int")
+    AddPersistenceKey("gameStats.mode_played_ttdm", "int")
+    AddPersistenceKey("gameStats.mode_won_ttdm", "int")
+    AddPersistenceKey("gameStats.mode_played_tmfd", "int")
+    AddPersistenceKey("gameStats.mode_won_tmfd", "int")
+    AddPersistenceKey("gameStats.mode_played_tmfdp", "int")
+    AddPersistenceKey("gameStats.mode_won_tmfdp", "int")
+
     AddPersistenceArray("mapStats", "maps")
     AddPersistenceArray("mapStats.gamesJoined", "gameModes")
     AddPersistenceKey("mapStats.gamesJoined", "int")
@@ -1700,6 +1712,15 @@ function InitPersistence()
 		ch_daily_twinb_pilot_kills = 195,
 		ch_daily_twinb_spectre_kills = 196,
 		ch_daily_twinb_grunt_kills = 197,
+
+	    ch_daily_play_scv = 198,
+	    ch_daily_win_scv = 199,
+	    ch_daily_play_ttdm = 200,
+	    ch_daily_win_ttdm = 201,
+	    ch_daily_play_tmfd = 202,
+	    ch_daily_win_tmfd = 203,
+	    ch_daily_play_tmfdp = 204,
+	    ch_daily_win_tmfdp = 205,
     }
 
     AddPersistenceEnum("dailychallenge", dailychallenge)
