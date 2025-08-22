@@ -3909,6 +3909,23 @@ function ServerCallback_GameModeAnnouncement()
 		delaythread( totalDuration ) PlayConversationToLocalClient( "floor_is_lava_announcement" )
 	}
 
+	if ( level.nv.titanExitEnabled != eTitanExitEnabled.Default )
+	{
+		switch ( level.nv.titanExitEnabled )
+		{
+			case eTitanExitEnabled.Never:
+				announcementDuration = 5.0
+				totalDuration += announcementDuration
+				delaythread( totalDuration ) PlayConversationToLocalClient( "NoDisembark" )
+				break
+
+			case eTitanExitEnabled.DisembarkOnly:
+				announcementDuration = 5.0
+				totalDuration += announcementDuration
+				delaythread( totalDuration ) PlayConversationToLocalClient( "NoEject" )
+				break
+		}
+	}
 
 	file.gameModeAnnounced = true
 }

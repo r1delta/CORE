@@ -198,7 +198,7 @@ if ( IsClient() )
 	GameMode_SetDefaultTimeLimits( MARKED_FOR_DEATH_PRO, 0, 4 )
 
 	GameMode_Create( SCAVENGER )
-	GameMode_SetName( SCAVENGER, "#GAMEMODE_SCAVENGER" )
+	GameMode_SetName( SCAVENGER, "#GAMEMODE_SCAVENGER_N" )
 	GameMode_SetGameModeAnnouncement( SCAVENGER, "GameModeAnnounce_TDM" )
 	GameMode_SetDesc( SCAVENGER, "#GAMEMODE_SCAVENGER_HINT" )
 	GameMode_SetIcon( SCAVENGER, "../ui/menu/playlist/tdm" ) //Need own icon
@@ -269,7 +269,7 @@ if ( IsClient() )
 
 	GameMode_Create( TITAN_BRAWL )
 	GameMode_SetName( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL" )
-	GameMode_SetGameModeAnnouncement( TITAN_BRAWL, "GameModeAnnounce_TDM" )
+	GameMode_SetGameModeAnnouncement( TITAN_BRAWL, "GameModeAnnounce_TTDM" )
 	GameMode_SetDesc( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL_HINT" )
 	GameMode_SetIcon( TITAN_BRAWL, "../ui/menu/playlist/lts" )
 	GameMode_AddServerScript( TITAN_BRAWL, "mp/_gamemode_titan_brawl" )
@@ -278,7 +278,7 @@ if ( IsClient() )
 
 	GameMode_Create( TITAN_MFD )
 	GameMode_SetName( TITAN_MFD, "#GAMEMODE_TITAN_MFD" )
-	GameMode_SetGameModeAnnouncement( TITAN_MFD, "GameModeAnnounce_MFD" )
+	GameMode_SetGameModeAnnouncement( TITAN_MFD, "GameModeAnnounce_TMFD" )
 	GameMode_SetDesc( TITAN_MFD, "#GAMEMODE_MARKED_FOR_DEATH_HINT" ) //GAMEMODE_TITAN_MFD_HINT
 	GameMode_SetIcon( TITAN_MFD, "../ui/menu/playlist/mfd" )
 	GameMode_AddServerScript( TITAN_MFD, "mp/_gamemode_titan_mfd" )
@@ -290,7 +290,7 @@ if ( IsClient() )
 
 	GameMode_Create( TITAN_MFD_PRO )
 	GameMode_SetName( TITAN_MFD_PRO, "#GAMEMODE_TITAN_MFD_PRO" )
-	GameMode_SetGameModeAnnouncement( TITAN_MFD_PRO, "GameModeAnnounce_MFD_PRO" )
+	GameMode_SetGameModeAnnouncement( TITAN_MFD_PRO, "GameModeAnnounce_MFD_PRO" ) // Still gonna use the regular PRO announcement, since we dont have an equivalent for tmfd
 	GameMode_SetDesc( TITAN_MFD_PRO, "#GAMEMODE_MARKED_FOR_DEATH_HINT" ) //GAMEMODE_TITAN_MFD_PRO_HINT
 	GameMode_SetIcon( TITAN_MFD_PRO, "../ui/menu/playlist/mfd_pro" )
 	GameMode_AddServerScript( TITAN_MFD_PRO, "mp/_gamemode_titan_mfdp" )

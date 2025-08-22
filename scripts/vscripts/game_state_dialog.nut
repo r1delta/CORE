@@ -6,7 +6,7 @@ function main()
 	RegisterAutoTitanConversations()
 
 	//dev only, DO NOT SHIP
-	RegisterDebugVDUConversations()
+	//RegisterDebugVDUConversations()
 
 	if ( GameModeHasCapturePoints() )
 		IncludeScript( "_gamemode_cp_dialogue" )
@@ -62,7 +62,7 @@ function main()
 
 	}
 
-	RegisterMovedCoopConversations()
+	RegisterR1DeltaConversations()
 }
 
 function RegisterGameStateConversations()
@@ -1106,13 +1106,32 @@ function RegisterDebugVDUConversations()
 
 }
 
-function RegisterMovedCoopConversations()
+function RegisterR1DeltaConversations()
 {
+	// Titan Brawl and Titan Marked for Death
+	RegisterConversation( "GameModeAnnounce_TTDM",					VO_PRIORITY_GAMEMODE )
+	RegisterConversation( "GameModeAnnounce_TMFD",					VO_PRIORITY_GAMEMODE )
+	RegisterConversation( "NoEject",								VO_PRIORITY_GAMEMODE )
+	RegisterConversation( "NoDisembark",							VO_PRIORITY_GAMEMODE )
+
+	// These were moved out of fd conversation script so they can be used on any gamemode
 	RegisterConversation( "CoopTD_SpectreRodeoWarning", 			VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player- HACK the priority is super high so players will hear it
 	RegisterConversation( "CoopTD_SpectreRodeoWarning_Short", 		VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player (short duration variant)
 
 	if ( IsServer() )
 		return
+
+	AddVDULineForBlisk( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncA_imc_Blisk" )
+	AddVDULineForBlisk( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncB_imc_Blisk" )
+	AddVDULineForBlisk( "GameModeAnnounce_TMFD", "diag_gm_tmfdp_modeAnnc_imc_Blisk" )
+	AddVDULineForBlisk( "NoEject", "diag_gm_tidm_noEjectNote_imc_Blisk" )
+	AddVDULineForBlisk( "NoDisembark", "diag_gm_tidm_noDisembarkNote_imc_Blisk" )
+
+	AddVDULineForBish( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncA_mcor_Bish" )
+	AddVDULineForBish( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncB_mcor_Bish" )
+	AddVDULineForBish( "GameModeAnnounce_TMFD", "diag_gm_tmfdp_modeAnnc_mcor_Bish" )
+	AddVDULineForBish( "NoEject", "diag_gm_tidm_noEjectNote_mcor_Bish" )
+	AddVDULineForBish( "NoDisembark", "diag_gm_tidm_noDisembarkNote_mcor_Bish" )
 
 	// Spectre rodeoing player
 	AddVDULineForSarah( "CoopTD_SpectreRodeoWarning", "diag_gm_coop_spectreRodeo_mcor_Sarah" )
