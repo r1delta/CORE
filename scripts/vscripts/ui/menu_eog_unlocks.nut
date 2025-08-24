@@ -710,7 +710,7 @@ function GetEOGUnlockedItems()
 	}
 
 	// Check if we unlocked any titan decals
-	if ( !IsItemLocked( "edit_titans" ) && !DevEverythingUnlocked() )
+	if ( !IsItemLocked( "edit_titans" ) && !IsPlayerEverythingUnlocked() )
 	{
 		local decalItems = GetAllItemsOfType( itemType.TITAN_DECAL )
 		foreach( item in decalItems )
