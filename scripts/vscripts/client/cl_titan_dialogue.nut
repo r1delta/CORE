@@ -86,9 +86,6 @@ function main()
 	// "_def_ampedSlaved_grp" just makes them say "Titan Burn Card enabled.", so if we add any new titan burn cards in the future, use that one
 	file.betty.BC_TITAN_GENERIC <- { prefix = "diag_gs_titan", suffix = "_def_ampedSlaved_grp" }
 
-    file.betty.MISSILELOCK <- { prefix = "diag_gs_titan", suffix = "_def_dmgCoreOnline_1" }
-    file.betty.MISSILE_LOCK_ACQUIRED <- { prefix = "diag_gs_titan", suffix = "_def_dmgCoreOnline_2" }
-
 	foreach ( eventName, dialogInfo in file.betty )
 	{
 		dialogInfo.eventType <- eventName
