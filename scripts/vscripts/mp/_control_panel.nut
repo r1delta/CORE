@@ -298,6 +298,10 @@ function PlayerProgramsControlPanel( panel, player )
 						// we should change how this works for R2
 						local gameMode = GameRules.GetGameMode()
 
+						if(gameMode == BIG_BROTHER) {
+							panel.SetUsableByGroup( e.panelUsableValue )
+						}
+
 						if (IsTrainingLevel())
 						 	panel.SetUsableValue( e.panelUsableValue )
 					}

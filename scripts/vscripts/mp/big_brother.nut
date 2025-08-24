@@ -1,4 +1,4 @@
-const EXPLO_TIME = 60.0 // 폭파 시간
+const EXPLO_TIME = 10.0 // 폭파 시간
 const BLUESUN_TIME = 0.7 // 핵폭발 전 blue sun effect 시간
 const EXPLO_CAM_LIMIT_DIST	= 0 // 폭발 시 패널과 이 거리 안에있는 플레이어는 카메라 이동 안시킴.
 
@@ -37,7 +37,8 @@ function main()
 
 	level.bbPanels <- []
 	file.bigBrotherPanelNames <- [ "bb_panel_a", "bb_panel_b" ]
-
+	level.bbPanelHackTime <- 0.0
+	level.bbHacked <- false
 
 
 }
@@ -78,7 +79,7 @@ function EntitiesDidLoad()
 			panel.SetOrigin( hardpoint.GetOrigin() )
 			panel.SetAngles( hardpoint.GetAngles() )
 
-			panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
+			panel.SetTeam(TEAM_UNASSIGNED)
 			panel.UnsetUsable()
 
 			thread BBPanelThink( panel )
@@ -101,7 +102,7 @@ function EntitiesDidLoad()
 			panel.SetAngles( levelPanel.GetAngles() )
 			levelPanel.Destroy()
 
-			panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
+			panel.SetTeam(TEAM_UNASSIGNED)
 			panel.UnsetUsable()
 
 			thread BBPanelThink( panel )
@@ -117,12 +118,15 @@ function BBPanelThink( panel )
 {
 	while( true )
 	{
-		// check team of the panel 
-		
+
 		panel.WaitSignal( "PanelReprogram_Success" )
+		if(level.bbHacked) {
+			continue
+		}
 		local team = panel.GetTeam()
-		printt("Panel Team: " + team)
-		printt("Hacked BB Panel")
+		
+		// 
+
 		foreach ( exfilPanel in level.bbPanels )
 		{
 			exfilPanel.UnsetUsable()
@@ -136,6 +140,8 @@ function BBPanelThink( panel )
 		// swap the team of the panel that was hacked
 		panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		panel.SetUsableByGroup( "friendlies pilot" )
+		
+		
 		foreach(guy in GetPlayerArray())
 		{
 			Remote.CallFunction_Replay( guy, "SCB_BBUpdate", owner.GetEncodedEHandle() )
@@ -144,6 +150,11 @@ function BBPanelThink( panel )
 				Remote.CallFunction_Replay( guy, "SCB_BBVdu", panel.GetEncodedEHandle(), 1 )
 			}
 		}
+
+		level.bbPanelHackTime = Time()
+		level.bbHacked = true
+		thread BBBombCountdown(panel)
+
 
 	}
 }
@@ -159,18 +170,30 @@ function BBRoundStart() {
 	}
 }
 
-function BBPanelHacked(panel) {
-	while (true) {
-		panel.WaitSignal( "PanelReprogram_Success" )
-
-		printt("BB Panel Hacked - Start Explosion Countdown")
-	}
-}
 
 function BBBombCountdown(panel) {
 	// run this thread when the panel is hacked and we need to monitor if the panel gets hacked the round ends.
 
-	wait(EXPLO_TIME )
+// wait for the explosion time or for the panel to be reprogrammed again
+	printt("BB Panel Explosion Countdown Started")
+
+	while(true) {
+		local timeElapsed = Time() - level.bbPanelHackTime
+		if ( timeElapsed >= EXPLO_TIME ) {
+			break
+		}
+		local result = WaitSignalTimeout(panel,EXPLO_TIME - timeElapsed, "PanelReprogram_Success")
+		if(result != null && result.signal == "PanelReprogram_Success") {
+			printt("BB Panel Reprogrammed - Stop Explosion Countdown, panel reprogrammed")
+			return
+		}
+		
+		printt("BB Panel Explosion Countdown Tick")
+		printt(timeElapsed)
+
+	}
+
+
 
 }
 
