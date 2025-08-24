@@ -67,6 +67,7 @@ function main()
 	level.nv.titanExitEnabled = titanExitEnabled
 
 	level.titanAvailabilityCheck <- function( player ) { return false }
+	level.titanRebuildAvailabilityCheck <- function( player ) { return false }
 
 	switch ( aiLethality )
 	{
@@ -211,6 +212,7 @@ function Riff_IsTitanAvailable( player )
 			return true
 
 		case eTitanAvailability.Custom:
+			printt("Riff_IsTitanAvailable: Checking custom titan availability for ", player.GetName() )
 			return level.titanAvailabilityCheck( player )
 
 		case eTitanAvailability.Never:

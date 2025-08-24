@@ -87,11 +87,18 @@ function StartTitanBuildProgress( player, forceBuild = false, rebuild = false )
 	if( level.nv.titanAvailability == eTitanAvailability.Once && player.titansBuilt > 0 )
 		return
 
+	if( level.nv.titanAvailability == eTitanAvailability.Custom && level.titanRebuildAvailabilityCheck( player ) == false && !forceBuild ) {
+		player.SetTitanRespawnTime( -1 )
+		return
+	}
+
 	if ( !forceBuild && !rebuild )
 	{
 		if( player.IsTitanBuildStarted() || player.IsTitanReady() || player.IsTitanDeployed() )
 			return
 	}
+
+
 
 	printt( "StartTitanBuildProgress: " + player.GetName() )
 
@@ -247,6 +254,9 @@ function ShouldGiveTimerCredit( player, victim )
 		return false
 
 	if (Riff_TitanAvailability() == eTitanAvailability.Never)
+		return false
+
+	if (Riff_TitanAvailability() == eTitanAvailability.Custom)
 		return false
 
 	return true
