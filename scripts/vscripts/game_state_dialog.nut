@@ -99,6 +99,7 @@ function RegisterGameStateConversations()
 	RegisterConversation( "GameModeAnnounce_PS",						VO_PRIORITY_GAMEMODE )
 	RegisterConversation( "GameModeAnnounce_CP",						VO_PRIORITY_GAMEMODE )
 	RegisterConversation( "GameModeAnnounce_CTF",						VO_PRIORITY_GAMEMODE )
+	RegisterConversation( "GameModeAnnounce_CTFPro",					VO_PRIORITY_GAMEMODE )
 	RegisterConversation( "GameModeAnnounce_LTS",						VO_PRIORITY_GAMEMODE )
 
 	RegisterConversation( "PullAhead",									VO_PRIORITY_GAMEMODE )
@@ -163,6 +164,12 @@ function RegisterGameStateConversations()
 	AddVDULineForBlisk( "GameModeAnnounce_CTF", "diag_imc_blisk_ctf_modeAnnc_02" )
 	AddVDULineForBlisk( "GameModeAnnounce_CTF", "diag_imc_blisk_ctf_modeAnnc_03" )
 	AddVDULineForBlisk( "GameModeAnnounce_CTF", "diag_imc_blisk_ctf_modeAnnc_04" )
+
+	AddVDULineForBlisk( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncA_imc_Blisk" )
+	AddVDULineForBlisk( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncB_imc_Blisk" )
+	AddVDULineForBlisk( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncC_imc_Blisk" )
+	AddVDULineForBlisk( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncD_imc_Blisk" )
+	
 
 	AddVDULineForBlisk( "GameModeAnnounce_LTS", "diag_lts_modeAnnc_101_01_imc_BLISK" )
 	AddVDULineForBlisk( "GameModeAnnounce_LTS", "diag_lts_modeAnnc_101_02_imc_BLISK" )
@@ -448,6 +455,11 @@ function RegisterGameStateConversations()
 	AddVDULineForBish( "GameModeAnnounce_CTF", "diag_mcor_bish_ctf_modeAnnc_02" )
 	AddVDULineForBish( "GameModeAnnounce_CTF", "diag_mcor_bish_ctf_modeAnnc_03" )
 	AddVDULineForBish( "GameModeAnnounce_CTF", "diag_mcor_bish_ctf_modeAnnc_04" )
+
+	AddVDULineForBish( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncA_mcor_Bish" )
+	AddVDULineForBish( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncB_mcor_Bish" )
+	AddVDULineForBish( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncC_mcor_Bish" )
+	AddVDULineForBish( "GameModeAnnounce_CTFPro", "diag_gm_1ctf_modeAnncD_mcor_Bish" )
 
 	AddVDULineForBish( "GameModeAnnounce_LTS", "diag_lts_modeAnnc_101_01_mcor_BISH" )
 	AddVDULineForBish( "GameModeAnnounce_LTS", "diag_lts_modeAnnc_101_02_mcor_BISH" )

@@ -230,9 +230,9 @@ if ( IsClient() )
 	GameMode_Create( CAPTURE_THE_FLAG_PRO )
 	GameMode_SetName( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO" )
 	//GameMode_SetGameModeAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_PS" )
-	GameMode_SetGameModeAttackAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_PS" )
-	GameMode_SetGameModeDefendAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_PS" )
-	//GameMode_SetDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_HINT" ) // TODO: is this still needed for scoreboard? anwyay to use attack/defend desc?
+	GameMode_SetGameModeAttackAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_CTFPro" )
+	GameMode_SetGameModeDefendAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_CTFPro" )
+	GameMode_SetDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_HINT" ) // TODO: is this still needed for scoreboard? anwyay to use attack/defend desc?
 	GameMode_SetAttackDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_ATTACK_HINT" )
 	GameMode_SetDefendDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_DEFEND_HINT" )
 	GameMode_SetIcon( CAPTURE_THE_FLAG_PRO, "../ui/menu/playlist/ctf" )
