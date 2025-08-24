@@ -2970,10 +2970,12 @@ function CaptureTheFlagThink( vgui, player )
 	{
 		if ( "friendlyFlagState" in player.s )
 		{
+			// add checks for ctf pro where only 1 flag is present
 			switch ( player.s.friendlyFlagState )
 			{
 				case eFlagState.None:
 					vgui.s.friendlyFlagLabel.SetText( "" )
+					vgui.s.friendlyFlag.Hide()
 					break
 				case eFlagState.Home:
 					vgui.s.friendlyFlagLabel.SetText( "#GAMEMODE_FLAG_HOME" )
@@ -2990,6 +2992,7 @@ function CaptureTheFlagThink( vgui, player )
 			{
 				case eFlagState.None:
 					vgui.s.enemyFlagLabel.SetText( "" )
+					vgui.s.enemyFlag.Hide()
 					break
 				case eFlagState.Home:
 					vgui.s.enemyFlagLabel.SetText( "#GAMEMODE_FLAG_HOME" )
