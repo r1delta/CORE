@@ -267,6 +267,16 @@ if ( IsClient() )
 	GameMode_AddClientScript( EXFILTRATION, "client/cl_exfiltration" )
 	//GameMode_SetDefaultScoreLimits( EXFILTRATION, 125, 0 )
 
+	GameMode_Create( BIG_BROTHER )
+	GameMode_SetName( BIG_BROTHER, "#GAMEMODE_BIG_BROTHER" )
+	GameMode_SetGameModeAnnouncement( BIG_BROTHER, "GameModeAnnounce_TDM" )
+	GameMode_SetDesc( BIG_BROTHER, "#GAMEMODE_BIG_BROTHER_HINT" )
+	GameMode_SetIcon( BIG_BROTHER, "../ui/menu/playlist/tdm" ) //Need own icon
+	GameMode_AddServerScript( BIG_BROTHER, "mp/big_brother" )
+	GameMode_AddClientScript( BIG_BROTHER, "client/cl_big_brother" )
+	//GameMode_SetDefaultScoreLimits( BIG_BROTHER, 125, 0 )
+	
+
 	GameMode_Create( TITAN_BRAWL )
 	GameMode_SetName( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL" )
 	GameMode_SetGameModeAnnouncement( TITAN_BRAWL, "GameModeAnnounce_TTDM" )

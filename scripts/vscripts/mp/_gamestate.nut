@@ -1265,10 +1265,10 @@ function CheckEliminationPilotWinner( setWinner = false )
 {
 	// 빅브라더 모드 폭탄 설치 시 방어팀이 살아있으면 엘리 체크 안함.
 	// 방어팀이 전멸인 경우 폭탄 설치와 상관없이 엘리 처리.
-	if( GAMETYPE == BIG_BROTHER && IsBigBrotherPanelExplosion() )
-	{
-		return
-	}
+	// if( GAMETYPE == BIG_BROTHER && IsBigBrotherPanelExplosion() )
+	// {
+	// 	return
+	// }
 
 	local players = GetPlayerArray()
 	local teams = {}
@@ -1927,7 +1927,7 @@ function TimeLimit_Complete()
 	{
 		local timeLeftSeconds = GameTime.TimeLeftSeconds()
 
-		if( GAMETYPE != BIG_BROTHER || !IsBigBrotherPanelHacked() )
+		if( GAMETYPE != BIG_BROTHER)
 		{
 			if ( timeLeftSeconds < 15 && timeLeftSeconds != level.lastTimeLeftSeconds )
 			{
@@ -1944,7 +1944,7 @@ function TimeLimit_Complete()
 		}
 		else // 폭파미션 폭탄 설치시 비프음.
 		{
-			if( IsBigBrotherPanelHacked() && timeLeftSeconds < 45 && timeLeftSeconds != level.lastTimeLeftSeconds)
+			if( timeLeftSeconds < 45 && timeLeftSeconds != level.lastTimeLeftSeconds)
 			{
 				local players = GetPlayerArray()
 

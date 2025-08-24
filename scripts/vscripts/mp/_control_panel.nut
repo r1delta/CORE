@@ -7,6 +7,8 @@
 function main()
 {
 	PrecacheModel( "models/communication/terminal_usable_imc_01.mdl" )
+	PrecacheModel("models/communication/terminal_usable_dem_01.mdl")
+	PrecacheModel( MODEL_BIGBROTHER_PANEL )
 	PrecacheParticleSystem( "ar_titan_droppoint" )
 
 	PrecacheMaterial( "vgui/hud/control_panel/console_disabled/console_disabled" )
@@ -18,6 +20,8 @@ function main()
 	PrecacheMaterial( "vgui/hud/control_panel/console_e_search/console_e_search" )
 	PrecacheMaterial( "vgui/hud/control_panel/console_e_active/console_e_active" )
 	PrecacheMaterial( "vgui/hud/control_panel/console_e_repair/console_e_repair" )
+
+
 
 	AddSpawnCallback( "prop_control_panel", OnPanelSpawn )
 
