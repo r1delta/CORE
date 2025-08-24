@@ -500,6 +500,9 @@ RegisterString( "#GAMESTATE_SWITCHING_SIDES" )
 
 RegisterString( "#GAMEMODE_HOST_ENDED_MATCH" )
 
+RegisterString( "#HEIST_TEAM_HACKED_PANEL" )
+RegisterString( "#HEIST_DATA_STOLEN" )
+
 Remote.EndRegisteringFunctions()
 GetDeveloperLevel <- _GetDeveloperLevel
 delete _GetDeveloperLevel

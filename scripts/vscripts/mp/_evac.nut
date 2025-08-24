@@ -1002,23 +1002,42 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 
 				if ( level.nv.winningTeam == null )
 				{
+					local attackerWin
+					local DefenderLoss
+					local DefenderWin
+
+					switch( GameRules.GetGameMode() )
+					{
+						case CAPTURE_THE_FLAG_PRO:
+							attackerWin = "#CAPTURE_THE_FLAG_PRO_FLAG_TAKEN"
+							DefenderLoss = "#CAPTURE_THE_FLAG_FLAG_ESCAPED"
+							DefenderWin = "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED"
+							break
+
+						case EXFILTRATION:
+							attackerWin = "#HEIST_TEAM_HACKED_PANEL"
+							DefenderLoss = "#HEIST_DATA_STOLEN"
+							DefenderWin = "#GAMEMODE_DEFENDERS_WIN"
+							break
+					}
+
 					if ( evacPlayerCount )
 					{
 						if ( IsAlive( dropship ) )
 						{
-							SetWinLossReasons( "#CAPTURE_THE_FLAG_PRO_FLAG_TAKEN", "#CAPTURE_THE_FLAG_FLAG_ESCAPED" ) //CTF PRo only. Make this more generic later
+							SetWinLossReasons( attackerWin, DefenderLoss ) //CTF PRo only. Make this more generic later
 							SetWinner( level.evacTeam )
 						}
 						else
 						{
-							SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED" )
+							SetWinLossReasons( DefenderWin, DefenderWin )
 							SetWinner( GetOtherTeam( level.evacTeam ) )
 						}
 
 					}
 					else
 					{
-						SetWinLossReasons( "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED", "#CAPTURE_THE_FLAG_FLAG_CAPTURE_STOPPED" ) //CTF PRo only. Make this more generic later
+						SetWinLossReasons( DefenderWin, DefenderWin ) //CTF PRo only. Make this more generic later
 						SetWinner( GetOtherTeam( level.evacTeam ) )
 					}
 				}

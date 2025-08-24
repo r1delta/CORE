@@ -14,7 +14,6 @@ GAMETYPE_TEXT[ ATTRITION ] 				<- "#GAMEMODE_ATTRITION"
 GAMETYPE_TEXT[ BIG_BROTHER ] 			<- "#GAMEMODE_BIG_BROTHER"
 GAMETYPE_TEXT[ HEIST ] 					<- "#GAMEMODE_HEIST"
 GAMETYPE_TEXT[ UPLINK ] 				<- "#GAMEMODE_UPLINK"
-GAMETYPE_TEXT[ EXFILTRATION ] 			<- "#GAMEMODE_EXFILTRATION"
 GAMETYPE_TEXT[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG"
 GAMETYPE_TEXT[ COOPERATIVE ] 			<- "#GAMEMODE_COOP"
 GAMETYPE_TEXT[ FFA ] 					<- "#GAMEMODE_FFA"
@@ -26,7 +25,6 @@ GAMETYPE_DESC[ ATDM ] 					<- "#GAMEMODE_ATDM_HINT"
 GAMETYPE_DESC[ ATTRITION ] 				<- "#GAMEMODE_ATTRITION_HINT"
 GAMETYPE_DESC[ HEIST ]		 			<- "#GAMEMODE_HEIST_HINT"
 GAMETYPE_DESC[ UPLINK ] 				<- "#GAMEMODE_UPLINK_HINT"
-GAMETYPE_DESC[ EXFILTRATION ] 			<- "#GAMEMODE_EXFILTRATION_HINT"
 GAMETYPE_DESC[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG_HINT"
 GAMETYPE_DESC[ FFA ] 					<- "#GAMEMODE_FFA_HINT"
 
@@ -39,7 +37,6 @@ GAMETYPE_ICON[ BIG_BROTHER ] 			<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ HEIST ] 					<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ SCAVENGER ]	 			<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ UPLINK ] 				<- "../ui/menu/playlist/classic"
-GAMETYPE_ICON[ EXFILTRATION ] 			<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ TITAN_TAG ] 				<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ COOPERATIVE ] 			<- "../ui/menu/playlist/coop"
 GAMETYPE_ICON[ RANKED_PLAY ] 			<- "../ui/scoreboard_secret_logo"
@@ -95,7 +92,6 @@ if ( IsClient() )
 	PrecacheHUDMaterial( GAMETYPE_ICON[ BIG_BROTHER ] )
 	PrecacheHUDMaterial( GAMETYPE_ICON[ ATTRITION ] )
 	PrecacheHUDMaterial( GAMETYPE_ICON[ UPLINK ] )
-	PrecacheHUDMaterial( GAMETYPE_ICON[ EXFILTRATION ] )
 	PrecacheHUDMaterial( GAMETYPE_ICON[ TITAN_TAG ] )
 }
 
@@ -259,9 +255,9 @@ if ( IsClient() )
 	GameMode_SetName( EXFILTRATION, "#GAMEMODE_EXFILTRATION" )
 	GameMode_SetGameModeAttackAnnouncement( EXFILTRATION, "GameModeAnnounce_TDM" )
 	GameMode_SetGameModeDefendAnnouncement( EXFILTRATION, "GameModeAnnounce_TDM" )
-	GameMode_SetDesc( EXFILTRATION, "#GAMEMODE_EXFILTRATION_HINT" )
-	GameMode_SetAttackDesc( EXFILTRATION, "#GAMEMODE_EXFILTRATION_ATTACK_HINT" )
-	GameMode_SetDefendDesc( EXFILTRATION, "#GAMEMODE_EXFILTRATION_DEFEND_HINT" )
+	GameMode_SetDesc( EXFILTRATION, "#GAMEMODE_HEIST_HINT" )
+	GameMode_SetAttackDesc( EXFILTRATION, "#GAMEMODE_HEIST_ATTACK" )
+	GameMode_SetDefendDesc( EXFILTRATION, "#GAMEMODE_HEIST_DEFEND" )
 	GameMode_SetIcon( EXFILTRATION, "../ui/menu/playlist/tdm" ) //Need own icon
 	GameMode_AddServerScript( EXFILTRATION, "mp/exfiltration" )
 	GameMode_AddClientScript( EXFILTRATION, "client/cl_exfiltration" )

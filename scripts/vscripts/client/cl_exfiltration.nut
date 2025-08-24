@@ -69,12 +69,12 @@ function UpdateExfilIcons()
 		if ( player.GetTeam() == level.nv.attackingTeam )
 		{
 			player.hudElems.SiteAIcon.SetImage( "HUD/capture_point_status_orange_a" )
-			player.hudElems.SiteALabel.SetText( "HACK" )
+			player.hudElems.SiteALabel.SetText( "#GAMEMODE_EXFIL_HACK" )
 		}
 		else
 		{
 			player.hudElems.SiteAIcon.SetImage( "HUD/capture_point_status_blue_a" )
-			player.hudElems.SiteALabel.SetText( "DEFEND" )
+			player.hudElems.SiteALabel.SetText( "#GAMEMODE_FLAG_DEFEND" )
 		}
 	}
 
@@ -91,12 +91,12 @@ function UpdateExfilIcons()
 		if ( player.GetTeam() == level.nv.attackingTeam )
 		{
 			player.hudElems.SiteBIcon.SetImage( "HUD/capture_point_status_orange_b" )
-			player.hudElems.SiteBLabel.SetText( "HACK" )
+			player.hudElems.SiteBLabel.SetText( "#GAMEMODE_EXFIL_HACK" )
 		}
 		else
 		{
 			player.hudElems.SiteBIcon.SetImage( "HUD/capture_point_status_blue_b" )
-			player.hudElems.SiteBLabel.SetText( "DEFEND" )
+			player.hudElems.SiteBLabel.SetText( "#GAMEMODE_FLAG_DEFEND" )
 		}
 	}
 }
