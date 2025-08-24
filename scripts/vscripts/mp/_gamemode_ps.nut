@@ -9,10 +9,10 @@ function main()
 	//SetGameModeAnnouncement( "GameModeAnnounce_PST" )
 	level.spawnRatingFunc_Pilot = RateSpawnpoint_Generic
 	level.spawnRatingFunc_Generic = RateSpawnpoint_Generic
-	Riff_ForceTitanAvailability( eTitanAvailability.Custom )
-	AddCallback_OnPlayerKilled( PlayerKilledByEnemy )
-	level.titanAvailabilityCheck = Bind( IsPlayerTitanAvailable )
-	level.titanRebuildAvailabilityCheck = Bind( ShouldRebuildTitan )
+	Riff_ForceTitanAvailability( eTitanAvailability.Never )
+	// AddCallback_OnPlayerKilled( PlayerKilledByEnemy )
+	// level.titanAvailabilityCheck = Bind( IsPlayerTitanAvailable )
+	// level.titanRebuildAvailabilityCheck = Bind( ShouldRebuildTitan )
 }
 
 function EntitiesDidLoad()
@@ -28,9 +28,9 @@ function EntitiesDidLoad()
 
 	//monitor population and respawns
 	thread SetupTeamDeathmatchNPCs()
-	level.titanAvailabilityCheck = Bind( IsPlayerTitanAvailable )
-	level.titanRebuildAvailabilityCheck = Bind( ShouldRebuildTitan )
-	Riff_ForceTitanAvailability( eTitanAvailability.Custom )
+	// level.titanAvailabilityCheck = Bind( IsPlayerTitanAvailable )
+	// level.titanRebuildAvailabilityCheck = Bind( ShouldRebuildTitan )
+	// Riff_ForceTitanAvailability( eTitanAvailability.Custom )
 }
 
 function ScriptCallback_OnClientConnecting( player )

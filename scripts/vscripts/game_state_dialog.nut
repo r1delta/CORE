@@ -146,8 +146,8 @@ function RegisterGameStateConversations()
 	AddVDULineForBlisk( "GameModeAnnounce_TDM", "diag_tdm_modeAnnc_101_03_imc_blisk" )
 
 	//Blisk: "This is a skirmish between Pilots. Titanfall authorization has been revoked. Eliminate all Militia Pilots you see down there!"
-	// AddVDULineForBlisk( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnnc_imc_Blisk" )
-	AddVDULineForBlisk("GameModeAnnounce_PS","diag_gm_8v8_modeAnncLimitedTitans_imc_Blisk")
+	AddVDULineForBlisk( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnnc_imc_Blisk" )
+	// AddVDULineForBlisk("GameModeAnnounce_PS","diag_gm_8v8_modeAnncLimitedTitans_imc_Blisk")
 
 	AddVDULineForBlisk("PS_3KillBeforeTitan","diag_gm_8v8_titanProgAnnc3_imc_Blisk")
 	AddVDULineForBlisk("PS_2KillBeforeTitan","diag_gm_8v8_titanProgAnnc2_imc_Blisk")
@@ -435,8 +435,8 @@ function RegisterGameStateConversations()
 	AddVDULineForBish( "GameModeAnnounce_TDM", "diag_tdm_modeAnnc_101_03_mcor_bish" )
 
 	//Bish: "This is a skirmish between Pilots. You won't have any Titans backing you up down there Boss. Take out any IMC Pilots you see!"
-	// AddVDULineForBish( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnnc_mcor_Bish" )
-	AddVDULineForBish( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnncLimitedTitans_mcor_Bish" )
+	AddVDULineForBish( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnnc_mcor_Bish" )
+	// AddVDULineForBish( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnncLimitedTitans_mcor_Bish" )
 
 	AddVDULineForBish("PS_3KillBeforeTitan","diag_gm_8v8_titanProgAnnc3_mcor_Bish")
 	AddVDULineForBish("PS_2KillBeforeTitan","diag_gm_8v8_titanProgAnnc2_mcor_Bish")
