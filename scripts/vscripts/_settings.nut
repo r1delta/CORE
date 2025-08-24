@@ -230,14 +230,14 @@ if ( IsClient() )
 	GameMode_Create( CAPTURE_THE_FLAG_PRO )
 	GameMode_SetName( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO" )
 	//GameMode_SetGameModeAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_PS" )
-	GameMode_SetGameModeAttackAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_CTFPro" )
-	GameMode_SetGameModeDefendAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_CTFPro" )
-	GameMode_SetDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_HINT" ) // TODO: is this still needed for scoreboard? anwyay to use attack/defend desc?
+	GameMode_SetGameModeAttackAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_CTFP_Attack" )
+	GameMode_SetGameModeDefendAnnouncement( CAPTURE_THE_FLAG_PRO, "GameModeAnnounce_CTFP_Defend" )
+	//GameMode_SetDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_HINT" ) // TODO: is this still needed for scoreboard? anwyay to use attack/defend desc?
 	GameMode_SetAttackDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_ATTACK_HINT" )
 	GameMode_SetDefendDesc( CAPTURE_THE_FLAG_PRO, "#GAMEMODE_CAPTURE_THE_FLAG_PRO_DEFEND_HINT" )
 	GameMode_SetIcon( CAPTURE_THE_FLAG_PRO, "../ui/menu/playlist/ctf" )
 	GameMode_AddServerScript( CAPTURE_THE_FLAG_PRO, "mp/_gamemode_ctf_pro" )
-	GameMode_AddClientScript( CAPTURE_THE_FLAG_PRO, "client/cl_capture_the_flag" )
+	GameMode_AddClientScript( CAPTURE_THE_FLAG_PRO, "client/cl_capture_the_flag_pro" )
 	GameMode_AddSharedScript( CAPTURE_THE_FLAG_PRO, "_capture_the_flag_shared" )
 	GameMode_AddSharedDialogueScript( CAPTURE_THE_FLAG_PRO, "_gamemode_ctf_dialogue" )
 	GameMode_SetDefaultScoreLimits( CAPTURE_THE_FLAG_PRO, 0, 6 )
@@ -278,7 +278,7 @@ if ( IsClient() )
 
 	GameMode_Create( TITAN_MFD )
 	GameMode_SetName( TITAN_MFD, "#GAMEMODE_TITAN_MFD" )
-	GameMode_SetGameModeAnnouncement( TITAN_MFD, "GameModeAnnounce_TMFD" )
+	GameMode_SetGameModeAnnouncement( TITAN_MFD, "GameModeAnnounce_MFD" )
 	GameMode_SetDesc( TITAN_MFD, "#GAMEMODE_MARKED_FOR_DEATH_HINT" ) //GAMEMODE_TITAN_MFD_HINT
 	GameMode_SetIcon( TITAN_MFD, "../ui/menu/playlist/mfd" )
 	GameMode_AddServerScript( TITAN_MFD, "mp/_gamemode_titan_mfd" )
@@ -290,7 +290,7 @@ if ( IsClient() )
 
 	GameMode_Create( TITAN_MFD_PRO )
 	GameMode_SetName( TITAN_MFD_PRO, "#GAMEMODE_TITAN_MFD_PRO" )
-	GameMode_SetGameModeAnnouncement( TITAN_MFD_PRO, "GameModeAnnounce_MFD_PRO" ) // Still gonna use the regular PRO announcement, since we dont have an equivalent for tmfd
+	GameMode_SetGameModeAnnouncement( TITAN_MFD_PRO, "GameModeAnnounce_TMFDP" )
 	GameMode_SetDesc( TITAN_MFD_PRO, "#GAMEMODE_MARKED_FOR_DEATH_HINT" ) //GAMEMODE_TITAN_MFD_PRO_HINT
 	GameMode_SetIcon( TITAN_MFD_PRO, "../ui/menu/playlist/mfd_pro" )
 	GameMode_AddServerScript( TITAN_MFD_PRO, "mp/_gamemode_titan_mfdp" )

@@ -92,6 +92,7 @@ function main()
 			npcPerSide = GetCPULevelWrapper() == CPU_LEVEL_HIGHEND ? level.max_npc_per_side : 9
 			break
 		case CAPTURE_THE_FLAG:
+		case CAPTURE_THE_FLAG_PRO:
 			level.npcRespawnWait = 10
 			npcPerSide = 9
 			break
@@ -967,6 +968,7 @@ function GameModeRemoveFrontline( entArray )
 	switch ( gameMode )
 	{
 		case CAPTURE_THE_FLAG:
+		case CAPTURE_THE_FLAG_PRO:
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
 		case TITAN_BRAWL:
@@ -1175,7 +1177,8 @@ function CheckFrontlineOverrun( losingTeam )
 //////////////////////////////////////////////////////////
 function MoveFrontline( winningTeam )
 {
-	if ( GameRules.GetGameMode() == CAPTURE_THE_FLAG )
+	local gamemode = GameRules.GetGameMode()
+	if ( gamemode == CAPTURE_THE_FLAG || gamemode == CAPTURE_THE_FLAG_PRO )
 		return
 
 	local prevFrontlineName = file.currentFrontline.name

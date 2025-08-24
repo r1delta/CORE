@@ -48,7 +48,10 @@ function main()
 
 	file.flagKillBounds <- []
 
+	FlagInit( "DefendersWinDraw" )
+
 	Globalize( DropFlag )
+	Globalize( AnyPlayerHasEnemyFlag )
 }
 
 
@@ -174,6 +177,21 @@ function CTFRoundEnd()
 
 	MessageToTeam( TEAM_IMC, -1 )
 	MessageToTeam( TEAM_MILITIA, -1 )
+
+	// --- Lógica especial para CTF PRO empate / Special logic for CTF PRO draws ---
+	local imcScore = GameRules.GetTeamScore( TEAM_IMC )
+	local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
+
+	if ( GAMETYPE == CAPTURE_THE_FLAG_PRO && imcScore == militiaScore && !level.ctf_pro_evac_started )
+	{
+		if ( !AnyPlayerHasEnemyFlag() )
+		{
+			local winningTeam = GetOtherTeam( level.nv.attackingTeam )
+			SetWinLossReasons( "#GAMEMODE_DEFENDERS_WIN", "#GAMEMODE_DEFENDERS_WIN" )
+			SetWinner( winningTeam )
+			return // Detenemos aquí para evitar que siga el flujo normal
+		}
+	}
 }
 
 
@@ -289,6 +307,8 @@ function CodeCallback_OnTouchHealthKit( player, flag )
 		{
 			level.ctf_pro_evac_started = true
 			thread CTF_Pro_Evac()
+			level.nv.gameStateChangeTime = Time() + 300.0
+			level.nv.roundEndTime = Time() + 55.0
 		}
 	}
 	else if ( playerTeam == flagTeam )
@@ -530,7 +550,6 @@ function DropFlag( player, damageInfo = null )
 	PlayConversationToTeam( "enemy_dropped_flag", flagTeam )
 	PlayConversationToTeam( "friendly_dropped_flag", otherFlagTeam )
 
-
 	if ( !IsValid( flag ) )
 		return
 
@@ -585,28 +604,7 @@ function CTF_Pro_Evac()
 {
 	local defendingTeam = GetOtherTeam(level.nv.attackingTeam)
 	SetEvacShipArrivalTimeAndDistanceFromFlagPoint()
-	thread EvacOnDemand( defendingTeam, 7000, 5000 )
-	local dropship = level.ent.WaitSignal( "EvacDropship" ).dropship
-
-	thread CTF_Pro_EvacDropshipTriggerThink( dropship )  //TODO: Need to add winning/losing reasons in setwinner, called from _evac when flag EvacEndsMatch is not true
-}
-
-function CTF_Pro_EvacDropshipTriggerThink( dropship ) //TODO: Will need to be integrated in gamestate think loop to avoid players falling through dropship due to low server frame rate
-{
-	if ( Flag( "EvacFinished" ) ) //Guys were killed before dropship got
-	{
-		//printt( "EvacFinished Flag Set before we run loop in CTF_Pro_EvacDropshipTriggerThink" )
-		return
-	}
-
-	dropship.EndSignal( "OnDeath" )
-	FlagEnd( "EvacFinished" )
-
-	while ( true )
-	{
-		EvacShipTriggerCheck( dropship )
-		wait 0
-	}
+	thread EvacOnDemand( defendingTeam, null, 7000, 5000 )
 }
 
 function SetEvacShipArrivalTimeAndDistanceFromFlagPoint()
@@ -617,8 +615,8 @@ function SetEvacShipArrivalTimeAndDistanceFromFlagPoint()
 		case "mp_angel_city":
 		case "mp_outpost_207":
 		{
-			Evac_SetDropshipArrivalWaitTime( 25.0 )
-			Evac_SetDropshipArrivalIdleTime( 20.0 )
+			Evac_SetDropshipArrivalWaitTime( 20.0 )
+			Evac_SetDropshipArrivalIdleTime( 30.0 )
 			return //Depend on level script to pick a random evac node. Main reason for this is that the 2 maps don't use AddEvacLocation
 			break
 		}
@@ -626,6 +624,7 @@ function SetEvacShipArrivalTimeAndDistanceFromFlagPoint()
 		case "mp_airbase":
 		{
 			Evac_SetDropshipArrivalWaitTime( 20.0 )
+			Evac_SetDropshipArrivalIdleTime( 30.0 )
 			local distance = 4500
 			ReselectEvacNode( distance * distance )
 			return
@@ -634,6 +633,7 @@ function SetEvacShipArrivalTimeAndDistanceFromFlagPoint()
 		default:
 		{
 			Evac_SetDropshipArrivalWaitTime( 20.0 )
+			Evac_SetDropshipArrivalIdleTime( 30.0 )
 			local distance = 4500
 			ReselectEvacNode( distance * distance )
 			return
@@ -674,6 +674,17 @@ function ReselectEvacNode( distanceSqrThreshold )
 
 }
 
+function AnyPlayerHasEnemyFlag()
+{
+    foreach ( player in GetPlayerArray() )
+    {
+        if ( PlayerHasEnemyFlag( player ) )
+        {
+            return true
+        }
+    }
+    return false
+}
 
 /*function DidAttackingTeamGetAwayWithFlag() //Not used currently
 {

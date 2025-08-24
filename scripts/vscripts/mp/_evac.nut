@@ -319,7 +319,7 @@ function ExfiltrationEvacMain( chaseTeam, escapeNode )
 	level.evacShipIcon.Destroy()
 }
 
-function EvacOnDemand( chaseTeam, dropshipHealth = null, shieldHealth = null )
+function EvacOnDemand( chaseTeam, escapeNode = null, dropshipHealth = EVAC_DROPSHIP_HEALTH, shieldHealth = EVAC_DROPSHIP_SHIELD_HEALTH )
 {
 	/*
 	if ( level.isTestmap )
@@ -362,6 +362,9 @@ function EvacOnDemand( chaseTeam, dropshipHealth = null, shieldHealth = null )
 		callbackInfo.func.acall( [ callbackInfo.scope ] )
 	}
 
+	if ( escapeNode )
+		level.evacNode = escapeNode
+
 	local evacNode = level.evacNode
 
 	Assert( evacNode, "level.evacNode not set, call Evac_SetEvacNode( node ) to specify an evac point" )
@@ -369,6 +372,16 @@ function EvacOnDemand( chaseTeam, dropshipHealth = null, shieldHealth = null )
 
 	local scriptRef = CreateEvacShipIcon( evacNode )
 	level.evacShipIcon = scriptRef
+
+	if ( GAMETYPE == EXFILTRATION )
+	{
+		wait 1.0 // delay long enough for the scriptRef to get to the client... because retarded.
+		if ( !GamePlayingOrSuddenDeath() )
+		{
+			level.evacShipIcon.Destroy()
+			return
+		}
+	}
 
 	DisableTitanfallForLifetimeOfEntityNearOrigin( evacNode, evacNode.GetOrigin(), EVAC_PREVENT_TITANFALL_RADIUS  )
 
@@ -397,7 +410,21 @@ function EvacOnDemand( chaseTeam, dropshipHealth = null, shieldHealth = null )
 
 	thread EvacShipMain( dropshipHealth, shieldHealth )
 
-	WaitForever() //Mainly to structure it so we clean up the EvacShipIcon properly in case evac gets interrupted
+	thread EvacRoundBasedCleanup()
+
+	if ( GAMETYPE == EXFILTRATION )
+	{
+		level.ent.WaitSignal( "GameStateChange" )
+
+		FlagSet( "EvacFinished" )
+		level.ent.Signal( "EvacCancelled" )
+
+		level.evacShipIcon.Destroy()
+	}
+	else
+	{
+		WaitForever() //Mainly to structure it so we clean up the EvacShipIcon properly in case evac gets interrupted
+	}
 }
 Globalize( EvacOnDemand )
 
@@ -1058,6 +1085,28 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 
 	FlagWait( "EvacFinished" )
 	thread EvacEscapeScore( dropship )
+}
+
+//TODO: Need to add winning/losing reasons in setwinner, called from _evac when flag EvacEndsMatch is not true
+//TODO: Will need to be integrated in gamestate think loop to avoid players falling through dropship due to low server frame rate
+function EvacRoundBasedCleanup()
+{
+	local dropship = level.ent.WaitSignal( "EvacDropship" ).dropship
+
+	if ( Flag( "EvacFinished" ) ) //Guys were killed before dropship got
+	{
+		//printt( "EvacFinished Flag Set before we run loop in CTF_Pro_EvacDropshipTriggerThink" )
+		return
+	}
+
+	dropship.EndSignal( "OnDeath" )
+	FlagEnd( "EvacFinished" )
+
+	while ( true )
+	{
+		EvacShipTriggerCheck( dropship )
+		wait 0
+	}
 }
 
 function EvacShipDeathScore( dropship )

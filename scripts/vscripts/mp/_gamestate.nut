@@ -1176,6 +1176,11 @@ function SetWinner( winningTeam )
 			local losingTeamScore = GameRules.GetTeamScore2( losingTeam )
 			if ( ShouldDoScoreSwapVO( roundWins, newRoundWins, losingTeamScore ) )
 				thread ScoreSwapVO( winningTeam, losingTeam )
+
+			if ( IsValid( level.dropship ) )
+			{
+				
+			}
 		}
 	}
 

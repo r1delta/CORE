@@ -883,7 +883,7 @@ function RodeoAlertThink( cockpit, player )
 	OnThreadEnd(
 		function() : ()
 		{
-			if ( GAMETYPE == CAPTURE_THE_FLAG )
+			if ( GAMETYPE == CAPTURE_THE_FLAG || GAMETYPE == CAPTURE_THE_FLAG_PRO )
 			{
 				local clientPlayer = GetLocalClientPlayer()
 
@@ -917,7 +917,7 @@ function RodeoAlertThink( cockpit, player )
 				cockpit.s.mainVGUI.s.rodeoAlertLabel.SetColor( 61, 211, 255, 200 )
 				cockpit.s.mainVGUI.s.antiRodeoHint.Hide()
 
-				if ( GAMETYPE == CAPTURE_THE_FLAG && PlayerHasEnemyFlag( rider ) )
+				if ( ( GAMETYPE == CAPTURE_THE_FLAG || GAMETYPE == CAPTURE_THE_FLAG_PRO ) && PlayerHasEnemyFlag( rider ) )
 					SetEventNotification( "#GAMEMODE_RODEO_PILOT_HAS_THE_ENEMY_FLAG" )
 			}
 			else
@@ -937,7 +937,7 @@ function RodeoAlertThink( cockpit, player )
 			cockpit.s.mainVGUI.s.rodeoAlertLabel.Hide()
 			cockpit.s.mainVGUI.s.antiRodeoHint.Hide()
 
-			if ( GAMETYPE == CAPTURE_THE_FLAG )
+			if ( GAMETYPE == CAPTURE_THE_FLAG || GAMETYPE == CAPTURE_THE_FLAG_PRO )
 			{
 				if ( player != GetLocalClientPlayer() || !player.cv )
 					continue
@@ -2420,6 +2420,7 @@ function MainHud_InitScoreBars( vgui, player, scoreGroup )
 	switch ( gameMode )
 	{
 		case CAPTURE_THE_FLAG:
+		case CAPTURE_THE_FLAG_PRO:
 			vgui.s.friendlyFlag <- scoreGroup.CreateElement( "FriendlyFlag", panel )
 			vgui.s.enemyFlag <- scoreGroup.CreateElement( "EnemyFlag", panel )
 

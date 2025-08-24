@@ -1411,6 +1411,7 @@ function HideEventNotification( duration )
 		switch ( GAMETYPE )
 		{
 			case CAPTURE_THE_FLAG:
+			case CAPTURE_THE_FLAG_PRO:
 				if ( PlayerHasEnemyFlag( player ) )
 				{
 					SetEventNotification( "#GAMEMODE_YOU_HAVE_THE_ENEMY_FLAG" )

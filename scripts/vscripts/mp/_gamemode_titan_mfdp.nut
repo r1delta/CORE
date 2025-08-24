@@ -20,6 +20,7 @@ function EntitiesDidLoad()
 
 function TitanMFD_Pro_PrematchStart()
 {
+	level.nv.eliminationMode = eEliminationMode.PilotsTitans
 	FlagSet( "ForceStartSpawn" )
 
 	local players = GetPlayerArray()

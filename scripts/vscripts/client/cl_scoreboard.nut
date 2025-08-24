@@ -881,6 +881,15 @@ function ShowScoreboard()
 			file.nextPlayer = file.selectedPlayer
 		}
 
+		if ( GameMode_IsDefined( GAMETYPE ) )
+		{
+			if ( GameMode_GetAttackDesc( GAMETYPE ) != "" && myTeam == level.nv.attackingTeam )
+				file.header.gametypeDesc.SetText( GameMode_GetAttackDesc( GAMETYPE ) )
+
+			if ( GameMode_GetDefendDesc( GAMETYPE ) != "" && myTeam != level.nv.attackingTeam )
+				file.header.gametypeDesc.SetText( GameMode_GetDefendDesc( GAMETYPE ) )
+		}
+
 		teamPlayers[myTeam].clear()
 		teamPlayers[enemyTeam].clear()
 

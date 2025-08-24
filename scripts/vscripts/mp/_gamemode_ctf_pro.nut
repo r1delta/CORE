@@ -8,7 +8,7 @@ function main()
 	level.classicMPDropshipIntroLength = CLASSIC_MP_DROPSHIP_IDLE_ANIM_TIME - 2.0
 	level.nv.attackingTeam = TEAM_MILITIA
 	level.ctf_pro_evac_started <- false
-	DisableDropshipSpawnForTeam( TEAM_IMC )
+	//DisableDropshipSpawnForTeam( TEAM_IMC )
 
 	AddCallback_GameStateEnter( eGameState.SwitchingSides, CTF_Pro_SwitchingSidesEnter )
 	AddCallback_GameStateEnter( eGameState.Prematch, CTF_Pro_PrematchEnter )
@@ -17,8 +17,8 @@ function main()
 
 function CTF_Pro_SwitchingSidesEnter()
 {
-	EnableDropshipSpawnForTeam( TEAM_IMC )
-	DisableDropshipSpawnForTeam( TEAM_MILITIA )
+	//EnableDropshipSpawnForTeam( TEAM_IMC )
+	//DisableDropshipSpawnForTeam( TEAM_MILITIA )
 }
 
 function EntitiesDidLoad()
@@ -28,6 +28,12 @@ function EntitiesDidLoad()
 
 function CTF_Pro_PrematchEnter()
 {
+	if ( IsValid( level.dropship ) )
+	{
+		level.dropship.s.pilot.Destroy()
+		level.dropship.Destroy()
+	}
+
 	SetGlobalForcedDialogueOnly( false ) //Reset from evac from previous round
 	foreach( player in GetPlayerArray() )
 	{
