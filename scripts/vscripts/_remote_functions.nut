@@ -461,20 +461,6 @@ if ( !IsModelViewer() )
 			break
 
 		case BIG_BROTHER:
-            Remote.RegisterFunction( "SCB_BBPanelHackingStart" )
-            Remote.RegisterFunction( "SCB_BBPanelHackingEnd" )
-            Remote.RegisterFunction( "SCB_BBAttackerHacks" )
-            Remote.RegisterFunction( "SCB_BBDefenderHacks" )
-            Remote.RegisterFunction( "SCB_BBVdu" )
-            Remote.RegisterFunction( "SCB_BBExplosion" )
-            Remote.RegisterFunction( "SCB_BBPreMatchStart" )
-
-            // [LJS] bigbrother panel
-            Remote.RegisterFunction( "ServerCallback_BBPanelRefresh" )
-            Remote.RegisterFunction( "ServerCallback_BBPanelHud_Visible" )
-
-            Remote.RegisterFunction( "ServerCallback_BBTurretRefresh" )
-            break
 		case HEIST:
 			Remote.RegisterFunction( "SCB_BBUpdate" )
 			Remote.RegisterFunction( "SCB_BBVdu" )
