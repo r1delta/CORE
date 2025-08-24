@@ -130,6 +130,9 @@ function BBPanelThink( panel )
 		foreach ( exfilPanel in level.bbPanels )
 		{
 			exfilPanel.UnsetUsable()
+			if( exfilPanel != panel ) {
+				exfilPanel.SetTeam( TEAM_UNASSIGNED )
+			}
 		}
 
 		local owner = panel.GetBossPlayer()
