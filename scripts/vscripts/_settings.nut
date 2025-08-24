@@ -271,6 +271,15 @@ if ( IsClient() )
 	GameMode_AddServerScript( BIG_BROTHER, "mp/big_brother" )
 	GameMode_AddClientScript( BIG_BROTHER, "client/cl_big_brother" )
 	//GameMode_SetDefaultScoreLimits( BIG_BROTHER, 125, 0 )
+
+	GameMode_Create( UPLINK )
+	GameMode_SetName( UPLINK, "#GAMEMODE_UPLINK" )
+	GameMode_SetGameModeAnnouncement( UPLINK, "GameModeAnnounce_TDM" )
+	GameMode_SetDesc( UPLINK, "#GAMEMODE_UPLINK_HINT" )
+	GameMode_SetIcon( UPLINK, "../ui/menu/playlist/tdm" )
+	GameMode_AddServerScript( UPLINK, "mp/uplink" )
+	GameMode_AddClientScript( UPLINK, "client/cl_uplink" )
+	GameMode_SetDefaultScoreLimits( UPLINK, 5, 0 )
 	
 
 	GameMode_Create( TITAN_BRAWL )

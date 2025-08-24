@@ -67,8 +67,13 @@ function EntitiesDidLoad()
 
 		local hardpoints = ArrayFarthest( GetEntArrayByClass_Expensive( "info_hardpoint" ), attackerStartOrigin )
 
-		foreach ( hardpoint in hardpoints )
+		foreach ( i,hardpoint in hardpoints )
 		{
+			hardpoint.SetHardpointID( i )
+			hardpoint.SetTeam( TEAM_UNASSIGNED )
+
+			hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
+
 			local panel = CreateEntity( "prop_control_panel" )
 			panel.kv.model = "models/communication/terminal_usable_imc_01.mdl"
 			panel.kv.solid = 2
@@ -82,7 +87,9 @@ function EntitiesDidLoad()
 			panel.SetTeam(TEAM_UNASSIGNED)
 			panel.UnsetUsable()
 
-			thread BBPanelThink( panel )
+			thread BBPanelThink( panel,hardpoint )
+
+			hardpoint.SetTerminal( panel )
 
 			level.bbPanels.append( panel )
 			if( level.bbPanels.len() >= 2 )
@@ -91,6 +98,13 @@ function EntitiesDidLoad()
 	}
 	else {
 		foreach (levelPanel in bbPanels) {
+
+			local hardpoint = GetEntByHardpointID( levelPanel.GetHardpointID() )
+			hardpoint.SetHardpointID( levelPanel.GetHardpointID() )
+			hardpoint.SetTeam( TEAM_UNASSIGNED )
+			hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
+			hardpoint.SetTerminal( levelPanel )
+
 			local panel = CreateEntity( "prop_control_panel" )
 			panel.kv.model = "models/communication/terminal_usable_imc_01.mdl"
 			panel.kv.solid = 1
@@ -114,7 +128,7 @@ function EntitiesDidLoad()
 	}
 }
 
-function BBPanelThink( panel )
+function BBPanelThink( panel, hardpoint )
 {
 	while( true )
 	{
@@ -188,9 +202,11 @@ function BBBombCountdown(panel) {
 		local result = WaitSignalTimeout(panel,EXPLO_TIME - timeElapsed, "PanelReprogram_Success")
 		if(result != null && result.signal == "PanelReprogram_Success") {
 			printt("BB Panel Reprogrammed - Stop Explosion Countdown, panel reprogrammed")
+			// update game state to not hacked
+			SetGameState( eGameState.WinnerDetermined)
 			return
 		}
-		
+		SetGameState( eGameState.WinnerDetermined)
 		printt("BB Panel Explosion Countdown Tick")
 		printt(timeElapsed)
 

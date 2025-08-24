@@ -296,11 +296,11 @@ function PlayerProgramsControlPanel( panel, player )
 						// training level a hackable panel that isn't hooked up to a turret.
 						// In this case we need to reset the usable value to what it used to be
 						// we should change how this works for R2
-						local gameMode = GameRules.GetGameMode()
+						// local gameMode = GameRules.GetGameMode()
 
-						if(gameMode == BIG_BROTHER) {
-							panel.SetUsableByGroup( e.panelUsableValue )
-						}
+						// if(gameMode == BIG_BROTHER) {
+						// }
+						panel.SetUsableValue( e.panelUsableValue )
 
 						if (IsTrainingLevel())
 						 	panel.SetUsableValue( e.panelUsableValue )
