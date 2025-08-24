@@ -6,6 +6,7 @@ function main()
 
 	RegisterServerVarChangeCallback( "exfilState", UpdateExfilIcons )
 	RegisterServerVarChangeCallback( "attackingTeam", UpdateExfilIcons )
+	RegisterServerVarChangeCallback( "gameState", Exfil_GameStateChanged )
 
 	RegisterSignal( "FlagUpdate" )
 
@@ -112,4 +113,17 @@ function OnPanelCreated( panelEnt, isRecreate )
 		level.exfilPanels[1] = panelEnt
 
 	UpdateExfilIcons()
+}
+
+// TODO: need to make this shared somehow
+// So other round-based dropship game modes can use this without copy pasting
+function Exfil_GameStateChanged()
+{
+	if ( IsLobby() )
+		return
+
+	if ( GetGameState() <= eGameState.Playing )
+	{
+		CE_ResetVisualSettings( GetLocalViewPlayer() )
+	}
 }
