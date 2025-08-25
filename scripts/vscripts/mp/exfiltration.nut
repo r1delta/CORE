@@ -6,12 +6,13 @@ function main()
 
 	level.nv.eliminationMode = eEliminationMode.Pilots
 	FlagSet( "PilotBot" )
-	FlagSet( "ForceStartSpawn" )
+	//FlagSet( "ForceStartSpawn" )
 	SetRoundBased( true )
 	SetAttackDefendBased( true )
 
-	AddCallback_GameStateEnter( eGameState.Playing, ExfilPlaying )
+	FlagInit( "DefendersWinDraw" )
 
+	AddCallback_GameStateEnter( eGameState.Playing, ExfilPlaying )
 	GM_AddStartRoundFunc( ExfilRoundStart )
 	GM_AddEndRoundFunc( ExfilRoundEnd )
 
@@ -157,22 +158,6 @@ function ExfilRoundStart()
 		exfilPanel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 	}
 
-	if ( IsValid( level.dropship ) )
-	{
-		level.dropship.s.pilot.Destroy()
-		level.dropship.Destroy()
-	}
-
-	FlagClear( "EvacAnimStart" )
-	FlagClear( "EvacShipArrive" )
-	FlagClear( "EvacShipLeave" )
-	FlagClear( "EvacFinished" )
-	FlagClear( "PlayPostEvacDialogue" )
-	FlagClear( "EvacKillProximityConversationThread" )
-}
-
-function ExfilRoundEnd()
-{
 	SetGlobalForcedDialogueOnly( false ) //Reset from evac from previous round
 	foreach( player in GetPlayerArray() )
 	{
@@ -181,6 +166,18 @@ function ExfilRoundEnd()
 
 	ClearTeamActiveObjective( TEAM_IMC )
 	ClearTeamActiveObjective( TEAM_MILITIA )
+
+	//FlagClear( "EvacAnimStart" )
+	//FlagClear( "EvacShipArrive" )
+	//FlagClear( "EvacShipLeave" )
+	FlagClear( "EvacFinished" )
+	//FlagClear( "PlayPostEvacDialogue" )
+	//FlagClear( "EvacKillProximityConversationThread" )
+}
+
+function ExfilRoundEnd()
+{
+	FlagSet( "EvacFinished" )
 }
 
 function ExfilTimeLimitComplete()

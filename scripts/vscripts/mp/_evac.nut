@@ -410,7 +410,7 @@ function EvacOnDemand( chaseTeam, escapeNode = null, dropshipHealth = EVAC_DROPS
 
 	thread EvacShipMain( dropshipHealth, shieldHealth )
 
-	thread EvacRoundBasedCleanup()
+	thread EvacTriggerThink()
 
 	if ( GAMETYPE == EXFILTRATION )
 	{
@@ -917,20 +917,27 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 	level.dropship = dropship
 	level.ent.Signal( "EvacDropship", { dropship = dropship } )
 
-	//Add a pilot to the dropship
-	local pilot
-	if ( level.evacTeam == TEAM_IMC )
-	 	pilot = CreatePropDynamic( TEAM_IMC_CAPTAIN_MDL )
-	 else if ( level.evacTeam == TEAM_MILITIA )
-	 	pilot = CreatePropDynamic( TEAM_MILITIA_CAPTAIN_MDL )
-	 else Assert( false, "Unsupported team: " + level.evacTeam + " evacing!" )
+	local gamemode = GameRules.GetGameMode()
 
-	pilot.SetParent( dropship, "ORIGIN" )
-	pilot.MarkAsNonMovingAttachment()
+	// im sick of trying to find out how to delete them between rounds
+	// so im just not gonna spawn them in these gamemodes
+	if ( gamemode != CAPTURE_THE_FLAG_PRO && gamemode != EXFILTRATION )
+	{
+		//Add a pilot to the dropship
+		local pilot
+		if ( level.evacTeam == TEAM_IMC )
+		 	pilot = CreatePropDynamic( TEAM_IMC_CAPTAIN_MDL )
+		 else if ( level.evacTeam == TEAM_MILITIA )
+		 	pilot = CreatePropDynamic( TEAM_MILITIA_CAPTAIN_MDL )
+		 else Assert( false, "Unsupported team: " + level.evacTeam + " evacing!" )
 
-	dropship.s.pilot <- pilot
+		pilot.SetParent( dropship, "ORIGIN" )
+		pilot.MarkAsNonMovingAttachment()
 
-	thread PlayAnimTeleport( pilot, "Militia_flyinA_idle_mac", dropship, "ORIGIN" )
+		dropship.s.pilot <- pilot
+
+		thread PlayAnimTeleport( pilot, "Militia_flyinA_idle_mac", dropship, "ORIGIN" )
+	}
 
 
 	AddDamageCallback( "npc_dropship", Dropship_TookDamage )
@@ -950,7 +957,7 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 
 	thread RunEvacDropship( dropship, event1, event2, event3, event4 )
 
-	if ( GameRules.GetGameMode() != HEIST )
+	if ( gamemode != HEIST )
 		thread EvacShipDeathScore( dropship )
 
 	dropship.ClearInvulnerable()
@@ -990,6 +997,8 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 			else
 			{
 				printt("[DEBUG_DEBUG] NOT EvacEndsMatch\n");
+
+				//dropship.s.pilot.Destroy()
 
 				local evacPlayerCount = 0
 				foreach( player, _ in level.playersOnDropship )
@@ -1108,7 +1117,7 @@ function EvacShipMain( health = EVAC_DROPSHIP_HEALTH, shield = EVAC_DROPSHIP_SHI
 
 //TODO: Need to add winning/losing reasons in setwinner, called from _evac when flag EvacEndsMatch is not true
 //TODO: Will need to be integrated in gamestate think loop to avoid players falling through dropship due to low server frame rate
-function EvacRoundBasedCleanup()
+function EvacTriggerThink()
 {
 	local dropship = level.ent.WaitSignal( "EvacDropship" ).dropship
 
@@ -1656,7 +1665,8 @@ function DropshipPilotAnnouncesDeparture( dropship, ref, table )
 	if ( Flag( "EvacFinished" ) )
 		return
 
-	Assert( IsValid( dropship.s.pilot ) )
+	if ( !( "pilot" in dropship.s ) )
+		return
 
 	local departureAnnouncement = DecideDepartureAnnouncement()
 

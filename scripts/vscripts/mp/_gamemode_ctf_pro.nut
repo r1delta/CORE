@@ -5,7 +5,9 @@ function main()
 	SetRoundBased( true )
 	SetAttackDefendBased( true )
 
-	level.classicMPDropshipIntroLength = CLASSIC_MP_DROPSHIP_IDLE_ANIM_TIME - 2.0
+	FlagInit( "DefendersWinDraw" )
+
+	//level.classicMPDropshipIntroLength = CLASSIC_MP_DROPSHIP_IDLE_ANIM_TIME - 2.0
 	level.nv.attackingTeam = TEAM_MILITIA
 	level.ctf_pro_evac_started <- false
 	//DisableDropshipSpawnForTeam( TEAM_IMC )
@@ -28,12 +30,6 @@ function EntitiesDidLoad()
 
 function CTF_Pro_PrematchEnter()
 {
-	if ( IsValid( level.dropship ) )
-	{
-		level.dropship.s.pilot.Destroy()
-		level.dropship.Destroy()
-	}
-
 	SetGlobalForcedDialogueOnly( false ) //Reset from evac from previous round
 	foreach( player in GetPlayerArray() )
 	{

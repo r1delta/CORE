@@ -48,8 +48,6 @@ function main()
 
 	file.flagKillBounds <- []
 
-	FlagInit( "DefendersWinDraw" )
-
 	Globalize( DropFlag )
 	Globalize( AnyPlayerHasEnemyFlag )
 }
