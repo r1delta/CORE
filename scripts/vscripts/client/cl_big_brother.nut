@@ -16,7 +16,7 @@ function BB_AddPlayer( player )
 	player.cv.BBTitanIcon <- HudElement( "NeutralPetTitanIcon" )
 	player.cv.BBTitanIcon.SetClampToScreen( CLAMP_RECT )
 	player.cv.BBTitanIcon.SetADSFade( 0, 0, 0, 1 )
-	player.cv.BBTitanIcon.Show()
+	// player.cv.BBTitanIcon.Show()
 }
 
 function VarChangedCallback_GameStateChanged()
@@ -55,11 +55,65 @@ function BigBrotherControlPanelCreate( ent, isRecreate )
 
 	GetPanelRanges( ent )
 
-	//statusText.SetEntity( ent, offset, 0.5, 0.0 )
-	//statusText.SetClampToScreen( CLAMP_RECT )
-	//statusText.SetFOVFade( deg_cos( 40 ), deg_cos( 15 ), 0, 1 )
-	//statusText.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
-	//statusText.Show()
+	ent.s.statusText <- HudElement( "CaptureBarStatus_" + index )
+	ent.s.statusText.SetEntity( ent, offset, 0.5, 0.0 )
+	ent.s.statusText.SetClampToScreen( CLAMP_RECT )
+	ent.s.statusText.Show()
+
+	ent.s.statusText.SetAutoTextVector( "#HUD_DISTANCE_METERS", HATT_DISTANCE_METERS, ent.GetOrigin() )
+	// ent.s.statusText.SetText("")
+	ent.s.VGUIFunc <- UpdateBBText
+
+	if ( !ent.s.statusText.IsAutoText() )
+		ent.s.statusText.EnableAutoText()
+
+	ent.s.labelText <- HudElement( "CaptureBarLabel_" + index )
+	ent.s.labelText.Show()
+
+	if(CanUpdateVGUI(ent))
+	{
+		local stateElement = ent.s.HudVGUI.s.state
+		local controlledItem = ent.s.HudVGUI.s.controlledItem
+		controlledItem.SetText( "" )
+		stateElement.SetText( "" )
+	}
+
+	statusText.SetEntity( ent, offset, 0.5, 0.0 )
+	statusText.SetClampToScreen( CLAMP_RECT )
+	statusText.SetFOVFade( deg_cos( 40 ), deg_cos( 15 ), 0, 1 )
+	statusText.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
+	statusText.Show()
+}
+
+function CanUpdateVGUI( panel )
+{
+	if ( panel.s.VGUIFunc == null )
+		return false
+
+	if ( panel.s.HudVGUI == null )
+		return false
+
+	// if ( panel.s.targetArray.len() == 0 )
+	// 	return false
+
+	return true
+}
+
+function UpdateBBText(panel) {
+
+	local stateElement = panel.s.HudVGUI.s.state
+	local controlledItem = panel.s.HudVGUI.s.controlledItem
+	local endTime = Time() + 45;
+	stateElement.SetAutoText( "", HATT_COUNTDOWN_TIME, endTime )
+
+
+	controlledItem.SetText( "Panel " + panel.GetName() )
+	// stateElement.SetText( Time().tointeger() + "" )
+}
+
+function InitializeHardpoint( hardpoint )
+{
+	
 }
 
 function BigBrotherUpdatePanel( panel, index )
@@ -91,6 +145,12 @@ function BigBrotherUpdatePanel( panel, index )
 		panel.s.worldIcon.Hide()
 	else
 		panel.s.worldIcon.Show()
+
+
+	if ( CanUpdateVGUI( panel ) ) {
+		panel.s.VGUIFunc( panel )	// Update the panel vgui screen to match the state of the target(s)
+	}
+
 }
 
 function GetCapturePointStatusIcon( index )
@@ -111,11 +171,17 @@ function SCB_BBUpdate( playerHandle )
 		BigBrotherUpdatePanel( panel, index )
 	}
 
+	if(!playerHandle)
+		return
+
 	local panelUser = GetEntityFromEncodedEHandle( playerHandle )
+	
+	local player = GetLocalViewPlayer()
+	if(!player)
+		return	
 	local msg
 	local subMsg
 
-	local player = GetLocalViewPlayer()
 	local team = player.GetTeam()
 
 	if ( player == panelUser )

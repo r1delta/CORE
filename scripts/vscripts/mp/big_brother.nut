@@ -69,10 +69,10 @@ function EntitiesDidLoad()
 
 		foreach ( i,hardpoint in hardpoints )
 		{
-			hardpoint.SetHardpointID( i )
-			hardpoint.SetTeam( TEAM_UNASSIGNED )
+			// hardpoint.SetHardpointID( i )
+			// hardpoint.SetTeam( TEAM_UNASSIGNED )
 
-			hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
+			// hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
 
 			local panel = CreateEntity( "prop_control_panel" )
 			panel.kv.model = "models/communication/terminal_usable_imc_01.mdl"
@@ -89,7 +89,7 @@ function EntitiesDidLoad()
 
 			thread BBPanelThink( panel,hardpoint )
 
-			hardpoint.SetTerminal( panel )
+			// hardpoint.SetTerminal( panel )
 
 			level.bbPanels.append( panel )
 			if( level.bbPanels.len() >= 2 )
@@ -100,7 +100,7 @@ function EntitiesDidLoad()
 		foreach (levelPanel in bbPanels) {
 
 			local hardpoint = GetEntByHardpointID( levelPanel.GetHardpointID() )
-			hardpoint.SetHardpointID( levelPanel.GetHardpointID() )
+			// hardpoint.SetHardpointID( levelPanel.GetHardpointID() )
 			hardpoint.SetTeam( TEAM_UNASSIGNED )
 			hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
 			hardpoint.SetTerminal( levelPanel )
@@ -150,10 +150,7 @@ function BBPanelThink( panel, hardpoint )
 		}
 
 		local owner = panel.GetBossPlayer()
-		printt("Owner: " + owner)
-
 		
-
 		// swap the team of the panel that was hacked
 		panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 		panel.SetUsableByGroup( "friendlies pilot" )
@@ -195,6 +192,10 @@ function BBBombCountdown(panel) {
 	printt("BB Panel Explosion Countdown Started")
 
 	while(true) {
+		foreach(guy in GetPlayerArray())
+		{
+			Remote.CallFunction_Replay( guy, "SCB_BBUpdate",null)
+		}
 		local timeElapsed = Time() - level.bbPanelHackTime
 		if ( timeElapsed >= EXPLO_TIME ) {
 			break
