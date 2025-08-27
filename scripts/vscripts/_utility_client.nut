@@ -14,6 +14,11 @@ experimentalClient <- false
 ::RUMBLE_FLAG_RANDOM_AMPLITUDE	<- 0x0020 // Amplitude scale will be randomly chosen. Between 10% and 100%
 ::RUMBLE_FLAG_INITIAL_SCALE		<- 0x0040 // Data is the initial scale to start this effect ( * 100 )
 
+// Shortcuts for the console, just like gp <- GetPlayerArray
+glc <- GetLocalClientPlayer
+glcp <- GetLocalClientPlayer
+glv <- GetLocalViewPlayer
+glvp <- GetLocalViewPlayer
 
 /***************************************************
 Code constants already registered for script
