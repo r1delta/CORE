@@ -732,6 +732,32 @@ function AddLocalPlayerDidDamageCallback( callbackFunc )
 	level.onLocalPlayerDidDamageCallbacks.append( callbackInfo )
 }
 
+function AddCallback_LocalClientPlayerSpawned( callbackFunc )
+{
+	Assert( "onLocalClientPlayerSpawnedCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_LocalClientPlayerSpawned can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 1, "entity" )
+
+	local callbackInfo = {}
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onLocalClientPlayerSpawnedCallbacks.append( callbackInfo )
+}
+
+function AddCallback_LocalViewPlayerSpawned( callbackFunc )
+{
+	Assert( "onLocalViewPlayerSpawnedCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_LocalViewPlayerSpawned can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 1, "entity" )
+
+	local callbackInfo = {}
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onLocalViewPlayerSpawnedCallbacks.append( callbackInfo )
+}
+
 function PlayerProgressionAllowed( player = null )
 {
 	if ( IsPrivateMatch() )

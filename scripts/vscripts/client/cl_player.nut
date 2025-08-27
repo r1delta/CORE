@@ -305,6 +305,22 @@ function ClientCodeCallback_PlayerSpawned( player )
 	// exists on server and client. Clear it when you respawn.
 	player.s.recentDamageHistory = []
 
+	if ( player == GetLocalViewPlayer() )
+	{
+		foreach ( callbackInfo in level.onLocalViewPlayerSpawnedCallbacks )
+		{
+			callbackInfo.func.acall( [callbackInfo.scope, player] )
+		}
+	}
+
+	if ( player == GetLocalClientPlayer() )
+	{
+		foreach ( callbackInfo in level.onLocalClientPlayerSpawnedCallbacks )
+		{
+			callbackInfo.func.acall( [callbackInfo.scope, player] )
+		}
+	}
+
 	if ( player.IsTitan() )
 	{
 		return
