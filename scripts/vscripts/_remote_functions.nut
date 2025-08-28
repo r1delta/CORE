@@ -253,6 +253,9 @@ if ( IsMultiplayer() )
 
 		// ??�� 진행 ?�료 ?�래�?
 		RegisterServerVar( "BigBrotherPanelExplosion", false )
+
+		RegisterServerVar( "BigBrotherHackInProgress", false )
+		RegisterServerVar("bbHackStartTime",0.0)
 	}
 
 

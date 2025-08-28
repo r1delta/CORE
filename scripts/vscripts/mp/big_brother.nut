@@ -16,7 +16,7 @@ function main()
 	SetRoundWinningKillEnabled( false )
 
 	level.nv.attackingTeam = TEAM_IMC
-
+	level.nv.bbHackStartTime = 0.0
 	// 드랍쉽 스폰 사용.
 	//FlagSet( "GameModeAlwaysAllowsClassicIntro" )
 
@@ -43,6 +43,18 @@ function main()
 
 }
 
+function GetHardpointMats( panelIndex )
+{
+	local panelNames = [ "a", "b" ]
+	local panelMaterials = {}
+	panelMaterials.a <- { friendly = "hardpoint_friendly_a", neutral = "hardpoint_neutral_a", enemy = "hardpoint_enemy_a" }
+	panelMaterials.b <- { friendly = "hardpoint_friendly_b", neutral = "hardpoint_neutral_b", enemy = "hardpoint_enemy_b" }
+
+	Assert( panelIndex < panelNames.len(), "Too many big brother control panels." )
+	local panelLetter = panelNames[ panelIndex ]
+	local panelMats = panelMaterials[ panelLetter ]
+	return panelMats
+}
 
 function EntitiesDidLoad()
 {
@@ -70,10 +82,10 @@ function EntitiesDidLoad()
 		foreach ( i,hardpoint in hardpoints )
 		{
 			// hardpoint.SetHardpointID( i )
-			// hardpoint.SetTeam( TEAM_UNASSIGNED )
+			hardpoint.SetTeam( TEAM_UNASSIGNED )
 
 			// hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
-
+			hardpoint.SetTerminal
 			local panel = CreateEntity( "prop_control_panel" )
 			panel.kv.model = "models/communication/terminal_usable_imc_01.mdl"
 			panel.kv.solid = 2
@@ -86,6 +98,19 @@ function EntitiesDidLoad()
 
 			panel.SetTeam(TEAM_UNASSIGNED)
 			panel.UnsetUsable()
+			local panelMats = GetHardpointMats( i )
+
+				//local icon = "VIP_friendly"
+			panel.Minimap_SetDefaultMaterial( GetMinimapMaterial( panelMats.neutral ) )
+			panel.Minimap_SetFriendlyMaterial( GetMinimapMaterial( panelMats.friendly ) )
+			panel.Minimap_SetEnemyMaterial( GetMinimapMaterial( panelMats.enemy ) )
+			panel.Minimap_SetObjectScale( 0.11 )
+			panel.Minimap_SetAlignUpright( true )
+			panel.Minimap_SetClampToEdge( true )
+			panel.Minimap_SetFriendlyHeightArrow( true )
+			panel.Minimap_SetEnemyHeightArrow( true )
+			panel.Minimap_SetZOrder( 10 )
+			hardpoint.SetTerminal( panel )
 
 			thread BBPanelThink( panel,hardpoint )
 
@@ -119,6 +144,20 @@ function EntitiesDidLoad()
 			panel.SetTeam(TEAM_UNASSIGNED)
 			panel.UnsetUsable()
 
+			local panelMats = GetHardpointMats( levelPanel.GetHardpointID() )
+
+				//local icon = "VIP_friendly"
+			panel.Minimap_SetDefaultMaterial( GetMinimapMaterial( panelMats.neutral ) )
+			panel.Minimap_SetFriendlyMaterial( GetMinimapMaterial( panelMats.friendly ) )
+			panel.Minimap_SetEnemyMaterial( GetMinimapMaterial( panelMats.enemy ) )
+			panel.Minimap_SetObjectScale( 0.11 )
+			panel.Minimap_SetAlignUpright( true )
+			panel.Minimap_SetClampToEdge( true )
+			panel.Minimap_SetFriendlyHeightArrow( true )
+			panel.Minimap_SetEnemyHeightArrow( true )
+			panel.Minimap_SetZOrder( 10 )
+			hardpoint.SetTerminal( panel )
+
 			thread BBPanelThink( panel )
 
 			level.bbPanels.append( panel )
@@ -130,6 +169,7 @@ function EntitiesDidLoad()
 
 function BBPanelThink( panel, hardpoint )
 {
+	
 	while( true )
 	{
 
@@ -137,6 +177,9 @@ function BBPanelThink( panel, hardpoint )
 		if(level.bbHacked) {
 			continue
 		}
+		hardpoint.SetHardpointState(CAPTURE_POINT_STATE_NEXT)
+		hardpoint.SetHardpointEstimatedCaptureTime( Time() + EXPLO_TIME )
+
 		local team = panel.GetTeam()
 		
 		// 
@@ -152,8 +195,8 @@ function BBPanelThink( panel, hardpoint )
 		local owner = panel.GetBossPlayer()
 		
 		// swap the team of the panel that was hacked
-		panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
-		panel.SetUsableByGroup( "friendlies pilot" )
+		panel.SetTeam((level.nv.attackingTeam))
+		panel.SetUsableByGroup( "enemies pilot" )
 		
 		
 		foreach(guy in GetPlayerArray())
@@ -167,7 +210,7 @@ function BBPanelThink( panel, hardpoint )
 
 		level.bbPanelHackTime = Time()
 		level.bbHacked = true
-		thread BBBombCountdown(panel)
+		thread BBBombCountdown(hardpoint)
 
 
 	}
@@ -180,23 +223,24 @@ function BBRoundStart() {
 	foreach ( bbPanel in level.bbPanels )
 	{
 		bbPanel.SetUsableByGroup( "enemies pilot" )
-		bbPanel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
+		// bbPanel.SetTeam(TEAM_UNASSIGNED)
 	}
 }
 
 
-function BBBombCountdown(panel) {
-	// run this thread when the panel is hacked and we need to monitor if the panel gets hacked the round ends.
-
-// wait for the explosion time or for the panel to be reprogrammed again
+function BBBombCountdown(hardpoint) {
+	local panel = hardpoint.GetTerminal()
 	printt("BB Panel Explosion Countdown Started")
-
+	level.nv.bbHackStartTime = Time()
 	while(true) {
 		foreach(guy in GetPlayerArray())
 		{
 			Remote.CallFunction_Replay( guy, "SCB_BBUpdate",null)
 		}
 		local timeElapsed = Time() - level.bbPanelHackTime
+
+		
+
 		if ( timeElapsed >= EXPLO_TIME ) {
 			break
 		}
@@ -204,9 +248,11 @@ function BBBombCountdown(panel) {
 		if(result != null && result.signal == "PanelReprogram_Success") {
 			printt("BB Panel Reprogrammed - Stop Explosion Countdown, panel reprogrammed")
 			// update game state to not hacked
+			level.nv.winningTeam = GetOtherTeam(level.nv.attackingTeam)
 			SetGameState( eGameState.WinnerDetermined)
 			return
 		}
+		level.nv.winningTeam = level.nv.attackingTeam
 		SetGameState( eGameState.WinnerDetermined)
 		printt("BB Panel Explosion Countdown Tick")
 		printt(timeElapsed)
