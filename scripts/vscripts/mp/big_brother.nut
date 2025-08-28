@@ -26,6 +26,8 @@ function main()
 	DisableDropshipSpawnForTeam( TEAM_MILITIA )
 
 	SetRoundBased( true )
+	level.nv.eliminationMode = eEliminationMode.Pilots
+
 	SetSwitchSidesBased( true )
 	FlagSet( "ForceStartSpawn" )
 	GM_AddStartRoundFunc( BBRoundStart )
@@ -264,6 +266,8 @@ function BBBombCountdown(hardpoint) {
 			level.bbHacked = false
 			return
 		}
+		level.nv.bbHackStartTime = 0.0
+		level.bbHacked = false
 		thread NuclearCoreExplosion( panel.GetOrigin(), panel )
 		// if (GamePlayingOrSuddenDeath())
 		// {
