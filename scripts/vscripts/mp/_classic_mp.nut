@@ -763,7 +763,7 @@ function PlayJumpoutAnims( player, ship, jumpAnim )
 	player.ClearAnimViewEntity()
 	for ( ;; )
 	{
-		if ( player.IsOnGround() || player.IsWallRunning() || player.IsWallHanging() )
+		if ( player.IsOnGround() || player.IsWallRunning() || player.IsWallHanging() || player.IsZiplining() )
 			break
 		wait 0
 	}
