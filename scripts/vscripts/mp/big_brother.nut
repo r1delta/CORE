@@ -85,8 +85,8 @@ function EntitiesDidLoad()
 			// hardpoint.SetHardpointID( i )
 			hardpoint.SetTeam( TEAM_UNASSIGNED )
 
-			// hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
-			hardpoint.SetTerminal
+			hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
+			
 			local panel = CreateEntity( "prop_control_panel" )
 			panel.kv.model = "models/communication/terminal_usable_imc_01.mdl"
 			panel.kv.solid = 2
@@ -99,8 +99,8 @@ function EntitiesDidLoad()
 
 			panel.SetTeam(level.nv.attackingTeam)
 			panel.UnsetUsable()
-			local panelMats = GetHardpointMats( i )
-
+			// local panelMats = GetHardpointMats(  )
+			local panelMats = GetHardpointMats( level.bbPanels.len() ? 0 : 1 )
 				//local icon = "VIP_friendly"
 			panel.Minimap_SetDefaultMaterial( GetMinimapMaterial( panelMats.neutral ) )
 			panel.Minimap_SetFriendlyMaterial( GetMinimapMaterial( panelMats.friendly ) )
@@ -111,6 +111,8 @@ function EntitiesDidLoad()
 			panel.Minimap_SetFriendlyHeightArrow( true )
 			panel.Minimap_SetEnemyHeightArrow( true )
 			panel.Minimap_SetZOrder( 10 )
+			panel.Minimap_AlwaysShow( TEAM_IMC, null )
+			panel.Minimap_AlwaysShow( TEAM_MILITIA, null )
 			hardpoint.SetTerminal( panel )
 
 			thread BBPanelThink( panel,hardpoint )
@@ -145,9 +147,13 @@ function EntitiesDidLoad()
 			panel.SetTeam(level.nv.attackingTeam)
 			panel.UnsetUsable()
 
-			local panelMats = GetHardpointMats( levelPanel.GetHardpointID() )
+			local panelMaterials = {}
+			panelMaterials.a <- { friendly = "hardpoint_friendly_a", neutral = "hardpoint_neutral_a", enemy = "hardpoint_enemy_a" }
+			panelMaterials.b <- { friendly = "hardpoint_friendly_b", neutral = "hardpoint_neutral_b", enemy = "hardpoint_enemy_b" }
 
-				//local icon = "VIP_friendly"
+			local panelMats = panelMaterials[ level.bbPanels.len() ? "b" : "a" ]
+
+			//local icon = "VIP_friendly"
 			panel.Minimap_SetDefaultMaterial( GetMinimapMaterial( panelMats.neutral ) )
 			panel.Minimap_SetFriendlyMaterial( GetMinimapMaterial( panelMats.friendly ) )
 			panel.Minimap_SetEnemyMaterial( GetMinimapMaterial( panelMats.enemy ) )
@@ -157,6 +163,8 @@ function EntitiesDidLoad()
 			panel.Minimap_SetFriendlyHeightArrow( true )
 			panel.Minimap_SetEnemyHeightArrow( true )
 			panel.Minimap_SetZOrder( 10 )
+			panel.Minimap_AlwaysShow( TEAM_IMC, null )
+			panel.Minimap_AlwaysShow( TEAM_MILITIA, null )
 			hardpoint.SetTerminal( panel )
 
 			thread BBPanelThink( panel )
@@ -190,6 +198,8 @@ function BBPanelThink( panel, hardpoint )
 			exfilPanel.UnsetUsable()
 			if( exfilPanel != panel ) {
 				exfilPanel.SetTeam( TEAM_UNASSIGNED )
+				exfilPanel.Minimap_Hide( TEAM_IMC, null )
+				exfilPanel.Minimap_Hide( TEAM_MILITIA, null )
 			}
 		}
 
