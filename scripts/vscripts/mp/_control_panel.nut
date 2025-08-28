@@ -78,7 +78,6 @@ function GameModeRemovePanel( ent )
 function OnPanelSpawn( panel )
 {
 	Assert( panel.GetModelName() == "models/communication/terminal_usable_imc_01.mdl" )
-	printt("OnPanelSpawn")
 	thread OnPanelSpawn_Internal( panel )
 }
 
@@ -92,7 +91,6 @@ function OnPanelSpawn_Internal( panel )
 
 	Assert( IsValid( panel ), "Invalid panel " + panel )
 	panel.EndSignal( "OnDestroy" )
-	printt("OnPanelSpawn_Internal")
 	level.controlPanels.append( panel )
 	//Default, set it usable by everyone
 	panel.SetUsableByGroup( "pilot" )

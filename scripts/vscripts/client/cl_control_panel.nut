@@ -45,7 +45,7 @@ function ServerCallback_ControlPanelRefresh( panelEHandle )
 	local panel = GetEntityFromEncodedEHandle( panelEHandle )
 	if ( !IsValid( panel ) )
 		return
-
+	printt( "ServerCallback_ControlPanelRefresh called" )
 	ControlPanelRefresh( panel )
 }
 
@@ -227,8 +227,8 @@ function CanUpdateVGUI( panel )
 	if ( panel.s.HudVGUI == null )
 		return false
 
-	if ( panel.s.targetArray.len() == 0 )
-		return false
+	// if ( panel.s.targetArray.len() == 0 )
+	// 	return false
 
 	return true
 }

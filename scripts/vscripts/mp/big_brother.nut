@@ -1,4 +1,4 @@
-const EXPLO_TIME = 10.0 // 폭파 시간
+const EXPLO_TIME = 30.0 // 폭파 시간
 const BLUESUN_TIME = 0.7 // 핵폭발 전 blue sun effect 시간
 const EXPLO_CAM_LIMIT_DIST	= 0 // 폭발 시 패널과 이 거리 안에있는 플레이어는 카메라 이동 안시킴.
 
@@ -16,7 +16,7 @@ function main()
 	SetRoundWinningKillEnabled( false )
 
 	level.nv.attackingTeam = TEAM_IMC
-
+	level.nv.bbHackStartTime = 0.0
 	// 드랍쉽 스폰 사용.
 	//FlagSet( "GameModeAlwaysAllowsClassicIntro" )
 
@@ -26,6 +26,8 @@ function main()
 	DisableDropshipSpawnForTeam( TEAM_MILITIA )
 
 	SetRoundBased( true )
+	level.nv.eliminationMode = eEliminationMode.Pilots
+
 	SetSwitchSidesBased( true )
 	FlagSet( "ForceStartSpawn" )
 	GM_AddStartRoundFunc( BBRoundStart )
@@ -39,10 +41,23 @@ function main()
 	file.bigBrotherPanelNames <- [ "bb_panel_a", "bb_panel_b" ]
 	level.bbPanelHackTime <- 0.0
 	level.bbHacked <- false
+	level.HackedPlayer <- null
 
 
 }
 
+function GetHardpointMats( panelIndex )
+{
+	local panelNames = [ "a", "b" ]
+	local panelMaterials = {}
+	panelMaterials.a <- { friendly = "hardpoint_friendly_a", neutral = "hardpoint_neutral_a", enemy = "hardpoint_enemy_a" }
+	panelMaterials.b <- { friendly = "hardpoint_friendly_b", neutral = "hardpoint_neutral_b", enemy = "hardpoint_enemy_b" }
+
+	Assert( panelIndex < panelNames.len(), "Too many big brother control panels." )
+	local panelLetter = panelNames[ panelIndex ]
+	local panelMats = panelMaterials[ panelLetter ]
+	return panelMats
+}
 
 function EntitiesDidLoad()
 {
@@ -69,11 +84,11 @@ function EntitiesDidLoad()
 
 		foreach ( i,hardpoint in hardpoints )
 		{
-			hardpoint.SetHardpointID( i )
+			// hardpoint.SetHardpointID( i )
 			hardpoint.SetTeam( TEAM_UNASSIGNED )
 
 			hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
-
+			
 			local panel = CreateEntity( "prop_control_panel" )
 			panel.kv.model = "models/communication/terminal_usable_imc_01.mdl"
 			panel.kv.solid = 2
@@ -84,12 +99,27 @@ function EntitiesDidLoad()
 			panel.SetOrigin( hardpoint.GetOrigin() )
 			panel.SetAngles( hardpoint.GetAngles() )
 
-			panel.SetTeam(TEAM_UNASSIGNED)
+			panel.SetTeam(level.nv.attackingTeam)
 			panel.UnsetUsable()
+			// local panelMats = GetHardpointMats(  )
+			local panelMats = GetHardpointMats( level.bbPanels.len() ? 0 : 1 )
+				//local icon = "VIP_friendly"
+			panel.Minimap_SetDefaultMaterial( GetMinimapMaterial( panelMats.neutral ) )
+			panel.Minimap_SetFriendlyMaterial( GetMinimapMaterial( panelMats.friendly ) )
+			panel.Minimap_SetEnemyMaterial( GetMinimapMaterial( panelMats.enemy ) )
+			panel.Minimap_SetObjectScale( 0.11 )
+			panel.Minimap_SetAlignUpright( true )
+			panel.Minimap_SetClampToEdge( true )
+			panel.Minimap_SetFriendlyHeightArrow( true )
+			panel.Minimap_SetEnemyHeightArrow( true )
+			panel.Minimap_SetZOrder( 10 )
+			panel.Minimap_AlwaysShow( TEAM_IMC, null )
+			panel.Minimap_AlwaysShow( TEAM_MILITIA, null )
+			hardpoint.SetTerminal( panel )
 
 			thread BBPanelThink( panel,hardpoint )
 
-			hardpoint.SetTerminal( panel )
+			// hardpoint.SetTerminal( panel )
 
 			level.bbPanels.append( panel )
 			if( level.bbPanels.len() >= 2 )
@@ -100,7 +130,7 @@ function EntitiesDidLoad()
 		foreach (levelPanel in bbPanels) {
 
 			local hardpoint = GetEntByHardpointID( levelPanel.GetHardpointID() )
-			hardpoint.SetHardpointID( levelPanel.GetHardpointID() )
+			// hardpoint.SetHardpointID( levelPanel.GetHardpointID() )
 			hardpoint.SetTeam( TEAM_UNASSIGNED )
 			hardpoint.SetName( level.bbPanels.len() ? "bb_panel_a" : "bb_panel_b" )
 			hardpoint.SetTerminal( levelPanel )
@@ -116,8 +146,28 @@ function EntitiesDidLoad()
 			panel.SetAngles( levelPanel.GetAngles() )
 			levelPanel.Destroy()
 
-			panel.SetTeam(TEAM_UNASSIGNED)
+			panel.SetTeam(level.nv.attackingTeam)
 			panel.UnsetUsable()
+
+			local panelMaterials = {}
+			panelMaterials.a <- { friendly = "hardpoint_friendly_a", neutral = "hardpoint_neutral_a", enemy = "hardpoint_enemy_a" }
+			panelMaterials.b <- { friendly = "hardpoint_friendly_b", neutral = "hardpoint_neutral_b", enemy = "hardpoint_enemy_b" }
+
+			local panelMats = panelMaterials[ level.bbPanels.len() ? "b" : "a" ]
+
+			//local icon = "VIP_friendly"
+			panel.Minimap_SetDefaultMaterial( GetMinimapMaterial( panelMats.neutral ) )
+			panel.Minimap_SetFriendlyMaterial( GetMinimapMaterial( panelMats.friendly ) )
+			panel.Minimap_SetEnemyMaterial( GetMinimapMaterial( panelMats.enemy ) )
+			panel.Minimap_SetObjectScale( 0.11 )
+			panel.Minimap_SetAlignUpright( true )
+			panel.Minimap_SetClampToEdge( true )
+			panel.Minimap_SetFriendlyHeightArrow( true )
+			panel.Minimap_SetEnemyHeightArrow( true )
+			panel.Minimap_SetZOrder( 10 )
+			panel.Minimap_AlwaysShow( TEAM_IMC, null )
+			panel.Minimap_AlwaysShow( TEAM_MILITIA, null )
+			hardpoint.SetTerminal( panel )
 
 			thread BBPanelThink( panel )
 
@@ -130,13 +180,17 @@ function EntitiesDidLoad()
 
 function BBPanelThink( panel, hardpoint )
 {
+	
 	while( true )
 	{
 
 		panel.WaitSignal( "PanelReprogram_Success" )
-		if(level.bbHacked) {
-			continue
-		}
+		// if(level.bbHacked) {
+		// 	continue
+		// }
+		// hardpoint.SetHardpointState(CAPTURE_POINT_STATE_NEXT)
+		// hardpoint.SetHardpointEstimatedCaptureTime( Time() + EXPLO_TIME )
+
 		local team = panel.GetTeam()
 		
 		// 
@@ -146,17 +200,16 @@ function BBPanelThink( panel, hardpoint )
 			exfilPanel.UnsetUsable()
 			if( exfilPanel != panel ) {
 				exfilPanel.SetTeam( TEAM_UNASSIGNED )
+				exfilPanel.Minimap_Hide( TEAM_IMC, null )
+				exfilPanel.Minimap_Hide( TEAM_MILITIA, null )
 			}
 		}
 
 		local owner = panel.GetBossPlayer()
-		printt("Owner: " + owner)
-
-		
-
+		level.HackedPlayer = owner;
 		// swap the team of the panel that was hacked
-		panel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
-		panel.SetUsableByGroup( "friendlies pilot" )
+		panel.SetTeam((level.nv.attackingTeam))
+		panel.SetUsableByGroup( "enemies pilot" )
 		
 		
 		foreach(guy in GetPlayerArray())
@@ -168,9 +221,9 @@ function BBPanelThink( panel, hardpoint )
 			}
 		}
 
-		level.bbPanelHackTime = Time()
+		level.nv.bbHackStartTime = Time()
 		level.bbHacked = true
-		thread BBBombCountdown(panel)
+		waitthread BBBombCountdown(hardpoint)
 
 
 	}
@@ -179,7 +232,6 @@ function BBPanelThink( panel, hardpoint )
 function BBRoundStart() {
 
 	local startTime = IsRoundBased() ? level.nv.roundStartTime : level.nv.gameStartTime
-
 	foreach ( bbPanel in level.bbPanels )
 	{
 		bbPanel.SetUsableByGroup( "enemies pilot" )
@@ -188,27 +240,43 @@ function BBRoundStart() {
 }
 
 
-function BBBombCountdown(panel) {
-	// run this thread when the panel is hacked and we need to monitor if the panel gets hacked the round ends.
-
-// wait for the explosion time or for the panel to be reprogrammed again
+function BBBombCountdown(hardpoint) {
+	local panel = hardpoint.GetTerminal()
 	printt("BB Panel Explosion Countdown Started")
-
 	while(true) {
-		local timeElapsed = Time() - level.bbPanelHackTime
-		if ( timeElapsed >= EXPLO_TIME ) {
-			break
+		foreach(guy in GetPlayerArray())
+		{
+			Remote.CallFunction_Replay( guy, "SCB_BBUpdate",null)
 		}
-		local result = WaitSignalTimeout(panel,EXPLO_TIME - timeElapsed, "PanelReprogram_Success")
+		local startTime = IsRoundBased() ? level.nv.roundStartTime : level.nv.gameStartTime
+		local timeElapsed = startTime - level.nv.bbHackStartTime
+		printt("panel team: " + panel.GetTeam())
+		printt("attacking team: " + level.nv.attackingTeam)
+		printt("timeElapsed: " + timeElapsed)
+		printt("timeElapsed: " + (EXPLO_TIME - timeElapsed))
+		local result = WaitSignalTimeout(panel, EXPLO_TIME, "PanelReprogram_Success")
 		if(result != null && result.signal == "PanelReprogram_Success") {
 			printt("BB Panel Reprogrammed - Stop Explosion Countdown, panel reprogrammed")
-			// update game state to not hacked
-			SetGameState( eGameState.WinnerDetermined)
+			if (GamePlayingOrSuddenDeath())
+			{
+				SetWinLossReasons( "#HEIST_TEAM_HACKED_PANEL", "#HEIST_DATA_STOLEN" )
+				SetWinner( GetOtherTeam(level.nv.attackingTeam) )
+			}
+			level.nv.bbHackStartTime = 0.0
+			level.bbHacked = false
 			return
 		}
-		SetGameState( eGameState.WinnerDetermined)
+		level.nv.bbHackStartTime = 0.0
+		level.bbHacked = false
+		thread NuclearCoreExplosion( panel.GetOrigin(), panel )
+		// if (GamePlayingOrSuddenDeath())
+		// {
+		// 	SetWinLossReasons( "#HEIST_DATA_STOLEN", "#HEIST_TEAM_HACKED_PANEL" )
+		// 	SetWinner( level.nv.attackingTeam )
+		// }
 		printt("BB Panel Explosion Countdown Tick")
 		printt(timeElapsed)
+
 
 	}
 
@@ -823,122 +891,121 @@ function BBBombCountdown(panel) {
 
 
 // //! 폭파 관련 처리
-// function NuclearCoreExplosion( origin, panel )
-// {
-// 	//! 기존의 핵 FX 삭제
-// 	/*
-// 	OnThreadEnd(
-// 		function() : ( panel )
-// 		{
-// 			ClearNuclearBlueSunEffect( panel )
-// 		}
-// 	)
-// 	wait 1.3
-// 	*/
-// 	local panelEHandle = IsValid( panel ) ? panel.GetEncodedEHandle() : null
-// 	local callOnce = false
-// 	local players = GetPlayerArray()
-// 	foreach( player in players )
-// 	{
-// 		Remote.CallFunction_Replay( player, "ServerCallback_BBPanelHud_Visible", panelEHandle, false )
-// 		if(callOnce == false)
-// 		{
-// 			player.OnNuclearCoreExplosion()
-// 			callOnce = true
-// 		}
-// 	}
+function NuclearCoreExplosion( origin, panel )
+{
+	//! 기존의 핵 FX 삭제
+	/*
+	OnThreadEnd(
+		function() : ( panel )
+		{
+			ClearNuclearBlueSunEffect( panel )
+		}
+	)
+	wait 1.3
+	*/
+	local panelEHandle = IsValid( panel ) ? panel.GetEncodedEHandle() : null
+	local callOnce = false
+	local players = GetPlayerArray()
+	foreach( player in players )
+	{
+		// Remote.CallFunction_Replay( player, "ServerCallback_BBPanelHud_Visible", panelEHandle, false )
+		if(callOnce == false)
+		{
+			player.OnNuclearCoreExplosion()
+			callOnce = true
+		}
+	}
 
-// 	//local attachmentIndex = panel.LookupAttachment( "PANEL_SCREEN_MIDDLE" )
-// 	//local fxOrigin = panel.GetAttachmentOrigin( attachmentIndex )
+	//local attachmentIndex = panel.LookupAttachment( "PANEL_SCREEN_MIDDLE" )
+	//local fxOrigin = panel.GetAttachmentOrigin( attachmentIndex )
 
-// 	local fxEnt
-// 	local fxOrigin
+	local fxEnt
+	local fxOrigin
 
-// 	if( StringContains( panel.GetName(), "_a" ) )
-// 	{
-// 		fxEnt = GetEnt( "out_A" )
-// 	}
-// 	else if( StringContains( panel.GetName(), "_b" ) )
-// 	{
-// 		fxEnt = GetEnt( "out_B" )
-// 	}
+	if( StringContains( panel.GetName(), "_a" ) )
+	{
+		fxEnt = GetEnt( "out_A" )
+	}
+	else if( StringContains( panel.GetName(), "_b" ) )
+	{
+		fxEnt = GetEnt( "out_B" )
+	}
 
-// 	if( fxEnt )
-// 	{
-// 		fxOrigin = fxEnt.GetOrigin()
-// 	}
-// 	else
-// 	{
-// 		local attachmentIndex = panel.LookupAttachment( "PANEL_SCREEN_MIDDLE" )
-// 		fxOrigin = panel.GetAttachmentOrigin( attachmentIndex )
-// 	}
+	if( fxEnt )
+	{
+		fxOrigin = fxEnt.GetOrigin()
+	}
+	else
+	{
+		local attachmentIndex = panel.LookupAttachment( "PANEL_SCREEN_MIDDLE" )
+		fxOrigin = panel.GetAttachmentOrigin( attachmentIndex )
+	}
 
 
-// 	EmitSoundAtPosition( fxOrigin, "titan_nuclear_death_charge" )
+	EmitSoundAtPosition( fxOrigin, "titan_nuclear_death_charge" )
 
-// 	wait BLUESUN_TIME
+	wait BLUESUN_TIME
 
-// 	//! 폭파 처리
-// 	thread NuclearCoreExplosionChainReaction( fxOrigin, panel )
-// }
+	//! 폭파 처리
+	thread NuclearCoreExplosionChainReaction( fxOrigin, panel )
+}
 
-// //! 핵 FX 처리 루틴
-// function NuclearCoreExplosionChainReaction( origin, panel )
-// {
-// 	local explosions
-// 	local explosionDist
-// 	local time
-// 	local IsNPC
+//! 핵 FX 처리 루틴
+function NuclearCoreExplosionChainReaction( origin, panel )
+{
+	local explosions
+	local explosionDist
+	local time
+	local IsNPC
 
-// 	local titanDamage 		= 20000
-// 	local nonTitanDamage 	= 15000
+	local titanDamage 		= 20000
+	local nonTitanDamage 	= 15000
 
-// 	explosions = 1
-// 	explosionDist = 2100	// 6000
-// 	time = 1.7
+	explosions = 1
+	explosionDist = 2100	// 6000
+	time = 1.7
 
-// 	local waitPerExplosion = time / explosions
+	local waitPerExplosion = time / explosions
 
-// 	//! 핵 사운드 출력
-// 	EmitSoundAtPosition( origin, "titan_nuclear_death_explode" )
+	//! 핵 사운드 출력
+	EmitSoundAtPosition( origin, "titan_nuclear_death_explode" )
 
-// 	//! FX 출력origin, Vector(0,RandomInt(360),0) )
-// 	PlayFX( FX_BIGBROTHER_PANEL_EXPLOSION, origin, Vector(0,RandomInt(360),0) )
+	//! FX 출력origin, Vector(0,RandomInt(360),0) )
+	PlayFX( FX_BIGBROTHER_PANEL_EXPLOSION, origin, Vector(0,RandomInt(360),0) )
 
-// 	// one extra explosion that does damage to physics entities at smaller radius
-// 	explosions += 1
+	// one extra explosion that does damage to physics entities at smaller radius
+	explosions += 1
 
-// 	for ( local i = 0; i < explosions; i++ )
-// 	{
-// 		local explosionOwner = file.HackedPlayer
+	for ( local i = 0; i < explosions; i++ )
+	{
+		local explosionOwner = level.HackedPlayer
 
-// 		//RadiusDamage( origin, titanDamage, nonTitanDamage, explosionDist, 0, explosionOwner, eDamageSourceId.nuclear_core, true, true, null, null )
+		//RadiusDamage( origin, titanDamage, nonTitanDamage, explosionDist, 0, explosionOwner, eDamageSourceId.nuclear_core, true, true, null, null )
 
-// 		RadiusDamage( panel.GetOrigin(),	// origin
-// 		titanDamage,								// titan damage
-// 		nonTitanDamage,								// pilot damage
-// 		explosionDist,		// radiusFalloffMax
-// 		0,								// radiusFullDamage
-// 		null, 					// owner
-// 		eDamageSourceId.nuclear_core,  // damage source id
-// 		false,							// alive only
-// 		true,							// selfDamage
-// 		null,							// team
-// 		null,							// scriptFlags
-// 		true )							// except Collision
+		RadiusDamage( panel.GetOrigin(),	// origin
+		titanDamage,								// titan damage
+		nonTitanDamage,								// pilot damage
+		explosionDist,		// radiusFalloffMax
+		0,								// radiusFullDamage
+		null, 					// owner
+		eDamageSourceId.nuclear_core,  // damage source id
+		false,							// alive only
+		true,							// selfDamage
+		null,							// team
+		null							// scriptFlags
+		)
+		wait waitPerExplosion
+	}
 
-// 		wait waitPerExplosion
-// 	}
+	wait 1.0
 
-// 	wait 1.0
-
-// 	// 폭탄이 터지기 직전에 방어팀이 엘리된 경우, 처리 스레드가 달라서 꼬임. 그래서 여기에 조건 추가.
-// 	if (GamePlayingOrSuddenDeath())
-// 	{
-// 		SetWinLossReasons( "#BIG_BROTHER_ENEMY_PANEL_DESTROYED", "#BIG_BROTHER_FRIENDLY_PANEL_DESTROYED" )
-// 		SetWinner( level.nv.attackingTeam )
-// 	}
-// }
+	// 폭탄이 터지기 직전에 방어팀이 엘리된 경우, 처리 스레드가 달라서 꼬임. 그래서 여기에 조건 추가.
+	if (GamePlayingOrSuddenDeath())
+	{
+		SetWinLossReasons( "#HEIST_DATA_STOLEN", "#HEIST_TEAM_HACKED_PANEL" )
+		SetWinner( level.nv.attackingTeam )
+	}
+}
 
 // //! AttackerHacksPanel 에서 호출
 // function ExplosionProgress( panel, waitTime )
