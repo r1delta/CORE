@@ -175,6 +175,7 @@ function IsReplacementTitanAvailableForGameState()
 
 	 return true*/
 }
+Globalize( IsReplacementTitanAvailableForGameState )
 
 function GetTitanCoreTimer( titan )
 {

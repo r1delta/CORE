@@ -12,6 +12,7 @@ function main()
 	AddClientCommandCallback( "explode", ClientCommand_Explode )
 	AddClientCommandCallback( "pinkmist", ClientCommand_Explode )
 	AddClientCommandCallback( "dissolve", ClientCommand_Dissolve )
+	AddClientCommandCallback( "vanish", ClientCommand_Vanish )
 
 	AddClientCommandCallback( "giveallammo", ClientCommand_GiveAllAmmo )
 }
@@ -55,29 +56,54 @@ function ClientCommand_ToggleDemigod( player, ... )
 	return true
 }
 
+function CanUseKillCommands( player )
+{
+	// Pretty much exacly what i need
+	if ( !IsReplacementTitanAvailableForGameState() )
+		return false
+
+	if ( !IsAlive( player ) )
+		return false
+
+	return true
+}
+
+// Using worldspawn as the attacker so titans dont become unavailable for that player after dying
+// DF_MELEE makes titans pathetically ragdoll instead of exploding
 function ClientCommand_Kill( player, ... )
 {
-	if ( IsAlive( player ) && !player.IsTitan() )
-		player.Die( null, null, { damageSourceId = eDamageSourceId.suicide } )
+	if ( CanUseKillCommands( player ) )
+		player.Die( level.worldspawn, level.worldspawn, { scriptType = DF_MELEE, damageSourceId = eDamageSourceId.suicide } )
 
 	return true
 }
 
 function ClientCommand_Explode( player, ... )
 {
-	if ( IsAlive( player ) && !player.IsTitan() )
-		player.Die( null, null, { scriptType = DF_GIB | DF_DISSOLVE, damageSourceId = eDamageSourceId.suicide } )
+	if ( CanUseKillCommands( player ) )
+		player.Die( level.worldspawn, level.worldspawn, { scriptType = DF_GIB | DF_DISSOLVE, damageSourceId = eDamageSourceId.suicide } )
 
 	return true
 }
 
 function ClientCommand_Dissolve( player, ... )
 {
-	if ( IsAlive( player ) && !player.IsTitan() )
+	if ( CanUseKillCommands( player ) )
 	{
-		player.Die( null, null, { damageSourceId = eDamageSourceId.suicide } )
+		player.Die( level.worldspawn, level.worldspawn, { scriptType = DF_MELEE, damageSourceId = eDamageSourceId.suicide } )
 		player.Dissolve( ENTITY_DISSOLVE_CHAR, Vector( 0, 0, 0 ), 0 )
 		EmitSoundAtPosition( player.GetOrigin(), "Object_Dissolve" )
+	}
+
+	return true
+}
+
+function ClientCommand_Vanish( player, ... )
+{
+	if ( CanUseKillCommands( player ) )
+	{
+		player.MakeInvisible()
+		player.Die( level.worldspawn, level.worldspawn, { scriptType = DF_MELEE, damageSourceId = eDamageSourceId.suicide } )
 	}
 
 	return true
