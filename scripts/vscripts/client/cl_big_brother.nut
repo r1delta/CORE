@@ -209,7 +209,6 @@ function BigBrotherControlPanelCreate( ent, isRecreate )
 	worldIcon.SetWorldSpaceScale( 1.0, 0.7, 500, 3500 )
 
 	ent.s.worldIcon <- worldIcon
-	BigBrotherUpdatePanel( ent, index )
 
 	GetPanelRanges( ent )
 
@@ -227,7 +226,7 @@ function BigBrotherControlPanelCreate( ent, isRecreate )
 	ent.s.labelText <- HudElement( "CaptureBarLabel_" + index )
 	ent.s.labelText.SetText("Hack") 
 	ent.s.labelText.Show()
-
+	BigBrotherUpdatePanel( ent, index )
 	if(CanUpdateVGUI(ent))
 	{
 		local stateElement = ent.s.HudVGUI.s.state
@@ -236,10 +235,10 @@ function BigBrotherControlPanelCreate( ent, isRecreate )
 		stateElement.SetText( "" )
 	}
 
-	statusText.SetEntity( ent, offset, 0.5, 0.0 )
-	statusText.SetClampToScreen( CLAMP_RECT )
-	statusText.SetFOVFade( deg_cos( 40 ), deg_cos( 15 ), 0, 1 )
-	statusText.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
+	// statusText.SetEntity( ent, offset, 0.5, 0.0 )
+	// statusText.SetClampToScreen( CLAMP_RECT )
+	// statusText.SetFOVFade( deg_cos( 40 ), deg_cos( 15 ), 0, 1 )
+	// statusText.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
 	statusText.Show()
 }
 
@@ -291,7 +290,10 @@ function UpdateBBText(panel) {
 	stateElement.SetAutoText( "", HATT_COUNTDOWN_TIME, endTime )
 
 
-	controlledItem.SetText( "Panel " + panel.GetName() )
+	controlledItem.SetText( "Defend")
+	controlledItem.SetColor( 0, 255, 0, 255 )
+	panel.s.labelText.SetAutoText( "#DEFEND_COUNTDOWNTIME", HATT_COUNTDOWN_TIME, endTime )
+	panel.s.labelText.EnableAutoText()
 	// stateElement.SetText( Time().tointeger() + "" )
 }
 
@@ -468,11 +470,16 @@ function BigBrotherUpdatePanel( panel, index )
 	}
 
 	
-	if ( panelTeam == TEAM_UNASSIGNED )
+	if ( panelTeam == TEAM_UNASSIGNED ) {
 		panel.s.worldIcon.Hide()
-	else
+		panel.s.statusText.Hide()
+		panel.s.labelText.Hide()
+	}
+	else {
 		panel.s.worldIcon.Show()
-
+		panel.s.statusText.Show()
+		panel.s.labelText.Show()
+	}
 
 	if ( CanUpdateVGUI( panel ) ) {
 		panel.s.VGUIFunc( panel )	// Update the panel vgui screen to match the state of the target(s)
