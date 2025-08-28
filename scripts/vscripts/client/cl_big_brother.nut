@@ -2,6 +2,8 @@ const TEAM_NEUTRAL = 0
 const TEAM_FRIENDLY = 1
 const TEAM_ENEMY = 2
 
+const EXPLO_TIME = 10
+
 capturePointColor <- {}
 capturePointColor[ TEAM_NEUTRAL ] <- StringToColors( CAPTURE_POINT_COLOR_NEUTRAL )
 capturePointColor[ TEAM_ENEMY ] <- StringToColors( CAPTURE_POINT_COLOR_ENEMY )
@@ -35,7 +37,7 @@ function main()
 
 	RegisterSignal( "Stop_VDU" )
 	AddCallback_OnClientScriptInit( BB_AddPlayer )
-	AddCreateCallback( "info_hardpoint", OnHardpointCreated )
+	// AddCreateCallback( "info_hardpoint", OnHardpointCreated )
 
 }
 
@@ -79,19 +81,19 @@ function HardpointEntityChanged( player )
 
 function UpdateHardpointLabelAndColor( player, hardpoint )
 {
-	// sets the color of the bar for the local players team
-	local team = hardpoint.GetTeam()
-	local color = GetColorForTeam( hardpoint )
-	if ( hardpoint == player.GetHardpointEntity() )
-	{
-		player.s.captureBarData.color = color
-		player.s.captureBarData.labelText = "UPLINK"
-	}
+	// // sets the color of the bar for the local players team
+	// local team = hardpoint.GetTeam()
+	// local color = GetColorForTeam( hardpoint )
+	// if ( hardpoint == player.GetHardpointEntity() )
+	// {
+	// 	player.s.captureBarData.color = color
+	// 	player.s.captureBarData.labelText = "UPLINK"
+	// }
 
-	player.s.labelText.SetText( "UPLINK" )
-	hardpoint.s.color = color
+	// player.s.labelText.SetText( "UPLINK" )
+	// hardpoint.s.color = color
 
-	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
+	// level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
 }
 
 
@@ -379,11 +381,11 @@ function HardpointChanged( hardpoint )
 
 		printt( startTime, endTime, currentProgress, endTime - Time() )
 
-		player.s.progressBar.SetBarProgressOverTime( currentProgress, 0.0, endTime - Time() )
+		// player.s.progressBar.SetBarProgressOverTime( currentProgress, 0.0, endTime - Time() )
 	}
 	else
 	{
-		player.s.progressBar.SetBarProgress( 0.0 )
+		// player.s.progressBar.SetBarProgress( 0.0 )
 	}
 
 	player.s.progressBar.SetColor( color.r, color.g, color.b, color.a )
@@ -432,10 +434,35 @@ function BigBrotherUpdatePanel( panel, index )
 	capturePointIcon.SetImage( icon )
 
 	local progressBar =  panel.s.worldIcon.GetElement( "CapturePointIconBG_" + index )
+	local startTime = Time() - level.nv.bbHackStartTime
+	local endTime = level.nv.bbHackStartTime + 10
+	local playerTeam = player.GetTeam()
+	local color
+	if( playerTeam == level.nv.attackingTeam)
+	{
+		color = StringToColors( CAPTURE_POINT_COLOR_FRIENDLY )
+	}
+	else
+	{
+		color = StringToColors( CAPTURE_POINT_COLOR_ENEMY )
+	}
 	
-			// hardpoint.s.progressBar.SetBarProgressOverTime( hardpoint.s.startProgress, hardpoint.s.goalProgress, hardpoint.s.durationToCapture )
-	progressBar.SetBarProgressOverTime( 0, Time(), 45 )
+	local currentProgress = GraphCapped( Time(), endTime,startTime , 1.0, 0.0 )
 
+	local curProgress = 0
+	local estimatedTime = EXPLO_TIME
+	local startHackingTime = level.nv.bbHackStartTime
+	if( startHackingTime != 0 )
+	{
+		local timePassed = Time() - startHackingTime
+		curProgress = timePassed / estimatedTime
+		estimatedTime = estimatedTime - timePassed
+	}
+
+	progressBar.SetBarProgressOverTime( curProgress, 1, estimatedTime )
+	progressBar.SetColor( color.r, color.g, color.b, color.a )
+
+	
 	if ( panelTeam == TEAM_UNASSIGNED )
 		panel.s.worldIcon.Hide()
 	else
