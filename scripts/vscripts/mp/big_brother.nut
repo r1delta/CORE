@@ -1,4 +1,4 @@
-const EXPLO_TIME = 10.0 // 폭파 시간
+const EXPLO_TIME = 30.0 // 폭파 시간
 const BLUESUN_TIME = 0.7 // 핵폭발 전 blue sun effect 시간
 const EXPLO_CAM_LIMIT_DIST	= 0 // 폭발 시 패널과 이 거리 안에있는 플레이어는 카메라 이동 안시킴.
 
@@ -96,7 +96,7 @@ function EntitiesDidLoad()
 			panel.SetOrigin( hardpoint.GetOrigin() )
 			panel.SetAngles( hardpoint.GetAngles() )
 
-			panel.SetTeam(TEAM_UNASSIGNED)
+			panel.SetTeam(level.nv.attackingTeam)
 			panel.UnsetUsable()
 			local panelMats = GetHardpointMats( i )
 
@@ -141,7 +141,7 @@ function EntitiesDidLoad()
 			panel.SetAngles( levelPanel.GetAngles() )
 			levelPanel.Destroy()
 
-			panel.SetTeam(TEAM_UNASSIGNED)
+			panel.SetTeam(level.nv.attackingTeam)
 			panel.UnsetUsable()
 
 			local panelMats = GetHardpointMats( levelPanel.GetHardpointID() )
@@ -174,11 +174,11 @@ function BBPanelThink( panel, hardpoint )
 	{
 
 		panel.WaitSignal( "PanelReprogram_Success" )
-		if(level.bbHacked) {
-			continue
-		}
-		hardpoint.SetHardpointState(CAPTURE_POINT_STATE_NEXT)
-		hardpoint.SetHardpointEstimatedCaptureTime( Time() + EXPLO_TIME )
+		// if(level.bbHacked) {
+		// 	continue
+		// }
+		// hardpoint.SetHardpointState(CAPTURE_POINT_STATE_NEXT)
+		// hardpoint.SetHardpointEstimatedCaptureTime( Time() + EXPLO_TIME )
 
 		local team = panel.GetTeam()
 		
@@ -208,9 +208,9 @@ function BBPanelThink( panel, hardpoint )
 			}
 		}
 
-		level.bbPanelHackTime = Time()
+		level.nv.bbHackStartTime = Time()
 		level.bbHacked = true
-		thread BBBombCountdown(hardpoint)
+		waitthread BBBombCountdown(hardpoint)
 
 
 	}
@@ -223,7 +223,7 @@ function BBRoundStart() {
 	foreach ( bbPanel in level.bbPanels )
 	{
 		bbPanel.SetUsableByGroup( "enemies pilot" )
-		// bbPanel.SetTeam(TEAM_UNASSIGNED)
+		bbPanel.SetTeam(GetOtherTeam(level.nv.attackingTeam))
 	}
 }
 
@@ -231,7 +231,6 @@ function BBRoundStart() {
 function BBBombCountdown(hardpoint) {
 	local panel = hardpoint.GetTerminal()
 	printt("BB Panel Explosion Countdown Started")
-	level.nv.bbHackStartTime = Time()
 	while(true) {
 		foreach(guy in GetPlayerArray())
 		{
@@ -239,17 +238,18 @@ function BBBombCountdown(hardpoint) {
 		}
 		local timeElapsed = Time() - level.bbPanelHackTime
 
-		
-
-		if ( timeElapsed >= EXPLO_TIME ) {
-			break
-		}
+		printt("panel team: " + panel.GetTeam())
+		printt("attacking team: " + level.nv.attackingTeam)
+		printt("timeElapsed: " + timeElapsed)
+		printt("timeElapsed: " + (EXPLO_TIME - timeElapsed))
 		local result = WaitSignalTimeout(panel,EXPLO_TIME - timeElapsed, "PanelReprogram_Success")
 		if(result != null && result.signal == "PanelReprogram_Success") {
 			printt("BB Panel Reprogrammed - Stop Explosion Countdown, panel reprogrammed")
 			// update game state to not hacked
 			level.nv.winningTeam = GetOtherTeam(level.nv.attackingTeam)
 			SetGameState( eGameState.WinnerDetermined)
+			level.nv.bbHackStartTime = 0.0
+			level.bbHacked = false
 			return
 		}
 		level.nv.winningTeam = level.nv.attackingTeam

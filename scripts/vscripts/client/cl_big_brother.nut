@@ -2,7 +2,7 @@ const TEAM_NEUTRAL = 0
 const TEAM_FRIENDLY = 1
 const TEAM_ENEMY = 2
 
-const EXPLO_TIME = 10
+const EXPLO_TIME = 30
 
 capturePointColor <- {}
 capturePointColor[ TEAM_NEUTRAL ] <- StringToColors( CAPTURE_POINT_COLOR_NEUTRAL )
@@ -190,7 +190,7 @@ function BigBrotherControlPanelCreate( ent, isRecreate )
 	local name = ent.GetName()
 	if ( !( name in file.bigBrotherPanelNames ) )
 		return
-
+	printt( "BigBrotherControlPanelCreate: ", name )
 	local index = file.bigBrotherPanelNames[ name ]
 	file.controlPanels[ index ] <- ent
 
@@ -265,7 +265,7 @@ function UpdateBBText(panel) {
 	{
 		// based on if the player is attacking or defending set the text and color appropriately
 		local player = GetLocalViewPlayer()
-		if ( player.GetTeam() == level.nv.attackingTeam )
+		if ( player.GetTeam() != level.nv.attackingTeam )
 		{
 			controlledItem.SetText( "DEFEND" )
 			controlledItem.SetColor( 0, 255, 0, 255 )
@@ -280,7 +280,14 @@ function UpdateBBText(panel) {
 		}
 		return
 	}
-	local endTime = level.nv.bbHackStartTime + 10;
+	if(level.nv.bbHackStartTime == 0.0)
+	{
+		stateElement.SetAutoText( "", HATT_COUNTDOWN_TIME, 0 )
+		stateElement.EnableAutoText()
+		controlledItem.SetText( "" )
+		return
+	}
+	local endTime = level.nv.bbHackStartTime + EXPLO_TIME
 	stateElement.SetAutoText( "", HATT_COUNTDOWN_TIME, endTime )
 
 
@@ -446,8 +453,7 @@ function BigBrotherUpdatePanel( panel, index )
 	{
 		color = StringToColors( CAPTURE_POINT_COLOR_ENEMY )
 	}
-	
-	local currentProgress = GraphCapped( Time(), endTime,startTime , 1.0, 0.0 )
+	capturePointIcon.SetColor( color.r, color.g, color.b )
 
 	local curProgress = 0
 	local estimatedTime = EXPLO_TIME
@@ -457,10 +463,9 @@ function BigBrotherUpdatePanel( panel, index )
 		local timePassed = Time() - startHackingTime
 		curProgress = timePassed / estimatedTime
 		estimatedTime = estimatedTime - timePassed
+		progressBar.SetBarProgressOverTime( curProgress, 1, estimatedTime )
+		progressBar.SetColor( color.r, color.g, color.b, color.a )
 	}
-
-	progressBar.SetBarProgressOverTime( curProgress, 1, estimatedTime )
-	progressBar.SetColor( color.r, color.g, color.b, color.a )
 
 	
 	if ( panelTeam == TEAM_UNASSIGNED )
