@@ -259,7 +259,7 @@ function BBBombCountdown(hardpoint) {
 			printt("BB Panel Reprogrammed - Stop Explosion Countdown, panel reprogrammed")
 			if (GamePlayingOrSuddenDeath())
 			{
-				SetWinLossReasons( "#HEIST_TEAM_HACKED_PANEL", "#HEIST_DATA_STOLEN" )
+				SetWinLossReasons( "#BIG_BROTHER_PANEL_HACKED", "#BIG_BROTHER_PANEL_HACKED" )
 				SetWinner( GetOtherTeam(level.nv.attackingTeam) )
 			}
 			level.nv.bbHackStartTime = 0.0
