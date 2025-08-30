@@ -742,12 +742,8 @@ function HasFriendlyRiderEnt( player )
 		return false
 	}
 	printt("HasFriendlyRiderEnt")
-	if(GAMETYPE == FFA)
-	{
-		return false
-	}
 
-	return riderEnt.GetTeam() == player.GetTeam()
+	return !ShouldPreventFriendlyFire( player, riderEnt )
 }
 
 
@@ -761,10 +757,5 @@ function HasEnemyRiderEnt( player )
 	if ( !IsValid( riderEnt ) )
 		return false
 
-	if(GAMETYPE == FFA)
-	{
-		return true
-	}
-
-	return riderEnt.GetTeam() != player.GetTeam()
+	return ShouldPreventFriendlyFire( player, riderEnt )
 }

@@ -247,7 +247,7 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 	}
 
 
-	if ( titan.GetTeam() == attacker.GetTeam() )
+	if ( ShouldPreventFriendlyFire( titan, attacker ) )
 		return false
 
 	player.SetTitanKillCount( player.GetTitanKillCount() + 1 )
@@ -370,7 +370,7 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 
 	player.s.lastKiller = attacker
 
-	if ( player.GetTeam() == attacker.GetTeam() )
+	if ( ShouldPreventFriendlyFire( player, attacker ) )
 	{
 		//Preventing streaks from continuing after suicides.
 		player.s.numberKillsSinceLastDeath = 0
@@ -500,7 +500,7 @@ function ScoreEvent_NPCKilled( npc, attacker, damageInfo )
 	ScoreCheck_InitStats( attacker )
 	ScoreCheck_InitStats( npc )
 
-	if ( npc.GetTeam() == attacker.GetTeam() )
+	if ( ShouldPreventFriendlyFire( npc, attacker ) )
 		return false
 
 	if ( npc.IsMarvin() )

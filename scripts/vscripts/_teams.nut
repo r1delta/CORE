@@ -1,5 +1,6 @@
 if ( IsMultiplayer() )
 {
+	// IsFFABased() causes errors here too
 	if ( ( GAMETYPE == COOPERATIVE && GetCurrentPlaylistName() == COOPERATIVE ) || ( GAMETYPE == FFA && GetCurrentPlaylistName() == FFA ) )
 	{
 		// all on one team

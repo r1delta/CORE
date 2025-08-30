@@ -785,9 +785,9 @@ function Dump( package, depth = 0 )
 function GetOtherTeam( guy )
 {
 	local team
-	if(GAMETYPE == FFA) {
+	if ( IsFFABased() )
 		return 2
-	}
+
 	if ( typeof guy == "integer" )
 		team = guy
 	else
@@ -2387,6 +2387,9 @@ function ScoreboardCompareFuncForGamemode( gamemode )
 		case BIG_BROTHER:
 		case HEIST:
 		default:
+			if ( IsFFABased() )
+				return CompareKills
+
 			return CompareScore
 	}
 }
@@ -3572,4 +3575,23 @@ function IsShoulderTurret( ent )
 		return false
 
 	return ent.GetName().find( "turret_shoulder" ) != null
+}
+
+function ShouldPreventFriendlyFire( victim, attacker )
+{
+	local victimTeam = victim.GetTeam()
+	local attackerTeam = attacker.GetTeam()
+
+	if ( victimTeam == attackerTeam )
+	{
+		if ( victim == attacker )
+			return true
+
+		if ( IsFFABased() )
+			return false
+		//else
+		//	return !GetConVarBool( "mp_friendlyfire" ) //doesnt seem to work properly? also its set to 1 by default so thats not good
+	}
+
+	return false
 }

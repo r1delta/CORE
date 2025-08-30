@@ -279,8 +279,10 @@ function IsLobby()
 function GetEnemyTeam( team )
 {
 	Assert( team == TEAM_IMC || team == TEAM_MILITIA )
-	if (GetConVarString("mp_gamemode").tolower() == "ffa")
+
+	if ( IsFFABased() )
 		return team
+
 	if ( team == TEAM_IMC )
 		return TEAM_MILITIA
 	else
@@ -923,4 +925,12 @@ function IsNonDeltaPrivateMatch()
 		return true
 
 	return false
+}
+
+function IsFFABased()
+{
+	if ( IsUI() )
+		return level.ui.ffaBased
+
+	return level.nv.ffaBased
 }

@@ -289,7 +289,7 @@ function ScriptCallback_ShouldEntTakeDamage( ent, damageInfo )
 	local damageSourceID = damageInfo.GetDamageSourceIdentifier()
 	local suicideSpectreDamage = ( damageSourceID == eDamageSourceId.suicideSpectre || damageSourceID == eDamageSourceId.suicideSpectreAoE )
 
-	if ( ( attacker.GetTeam() == ent.GetTeam() ) && ( damageSourceID != eDamageSourceId.switchback_trap ) && !suicideSpectreDamage && GAMETYPE != FFA)
+	if ( ( attacker.GetTeam() == ent.GetTeam() ) && ( damageSourceID != eDamageSourceId.switchback_trap ) && !suicideSpectreDamage && !IsFFABased() )
 	{
 		if ( attacker != ent && ent.GetOwner() != attacker && ent.GetBossPlayer() != attacker )
 		{
@@ -807,7 +807,7 @@ function PlayerOrNPCKilledByEnemy( entity, damageInfo )
 		ScoreEvent_NPCKilled( entity, attacker, damageInfo )
 	}
 
-	if ( entity.GetTeam() == attacker.GetTeam() && GAMETYPE != FFA )
+	if ( ShouldPreventFriendlyFire( entity, attacker ) )
 	{
 		return false
 	}
@@ -2459,7 +2459,7 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 	if ( GameRules.GetGameMode() == COOPERATIVE )
 		return false
 
-	if ( GAMETYPE == FFA )
+	if ( IsFFABased() )
 		return false
 
 	if ( player.s.respawnCount < 1 )

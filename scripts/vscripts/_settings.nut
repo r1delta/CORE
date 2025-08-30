@@ -16,7 +16,6 @@ GAMETYPE_TEXT[ HEIST ] 					<- "#GAMEMODE_HEIST"
 GAMETYPE_TEXT[ UPLINK ] 				<- "#GAMEMODE_UPLINK"
 GAMETYPE_TEXT[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG"
 GAMETYPE_TEXT[ COOPERATIVE ] 			<- "#GAMEMODE_COOP"
-GAMETYPE_TEXT[ FFA ] 					<- "#GAMEMODE_FFA"
 
 GAMETYPE_DESC <- {}
 GAMETYPE_DESC[ TEAM_DEATHMATCH ] 		<- "#GAMEMODE_PILOT_HUNTER_HINT"
@@ -26,7 +25,6 @@ GAMETYPE_DESC[ ATTRITION ] 				<- "#GAMEMODE_ATTRITION_HINT"
 GAMETYPE_DESC[ HEIST ]		 			<- "#GAMEMODE_HEIST_HINT"
 GAMETYPE_DESC[ UPLINK ] 				<- "#GAMEMODE_UPLINK_HINT"
 GAMETYPE_DESC[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG_HINT"
-GAMETYPE_DESC[ FFA ] 					<- "#GAMEMODE_FFA_HINT"
 
 GAMETYPE_ICON <- {}
 GAMETYPE_ICON[ TEAM_DEATHMATCH ] 		<- "../ui/menu/playlist/tdm"
@@ -40,7 +38,6 @@ GAMETYPE_ICON[ UPLINK ] 				<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ TITAN_TAG ] 				<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ COOPERATIVE ] 			<- "../ui/menu/playlist/coop"
 GAMETYPE_ICON[ RANKED_PLAY ] 			<- "../ui/scoreboard_secret_logo"
-GAMETYPE_ICON[ FFA ] 					<- "../ui/scoreboard_secret_logo"
 
 GAMETYPE_STAR_SCORE_REQUIREMENT <- {}
 GAMETYPE_STAR_SCORE_REQUIREMENT[ TEAM_DEATHMATCH ] 		<- [ 5, 10, 20 ]
@@ -241,10 +238,11 @@ if ( IsClient() )
 	
 	GameMode_Create( FFA )
 	GameMode_SetName( FFA, "#GAMEMODE_FFA" )
-	GameMode_SetGameModeAnnouncement( FFA, "GameModeAnnounce_PS" )
-	GameMode_SetDesc( FFA, "#GAMEMODE_PILOT_SKIRMISH_HINT" )
-	GameMode_SetIcon( FFA, "../ui/scoreboard_secret_logo" )
-	GameMode_AddServerScript( FFA, "mp/_gamemode_ps" )
+	GameMode_SetGameModeAnnouncement( FFA, "GameModeAnnounce_TDM" )
+	GameMode_SetDesc( FFA, "#GAMEMODE_FFA_HINT" )
+	GameMode_SetIcon( FFA, "../ui/menu/playlist/tdm" )
+	GameMode_AddServerScript( FFA, "mp/_gamemode_ffa" )
+	GameMode_AddClientScript( FFA, "client/cl_gamemode_ffa" )
 	GameMode_SetDefaultScoreLimits( FFA, 100, 0 )
 	GameMode_SetDefaultTimeLimits( FFA, 15, 0 )
 	//GameMode_AddServerScript( COOPERATIVE, "mp/_gamemode_coop")

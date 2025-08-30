@@ -172,6 +172,11 @@ function ScoreboardButtonPressed( localPlayer )
 	if ( GAMETYPE == COOPERATIVE && Coop_IsGameOver() )
 		return
 
+	// Scoreboard looks like a pain in the ass to fix for FFA
+	// So disabling it for now
+	if ( IsFFABased() )
+		return
+
 	if ( file.showingScoreboard )
 		HideScoreboard()
 	else
@@ -217,6 +222,16 @@ function AddColumnLabel( scoreboard, varName, icon, headerString, minWidth, high
 
 function InitScoreboard()
 {
+	thread InitScoreboard_Think()
+}
+
+function InitScoreboard_Think()
+{
+	FlagWait( "EntitiesDidLoad" ) // Have to do this because the nv that determines if ffaBased or not might not get set yet
+
+	if ( IsFFABased() )
+		return
+
 	local localPlayer = GetLocalClientPlayer()
 	local myTeam = localPlayer.GetTeam()
 	local enemyTeam = GetEnemyTeam( myTeam )
@@ -264,8 +279,11 @@ function InitScoreboard()
 	file.teamElems[enemyTeam].logo <- HudElement( "ScoreboardEnemyTeamLogo", scoreboard )
 	file.teamElems[enemyTeam].score <- HudElement( "ScoreboardEnemyTeamScore", scoreboard )
 
-	file.teamElems[TEAM_IMC].logo.SetImage( "../ui/scoreboard_imc_logo" )
-	file.teamElems[TEAM_MILITIA].logo.SetImage( "../ui/scoreboard_mcorp_logo" )
+	if ( !IsFFABased() )
+	{
+		file.teamElems[TEAM_IMC].logo.SetImage( "../ui/scoreboard_imc_logo" )
+		file.teamElems[TEAM_MILITIA].logo.SetImage( "../ui/scoreboard_mcorp_logo" )
+	}
 
 	file.columnIconBackgrounds <- {}
 	file.columnIcons <- {}
@@ -293,6 +311,11 @@ function InitScoreboard()
 	local teams = [ myTeam, enemyTeam ]
 	local prefix
 
+	if ( IsFFABased() )
+	{
+		teams = [ myTeam ]
+	}
+
 	foreach ( team in teams )
 	{
 		if ( team == myTeam )
@@ -308,7 +331,7 @@ function InitScoreboard()
 			table.background <- HudElement( prefix + "Background" + elemNum, scoreboard )
 			table.selection <- HudElement( prefix + "Selection" + elemNum, scoreboard )
 			table.playerNumber <- HudElement( prefix + "PlayerNumber" + elemNum, scoreboard )
-			if( GAMETYPE != COOPERATIVE )
+			if( GAMETYPE != COOPERATIVE && !IsFFABased() )
 				table.playerNumber.SetWidth( 0 )
 			table.status <- HudElement( prefix + "Status" + elemNum, scoreboard )
 			local art = HudElement( prefix + "Art" + elemNum, scoreboard )
@@ -422,7 +445,7 @@ function ShowScoreboard()
 	foreach ( line in file.columnLines )
 		line.SetHeight( teamHeight )
 
-	if( GAMETYPE == COOPERATIVE )
+	if( GAMETYPE == COOPERATIVE || IsFFABased() )
 		file.enemyColumnLines.Hide()
 
 	local index
@@ -1272,7 +1295,7 @@ Globalize( SetEmptyScoreboardStar )
 
 function GetNumTeamPlayers()
 {
-	if ( GAMETYPE == COOPERATIVE )
+	if ( GAMETYPE == COOPERATIVE || IsFFABased() )
 		return max( 4, GetCurrentPlaylistVar( "max players", 4 ).tointeger() )
 	else
 		return max( 6, GetCurrentPlaylistVar( "max players", 12 ).tointeger() / 2.0 )

@@ -44,7 +44,7 @@ function TeamDeathmatch_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 
 	local attackerTeam = attacker.GetTeam()
 
-	if ( victim.GetTeam() == attackerTeam )
+	if ( ShouldPreventFriendlyFire( victim, attacker ) )
 		return
 
 	GameScore.AddTeamScore( attackerTeam, 1 )

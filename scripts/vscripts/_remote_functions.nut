@@ -271,6 +271,8 @@ if ( IsMultiplayer() )
 	RegisterServerVar( "roundEndTime", null )
 	RegisterServerVar( "roundsPlayed", 0 )
 
+	RegisterServerVar( "ffaBased", false )
+
 	RegisterServerVar( "minPickLoadOutTime", null )
 	RegisterServerVar( "connectionTimeout", 0 )
 	RegisterServerVar( "winningTeam", null )

@@ -43,6 +43,7 @@ function main()
 	Globalize( SetRoundBased )
 	Globalize( SetSwitchSidesBased )
 	Globalize( SetAttackDefendBased )
+	Globalize( SetFFABased )
 
 	Globalize( GetGameWonAnnouncement )
 	Globalize( SetGameWonAnnouncement )
@@ -2989,6 +2990,12 @@ function SetRoundBased( state )
 function SetAttackDefendBased( state )
 {
 	level.attackDefendBased = state
+}
+
+function SetFFABased( state )
+{
+	level.nv.ffaBased = state
+	level.ui.ffaBased = state
 }
 
 function GameStateControlCheck( player )

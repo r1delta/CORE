@@ -203,7 +203,7 @@ function CodeCallback_IsValidMeleeExecutionTarget( attacker, target )
 
 	if ( IsMultiplayer() )
 	{
-		if ( attacker.GetTeam() == target.GetTeam() && GAMETYPE != FFA )
+		if ( ShouldPreventFriendlyFire( target, attacker ) )
 			return false
 
 		if ( IsServer() )
@@ -261,7 +261,7 @@ function CodeCallback_IsValidMeleeAttackTarget( attacker, target )
 	if ( !CanBeMeleed( target ) )
 		return false
 
-	if ( attacker.GetTeam() == target.GetTeam() )
+	if ( ShouldPreventFriendlyFire( target, attacker ) )
 			return false
 
 	if ( IsServer() )

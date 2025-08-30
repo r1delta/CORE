@@ -910,7 +910,7 @@ function RodeoAlertThink( cockpit, player )
 			cockpit.s.mainVGUI.s.rodeoAlertIcon.Show()
 			cockpit.s.mainVGUI.s.rodeoAlertLabel.Show()
 
-			if ( rider.GetTeam() == player.GetTeam() && GAMETYPE != FFA )
+			if ( ShouldPreventFriendlyFire( rider, player ) )
 			{
 				cockpit.s.mainVGUI.s.rodeoAlertIcon.SetImage( "HUD/rodeo_icon_friendly" )
 				cockpit.s.mainVGUI.s.rodeoAlertLabel.SetText( "#HUD_RODEO_RIDER_FRIENDLY", rider.GetPlayerName() )
