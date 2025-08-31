@@ -127,12 +127,6 @@ function RegisterGameStateConversations()
 	RegisterConversation( "GameModeAnnounce_CTF_SuddenDeath",			VO_PRIORITY_GAMESTATE )
 	RegisterConversation( "GameModeAnnounce_TDM_SuddenDeath",			VO_PRIORITY_GAMESTATE )
 
-
-	RegisterConversation( "PS_3KillBeforeTitan", VO_PRIORITY_GAMESTATE )
-	RegisterConversation( "PS_2KillBeforeTitan", VO_PRIORITY_GAMESTATE )
-	RegisterConversation( "PS_1KillBeforeTitan", VO_PRIORITY_GAMESTATE )
-	RegisterConversation( "PS_TitanReady", VO_PRIORITY_GAMESTATE )
-
 	if ( IsServer() )
 		return
 
@@ -147,12 +141,6 @@ function RegisterGameStateConversations()
 
 	//Blisk: "This is a skirmish between Pilots. Titanfall authorization has been revoked. Eliminate all Militia Pilots you see down there!"
 	AddVDULineForBlisk( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnnc_imc_Blisk" )
-	// AddVDULineForBlisk("GameModeAnnounce_PS","diag_gm_8v8_modeAnncLimitedTitans_imc_Blisk")
-
-	AddVDULineForBlisk("PS_3KillBeforeTitan","diag_gm_8v8_titanProgAnnc3_imc_Blisk")
-	AddVDULineForBlisk("PS_2KillBeforeTitan","diag_gm_8v8_titanProgAnnc2_imc_Blisk")
-	AddVDULineForBlisk("PS_1KillBeforeTitan","diag_gm_8v8_titanProgAnnc1_imc_Blisk")
-	AddVDULineForBlisk("PS_TitanReady","diag_gm_8v8_titanProgReady_imc_Blisk")
 
 	AddVDUAnimWithEmbeddedAudioForBlisk( "GameModeAnnounce_CP", "diag_imc_blisk_hp_modeannounce_01" ) //Blisk: All ground forces, secure the hardpoints.
 	AddVDUAnimWithEmbeddedAudioForBlisk( "GameModeAnnounce_CP", "diag_imc_blisk_hp_modeannounce_02" ) //Blisk: Pilot, you need to secure hardpoints A, B, and C so my team can access the system. Good luck.
@@ -436,12 +424,7 @@ function RegisterGameStateConversations()
 
 	//Bish: "This is a skirmish between Pilots. You won't have any Titans backing you up down there Boss. Take out any IMC Pilots you see!"
 	AddVDULineForBish( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnnc_mcor_Bish" )
-	// AddVDULineForBish( "GameModeAnnounce_PS", "diag_gm_8v8_modeAnncLimitedTitans_mcor_Bish" )
 
-	AddVDULineForBish("PS_3KillBeforeTitan","diag_gm_8v8_titanProgAnnc3_mcor_Bish")
-	AddVDULineForBish("PS_2KillBeforeTitan","diag_gm_8v8_titanProgAnnc2_mcor_Bish")
-	AddVDULineForBish("PS_1KillBeforeTitan","diag_gm_8v8_titanProgAnnc1_mcor_Bish")
-	AddVDULineForBish("PS_TitanReady","diag_gm_8v8_titanProgReady_mcor_Bish")
 	AddVDUAnimWithEmbeddedAudioForBish( "GameModeAnnounce_CP", "diag_hp_bish_modeannounce_03" ) //Bish: Ok boss, this is a hardpoint operation. Take control of as many hardpoints as you can, patch me in to them, and I'll take care of the rest.
 
 	AddVDULineForBish( "GameModeAnnounce_CTF", "diag_mcor_bish_ctf_modeAnnc_01" )
@@ -1125,11 +1108,18 @@ function RegisterDebugVDUConversations()
 
 function RegisterR1DeltaConversations()
 {
-	// CTF Pro, Titan Brawl and Titan Marked for Death Pro
+	// CTF Pro, Titan Brawl, Titan Marked Death Pro, etc
 	RegisterConversation( "GameModeAnnounce_CTFP_Attack",			VO_PRIORITY_GAMEMODE )
 	RegisterConversation( "GameModeAnnounce_CTFP_Defend",			VO_PRIORITY_GAMEMODE )
 	RegisterConversation( "GameModeAnnounce_TTDM",					VO_PRIORITY_GAMEMODE )
 	RegisterConversation( "GameModeAnnounce_TMFDP",					VO_PRIORITY_GAMEMODE )
+	RegisterConversation( "GameModeAnnounce_PST",					VO_PRIORITY_GAMEMODE )
+
+	RegisterConversation( "PS_3KillBeforeTitan",					VO_PRIORITY_GAMESTATE )
+	RegisterConversation( "PS_2KillBeforeTitan",					VO_PRIORITY_GAMESTATE )
+	RegisterConversation( "PS_1KillBeforeTitan",					VO_PRIORITY_GAMESTATE )
+	RegisterConversation( "PS_TitanReady",							VO_PRIORITY_GAMESTATE )
+
 	RegisterConversation( "NoEject",								VO_PRIORITY_GAMEMODE )
 	RegisterConversation( "NoDisembark",							VO_PRIORITY_GAMEMODE )
 
@@ -1140,6 +1130,7 @@ function RegisterR1DeltaConversations()
 	if ( IsServer() )
 		return
 
+	// IMC
 	AddVDULineForBlisk( "GameModeAnnounce_CTFP_Attack", "diag_gm_1ctf_modeAnncA_imc_Blisk" )
 	AddVDULineForBlisk( "GameModeAnnounce_CTFP_Attack", "diag_gm_1ctf_modeAnncB_imc_Blisk" )
 	AddVDULineForBlisk( "GameModeAnnounce_CTFP_Defend", "diag_gm_1ctf_modeAnncC_imc_Blisk" )
@@ -1147,9 +1138,19 @@ function RegisterR1DeltaConversations()
 	AddVDULineForBlisk( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncA_imc_Blisk" )
 	AddVDULineForBlisk( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncB_imc_Blisk" )
 	AddVDULineForBlisk( "GameModeAnnounce_TMFDP", "diag_gm_tmfdp_modeAnnc_imc_Blisk" )
+	AddVDULineForBlisk( "GameModeAnnounce_PST", "diag_gm_8v8_modeAnncLimitedTitans_imc_Blisk" )
+
+	AddVDULineForBlisk( "PS_3KillBeforeTitan", "diag_gm_8v8_titanProgAnnc3_imc_Blisk" )
+	AddVDULineForBlisk( "PS_2KillBeforeTitan", "diag_gm_8v8_titanProgAnnc2_imc_Blisk" )
+	AddVDULineForBlisk( "PS_1KillBeforeTitan", "diag_gm_8v8_titanProgAnnc1_imc_Blisk" )
+	AddVDULineForBlisk( "PS_TitanReady", "diag_gm_8v8_titanProgReady_imc_Blisk" )
+
 	AddVDULineForBlisk( "NoEject", "diag_gm_tidm_noEjectNote_imc_Blisk" )
 	AddVDULineForBlisk( "NoDisembark", "diag_gm_tidm_noDisembarkNote_imc_Blisk" )
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// Militia
 	AddVDULineForBish( "GameModeAnnounce_CTFP_Attack", "diag_gm_1ctf_modeAnncA_mcor_Bish" )
 	AddVDULineForBish( "GameModeAnnounce_CTFP_Attack", "diag_gm_1ctf_modeAnncB_mcor_Bish" )
 	AddVDULineForBish( "GameModeAnnounce_CTFP_Defend", "diag_gm_1ctf_modeAnncC_mcor_Bish" )
@@ -1157,6 +1158,13 @@ function RegisterR1DeltaConversations()
 	AddVDULineForBish( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncA_mcor_Bish" )
 	AddVDULineForBish( "GameModeAnnounce_TTDM", "diag_gm_tidm_modeAnncB_mcor_Bish" )
 	AddVDULineForBish( "GameModeAnnounce_TMFDP", "diag_gm_tmfdp_modeAnnc_mcor_Bish" )
+	AddVDULineForBish( "GameModeAnnounce_PST", "diag_gm_8v8_modeAnncLimitedTitans_mcor_Bish" )
+
+	AddVDULineForBish( "PS_3KillBeforeTitan", "diag_gm_8v8_titanProgAnnc3_mcor_Bish" )
+	AddVDULineForBish( "PS_2KillBeforeTitan", "diag_gm_8v8_titanProgAnnc2_mcor_Bish" )
+	AddVDULineForBish( "PS_1KillBeforeTitan", "diag_gm_8v8_titanProgAnnc1_mcor_Bish" )
+	AddVDULineForBish( "PS_TitanReady", "diag_gm_8v8_titanProgReady_mcor_Bish" )
+
 	AddVDULineForBish( "NoEject", "diag_gm_tidm_noEjectNote_mcor_Bish" )
 	AddVDULineForBish( "NoDisembark", "diag_gm_tidm_noDisembarkNote_mcor_Bish" )
 
