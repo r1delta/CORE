@@ -1648,6 +1648,10 @@ function FrontlineDeath( ent, damageInfo )
 	}
 
 	local team = ent.GetTeam()
+
+	if ( team == TEAM_BOTH )
+		return
+
 	CheckFrontlineOverrun( team )
 }
 
