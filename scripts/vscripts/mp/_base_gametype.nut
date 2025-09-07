@@ -2439,7 +2439,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 
 		NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
 
-		thread PostAutoBalanceThink( player )
+		thread PostAutoBalanceThink( player, newTeam )
 
 		foreach ( callbackInfo in level.onPostAutoBalanceCallbacks )
 		{
@@ -2475,7 +2475,7 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 	return true
 }
 
-function PostAutoBalanceThink( player )
+function PostAutoBalanceThink( player, newTeam )
 {
 	// Only these two NPCs use the overhead teammate indicator
 	local ai = GetNPCArrayByClass( "npc_soldier" )
@@ -2483,6 +2483,10 @@ function PostAutoBalanceThink( player )
 
 	foreach( npc in ai )
 	{
+		// Swap hacked Spectres and (probably) conscripted grunts
+		if ( npc.GetBossPlayer() == player )
+			npc.SetTeam( newTeam )
+
 		local eHandle = npc.GetEncodedEHandle()
 
 		Remote.CallFunction_Replay( player, "ServerCallback_UpdateOverheadIconForNPC", eHandle )
