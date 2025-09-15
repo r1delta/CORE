@@ -2795,10 +2795,11 @@ function NukeScreenFlashFX()
 		local angles = Vector( 0, -90, 90 )
 		local wide = 16
 		local tall = 9
+		local fovOffset = Graph( GetConVarFloat( "cl_fovScale" ), 1.0, 1.7, 4, 2.5 )
 		local empVgui = CreateClientsideVGuiScreen( "vgui_titan_emp", VGUI_SCREEN_PASS_VIEWMODEL, Vector(0,0,0), Vector(0,0,0), wide, tall );
 
 		empVgui.SetParent( player )
-		empVgui.SetAttachOffsetOrigin( Vector( 4, wide / 2, -tall / 2 ) )
+		empVgui.SetAttachOffsetOrigin( Vector( fovOffset, wide / 2, -tall / 2 ) )
 		empVgui.SetAttachOffsetAngles( angles )
 		empVgui.GetPanel().WarpEnable()
 
