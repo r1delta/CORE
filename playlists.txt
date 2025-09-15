@@ -2950,9 +2950,9 @@
 	{
 		"vars"
 		{
-			"name"	"#PL_titan_mfd_pro"
-			"lobbytitle"	"#PL_titan_mfd_pro_lobby"
-			"description"	"#PL_titan_mfd_pro_desc"
+			"name"	"#PL_titan_mfdp"
+			"lobbytitle"	"#PL_titan_mfdp_lobby"
+			"description"	"#PL_titan_mfdp_desc"
 			"max players"	"12"
 			"cmdlineMapLoad"	"0"
 			"max teams"	"2"
