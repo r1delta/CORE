@@ -2145,6 +2145,8 @@ function GetLocalizedNameFromItemType( type )
 			return "#ITEM_TYPE_WEAPON_ATTACHMENT"
 
 		case itemType.PILOT_PRIMARY_MOD:
+		case itemType.PILOT_SECONDARY_MOD:
+		case itemType.PILOT_SIDEARM_MOD:
 		case itemType.TITAN_PRIMARY_MOD:
 			return "#ITEM_TYPE_WEAPON_MOD"
 
