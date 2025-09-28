@@ -9,6 +9,7 @@ function main()
 	Globalize( ActiveWeaponSonar )
 	Globalize( ForceDeactivateSonar )
 	RegisterSignal( FORCE_SONAR_DEACTIVATE )
+	RegisterSignal( "ForceRegularSonarDeactivate" )
 
 	if ( IsClient() )
 	{
@@ -211,7 +212,7 @@ if ( IsClient() )
 		if ( wasDMRSonar)
 			thread DestroyAfterDelay( cloneEnt, sonarImageDuration, player, FORCE_SONAR_DEACTIVATE )
 		else
-			thread DestroyAfterDelay( cloneEnt, sonarImageDuration, player )
+			thread DestroyAfterDelay( cloneEnt, sonarImageDuration, player, "ForceRegularSonarDeactivate" )
 	}
 
 
@@ -341,14 +342,14 @@ function ActivateSonar( weapon, duration, triggerScreenEffects = true, colorCorr
 
 	if ( IsServer() )
 	{
-		thread SonarSoundThink( weapon, ownerPlayer, duration, null, pulseDelay )
-		thread ServerSonarThink( ownerPlayer, duration, null, true, pulseDelay ) //HACK: triggerScreenEffects parameter not respected, passed as true regardless
+		thread SonarSoundThink( weapon, ownerPlayer, duration, "ForceRegularSonarDeactivate", pulseDelay )
+		thread ServerSonarThink( ownerPlayer, duration, "ForceRegularSonarDeactivate", true, pulseDelay ) //HACK: triggerScreenEffects parameter not respected, passed as true regardless
 
 		if ( !( "sonarEndTime" in ownerPlayer.s ) )
 			ownerPlayer.s.sonarEndTime <- 0
 		ownerPlayer.s.sonarEndTime = Time() + duration + pulseDelay
 
-		thread SonarColorCorrection( ownerPlayer, duration, null, colorCorrectionOverride )
+		thread SonarColorCorrection( ownerPlayer, duration, "ForceRegularSonarDeactivate", colorCorrectionOverride )
 	}
 }
 
@@ -456,9 +457,16 @@ function SonarSoundThink( weapon, player, duration, uniqueEndSignal = null, puls
 
 function ForceDeactivateSonar( self, uniqueEndSignal )
 {
-	local weaponOwner = self.GetWeaponOwner()
-	if ( IsValid( weaponOwner ) )
-		weaponOwner.Signal( uniqueEndSignal )
+	if ( IsValid( self ) && self.IsPlayer() )
+	{
+		self.Signal( "ForceRegularSonarDeactivate" )
+	}
+	else
+	{
+		local weaponOwner = self.GetWeaponOwner()
+		if ( IsValid( weaponOwner ) )
+			weaponOwner.Signal( uniqueEndSignal )
+	}
 }
 
 

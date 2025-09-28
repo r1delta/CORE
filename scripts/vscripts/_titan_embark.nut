@@ -639,6 +639,7 @@ function PlayerEmbarksTitan( player, titan, embark )
 //	Assert( !InSolid( titan ), titan + " is in solid" )
 
 	DisableCloak( player )
+	ForceDeactivateSonar( player, "ForceRegularSonarDeactivate" )
 
 	local startOrigin = titan.GetOrigin()
 	local startAngles = titan.GetAngles()
