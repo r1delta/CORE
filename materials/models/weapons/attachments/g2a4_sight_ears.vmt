@@ -9,7 +9,7 @@ UnlitTwoTexture
 	"$allowoverbright" "1"
 	"$translucent" "1"
 
-  "$basetexture" "models\weapons\attachments\g2a4_sight"
+	"$basetexture" "models\weapons\attachments\g2a4_sight"
 	"$Texture2" "dev\noise_post"
 	"$color" "[1 1 1]"
 	"$color2" "[3 1 1]"
@@ -21,8 +21,36 @@ UnlitTwoTexture
 
 	$holoOffset "[0 0]"
 
+/////////////////////////////////////////////////////////
+
+	"$valuezero"	"0"
+
+	"$colorzero"		"[0 0 0]"
+	"$colorblind_color"		"[1 1 1]"
+
+	"$clroffsetzero"	"[3 1 1]"
+
 	"Proxies"
 	{
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_ColorBlindRed"
+			resultVar $colorblind_color
+		}
+
+		//	if ( srcVar1 > srcVar2 )
+		//		resultVar = greaterVar
+		//	else
+		//		resultVar = LessEqualVar
+		LessOrEqual
+		{
+			lessEqualVar	$clroffsetzero
+			greaterVar		$colorblind_color
+			srcVar1			$colorblind_color
+			srcVar2			$valuezero
+			resultVar		$color2
+		}
+
 		//Horizontal movement speed
 		"UniformNoise"
 		{

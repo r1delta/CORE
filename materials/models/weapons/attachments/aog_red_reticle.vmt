@@ -11,17 +11,63 @@
 	"$basetexture" "Models\Weapons\attachments\aog_reticle_col"
 	"$Texture2" "dev\noise_post"
 	"$color" "[1 1 1]"
-	"$color2" "[4 1 1]"
+	"$color2" "[1 1 1]"
 
 	"$t2offset" 0
 	"$t2scale" 2
 	"$t2rot" 0
 	"$scroll" "[0 1]"
 
-	$holoOffset "[0 0 0]"
+/////////////////////////////////////////////////////////
+
+	"$valuezero"	"0"
+
+	"$colorblind_color"		"[1 1 1]"
+
+	"$clroffsetzero"	"[4 1 1]"			//Base colour
+
+	$Translatescale "2.0"		//main scalar
+	$TranslatescaleX "2.0"		//x scalar
+	$TranslatescaleY "2.0"		//y scalar
+	$holoScale "[1.0 1.0]"		// Base scaling var [inverted!]
+	$holoOffset "[0.0 0.0]"		// Base Offset var
+
+	$holoOffsetX ".0"			//dummy for print
+	$holoOffsetY ".0"			//dummy for print
+	$holoOffsetX_temp ".0"		//dummy for print
+	$holoOffsetY_temp ".0"		//dummy for print
+
+	$holoOffset2 "[0.0 0.0]"	//Final Offset var
+
+	$holoOffset_temp 	"[0.0 0.0]"		// dummy Offset var
+	$holoOffset2_temp 	"[0.0 0.0]"		// dummy Offset var
+	$offset_disable		"0"				//offset killswitch
+
+	"$scale_temp"	"1.2" 		//"1.2" //dummy for cvar scaling =$holoscale
+	"$scale_post"	"1.0" //.0		//temp var for cvar scaling
+	"$scale_result"	".0"		//temp var because we can't
 
 	"Proxies"
 	{
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_ColorBlindRed"
+			resultVar $colorblind_color
+		}
+
+		//	if ( srcVar1 > srcVar2 )
+		//		resultVar = greaterVar
+		//	else
+		//		resultVar = LessEqualVar
+		LessOrEqual
+		{
+			lessEqualVar	$clroffsetzero
+			greaterVar		$colorblind_color
+			srcVar1			$colorblind_color
+			srcVar2			$valuezero
+			resultVar		$color2
+		}
+
 		//Horizontal movement speed
 		"UniformNoise"
 		{
@@ -29,6 +75,7 @@
 			"maxVal" 1
 			"resultVar" "$scroll[0]"
 		}
+
 		//Vertical movement speed
 		"UniformNoise"
 		{
@@ -36,6 +83,7 @@
 			"maxVal" 1
 			"resultVar" "$scroll[1]"
 		}
+
 		//Move the 2nd texture using horiz and vert speed
 		"TextureTransform"
 		{
@@ -44,6 +92,7 @@
 			"rotateVar" "$t2rot"
 			"resultvar" "$texture2transform"
 		}
+
 		//chevron flicker
 		"UniformNoise"
 		{
@@ -52,23 +101,115 @@
 			"resultVar" "$color"
 		}
 
-		"TextureTransform"
-		{
-			"translateVar" "$holoOffset"
-			"resultvar" "$basetexturetransform"
-		}
-
 		"HoloSight"
 		{
 			resultVar $alpha
 		}
 
+//OFFSET/SCALE CONVARS
+//
+
+		//function that controls $holoOffset scalar
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_FOVReticleOffset"
+			resultVar $translatescale
+		}
+
+
+//Convar Based Scale manipulation
+//
+		//Holo Scalar X
+		Multiply
+		{
+			srcVar1		$scale_temp
+			srcVar2		$scale_post
+			resultVar	"$holoScale[0]"
+		}
+		//Holo Scalar Y
+		Multiply
+		{
+			srcVar1		$scale_temp
+			srcVar2		$scale_post
+			resultVar	"$holoScale[1]"
+		}
+
+		//EntityScript
+		//{
+		//	scriptFuncName	"VMTCallback_HoloSightOffset_RSPN101_Front"
+		//	resultVar $holoOffset
+		//}
+
 		"HoloSightOffset"
 		{
 			attachmentName		"AOG_FRONT"
-			horizontalScalar	"-4.855"
-			verticalScalar		"-4.99"
+			horizontalScalar	"-3.5"
+			verticalScalar		"-3.5"
 			resultVar			$holoOffset
+		}
+
+//Convar Based position manipulation
+//
+		
+		// Print $holooffset value for later use
+		Clamp	//X axis
+		{
+			srcVar1		$valuezero
+			min			"$holoOffset[0]"
+			max			"$holoOffset[0]"
+			resultVar	$holoOffsetX
+		}
+		
+		Clamp	//Y axis
+		{
+			srcVar1		$valuezero
+			min			"$holoOffset[1]"
+			max			"$holoOffset[1]"
+			resultVar	$holoOffsetY
+		}
+		//Additional multiplication for scale+offset integration
+		Equals
+		{
+			srcVar1			$holoOffsetX
+			resultVar		$holoOffsetX_temp
+		}
+		Equals 
+		{
+			srcVar1			$holoOffsetY
+			resultVar		$holoOffsetY_temp
+		}
+		multiply	//scale+offset X axis
+		{
+			srcVar1		$holoOffsetX_temp
+			srcVar2		$scale_post
+			resultVar	$holoOffsetX
+		}
+		multiply	//scale+offset Y axis
+		{
+			srcVar1		$holoOffsetY_temp
+			srcVar2		$scale_post
+			resultVar	$holoOffsetY
+		}
+		// additional offset scalar set by convar
+		multiply	//X axis
+		{
+			srcVar1		$holoOffsetX
+			srcVar2		"$translatescale"
+			resultVar	"$holoOffset2[0]"
+		}
+		multiply	//Y axis
+		{
+			srcVar1		$holoOffsetY
+			srcVar2		"$translatescale"
+			resultVar	"$holoOffset2[1]"
+		}
+
+		// Final transform
+		"TextureTransform"
+		{
+			"scaleVar"		"$holoScale"
+			"translateVar"	"$holoOffset2"
+			"resultvar"		"$basetexturetransform"
 		}
 	}
 }
