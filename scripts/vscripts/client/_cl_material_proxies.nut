@@ -465,3 +465,164 @@ function VMTCallback_DamageArrowFlash( entity )
 
 	return Vector( 1.0, flashVal, flashVal )
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const MAX_PROSCREEN_VALUE = 999999
+function VMTCallback_ProScreen( entity )
+{
+	return GetProScreenStats()
+}
+
+function VMTCallback_GruntProScreen( entity )
+{
+	return GetProScreenStats( false, true )
+}
+
+function VMTCallback_AllProScreen( entity )
+{
+	return GetProScreenStats( true, true )
+}
+
+function VMTCallback_HasMaxedProScreen( entity )
+{
+	local kills = GetProScreenStats()
+
+	if ( kills >= MAX_PROSCREEN_VALUE )
+		return 1
+
+	return 0
+}
+
+function GetProScreenStats( pilots = true, grunts = false )
+{
+	local kills = 0
+
+	local player = GetLocalViewPlayer()
+ 	if ( !IsValid( player ) )
+ 		return kills
+
+	local weapon = player.GetActiveWeapon()
+ 	if ( !IsValid( weapon ) )
+ 		return kills
+
+	local weaponName = weapon.GetWeaponClassName()
+	if ( !ItemDefined( weaponName ) )
+		return kills
+
+	if ( pilots )
+	{
+		kills += StatToInt( "weapon_kill_stats", "pilots", weaponName, player )
+		kills += StatToInt( "weapon_kill_stats", "titansTotal", weaponName, player )
+	}
+
+	if ( grunts )
+	{
+ 		kills += StatToInt( "weapon_kill_stats", "grunts", weaponName, player )
+		kills += StatToInt( "weapon_kill_stats", "spectres", weaponName, player )
+		kills += StatToInt( "weapon_kill_stats", "marvins", weaponName, player )
+	}
+
+	if ( kills >= MAX_PROSCREEN_VALUE )
+		return MAX_PROSCREEN_VALUE
+
+	return kills
+}
+
+
+// https://thunderstore.io/c/northstar/p/Creamy_jpg/Customisable_Reticles_Framework/
+
+// cl_fovscale values
+const FOV_70 = 1.0
+const FOV_76 = 1.0825
+const FOV_80 = 1.1375
+const FOV_86 = 1.22
+const FOV_90 = 1.275
+const FOV_96 = 1.3575
+const FOV_100 = 1.4125
+const FOV_106 = 1.495
+const FOV_110 = 1.55
+const FOV_115 = 1.6
+const FOV_120 = 1.7
+
+function VMTCallback_FOVReticleOffset( ent )
+{
+	local fov = GetConVarFloat( "cl_fovScale" )
+	local offset = 1.0
+
+	// offsetVals values are completely arbitraty, i just input random numbers until they worked fine
+	// No maths involved here
+	local fovVals = [ FOV_70, FOV_76, FOV_80, FOV_86, FOV_90, FOV_96, FOV_100, FOV_106, FOV_110, FOV_115, FOV_120 ]
+	local offsetVals = [ 1.5, 1.3, 1.25, 1.2, 1.15, 1.0, 0.95, 0.85, 0.8, 0.75, 0.65 ]
+
+	local count = 0
+	local count2 = 1
+	foreach ( val in fovVals )
+	{
+		if ( count >= 10 )
+			break
+
+		offset = GraphCapped( fov, fovVals[count], fovVals[count2], offsetVals[count], offsetVals[count2] )
+
+		count++
+		count2++
+	}
+
+	return offset
+}
+
+function VMTCallback_ColorBlindRed( ent )
+{
+	local col = GetColorBlindColors()
+
+	return col.Red
+}
+
+function VMTCallback_ColorBlindBlue( ent )
+{
+	local col = GetColorBlindColors()
+
+	return col.Blue
+}
+
+function VMTCallback_ColorBlindYellow( ent )
+{
+	local col = GetColorBlindColors()
+
+	return col.Yellow
+}
+
+function GetColorBlindColors()
+{
+	colorInfo <- {}
+	colorInfo.Red <- Vector( 0, 0, 0 )
+	colorInfo.Blue <- Vector( 0, 0, 0 )
+	colorInfo.Yellow <- Vector( 0, 0, 0 )
+
+	local colorblind = GetConVarInt( "colorblind_mode" )
+	switch( colorblind )
+	{
+		// Protanopia
+		case 1:
+			colorInfo.Red = Vector( 4.45, 3.9, 0 )
+			colorInfo.Blue = Vector( 0.247, 0.501, 0.965 ) * 5
+			colorInfo.Yellow = Vector( 0, 0, 0 ) // TODO
+			break
+
+		// Deuteranopia
+		case 2:
+			colorInfo.Red = Vector( 4, 2.51, 2.72 )
+			colorInfo.Blue = Vector( 0.1, 5.8, 7.7 )
+			colorInfo.Yellow = Vector( 0, 0, 0 )
+			break
+
+		// Tritanopia
+		case 3:
+			colorInfo.Red = Vector( 4.1, 3.7, 0.3 )
+			colorInfo.Blue = Vector( 2.8, 5.2, 9.7 )
+			colorInfo.Yellow = Vector( 0, 0, 0 )
+			break
+	}
+
+	return colorInfo
+}
