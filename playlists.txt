@@ -1,7 +1,7 @@
 "playlists"
 {
 	"version"	"stable"
-	"versionNum"	"1942" // Never forget to bump this for every playlist update.
+	"versionNum"	"1943" // Never forget to bump this for every playlist update.
 	"at"
 	{
 		"vars"
@@ -2650,7 +2650,7 @@
 			"cinematic_mode"	"0"
 			"AT_scorelimit"	"300"
 			"run_evac"	"0"
-			"riff_spawn_as_titan"	"2" // eSpawnAsTitan.Once
+			"riff_spawn_as_titan"	"1" // eSpawnAsTitan.Always
 			"riff_titan_availability"	"3" // eTitanAvailability.Never
 			"riff_allow_npcs"	"0"
 			"campaign_matchmaking"	"0"
@@ -2813,7 +2813,7 @@
 			"cinematic_mode"	"0"
 			"AT_scorelimit"	"300"
 			"run_evac"	"0"
-			"riff_spawn_as_titan"	"2" // eSpawnAsTitan.Once
+			"riff_spawn_as_titan"	"1" // eSpawnAsTitan.Always
 			"riff_titan_availability"	"3" // eTitanAvailability.Never
 			"riff_allow_npcs"	"0"
 			"campaign_matchmaking"	"0"
