@@ -2651,7 +2651,7 @@
 			"AT_scorelimit"	"300"
 			"run_evac"	"0"
 			"riff_spawn_as_titan"	"1" // eSpawnAsTitan.Always
-			"riff_titan_availability"	"3" // eTitanAvailability.Never
+			"riff_titan_availability"	"1" // eTitanAvailability.Always
 			"riff_allow_npcs"	"0"
 			"campaign_matchmaking"	"0"
 			"spectre_kill_credit"	"9"
@@ -2667,7 +2667,7 @@
 			"riff_minimap_state"	"0"
 			"riff_osp"	"0"
 			"riff_ammo_limit"	"0"
-			"riff_elimination"	"3" // eEliminationMode.PilotsTitans
+			"riff_elimination"	"0"
 			"xp_modifier"	"1"
 			"force_quick_play"	"0"
 			"campaign_search_expand_enabled"	"1"
@@ -2814,7 +2814,7 @@
 			"AT_scorelimit"	"300"
 			"run_evac"	"0"
 			"riff_spawn_as_titan"	"1" // eSpawnAsTitan.Always
-			"riff_titan_availability"	"3" // eTitanAvailability.Never
+			"riff_titan_availability"	"1" // eTitanAvailability.Always
 			"riff_allow_npcs"	"0"
 			"campaign_matchmaking"	"0"
 			"spectre_kill_credit"	"9"
@@ -2830,7 +2830,7 @@
 			"riff_minimap_state"	"0"
 			"riff_osp"	"0"
 			"riff_ammo_limit"	"0"
-			"riff_elimination"	"3" // eEliminationMode.PilotsTitans
+			"riff_elimination"	"0"
 			"xp_modifier"	"1"
 			"force_quick_play"	"0"
 			"campaign_search_expand_enabled"	"1"
@@ -2977,7 +2977,7 @@
 			"AT_scorelimit"	"300"
 			"run_evac"	"0"
 			"riff_spawn_as_titan"	"2" // eSpawnAsTitan.Once
-			"riff_titan_availability"	"3" // eTitanAvailability.Never
+			"riff_titan_availability"	"1" // eTitanAvailability.Always
 			"riff_allow_npcs"	"0"
 			"campaign_matchmaking"	"0"
 			"spectre_kill_credit"	"9"
