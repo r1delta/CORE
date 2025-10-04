@@ -1,5 +1,5 @@
 
-const VOICEHUD_MAX = 5
+const VOICEHUD_MAX = 9
 
 
 function main()
@@ -47,6 +47,12 @@ function UpdateVoiceHUD()
 	local teamPlayers = GetPlayerArrayOfTeam( localPlayer.GetTeam() )
 	local index = 0
 
+	// TODO: alltalk isn't replicated, this doesn't work yet
+	local allTalkEnabled = GetConVarBool( "sv_alltalk" )
+
+	if ( allTalkEnabled )
+		teamPlayers = GetPlayerArray()
+
 	foreach ( teamPlayer in teamPlayers )
 	{
 		if ( teamPlayer.IsTalking() && !teamPlayer.IsMuted() )
@@ -55,6 +61,25 @@ function UpdateVoiceHUD()
 
 			localPlayer.cv.voiceHUDArray[index].name.SetText( teamPlayer.GetPlayerName() )
 			localPlayer.cv.voiceHUDArray[index].name.Show()
+
+			if ( allTalkEnabled )
+			{
+				if ( teamPlayer.GetTeam() == localPlayer.GetTeam() && !IsFFABased() )
+				{
+					localPlayer.cv.voiceHUDArray[index].mic.SetColor( FRIENDLY_COLOR )
+					localPlayer.cv.voiceHUDArray[index].name.SetColor( FRIENDLY_COLOR )
+				}
+				else
+				{
+					localPlayer.cv.voiceHUDArray[index].mic.SetColor( ENEMY_COLOR )
+					localPlayer.cv.voiceHUDArray[index].name.SetColor( ENEMY_COLOR )
+				}
+			}
+			else
+			{
+				localPlayer.cv.voiceHUDArray[index].mic.ReturnToBaseColor()
+				localPlayer.cv.voiceHUDArray[index].name.ReturnToBaseColor()
+			}
 
 			index++
 
