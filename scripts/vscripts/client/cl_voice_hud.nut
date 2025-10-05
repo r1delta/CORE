@@ -66,13 +66,13 @@ function UpdateVoiceHUD()
 			{
 				if ( teamPlayer.GetTeam() == localPlayer.GetTeam() && !IsFFABased() )
 				{
-					localPlayer.cv.voiceHUDArray[index].mic.SetColor( FRIENDLY_COLOR )
-					localPlayer.cv.voiceHUDArray[index].name.SetColor( FRIENDLY_COLOR )
+					localPlayer.cv.voiceHUDArray[index].mic.SetColor( OBITUARY_COLOR_FRIENDLY )
+					localPlayer.cv.voiceHUDArray[index].name.SetColor( OBITUARY_COLOR_FRIENDLY )
 				}
 				else
 				{
-					localPlayer.cv.voiceHUDArray[index].mic.SetColor( ENEMY_COLOR )
-					localPlayer.cv.voiceHUDArray[index].name.SetColor( ENEMY_COLOR )
+					localPlayer.cv.voiceHUDArray[index].mic.SetColor( OBITUARY_COLOR_ENEMY )
+					localPlayer.cv.voiceHUDArray[index].name.SetColor( OBITUARY_COLOR_ENEMY )
 				}
 			}
 			else
