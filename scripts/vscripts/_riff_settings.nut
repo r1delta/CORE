@@ -85,6 +85,7 @@ function main()
 
 	if ( !IsLobby() )
 	{
+		AddCallback_OnChangeLoadout( RiffSettings_ChangeLoadout )
 		AddCallback_OnPilotBecomesTitan( RiffSettings_PilotBecomesTitan )
 	}
 }
@@ -247,6 +248,12 @@ function Riff_TitanExitIsDisabled()
 	return Riff_TitanExitEnabled() == eTitanExitEnabled.Never
 }
 
+function RiffSettings_ChangeLoadout( player, loadoutTable, isTitan )
+{
+	if ( isTitan )
+		RiffSettings_PilotBecomesTitan( player, player )
+}
+
 function RiffSettings_PilotBecomesTitan( player, titan )
 {
 	if ( Riff_TitanEjectIsDisabled() )
@@ -254,6 +261,7 @@ function RiffSettings_PilotBecomesTitan( player, titan )
 		local soul = player.GetTitanSoul()
 
 		// If we cant eject, we dont need these
+		// Instead, give them the next passive based on unlock level
 		if ( PlayerHasPassive( player, PAS_NUCLEAR_CORE ) )
 		{
 			TakePassive( soul, PAS_NUCLEAR_CORE )
