@@ -605,21 +605,21 @@ function GetColorBlindColors()
 	local colorblind = GetConVarInt( "colorblind_mode" )
 	switch( colorblind )
 	{
-		// Protanopia
+		// Deuteranopia
 		case 1:
 			colorInfo.Red = Vector( 4.45, 3.9, 0 )
 			colorInfo.Blue = Vector( 0.247, 0.501, 0.965 ) * 5
 			colorInfo.Yellow = Vector( 0, 0, 0 ) // TODO
 			break
 
-		// Deuteranopia
+		// Tritanopia
 		case 2:
 			colorInfo.Red = Vector( 4, 2.51, 2.72 )
 			colorInfo.Blue = Vector( 0.1, 5.8, 7.7 )
 			colorInfo.Yellow = Vector( 0, 0, 0 )
 			break
 
-		// Tritanopia
+		// Protanopia
 		case 3:
 			colorInfo.Red = Vector( 4.1, 3.7, 0.3 )
 			colorInfo.Blue = Vector( 2.8, 5.2, 9.7 )
