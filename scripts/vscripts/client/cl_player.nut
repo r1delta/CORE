@@ -1118,6 +1118,21 @@ function ClientCodeCallback_PlayerDidDamage( params )
 
 		Crosshair_ShowHitIndicator( hitWeakpoint, hitIneffective, false )
 	}
+	// --- R1DELTA DAMAGE NUMBERS START ---
+	if ( GetConVarInt( "delta_damage_numbers" ) == 1 && IsValid( victim ) )
+	{
+	    if ( showCrosshairHitIndicator && ("damagePosition" in params) && (damageAmount > 0 )) // Don't show for 0 damage
+	    {
+	        local isCritical = (damageType & DF_CRITICAL) != 0
+	        local pos = victim.EyePosition() //("damagePosition" in params && params.damagePosition != Vector(0,0,0)) ? params.damagePosition : victim.GetWorldSpaceCenter()
+	        pos.z += 10
+			if (victim.IsTitan())
+				pos.z += 30
+	        // Pass victim.GetEntIndex() as the 7th parameter for batching
+	        AddDamageNumber( damageAmount, pos.x, pos.y, pos.z, isCritical || isHeadShot || playKillSound, victim.GetEntIndex() )
+	    }
+	}
+	// --- R1DELTA DAMAGE NUMBERS END ---
 
 	if ( IsValid( victim ) && playKillSound )
 	{

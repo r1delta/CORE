@@ -236,7 +236,7 @@ function ShowPlayerScoreEvent( player, event, associatedEntity, pointValueOverri
 function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, weaponName, scriptDamageType )
 {
 	local player = attacker
-	if ( !player.IsPlayer() )
+	if ( !player.IsPlayer() && GAMETYPE != TITAN_BRAWL_AUTO  )
 	{
 		local actualPlayer = GetPlayerFromEntity( player )
 		if ( IsValid( actualPlayer ) )
@@ -250,7 +250,8 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 	if ( ShouldPreventFriendlyFire( titan, attacker ) )
 		return false
 
-	player.SetTitanKillCount( player.GetTitanKillCount() + 1 )
+	if ( player.IsPlayer())
+		player.SetTitanKillCount( player.GetTitanKillCount() + 1 )
 	AddTitanBuildPoint( player, "TitanKilled" )
 
 
@@ -411,7 +412,7 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 			awardedEliminationScore = true
 		}
 
-		if ( SavedFromRodeo( player, attacker ) )
+		if ( !player.IsNPC() && SavedFromRodeo( player, attacker ) )
 		{
 	        local rodeoTitan = GetTitanBeingRodeoed( player )
 	        if ( rodeoTitan.IsPlayer() )
@@ -427,7 +428,7 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 			Stats_IncrementStat( attacker, "kills_stats","titanMeleePilot",1.0)
 		}
 
-		if ( player.pilotEjecting && !awardedEliminationScore )
+		if ( !player.IsNPC() && player.pilotEjecting && !awardedEliminationScore )
 			AddPlayerScore( attacker, "PilotEjectKill", player )
 	}
 
@@ -444,7 +445,7 @@ function ScoreEvent_PlayerKilled( player, attacker, damageInfo )
 
 	ScoreCheck_Kill( attacker, player )
 
-	if ( "recentDamageHistory" in player.s || ( player.isTitan() && ( "recentDamageHistory" in player.GetTitanSoul().s ) )  )
+	if ( "recentDamageHistory" in player.s || ( !player.IsNPC() && player.isTitan() && ( "recentDamageHistory" in player.GetTitanSoul().s ) )  )
 		ScoreEvent_KillAssists( player, attacker, scoreEvent )
 }
 

@@ -415,9 +415,11 @@ function AddTitanBuildPoint( player, event )
 
 function UpdateBuildPoint( player, point, event )
 {
-	player.SetCurTitanBuildPoint( player.GetCurTitanBuildPoint() + point )
+	if (player.IsPlayer()) {
+		player.SetCurTitanBuildPoint( player.GetCurTitanBuildPoint() + point )
 
-	Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_UpdateTitanModeHUD" )
+	}
 }
 
 function RoundBasedTitanReset()

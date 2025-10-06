@@ -16,6 +16,7 @@ GAMETYPE_TEXT[ HEIST ] 					<- "#GAMEMODE_HEIST"
 GAMETYPE_TEXT[ UPLINK ] 				<- "#GAMEMODE_UPLINK"
 GAMETYPE_TEXT[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG"
 GAMETYPE_TEXT[ COOPERATIVE ] 			<- "#GAMEMODE_COOP"
+GAMETYPE_TEXT[ TITAN_BRAWL_AUTO ] 		<- "#GAMEMODE_TITAN_BRAWL_AUTO"
 
 GAMETYPE_DESC <- {}
 GAMETYPE_DESC[ TEAM_DEATHMATCH ] 		<- "#GAMEMODE_PILOT_HUNTER_HINT"
@@ -25,6 +26,7 @@ GAMETYPE_DESC[ ATTRITION ] 				<- "#GAMEMODE_ATTRITION_HINT"
 GAMETYPE_DESC[ HEIST ]		 			<- "#GAMEMODE_HEIST_HINT"
 GAMETYPE_DESC[ UPLINK ] 				<- "#GAMEMODE_UPLINK_HINT"
 GAMETYPE_DESC[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG_HINT"
+GAMETYPE_DESC[ TITAN_BRAWL_AUTO ] 		<- "#GAMEMODE_TITAN_BRAWL_AUTO_HINT"
 
 GAMETYPE_ICON <- {}
 GAMETYPE_ICON[ TEAM_DEATHMATCH ] 		<- "../ui/menu/playlist/tdm"
@@ -36,6 +38,7 @@ GAMETYPE_ICON[ HEIST ] 					<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ SCAVENGER ]	 			<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ UPLINK ] 				<- "../ui/menu/playlist/classic"
 GAMETYPE_ICON[ TITAN_TAG ] 				<- "../ui/menu/playlist/classic"
+GAMETYPE_ICON[ TITAN_BRAWL_AUTO ] 		<- "../ui/menu/playlist/lts"
 GAMETYPE_ICON[ COOPERATIVE ] 			<- "../ui/menu/playlist/coop"
 GAMETYPE_ICON[ RANKED_PLAY ] 			<- "../ui/scoreboard_secret_logo"
 
@@ -289,6 +292,15 @@ if ( IsClient() )
 	GameMode_SetDefaultScoreLimits( TITAN_BRAWL, 30, 0 )
 	GameMode_SetDefaultTimeLimits( TITAN_BRAWL, 10, 0 )
 
+	GameMode_Create( TITAN_BRAWL_AUTO )
+	GameMode_SetName( TITAN_BRAWL_AUTO, "#GAMEMODE_TITAN_BRAWL_AUTO" )
+	GameMode_SetGameModeAnnouncement( TITAN_BRAWL_AUTO, "GameModeAnnounce_TTDM" )
+	GameMode_SetDesc( TITAN_BRAWL_AUTO, "#GAMEMODE_TITAN_BRAWL_AUTO_HINT" )
+	GameMode_SetIcon( TITAN_BRAWL_AUTO, "../ui/menu/playlist/lts" )
+	GameMode_AddServerScript( TITAN_BRAWL_AUTO, "mp/_gamemode_titan_brawl_auto" )
+	GameMode_SetDefaultScoreLimits( TITAN_BRAWL_AUTO, 30, 0 )
+	GameMode_SetDefaultTimeLimits( TITAN_BRAWL_AUTO, 10, 0 )
+
 	GameMode_Create( TITAN_MFD )
 	GameMode_SetName( TITAN_MFD, "#GAMEMODE_TITAN_MFD" )
 	GameMode_SetGameModeAnnouncement( TITAN_MFD, "GameModeAnnounce_MFD" )
@@ -344,7 +356,8 @@ enum eGameModes
 	CAMPAIGN_ID =						22,
 	TITAN_BRAWL_ID =					23,
 	TITAN_MFD_ID =						24,
-	TITAN_MFD_PRO_ID =					25
+	TITAN_MFD_PRO_ID =					25,
+	TITAN_BRAWL_AUTO_ID =				26
 }
 
 gameModesStringToIdMap <- {}
@@ -372,6 +385,7 @@ gameModesStringToIdMap[ CAPTURE_THE_FLAG_PRO ] 				<- eGameModes.CAPTURE_THE_FLA
 gameModesStringToIdMap[ FFA ]								<- eGameModes.FFA_ID
 gameModesStringToIdMap[ CAMPAIGN ]							<- eGameModes.CAMPAIGN_ID
 gameModesStringToIdMap[ TITAN_BRAWL ] 						<- eGameModes.TITAN_BRAWL_ID
+gameModesStringToIdMap[ TITAN_BRAWL_AUTO ] 					<- eGameModes.TITAN_BRAWL_AUTO_ID
 gameModesStringToIdMap[ TITAN_MFD ]							<- eGameModes.TITAN_MFD_ID
 gameModesStringToIdMap[ TITAN_MFD_PRO ]						<- eGameModes.TITAN_MFD_PRO_ID
 

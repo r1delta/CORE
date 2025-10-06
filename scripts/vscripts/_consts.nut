@@ -61,6 +61,7 @@ const TITAN_ESCORT = "te"
 const DEVTEST = "devtest"
 const FFA = "ffa"
 const TITAN_BRAWL = "ttdm"
+const TITAN_BRAWL_AUTO = "ttdm_auto"
 const TITAN_MFD = "tmfd"
 const TITAN_MFD_PRO = "tmfdp"
 

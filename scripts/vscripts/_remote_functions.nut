@@ -291,6 +291,7 @@ if ( IsMultiplayer() )
 	RegisterServerVar( "cttTitanSoul", null )
 	RegisterServerVar( "cttPlayerCaptureEndTime", 0 )
 
+
 	// Riffs
 	RegisterServerVar( "spawnAsTitan", null )
 	RegisterServerVar( "titanAvailability", null )

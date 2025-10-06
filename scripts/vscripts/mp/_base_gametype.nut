@@ -793,11 +793,11 @@ function PlayerOrNPCKilledByEnemy( entity, damageInfo )
 	}
 
 	// ???: Why are we running score related functions before checking for friendly fire? Answer: Because they all check team internally
-	if ( entity.IsPlayer() )
+	if ( entity.IsPlayer() || (entity.IsTitan() && GAMETYPE == TITAN_BRAWL_AUTO) )
 	{
 		ScoreEvent_PlayerKilled( entity, attacker, damageInfo )
 	}
-	else if ( entity.IsTitan() && entity.IsNPC() )
+	else if ( entity.IsTitan() && entity.IsNPC() && GAMETYPE != TITAN_BRAWL_AUTO )
 	{
 		if ( !entity.GetDoomedState() )
 			ScoreEvent_TitanKilled( entity, attacker, damageInfo.GetInflictor(), damageSourceID, _GetWeaponNameFromDamageInfo( damageInfo ), damageInfo.GetCustomDamageType() )

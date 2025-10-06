@@ -145,6 +145,13 @@ function main()
 
 	file.evacPlayers <- {}
 
+	file.autoTitanRoster <- {}
+	file.autoTitanRoster[TEAM_IMC] <- []
+	file.autoTitanRoster[TEAM_MILITIA] <- []
+	file.autoTitanRosterEncoded <- {}
+	file.autoTitanRosterEncoded[TEAM_IMC] <- ""
+	file.autoTitanRosterEncoded[TEAM_MILITIA] <- ""
+
 	file.menuColorCorrection <- ColorCorrection_Register( "materials/correction/menu_background.raw" )
 
 	AddKillReplayStartedCallback( HideCrosshairIfScoreBoardIsShowing )
@@ -597,7 +604,14 @@ function ShowScoreboard()
 		{
 			index = 0
 
-			foreach ( player in players )
+			local playersForDisplay = players
+			if ( GAMETYPE == TITAN_BRAWL_AUTO )
+			{
+				playersForDisplay = players.slice( 0 )
+				playersForDisplay.extend( TitanBrawlAuto_GetRosterForDisplay( team ) )
+			}
+
+			foreach ( player in playersForDisplay )
 			{
 				elemTable = file.playerElems[team][index]
 
@@ -606,7 +620,9 @@ function ShowScoreboard()
 				else
 					elemTable.background.SetImage( playerSlotFilledOdd[team] )
 
-				if ( player == file.selectedPlayer )
+			local isAutoTitanEntry = TitanBrawlAuto_IsRosterEntry( player )
+
+				if ( !isAutoTitanEntry && player == file.selectedPlayer )
 				{
 					elemTable.selection.Show()
 					selectedPlayerIndex = allPlayers.len()
@@ -615,9 +631,20 @@ function ShowScoreboard()
 				{
 					elemTable.selection.Hide()
 				}
-				allPlayers.append( player )
+
+				if ( !isAutoTitanEntry )
+					allPlayers.append( player )
 
 				elemTable.background.Show()
+
+				if ( isAutoTitanEntry )
+				{
+					TitanBrawlAuto_FillScoreboardRow( elemTable, player, team, data_highlight_bg_color, nameMeasureElem )
+					index++
+					if ( index >= level.maxTeamSize )
+						break
+					continue
+				}
 
 				if ( GetGameState() == eGameState.Epilogue && player.GetParent() && player.GetParent().GetSignifierName() == "npc_dropship" )
 				{
@@ -1292,6 +1319,167 @@ function SetEmptyScoreboardStar( starIndex )
 	file.CoopStars[starIndex].SetImage( SCOREBOARD_MATERIAL_COOP_STARS_EMPTY )
 }
 Globalize( SetEmptyScoreboardStar )
+
+function TitanBrawlAuto_IsScoreboardEnabled()
+{
+	return GAMETYPE == TITAN_BRAWL_AUTO
+}
+
+function TitanBrawlAuto_IsRosterEntry( entry )
+{
+	return entry != null && typeof entry == "table" && ( "isAutoTitan" in entry ) && entry.isAutoTitan
+}
+
+function TitanBrawlAuto_GetRosterEncoded( team )
+{
+	if ( team == TEAM_IMC )
+		return ( "autoTitanRosterIMC" in level.nv ) ? level.nv.autoTitanRosterIMC : ""
+	if ( team == TEAM_MILITIA )
+		return ( "autoTitanRosterMilitia" in level.nv ) ? level.nv.autoTitanRosterMilitia : ""
+	return ""
+}
+
+function TitanBrawlAuto_GetRosterForDisplay( team )
+{
+	if ( !TitanBrawlAuto_IsScoreboardEnabled() )
+		return []
+
+	local encoded = TitanBrawlAuto_GetRosterEncoded( team )
+	if ( encoded == null )
+		encoded = ""
+
+	if ( !( team in file.autoTitanRosterEncoded ) || file.autoTitanRosterEncoded[team] != encoded )
+	{
+		file.autoTitanRosterEncoded[team] <- encoded
+		file.autoTitanRoster[team] <- TitanBrawlAuto_DecodeRoster( encoded, team )
+	}
+
+	return file.autoTitanRoster[team]
+}
+
+function TitanBrawlAuto_DecodeRoster( encoded, team )
+{
+	local result = []
+	if ( encoded == null || encoded == "" )
+		return result
+
+	local entries = TitanBrawlAuto_Split( encoded, ";" )
+	foreach ( entryStr in entries )
+	{
+		if ( entryStr == "" )
+			continue
+
+		local fields = TitanBrawlAuto_Split( entryStr, "," )
+		if ( fields.len() < 7 )
+			continue
+
+		local entry =
+		{
+			isAutoTitan = true,
+			team = team,
+			guid = TitanBrawlAuto_ParseInt( fields[0] ),
+			name = fields[1],
+			kills = TitanBrawlAuto_ParseInt( fields[2] ),
+			deaths = TitanBrawlAuto_ParseInt( fields[3] ),
+			titanKills = TitanBrawlAuto_ParseInt( fields[4] ),
+			assists = TitanBrawlAuto_ParseInt( fields[5] ),
+			alive = TitanBrawlAuto_ParseInt( fields[6] ) != 0
+		}
+
+		result.append( entry )
+	}
+
+	return result
+}
+
+function TitanBrawlAuto_ParseInt( value )
+{
+	if ( value == null || value == "" )
+		return 0
+	return value.tointeger()
+}
+
+function TitanBrawlAuto_Split( input, delimiter )
+{
+	local result = []
+	local start = 0
+	local delimLen = delimiter.len()
+
+	while ( true )
+	{
+		local pos = input.find( delimiter, start )
+		if ( pos == null )
+		{
+			result.append( input.slice( start ) )
+			break
+		}
+
+		result.append( input.slice( start, pos ) )
+		start = pos + delimLen
+	}
+
+	return result
+}
+
+function TitanBrawlAuto_GetColumnValue( entry, column )
+{
+	switch ( column )
+	{
+		case "assists":
+			return entry.assists
+		case "deaths":
+			return entry.deaths
+		case "titanKills":
+			return entry.titanKills
+		case "pilotKills":
+			return entry.kills
+	}
+
+	return 0
+}
+
+function TitanBrawlAuto_FillScoreboardRow( elemTable, entry, team, data_highlight_bg_color, nameMeasureElem )
+{
+	elemTable.selection.Hide()
+	elemTable.playerNumber.Hide()
+	elemTable.leader.Hide()
+	elemTable.lvl.Hide()
+	elemTable.artImage.Hide()
+	elemTable.mic.Hide()
+
+	elemTable.status.SetImage( entry.alive ? SCOREBOARD_MATERIAL_STATUS_TITAN : SCOREBOARD_MATERIAL_STATUS_DEAD )
+	elemTable.status.Show()
+
+	elemTable.name.SetText( entry.name )
+	elemTable.name.SetColor( [230, 230, 230, 255] )
+	elemTable.name.SetWidth( file.nameEndColumn.GetAbsX() - nameMeasureElem.GetAbsX() )
+	elemTable.name.Show()
+
+	elemTable.connection.SetText( "--" )
+	elemTable.connection.Show()
+
+	foreach ( varName, hudElem in file.columnLabels )
+	{
+		if ( !( varName in elemTable ) )
+			continue
+
+		local value = TitanBrawlAuto_GetColumnValue( entry, varName )
+		elemTable[varName].SetText( file.columnLabelsLocalize[ varName ], value, "" )
+
+		if ( file.highlightColumns[varName] )
+		{
+			elemTable[varName].SetColor( file.data_highlight_color )
+			elemTable[varName].SetColorBG( data_highlight_bg_color[team] )
+		}
+		else
+		{
+			elemTable[varName].SetColor( file.data_default_color )
+			elemTable[varName].SetColorBG( [0,0,0,0] )
+		}
+
+		elemTable[varName].Show()
+	}
+}
 
 function GetNumTeamPlayers()
 {
