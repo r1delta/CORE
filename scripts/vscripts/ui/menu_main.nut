@@ -250,7 +250,7 @@ function ShowMainMenu()
 	file.versionDisplay.SetText( "v1.0.10.1" )
 	file.versionDisplay.Show()
 
-	file.r1DeltaVersion.SetText( GetR1DVersion() )
+	file.r1DeltaVersion.SetText( "R1Delta " + GetR1DVersion() )
 	file.r1DeltaVersion.Show()
 
 	thread UpdateDatacenterInfo()

@@ -318,7 +318,7 @@ function UpdateShownPage()
 
             file.serversMap[i].SetText("Lobby")
         } else
-            file.serversMap[i].SetText("#" +  server.map_name )
+            file.serversMap[i].SetText("#" +  server.map_name  )
 
         file.serversName[i].SetVisible(true)
         file.playerCountLabels[i].SetVisible(true)
@@ -408,9 +408,12 @@ function OnServerButtonFocused(button)
         menu.GetChild("NextMapImage").SetImage("../loadscreens/" + server.map_name + "_widescreen")
     }
      else {
-        menu.GetChild("StarsLabel").SetText( "#" + server.map_name )
+        menu.GetChild("StarsLabel").SetText( "#" + server.map_name  )
         menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/lobby_image_" + server.map_name)
     }
+    printt("Server version: " + server.version)
+    menu.GetChild("VersionLabel").SetText( "v" + server.version )
+    menu.GetChild("VersionLabel").SetVisible( true )
 
     // Update preview panel
     if( server.description.len() )
@@ -433,7 +436,12 @@ function OnServerButtonFocused(button)
         }
         trimmed_hostname = result;
     }
+    local r1dVersion = GetR1DVersion()
 
+    if(r1dVersion == "dev") {
+        menu.GetChild("ServerVersionLabel").SetText( server.version )
+        menu.GetChild("ServerVersionLabel").SetVisible( true )
+    }
 
     menu.GetChild( "NextMapName" ).SetText( trimmed_hostname )
     menu.GetChild( "NextMapName" ).Show()

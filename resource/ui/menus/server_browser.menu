@@ -130,6 +130,24 @@ resource/ui/menus/server_browser.menu
 			pin_to_sibling_corner	5
 		}
 
+        ServerVersionLabel
+		{
+			ControlName				Label
+			classname 				ServerVersionLabel
+			xpos					0
+			ypos					90
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					0
+			labelText				""
+			font					WinStreakHeaderFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+			pin_to_sibling			NextMapName
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
 
 		ImgTopBar
 		{
