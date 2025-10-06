@@ -47,7 +47,6 @@ function UpdateVoiceHUD()
 	local teamPlayers = GetPlayerArrayOfTeam( localPlayer.GetTeam() )
 	local index = 0
 
-	// TODO: alltalk isn't replicated, this doesn't work yet
 	local allTalkEnabled = GetConVarBool( "sv_alltalk" )
 
 	if ( allTalkEnabled )
@@ -62,24 +61,17 @@ function UpdateVoiceHUD()
 			localPlayer.cv.voiceHUDArray[index].name.SetText( teamPlayer.GetPlayerName() )
 			localPlayer.cv.voiceHUDArray[index].name.Show()
 
+			local color = [ 255, 255, 255, 255 ]
 			if ( allTalkEnabled )
 			{
 				if ( teamPlayer.GetTeam() == localPlayer.GetTeam() && !IsFFABased() )
-				{
-					localPlayer.cv.voiceHUDArray[index].mic.SetColor( OBITUARY_COLOR_FRIENDLY )
-					localPlayer.cv.voiceHUDArray[index].name.SetColor( OBITUARY_COLOR_FRIENDLY )
-				}
+					color = ColorStringToArray( OBITUARY_COLOR_FRIENDLY )
 				else
-				{
-					localPlayer.cv.voiceHUDArray[index].mic.SetColor( OBITUARY_COLOR_ENEMY )
-					localPlayer.cv.voiceHUDArray[index].name.SetColor( OBITUARY_COLOR_ENEMY )
-				}
+					color = ColorStringToArray( OBITUARY_COLOR_ENEMY )
 			}
-			else
-			{
-				localPlayer.cv.voiceHUDArray[index].mic.ReturnToBaseColor()
-				localPlayer.cv.voiceHUDArray[index].name.ReturnToBaseColor()
-			}
+
+			localPlayer.cv.voiceHUDArray[index].mic.SetColor( color )
+			localPlayer.cv.voiceHUDArray[index].name.SetColor( color )
 
 			index++
 
@@ -94,4 +86,41 @@ function UpdateVoiceHUD()
 		localPlayer.cv.voiceHUDArray[index].name.Hide()
 		localPlayer.cv.voiceHUDArray[index].mic.Hide()
 	}
+
 }
+
+/*
+function VoiceHUD_TestLabelColors()
+{
+	for ( ;; )
+	{
+		local localPlayer = GetLocalClientPlayer()
+		local allTalkEnabled = GetConVarBool( "sv_alltalk" )
+
+		local index = 0
+
+		for ( index; index < VOICEHUD_MAX; index++ )
+		{
+			localPlayer.cv.voiceHUDArray[index].mic.Show()
+
+			localPlayer.cv.voiceHUDArray[index].name.Show()
+			localPlayer.cv.voiceHUDArray[index].name.SetText( localPlayer.GetPlayerName() )
+
+			local color = [255, 255, 255, 255]
+			if ( allTalkEnabled )
+			{
+				if ( CoinFlip() )
+					color = ColorStringToArray( OBITUARY_COLOR_FRIENDLY )
+				else
+					color = ColorStringToArray( OBITUARY_COLOR_ENEMY )
+			}
+
+			localPlayer.cv.voiceHUDArray[index].mic.SetColor( color )
+			localPlayer.cv.voiceHUDArray[index].name.SetColor( color )
+		}
+
+		wait 1
+	}
+}
+Globalize( VoiceHUD_TestLabelColors )
+*/
