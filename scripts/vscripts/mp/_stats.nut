@@ -127,7 +127,14 @@ function Stats_EndRound()
 
         local winStreak = player.GetPersistentVar( "winStreak" )
         local highestWinStreak = player.GetPersistentVar( "highestWinStreak" )
+        local winLossHistory = player.GetPersistentVar("winLossHistorySize")
+        local winLossList = player.GetPersistentVar("winLossHistory[" + winLossHistory + "]")
 
+        if ( winLossHistory == null )
+            winLossHistory = 0
+
+        if ( winLossList == null )
+            winLossList = 0
         if( GetCurrentWinner() == player.GetTeam() )
         {
             if ( GetCinematicMode() )
@@ -148,6 +155,8 @@ function Stats_EndRound()
                 winStreak = 0
 
             winStreak += 1
+
+            winLossList = 1;        
 
             if ( killedTeam == TEAM_IMC )
                 Stats_IncrementStat( player, "game_stats", "games_won_as_imc", 1.0 )
@@ -179,14 +188,19 @@ function Stats_EndRound()
                 winStreak = 0
                 player.SetPersistentVar("winStreakIsDraws", 0)
             }
-            else
+            else {
                 player.SetPersistentVar("winStreakIsDraws", 1)
-
+                winLossList = 0; // draw
+            }
+            winLossList = -1;
             Stats_IncrementStat( player, "game_stats", "mode_played_" + GameRules.GetGameMode(), 1.0 )
 
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
             AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
         }
+
+        player.SetPersistentVar("winLossHistory[" + winLossHistory + "]", winLossList)
+        player.SetPersistentVar("winLossHistorySize", min( winLossHistory + 1, 10 ) )
 
         if ( highestWinStreak == null )
             highestWinStreak = 0
