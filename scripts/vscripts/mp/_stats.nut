@@ -127,14 +127,15 @@ function Stats_EndRound()
 
         local winStreak = player.GetPersistentVar( "winStreak" )
         local highestWinStreak = player.GetPersistentVar( "highestWinStreak" )
+    
+        local j = 0
+        for(j = NUM_GAMES_TRACK_WINLOSS_HISTORY - 2; j >= 0; --j)
+        {
+            player.SetPersistentVar( format( "winLossHistory[%i]", ( j + 1 ) ), player.GetPersistentVar( format("winLossHistory[%i]", j ) ) )
+        }
         local winLossHistory = player.GetPersistentVar("winLossHistorySize")
-        local winLossList = player.GetPersistentVar("winLossHistory[" + winLossHistory + "]")
-
         if ( winLossHistory == null )
             winLossHistory = 0
-
-        if ( winLossList == null )
-            winLossList = 0
         if( GetCurrentWinner() == player.GetTeam() )
         {
             if ( GetCinematicMode() )
@@ -150,13 +151,11 @@ function Stats_EndRound()
             }
 
             Stats_IncrementStat( player, "game_stats", "mode_won_" + GameRules.GetGameMode(), 1.0 )
-
+            player.SetPersistentVar("winLossHistory[0]", 1)
             if ( winStreak == null )
                 winStreak = 0
 
             winStreak += 1
-
-            winLossList = 1;        
 
             if ( killedTeam == TEAM_IMC )
                 Stats_IncrementStat( player, "game_stats", "games_won_as_imc", 1.0 )
@@ -190,16 +189,14 @@ function Stats_EndRound()
             }
             else {
                 player.SetPersistentVar("winStreakIsDraws", 1)
-                winLossList = 0; // draw
+                player.SetPersistentVar("winLossHistory[0]", 0)
             }
-            winLossList = -1;
+            player.SetPersistentVar("winLossHistory[0]", -1)
             Stats_IncrementStat( player, "game_stats", "mode_played_" + GameRules.GetGameMode(), 1.0 )
 
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
             AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
         }
-
-        player.SetPersistentVar("winLossHistory[" + winLossHistory + "]", winLossList)
         player.SetPersistentVar("winLossHistorySize", min( winLossHistory + 1, 10 ) )
 
         if ( highestWinStreak == null )
@@ -253,10 +250,13 @@ function Stats_EndRound()
 			player.SetPersistentVar( format( "kdratiopvp_match[%i]", ( i + 1 ) ), player.GetPersistentVar( format( "kdratiopvp_match[%i]", i ) ) )
 		}
 
+
+
         player.SetPersistentVar( "kdratio_match[0]", match_kd )
         player.SetPersistentVar( "kdratiopvp_match[0]", pvpMatchRatio )
         player.SetPersistentVar( "kdratio_lifetime", lifetimeKdRatio )
         player.SetPersistentVar( "kdratiopvp_lifetime", lifetimePvpRatio )
+
 
         if( GameRules.GetGameMode() == ATTRITION && player.GetAssaultScore() >= 100 )
         {
