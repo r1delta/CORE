@@ -500,7 +500,13 @@ function UpdateChallengeData(player,category,statName,value,weaponName)
                     Stats_IncrementStat( player, "misc_stats", "dailyChallengesCompleted", 1 )
                     AddCoins( player, COIN_REWARD_DAILY_CHALLENGE, eCoinRewardType.DAILY_CHALLENGE )
                 }
-
+                Stats_IncrementStat( player, "misc_stats", "challengeTiersCompleted", 1 )
+                local tier = GetCurrentChallengeTier( challRef, player )
+                local maxTier = GetChallengeTierCount( challRef )
+                if( tier == maxTier )
+                {
+                    Stats_IncrementStat( player, "misc_stats", "challengesCompleted", 1 )
+                }
                 AddPlayerScore(player,"ChallengeCompleted",null,xp)
 
                 local burncards = GetChallengeBurnCardRewards(challRef,tier,player)
