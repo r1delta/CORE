@@ -271,4 +271,33 @@
 		pin_to_sibling_corner		0
 	}
 
+	voiceMic9
+	{
+		ControlName			ImagePanel
+		wide				16
+		tall				16
+		visible				0
+		image				../ui/icon_mic_active
+		scaleImage			1
+		zpos				900
+
+		pin_to_sibling				voiceMic8
+		pin_corner_to_sibling		1
+		pin_to_sibling_corner		3
+	}
+	voiceName9
+	{
+		ControlName			Label
+		wide				200
+		tall				16
+		visible				0
+		font				HudFontSmall
+		textAlignment		east
+		textinsetx			6
+		zpos				900
+
+		pin_to_sibling				voiceMic9
+		pin_corner_to_sibling		1
+		pin_to_sibling_corner		0
+	}
 }

@@ -463,7 +463,7 @@ resource/ui/menus/options.menu
 			pin_to_sibling_corner	2
 			navUp					BtnAdvancedVideo [!$GAMECONSOLE]
 			navUp					SwchSubtitles [$GAMECONSOLE]
-			navDown					SwchSafeArea
+			navDown					SwchExtendedColorBlind
 			labelText				"#COLORBLIND_MODE"
 			ConVar					"colorblind_mode"
 			list
@@ -475,16 +475,36 @@ resource/ui/menus/options.menu
 			}
 		}
 
+		SwchExtendedColorBlind
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ExtendedColorBlindClass
+			style					DialogListButton
+			pin_to_sibling			SwchColorBlindMode
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchColorBlindMode
+			navDown					SwchSafeArea
+			labelText				"#MENU_EXTENDED_COLORBLIND"
+			ConVar					"delta_improved_colorblind"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
 		SwchSafeArea
 		{
 			ControlName				BaseModHybridButton
 			InheritProperties		SwitchButton
 			classname 				SafeAreaSwitchClass
 			style					DialogListButton
-			pin_to_sibling			SwchColorBlindMode
+			pin_to_sibling			SwchExtendedColorBlind
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
-			navUp					SwchColorBlindMode
+			navUp					SwchExtendedColorBlind
 			navDown					BtnMouseKeyboardControls [!$GAMECONSOLE]
 			navDown					BtnHelpAndSupport [$GAMECONSOLE]
 			labelText				"#SAFEAREA"

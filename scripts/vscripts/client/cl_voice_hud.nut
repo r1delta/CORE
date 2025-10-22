@@ -1,5 +1,5 @@
 
-const VOICEHUD_MAX = 9
+const VOICEHUD_MAX = 10
 
 
 function main()

@@ -5,6 +5,7 @@ function main()
 	Globalize( OnCloseOptionsMenu )
 	Globalize( OnOpenOptionsMenu )
 	Globalize( OnXboxHelp_Activate )
+	Globalize( OnButtonFocused_Shared )
 }
 
 function InitOptionsMenu( menu )
@@ -31,6 +32,7 @@ function InitOptionsMenu( menu )
 	AddEventHandlerToButtonClass( menu, "PCFooterButtonClass", UIE_GET_FOCUS, PCFooterButtonClass_Focused )
 
 	AddEventHandlerToButtonClass( menu, "HoldToRodeoSwitchClass", UIE_GET_FOCUS, HoldToRodeo_Focused )
+	AddEventHandlerToButtonClass( menu, "ExtendedColorBlindClass", UIE_GET_FOCUS, ExtendedColorBlind_Focused )
 }
 
 function OnOpenOptionsMenu( menu )
@@ -43,10 +45,6 @@ function OnOpenOptionsMenu( menu )
 
 	foreach ( button in buttons )
 		button.SetEnabled( enable )
-
-	local elements = GetElementsByClassname( menu, "MenuItemDescriptionClass" )
-	foreach ( element in elements )
-		element.EnableKeyBindingIcons()
 }
 
 function OnCloseOptionsMenu()
@@ -60,81 +58,125 @@ function OnCloseOptionsMenu()
 	SavePlayerSettings()
 }
 
+function OnButtonFocused_Shared( menu, button )
+{
+	// This is dumb
+	local elements = GetElementsByClassname( menu, "MenuItemDescriptionClass" )
+	foreach ( element in elements )
+	{
+		element.EnableKeyBindingIcons()
+	}
+}
+
 function MouseKeyboardControls_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_MOUSE_KEYBOARD_SETTINGS_DESC" )
 }
 
 function GamepadControls_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_CONTROLLER_SETTINGS_DESC" )
 }
 
 function AutoSprint_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_AUTOSPRINT_DESC" )
 }
 
 function MasterVolume_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_MASTER_VOLUME_DESC" )
 }
 
 function VoiceChat_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_VOICE_CHAT_DESC" )
 }
 
 function MusicVolume_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_MUSIC_VOLUME_DESC" )
 }
 
 function LobbyMusicVolume_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_LOBBY_MUSIC_VOLUME_DESC" )
 }
 
 function MusicSettingClassicMP_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_MUSIC_SETTING_DESC" )
 }
 
 function Subtitles_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_SUBTITLES_DESC" )
 }
 
 function SafeArea_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_SAFE_AREA_DESC" )
 }
 
 function ColorBlindMode_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_COLORBLIND_TYPE_DESC" )
+
+	// The description uses % and that messes with EnableKeyBindingIcons()
+	// This is dumb
+	local elements = GetElementsByClassname( menu, "MenuItemDescriptionClass" )
+	foreach ( element in elements )
+	{
+		element.DisableKeyBindingIcons()
+	}
 }
 
 function AdvancedVideoSettings_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_ADVANCED_VIDEO_SETTINGS_DESC" )
 }
 
 function HelpAndSupportButton_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_HELP_AND_SUPPORT" )
 }
 
@@ -146,11 +188,23 @@ function OnXboxHelp_Activate( button )
 function PCFooterButtonClass_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "" )
 }
 
 function HoldToRodeo_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
 	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_HOLD_TO_RODEO_DESC" )
+}
+
+function ExtendedColorBlind_Focused( button )
+{
+	local menu = GetMenu( "OptionsMenu" )
+	OnButtonFocused_Shared( menu, button )
+
+	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_EXTENDED_COLORBLIND_DESC" )
 }

@@ -599,6 +599,9 @@ function GetColorBlindColors()
 	colorInfo.Blue <- Vector( 0, 0, 0 )
 	colorInfo.Yellow <- Vector( 0, 0, 0 )
 
+	if ( !GetConVarBool( "delta_improved_colorblind" ) )
+		return colorInfo
+
 	local colorblind = GetConVarInt( "colorblind_mode" )
 	switch( colorblind )
 	{

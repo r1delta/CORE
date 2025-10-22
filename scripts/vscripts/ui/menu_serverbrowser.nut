@@ -215,6 +215,8 @@ function ShouldHideEmpty()
 
 function CompareSemver(versionA, versionB)
 {
+    if(GetR1DVersion() == "dev")
+        return 1
     local partsA = split( versionA, "." )
     local partsB = split( versionB, "." )
 
@@ -411,9 +413,6 @@ function OnServerButtonFocused(button)
         menu.GetChild("StarsLabel").SetText( "#" + server.map_name  )
         menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/lobby_image_" + server.map_name)
     }
-    printt("Server version: " + server.version)
-    menu.GetChild("VersionLabel").SetText( "v" + server.version )
-    menu.GetChild("VersionLabel").SetVisible( true )
 
     // Update preview panel
     if( server.description.len() )
@@ -438,10 +437,10 @@ function OnServerButtonFocused(button)
     }
     local r1dVersion = GetR1DVersion()
 
-    if(r1dVersion == "dev") {
+    // if(r1dVersion == "dev") {
         menu.GetChild("ServerVersionLabel").SetText( server.version )
         menu.GetChild("ServerVersionLabel").SetVisible( true )
-    }
+    // }
 
     menu.GetChild( "NextMapName" ).SetText( trimmed_hostname )
     menu.GetChild( "NextMapName" ).Show()
