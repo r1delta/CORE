@@ -590,3 +590,9 @@ server.dll,text,0x3C12E0,83 C1 0E,83 C1 04
 
 ; ignore ssl failure 
 engine.dll,text,0x29457C,7F 47,EB 47 
+
+
+
+client.dll,rdata,0x85F2A0,"Menu","Default\x00"
+client.dll,rdata,0x85F2B0,"Menu","Default\x00"
+client.dll,rdata,0x85F2D0,"Menu","Default\x00"
