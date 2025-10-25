@@ -842,7 +842,6 @@ function NextMapModeComboIndex_Changed()
 		UpdateFooterButtons()
 		return
 	}
-	printt( "NextMapModeComboIndex_Changed(), level.ui.nextMapModeComboIndex =", level.ui.nextMapModeComboIndex )
 
 	SetDisplayedMapByComboIndex( level.ui.nextMapModeComboIndex )
 }
@@ -1053,6 +1052,7 @@ function ChangeStarPanelState( visible, instant = false )
 
 function SetStreakInfo( bShow )
 {
+	printt( "SetStreakInfo( " + bShow + " )" )
 	if ( !bShow )
 	{
 		file.winStreakHeader.Hide()

@@ -3589,8 +3589,8 @@ function ShouldPreventFriendlyFire( victim, attacker )
 
 		if ( IsFFABased() )
 			return false
-		//else
-		//	return !GetConVarBool( "mp_friendlyfire" ) //doesnt seem to work properly? also its set to 1 by default so thats not good
+		
+		return true
 	}
 
 	return false

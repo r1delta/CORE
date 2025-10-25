@@ -127,7 +127,15 @@ function Stats_EndRound()
 
         local winStreak = player.GetPersistentVar( "winStreak" )
         local highestWinStreak = player.GetPersistentVar( "highestWinStreak" )
-
+    
+        local j = 0
+        for(j = NUM_GAMES_TRACK_WINLOSS_HISTORY - 2; j >= 0; --j)
+        {
+            player.SetPersistentVar( format( "winLossHistory[%i]", ( j + 1 ) ), player.GetPersistentVar( format("winLossHistory[%i]", j ) ) )
+        }
+        local winLossHistory = player.GetPersistentVar("winLossHistorySize")
+        if ( winLossHistory == null )
+            winLossHistory = 0
         if( GetCurrentWinner() == player.GetTeam() )
         {
             if ( GetCinematicMode() )
@@ -143,7 +151,7 @@ function Stats_EndRound()
             }
 
             Stats_IncrementStat( player, "game_stats", "mode_won_" + GameRules.GetGameMode(), 1.0 )
-
+            player.SetPersistentVar("winLossHistory[0]", 1)
             if ( winStreak == null )
                 winStreak = 0
 
@@ -179,14 +187,17 @@ function Stats_EndRound()
                 winStreak = 0
                 player.SetPersistentVar("winStreakIsDraws", 0)
             }
-            else
+            else {
                 player.SetPersistentVar("winStreakIsDraws", 1)
-
+                player.SetPersistentVar("winLossHistory[0]", 0)
+            }
+            player.SetPersistentVar("winLossHistory[0]", -1)
             Stats_IncrementStat( player, "game_stats", "mode_played_" + GameRules.GetGameMode(), 1.0 )
 
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
             AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
         }
+        player.SetPersistentVar("winLossHistorySize", min( winLossHistory + 1, 10 ) )
 
         if ( highestWinStreak == null )
             highestWinStreak = 0
@@ -239,10 +250,13 @@ function Stats_EndRound()
 			player.SetPersistentVar( format( "kdratiopvp_match[%i]", ( i + 1 ) ), player.GetPersistentVar( format( "kdratiopvp_match[%i]", i ) ) )
 		}
 
+
+
         player.SetPersistentVar( "kdratio_match[0]", match_kd )
         player.SetPersistentVar( "kdratiopvp_match[0]", pvpMatchRatio )
         player.SetPersistentVar( "kdratio_lifetime", lifetimeKdRatio )
         player.SetPersistentVar( "kdratiopvp_lifetime", lifetimePvpRatio )
+
 
         if( GameRules.GetGameMode() == ATTRITION && player.GetAssaultScore() >= 100 )
         {
@@ -486,7 +500,13 @@ function UpdateChallengeData(player,category,statName,value,weaponName)
                     Stats_IncrementStat( player, "misc_stats", "dailyChallengesCompleted", 1 )
                     AddCoins( player, COIN_REWARD_DAILY_CHALLENGE, eCoinRewardType.DAILY_CHALLENGE )
                 }
-
+                Stats_IncrementStat( player, "misc_stats", "challengeTiersCompleted", 1 )
+                local tier = GetCurrentChallengeTier( challRef, player )
+                local maxTier = GetChallengeTierCount( challRef )
+                if( tier == maxTier )
+                {
+                    Stats_IncrementStat( player, "misc_stats", "challengesCompleted", 1 )
+                }
                 AddPlayerScore(player,"ChallengeCompleted",null,xp)
 
                 local burncards = GetChallengeBurnCardRewards(challRef,tier,player)

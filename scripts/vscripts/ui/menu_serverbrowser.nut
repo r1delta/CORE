@@ -215,6 +215,8 @@ function ShouldHideEmpty()
 
 function CompareSemver(versionA, versionB)
 {
+    if(GetR1DVersion() == "dev")
+        return 1
     local partsA = split( versionA, "." )
     local partsB = split( versionB, "." )
 
