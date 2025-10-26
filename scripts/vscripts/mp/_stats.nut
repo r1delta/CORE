@@ -93,8 +93,9 @@ function Stats_EndRound()
         Stats_IncrementStat(player,"game_stats","game_completed", 1)
         Stats_IncrementStat( player, "game_stats", "game_completed_total", 1.0 )
 
-        local modePlayedStat = "mode_played_" + currentGameMode
-        Stats_IncrementStat( player, "game_stats", modePlayedStat, 1.0 )
+        // These 2 do different things
+        Stats_IncrementStat( player, "game_stats", "mode_played", 1.0 )
+        Stats_IncrementStat( player, "game_stats", "mode_played_" + currentGameMode, 1.0 )
 
         if ( killedTeam == TEAM_IMC )
             Stats_IncrementStat( player, "game_stats", "games_completed_as_imc", 1.0 )
@@ -192,6 +193,9 @@ function Stats_EndRound()
                 player.SetPersistentVar("winLossHistory[0]", 0)
             }
             player.SetPersistentVar("winLossHistory[0]", -1)
+
+            // These 2 do different things
+            Stats_IncrementStat( player, "game_stats", "mode_played", 1.0 )
             Stats_IncrementStat( player, "game_stats", "mode_played_" + GameRules.GetGameMode(), 1.0 )
 
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
