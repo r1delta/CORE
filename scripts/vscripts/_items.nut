@@ -2758,8 +2758,9 @@ function GetDecalUnlockData( ref, player = null )
 
 		case "titan_decal_gooser":
 			//Do the Gen 5 challenge requirement 'Gooser' the hard way
-			data.goal = 1
-			data.progress = IsUI() ? GetPersistentVar( "previousGooserProgress" ) : player.GetPersistentVar( "previousGooserProgress" )
+			data.goal = 50
+			data.progress =	StatToInt( "kills_stats", "ejectingPilots", null, player )
+			// data.progress = IsUI() ? GetPersistentVar( "previousGooserProgress" ) : player.GetPersistentVar( "previousGooserProgress" )
 			break
 
 		case "titan_decal_padoublethreat":
