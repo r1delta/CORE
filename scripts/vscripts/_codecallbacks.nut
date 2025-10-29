@@ -17,6 +17,7 @@ function main()
 	level.onTitanBecomesPilotCallbacks <- {} // these run whenever a Titan player becomes a Pilot
 	level.onPlayerKilledCallbacks <- {} //
 	level.onTitanDoomedCallbacks <- {}
+	level.onTitanEjectCallbacks <- {} // these run whenever a Titan is about to eject
 	level.titanDamageScaler <- {}
 	level.onClientChatMsgCallbacks <- {}
 	level.onOverrideLoadoutCallbacks <- {}
@@ -400,6 +401,23 @@ function AddCallback_OnTitanDoomed( callbackFunc )
 	callbackInfo.scope <- this
 
 	level.onTitanDoomedCallbacks[name] <- callbackInfo
+}
+
+function AddCallback_OnTitanEject( callbackFunc )
+{
+	Assert( "onTitanEjectCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnTitanEject can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 2, "player, titanSoul" )
+
+	local name = FunctionToString( callbackFunc )
+	Assert( !( name in level.onTitanEjectCallbacks ), "Already added " + name + " with AddCallback_OnTitanEject" )
+
+	local callbackInfo = {}
+	callbackInfo.name <- name
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onTitanEjectCallbacks[name] <- callbackInfo
 }
 
 function AddCallback_OnClientConnecting( callbackFunc )
