@@ -753,6 +753,12 @@ function TitanEjectPlayer( ejectTitan, instant = false )
 		}
 	)
 
+	// Fire OnTitanEject callbacks before soul destruction
+	foreach ( callbackInfo in level.onTitanEjectCallbacks )
+	{
+		callbackInfo.func.acall( [callbackInfo.scope, e.player, soul ] )
+	}
+
 	soul.SetEjecting( true )
 	ejectTitan.SetInvulnerable()  //Give both player and ejectTitan temporary invulnerability in the course of ejecting. Player invulnerability gets cleared in ClearEjectInvulnerability
 
