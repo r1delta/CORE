@@ -753,10 +753,12 @@ function TitanEjectPlayer( ejectTitan, instant = false )
 		}
 	)
 
-	// Fire OnTitanEject callbacks before soul destruction
-	foreach ( callbackInfo in level.onTitanEjectCallbacks )
-	{
-		callbackInfo.func.acall( [callbackInfo.scope, e.player, soul ] )
+	if ("onTitanEjectCallbacks" in level ) {
+		// Fire OnTitanEject callbacks before soul destruction
+		foreach ( callbackInfo in level.onTitanEjectCallbacks )
+		{
+			callbackInfo.func.acall( [callbackInfo.scope, e.player, soul ] )
+		}
 	}
 
 	soul.SetEjecting( true )
