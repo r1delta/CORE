@@ -10,12 +10,9 @@ function main()
 }
 
 
-function OnOpenAddonsMenu(menu) {
-	printt(menu)
-	uiGlobal.menu = menu	
-	file.menu = menu
+function OnOpenAddonsMenu() {
 	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
-	file.menu.GetChild("AddonImage").SetVisible( true )
+	uiGlobal.menu.GetChild("AddonImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	local var = GetMods()
 	uiGlobal.addons <- {}
@@ -29,7 +26,7 @@ function InitAddonsMenu( menu )
 	file.menu <- menu
 	file.mapListScrollState <- 0
 	file.numMapButtonsOffScreen <- null
-	uiGlobal.menu <- menu	
+	uiGlobal.menu <- menu
 	file.menu.GetChild("MapButtonsPanel").SetVisible( true )
 	AddEventHandlerToButtonClass( menu, "MapListScrollUpClass", UIE_CLICK, Bind( OnMapListScrollUp_Activate ) )
 	AddEventHandlerToButtonClass( menu, "MapListScrollDownClass", UIE_CLICK, Bind( OnMapListScrollDown_Activate ) )
@@ -53,7 +50,9 @@ function InitAddonsMenu( menu )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
 	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
-}	
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenAddonsMenu)
+}
 
 function ScrollDown( button )
 {
@@ -81,7 +80,7 @@ function ChangePreviewUI( button )
 
 	if( desc == "Description_Here" )
 		desc = "No Description"
-	
+
 	if( author == "Author_Name_Here" )
 		author = "No Author"
 

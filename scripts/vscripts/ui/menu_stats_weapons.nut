@@ -113,6 +113,9 @@ function InitStats_Weapons()
 	//pws.allTitanWeapons.extend( GetAllItemsOfType( itemType.TITAN_SPECIAL ) )
 
 	pws.weaponMenuInitComplete = true
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenViewStatsWeapons)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseViewStatsWeapons)
 }
 
 function WeaponButtonClicked( button )

@@ -52,6 +52,9 @@ function InitMenuInGame( menu )
 
 	local buttons = GetElementsByClassname( menu, "RankedButtonClass" )
 	file.BtnRanked <- buttons[0]
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenInGameMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseInGameMenu)
 }
 Globalize( InitMenuInGame )
 

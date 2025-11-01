@@ -4,6 +4,7 @@ function main()
 	Globalize( InitMainMenu )
 	Globalize( OnOpenMainMenu )
 	Globalize( DataCenterDialog )
+	Globalize( ShowMainMenu )
 	Globalize( Threaded_CreateLocalServer )
 	Globalize( OpenOfflineNameDialogButton_Activate )
 	Globalize( OnAddonButton_Activate )
@@ -53,6 +54,8 @@ function InitMainMenu( menu )
 
 	AddEventHandlerToButton( GetMenu( "UsernameDialog" ), "BtnAccept", UIE_CLICK, OpenOfflineNameDialogButtonOk_Activate )
     AddEventHandlerToButton( GetMenu( "UsernameDialog" ), "BtnCancel", UIE_CLICK, OpenOfflineNameDialogButtonCancel_Activate )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenMainMenu)
 }
 
 
@@ -757,7 +760,7 @@ function AuthDialog() {
 	if (GetConVarString( "delta_persistent_master_auth_token" ) != "DEFAULT")
 		return
 
-	
+
 
 	local buttonData = []
 	buttonData.append( { name = "Login with Discord", func = OnAuthButtonConnect_Activate } )
