@@ -49,6 +49,9 @@ function InitModesMenu( menu )
 {
 	AddEventHandlerToButtonClass( menu, "ModeButton", UIE_GET_FOCUS, ModeButton_GetFocus )
 	AddEventHandlerToButtonClass( menu, "ModeButton", UIE_CLICK, ModeButton_Click )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenModesMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseModesMenu)
 }
 
 function OnOpenModesMenu()
@@ -183,6 +186,9 @@ function InitMatchSettingsMenu( menu )
 	AddDescFocusHandler( file.burnCardSetButton, "#PM_DESC_BURN_CARDS" )
 
 	uiGlobal.matchSettingsChanged <- false
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenMatchSettingsMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseMatchSettingsMenu)
 }
 
 

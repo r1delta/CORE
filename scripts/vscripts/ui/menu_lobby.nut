@@ -82,6 +82,14 @@ function main()
 	Globalize( LocalDialogChoice_RestartTraining )
 	Globalize( LocalDialogChoice_TrainPilotOnly )
 	Globalize( LocalDialogChoice_TrainTitanOnly )
+
+	Globalize( Privatematch_map_Changed )
+	Globalize( Privatematch_mode_Changed )
+	Globalize( Privatematch_starting_Changed )
+	Globalize( GameStartTime_Changed )
+	Globalize( CoopLobbyMap_Changed )
+	Globalize( ListenHostUsernameHash_Changed )
+	Globalize( UpdateLobbyUI )
 }
 
 function InitLobbyMenu( menu )
@@ -181,6 +189,9 @@ function InitLobbyMenu( menu )
 	file.haveShownDLCAnnounce <- false
 
 	file.progressionKeybindRegistered <- false
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenLobbyMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseLobbyMenu)
 }
 
 function SetDLCHaveLabel( parentButton, haveDLC )
@@ -419,6 +430,7 @@ function OnCloseLobbyMenu()
 {
 	//RegisterButtonPressedCallback( BUTTON_SHOULDER_LEFT, ButtonCallback_RotateNodeCounterClockwise )
 	SetStarInfo( null, null )
+	Signal( uiGlobal.signalDummy, "OnCloseLobbyMenu" )
 }
 
 function EditPilotLoadoutList_Activate( button )

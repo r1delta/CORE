@@ -116,6 +116,9 @@ function InitBlackMarketMenu( menu )
 	level.shopMenu.burnCardStashStatus      = cardStashPanel.GetChild( "BurnCardStashStatus" )
 	level.shopMenu.burnCardStashStatus.s.lastBurnCardStashCount <- 0
 	level.shopMenu.burnCardStashStatusIcon  = cardStashPanel.GetChild( "BurnCardStashStatus_Icon" )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenBlackMarketMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseBlackMarketMenu)
 }
 
 

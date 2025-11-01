@@ -33,6 +33,9 @@ function InitOptionsMenu( menu )
 
 	AddEventHandlerToButtonClass( menu, "HoldToRodeoSwitchClass", UIE_GET_FOCUS, HoldToRodeo_Focused )
 	AddEventHandlerToButtonClass( menu, "ExtendedColorBlindClass", UIE_GET_FOCUS, ExtendedColorBlind_Focused )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenOptionsMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseOptionsMenu)
 }
 
 function OnOpenOptionsMenu( menu )

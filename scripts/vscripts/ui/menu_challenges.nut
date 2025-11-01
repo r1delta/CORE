@@ -157,6 +157,9 @@ function InitChallengesMenu()
 	Assert( chMenu.challengeButtons.len() == NUM_CHALLENGE_BUTTONS )
 	chMenu.buttonScrollDist = chMenu.challengeButtons[0].GetBaseHeight()
 	chMenu.buttonPopOutDist = chMenu.challengeButtonsContainer.GetWidth() - chMenu.challengeButtons[0].GetWidth() - chMenu.challengeButtons[0].GetPos()[0]
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenViewChallenges)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseViewChallenges)
 }
 
 function ChallengeButtonClicked( button )

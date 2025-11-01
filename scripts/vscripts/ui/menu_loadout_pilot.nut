@@ -89,6 +89,8 @@ function InitPilotLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, PILOT_ORDNANCE_DESC )
 	AddMenuElementsByClassname( menu, PILOT_PASSIVE1_DESC )
 	AddMenuElementsByClassname( menu, PILOT_PASSIVE2_DESC )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenPilotLoadoutsMenu)
 }
 
 function InitEditPilotLoadoutsMenu( menu )
@@ -137,6 +139,8 @@ function InitEditPilotLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, PILOT_ORDNANCE_DESC )
 	AddMenuElementsByClassname( menu, PILOT_PASSIVE1_DESC )
 	AddMenuElementsByClassname( menu, PILOT_PASSIVE2_DESC )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenEditPilotLoadoutsMenu)
 }
 
 function UpdatePilotLoadoutElems( menu, loadout, button = null )
