@@ -453,17 +453,8 @@ function ShouldDoReplay( player, attacker, replayTime )
 	if ( attacker == player )
 		return false
 
-	// Check for connectTime property existence
+	// Check for connectTime property existence (for replay buffer check)
 	if ( !( "connectTime" in player ) || !( "connectTime" in attacker ) )
-		return false
-
-	// Defensive check: Both players must have been connected and in-game for at least 30 seconds
-	// This prevents replay bugs when players join and quickly kill each other
-	// The 30 second timer starts from when they first connected (and subsequently spawned)
-	if ( Time() - player.connectTime < minimumGameTime )
-		return false
-
-	if ( Time() - attacker.connectTime < minimumGameTime )
 		return false
 
 	// Additional defensive check: Ensure minimum replay buffer time
@@ -475,6 +466,23 @@ function ShouldDoReplay( player, attacker, replayTime )
 		return false
 
 	if ( !player.hasSpawned || !attacker.hasSpawned )
+		return false
+
+	// Check for firstSpawnTime property existence
+	if ( !( "firstSpawnTime" in player ) || !( "firstSpawnTime" in attacker ) )
+		return false
+
+	// Both players must have valid firstSpawnTime
+	if ( player.firstSpawnTime == null || attacker.firstSpawnTime == null )
+		return false
+
+	// Defensive check: Both players must have been spawned and in-game for at least 30 seconds
+	// This prevents replay bugs when players join, spend time loading, spawn, and quickly kill each other
+	// The 30 second timer starts from when they FIRST spawned, not when they connected
+	if ( Time() - player.firstSpawnTime < minimumGameTime )
+		return false
+
+	if ( Time() - attacker.firstSpawnTime < minimumGameTime )
 		return false
 
 	// Check if replays are globally disabled
