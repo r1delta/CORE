@@ -457,8 +457,9 @@ function ShouldDoReplay( player, attacker, replayTime )
 	if ( !( "connectTime" in player ) || !( "connectTime" in attacker ) )
 		return false
 
-	// Defensive check: Both players must be connected for at least 30 seconds
+	// Defensive check: Both players must have been connected and in-game for at least 30 seconds
 	// This prevents replay bugs when players join and quickly kill each other
+	// The 30 second timer starts from when they first connected (and subsequently spawned)
 	if ( Time() - player.connectTime < minimumGameTime )
 		return false
 
@@ -474,18 +475,6 @@ function ShouldDoReplay( player, attacker, replayTime )
 		return false
 
 	if ( !player.hasSpawned || !attacker.hasSpawned )
-		return false
-
-	// Check for spawnTime property existence
-	if ( !( "spawnTime" in player ) || !( "spawnTime" in attacker ) )
-		return false
-
-	// Defensive check: Both players must have been spawned for at least 30 seconds
-	// This ensures adequate replay history exists before attempting to create a killcam
-	if ( Time() - player.spawnTime < minimumGameTime )
-		return false
-
-	if ( Time() - attacker.spawnTime < minimumGameTime )
 		return false
 
 	// Check if replays are globally disabled
