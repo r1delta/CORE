@@ -25,6 +25,7 @@ CBasePlayer.playerClassData <- null
 CBasePlayer.escalation <- null
 CBasePlayer.pilotAbility <- null
 CBasePlayer.connectTime <- null
+CBasePlayer.firstSpawnTime <- null
 CBasePlayer.titansBuilt <- 0
 CBasePlayer.spawnTime <- 0
 CBasePlayer.serverFlags <- 0
@@ -103,6 +104,10 @@ function CBasePlayer::RespawnPlayer( ent )
 	this.ClearViewOffsetEntity()
 	this.ClearAnimViewEntity()
 	this.spawnTime = Time()
+
+	// Track when player first spawned (for replay history checks)
+	if ( this.firstSpawnTime == null )
+		this.firstSpawnTime = Time()
 
 	this.ClearReplayDelay()
 	this.ClearViewEntity()
