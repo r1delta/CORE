@@ -441,7 +441,9 @@ function DrawArrow( origin, angles = null, time = 5, scale = 50, rgb = null )
 function ShouldDoReplay( player, attacker, replayTime )
 {
 	local minimumReplayTime = replayTime * 2
+	local minimumGameTime = 30.0 // Require 30 seconds in-game to prevent replay bugs
 
+	// Basic validity checks
 	if ( !IsValid( player ) )
 		return false
 
@@ -451,12 +453,42 @@ function ShouldDoReplay( player, attacker, replayTime )
 	if ( attacker == player )
 		return false
 
+	// Check for connectTime property existence
 	if ( !( "connectTime" in player ) || !( "connectTime" in attacker ) )
 		return false
 
+	// Defensive check: Both players must be connected for at least 30 seconds
+	// This prevents replay bugs when players join and quickly kill each other
+	if ( Time() - player.connectTime < minimumGameTime )
+		return false
+
+	if ( Time() - attacker.connectTime < minimumGameTime )
+		return false
+
+	// Additional defensive check: Ensure minimum replay buffer time
 	if ( Time() - player.connectTime <= minimumReplayTime || Time() - attacker.connectTime <= minimumReplayTime )
 		return false
 
+	// Check if players have spawned at all
+	if ( !( "hasSpawned" in player ) || !( "hasSpawned" in attacker ) )
+		return false
+
+	if ( !player.hasSpawned || !attacker.hasSpawned )
+		return false
+
+	// Check for spawnTime property existence
+	if ( !( "spawnTime" in player ) || !( "spawnTime" in attacker ) )
+		return false
+
+	// Defensive check: Both players must have been spawned for at least 30 seconds
+	// This ensures adequate replay history exists before attempting to create a killcam
+	if ( Time() - player.spawnTime < minimumGameTime )
+		return false
+
+	if ( Time() - attacker.spawnTime < minimumGameTime )
+		return false
+
+	// Check if replays are globally disabled
 	if ( level.nv.replayDisabled )
 		return false
 
