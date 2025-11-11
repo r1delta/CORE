@@ -57,6 +57,7 @@ function main()
 		level.missingPlayersTimeout <- null
 
 		level.shouldPlayerBeEliminatedFuncTable <- null
+    	level.lastForceSwitchTime <- {} // Track last force switch time per player
 
 		CreateTeamColorControlPoints()
 
@@ -2360,6 +2361,12 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				rodeoEnt.Signal( "RodeoOver" )
 		}
 
+		if ( forceSwitch )
+        {
+			printt( "AutoBalancePlayer: Forcing team switch for player " + player.GetPlayerName() )
+            level.lastForceSwitchTime[player.GetUID()] <- Time()
+        }
+
 		// Store pet titan before switching
 		local petTitan = player.GetPetTitan()
 
@@ -2476,6 +2483,20 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 		if ( GetMatchProgress() >= 90 )
 			return false
 	}
+
+	if ( forceSwitch )
+    {
+        local playerUID = player.GetUID()
+        if ( playerUID in level.lastForceSwitchTime )
+        {
+            local timeSinceLastSwitch = Time() - level.lastForceSwitchTime[playerUID]
+            if ( timeSinceLastSwitch < 15.0 )
+            {
+                printt( "Force switch on cooldown for player " + player.GetPlayerName() + " - " + (15.0 - timeSinceLastSwitch) + " seconds remaining" )
+                return false
+            }
+        }
+    }
 
 	return true
 }
