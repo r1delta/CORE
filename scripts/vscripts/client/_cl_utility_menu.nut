@@ -1309,7 +1309,8 @@ function EventNotification( eventID, entity, eventVal = null )
 			break
 
 		case eEventNotifications.AutoBalanceCooldown:
-			SetTimedEventNotificationHATT( 3.0, "#AUTOBALANCE_COOLDOWN", HATT_GAME_COUNTDOWN_SECONDS, eventVal )
+			printt( "AutoBalance Cooldown Notification: ", eventVal )
+			// SetTimedEventNotificationHATT( (eventVal + Time()) / 2, "#AUTOBALANCE_COOLDOWN", HATT_GAME_COUNTDOWN_SECONDS, eventVal )
 			break
 
 		default:

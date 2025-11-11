@@ -2361,19 +2361,17 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				rodeoEnt.Signal( "RodeoOver" )
 		}
 
-		if ( forceSwitch )
-        {
-			printt( "AutoBalancePlayer: Forcing team switch for player " + player.GetPlayerName() )
-            level.lastForceSwitchTime[player.GetUID()] <- Time()
-        }
-
 		// Store pet titan before switching
 		local petTitan = player.GetPetTitan()
 
 		// Switch player team
 		player.TrueTeamSwitch()
 		local newTeam = player.GetTeam() // Get the new team after switching
-
+		if ( forceSwitch )
+        {
+			printt( "AutoBalancePlayer: Forcing team switch for player " + player.GetPlayerName() )
+            level.lastForceSwitchTime[player.GetUID()] <- Time()
+        }
 		// Switch pet titan team if it exists
 		if ( IsValid( petTitan ) && IsAlive( petTitan ) )
 		{
@@ -2494,9 +2492,9 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
             {	                
 				local timeRemaining = ceil( 15.0 - timeSinceLastSwitch )
                 printt( "Force switch on cooldown for player " + player.GetPlayerName() + " - " + (15.0 - timeSinceLastSwitch) + " seconds remaining" )
-                // eEventNotifications.AutoBalanceCooldown
-				MessageToPlayer( player, eEventNotifications.AutoBalanceCooldown, null, timeRemaining )
-
+				// MessageToPlayer( player, eEventNotifications.AutoBalanceCooldown, null, timeRemaining )
+				// send a hud text message instead of event notification
+				SendHudMessage( player, "You can switch teams again in " + timeRemaining + " seconds", -1, 0.4, 255, 255, 255, 255, 1.0, 2.0, 1.0 )
 				return false
             }
         }
