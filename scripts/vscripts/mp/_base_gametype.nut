@@ -2491,9 +2491,13 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
         {
             local timeSinceLastSwitch = Time() - level.lastForceSwitchTime[playerUID]
             if ( timeSinceLastSwitch < 15.0 )
-            {
+            {	                
+				local timeRemaining = ceil( 15.0 - timeSinceLastSwitch )
                 printt( "Force switch on cooldown for player " + player.GetPlayerName() + " - " + (15.0 - timeSinceLastSwitch) + " seconds remaining" )
-                return false
+                // eEventNotifications.AutoBalanceCooldown
+				MessageToPlayer( player, eEventNotifications.AutoBalanceCooldown, null, timeRemaining )
+
+				return false
             }
         }
     }

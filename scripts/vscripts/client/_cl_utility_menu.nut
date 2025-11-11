@@ -1308,6 +1308,10 @@ function EventNotification( eventID, entity, eventVal = null )
 			SetTimedEventNotification( 3.0, "#MARKED_FOR_DEATH_MARKED_AUTOBALANCED" )
 			break
 
+		case eEventNotifications.AutoBalanceCooldown:
+			SetTimedEventNotificationHATT( 3.0, "#AUTOBALANCE_COOLDOWN", HATT_GAME_COUNTDOWN_SECONDS, eventVal )
+			break
+
 		default:
 			ClearEventNotification()
 			break
