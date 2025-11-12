@@ -710,7 +710,7 @@ function CBasePlayer::GetUserId() {
 }
 
 function CBasePlayer::GetUID() {
-	return getroottable().GetPlayerUserId(this);
+	return getroottable().GetPlayerPlatformUserId(this);
 }
 
 function CBasePlayer::GetPlatformUserId() {
