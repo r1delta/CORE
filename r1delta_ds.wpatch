@@ -201,3 +201,6 @@ server.dll,text,0x148B31,0F 84 89 02 00 00,90 90 90 90 90 90
 engine_ds.dll,text,0x05100A,41 B8 0C,41 B8 1A
 
 engine_ds.dll,text,0x6E430,E9,B0 01 C3
+
+engine_ds.dll,rdata,0x430EF4,"1200","1150"
+

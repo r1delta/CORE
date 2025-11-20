@@ -599,3 +599,4 @@ client.dll,rdata,0x85F2A0,"Menu","Default\x00"
 client.dll,rdata,0x85F2B0,"Menu","Default\x00"
 client.dll,rdata,0x85F2D0,"Menu","Default\x00"
 
+engine.dll,rdata,0x63D04C,"1200","1150"
