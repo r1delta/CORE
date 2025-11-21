@@ -1,0 +1,13 @@
+"spritecard"
+{
+	"$basetexture" "particle\glows\flare_streak01"
+
+	//$additive 1
+	$screenblend "1"
+	$muloutputbyalpha 1
+
+	$depthblend 0
+	
+	$intensity 0.1
+	$alpha 0.1
+}

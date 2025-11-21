@@ -1,0 +1,9 @@
+"spritecard"
+{
+	"$basetexture" "particle\glows\flare_hex"
+	$additive 1
+
+	$vertexFogAmount 1
+	$intensity 0.1
+	$alpha 0.1
+}

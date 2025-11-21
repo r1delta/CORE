@@ -1,0 +1,14 @@
+"spritecard"
+{
+	"$basetexture" "particle\glows\glow_soft_linear"
+	$additive 1
+	$muloutputbyalpha 1
+
+	$depthblend 0
+
+	$ignorez 1
+
+	$vertexFogAmount 1
+	$intensity 0.1
+	$alpha 0.1
+}
