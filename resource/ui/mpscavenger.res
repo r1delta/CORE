@@ -309,7 +309,7 @@ Resource/UI/MPScavenger.res
 		zpos				1
 	}
 
-	PlayerOreCarryingLabel119
+	PlayerOreCarryingLabel19
 	{
 		ControlName			Label
 		xpos				0
