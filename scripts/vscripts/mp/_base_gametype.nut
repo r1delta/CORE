@@ -66,6 +66,8 @@ function main()
 
 		AddClientCommandCallback( "PrivateMatchEndMatch", ClientCommand_PrivateMatchEndMatch )
 
+		AddCallback_GameStateEnter( eGameState.Playing, GameStart_AutoBalanceCooldown )
+
 		MarkTeamsAsBalanced_Off()
 
 		level.altTitanBuildTimer <- GetCurrentPlaylistVarInt( "alt_titan_build_timer", 0 ) ? true : false
@@ -2481,8 +2483,7 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 		if ( GetMatchProgress() >= 90 )
 			return false
 	}
-
-	if ( forceSwitch )
+	else
     {
         local playerUID = player.GetUID()
         if ( playerUID in level.lastForceSwitchTime )
@@ -2524,6 +2525,14 @@ function PostAutoBalanceThink( player, newTeam )
 
 	if ( player )
 		player.s.forceDisableFlagTouch = false
+}
+
+function GameStart_AutoBalanceCooldown()
+{
+	foreach( player in GetPlayerArray() )
+	{
+		level.lastForceSwitchTime[ player.GetUID() ] <- Time()
+	}
 }
 
 function GetEmbarkPlayer( titan )
