@@ -111,7 +111,7 @@ function Scavenger_InitPlayerScripts( player )
 		player.hudElems.HomeBaseIcon.Hide()*/
 
 	//TODO: Terribly hacky, rethink this if we want to make this gamemode real!
-	for ( local i = 0; i < 16; ++i  )
+	for ( local i = 0; i < 32; ++i  )
 	{
 		player.InitHudElem( "PlayerOreCarryingLabel" + i )
 	}
@@ -247,7 +247,7 @@ function SCV_GameStateChanged()
 function HideHudElements( player )
 {
 	PrintFunc()
-	for ( local i = 0; i < 16; ++i  )
+	for ( local i = 0; i < 32; ++i  )
 	{
 		player.hudElems[ "PlayerOreCarryingLabel" + i ].Hide()
 	}
