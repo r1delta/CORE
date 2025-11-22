@@ -2,6 +2,8 @@
 // UIE_CLICK
 // UIE_GET_FOCUS
 // UIE_LOSE_FOCUS
+// R1DELTA_UIE_OPEN (added by r1delta, for AddMenuEventHandler)
+
 
 const MAINMENU_MUSIC_DELAY = 4.0
 
@@ -857,6 +859,17 @@ function AddMenu( blockName, resourceFile, displayName = null )
 	uiGlobal.allMenus.append( uiGlobal.menus[blockName ] )
 }
 
+function AddMenuEventHandler(menu, event, func)
+{
+	if ( event == R1DELTA_UIE_OPEN ) {
+		Assert(menu.s.openFunc == null)
+		menu.s.openFunc <- func
+	} else if ( event == R1DELTA_UIE_CLOSE ) {
+		Assert(menu.s.closeFunc == null)
+		menu.s.closeFunc <- func
+	}
+}
+
 function AddMenu_Named( blockName, menuName, resourceFile )
 {
 	uiGlobal.menus[menuName] <- CreateMenu( blockName, resourceFile )
@@ -1594,232 +1607,104 @@ function OpenMenuWrapper( menu, focusDefault )
 
 	switch ( menuName )
 	{
-		case "MainMenu":
-			thread OnOpenMainMenu()
-			break
-
-		case "LobbyMenu":
-			OnOpenLobbyMenu()
-			break
-
-		case "Addons":
-			OnOpenAddonsMenu(menu)
-			break
-
-		case "InGameMenu":
-			OnOpenInGameMenu()
-			break
-
-		case "InGameSPMenu":
+		case "InGameSPMenu": // move to UHHHHHHHHHHH
 			OnOpenInGameSPMenu()
 			break
 
-		case "PilotLoadoutsMenu":
-			OnOpenPilotLoadoutsMenu( menu )
-			break
-
-		case "TitanLoadoutsMenu":
-			OnOpenTitanLoadoutsMenu( menu )
-			break
-
-		case "EditPilotLoadoutsMenu":
-			OnOpenEditPilotLoadoutsMenu( menu )
-			break
-
-		case "EditTitanLoadoutsMenu":
-			OnOpenEditTitanLoadoutsMenu( menu )
-			break
-
-		case "EditPilotLoadoutMenu":
-			OnOpenEditPilotLoadoutMenu()
-			break
-
-		case "EditTitanLoadoutMenu":
-			OnOpenEditTitanLoadoutMenu()
-			break
-
-		case "WeaponSelectMenu":
-			OnOpenWeaponSelectMenu()
-			break
-
-		case "BurnCards_pickcard":
-			OnOpenMenu_BurnCardsPickCard()
-			break
-
-		case "BurnCards_InGame":
-			OnOpenMenu_BurnCardsInGame( menu )
-			break
-
-		case "BurnCards_filters":
-			OnOpenMenu_BurnCardsFilters()
-			break
-
-		case "AbilitySelectMenu":
+		case "AbilitySelectMenu": // move to _loadout_shared.nut
 			OnOpenAbilitySelectMenu()
 			break
 
-		case "PassiveSelectMenu":
+		case "PassiveSelectMenu": // move to _loadout_shared.nut
 			OnOpenPassiveSelectMenu()
 			break
 
-		case "ImageWalkThroughMenu":
-			OnOpenImageWalkThroughMenu()
-			break
-
 		case "TitanOSSelectMenu":
-			OnOpenTitanOSSelectMenu()
+			OnOpenTitanOSSelectMenu() // move to _loadout_shared.nut
 			break
 
 		case "TitanSelectMenu":
-			OnOpenTitanSelectMenu()
+			OnOpenTitanSelectMenu() // move to _loadout_shared.nut
 			break
 
 		case "DecalSelectMenu":
-			OnOpenDecalSelectMenu()
+			OnOpenDecalSelectMenu() // move to _loadout_shared.nut
 			break
 
 		case "DevMenu":
-			OnOpenDevMenu()
-			break
-
-		case "RankedInviteMenu":
-			OnOpenRankedInviteMenu()
-			break
-
-		case "RankedPlayMenu":
-			OnOpenRankedPlayMenu()
+			OnOpenDevMenu() // move to menu_dev.nut
 			break
 
 		case "RankedTiersMenu":
-			OnOpenRankedTiersMenu()
+			OnOpenRankedTiersMenu() // move to menu_ranked_tiers.nut
 			break
 
 		case "RankedSeasonsMenu":
-			OnOpenRankedSeasonsMenu()
+			OnOpenRankedSeasonsMenu() // move to menu_ranked_seasons.nut
 			break
 
 		case "ViewStatsMenu":
-			OnOpenViewStats()
-			break
-
-		case "ViewStats_Overview_Menu":
-			OnOpenViewStatsOverview()
-			break
-
-		case "ViewStats_Kills_Menu":
-			OnOpenViewStatsKills()
-			break
-
-		case "ViewStats_Time_Menu":
-			OnOpenViewStatsTime()
-			break
-
-		case "ViewStats_Distance_Menu":
-			OnOpenViewStatsDistance()
-			break
-
-		case "ViewStats_Weapons_Menu":
-			OnOpenViewStatsWeapons()
-			break
-
-		case "ViewStats_Levels_Menu":
-			OnOpenViewStatsLevels()
-			break
-
-		case "ViewStats_Misc_Menu":
-			OnOpenViewStatsMisc()
-			break
-
-		case "ChallengesMenu":
-			OnOpenViewChallenges()
+			OnOpenViewStats() // move to menu_stats.nut
 			break
 
 		case "EOG_XP":
-			thread OnOpenEOG_XP()
+			thread OnOpenEOG_XP() // move to menu_eog_xp.nut
 			break
 
 		case "EOG_Coins":
-			thread OnOpenEOG_Coins()
+			thread OnOpenEOG_Coins() // move to menu_eog_coins.nut
 			break
 
 		case "EOG_MapStars":
-			thread OnOpenEOG_MapStars()
+			thread OnOpenEOG_MapStars() // move to menu_eog_mapstars.nut
 			break
 
 		case "EOG_Challenges":
-			thread OnOpenEOG_Challenges()
+			thread OnOpenEOG_Challenges() // move to menu_eog_challenges.nut
 			break
 
 		case "EOG_Unlocks":
-			thread OnOpenEOG_Unlocks()
+			thread OnOpenEOG_Unlocks() // move to menu_eog_unlocks.nut
 			break
 
 		case "EOG_Coop":
-			thread OnOpenEOG_Coop()
+			thread OnOpenEOG_Coop() // move to menu_eog_coop.nut
 			break
 
 		case "EOG_Scoreboard":
-			thread OnOpenEOG_Scoreboard()
+			thread OnOpenEOG_Scoreboard() // move to menu_eog_scoreboard.nut
 			break
 
 		case "EOG_Ranked":
-			thread OnOpenEOG_Ranked()
+			thread OnOpenEOG_Ranked() // move to menu_eog_ranked.nut
 			break
 
 		case "MouseKeyboardBindingsMenu":
-			OnOpenKeyboardBindingsMenu( menu )
-			break
+			OnOpenKeyboardBindingsMenu( menu ) // considering by the fact this takes a parameter,
+			break							   // its most likely the init function isn't completely written
 
 		case "AdvancedVideoSettingsMenu":
-			OnOpenAdvancedVideoSettingsMenu( menu )
+			OnOpenAdvancedVideoSettingsMenu( menu ) // same as previous
 			break
 
 		case "Generation_Respawn":
-			thread OnOpen_Generation_Respawn()
-			break
-
-		case "Advocate_Letter":
-			thread OnOpen_Advocate_Letter()
+			thread OnOpen_Generation_Respawn() // move to menu_generation_respawn.nut
 			break
 
 		case "OptionsMenu":
-			OnOpenOptionsMenu( menu )
-			break
-
-		case "MapsMenu":
-			OnOpenMapsMenu()
+			OnOpenOptionsMenu( menu ) // same as previous
 			break
 
 		case "CoopPartyMenu":
-			OnOpenCoopPartyMenu( menu )
+			OnOpenCoopPartyMenu( menu ) // same as previous
 			break;
 
 		case "CoopPartyCustomMenu":
-			OnOpenCoopPartyCustomMenu( menu )
+			OnOpenCoopPartyCustomMenu( menu ) // same as previous
 			break;
 
-		case "ModesMenu":
-			OnOpenModesMenu()
-			break
-
-		case "MatchSettingsMenu":
-			OnOpenMatchSettingsMenu()
-			break
-
-		case "BlackMarketMainMenu":
-			OnOpenBlackMarketMainMenu()
-			break
-
 		case "BlackMarketMenu":
-			OnOpenBlackMarketMenu( menu )
-			break
-
-		case "RankedModesMenu":
-			OnOpenRankedModesMenu()
-			break
-
-		case "ClassicMenu":
-			OnOpenClassicMenu()
+			OnOpenBlackMarketMenu( menu ) // same as previous
 			break
 
 		case "ServerBrowserMenu":
@@ -1827,6 +1712,11 @@ function OpenMenuWrapper( menu, focusDefault )
 			break;
 
 		default:
+			if ( "openFunc" in menu.s )
+			{
+				thread menu.s.openFunc()
+				printt( "Called openFunc for:", menu.GetName() )
+			}
 			break
 	}
 }
@@ -1847,15 +1737,6 @@ function CloseMenuWrapper( menu )
 
 	switch ( menuName )
 	{
-		case "LobbyMenu":
-			OnCloseLobbyMenu()
-			Signal( uiGlobal.signalDummy, "OnCloseLobbyMenu" )
-			break
-
-		case "InGameMenu":
-			OnCloseInGameMenu()
-			break
-
 		case "EOG_XP":
 			OnCloseEOG_XP()
 			break
@@ -1890,28 +1771,8 @@ function CloseMenuWrapper( menu )
 			OnCloseEOG_Ranked()
 			break
 
-		case "ViewStats_Weapons_Menu":
-			OnCloseViewStatsWeapons()
-			break
-
-		case "ViewStats_Levels_Menu":
-			OnCloseViewStatsLevels()
-			break
-
-		case "BurnCards_InGame":
-			OnCloseMenu_BurnCardsInGame()
-			break
-
-		case "BurnCards_pickcard":
-			OnCloseMenu_BurnCardPickCard()
-			break
-
-		case "TitanSelectMenu":
+		case "TitanSelectMenu": // mv: this shit is ass
 			OnCloseTitanSelectMenu()
-			break
-
-		case "ChallengesMenu":
-			OnCloseViewChallenges()
 			break
 
 		case "MouseKeyboardBindingsMenu":
@@ -1922,62 +1783,8 @@ function CloseMenuWrapper( menu )
 			OnCloseAdvancedVideoSettingsMenu( menu )
 			break
 
-
-
-		case "Generation_Respawn":
+		case "Generation_Respawn": // mv: this shit is ass
 			OnClose_Generation_Respawn()
-			break
-
-		case "ImageWalkThroughMenu":
-			OnCloseImageWalkThroughMenu()
-			break
-
-		case "RankedInviteMenu":
-			OnCloseRankedInviteMenu()
-			break
-
-		case "RankedPlayMenu":
-			OnCloseRankedPlayMenu()
-			break
-
-		case "Advocate_Letter":
-			OnClose_Advocate_Letter()
-			break
-
-		case "OptionsMenu":
-			OnCloseOptionsMenu()
-			break
-
-		case "MapsMenu":
-			OnCloseMapsMenu()
-			break
-
-		case "ModesMenu":
-			OnCloseModesMenu()
-			break
-
-		case "MatchSettingsMenu":
-			OnCloseMatchSettingsMenu()
-			break
-
-		case "EditPilotLoadoutsMenu":
-			OnCloseEditPilotLoadoutsMenu()
-			break
-
-		case "EditTitanLoadoutsMenu":
-			OnCloseEditTitanLoadoutsMenu()
-			break
-
-		case "EditPilotLoadoutMenu":
-			OnCloseEditPilotLoadoutMenu()
-			break
-
-		case "EditTitanLoadoutMenu":
-			OnCloseEditTitanLoadoutMenu()
-			break
-
-		case "BlackMarketMenu":
-			OnCloseBlackMarketMenu()
 			break
 
 		case "DecalSelectMenu":
@@ -1985,15 +1792,11 @@ function CloseMenuWrapper( menu )
 			break
 
 		// COOP - used by the change loadout crate script
-		case "PilotLoadoutsMenu":
+		case "PilotLoadoutsMenu": // mv: this shit is ass
 			OnClosePilotLoadoutsMenu()
 			break
 
-		case "RankedModesMenu":
-			OnCloseRankedModesMenu()
-			break
-
-		case "RankedSeasonsMenu":
+		case "RankedSeasonsMenu": // mv: this shit is ass
 			OnCloseRankedSeasonsMenu()
 			break
 

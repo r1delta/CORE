@@ -42,6 +42,7 @@ function InitLoadouts()
 	lockedChallengePanel.progress <- panel.GetChild( "Progress" )
 	lockedChallengePanel.bar <- panel.GetChild( "BarFillPrevious" )
 	lockedChallengePanel.barShadow <- panel.GetChild( "BarFillShadow" )
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenWeaponSelectMenu)
 
 	RegisterSignal( "PlayOSVoiceRandomSample" )
 }
