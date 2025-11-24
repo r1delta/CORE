@@ -1911,8 +1911,17 @@ function TimeLimit_Complete()
 	else if ( IsRoundBased() )
 		timeLimit = ( GetRoundTimeLimit_ForGameMode() * 60.0 ).tointeger()
 	else
-		timeLimit = ( GetTimeLimit_ForGameMode() * 60.0 ).tointeger()
-
+    {
+        if ( level.nv.gameEndTime != 0.0 )
+        {
+            local startTime = Time() - GameTime.TimeSpentInCurrentState()
+            timeLimit = level.nv.gameEndTime - startTime
+        }
+        else
+        {
+            timeLimit = ( GetTimeLimit_ForGameMode() * 60.0 ).tointeger()
+        }
+    }
 	if ( !timeLimit )
 		return false
 
