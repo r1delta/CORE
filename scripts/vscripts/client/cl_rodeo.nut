@@ -741,9 +741,7 @@ function HasFriendlyRiderEnt( player )
 	{
 		return false
 	}
-	printt("HasFriendlyRiderEnt")
-
-	return !ShouldPreventFriendlyFire( player, riderEnt )
+	return ShouldPreventFriendlyFire( player, riderEnt )
 }
 
 
