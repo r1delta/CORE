@@ -204,3 +204,4 @@ engine_ds.dll,text,0x6E430,E9,B0 01 C3
 
 engine_ds.dll,rdata,0x430EF4,"1200","1150"
 
+vphysics.dll,text,0x31626,0F 84 4C 02 00 00,E9 4D 02 00 00 
