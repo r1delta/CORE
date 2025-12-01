@@ -7,7 +7,7 @@ engine_r1o.dll,rdata,0x558629,"\x00\x00\x00\x00","_imc"
 ; nop out some seemingly-unused callback causing calls to garbage callback func ptr
 ; filesystem_stdio.dll,text,0x1b448,74 65 4C 8D 05 1F 53 0B,90 90 4C 8D 05 1F 53 0B
 ; fix typo causing shared client VPK to not work properly
-filesystem_stdio.dll,rdata,0xd0774,"client_%s.bsp.pak000%s\x00\x00\x00\x00\x00\x00-s","englishclient_%s.bsp.pak000%s\x00"
+; filesystem_stdio.dll,rdata,0xd0774,"client_%s.bsp.pak000%s\x00\x00\x00\x00\x00\x00-s","englishclient_%s.bsp.pak000%s\x00"
 ; unhide fatal_script_errors
 launcher.dll,text,0xd550b,02,00
 ; unhide ai_ainRebuildOnMapStart
@@ -65,7 +65,7 @@ engine.dll,data,0x55B6F,75,EB
 ; precache hell...
 engine.dll,rdata,0x62BDE0,"%sserver_%s%s","%sclient_%s%s\x00"
 engine.dll,rdata,0x62BDB8,"vpk/server_","vpk/client_\x00"
-engine.dll,data,0x136EA3,0F 84 A0 00 00 00,EB 13
+; engine.dll,data,0x136EA3,0F 84 A0 00 00 00,EB 13
 ; server.dll sendprop HELL
 server.dll,data,0x3a1f29,80,40
 server.dll,data,0x3a207d,80,40
@@ -182,7 +182,7 @@ client.dll,text,0x2571C5,B8 00 00 20 00,B8 00 00 FF 00
 ; make persistence always ready
 ;engine.dll,text,0x210060,48 83 EC 28,B0 01 C3
 ; fix fs crash???
-filesystem_stdio.dll,text,0x74E1E,74 1A,EB 1A
+; filesystem_stdio.dll,text,0x74E1E,74 1A,EB 1A
 ; fix fps drop :)
 vguimatsurface.dll,text,0x181574,"60.","175\x00"
 ; unhide net_blockmsg
@@ -193,7 +193,7 @@ engine.dll,text,0x127EE6,C7 44 24 20 01 00,C7 44 24 20 00 00
 ; move fs path to head
 engine.dll,text,0x127EFD,41 B9 01 00 00 00,41 B9 00 00 00 00
 ; fix fs "dlc" crap
-filesystem_stdio.dll,text,0xD0728,"portal2","r1\x00"
+; filesystem_stdio.dll,text,0xD0728,"portal2","r1\x00"
 ; use r1 fs gameinfo (instead of the one in VPK)
 engine.dll,text,0x629A30,"GameInfo.txt","..\r1delta\GameInfo.txt\x00"
 ; remove TFOData CSV parser
@@ -601,3 +601,5 @@ client.dll,rdata,0x85F2D0,"Menu","Default\x00"
 
 engine.dll,rdata,0x63D04C,"1200","1150"
 server.dll,text,0x1FCB00,40,C3
+
+engine.dll,text,0x19FCEF,0F 84 AA FE FF FF,90 90 90 90 90 90
