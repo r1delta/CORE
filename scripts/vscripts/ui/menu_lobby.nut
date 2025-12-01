@@ -2038,6 +2038,7 @@ function OnPrivateMatchButtonThreaded()
 
 	ClientCommand( "playlist private_match" )
 	ClientCommand( "reload" )
+	ClientCommand(" sv_lobbyType 1")
 }
 
 function OnPrivateMatchButton_Activate( button )

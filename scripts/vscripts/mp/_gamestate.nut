@@ -1930,7 +1930,11 @@ function TimeLimit_Complete()
 
 	if ( !GetCinematicMode() )
 	{
-		local timeLeftSeconds = GameTime.TimeLeftSeconds()
+		local timeLeftSeconds
+        if ( level.nv.gameEndTime != 0.0 )
+            timeLeftSeconds = (level.nv.gameEndTime - Time()).tointeger()
+        else
+            timeLeftSeconds = GameTime.TimeLeftSeconds()
 
 		if( GAMETYPE != BIG_BROTHER)
 		{
@@ -2530,7 +2534,6 @@ function UpdateMatchProgress()
 	if ( level.nv.matchProgress != progress )
 	{
 		level.nv.matchProgress = progress
-		//printt( "Match Progress: " + progress + "%" )
 		Announce_Progress( progress )
 	}
 }
@@ -2588,12 +2591,33 @@ function GetMatchProgress_Time()
 	if ( Flag( "DisableTimeLimit" ) )
 		return 0.0
 
-	local timeLimit = ( GetTimeLimit_ForGameMode() * 60.0 ).tointeger()
+    local timeLimit
+    local timePassed
 
-	if ( !timeLimit )
-		return 0.0
+    if ( level.nv.gameEndTime != 0.0 )
+    {
+        local startTime = Time() - GameTime.TimeSpentInCurrentState()
+        timeLimit = level.nv.gameEndTime - startTime
+        timePassed = GameTime.TimeSpentInCurrentState()
+    }
+    else
+    {
+        if ( !GetTimeLimit_ForGameMode() )
+            return 0.0
 
-	return ( GameTime.PlayingTime().tofloat() / timeLimit.tofloat() ) * 100.0
+        timeLimit = ( GetTimeLimit_ForGameMode() * 60.0 ).tointeger()
+        timePassed = GameTime.PlayingTime()
+    }
+
+    if ( !timeLimit )
+        return 0.0
+
+    local progress = ( timePassed.tofloat() / timeLimit.tofloat() ) * 100.0
+
+    if ( progress > 100.0 )
+        progress = 100.0
+
+    return progress
 }
 
 
