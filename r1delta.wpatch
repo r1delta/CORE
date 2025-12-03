@@ -202,20 +202,20 @@ engine_r1o.dll,text,0x28E4D0,48,C3
 ; (it's broken in resource :( )
 engine.dll,text,0x127F37,48 8B,EB 0E
 ; KeyValues::LoadFromFile: patch special case on cache read failure for vmts
-AdminServer.dll,text,0x20B4F,74,EB
-bsppack.dll,text,0x816AF,74,EB
-client.dll,text,0x65FA3F,74,EB
-dedicated.dll,text,0xC769F,74,EB
-engine.dll,text,0x47DCBF,74,EB
-engine_ds.dll,text,0x31C60F,74,EB
-filesystem_stdio.dll,text,0x5CDAF,74,EB
-launcher.dll,text,0x7FC3F,74,EB
-localize.dll,text,0x1648F,74,EB
+;AdminServer.dll,text,0x20B4F,74,EB
+;bsppack.dll,text,0x816AF,74,EB
+;client.dll,text,0x65FA3F,74,EB
+;dedicated.dll,text,0xC769F,74,EB
+;engine.dll,text,0x47DCBF,74,EB
+;engine_ds.dll,text,0x31C60F,74,EB
+;filesystem_stdio.dll,text,0x5CDAF,74,EB
+;launcher.dll,text,0x7FC3F,74,EB
+;localize.dll,text,0x1648F,74,EB
 materialsystem_dx11.dll,text,0x111DFF,74,EB
-materialsystem_nodx.dll,text,0x4776F,74,EB
-valve_avi.dll,text,0x173DF,74,EB
-vgui2.dll,text,0x4301F,74,EB
-vguimatsurface.dll,text,0x46FDF,74,EB
+;materialsystem_nodx.dll,text,0x4776F,74,EB
+;valve_avi.dll,text,0x173DF,74,EB
+;vgui2.dll,text,0x4301F,74,EB
+;vguimatsurface.dll,text,0x46FDF,74,EB
 ; patch out "Can't send client command; not connected to a server" sq error
 client.dll,text,0x2DB33B,75,EB
 ; remove CVEngineServer::SendPlayersToPartyScreen
