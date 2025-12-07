@@ -65,7 +65,7 @@ engine.dll,data,0x55B6F,75,EB
 ; precache hell...
 engine.dll,rdata,0x62BDE0,"%sserver_%s%s","%sclient_%s%s\x00"
 engine.dll,rdata,0x62BDB8,"vpk/server_","vpk/client_\x00"
-; engine.dll,data,0x136EA3,0F 84 A0 00 00 00,EB 13
+engine.dll,data,0x136EA3,0F 84 A0 00 00 00,EB 13
 ; server.dll sendprop HELL
 server.dll,data,0x3a1f29,80,40
 server.dll,data,0x3a207d,80,40
