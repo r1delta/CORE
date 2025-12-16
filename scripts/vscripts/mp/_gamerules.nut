@@ -13,10 +13,23 @@ function GameRules_ChangeMap( mapName, mode )
     ServerCommand( "changelevel " + mapName )
 }
 
+function GameRules_PickRandomMap()
+{
+    local combos = GetPlaylistCombos( GetCurrentPlaylistName())
+    local rand = combos[ RandomInt( 0, combos.len() - 1 )]
+    GameRules_ChangeMap( rand.mapName, rand.modeName )
+}
+
+
 function GameRules_EndMatch()
 {
     if( IsPrivateMatch() )
 	    ServerCommand("playlist private_match")
+
+    if(!GetConVarBool("delta_return_to_lobby")) {
+        GameRules_PickRandomMap()
+        return
+    }
 
     ServerCommand( "changelevel mp_lobby" )
 }
