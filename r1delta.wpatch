@@ -615,4 +615,4 @@ client.dll,rdata,0x85F2D0,"Menu","Default\x00"
 engine.dll,rdata,0x63D04C,"1200","1150"
 server.dll,text,0x1FCB00,40,C3
 
-engine.dll,text,0x19FCEF,0F 84 AA FE FF FF,90 90 90 90 90 90
+;engine.dll,text,0x19FCEF,0F 84 AA FE FF FF,90 90 90 90 90 90
