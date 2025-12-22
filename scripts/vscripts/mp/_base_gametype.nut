@@ -3283,6 +3283,8 @@ function CheckForEmptyTeamVictory()
 		return
 	if ( GAMETYPE == COOPERATIVE )
 		return
+	if (GetCurrentPlaylistName() == CAMPAIGN)
+		return
 
 	if ( !IsRoundBased() && (GetGameState() >= eGameState.WinnerDetermined) )
 		return
