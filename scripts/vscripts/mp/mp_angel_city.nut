@@ -1375,7 +1375,7 @@ function MilitiaWinAttackMegaCarrier()
 
 	wait 16.5
 	FlagSet( "MegaCarrierEscapes" )
-	//thread LaunchRandomDogFighterAttacks( TEAM_MILITIA )
+	thread LaunchRandomDogFighterAttacks( TEAM_MILITIA )
 
 }
 
@@ -1392,7 +1392,7 @@ function IMCWinCarrierMoves()
 
 	FlagSet( "MegaCarrierMovesOverCity" )
 	wait 10.0
-	//thread LaunchRandomDogFighterAttacks( TEAM_IMC )
+	thread LaunchRandomDogFighterAttacks( TEAM_IMC )
 
 	//Nothing here yet
 	return
