@@ -703,8 +703,12 @@ class CGameTimer
 		}
 		else
 		{
-			if ( gameState > eGameState.SuddenDeath )
+			if ( gameState > eGameState.SuddenDeath ) {
+				if(GetServerVar("gameEndTime") == null || GetServerVar("gameStartTime") == null) {
+					return 0.0;
+				}
 				return (GetServerVar( "gameEndTime" ) - GetServerVar( "gameStartTime" ) )
+			}
 			else
 				return Time() - GetServerVar( "gameStartTime" )
 		}
