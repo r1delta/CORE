@@ -786,8 +786,8 @@ function CreateR1DeltaItems()
 	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_titanweapon_shotgun", 				"../ui/menu/items/titanweapon_shotgun" )
 
 	// DEV_DISABLED for now, theyre not balanced at all
-	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega3", 				"../ui/menu/items/titanweapon_minigun", null, null, HideFromMenus )
-	CreateWeaponData( itemType.TITAN_SPECIAL,		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega4", 				"../ui/menu/items/ability_icons/charge_cannon",				"../ui/menu/items/ability_icons/charge_cannon", null, HideFromMenus )
+	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_weapon_mega3", 				"../ui/menu/items/titanweapon_minigun", null, null )
+	CreateWeaponData( itemType.TITAN_SPECIAL,		DEV_ENABLED,	0, 		null, 	null, "mp_weapon_mega4", 				"../ui/menu/items/ability_icons/charge_cannon",				"../ui/menu/items/ability_icons/charge_cannon", null )
 
 	CreateWeaponData( itemType.TITAN_ORDNANCE,		DEV_ENABLED,	0,		null, 	null, "mp_titanweapon_shoulder_turret", 	"../ui/menu/items/titanweapon_shoulder_rockets",		"HUD/coop/mini_turret_counter", 	"../ui/menu/items/titanweapon_shoulder_rockets", HideFromMenus )
 
