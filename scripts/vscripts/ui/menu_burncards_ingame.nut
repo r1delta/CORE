@@ -134,6 +134,9 @@ function InitBurnCardInGameMenu( menu )
 	//	button.AddEventHandler( UIE_CLICK, Bind( OnStoredSlot_Click ) )
 	//	file.allButtons.append( button )
 	//}
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenMenu_BurnCardsInGame)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseMenu_BurnCardsInGame)
 }
 
 
