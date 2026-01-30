@@ -164,6 +164,10 @@ function main()
 	SmartGlass_SetGameState( "MainMenu" )
 	SmartGlass_SetScriptVersion( 1 )
 
+	if(GetConVarInt("debugvpkprecache") == 0) {
+		ClientCommand("debugvpkprecache mp_angel_city")
+	}
+
 	//RegisterButtonPressedCallback( BUTTON_SHOULDER_LEFT, ButtonCallback_MenuShoulderLeft )
 	//RegisterButtonPressedCallback( BUTTON_SHOULDER_RIGHT, ButtonCallback_MenuShoulderRight )
 }
