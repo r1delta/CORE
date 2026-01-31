@@ -48,10 +48,10 @@ WeaponData
 	"damage_far_distance" 							"3000"
 	"damage_near_value"   							"200"
 	"damage_far_value"								"200"
-	"damage_near_value_titanarmor"					"1500"
-	"damage_far_value_titanarmor" 					"1500"
+	"damage_near_value_titanarmor"					"1000"
+	"damage_far_value_titanarmor" 					"1000"
 
-	"critical_hit_damage_scale"						"2.5"
+	"critical_hit_damage_scale"						"1.5"
 	"critical_hit"  								"1"
 
 	"damage_additional_bullets"						"200"		// damage_xxx_value에 차지 레벨 증가에 따라서 + 되는 수치
