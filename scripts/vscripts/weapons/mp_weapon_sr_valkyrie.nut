@@ -92,6 +92,17 @@ function OnWeaponPrimaryAttack( attackParams )
 {
 	// by codejun NPC 노출되는 사운드 범위 설정 ?
 	self.EmitWeaponNpcSound( LOUD_WEAPON_AI_SOUND_RADIUS_MP, 0.2 )
+
+	local owner = self.GetWeaponOwner()
+	if ( IsServer() && owner.IsPlayer() )
+	{
+		local sound = "SR_Valkyrie.Fire"
+		if ( self.HasModDefined( "silencer" ) && self.HasMod( "silencer" ) )
+			sound = "SR_Valkyrie.Fire_Suppressed"
+
+		EmitSoundOnEntityExceptToPlayer( owner, owner, sound )
+	}
+
 	// by codejun Fire Event, 주석 처리하면 피격 안된다.
 	return FireWeaponPlayerAndNPC( attackParams, true )	
 }

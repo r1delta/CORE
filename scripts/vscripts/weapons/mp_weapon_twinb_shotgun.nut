@@ -4,6 +4,16 @@ function OnWeaponPrimaryAttack( attackParams )
 {
 	self.EmitWeaponNpcSound( LOUD_WEAPON_AI_SOUND_RADIUS_MP, 0.2 )
 	ShotgunBlast( attackParams.pos, attackParams.dir, 7, damageTypes.LargeCaliber | DF_SPECTRE_GIB | DF_SHOTGUN )
+
+	local owner = self.GetWeaponOwner()
+	if ( IsServer() && owner.IsPlayer() )
+	{
+		local sound = "SG_Twin_B.Fire"
+		if ( self.HasModDefined( "silencer" ) && self.HasMod( "silencer" ) )
+			sound = "SG_Twin_B.Fire_Suppressed"
+
+		EmitSoundOnEntityExceptToPlayer( owner, owner, sound )
+	}
 }
 
 function OnWeaponNpcPrimaryAttack( attackParams )
