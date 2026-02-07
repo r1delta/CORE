@@ -210,8 +210,10 @@ function FireSpiralMissiles( attackParams, predicted, numMissiles = 4 )
 
 	local adsPressed = self.IsWeaponAdsButtonPressed()
 	local afterBurn = self.HasMod( "afterburners" )
-	if ( afterBurn )
-		adsPressed = !adsPressed
+
+	// ??????????????????????????????????
+	//if ( afterBurn )
+	//	adsPressed = !adsPressed
 
 	for ( local i = 0; i < numMissiles; i++ )
 	{
