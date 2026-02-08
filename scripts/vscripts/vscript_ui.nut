@@ -2013,6 +2013,10 @@ function CloseMenuWrapper( menu )
 			OnCloseServerBrowserMenu( menu );
 			break;
 
+		case "Addons":
+			OnCloseAddonsMenu( menu )
+			break
+
 		default:
 			break
 	}
