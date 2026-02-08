@@ -358,6 +358,9 @@ function CanSpawnAsTitan()
 	if ( !player )
 		return false
 
+	if ( IsValid( player.GetPetTitan() ) )
+		return false
+
 	local nextTitanTime = player.GetNextTitanRespawnAvailable()
 
 	if ( nextTitanTime <= 0 )
@@ -507,6 +510,10 @@ function TitanReadyPulse( player, reverse = false )
 function PetTitanDeployed()
 {
 	local player = GetLocalClientPlayer()
+
+	if ( IsValid( player.GetPetTitan() ) )
+		return true
+
 	return player.GetNextTitanRespawnAvailable() >= 999999
 }
 
