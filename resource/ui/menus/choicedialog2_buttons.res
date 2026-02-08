@@ -11,7 +11,7 @@
 		ypos					0
 		tabPosition				1
 
-		navUp					Button23
+		navUp					Button31
 		navDown					Button1
 	}
 
@@ -390,21 +390,6 @@
 
 		navUp					Button24
 		navDown					Button26
-	}
-    
-    Button26
-	{
-		ControlName				BaseModHybridButton
-		InheritProperties		DialogButton
-		classname				ChoiceDialogButtonClass
-		scriptID				26
-
-		pin_to_sibling			Button25
-		pin_corner_to_sibling	0
-		pin_to_sibling_corner	2
-
-		navUp					Button25
-		navDown					Button27
 	}
     
     Button26

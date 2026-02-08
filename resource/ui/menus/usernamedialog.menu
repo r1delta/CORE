@@ -132,7 +132,7 @@ resource/ui/menus/usernamedialog.menu
 			pin_corner_to_sibling	4
 			pin_to_sibling_corner	6
 			ypos					50
-			navUp					BtnConfirmQuitGame
+			navUp					BtnAccept
 			navDown					BtnAccept
 			tabPosition				1
 			labelText				"#CANCEL"
@@ -148,7 +148,7 @@ resource/ui/menus/usernamedialog.menu
 			pin_to_sibling_corner	6
             ypos                    30
 			navUp					BtnCancel
-			navDown					BtnConfirmLeaveTraining
+			navDown					BtnCancel
 			labelText				"#EULA_ACCEPT"
 		}
 

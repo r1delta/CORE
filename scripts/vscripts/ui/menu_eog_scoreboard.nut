@@ -629,6 +629,7 @@ function EOGScoreboard_FooterData( footerData )
 	footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
 	footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 
+/*
 	if ( uiGlobal.eogScoreboardFocusedButton != null && ("playerUID" in uiGlobal.eogScoreboardFocusedButton.s) )
 	{
 		footerData.pc.append( { label = "#MOUSE1_VIEW_PLAYER_PROFILE" } )
@@ -637,4 +638,5 @@ function EOGScoreboard_FooterData( footerData )
 		else
 			footerData.gamepad.append( { label = "#A_BUTTON_PLAYER_PROFILE" } )
 	}
+*/
 }

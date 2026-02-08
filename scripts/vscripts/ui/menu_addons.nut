@@ -53,6 +53,9 @@ function InitAddonsMenu( menu )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
 	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
+
+	RegisterButtonPressedCallback( BUTTON_X, UpdateAddonPaths )
+	RegisterButtonPressedCallback( BUTTON_SHOULDER_RIGHT, OpenAddonFolder ) // BUTTON_Y
 }	
 
 function ScrollDown( button )
