@@ -2992,6 +2992,70 @@
 		labelText				"#X_BUTTON_MUTE"
 	}
 
+	ScoreboardKeyboardFooterButton0
+	{
+		ControlName				Label
+		classname				ScoreboardKeyboardFooterButtonClass
+		zpos					3
+		auto_wide_tocontents 	1
+		tall 					16
+		font					FooterFont
+		allcaps					1
+		fgcolor_override 		"255 255 255 255" // HudBase160 is bad, and is defaulting everything to have 160 alpha
+		enabled					1
+		visible					1
+
+		pin_to_sibling 			ScoreboardBackground
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	3
+		ypos 					2
+		labelText				"#SCOREBOARD_KB_MUTE"
+
+		activeInputExclusivePaint	keyboard
+	}
+	ScoreboardKeyboardFooterButton1
+	{
+		ControlName				Label
+		classname				ScoreboardKeyboardFooterButtonClass
+		zpos					3
+		auto_wide_tocontents 	1
+		tall 					16
+		font					FooterFont
+		allcaps					1
+		fgcolor_override 		"255 255 255 255" // HudBase160 is bad, and is defaulting everything to have 160 alpha
+		enabled					1
+		visible					1
+
+		pin_to_sibling			ScoreboardKeyboardFooterButton0
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+		xpos 					10
+		labelText				"#SCOREBOARD_KB_SCROLL_DOWN"
+
+		activeInputExclusivePaint	keyboard
+	}
+	ScoreboardKeyboardFooterButton2
+	{
+		ControlName				Label
+		classname				ScoreboardKeyboardFooterButtonClass
+		zpos					3
+		auto_wide_tocontents 	1
+		tall 					16
+		font					FooterFont
+		allcaps					1
+		fgcolor_override 		"255 255 255 255" // HudBase160 is bad, and is defaulting everything to have 160 alpha
+		enabled					1
+		visible					1
+
+		pin_to_sibling			ScoreboardKeyboardFooterButton1
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+		xpos 					10
+		labelText				"#SCOREBOARD_KB_SCROLL_UP"
+
+		activeInputExclusivePaint	keyboard
+	}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COOP WAVE INFO
 
