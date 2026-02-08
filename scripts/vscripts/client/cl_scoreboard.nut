@@ -396,8 +396,8 @@ function InitScoreboard_Think()
 		elem.Show()
 
 	local gamepadButtons = []
-	// gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton0", scoreboard ) ) // "View Profile" button. We dont need it
-	gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton1", scoreboard ) )
+	gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton0", scoreboard ) )
+	//gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton1", scoreboard ) )
 
 	gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton0", scoreboard ) )
 	gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton1", scoreboard ) )

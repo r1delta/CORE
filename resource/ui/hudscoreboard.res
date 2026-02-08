@@ -2978,8 +2978,9 @@
 		pin_corner_to_sibling	1
 		pin_to_sibling_corner	3
 		ypos 					2
-		labelText				"#Y_BUTTON_PLAYER_PROFILE" [!$GAMECONSOLE]
-		labelText				"#Y_BUTTON_GAMERCARD" [$GAMECONSOLE]
+		labelText				"#X_BUTTON_MUTE"
+		// labelText				"#Y_BUTTON_PLAYER_PROFILE" [!$GAMECONSOLE]
+		// labelText				"#Y_BUTTON_GAMERCARD" [$GAMECONSOLE]
 	}
 	ScoreboardGamepadFooterButton1
 	{
@@ -2990,6 +2991,8 @@
 		pin_to_sibling_corner	0
 		xpos 					10
 		labelText				"#X_BUTTON_MUTE"
+		visible					0
+		enabled					0
 	}
 
 	ScoreboardKeyboardFooterButton0
