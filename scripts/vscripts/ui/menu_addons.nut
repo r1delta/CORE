@@ -7,6 +7,7 @@ function main()
 	Globalize( ResetUIScript )
 	Globalize( OnOpenAddonsMenu )
 	Globalize( OpenAddonFolder )
+	Globalize( OnCloseAddonsMenu )
 }
 
 
