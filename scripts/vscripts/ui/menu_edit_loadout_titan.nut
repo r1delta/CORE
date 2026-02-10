@@ -37,6 +37,8 @@ function InitEditTitanLoadoutMenu()
 	file.menuClosing <- false
 
 	AddEventHandlerToButton( menu, "RenameEditBox", UIE_LOSE_FOCUS, Bind( OnRenameEditBox_LostFocus ) )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenEditTitanLoadoutMenu)
 }
 
 function OnOpenEditTitanLoadoutMenu()

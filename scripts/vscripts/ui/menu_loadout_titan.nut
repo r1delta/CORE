@@ -71,6 +71,8 @@ function InitTitanLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, TITAN_PASSIVE2_DESC )
 
 	AddMenuElementsByClassname( menu, TITAN_OS_VOICE_IMAGE )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenTitanLoadoutsMenu)
 }
 
 function InitEditTitanLoadoutsMenu( menu )
@@ -113,6 +115,8 @@ function InitEditTitanLoadoutsMenu( menu )
 	AddMenuElementsByClassname( menu, TITAN_PASSIVE2_DESC )
 
 	AddMenuElementsByClassname( menu, TITAN_OS_VOICE_IMAGE )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenEditTitanLoadoutsMenu)
 }
 
 function UpdateTitanLoadoutElems( menu, loadout, button = null )
@@ -426,7 +430,7 @@ function OnOpenTitanLoadoutsMenu( menu )
 			{
 				button.SetSelected( true )
 
-				//if ( IsControllerModeActive() ) 
+				//if ( IsControllerModeActive() )
 					thread DelayedFocus( button )
 			}
 			else

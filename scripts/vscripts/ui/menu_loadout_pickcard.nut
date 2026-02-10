@@ -47,6 +47,9 @@ function InitPickCardMenu( menu )
 	}
 
 	UpdatePickCard()
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenMenu_BurnCardsPickCard)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseMenu_BurnCardPickCard)
 }
 
 function SCB_RefreshBurnCardSelector()
@@ -246,7 +249,7 @@ function InstantUpdatePickCard()
 
 	HidePreviewCard( file.burnCardPreviewCard )
 
-	local onDeckSlotID = GetBurnCardOnDeckIndex()	
+	local onDeckSlotID = GetBurnCardOnDeckIndex()
 	local activeSlotID = GetBurnCardActiveSlotID()
 	local activeCardRef = UIGetActiveBurnCard()
 	local max = GetMaxActiveBurnCards()

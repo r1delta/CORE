@@ -92,6 +92,9 @@ function InitRankedPlayMenu()
 	file.tipLabels <- []
 	file.tipLabels.append( menu.GetChild( "Tips0" ) )
 	file.tipLabels.append( menu.GetChild( "Tips1" ) )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenRankedPlayMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseRankedPlayMenu)
 }
 
 function SetupRankInfo()

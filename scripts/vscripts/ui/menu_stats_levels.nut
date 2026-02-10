@@ -127,6 +127,9 @@ function InitStats_Levels()
 	pls.starsLabel.EnableKeyBindingIcons()
 
 	ToggleStarPanelState( 0, true )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenViewStatsLevels)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseViewStatsLevels)
 }
 
 function LevelButtonClicked( button )

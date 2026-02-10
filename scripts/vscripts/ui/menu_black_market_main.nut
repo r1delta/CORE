@@ -22,6 +22,8 @@ function InitBlackMarketMainMenu( menu )
 
 	local marketMenu = GetMenu( "BlackMarketMenu" )
 	InitBlackMarketMenu( marketMenu )
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenBlackMarketMainMenu)
 }
 
 

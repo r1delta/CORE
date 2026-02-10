@@ -33,6 +33,9 @@ function InitMapsMenu()
 
 	file.numMapButtonsOffScreen <- null
 	file.mapListScrollState <- 0
+
+	AddMenuEventHandler(menu, R1DELTA_UIE_OPEN, OnOpenMapsMenu)
+	AddMenuEventHandler(menu, R1DELTA_UIE_CLOSE, OnCloseMapsMenu)
 }
 
 function OnOpenMapsMenu()

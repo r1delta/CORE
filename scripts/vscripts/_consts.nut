@@ -2491,3 +2491,6 @@ enum eMenuType
 	TEXT = 2,
 	ENTRY = 3
 }
+
+const R1DELTA_UIE_OPEN = 0x1001
+const R1DELTA_UIE_CLOSE = 0x1002
