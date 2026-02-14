@@ -247,6 +247,9 @@ function ChallengePopupSortFunc( a, b )
 
 function ShowChallengePopup( popupInfo )
 {
+	if ( !GetConVarBool( "delta_hud_show_challenge_completed" ) )
+		return
+
 	if ( GetGameState() >= eGameState.Postmatch )
 		return
 

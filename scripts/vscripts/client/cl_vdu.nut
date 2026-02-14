@@ -143,6 +143,9 @@ function VDUShouldBeVisible( player )
 	if ( !level.vduActive )
 		return false
 
+	if ( !GetConVarBool( "delta_hud_show_vdu" ) )
+		return false
+
 	if ( IsLockedVDU() )
 		return true
 
