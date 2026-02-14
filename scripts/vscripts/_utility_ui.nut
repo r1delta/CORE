@@ -112,6 +112,8 @@ function GetLobbyBackgroundImage()
 		case "AdvancedVideoSettingsMenu":
 		case "AudioSettingsMenu":
 		case "GamepadLayoutMenu":
+		case "HudSettingsMenu":
+		case "HudSettingsR1DMenu":
 			image += "_blur"
 			break
 	}

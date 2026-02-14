@@ -184,6 +184,10 @@ function main()
 	file.damageArrowAngles <- Vector( 0.0, 0.0, 0.0 )
 	file.damageArrowPointCenter <- Vector( 0.0, 0.0, 0.0 )
 
+	file.grenadeArrows <- []
+	file.currentGrenadeArrow <- 0
+	file.numGrenadeArrows <- 16
+
 	//PrecacheParticleSystem( SHIELD_FX )
 	PrecacheParticleSystem( SHIELD_BODY_FX )
 	PrecacheParticleSystem( SHIELD_BREAK_FX )
@@ -1038,6 +1042,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 
 	local playKillSound = isKillShot
 	local victimIsTitan
+	local victimIsDropship
 
 	if ( IsValid( victim ) )
 	{
@@ -1046,7 +1051,9 @@ function ClientCodeCallback_PlayerDidDamage( params )
 			hitWeakpoint = true
 
 		victimIsTitan = victim.IsTitan()
-		if ( victimIsTitan && !attacker.IsTitan() )
+		victimIsDropship = victim.IsDropship()
+
+		if ( ( victimIsTitan || victimIsDropship ) && !attacker.IsTitan() )
 		{
 			showCrosshairHitIndicator = true
 			hitIneffective = !IsHitEffective( damageType )
@@ -1116,7 +1123,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	{
 		Tracker_PlayerAttackedTarget( player, victim )
 
-		Crosshair_ShowHitIndicator( hitWeakpoint, hitIneffective, false )
+		TryShowHitIndicator( hitWeakpoint, hitIneffective )
 	}
 	// --- R1DELTA DAMAGE NUMBERS START ---
 	if ( GetConVarInt( "delta_damage_numbers" ) == 1 && IsValid( victim ) )
@@ -1163,6 +1170,29 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	{
 		callbackInfo.func.acall( [callbackInfo.scope, attacker, params] )
 	}
+}
+
+const HITMARKER_DISABLED = 0
+const HITMARKER_ALL = 1
+const HITMARKER_NORMAL_ONLY = 2
+const HITMARKER_SPECIAL_ONLY = 3
+function TryShowHitIndicator( hitWeakpoint, hitIneffective )
+{
+	local hitmarkerEnabled = GetConVarInt( "delta_hud_show_hitmarkers" )
+	if ( hitmarkerEnabled == HITMARKER_DISABLED )
+		return
+
+	if ( hitmarkerEnabled == HITMARKER_NORMAL_ONLY )
+	{
+		hitIneffective = false
+		hitWeakpoint = false
+	}
+	else if ( hitmarkerEnabled == HITMARKER_SPECIAL_ONLY && !hitIneffective && !hitWeakpoint )
+	{
+		return
+	}
+
+	Crosshair_ShowHitIndicator( hitWeakpoint, hitIneffective, false )
 }
 
 function PlayKillShotSound( attacker, victim, damageType, isHeadShot )
@@ -1290,6 +1320,9 @@ function PlayerWeaponFlyout( player )
 
 function ShouldShowPlayerWeaponFlyout( player, weapon )
 {
+	if ( !GetConVarBool( "delta_hud_show_flyout" ) )
+		return false
+
 	// No weapon
 	if ( !weapon )
 		return false
@@ -1479,6 +1512,27 @@ function InitDamageArrows()
 		arrow.s.arrowData <- arrowData
 
 		file.damageArrows.append( arrowData )
+	}
+
+	for ( local i = 0; i < file.numGrenadeArrows; i++ )
+	{
+		local arrowData = {
+			origin = Vector( 0.0, 0.0, 0.0 ),
+			endTime = -99.0 + DAMAGEARROW_DURATION,
+			startTime = -99.0,
+			isDying = false,
+			isVisible = false
+		}
+
+		local arrow = CreateClientSidePropDynamic( Vector( 0, 0, 0 ), Vector( 0, 0, 0 ), DAMAGE_ARROW_MODEL )
+		arrow.SetCanCloak( false )
+		arrow.SetVisibleForLocalPlayer( 0 )
+		arrow.DisableDraw()
+
+		arrowData.arrow <- arrow
+		arrow.s.arrowData <- arrowData
+
+		file.grenadeArrows.append( arrowData )
 	}
 
 	local arrow = CreateClientSidePropDynamic( Vector( 0, 0, 0 ), Vector( 0, 0, 0 ), DAMAGE_ARROW_MODEL )
@@ -1838,7 +1892,273 @@ function TryAddGrenadeIndicator( grenade, weaponName )
 		//203.531 // Titan
 		//64.1249 // Pilot
 		local padding = player.IsTitan() ? 204.0 : 65.0
-		AddGrenadeIndicator( grenade, grenade.GetDamageRadius() + padding, startDelay, true )
+		local radius = grenade.GetDamageRadius()
+
+		if ( !GetConVarBool( "delta_hud_grenade_style" ) )
+			AddGrenadeIndicator( grenade, radius + padding, startDelay, true )
+		else
+			ShowGrenadeArrow( player, grenade, weaponName, radius + padding, startDelay )
+	}
+}
+
+function ShowGrenadeArrow( player, grenade, weaponName, damageRadius, startDelay, requireLos = true )
+{
+	thread GrenadeArrowThink( player, grenade, weaponName, damageRadius, startDelay, requireLos )
+}
+
+const PLAY_GRENADE_ANIMS = 0
+function GrenadeArrowThink( player, grenade, weaponName, damageRadius, startDelay, requireLos, requiredPlayerState = "any" )
+{
+	grenade.EndSignal( "OnDestroy" )
+	player.EndSignal( "OnDeath" )
+
+	wait startDelay
+
+/*
+	arrow = file.grenadeArrows[ file.currentGrenadeArrow ].arrow
+
+	file.currentGrenadeArrow++
+	if ( file.currentGrenadeArrow >= file.numGrenadeArrows )
+		file.currentGrenadeArrow = 0
+*/
+	local time = Time()
+
+	local arrowModel = "models/weapons/bullets/grenade_indicator_arrow.mdl" //GRENADE_INDICATOR_ARROW_MODEL
+	local grenadeModel = "models/weapons/bullets/grenade_indicator.mdl" //GRENADE_INDICATOR_FRAG_MODEL
+	local grenadeOffset = Vector( -5, 0, 0 )
+
+	switch ( weaponName )
+	{
+		case "mp_titanweapon_triple_threat":
+			grenadeModel = "models/weapons/bullets/grenade_indicator_tt.mdl"
+			break
+	}
+
+	local arrow = CreateClientSidePropDynamic( Vector( 0, 0, 0 ), Vector( 0, 0, 0 ), arrowModel )
+	local mdl = CreateClientSidePropDynamic( Vector( 0, 0, 0 ), Vector( 0, 0, 0 ), grenadeModel )
+
+	local arrowData = {
+		endTime = time + DAMAGEARROW_DURATION, //DAMAGEARROW_DURATION
+		startTime = 99,
+		isDying = false,
+		isVisible = false
+	}
+
+	arrow.s.arrowData <- arrowData
+	mdl.s.arrowData <- arrowData
+
+	local cockpit = player.GetCockpit()
+	if ( !cockpit )
+		return
+
+	cockpit.EndSignal( "OnDestroy" )
+
+	arrow.SetParent( cockpit, "CAMERA_BASE" )
+	arrow.SetAttachOffsetOrigin( Vector( 25.0, 0.0, -4.0 ) )
+
+	mdl.SetParent( arrow, "BACK" )
+	mdl.SetAttachOffsetOrigin( grenadeOffset )
+
+	local lastVisibleTime = 0
+	local shouldBeVisible = true
+
+	local origin = Vector( 0, 0, 0 )
+	local lastOrigin = Vector( 0, 0, 0 )
+
+	OnThreadEnd(
+		function() : ( player, grenade, arrow, mdl, lastOrigin )
+		{
+			thread GrenadeArrow_PostThink( player, grenade, arrow, mdl )
+		}
+	)
+
+	local playedIncomingAnim = false
+
+	while ( true )
+	{
+		time = Time()
+		cockpit = player.GetCockpit()
+
+		if ( !IsValid( grenade ) )
+			origin = lastOrigin
+		else
+			origin = grenade.GetOrigin()
+
+		switch ( requiredPlayerState )
+		{
+			case "any":
+				shouldBeVisible = true
+				break
+			case "pilot":
+				shouldBeVisible = !player.IsTitan()
+				break
+			case "titan":
+				shouldBeVisible = player.IsTitan()
+				break
+			default:
+				Assert( false, "Invalid player state! Allower states: 'any' 'pilot' 'titan'" )
+
+		}
+
+		if ( shouldBeVisible )
+		{
+			if ( Distance( player.GetOrigin(), origin ) > damageRadius || !cockpit )
+			{
+				shouldBeVisible = false
+			}
+			else
+			{
+				local tracePassed = false
+
+				if ( requireLos )
+				{
+					//TraceResults result = TraceLine( origin, GetRandomOriginWithinBounds( player ), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+					local result = TraceLine( origin, player.GetOrigin(), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+
+					if ( result.fraction != 1.0 )
+						result = TraceLine( origin, player.EyePosition(), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+
+					if ( result.fraction == 1.0 )
+						tracePassed = true
+				}
+
+				if ( requireLos && !tracePassed )
+				{
+					shouldBeVisible = false
+				}
+				else
+				{
+					shouldBeVisible = true
+					lastVisibleTime = time
+				}
+			}
+		}
+
+		//TEST
+		//shouldBeVisible = true
+
+		arrow.s.arrowData.isVisible = shouldBeVisible
+		mdl.s.arrowData.isVisible = shouldBeVisible
+
+		if ( shouldBeVisible || time - lastVisibleTime < 0.25 )
+		{
+			arrow.EnableDraw()
+			mdl.EnableDraw()
+
+			arrow.DisableRenderWithViewModelsNoZoom()
+			arrow.EnableRenderWithCockpit()
+			mdl.DisableRenderWithViewModelsNoZoom()
+			mdl.EnableRenderWithCockpit()
+
+			local damageArrowAngles = player.EyeAngles().AnglesInverse()
+			local vecToDamage = origin - ( player.EyePosition() + ( player.GetViewVector() * 20.0 ) )
+
+			// reparent for embark/disembark
+			if ( arrow.GetParent() == null )
+				arrow.SetParent( cockpit, "CAMERA_BASE", true )
+
+			arrow.SetAttachOffsetAngles( damageArrowAngles.AnglesCompose( vecToDamage.GetAngles() ) ) //vecToDamage.VectorToAngles()
+
+			if ( !playedIncomingAnim )
+			{
+				arrow.s.arrowData.startTime = time
+				arrow.s.arrowData.startTime = time
+
+				if ( PLAY_GRENADE_ANIMS )
+				{
+					arrow.Anim_NonScriptedPlay( "damage_incoming" )
+					mdl.Anim_NonScriptedPlay( "damage_incoming" )
+				}
+
+				playedIncomingAnim = true
+			}
+		}
+		else
+		{
+			mdl.DisableDraw()
+			arrow.DisableDraw()
+		}
+
+		lastOrigin = origin
+
+		WaitFrame()
+	}
+
+}
+
+function GrenadeArrow_PostThink( player, grenade, arrow, mdl )
+{
+	if ( IsAlive( player ) && PLAY_GRENADE_ANIMS )
+	{
+		//arrow.s.arrowData.endTime = Time() - 1
+		//arrow.s.arrowData.endTime = Time() - 1
+
+		arrow.Anim_NonScriptedPlay( DAMAGEARROW_FADEANIM )
+		mdl.Anim_NonScriptedPlay( DAMAGEARROW_FADEANIM )
+
+		wait file.damageArrowFadeDuration
+	}
+
+	if ( IsValid( arrow ) )
+		arrow.Destroy()
+	if ( IsValid( mdl ) )
+		mdl.Destroy()
+
+/*
+	if ( !IsValid( arrow ) )
+		printt( "the game" )
+	else
+	{
+		printt( "the gamen't" )
+	}
+*/
+}
+
+function PlayerHudTest()
+{
+	local player = GetLocalViewPlayer()
+
+	local cockpit = player.GetCockpit()
+	if ( !cockpit )
+		return
+
+	thread PlayerHudTestThink( player, cockpit )
+}
+Globalize( PlayerHudTest )
+
+function PlayerHudTestThink( player, cockpit )
+{
+	player.EndSignal( "OnDeath" )
+	cockpit.EndSignal( "OnDestroy" )
+
+	local model = CreateClientSidePropDynamicClone( player, player.GetModelName() )
+
+	OnThreadEnd(
+		function() : ( model )
+		{
+			model.Destroy()
+		}
+	)
+
+	model.SetParent( cockpit, "CAMERA_BASE" )
+	model.SetAttachOffsetOrigin( Vector( 100.0, 0.0, -4.0 ) )
+
+	if ( player.GetTeam() == TEAM_MILITIA )
+		model.SetSkin( 1 )
+
+	model.DisableRenderWithViewModelsNoZoom()
+	model.EnableRenderWithCockpit()
+	model.EnableRenderAlways()
+
+	while( true )
+	{
+		if ( IsValid( player) && IsAlive( player ) )
+		{
+			model.SetOrigin( player.GetOrigin() )
+			model.SetAngles( player.GetAngles() )
+		}
+
+		WaitFrame()
 	}
 }
 

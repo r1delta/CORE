@@ -103,6 +103,9 @@ function Obituary( attacker, attackerClass, victim, scriptDamageType, damageSour
 	if ( IsTrainingLevel() )
 		return
 
+	if ( !GetConVarBool( "delta_hud_show_obituaries" ) )
+		return
+
 	if ( victim.IsPlayer() )
 	{
 		// Players

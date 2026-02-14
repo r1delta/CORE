@@ -124,7 +124,7 @@ resource/ui/menus/options.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			xpos					10
-			navUp					SwchSafeArea
+			navUp					BtnHudSettings
 			navDown					BtnGamepadControls
 			tabPosition				1
 			labelText				"#MOUSE_KEYBOARD_CONTROLS"
@@ -447,73 +447,22 @@ resource/ui/menus/options.menu
 			pin_to_sibling_corner	2
 			xpos					10
 			navUp					SldLobbyMusicVolume
-			navDown					SwchColorBlindMode
+			navDown					BtnHudSettings
 			labelText				"#MENU_VIDEO_SETTINGS"
 		}
 
-		SwchColorBlindMode
+		BtnHudSettings
 		{
 			ControlName				BaseModHybridButton
-			InheritProperties		SwitchButton
-			classname				ColorBlindModeClass
-			style					DialogListButton
-			pin_to_sibling			BtnAdvancedVideo [!$GAMECONSOLE]
-			pin_to_sibling			SwchSubtitles [$GAMECONSOLE]
+			InheritProperties		WideButton
+			classname 				HudSettingsButtonClass
+			pin_to_sibling			BtnAdvancedVideo
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
-			navUp					BtnAdvancedVideo [!$GAMECONSOLE]
-			navUp					SwchSubtitles [$GAMECONSOLE]
-			navDown					SwchExtendedColorBlind
-			labelText				"#COLORBLIND_MODE"
-			ConVar					"colorblind_mode"
-			list
-			{
-				"#SETTING_OFF"				0
-				"#SETTING_PROTANOPIA"		3
-				"#SETTING_DEUTERANOPIA"		1
-				"#SETTING_TRITANOPIA"		2
-			}
-		}
-
-		SwchExtendedColorBlind
-		{
-			ControlName				BaseModHybridButton
-			InheritProperties		SwitchButton
-			classname				ExtendedColorBlindClass
-			style					DialogListButton
-			pin_to_sibling			SwchColorBlindMode
-			pin_corner_to_sibling	0
-			pin_to_sibling_corner	2
-			navUp					SwchColorBlindMode
-			navDown					SwchSafeArea
-			labelText				"#MENU_EXTENDED_COLORBLIND"
-			ConVar					"delta_improved_colorblind"
-			list
-			{
-				"#SETTING_OFF"				0
-				"#SETTING_ON"				1
-			}
-		}
-
-		SwchSafeArea
-		{
-			ControlName				BaseModHybridButton
-			InheritProperties		SwitchButton
-			classname 				SafeAreaSwitchClass
-			style					DialogListButton
-			pin_to_sibling			SwchExtendedColorBlind
-			pin_corner_to_sibling	0
-			pin_to_sibling_corner	2
-			navUp					SwchExtendedColorBlind
+			navUp					BtnAdvancedVideo
 			navDown					BtnMouseKeyboardControls [!$GAMECONSOLE]
 			navDown					BtnHelpAndSupport [$GAMECONSOLE]
-			labelText				"#SAFEAREA"
-			ConVar					"cl_safearea"
-			list
-			{
-				"#SAFEAREA_DISABLED"	0
-				"#SAFEAREA_ENABLED"		1
-			}
+			labelText				"#HUD_SETTINGS"
 		}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -546,7 +495,7 @@ resource/ui/menus/options.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			xpos					10
-			navUp					SwchSafeArea
+			navUp					BtnHudSettings
 			navDown					BtnGamepadControls
 			labelText				"#MENU_GAME_MANUAL"
 		}

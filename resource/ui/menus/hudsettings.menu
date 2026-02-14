@@ -1,0 +1,578 @@
+resource/ui/menus/hudsettings.menu
+{
+	HudSettingsMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#HUD_SETTINGS"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		LblMenuItemDescription
+		{
+			ControlName				Label
+			InheritProperties		OptionMenuTooltip
+			classname 				MenuItemDescriptionClass
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ImgBaseHudSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					14
+		}
+		LblBaseHudSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgBaseHudSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#HUD_SETTINGS"
+		}
+
+		BtnHudSettingsR1D
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		WideButton
+			classname 				HudSettingsR1DButtonClass
+			pin_to_sibling			ImgBaseHudSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					SwchSafeArea
+			navDown					SwchColorBlindMode
+			tabPosition				1
+			labelText				"#HUD_SETTINGS_R1D"
+		}
+
+		SwchColorBlindMode
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ColorBlindModeClass
+			style					DialogListButton
+			pin_to_sibling			BtnHudSettingsR1D
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnHudSettingsR1D
+			navDown					SwchExtendedColorBlind
+			labelText				"#COLORBLIND_MODE"
+			ConVar					"colorblind_mode"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_PROTANOPIA"		3
+				"#SETTING_DEUTERANOPIA"		1
+				"#SETTING_TRITANOPIA"		2
+			}
+		}
+
+		SwchExtendedColorBlind
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ExtendedColorBlindClass
+			style					DialogListButton
+			pin_to_sibling			SwchColorBlindMode
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchColorBlindMode
+			navDown					SwchGrenadeIndicator
+			labelText				"#MENU_EXTENDED_COLORBLIND"
+			ConVar					"delta_improved_colorblind"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchGrenadeIndicator
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				GrenadeIndicatorClass
+			style					DialogListButton
+			pin_to_sibling			SwchExtendedColorBlind
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchExtendedColorBlind
+			navDown					SldObjectiveOpacity
+			labelText				"GRENADE INDICATOR STYLE"
+			ConVar					"delta_hud_grenade_style"
+			list
+			{
+				"2D TEXTURE"				0
+				"3D MODEL"					1
+			}
+		}
+
+		SldObjectiveOpacity
+		{
+			ControlName				SliderControl
+			InheritProperties		SliderControl
+			classname 				ObjectiveOpacityClass
+			pin_to_sibling			SwchGrenadeIndicator
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchGrenadeIndicator
+			navDown					SwchATHint
+			conCommand				"delta_hud_objective_opacity"
+			minValue				0
+			maxValue				255
+			stepSize				1
+			inverseFill				0
+			enabled 				0 ///////////
+			BtnDropButton
+			{
+				ControlName				BaseModHybridButton
+				classname 				MasterVolumeSliderClass
+				childGroupNormal		WideButtonNormalGroup
+				childGroupFocused		WideButtonFocusGroup
+				clip 					0
+				wide					300
+				tall					20
+				autoResize				1
+				pinCorner				0
+				visible					0 ///////////
+				enabled					0 ///////////
+				labelText				"OBJECTIVE MARKER OPACITY"
+				style					LeftDialogButton
+				allcaps					1
+				command					""
+			}
+		}
+
+		LblObjectiveMin
+		{
+			ControlName				Label
+			xpos					-168
+			ypos					-2
+			font					MenuFontTiny
+			pin_to_sibling			SldObjectiveOpacity
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+			labelText				"0"
+			textAlignment			"east"
+			fgcolor_override		"255 255 255 255"
+			zpos					0
+            visible                 0 ///////////
+            auto_wide_tocontents	1
+			enabled 				0 ///////////
+		}
+		LblObjectiveMax
+		{
+			ControlName				Label
+			xpos					-32
+			ypos					-2
+			auto_wide_to_contents	1
+			font					MenuFontTiny
+			pin_to_sibling			SldObjectiveOpacity
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			labelText				"255"
+			textAlignment			"west"
+			fgcolor_override		"255 255 255 255"
+			zpos					0
+			visible					0 ///////////
+			enabled 				0 ///////////
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ImgAdvancedHudSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackgroundWide
+			pin_to_sibling			SldObjectiveOpacity
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					14
+			xpos					-10
+		}
+		LblAdvancedHudSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgAdvancedHudSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#HUD_SETTINGS"
+		}
+
+		SwchATHint
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ATHintClass
+			style					DialogListButton
+			pin_to_sibling			ImgAdvancedHudSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					SldObjectiveOpacity
+			navDown					SwchChatMessages
+			labelText				"ANTI-TITAN HINT"
+			ConVar					"delta_hud_show_AT_hint"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchChatMessages
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ChatMessagesClass
+			style					DialogListButton
+			pin_to_sibling			SwchATHint
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchATHint
+			navDown					SwchCrosshair
+			labelText				"CHAT MESSAGES"
+			ConVar					"delta_hud_show_chat"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchCrosshair
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				CrosshairClass
+			style					DialogListButton
+			pin_to_sibling			SwchChatMessages
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchChatMessages
+			navDown					SwchHitmarkers
+			labelText				"Crosshair"
+			ConVar					"crosshair_enabled"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchHitmarkers
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				HitmarkerClass
+			style					DialogListButton
+			pin_to_sibling			SwchCrosshair
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchCrosshair
+			navDown					SwchFlyout
+			labelText				"HITMARKERS"
+			ConVar					"delta_hud_show_hitmarkers"
+			list
+			{
+				"#SETTING_OFF"				0
+				"All"						1
+				"Normal Only"				2
+				"Weak/Critical Only"		3
+			}
+		}
+
+		SwchFlyout
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				FlyoutClass
+			style					DialogListButton
+			pin_to_sibling			SwchHitmarkers
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchHitmarkers
+			navDown					SwchKeybindIcons
+			labelText				"WEAPON FLYOUTS"
+			ConVar					"delta_hud_show_flyout"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchKeybindIcons
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				KeybindClass
+			style					DialogListButton
+			pin_to_sibling			SwchFlyout
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchFlyout
+			navDown					SwchChallengeCompleted
+			labelText				"KEYBIND ICONS"
+			ConVar					"delta_hud_show_keybind_icons"
+			visible 				0 ///////////
+			enabled 				0 ///////////
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchChallengeCompleted
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ChallengeCompletedClass
+			style					DialogListButton
+			pin_to_sibling			SwchKeybindIcons
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchKeybindIcons
+			navDown					SwchLevelup
+			labelText				"CHALLENGE COMPLETED NOTIFICATIONS"
+			ConVar					"delta_hud_show_challenge_completed"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchLevelup
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				LevelupClass
+			style					DialogListButton
+			pin_to_sibling			SwchChallengeCompleted
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchChallengeCompleted
+			navDown					SwchObituaries
+			labelText				"LEVEL UP NOTIFICATIONS"
+			ConVar					"delta_hud_show_levelup"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		SwchObituaries
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ObituariesClass
+			style					DialogListButton
+			pin_to_sibling			SwchATHint
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			ypos					0
+			navUp					SwchLevelup
+			navDown					SwchTitanEarnings
+			labelText				"OBITUARIES"
+			ConVar					"delta_hud_show_obituaries"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchTitanEarnings
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				TitanEarningsClass
+			style					DialogListButton
+			pin_to_sibling			SwchObituaries
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchObituaries
+			navDown					SwchVDU
+			labelText				"TITAN EARNINGS"
+			ConVar					"delta_hud_show_titan_earnings"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchVDU
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				VDUClass
+			style					DialogListButton
+			pin_to_sibling			SwchTitanEarnings
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchTitanEarnings
+			navDown					SwchXPBar
+			labelText				"CHARACTER VDU"
+			ConVar					"delta_hud_show_vdu"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchXPBar
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				XPBarClass
+			style					DialogListButton
+			pin_to_sibling			SwchVDU
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchVDU
+			navDown					SwchHudWarp
+			labelText				"XP BAR"
+			ConVar					"delta_hud_show_xpbar"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchHudWarp
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				HudWarpClass
+			style					DialogListButton
+			pin_to_sibling			SwchXPBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchXPBar
+			navDown					SwchSafeArea
+			labelText				"HUD WARPING"
+			ConVar					"hudwarp_disable"
+			list
+			{
+				"#SETTING_OFF"				1
+				"#SETTING_ON"				0
+			}
+		}
+
+		SwchSafeArea
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname 				SafeAreaSwitchClass
+			style					DialogListButton
+			pin_to_sibling			SwchHudWarp
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchHudWarp
+			navDown					BtnHudSettingsR1D
+			labelText				"#SAFEAREA"
+			ConVar					"cl_safearea"
+			list
+			{
+				"#SAFEAREA_DISABLED"	0
+				"#SAFEAREA_ENABLED"		1
+			}
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

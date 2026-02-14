@@ -86,6 +86,10 @@ function main()
 		PrecacheModel( "models/weapons/bullets/mgl_grenade.mdl" )
 		PrecacheModel( "models/weapons/grenades/m20_f_grenade.mdl" )
 
+		PrecacheModel( "models/weapons/bullets/grenade_indicator_arrow.mdl" )
+		PrecacheModel( "models/weapons/bullets/grenade_indicator.mdl" )
+		PrecacheModel( "models/weapons/bullets/grenade_indicator_tt.mdl" )
+
 		//GENERIC GIBS
 		PrecacheModel( "models/gibs/metal_gib1.mdl" )
 		PrecacheModel( "models/gibs/metal_gib2.mdl" )

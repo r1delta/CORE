@@ -355,6 +355,7 @@ function UpdateFooterButtons( menuName = null )
 		case "RankedSeasonsMenu":
 		case "ViewStatsMenu":
 		case "ChallengesMenu":
+		case "HudSettingsR1DMenu":
 			footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
 
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
@@ -369,13 +370,13 @@ function UpdateFooterButtons( menuName = null )
 				// #6EEB6A = light green
 				if ( menuName == "PilotLoadoutsMenu" && !IsItemLocked( "pilot_custom_loadout_1" ) )
 				{
-					footerData.gamepad.append( { label = "%[Y_BUTTON]% ^6EEB6A00Edit" } )
-					footerData.pc.append( { label = "(Mouse 2) Edit", func = LoadoutEditMouseclickNotice } )
+					footerData.gamepad.append( { label = "#EDIT_LOADOUT_FOOTER_GAMEPAD" } )
+					footerData.pc.append( { label = "#EDIT_LOADOUT_FOOTER", func = LoadoutEditMouseclickNotice } )
 				}
 				else if ( menuName == "TitanLoadoutsMenu" && !IsItemLocked( "titan_custom_loadout_1" ) )
 				{
-					footerData.gamepad.append( { label = "%[Y_BUTTON]% ^6EEB6A00Edit" } )
-					footerData.pc.append( { label = "(Mouse 2) Edit", func = LoadoutEditMouseclickNotice } )
+					footerData.gamepad.append( { label = "#EDIT_LOADOUT_FOOTER_GAMEPAD" } )
+					footerData.pc.append( { label = "#EDIT_LOADOUT_FOOTER", func = LoadoutEditMouseclickNotice } )
 				}
 			}
 
@@ -468,6 +469,16 @@ function UpdateFooterButtons( menuName = null )
 		case "CampaignRewardMenu":
 			footerData.gamepad.append( { label = "#B_BUTTON_CLOSE" } )
 			footerData.pc.append( { label = "#CLOSE", func = PCBackButton_Activate } )
+			break
+
+		case "HudSettingsMenu":
+			footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
+
+			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
+			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
+
+			footerData.gamepad.append( { label = "#Y_BUTTON_RESTORE_DEFAULTS", func = RestoreDefaultHUDDialog } )
+			footerData.pc.append( { label = "#RESTORE_DEFAULTS", func = RestoreDefaultHUDDialog } )
 			break
 
 		default:

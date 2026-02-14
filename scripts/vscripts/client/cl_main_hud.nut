@@ -1035,7 +1035,7 @@ function TargetHealthBarsThink( cockpit, player )
 		switch ( results.signal )
 		{
 			case "HealthBarEntityTargetChanged":
-				if ( !isTitan && targetHealthBarEntity )
+				if ( !isTitan && targetHealthBarEntity && GetConVarBool( "delta_hud_show_AT_hint" ) )
 					ShowAntiTitanHint( cockpit, player, targetHealthBarEntity  )
 				break
 			case "DoomedTarget":
@@ -1250,7 +1250,7 @@ function TitanBuildBarThink( cockpit, player )
 			if ( Time() - lastEarnedDisplayTime < 3.0 )
 				timeDiff += lastTimeDiff
 
-			if ( timeDiff > 1.0 )
+			if ( timeDiff > 1.0 && GetConVarBool( "delta_hud_show_titan_earnings" ) )
 			{
 				cockpit.s.mainVGUI.s.titanBarEarnedLabel.Show()
 				cockpit.s.mainVGUI.s.titanBarEarnedLabel.SetColor( 173, 226, 255, 255 )
@@ -1267,7 +1267,7 @@ function TitanBuildBarThink( cockpit, player )
 			lastEarnedDisplayTime = Time()
 			lastTimeDiff = timeDiff
 		}
-		else if ( progressFrac >= 1.0 && timeDiff )
+		else if ( progressFrac >= 1.0 && timeDiff && GetConVarBool( "delta_hud_show_titan_earnings" ) )
 		{
 			cockpit.s.mainVGUI.s.titanBarEarnedLabel.Show()
 			cockpit.s.mainVGUI.s.titanBarEarnedLabel.SetColor( 173, 226, 255, 255 )
@@ -2254,7 +2254,6 @@ function GetActiveTrapsOfClassname( player, classname )
 	}
 	return array
 }
-
 
 function MainHud_InitAnnouncement( vgui, player )
 {
@@ -3708,7 +3707,9 @@ function MainHud_InitXPBar( cockpit, player )
 
 	cockpit.s.xpBarGroup <- xpBarGroup
 
-	if ( !ShouldShowXPBar( player ) )
+	if ( ShouldShowXPBar( player ) )
+		cockpit.s.xpBarGroup.Show()
+	else
 		cockpit.s.xpBarGroup.Hide()
 }
 
@@ -3756,18 +3757,21 @@ else
 
 			cockpit.s.xpBar.fill.SetBarProgressRemap( GetLevelProgressStart( player ), GetLevelProgressEnd( player ), 0, 1 )
 
-			local optionalTextArgs = [ lvl ]
+			if ( GetConVarBool( "delta_hud_show_levelup" ) )
+			{
+				local optionalTextArgs = [ lvl ]
 
-			local announcement = CAnnouncement( "#HUD_LEVEL_N" )
-			announcement.SetSubText( "#HUD_LEVEL_CONGRATULATIONS" )
-			announcement.SetTitleColor( [255, 190, 0] )
-			announcement.SetOptionalTextArgsArray( optionalTextArgs )
-			announcement.SetPurge( true )
-			announcement.SetPriority( 100 )
-			announcement.SetSoundAlias( "UI_InGame_LevelUp" )
-			//announcement.SetIcon( "HUD/quest/bg_circle" )
-			//announcement.SetIconText( "" + lvl )
-			AnnouncementFromClass( player, announcement )
+				local announcement = CAnnouncement( "#HUD_LEVEL_N" )
+				announcement.SetSubText( "#HUD_LEVEL_CONGRATULATIONS" )
+				announcement.SetTitleColor( [255, 190, 0] )
+				announcement.SetOptionalTextArgsArray( optionalTextArgs )
+				announcement.SetPurge( true )
+				announcement.SetPriority( 100 )
+				announcement.SetSoundAlias( "UI_InGame_LevelUp" )
+				//announcement.SetIcon( "HUD/quest/bg_circle" )
+				//announcement.SetIconText( "" + lvl )
+				AnnouncementFromClass( player, announcement )
+			}
 
 			player.cv.lastLevel = lvl
 		}
@@ -3781,6 +3785,9 @@ function ShouldShowXPBar( player )
 	if ( !level.showXPBar )
 		return false
 
+	if ( !GetConVarBool( "delta_hud_show_xpbar" ) )
+		return false
+
 	if ( IsWatchingKillReplay() )
 		return false
 
@@ -3792,7 +3799,6 @@ function ShouldShowXPBar( player )
 
 	return true
 }
-
 
 function ServerCallback_Announcement( titleStringID, subTextStringID )
 {
@@ -4390,7 +4396,7 @@ function InitChatHUD()
 		return
 	}
 
-	chat.Show()
+	ToggleChatVisibility()
 
 	local screenSize = Hud.GetScreenSize()
 	local resMultiplier = screenSize[1] / 480.0
@@ -4405,6 +4411,19 @@ function InitChatHUD()
 	chat.SetSize( width * resMultiplier, height * resMultiplier )
 }
 
+function ToggleChatVisibility()
+{
+	local chat = HudElement( "IngameTextChat" )
+
+	if ( GetConVarBool( "delta_hud_show_chat" ) )
+		chat.Show()
+	else
+		chat.Hide()
+
+	printt( "toggled chat")
+}
+Globalize( ToggleChatVisibility )
+
 function GetCustomMinimapZoom()
 {
 	return level.customMinimapZoom
@@ -4417,3 +4436,23 @@ function SetCustomMinimapZoom( value )
 	SetMinimapZoomOverride( level.customMinimapZoom )
 }
 Globalize( SetCustomMinimapZoom )
+
+function ToggleCockpitElementsVisibility()
+{
+	if ( IsLobby() )
+		return
+
+	local player = GetLocalClientPlayer()
+	if ( !IsValid( player ) )
+		return
+
+	local cockpit = player.GetCockpit()
+	if ( !IsValid( cockpit ) )
+		return
+
+	if ( ShouldShowXPBar( player ) )
+		cockpit.s.xpBarGroup.Show()
+	else
+		cockpit.s.xpBarGroup.Hide()
+}
+Globalize( ToggleCockpitElementsVisibility )

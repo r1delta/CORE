@@ -42,6 +42,8 @@ IncludeFile( "ui/menu_image_walk_through" )
 IncludeFile( "ui/menu_main" )
 IncludeFile( "ui/menu_serverbrowser" )
 IncludeFile( "ui/menu_addons")
+IncludeFile( "ui/menu_hud_settings")
+IncludeFile( "ui/menu_hud_settings_r1d")
 IncludeFile( "ui/menu_options" )
 IncludeFile( "ui/menu_black_market_main" )
 IncludeFile( "ui/menu_black_market" )
@@ -201,7 +203,7 @@ function DebugOpenEOG( page )
 }
 
 // TODO: Put open menus on the stack
-function AdvanceMenu( menu, replaceCurrent = false, enableBlur = true )
+function AdvanceMenu( menu, replaceCurrent = false, enableBlur = true, doReplaceCurrentPop = true )
 {
 	//foreach ( index, men in uiGlobal.menuStack )
 	//{
@@ -222,7 +224,11 @@ function AdvanceMenu( menu, replaceCurrent = false, enableBlur = true )
 		if ( replaceCurrent )
 		{
 			CloseMenuWrapper( uiGlobal.activeMenu )
-			uiGlobal.menuStack.pop()
+
+			// Done to prevent some random obscure bug due to buttoncallbacks
+			if ( doReplaceCurrentPop )
+				uiGlobal.menuStack.pop()
+
 			printt( "above closed for", menu.GetName(), "to open" )
 		}
 		else
@@ -996,7 +1002,8 @@ function InitMenus()
 	AddMenu( "MatchSettingsMenu", "resource/ui/menus/match_settings.menu" )
 	AddMenu( "ServerBrowserMenu", "resource/ui/menus/server_browser.menu", "#FIND_MATCH" )
 	AddMenu( "Addons", "resource/ui/menus/addons.menu", "ADDONS" )
-
+	AddMenu( "HudSettingsMenu", "resource/ui/menus/hudsettings.menu", "#HUD_SETTINGS" )
+	AddMenu( "HudSettingsR1DMenu", "resource/ui/menus/hudsettings_r1d.menu", "#HUD_SETTINGS_R1D" )
 
 	AddMenu( "BlackMarketMenu", "resource/ui/menus/blackMarket.menu", "#SHOP_TITLE" )
 	AddMenu( "BlackMarketMainMenu", "resource/ui/menus/blackMarket_main.menu", "#SHOP_TITLE" )
@@ -1081,6 +1088,9 @@ function InitMenus()
 	InitServerBrowserMenu( GetMenu( "ServerBrowserMenu" ) )
 
 	InitAddonsMenu( GetMenu( "Addons" ) )
+
+	InitHudSettingsMenu( GetMenu( "HudSettingsMenu" ) )
+	InitHudSettingsR1DMenu( GetMenu( "HudSettingsR1DMenu" ) )
 
 	// Intro
 	InitIntroMenu( GetMenu( "IntroMenu" ) )
@@ -1283,6 +1293,14 @@ function ReplaceMenuEventHandler( menu )
 	return function( item ) : ( menu )
 	{
 		AdvanceMenu( menu, true )
+	}
+}
+
+function ReplaceMenuEventHandlerNoPop( menu )
+{
+	return function( item ) : ( menu )
+	{
+		AdvanceMenu( menu, true, true, false )
 	}
 }
 
@@ -1830,6 +1848,14 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenServerBrowserMenu( menu );
 			break;
 
+		case "HudSettingsMenu":
+			OnOpenHudSettingsMenu( menu )
+			break
+
+		case "HudSettingsR1DMenu":
+			OnOpenHudSettingsR1DMenu( menu )
+			break
+
 		default:
 			break
 	}
@@ -2015,6 +2041,14 @@ function CloseMenuWrapper( menu )
 
 		case "Addons":
 			OnCloseAddonsMenu( menu )
+			break
+
+		case "HudSettingsMenu":
+			OnCloseHudSettingsMenu( menu )
+			break
+
+		case "HudSettingsR1DMenu":
+			OnCloseHudSettingsR1DMenu( menu )
 			break
 
 		default:
@@ -2469,6 +2503,26 @@ function SeasonEndDialogClosed(...)
 	CloseDialog()
 	if ( IsConnected() )
 		ClientCommand( "SeasonEndDialogClosed" )
+}
+
+function SetupButton( button, description )
+{
+	button.s.description <- description
+	button.AddEventHandler( UIE_GET_FOCUS, ShowButtonDescription )
+}
+Globalize( SetupButton )
+
+function SetupButtonText( button, buttonText, description )
+{
+	button.SetText( buttonText )
+	button.s.description <- description
+	button.AddEventHandler( UIE_GET_FOCUS, ShowButtonDescription )
+}
+Globalize( SetupButtonText )
+
+function ShowButtonDescription( button )
+{
+	SetElementsTextByClassname( uiGlobal.activeMenu, "MenuItemDescriptionClass", button.s.description )
 }
 
 thread main()

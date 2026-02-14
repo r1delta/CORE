@@ -1,0 +1,190 @@
+resource/ui/menus/hudsettings_r1d.menu
+{
+	HudSettingsR1DMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#R1DELTA"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		LblMenuItemDescription
+		{
+			ControlName				Label
+			InheritProperties		OptionMenuTooltip
+			classname 				MenuItemDescriptionClass
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ImgR1DHudSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			//xpos					54
+			//ypos					14
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					14
+		}
+		LblR1DHudSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgR1DHudSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#HUD_SETTINGS"
+		}
+
+		SwchDamageNumbers
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				DamageNumbersClass
+			style					DialogListButton
+			pin_to_sibling			ImgR1DHudSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					SwchWatermark
+			navDown					SwchLegacyProgressbar
+			tabPosition				1
+			labelText				"DAMAGE NUMBERS"
+			ConVar					"delta_damage_numbers"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchLegacyProgressbar
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				LegacyProgressbarClass
+			style					DialogListButton
+			pin_to_sibling			SwchDamageNumbers
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchDamageNumbers
+			navDown					SwchScriptNotification
+			labelText				"LEGACY PROGRESS BAR"
+			ConVar					"delta_useLegacyProgressBar"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchScriptNotification
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				ScriptNotificationClass
+			style					DialogListButton
+			pin_to_sibling			SwchLegacyProgressbar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchLegacyProgressbar
+			navDown					SwchWatermark
+			labelText				"SCRIPT ERROR NOTIFICATIONS"
+			ConVar					"delta_script_errors_notification"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchWatermark
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				WatermarkClass
+			style					DialogListButton
+			pin_to_sibling			SwchScriptNotification
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchScriptNotification
+			navDown					SwchDamageNumbers
+			labelText				"WATERMARK"
+			ConVar					"delta_watermark"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+    }
+}
