@@ -524,6 +524,7 @@ function SpawnGrunt( team, squadName, origin, angles, alert = true, weapon = nul
 		soldier.Hide()	//may want to hide before spawning to avoid pop in scripted model swaps
 
 	DispatchSpawn( soldier, true )
+	ApplyIronsights( soldier, weapon )
 
 	soldier.SetDoFaceAnimations( team == TEAM_MILITIA )
 
@@ -1287,6 +1288,7 @@ function SpawnSpectre( team, squadName, origin, angles, alert = true, weapon = n
 		spectre.Hide()	//may want to hide before spawning to avoid pop in scripted model swaps
 
 	DispatchSpawn( spectre, true )
+	ApplyIronsights( spectre, weapon )
 
 	spectre.ConnectOutput( "OnGainEnemyLOS", OnSpectreSeeEnemy )
 
@@ -1796,9 +1798,57 @@ function GiveMinionWeapon( npc, weapon )
 {
 	npc.kv.additionalequipment = weapon
 	npc.TakeActiveWeapon()
-	npc.GiveWeapon( weapon )
+
+	local sightMod = "iron_sights"
+	switch ( weapon )
+	{
+		case "mp_weapon_shotgun":
+		case "mp_weapon_mega2":
+		case "mp_weapon_autopistol":
+		case "mp_weapon_semipistol":
+		case "mp_weapon_smart_pistol":
+		case "mp_weapon_wingman":
+			sightMod = ""
+			break
+
+		case "mp_weapon_dmr":
+		case "mp_weapon_sniper":
+		case "mp_weapon_mega1":
+			sightMod = "scope_6x"
+			break
+	}
+
+	if ( sightMod != "" )
+		npc.GiveWeapon( weapon, [ sightMod ] )
+	else
+		npc.GiveWeapon( weapon )
 }
 Globalize( GiveMinionWeapon )
+
+function ApplyIronsights( npc, weapon )
+{
+	local sightMod = "iron_sights"
+	switch ( weapon )
+	{
+		case "mp_weapon_shotgun":
+		case "mp_weapon_mega2":
+		case "mp_weapon_autopistol":
+		case "mp_weapon_semipistol":
+		case "mp_weapon_smart_pistol":
+		case "mp_weapon_wingman":
+			return
+
+		case "mp_weapon_dmr":
+		case "mp_weapon_sniper":
+		case "mp_weapon_mega1":
+			sightMod = "scope_6x"
+			break
+	}
+
+	npc.kv.additionalequipment = weapon
+	npc.TakeActiveWeapon()
+	npc.GiveWeapon( weapon, [ sightMod ] )	
+}
 
 // Somewhat hacky way to get AI to throw grenades. Good enough for now.
 function SimulateGrenadeThrowing( npc, onlyRooftopCombat = true, targetGrunts = false )

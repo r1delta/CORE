@@ -5,8 +5,6 @@ function main()
 	Globalize( OnOpenHudSettingsMenu )
 	Globalize( OnCloseHudSettingsMenu )
 	Globalize( RestoreDefaultHUDDialog )
-
-	file.registeredButtonCallbacks <- false
 }
 
 function InitHudSettingsMenu( menu )
