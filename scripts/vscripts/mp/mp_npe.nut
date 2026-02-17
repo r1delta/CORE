@@ -40,6 +40,7 @@ const PILOT_WEAPON_3					= "mp_weapon_rspn101"
 const PILOT_WEAPON_OFFHAND_OFFENSIVE 	= "mp_weapon_frag_grenade"
 const PILOT_WEAPON_AT 					= "mp_weapon_smr"
 const GRENADE_SLOT 						= 0
+const CLOAK_SLOT						= 1
 
 const TITAN_WEAPON_1 					= "mp_titanweapon_xo16"
 const TITAN_WEAPON_OFFHAND_DEFENSIVE 	= "mp_titanweapon_vortex_shield"
@@ -60,6 +61,7 @@ function main()
 		return
 
 	Riff_ForceSetSpawnAsTitan( eSpawnAsTitan.Never )
+	level.nv.allowNPCs = eAllowNPCs.Default
 
 	AddCallback_OnClientConnected( NPE_PlayerConnected )
 	AddClientCommandCallback( "topTarget", ClientCommand_LookTarget_Top )
@@ -688,8 +690,13 @@ function StartTrainingModule( moduleID )
 		return
 	}
 
-	if (GAMETYPE != "battle_practice")
-		TakeAllWeapons( level.player )
+	if (GAMETYPE != "battle_practice" )
+	{
+		if ( ShouldDoIntroscreens() && moduleInfo.showLoading )
+			thread DelayedTakeAllWeapons( level.player )
+		else
+			TakeAllWeapons( level.player )
+	}
 
 	TrainingModule_ResetTriggers( moduleInfo )
 	TrainingModule_ResetFlags( moduleInfo )
@@ -811,7 +818,7 @@ function TrainingModule_SetPlayerSettings( moduleInfo )
 		level.player.SetPlayerSettings( playerSetFile )
 }
 
-function TrainingModule_GiveDefaultWeapons()
+function TrainingModule_GiveDefaultWeapons( deploy = true )
 {
 	if (GAMETYPE == "battle_practice")
 		return
@@ -823,15 +830,30 @@ function TrainingModule_GiveDefaultWeapons()
 		level.player.GiveWeapon( TITAN_WEAPON_1 )
 		//level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_OFFENSIVE, 0 )
 		//level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_DEFENSIVE, 1 )
-		level.player.DeployWeapon()
+
+		if ( deploy )
+			level.player.DeployWeapon()
 	}
 	else
 	{
 		level.player.GiveWeapon( PILOT_WEAPON_1 )
-		level.player.DeployWeapon()
+
+		if ( deploy )
+			level.player.DeployWeapon()
 	}
 
 	thread TakeAmmoFromPlayerASAP()
+}
+
+function DelayedTakeAllWeapons( player )
+{
+	player.EndSignal( "Disconnected" )
+	player.EndSignal( "OnDeath" )
+
+	wait 1.25
+
+	if ( IsValid( player ) )
+		TakeAllWeapons( player )
 }
 
 function AdvanceToNextTrainingModule()
@@ -1929,7 +1951,7 @@ function Module_Bedroom()
 	playerSequence.blendTime 			= 0.0
 	playerSequence.attachment 			= podAttach
 	playerSequence.firstPersonAnimIdle 	= "ptpov_trainingpod_idle"
-	playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
+	//playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
 	playerSequence.viewConeFunction 	= viewConeFunction_start
 	playerSequence.renderWithViewModels = true
 
@@ -1960,6 +1982,7 @@ function Module_Bedroom()
 
 	if ( !level.doQuickIntro )
 	{
+		TrainingPod_ViewConeLock_PodOpen( player )
 		wait 3
 
 		local warningVOEmitterPos = level.trainingPod.GetAttachmentOrigin( level.trainingPod.LookupAttachment( "fx_lookat_top" ) )
@@ -1982,6 +2005,7 @@ function Module_Bedroom()
 
 		minWaitEnd = 11 + Time()
 
+		// Welcome to the Hammond Pilot Certification Simulator. Warning. Unregistered user detec-- Key Accepted.
 		ForcePlayConversationToPlayer( "intro", level.player )
 		wait 3.25 // timed so that the "key accepted" happens after viewhand pushes buttons
 	}
@@ -1994,8 +2018,8 @@ function Module_Bedroom()
 		playerSequence.attachment 			= podAttach
 		playerSequence.firstPersonAnim 		= "ptpov_trainingpod_doors_close"
 		playerSequence.firstPersonAnimIdle 	= "ptpov_trainingpod_idle"
-		playerSequence.thirdPersonAnim 		= "pt_trainingpod_doors_close"
-		playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
+		//playerSequence.thirdPersonAnim 		= "pt_trainingpod_doors_close"
+		//playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
 		playerSequence.viewConeFunction 	= TrainingPod_ViewConeLock_SemiStrict
 		playerSequence.renderWithViewModels = true
 
@@ -2020,37 +2044,37 @@ function Module_Bedroom()
 	if(level.doQuickIntro)
 	{
 		// for *some* reason conversation isn't over at this point and i'm not 100% why, so, reset.
-		FlagToggle("ConversationOver")
+		//FlagToggle("ConversationOver")
 		if(level.titanTrainingOnly || level.resumeChoice > 9)
 		{
 			// Welcome back, Pilot.
 			// Now beginning Titan training.
 			ForcePlayConversationToPlayer( "intro_quickstart_titan", level.player )
+			wait 4 //
 		}
 		else
 		{
 			// Welcome back to Pilot certification.
 			ForcePlayConversationToPlayer( "intro_quickstart_pilot", level.player )
+			wait 3 //
 		}
-	}
 
-	FlagWait("ConversationOver")
-	FlagClear("ConversationOver")
+		//FlagWait("ConversationOver") // BUGGED
+		FlagClear("ConversationOver")
 
-	if(!level.doQuickIntro)
-		// Welcome, Pilot.
-		ForcePlayConversationToPlayer( "intro_welcome", level.player )
-
-	FlagWait("ConversationOver")
-	FlagClear("ConversationOver")
-	
-	if(level.doQuickIntro)
-	{
 		// Simulator initializing.
 		ForcePlayConversationToPlayer( "intro_simulator_initializing", level.player )
 	}
-	else
+
+	if(!level.doQuickIntro)
 	{
+		// Welcome, Pilot.
+		FlagToggle("ConversationOver")
+		ForcePlayConversationToPlayer( "intro_welcome", level.player )
+
+		FlagWait("ConversationOver")
+		FlagClear("ConversationOver")
+
 		//wait 1.5
 		waitthread LookTraining()
 	}
@@ -2093,7 +2117,7 @@ function IntroPod_HandlePrompt()
 
 function LookTraining()
 {
-	// LOOKAT SECTION
+	// To calibrate the AR display, please look at each of the RED lights.
 	ForcePlayConversationToPlayer( "train_lookat", level.player )
 	wait 3.5
 
@@ -2175,6 +2199,7 @@ function LookTraining()
 
 	TrainingPod_ViewConeLock_PodClosed( level.player )
 
+	// Visual calibration complete. Simulator initializing.
 	ForcePlayConversationToPlayer( "train_lookat_pt2", level.player )
 	wait 2
 	TrainingPod_ViewConeLock_SemiStrict( level.player )  // recenter player view
@@ -2559,7 +2584,7 @@ function Module_Bedroom_End()
 	playerSequence.blendTime 			= 0.0
 	playerSequence.attachment 			= podAttach
 	playerSequence.firstPersonAnimIdle 	= "ptpov_trainingpod_idle"
-	playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
+	//playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
 	playerSequence.viewConeFunction 	= TrainingPod_ViewConeLock_PodClosed
 	playerSequence.renderWithViewModels = true
 
@@ -2582,6 +2607,7 @@ function Module_Bedroom_End()
 	// time staring at inside of pod
 	wait 1.5
 
+	// For your safety, please stay in the training pod to regain your equilibrium.
 	ForcePlayConversationToPlayer( "outro_simulator_finished", level.player )
 
 	if ( level.doQuickOutro )
@@ -2600,8 +2626,8 @@ function Module_Bedroom_End()
 	playerSequence.attachment 			= podAttach
 	playerSequence.firstPersonAnim 		= "ptpov_trainingpod_doors_open"
 	playerSequence.firstPersonAnimIdle 	= "ptpov_trainingpod_idle"
-	playerSequence.thirdPersonAnim 		= "pt_trainingpod_doors_open"
-	playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
+	//playerSequence.thirdPersonAnim 		= "pt_trainingpod_doors_open"
+	//playerSequence.thirdPersonAnimIdle 	= "pt_trainingpod_idle"
 	playerSequence.viewConeFunction 	= TrainingPod_ViewConeLock_SemiStrict
 	playerSequence.renderWithViewModels = true
 
@@ -2871,6 +2897,7 @@ function Module_RunAndJump()
 		numResets++
 		if ( numResets % 2 == 0 )
 		{
+			// Sprint toward the edge, then jump just before the edge.
 			ForcePlayConversationToPlayer( "train_sprint_and_jump_help", level.player )
 			ControllerImageHint_Sprint()
 		}
@@ -2897,6 +2924,8 @@ function JumpTrainingVO()
 
 	// trigger flag
 	FlagWait( "PlayerNearJump" )
+
+	// Jump over the obstacle.
 	ForcePlayConversationToPlayer( "train_jump", level.player )
 	local minWait = 2
 	local startTime = Time()
@@ -2905,6 +2934,8 @@ function JumpTrainingVO()
 	FlagWait( "PlayerPastJump" )
 	while ( Time() < startTime + minWait )
 		wait 0.1
+
+	// For greater distance, jump while sprinting.
 	ForcePlayConversationToPlayer( "train_sprint_and_jump", level.player )
 	local minWaitEnd = 3
 
@@ -2913,11 +2944,13 @@ function JumpTrainingVO()
 	if ( Time() < minWaitEnd )
 		wait ( minWaitEnd - Time() )
 
+	// Jump toward the edge of a surface to pull yourself up.
 	ForcePlayConversationToPlayer( "train_mantle", level.player )
 	wait 3.6
 
 	FlagWait( "PlayerPastMantle" )
 
+	// Nicely done.
 	ForcePlayConversationToPlayer( "nicelydone", level.player )
 }
 
@@ -2927,10 +2960,13 @@ function MoveTraining( walkDoorsSnapOpenDist, lightTrigs )
 
 	DisplayTrainingPrompt( eTrainingButtonPrompts.MOVE )
 	local minWaitTimeout = 2.75 + Time()
+
+	// You are free to move around the simulation.
 	ForcePlayConversationToPlayer( "train_move", level.player )
 
 	level.player.ResetIdleTimer()
 
+	// Please move around to continue.
 	waitthread NagPlayerUntilPlayerMove2D( 48, "train_move_nag" )
 
 	level.player.ResetIdleTimer()
@@ -2942,6 +2978,7 @@ function MoveTraining( walkDoorsSnapOpenDist, lightTrigs )
 
 	DisplayTrainingPrompt( eTrainingButtonPrompts.MOVEFORWARD )
 
+	// Please WALK through the tunnel in front of you.
 	ForcePlayConversationToPlayer( "walk_through_tunnel", level.player )
 
 	local doorsCloseTime = 8
@@ -2988,9 +3025,15 @@ function MoveTraining( walkDoorsSnapOpenDist, lightTrigs )
 		{
 			local alias
 			if ( lastHelpAlias == "walk_through_tunnel_help1" )
+			{
+				// To make it past the closing doors, walk steadily through the tunnel.
 				alias = "walk_through_tunnel_help2"
+			}
 			else
+			{
+				// The doors in front of you will slowly close as you move forward. To proceed, move quickly enough to beat the closing doors.
 				alias = "walk_through_tunnel_help1"
+			}
 
 			lastHelpAlias = alias
 			ForcePlayConversationToPlayer( alias, level.player )
@@ -3013,6 +3056,7 @@ function MoveTraining( walkDoorsSnapOpenDist, lightTrigs )
 
 function SprintTraining( sprintDoorsSnapOpenDist, lightTrigs )
 {
+	// Sprint through the tunnel.
 	ForcePlayConversationToPlayer( "train_sprint", level.player )
 	DisplayTrainingPrompt( eTrainingButtonPrompts.SPRINT )
 	wait 1.5
@@ -3214,6 +3258,9 @@ function Module_Wallrun()
 		if ( Flag( "ShortWallrunDetected" ) && Time() - lastEarlyJumpOffVOTime >= earlyJumpOffVODebounceTime )
 		{
 			FlagSet( "DoingWallrunHelperVO" )
+
+			// You are jumping OFF the wall too early.
+			// After jumping ONCE to start wallrunning, WAIT before jumping off the wall.
 			ForcePlayConversationToPlayer( "train_wallrun_hint_jumpingOffTooEarly", level.player )
 			wait 8.5
 			FlagClear( "DoingWallrunHelperVO" )
@@ -3440,6 +3487,7 @@ function Module_Wallrun_Playground()
 
 	level.ent.WaitSignal( "ModuleChangeDone" )
 
+	// Use sprinting, jumping and wallrunning to make your way to the exit.
 	ForcePlayConversationToPlayer( "train_wallrun_playground", level.player )
 
 	//"WallrunPlayground_BonusEval", "WallrunPlayground_HighRoad_1", "WallrunPlayground_HighRoad_2", "WallrunPlayground_HighRoad_Fail"
@@ -3490,6 +3538,7 @@ function Module_Doublejump()
 
 	wait 0.5
 
+	// Jump Kits extend your natural jumping ability. You can jump once more after leaving the ground.
 	ForcePlayConversationToPlayer( "train_doublejump", level.player )
 	DisplayTrainingPrompt( eTrainingButtonPrompts.DOUBLEJUMP )
 	wait 6.5
@@ -3497,6 +3546,8 @@ function Module_Doublejump()
 	FlagWait( "PlayerReachedDoublejumpPlatform2" )
 	DisplayTrainingPrompt( eTrainingButtonPrompts.DOUBLEJUMP_FAR )
 	local minWaitEnd = 5.2 + Time()
+
+	// To cover even more distance, wait longer before starting the second jump.
 	ForcePlayConversationToPlayer( "train_doublejump_2", level.player )
 
 	local nags = [ "train_doublejump_help_1", "train_doublejump_help_2", "train_doublejump_help_3" ]
@@ -3558,6 +3609,7 @@ function Module_Doublejump_Playground()
 	printt( "timer started" )
 	local startTime = Time()
 
+	// Use wallrunning and double jumping to make your way to the exit.
 	ForcePlayConversationToPlayer( "train_doublejump_playground", level.player )
 
 	FlagWait( "DoublejumpPlayground_PlayerEval" )
@@ -3610,8 +3662,7 @@ function Module_Cloak()
 
 	level.ent.WaitSignal( "ModuleChangeDone" )
 
-	local cloakSlot = 1
-	level.player.GiveOffhandWeapon( "mp_ability_cloak", cloakSlot, [ "bc_long_cloak1" ] )
+	level.player.GiveOffhandWeapon( "mp_ability_cloak", CLOAK_SLOT, [ "bc_long_cloak1" ] )
 
 	thread Cloak_IntroVO()
 	thread Cloak_ManagePrompt( 3 )
@@ -3623,9 +3674,15 @@ function Module_Cloak()
 		if ( timesFailed > 0 && sig != "" )
 		{
 			if ( sig == "Cloak_RanIntoPlayer" )
+			{
+				// For best results don't run into the sentries.
 				ForcePlayConversationToPlayer( "train_cloak_ranIntoPlayer", level.player )
+			}
 			else if ( timesFailed % 2 == 0 )
+			{
+				// To get past the sentries, cloak first, then move past quickly.
 				ForcePlayConversationToPlayer( "train_cloak_failed", level.player )
+			}
 		}
 
 		FlagClear( "CloseCloakSwapDoors" )  // in edge cases players can be seen, then quickly run into the end trigger before being reset back to the start
@@ -3727,10 +3784,12 @@ function Module_Cloak()
 	FlagSet( "PlayerPastCloakArea" )
 	thread Cloak_CloseSwapDoorsWhenFinished()
 
+	// Well done.
 	local reactAlias = "welldone"
 	local reactTime = 2
 	if ( killedAllSentries )
 	{
+		// Impressive moves, Pilot. A textbook demonstration of using cloak in melee combat.
 		reactAlias = "train_cloak_killedSentries"
 		reactTime = 6.5
 	}
@@ -3758,6 +3817,7 @@ function Module_Cloak()
 
 		if ( !Flag( "CloseCloakSwapDoors" ) )
 		{
+			// Please proceed to the exit.
 			ForcePlayConversationToPlayer( "train_cloak_proceedtoExit", level.player )
 			minWaitEnd = 3 + Time()
 		}
@@ -3779,6 +3839,7 @@ function Module_Cloak()
 		}
 	)
 
+	// Cloaking does not last forever.  Look at your CLOAK METER on the bottom left of your screen to monitor your remaining cloak time.
 	ForcePlayConversationToPlayer( "train_cloak_limitedtime", level.player )
 	wait 6
 
@@ -3910,9 +3971,11 @@ function Cloak_IntroVO()
 	level.player.EndSignal( "OnDestroy" )
 	level.player.EndSignal( "Disconnected" )
 
+	// Cloaking - making yourself nearly invisible - is essential to Pilot survival.
 	ForcePlayConversationToPlayer( "train_cloak", level.player )
 	wait 5.5
 
+	// To get past the sentries, cloak first, then move past quickly.
 	ForcePlayConversationToPlayer( "train_cloak_pt2", level.player )
 }
 
@@ -4117,6 +4180,7 @@ function Module_BasicCombat()
 
 	waitthread TrainSmartPistol_MultiLock()
 
+	// Target down.
 	ForcePlayConversationToPlayer( "train_smart_pistol_multilock_done", level.player )
 	wait 2
 
@@ -4144,10 +4208,13 @@ function TrainMelee()
 	level.meleeGuy = SpawnDumbNPC( "grunt", spawnOrg, spawnAng )
 	level.meleeGuy.SetModel( TEAM_MILITIA_ROCKET_GRUNT_MDL )  // guy with a face mask = less brutal feeling necksnap
 
+	// 	In close quarters situations, you can kill silently with a melee attack.
 	ForcePlayConversationToPlayer( "train_melee", level.player )
 	wait 5.5
 	OpenSwapDoors( "door_melee_enter" )
 	DisplayTrainingPrompt( eTrainingButtonPrompts.MELEE )
+
+	// Get close to the target to melee.
 	ForcePlayConversationToPlayer( "train_melee_nag", level.player )
 
 	ControllerImageHint_Melee()
@@ -4159,6 +4226,8 @@ function TrainMelee()
 	StopControllerImageHint()
 
 	HideTrainingPrompt()
+
+	// If you melee an opponent from behind, you will perform an execution. Meleeing an enemy from the front can be faster, but carries more risk of death.
 	ForcePlayConversationToPlayer( "train_melee_behind_is_safer", level.player )
 	wait 9.5
 }
@@ -4168,6 +4237,7 @@ function TrainWeaponSwitch()
 	// WEAPON SWITCH AND RELOAD
 	TakeAllWeapons( level.player )
 
+	// To continue, please pull your weapon.
 	ForcePlayConversationToPlayer( "train_pull_weapon", level.player )
 	DisplayTrainingPrompt( eTrainingButtonPrompts.WEAPONSWITCH )
 
@@ -4191,6 +4261,8 @@ function TrainWeaponSwitch()
 		waitthread WaittillTime( minWaitEnd )
 
 		minWaitEnd = 3 + Time()
+
+		// The weapon is empty. Load a fresh magazine.
 		ForcePlayConversationToPlayer( "train_reload", level.player )
 		DisplayTrainingPrompt( eTrainingButtonPrompts.RELOAD )
 
@@ -4224,10 +4296,13 @@ function TrainSmartPistol_Grunt()
 	level.smartPistolGuy.SetNoTarget( true )
 	level.smartPistolGuy.SetNoTargetSmartAmmo( true )
 
+	// This is the Smart Pistol, an autotargeting weapon.
 	ForcePlayConversationToPlayer( "train_smart_pistol", level.player )
 	wait 4
+	// Get close enough to a valid target and the Smart Pistol will start locking on. Wait for a full lock before pulling the trigger.
 	ForcePlayConversationToPlayer( "train_smart_pistol_2", level.player )
 	wait 8.5
+	// Use your Smart Pistol to neutralize the target.
 	ForcePlayConversationToPlayer( "train_smart_pistol_reminder", level.player )
 	wait 2
 	DisplayTrainingPrompt( eTrainingButtonPrompts.FIREPRIMARY )
@@ -4280,6 +4355,7 @@ function TrainSmartPistol_Grunt()
 		if ( Time() < minWaitEnd )
 			wait minWaitEnd - Time()
 
+		// Wait for the weapon to finish the lockon process before pulling the trigger.
 		local nagAlias = "train_smart_pistol_multilock_reminder_2"
 		local lineWait = 4
 		if ( Flag( "MultiLock_TargetWasMeleed" ) )
@@ -4293,6 +4369,8 @@ function TrainSmartPistol_Grunt()
 	}
 
 	HideTrainingPrompt()
+
+	// Target eliminated.
 	ForcePlayConversationToPlayer( "train_smart_pistol_done", level.player )
 	wait 2.5
 }
@@ -4319,6 +4397,7 @@ function SpawnSmartPistolGrunt()
 
 function TrainSmartPistol_MultiTarget()
 {
+	// The Smart Pistol can lock onto more than one target.
 	ForcePlayConversationToPlayer( "train_smart_pistol_multitarget", level.player )
 	wait 3
 
@@ -4340,6 +4419,7 @@ function TrainSmartPistol_MultiTarget()
 		CloseSwapDoors( "door_melee_exit" )
 		CloseSwapDoors( "door_smartpistol_enter" )
 
+		
 		if ( numResets == 0 )
 			ForcePlayConversationToPlayer( "train_smart_pistol_multitarget_nag", level.player )
 
@@ -4629,7 +4709,24 @@ function SmartPistol_SpawnMultiLockTarget()
 		level.multiLockAssaultPoint <- CreateStrictAssaultEnt( spawnOrg, spawnAng, 64 )
 
 	level.multilockTargetGuy = SpawnDumbNPC( "grunt", spawnOrg, spawnAng )
-	level.multilockTargetGuy.SetModel( TEAM_MILITIA_GRUNT_MDL )
+
+	local model
+	switch( RandomInt( 1, 4 ) )
+	{
+		case 1:
+			model = MILITIA_MALE_CQ
+			break
+
+		case 2:
+			model = MILITIA_MALE_DM
+			break
+
+		default:
+			model = MILITIA_MALE_BR
+			break
+	}
+
+	level.multilockTargetGuy.SetModel( model )
 	level.multilockTargetGuy.StayPut( true )
 	level.multilockTargetGuy.AssaultPointEnt( level.multiLockAssaultPoint )
 	level.multilockTargetGuy.SetTitle( "#NPC_SIMULATED_PILOT" )
@@ -5069,6 +5166,8 @@ function Module_MoshPit()
 	level.player.GiveWeapon(PILOT_WEAPON_AT)
 	level.player.GiveOffhandWeapon( PILOT_WEAPON_OFFHAND_OFFENSIVE, GRENADE_SLOT )
 
+	level.player.GiveOffhandWeapon( "mp_ability_cloak", CLOAK_SLOT )
+
 	if ( !( "moshPitSquads" in level ) )
 		level.moshPitSquads <- {}
 	else if ( level.moshPitSquads )
@@ -5159,7 +5258,9 @@ function Module_MoshPit()
 	// Excellent. Combat scenario complete.
 	ForcePlayConversationToPlayer( "moshpit_done", level.player )
 
-	FlagWait("ConversationOver")
+	//FlagWait("ConversationOver") // BUGGED
+	wait 4 //
+
 	FlagClear("ConversationOver")
 
 	wait 1 // not really sure if its necessary
@@ -5700,11 +5801,15 @@ function MoshPit_Minimap_VO()
 
 	ForcePlayConversationToPlayer( "train_minimap", level.player )
 
-	FlagWait("ConversationOver")
+	//FlagWait("ConversationOver") // BUGGED
+	wait 5 //
+
 	FlagClear("ConversationOver")	
 	ForcePlayConversationToPlayer( "train_minimap_findgrunts", level.player )
 
-	FlagWait("ConversationOver")
+	//FlagWait("ConversationOver") // BUGGED
+	wait 5 //
+
 	FlagClear("ConversationOver")
 	StopHighlightMinimap()
 }
@@ -5883,7 +5988,9 @@ function PilotMoshPit_TitanTraining()
 
 	local minWaitEnd = 3.75 + Time()
 
-	FlagWait("ConversationOver")
+	//FlagWait("ConversationOver") // BUGGED
+	wait 11 //
+
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "train_call_in_titan", level.player )
 
@@ -6692,6 +6799,9 @@ function Module_TitanDash()
 	table.liverycolor1 <- null
 	table.liverycolor2 <- null
 
+	if ( level.player.GetOffhandWeapon( CLOAK_SLOT ) )
+		level.player.TakeOffhandWeapon( CLOAK_SLOT )
+
 	CloseSwapDoors("door_titan_dash_threat_start")
 	CloseSwapDoors("door_titan_dash_threat_enter")
 	ForcePlayConversationToPlayer( "titan_dash_speed_intro", level.player )
@@ -6759,7 +6869,7 @@ function Module_TitanDash()
 	spots.append({ origin = Vector(6655,2870,108), angles = Vector(0,-90,0) })
 	spots.append({ origin = Vector(6650,2870,108), angles = Vector(0,-90,0) })
 
-	FireRocketsUntilSignal(spots, 1000, 1, "PlayerDashThreat_Alcove1")
+	FireRocketsUntilSignal( spots, 1000, 4, "PlayerPastDashThreat", "trigger_lightswitch6" )
 }
 
 
@@ -6775,7 +6885,7 @@ function Module_TitanVortex() {
 	CloseSwapDoors("door_titan_vortex_enter")
 	CloseSwapDoors("door_titan_vortex_exit")
 	wait 2
-	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_DEFENSIVE, 1 )
+	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_DEFENSIVE, CLOAK_SLOT, [ "unlimited_charge_time" ] )
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_VORTEX_NAG)
 	// wait for player to use the vortex shield
 	
@@ -6798,6 +6908,21 @@ function Module_TitanVortex() {
 	// set the titan health to 0
 	titan.SetHealth( 1 )
 
+	titan.AssaultPoint( titan.GetOrigin() )
+	titan.StayPut( true )
+	AddDamageCallback( "npc_titan", VortexTitanDamaged )
+
+	// Definitely not accurate
+	local spots = []
+	spots.append( { origin = Vector( 8302.122070, -2407.420654, -2.406204 ), angles = Vector( 0, 13.029675, 0 ) } )
+	spots.append( { origin = Vector( 8604.661133, -2240.208984, -2.406204 ), angles = Vector( 0, 179.997955, 0 ) } )
+	spots.append( { origin = Vector( 8403.578125, -2077.864502, 1.697609 ), angles = Vector( 0, -89.240562, 0 ) } )
+
+	foreach ( spot in spots )
+	{
+		local marvin = FiringRange_SpawnMarvin( spot.origin, spot.angles )
+	}
+
 	while (1)
 	{
 		local foundOne = false
@@ -6816,6 +6941,27 @@ function Module_TitanVortex() {
 	// open the rest of the doors
 	OpenSwapDoors("door_titan_vortex_exit")
 
+}
+
+function VortexTitanDamaged( ent, damageInfo )
+{
+	if ( !IsValid( ent ) )
+		return
+
+    local attacker = damageInfo.GetAttacker()
+    if ( !IsValid( attacker ) )
+        return
+
+    local weapon = attacker.GetActiveWeapon()
+    if ( !IsValid( weapon ) )
+        return
+
+	// Original game insta kills it
+	if ( weapon.GetClassname() == TITAN_WEAPON_OFFHAND_DEFENSIVE && ent.GetTitanSoul().GetShieldHealth() <= 0 )
+	{
+		RemoveDamageCallback( "npc_titan", VortexTitanDamaged )
+		ent.Die( level.worldspawn, level.worldspawn, { scriptType = DF_GIB | DF_DISSOLVE | DF_VORTEX_REFIRE, damageSourceId = eDamageSourceId.mp_titanweapon_vortex_shield } )
+	}
 }
 
 function Module_TitanPet() 
@@ -6849,7 +6995,7 @@ function Module_TitanPet()
 	ForcePlayConversationToPlayer("titan_pet_disembark", level.player)
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_DISEMBARK )
 	level.player.WaitSignal("DisembarkingTitan")
-	TrainingModule_GiveDefaultWeapons()
+	TrainingModule_GiveDefaultWeapons( false )
 	OpenSwapDoors("door_controlpanel_enter")
 	Remote.CallFunction_Replay( level.player, "ServerCallback_EnableTitanModeHUD" )
 	local titan = GetPlayerTitanInMap(level.player)
@@ -6865,7 +7011,7 @@ function Module_TitanPet()
 	level.titanPetControlPanel.WaitSignal( "PanelReprogram_Success" )
 	HideTrainingPrompt()
 	ForcePlayConversationToPlayer("titan_aimode_intro", level.player)
-	wait 8
+	wait 10
 	ForcePlayConversationToPlayer("titan_aimode_hud", level.player)
 	TitanAIControlHintPulse()
 	wait 5
@@ -7096,7 +7242,7 @@ function TitanMoshPit_TrainTitanConcept( type )
 function Titan_OffensiveOffhandTraining()
 {
 	FlagClear( "FiredOffhandOffensive" )
-	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_OFFENSIVE, 0 )
+	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_OFFENSIVE, GRENADE_SLOT )
 
 	OnThreadEnd(
 		function() : ()
@@ -7117,14 +7263,18 @@ function Titan_OffensiveOffhandTraining()
 		OffhandOffensiveHintPulse()
 		ControllerImageHint_OffhandOffensive()
 
-		FlagWait("ConversationOver")
+		//FlagWait("ConversationOver") // BUGGED
+		wait 12
+
 		FlagClear("ConversationOver")
 		ForcePlayConversationToPlayer( "offhand_rocket_fire_name", level.player )
 	}
 
 	if ( !Flag( "FiredOffhandOffensive" ) )
 	{
-		FlagWait("ConversationOver")
+		//FlagWait("ConversationOver") //BUGGED
+		wait 3
+
 		FlagClear("ConversationOver")
 		ForcePlayConversationToPlayer( "offhand_rocket_fire_direction", level.player )
 
@@ -7137,7 +7287,7 @@ function Titan_OffensiveOffhandTraining()
 		StopControllerImageHint()
 	}
 
-	FlagWait("ConversationOver")
+	//FlagWait("ConversationOver")
 	FlagClear("ConversationOver")
 	ForcePlayConversationToPlayer( "offhand_rocket_fire_finish", level.player )
 	wait 5
@@ -7162,16 +7312,18 @@ function TitanMoshPit_Combat()
 	// remove auto eject passive
 	
 	// give loadout and infinite ammo
-	local offensiveOffhand = level.player.GetOffhandWeapon( 0 )
+	local offensiveOffhand = level.player.GetOffhandWeapon( GRENADE_SLOT )
 	if ( !offensiveOffhand )
-		level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_OFFENSIVE, 0 )
+		level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_OFFENSIVE, GRENADE_SLOT )
 
-	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_DEFENSIVE, 1 )
+	level.player.GiveOffhandWeapon( TITAN_WEAPON_OFFHAND_DEFENSIVE, CLOAK_SLOT )
 	thread RefillPlayerAmmo( level.player )
 
 	wait 4
 
 	ForcePlayConversationToPlayer( "titan_mosh_start", level.player )
+	wait 6
+
 	// 기존의 메세지 팝업창(생존, 최대한 버티세요.)을 아래 스레드 안으로 가져가기 위해 주석처리
 	// DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_SURVIVE )
 	AddDamageCallback( "player", PlayerDamageCallback_TitanMoshPit )
@@ -7205,7 +7357,9 @@ function TitanMoshPit_SpawnTitans_OrForceStandDown( endSig )
 	level.player.EndSignal( "Disconnected" )
 
 	DisplayTrainingPrompt( eTrainingButtonPrompts.TITAN_MOSH_PIT_SURVIVE )
-	ForcePlayConversationToPlayer( "titan_mosh_wave_start", level.player )
+
+	// Sounds weird when played on the first wave
+	//ForcePlayConversationToPlayer( "titan_mosh_wave_start", level.player )
 	wait 2
 	ForcePlayConversationToPlayer("titan_mosh_wave_shields_disabled", level.player)	
 	for (local i = 0; i < 1; i++)
@@ -7457,6 +7611,7 @@ function Titan_TrainEject()
 	if ( level.player.IsTitan() )
 	{
 		waitthread NagPlayerUntilFlag( "PlayerEjected", "titan_eject_nag", 15 )
+		TrainingModule_GiveDefaultWeapons( false )
 	}
 
 	// -- PLAYER PUNCHED OUT --
@@ -7620,6 +7775,7 @@ function FireRocketsUntilSignal( rocketSpots, rocketSpeed, volleyWait, endSig, l
 	level.ent.EndSignal( endSig )
 
 	local oppTeam = GetOppositeTeam( level.player )
+	local playedWarning = false
 
 	if ( lightTrigTN )
 		LightTrigger_On( lightTrigTN, FX_LIGHT_GREEN )
@@ -7641,8 +7797,15 @@ function FireRocketsUntilSignal( rocketSpots, rocketSpeed, volleyWait, endSig, l
 			local rocket = NPE_SpawnRocket( spot.origin, spot.angles, level, oppTeam, rocketSpeed )
 			// thread RocketSeekPlayer( rocket, rocketSpeed )
 			level.dashRockets.append( rocket )
+
+			if ( !playedWarning )
+			{
+				playedWarning = true
+				EmitSoundAtPosition( spot.origin, "NPE_Missile_Alarm" )
+			}
 		}
 
+		playedWarning = false
 		wait volleyWait
 	}
 }
