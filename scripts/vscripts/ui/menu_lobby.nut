@@ -43,6 +43,10 @@ function main()
 	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_sandtrap" )
 	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_zone_18" )
 
+	PrecacheHUDMaterial( "../loadscreens/mp_box_widescreen" )
+	PrecacheHUDMaterial( "../loadscreens/mp_mia_widescreen" )
+	PrecacheHUDMaterial( "../loadscreens/mp_nest2_widescreen" )
+	
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_1_installed" )
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_1_not_installed" )
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_2_installed" )
