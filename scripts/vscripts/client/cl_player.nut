@@ -1938,7 +1938,7 @@ function GrenadeArrowThink( player, grenade, weaponName, damageRadius, startDela
 	local mdl = CreateClientSidePropDynamic( Vector( 0, 0, 0 ), Vector( 0, 0, 0 ), grenadeModel )
 
 	local arrowData = {
-		endTime = time + DAMAGEARROW_DURATION, //DAMAGEARROW_DURATION
+		endTime = time + 99, //DAMAGEARROW_DURATION
 		startTime = 99,
 		isDying = false,
 		isVisible = false
