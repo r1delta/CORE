@@ -130,7 +130,7 @@ function NPE_CreateSpawnpoints()
 {
 	local NPE_GENERIC_PILOT_SPAWNSTART_MILITIA = [
 		{ origin = Vector( -933.7, 3083.08, 6690 ), angles = Vector( 0, -31.4, 0 ) },
-		{ origin = Vector( -1160.68, 2587.88, angles = 6381.74 ), Vector( 0, 22.7775, 0 ) },
+		{ origin = Vector( -1160.68, 2587.88, 6381.74 ), angles = Vector( 0, 22.7775, 0 ) },
 		{ origin = Vector( -1021.23, 2901.74, 6676.28 ), angles = Vector( 0, 13.1723, 0 ) },
 		{ origin = Vector( -865.209, 1910.66, 6398.24 ), angles = Vector( 0, 17.9835, 0 ) },
 		{ origin = Vector( -840.113, 1286.18, 6381.7 ), angles = Vector( 0, 21.0287, 0 ) },
