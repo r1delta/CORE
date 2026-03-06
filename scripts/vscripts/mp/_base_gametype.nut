@@ -2868,7 +2868,7 @@ function CodeCallback_OnClientConnectionCompleted( player )
 
 	InitPassives( player )
 
-	if (!player.IsBot() && (GetMapName() != "mp_npe"))
+	if ( !player.IsBot() && !IsTrainingLevel() )
 	{
 		// LoadOut Setting
 		// UpdateLoadouts( player )
@@ -3275,7 +3275,7 @@ function CodeCallback_GetWeaponDamageSourceId( weapon )
 
 function CheckForEmptyTeamVictory()
 {
-	if ( GetMapName() == "mp_npe" )
+	if ( IsTrainingLevel() )
 		return
 	if ( GetDeveloperLevel() )
 		return

@@ -1611,7 +1611,8 @@ enum ePrivateMatchMaps
 	mp_zone_18,
 	mp_box,
 	mp_nest2,
-	mp_mia
+	mp_mia,
+	mp_npe
 }
 
 enum ePrivateMatchModes

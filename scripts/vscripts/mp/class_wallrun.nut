@@ -47,7 +47,7 @@ function Wallrun_OnPlayerSpawn( player )
 
 	local playerClassDataTable = GetPlayerClassDataTable( player, level.pilotClass )
 
-	if (GetMapName() == "mp_npe")
+	if ( IsTrainingLevel() )
 		return
 
 	Wallrun_GiveLoadout( player, playerClassDataTable )

@@ -109,7 +109,7 @@ function GiveNPCTitanTacticalAbility( titan )
 
 function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 {
-	if (GetMapName() == "mp_npe")
+	if ( IsTrainingLevel() )
 		return
 
 	UpdateLastTitanLoadout( player )

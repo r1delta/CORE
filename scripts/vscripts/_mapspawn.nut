@@ -381,7 +381,7 @@
 	}
 
 	// Training
-	if ( mapname == "mp_npe" ) {
+	if ( IsTrainingLevel() ) {
                 ServerCommand("sv_pausable 1")
 	} else {
                 ServerCommand("sv_pausable 0")

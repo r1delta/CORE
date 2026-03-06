@@ -46,7 +46,8 @@ function main()
 	PrecacheHUDMaterial( "../loadscreens/mp_box_widescreen" )
 	PrecacheHUDMaterial( "../loadscreens/mp_mia_widescreen" )
 	PrecacheHUDMaterial( "../loadscreens/mp_nest2_widescreen" )
-	
+	PrecacheHUDMaterial( "../loadscreens/mp_npe_widescreen" )
+
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_1_installed" )
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_1_not_installed" )
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_2_installed" )
@@ -479,7 +480,7 @@ function Threaded_LaunchTraining()
 		uiGlobal.doTraining = false // Just in case...
 		CloseDialog()
 		// respawn launches training on tdm gamemode in the vanilla game
-		ClientCommand("playlist tdm; mp_gamemode tdm; map mp_npe")
+		ClientCommand("playlist training; mp_gamemode tdm; map mp_npe")
 	}
 	return
 }
@@ -895,7 +896,7 @@ function SetMapInfo( mapName )
 	SmartGlass_SetGameStateProperty( SMARTGLASS_PROP_NEXTLEVEL, mapName )
 
 	local mapImage
-	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" )
+	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe" )
 		mapImage = "../loadscreens/" + mapName + "_widescreen"
 	else
 		mapImage = "../ui/menu/lobby/lobby_image_" + mapName

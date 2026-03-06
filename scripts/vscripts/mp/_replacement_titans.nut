@@ -329,7 +329,7 @@ function ModifyBuildTimeForPlayerBonuses( player, amount )
 	return amount
 }
 
-if (GetMapName() == "mp_npe")
+if ( IsTrainingLevel() )
 {
 	function SetTitanCoreTimer( titan, timeDiff )
 	{

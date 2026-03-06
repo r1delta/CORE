@@ -139,7 +139,7 @@ function MapButton_Focused( button )
 	local mapName = mapsArray[buttonID]
 
 	local mapImage
-	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" )
+	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe" )
 		mapImage = "../loadscreens/" + mapName + "_widescreen"
 	else
 		mapImage = "../ui/menu/lobby/lobby_image_" + mapName

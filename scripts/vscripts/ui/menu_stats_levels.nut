@@ -1,5 +1,5 @@
 
-const MAX_LIST_ITEMS = 26
+const MAX_LIST_ITEMS = 27
 const SCROLL_START_TOP = 2
 const LEVEL_LIST_VISIBLE = 6
 const MENU_MOVE_TIME = 0.15
@@ -309,7 +309,7 @@ function UpdateStatsForLevel( mapName )
 
 	// Image
 	local image
-	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" )
+	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe" )
 		image = "../loadscreens/" + mapName + "_widescreen"
 	else
 		image = "../ui/menu/lobby/lobby_image_" + mapName

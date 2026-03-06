@@ -465,7 +465,7 @@ function UICodeCallback_ToggleInGameMenu()
 
 	if ( uiGlobal.activeMenu == null )
 	{
-		if ( IsLevelMultiplayer( activeLevel ) && activeLevel != "mp_npe" )
+		if ( IsLevelMultiplayer( activeLevel ) && !IsTrainingLevel() )
 			AdvanceMenu( GetMenu( "InGameMenu" ) )
 		else
 			AdvanceMenu( GetMenu( "InGameSPMenu" ) )
@@ -510,7 +510,7 @@ function UICodeCallback_LevelLoadingStarted( levelname )
 				ExitLobbyLeaveMenusOpen()
 		}
 	}
-	else if ( levelname == "mp_npe" )
+	else if ( levelname == "mp_npe" && IsTrainingMode() )
 	{
 		if ( !GetTrainingHasEverBeenStartedUI() )
 		{
@@ -1363,7 +1363,7 @@ function EOGReplaceMenuEventHandler( menu )
 
 function OnLeaveGameButton_Activate( button )
 {
-	if ( GetActiveLevel() == "mp_npe" )
+	if ( IsTrainingLevel() )
 	{
 		local desc 			= "#MENU_TRAINING_SKIPTOEND_CONFIRM_DESC"
 		local confirmText 	= "#MENU_TRAINING_SKIPTOEND_BUTTONTEXT"
@@ -2234,7 +2234,7 @@ function OnOpenInGameSPMenu()
 	Assert( IsConnected() )
 
 	local leaveGameButtons = GetElementsByClassname( GetMenu( "InGameSPMenu" ), "LeaveGameButtonClass" )
-	if ( GetActiveLevel() == "mp_npe" )
+	if ( IsTrainingLevel() )
 	{
 	    foreach ( leaveGameButton in leaveGameButtons )
 	    {

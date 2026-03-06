@@ -343,7 +343,7 @@ function ShouldShowEOGSummary()
 	if ( uiGlobal.viewedGameSummary == true )
 		return false
 
-	if ( uiGlobal.previousLevel == null || uiGlobal.previousLevel == "mp_lobby" || uiGlobal.previousLevel == "mp_npe" )
+	if ( uiGlobal.previousLevel == null || uiGlobal.previousLevel == "mp_lobby" || ( uiGlobal.previousLevel == "mp_npe" && uiGlobal.previousPlaylist == "training" ) )
 		return false
 
 	SmartGlass_SendEvent( "GameSummary", "", "", "" )
@@ -356,7 +356,7 @@ function ShouldJumpToCoopPartyMenu()
         return false
 	if ( (uiGlobal.previousPlaylist == null) || (uiGlobal.previousPlaylist != "coop") )
 		return false
-	if ( (uiGlobal.previousLevel == null) || (uiGlobal.previousLevel == "mp_lobby") || (uiGlobal.previousLevel == "mp_npe") )
+	if ( uiGlobal.previousLevel == null || uiGlobal.previousLevel == "mp_lobby" || ( uiGlobal.previousLevel == "mp_npe" && uiGlobal.previousPlaylist == "training" ) )
 		return false
 	if ( GetLobbyTypeScript() == eLobbyType.MATCH )
 		return false

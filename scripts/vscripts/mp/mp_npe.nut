@@ -56,6 +56,13 @@ TITAN_CORE_ENABLED = false
 function main()
 {
 	IncludeScript( "mp_npe_shared" )
+	IncludeScript( "mp/_simulation" )
+
+	if ( !IsTrainingMode() )
+	{
+		IncludeScript( "mp/mp_npe_multiplayer" )
+		return
+	}
 
 	if ( reloadingScripts )
 		return
@@ -80,6 +87,7 @@ function main()
 	AddClientCommandCallback( "NPE_PlayerPressedPrimaryWeapon", ClientCommand_NPE_PlayerPressedPrimaryWeapon)
 	AddClientCommandCallback( "NPE_FiredOffhandOffensive", ClientCommand_NPE_FiredOffhandOffensive )
 	AddClientCommandCallback( "NPE_PlayerPressedJump", ClientCommand_NPE_PlayerPressedJump )
+	AddClientCommandCallback( "NPE_HitMarvinBodyshot", ClientCommand_NPE_HitMarvinBodyshot )
 	AddClientCommandCallback( "leaveTraining", ClientCommand_LeaveTraining )  // for the pause menu
 	AddClientCommandCallback( "callConversationOverSignal", ClientCommand_CallConversationOverSignal )  // for the pause menu
 	AddClientCommandCallback( "callConversationOverEndSignal", ClientCommand_CallConversationOverEndSignal )  // for the pause menu
@@ -237,6 +245,9 @@ function main()
 
 function EntitiesDidLoad()
 {
+	if ( !IsTrainingMode()  )
+		return
+
 	NPE_EntitySetup()
 
 	SetupTrainingModules()
@@ -959,7 +970,7 @@ function NPE_EntitySetup()
 
 	SetupTrainingPod()
 
-	TrainingPod_GlowLightsArraySetup()
+	TrainingPod_GlowLightsArraySetup( level.trainingPod )
 
 	// the order of these should match the order of the gapInfo indices
 	level.wallrunPlatformTrigs.append( GetEnt( "trig_wallrun_start" ) )
@@ -1714,44 +1725,33 @@ function SetupTrainingPod()
 	level.trainingPod.s.glowLightFXHandles <- []
 	level.trainingPod.s.dLights <- []
 
-	TrainingPod_SetupInteriorDLights()
+	local pod = level.trainingPod
+
+	TrainingPod_SetupInteriorDLights( pod )
 
 	local laserAttachNames = [ "fx_laser_L", "fx_laser_R" ]
 
 	foreach ( attachName in laserAttachNames )
 	{
-		local emitter = CreateScriptMover( level.trainingPod )
-		local attachID = level.trainingPod.LookupAttachment( attachName )
-		local attachAng = level.trainingPod.GetAttachmentAngles( attachID )
+		local emitter = CreateScriptMover( pod )
+		local attachID = pod.LookupAttachment( attachName )
+		local attachAng = pod.GetAttachmentAngles( attachID )
 
 		emitter.s.attachName <- attachName
 		emitter.s.ogAng 	<- attachAng
 		emitter.s.sweepDone <- false
 		emitter.s.fxHandle 	<- null
 
-		level.trainingPod.s.laserEmitters.append( emitter )
+		pod.s.laserEmitters.append( emitter )
 	}
 
 	// HACK we do this later as well to reset the emitter positions, so it's a separate function
-	TrainingPod_SnapLaserEmittersToAttachPoints()
+	TrainingPod_SnapLaserEmittersToAttachPoints( pod )
 
-	level.trainingPod.SetAngles( Vector( 0, 109, 0 ) )  // these angles are a little better for seeing the room
+	pod.SetAngles( Vector( 0, 109, 0 ) )  // these angles are a little better for seeing the room
 }
 
-function TrainingPod_SetupInteriorDLights()
-{
-	local pod = level.trainingPod
-
-    local map = []
-    map.append( { scriptAlias = "console1", 		fxName = FX_POD_DLIGHT_CONSOLE1, 		attachName = "light_console1" } )
-    map.append( { scriptAlias = "console2", 		fxName = FX_POD_DLIGHT_CONSOLE2, 		attachName = "light_console2" } )
-    map.append( { scriptAlias = "backlight_side_L", fxName = FX_POD_DLIGHT_BACKLIGHT_SIDE, 	attachName = "light_back1" } )
-    map.append( { scriptAlias = "backlight_side_R", fxName = FX_POD_DLIGHT_BACKLIGHT_SIDE, 	attachName = "light_back2" } )
-    map.append( { scriptAlias = "backlight_top", 	fxName = FX_POD_DLIGHT_BACKLIGHT_TOP, 	attachName = "light_backtop" } )
-    level.trainingPod.s.dLightMappings <- map
-}
-
-function TrainingPod_TurnOnInteriorDLights_Delayed( delay )
+function TrainingPod_TurnOnInteriorDLights_Delayed( delay, pod )
 {
 	level.player.EndSignal( "OnDestroy" )
 	level.player.EndSignal( "Disconnected" )
@@ -1759,68 +1759,8 @@ function TrainingPod_TurnOnInteriorDLights_Delayed( delay )
 
 	wait delay
 
-	TrainingPod_TurnOnInteriorDLight( "console1" )
-	TrainingPod_TurnOnInteriorDLight( "console2" )
-}
-
-function TrainingPod_TurnOnInteriorDLight( scriptAlias )
-{
-	local pod = level.trainingPod
-
-	local fxName
-	local attachName
-	foreach ( mapping in pod.s.dLightMappings )
-	{
-		if ( mapping.scriptAlias == scriptAlias )
-		{
-			fxName = mapping.fxName
-			attachName = mapping.attachName
-			break
-		}
-	}
-
-	Assert( fxName && attachName )
-
-	local fxHandle = PlayLoopFXOnEntity( fxName, pod, attachName )
-	level.trainingPod.s.dLights.append( fxHandle )
-}
-
-function TrainingPod_KillInteriorDLights_Delayed( delay )
-{
-	level.player.EndSignal( "OnDestroy" )
-	level.player.EndSignal( "Disconnected" )
-	level.ent.EndSignal( "ModuleChanging" )
-
-	wait delay
-
-	TrainingPod_KillInteriorDLights()
-}
-
-function TrainingPod_KillInteriorDLights()
-{
-	foreach ( fxHandle in level.trainingPod.s.dLights )
-	{
-		if ( !IsValid_ThisFrame( fxHandle ) )
-			continue
-
-		KillFX( fxHandle )
-	}
-
-	level.trainingPod.s.dLights = []
-}
-
-function TrainingPod_SnapLaserEmittersToAttachPoints()
-{
-	foreach ( emitter in level.trainingPod.s.laserEmitters )
-	{
-		local attachID = level.trainingPod.LookupAttachment( emitter.s.attachName )
-		local attachOrg = level.trainingPod.GetAttachmentOrigin( attachID )
-		local attachAng = level.trainingPod.GetAttachmentAngles( attachID )
-
-		emitter.ClearParent()
-		emitter.SetOrigin( attachOrg )  // HACK set this to ANYTHING  (even 0, 0, 0) and the position is correct, otherwise it's offset from the attachpoint when parented
-		emitter.SetParent( level.trainingPod, emitter.s.attachName )
-	}
+	TrainingPod_TurnOnInteriorDLight( "console1", pod )
+	TrainingPod_TurnOnInteriorDLight( "console2", pod )
 }
 
 function DrawEmitterArrows()
@@ -1837,51 +1777,6 @@ function DrawEmitterArrows()
 		wait 1
 	}
 }
-
-function TrainingPod_GlowLightsArraySetup()
-{
-	local rows = []
-	// rows are set up bottom to top
-	// lights are set up outside to in (in = door close seam; opposite for each side)
-	// process two rows per loop (one for each door side)
-	local row = []
-	row.append( [ "fx_glow_L_door012", "fx_glow_L_door013" ] )
-	row.append( [ "fx_glow_R_door014", "fx_glow_R_door013" ] )
-	rows.append( row )
-
-	local row = []
-	row.append( [ "fx_glow_L_door014", "fx_glow_L_door011" ] )
-	row.append( [ "fx_glow_R_door012", "fx_glow_R_door011" ] )
-	rows.append( row )
-
-	local row = []
-	row.append( [ "fx_glow_L_door09", "fx_glow_L_door010" ] )
-	row.append( [ "fx_glow_R_door09", "fx_glow_R_door010" ] )
-	rows.append( row )
-
-	local row = []
-	row.append( [ "fx_glow_L_door07", "fx_glow_L_door08" ] )
-	row.append( [ "fx_glow_R_door07", "fx_glow_R_door08" ] )
-	rows.append( row )
-
-	local row = []
-	row.append( [ "fx_glow_L_door05", "fx_glow_L_door06" ] )
-	row.append( [ "fx_glow_R_door05", "fx_glow_R_door06" ] )
-	rows.append( row )
-
-	local row = []
-	row.append( [ "fx_glow_L_door03", "fx_glow_L_door04" ] )
-	row.append( [ "fx_glow_R_door03", "fx_glow_R_door04" ] )
-	rows.append( row )
-
-	local row = []
-	row.append( [ "fx_glow_L_door01", "fx_glow_L_door02" ] )
-	row.append( [ "fx_glow_R_door01", "fx_glow_R_door02" ] )
-	rows.append( row )
-
-	level.trainingPodGlowLightRows = rows
-}
-
 
 // =========================== MODULE THINK FUNCTIONS ===========================
 function Module_Bedroom()
@@ -1918,7 +1813,7 @@ function Module_Bedroom()
 				thread TrainingPod_ResetLaserEmitterRotation( level.trainingPod )
 				thread TrainingPod_KillLasers( level.trainingPod )
 				thread TrainingPod_KillGlowFX( level.trainingPod )
-				TrainingPod_KillInteriorDLights()
+				TrainingPod_KillInteriorDLights( level.trainingPod )
 			}
 
 			if ( IsValid( level.player ) && IsValid( level.trainingPod ) )
@@ -1965,8 +1860,8 @@ function Module_Bedroom()
 
 	if ( !level.doQuickIntro )
 	{
-		TrainingPod_TurnOnInteriorDLight( "console1" )
-		TrainingPod_TurnOnInteriorDLight( "console2" )
+		TrainingPod_TurnOnInteriorDLight( "console1", pod )
+		TrainingPod_TurnOnInteriorDLight( "console2", pod )
 		//TrainingPod_TurnOnInteriorDLight( "backlight_side_L" )
 		//TrainingPod_TurnOnInteriorDLight( "backlight_side_R" )
 	}
@@ -2030,7 +1925,7 @@ function Module_Bedroom()
 		podSequence.renderWithViewModels 	= true
 
 		// HACK this should be based on an anim event
-		thread TrainingPod_KillInteriorDLights_Delayed( 2.65 )
+		thread TrainingPod_KillInteriorDLights_Delayed( pod, 2.65 )
 
 		thread FirstPersonSequence( podSequence, pod )
 		waitthread FirstPersonSequence( playerSequence, player, pod )
@@ -2206,79 +2101,15 @@ function LookTraining()
 	Remote.CallFunction_Replay( level.player, "ScriptCallback_LookTargets_KillLights" )
 }
 
-
-function TrainingPod_InteriorFX_CommonSetup()
-{
-	local pod = level.trainingPod
-
-	if ( pod.s.laserEmitters.len() )
-	{
-		TrainingPod_KillLasers( pod )
-		TrainingPod_ResetLaserEmitterRotation( pod )
-	}
-
-	TrainingPod_KillGlowFX( pod )
-	//wait 1  // pause for iteration, to catch the sequence starting again
-}
-
-
-function TrainingPod_KillLasers( pod, doEndCap = false )
-{
-	foreach ( emitter in pod.s.laserEmitters )
-	{
-		if ( IsValid_ThisFrame( emitter.s.fxHandle ) )
-		{
-			if ( !doEndCap )
-			{
-				//printt( "killing laser FX", emitter.s.fxHandle )
-				KillFX( emitter.s.fxHandle )
-			}
-			else
-			{
-				//printt( "killing laser FX with endcap", emitter.s.fxHandle )
-				KillFXWithEndcap( emitter.s.fxHandle )
-			}
-		}
-
-		emitter.s.fxHandle = null
-	}
-}
-
-function TrainingPod_ResetLaserEmitterRotation( pod )
-{
-	if ( !( "laserEmitters" in pod.s ) )
-		return
-
-	foreach ( emitter in pod.s.laserEmitters )
-	{
-		//reset to start position
-		emitter.RotateTo( emitter.s.ogAng, 0.05 )
-	}
-}
-
-function TrainingPod_KillGlowFX( pod )
-{
-	foreach ( fxHandle in pod.s.glowLightFXHandles )
-	{
-		if ( !IsValid_ThisFrame( fxHandle ) )
-			continue
-
-		KillFX( fxHandle )
-	}
-
-	pod.s.glowLightFXHandles = []
-}
-
-
 function TrainingPod_Interior_BootSequence()
 {
 	level.player.EndSignal( "OnDestroy" )
 	level.player.EndSignal( "Disconnected" )
 	level.ent.EndSignal( "ModuleChanging" )
 
-	TrainingPod_InteriorFX_CommonSetup()
-
 	local pod = level.trainingPod
+
+	TrainingPod_InteriorFX_CommonSetup( pod )
 
 	EmitSoundOnEntity( level.player, "NPE_Scr_SimPod_PowerUp" )
 
@@ -2288,7 +2119,7 @@ function TrainingPod_Interior_BootSequence()
 	// GLOW LIGHTS
 	local lightWait = 0.015
 	local rowWait 	= 0.05
-	TrainingPod_GlowLightsTurnOn( lightWait, rowWait )
+	TrainingPod_GlowLightsTurnOn( pod, lightWait, rowWait )
 
     // LASERS
     local longestSweepTime = -1
@@ -2304,40 +2135,6 @@ function TrainingPod_Interior_BootSequence()
 	wait longestSweepTime
 
     level.ent.Signal( "PodInteriorSequenceDone" )
-}
-
-function TrainingPod_GlowLightsTurnOn( lightWait, rowWait )
-{
-	//local startTime = Time()
-
-	local pod = level.trainingPod
-
-	// light up one light on each side at a time
-	foreach ( row in level.trainingPodGlowLightRows )
-	{
-		local loopTime = Time()
-
-		// assume both sides have same number of lights
-		local numLights = row[ 0 ].len()
-
-		for ( local i = 0; i < numLights; i++ )
-		{
-			foreach ( side in row )
-			{
-				local attachName = side[ i ]
-				local fxHandle = PlayLoopFXOnEntity( FX_POD_GLOWLIGHT, pod, attachName )
-				pod.s.glowLightFXHandles.append( fxHandle )
-			}
-
-			if ( lightWait > 0 )
-				wait lightWait
-		}
-
-		if ( rowWait > 0)
-			wait rowWait
-	}
-
-	//printt( "glow lights turn on took", Time() - startTime, "secs" )
 }
 
 // NOTE startPosition is actually inverted from what I think it should be. Tag orientation issue, maybe?
@@ -2432,12 +2229,12 @@ function TrainingPod_Interior_ShutdownSequence( shutdownTime )
 	level.player.EndSignal( "Disconnected" )
 	level.ent.EndSignal( "ModuleChanging" )
 
-	TrainingPod_InteriorFX_CommonSetup()
-
 	local pod = level.trainingPod
 
+	TrainingPod_InteriorFX_CommonSetup( pod )
+
 	// TURN ON GLOW LIGHTS
-	TrainingPod_GlowLightsTurnOn( 0, 0 )
+	TrainingPod_GlowLightsTurnOn( pod, 0, 0 )
 
 	// TURN ON LASERS
 	thread TrainingPod_LasersInstantOn( pod )
@@ -2552,7 +2349,7 @@ function Module_Bedroom_End()
 			if ( IsValid ( level.trainingPod ) )
 			{
 				level.trainingPod.Anim_Stop()
-				TrainingPod_KillInteriorDLights()
+				TrainingPod_KillInteriorDLights( level.trainingPod )
 			}
 
 			if ( IsValid( level.skyboxModelSpace ) )
@@ -2597,7 +2394,7 @@ function Module_Bedroom_End()
 	thread FirstPersonSequence( podSequence, pod )
 
 	// HACK reparent the emitters so they look correct, I didn't expect to have to do this
-	TrainingPod_SnapLaserEmittersToAttachPoints()
+	TrainingPod_SnapLaserEmittersToAttachPoints( pod )
 
 	local startTime = Time()
 	level.ent.WaitSignal( "ModuleChangeDone" )
@@ -2637,7 +2434,7 @@ function Module_Bedroom_End()
 	podSequence.thirdPersonAnimIdle 	= "trainingpod_doors_open_idle"
 	podSequence.renderWithViewModels 	= true
 
-	thread TrainingPod_TurnOnInteriorDLights_Delayed( 1.5 )
+	thread TrainingPod_TurnOnInteriorDLights_Delayed( 1.5, pod )
 
 	thread FirstPersonSequence( podSequence, pod )
 	waitthread FirstPersonSequence( playerSequence, player, pod )
@@ -2784,45 +2581,6 @@ function ResetCabinWindowShutters()
 		shutter.SetAngles( shutter.s.ogAng )
 	}
 }
-
-function TrainingPod_ViewConeLock_Shared( player )
-{
-	player.PlayerCone_FromAnim()
-	player.PlayerCone_SetMinYaw( -25 )
-	player.PlayerCone_SetMaxYaw( 25 )
-	player.PlayerCone_SetMinPitch( -30 )
-}
-
-function TrainingPod_ViewConeLock_PodOpen( player )
-{
-	TrainingPod_ViewConeLock_Shared( player )
-	player.PlayerCone_SetMaxPitch( 35 )
-}
-
-function TrainingPod_ViewConeLock_PodClosed( player )
-{
-	TrainingPod_ViewConeLock_Shared( player )
-	player.PlayerCone_SetMaxPitch( 30 )
-}
-
-function TrainingPod_ViewConeLock_SemiStrict( player )
-{
-	player.PlayerCone_FromAnim()
-	player.PlayerCone_SetMinYaw( -10 )
-	player.PlayerCone_SetMaxYaw( 10 )
-	player.PlayerCone_SetMinPitch( -10 )
-	player.PlayerCone_SetMaxPitch( 10 )
-}
-
-function TrainingPod_ViewConeLock_Strict( player )
-{
-	player.PlayerCone_FromAnim()
-	player.PlayerCone_SetMinYaw( 0 )
-	player.PlayerCone_SetMaxYaw( 0 )
-	player.PlayerCone_SetMinPitch( 0 )
-	player.PlayerCone_SetMaxPitch( 0 )
-}
-
 
 function Module_RunAndJump()
 {
@@ -4901,15 +4659,15 @@ function Module_FiringRange()
 	// Targets neutralized.
 	local alias = "train_smart_pistol_multitarget_done"
 	local aliasTime = 2.5
-	/* Marvins don't have normal headshot detection (no HITGROUP_HEAD maybe?)
+
+	// Marvins don't have normal headshot detection (no HITGROUP_HEAD maybe?)
 	if ( !Flag( "NonHeadshot" ) )
 	{
 		// All headshots. You appear quite ready for ranged combat.
 		alias = "bonus_firingrange_headshots"
 		aliasTime = 5.2
 	}
-	else */
-	if ( !Flag( "PlayerReloaded" ) )
+	else if ( !Flag( "PlayerReloaded" ) )
 	{
 		// All targets eliminated without a magazine swap. Your ammunition conservation has been noted.
 		alias = "bonus_firingrange_noreload"
@@ -4978,9 +4736,10 @@ function FiringRange_ReloadChecker( weapon )
 
 function FiringRange_SpawnMarvins()
 {
+	// These are pretty accurate, no real need to change them
 	local spots = []
 	spots.append( { origin = Vector( 1478, -2130, 0 ), angles = Vector( 0, 130, 0 ) } )
-	spots.append( { origin = Vector( 1624, -2095, 0 ), angles = Vector( 0, 25, 0 ) } )
+	spots.append( { origin = Vector( 1624, -2095, 0 ), angles = Vector( 0, 38, 0 ) } )
 	spots.append( { origin = Vector( 1460, -1849, 0 ), angles = Vector( 0, 165, 0 ) } )
 	spots.append( { origin = Vector( 1616, -1732, 0 ), angles = Vector( 0, -35, 0 ) } )
 	spots.append( { origin = Vector( 1441, -1411, 0 ), angles = Vector( 0, 140, 0 ) } )
@@ -5218,14 +4977,14 @@ function Module_MoshPit()
 
 	thread RefillPlayerAmmo( level.player )
 
-	local spots = []
-
 	thread HealthSuperRegen()
 
 
 	// 기본 전투 
 	// P7: this is based on absolutely nothing and i fucking hate it.
 	// hit me up if you know how to extract the exact coordinates necessary to match vanilla
+	// Nachos: we dont know which entities they use to create these spawnpoints so probably not possible?
+	local spots = []
 	spots.append( CreateScriptRef( Vector( 112, 3883, 6400 ), Vector( 0, 50, 0 ) ) ) // this is probably alright
 	spots.append( CreateScriptRef( Vector( 112, 1858, 6400 ), Vector( 0, 50, 0 ) ) )
 	spots.append( CreateScriptRef( Vector( 1218, 2686, 6400 ), Vector( 0, 50, 0 ) ) )
@@ -6862,12 +6621,20 @@ function Module_TitanDash()
 	ForcePlayConversationToPlayer("titan_dash_threat", level.player)
 	wait 5
 	OpenSwapDoors("door_titan_dash_threat_start")
-	
+
+	// Actually accurate values taken from the original game, minus a 0.1 second delay
+	// Yes, some of them hit the wall, that also happens in the original lol
+
+	// AddCreateCallback( "rpg_missile", CreateCallback_Rocket )
+	// function CreateCallback_Rocket( ent, isRecreate ) { thread aaa( ent ) }
+	// function aaa( ent ) { wait 0.1 printt( "rocket origin:", ent.GetOrigin() ) }
 	local spots = []
-	spots.append({ origin = Vector(6650,2870,192), angles = Vector(0,-90,0) })
-	spots.append({ origin = Vector(6742,2870,192), angles = Vector(0,-90,0) })
-	spots.append({ origin = Vector(6655,2870,108), angles = Vector(0,-90,0) })
-	spots.append({ origin = Vector(6650,2870,108), angles = Vector(0,-90,0) })
+	spots.append( { origin = Vector( 6656, 2526, 180.540176 ), angles = Vector( 0, -90, 0 ) } )
+	spots.append( { origin = Vector( 6656, 2526, 96.540169 ), angles = Vector( 0, -90, 0 ) } )
+	spots.append( { origin = Vector( 6596, 2526, 138.540176 ), angles = Vector( 0, -90, 0 ) } )
+	spots.append( { origin = Vector( 6716, 2526, 138.540176 ), angles = Vector( 0, -90, 0 ) } )
+	spots.append( { origin = Vector( 6531, 2526, 138.540176 ), angles = Vector( 0, -90, 0 ) } )
+	spots.append( { origin = Vector( 6781, 2526, 138.540176 ), angles = Vector( 0, -90, 0 ) } )
 
 	FireRocketsUntilSignal( spots, 1000, 4, "PlayerPastDashThreat", "trigger_lightswitch6" )
 }
@@ -6912,11 +6679,14 @@ function Module_TitanVortex() {
 	titan.StayPut( true )
 	AddDamageCallback( "npc_titan", VortexTitanDamaged )
 
-	// Definitely not accurate
+	// Actually accurate values taken from the original game, minus a 0.1 second delay
+	// AddCreateCallback( "npc_marvin", CreateCallback_Marvin )
+	// function CreateCallback_Marvin( ent, isRecreate ) { thread aaa( ent ) }
+	// function aaa( ent ) { wait 0.1 printt( "marvin origin:", ent.GetOrigin() ) }
 	local spots = []
-	spots.append( { origin = Vector( 8302.122070, -2407.420654, -2.406204 ), angles = Vector( 0, 13.029675, 0 ) } )
-	spots.append( { origin = Vector( 8604.661133, -2240.208984, -2.406204 ), angles = Vector( 0, 179.997955, 0 ) } )
-	spots.append( { origin = Vector( 8403.578125, -2077.864502, 1.697609 ), angles = Vector( 0, -89.240562, 0 ) } )
+	spots.append( { origin = Vector( 8366.593750, -2464.687500, -2.375000 ), angles = Vector( 0, 129.331055, 0 ) } )
+	spots.append( { origin = Vector( 8462.281250, -2328.218750, -2.375000 ), angles = Vector( 0, -119.794922, 0 ) } )
+	spots.append( { origin = Vector( 8563.639648, -2199.249756, -2.312500 ), angles = Vector( 0, 64.466782, 0 ) } )
 
 	foreach ( spot in spots )
 	{
@@ -7906,9 +7676,6 @@ function NPE_GroundTroopsDeathCallback( guy, damageInfo )
 		printt( "Headshot!")
 	}
 	*/
-
-	EmitSoundAtPosition( guy.GetOrigin(), "Object_Dissolve" )
-	guy.Dissolve( ENTITY_DISSOLVE_CHAR, Vector( 0, 0, 0 ), 0 )
 }
 
 function TryTakeWeaponOnDeath( guy )
@@ -8089,6 +7856,12 @@ function ClientCommand_LeaveTraining( player, ... )
 	else 
 		GameRules_EndMatch()
 
+	return true
+}
+
+function ClientCommand_NPE_HitMarvinBodyshot( player, ... )
+{
+	FlagSet( "NonHeadshot" )
 	return true
 }
 

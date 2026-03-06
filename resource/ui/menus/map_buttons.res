@@ -10,7 +10,7 @@
 		ypos					0
 		tabPosition				0
 
-		navUp					MapButton23
+		navUp					MapButton27
 		navDown					MapButton1
 	}
 
@@ -401,6 +401,21 @@
 		pin_to_sibling_corner	2
 
 		navUp					MapButton25
+		navDown					MapButton27
+	}
+
+	MapButton27
+	{
+		ControlName				BaseModHybridButton
+		InheritProperties		CompactButton
+		classname				MapButtonClass
+		scriptID				27
+
+		pin_to_sibling			MapButton26
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+
+		navUp					MapButton26
 		navDown					MapButton0
 	}
 }

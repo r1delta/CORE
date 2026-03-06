@@ -1035,7 +1035,7 @@ function SkipCinematicStart() //Doesn't quite work as advertised for now.
 
 function SetIsTrainingLevel()
 {
-	level.isTrainingLevel <- GetMapName() == "mp_trainer" || GetMapName() == "mp_npe"
+	level.isTrainingLevel <- ( GetMapName() == "mp_trainer" || GetMapName() == "mp_npe" ) && IsTrainingMode()
 }
 
 function IsFirstCampaignLevel()

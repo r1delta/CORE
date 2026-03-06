@@ -1737,6 +1737,8 @@ function CreatePilotStartSpawnPoint( origin, angles, team, name )
 	ent.SetAngles( angles )
 	ent.SetTeam( team )
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Start spawnpoint for Titans
@@ -1748,6 +1750,8 @@ function CreateTitanPilotStartSpawnPoint( origin, angles, team, name )
 	ent.SetAngles( angles )
 	ent.SetTeam( team )
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Spawnpoint for Pilots ( generic )
@@ -1759,6 +1763,8 @@ function CreatePilotSpawnPoint( origin, angles, team, name )
 	ent.SetAngles( angles )
 	ent.SetTeam( team )
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Spawnpoint for Titans ( generic )
@@ -1770,6 +1776,8 @@ function CreateTitanPilotSpawnPoint( origin, angles, team, name )
 	ent.SetAngles( angles )
 	ent.SetTeam( team )
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1793,6 +1801,8 @@ function CreateMarvinSpawnPoint( origin, angles, team, name, bodyType = 1, headT
 	ent.kv.headtype = headType
 
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Start spawnpoint for Droppods
@@ -1805,6 +1815,8 @@ function CreateDropPodStartSpawnPoint( origin, angles, team, name )
 	ent.SetTeam( team )
 	ent.s.inUse <- false
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Spawnpoint for Droppods ( generic )
@@ -1817,6 +1829,8 @@ function CreateDropPodSpawnPoint( origin, angles, team, name )
 	ent.SetTeam( team )
 	ent.s.inUse <- false
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Start spawnpoint for Dropships
@@ -1829,6 +1843,8 @@ function CreateDropShipStartSpawnPoint( origin, angles, team, name )
 	ent.SetTeam( team )
 	ent.s.inUse <- false
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Spawnpoint for Dropships ( generic )
@@ -1841,6 +1857,8 @@ function CreateDropShipSpawnPoint( origin, angles, team, name )
 	ent.SetTeam( team )
 	ent.s.inUse <- false
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Spawnpoint for Flags
@@ -1852,6 +1870,8 @@ function CreateFlagSpawnPoint( origin, angles, team, name )
 	ent.SetAngles( angles )
 	ent.SetTeam( team )
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Create info_targets (used for evac nodes and some other stuff)
@@ -1868,12 +1888,14 @@ function CreateInfoTarget( origin, angles, name, target = "" )
 	}
 
 	DispatchSpawn( ent )
+
+	return ent
 }
 
 // Create info_frontlines (they tell npcs where they should go and shoot at eachother)
 // the "is[gamemode]" bools tell code if the frontline should be removed in that mode. 0 = gone
 // not entirely sure what "spectrepoint" does, so leave it off i guess
-function CreateInfoFrontline( origin, angles, team, name, group = "aaa", isTDM = 0, isLTS = 0, isCTF = 0, spectrepoint = 0 )
+function CreateInfoFrontline( origin, angles, team, name, group = "aaa", isTDM = 1, isLTS = 1, isCTF = 1, spectrepoint = 0 )
 {
 	local ent = CreateEntity( "info_frontline" )
 	ent.SetName( name )
@@ -1888,6 +1910,11 @@ function CreateInfoFrontline( origin, angles, team, name, group = "aaa", isTDM =
 		Assert( setting >= 0 && setting <= 1, "Setting [" + setting + "] for info_frontline [" + name + "] should ALWAYS be either 0 or 1" )
 	}
 
+	if ( team == TEAM_IMC )
+		team = 0
+	else if ( team == TEAM_MILITIA )
+		team = 1
+
 	ent.SetTeam( team )
 
 	ent.kv.gamemode_tdm = isTDM
@@ -1897,6 +1924,8 @@ function CreateInfoFrontline( origin, angles, team, name, group = "aaa", isTDM =
 
 	DispatchSpawn( ent )
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function CreateAssaultPointFromArray( locationArray, name = "assaultpoint", isNear = false ) {
 	local ENT_ASSAULTPOINT_COUNT = GetEntArrayByClass_Expensive("assault_assaultpoint").len()
@@ -1958,6 +1987,26 @@ function CreateDropPodSpawnPointFromArray( locationArray, team, name = "info_spa
 	foreach( idx, location in locationArray) {
 		CreateDropPodSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_SPAWNDROPPOD_COUNT+1))
 		ENT_SPAWNDROPPOD_COUNT++
+	}
+}
+
+function CreateInfoTargetFromArray( infoArray, name = "info_target" )
+{
+	local ENT_TARGET_COUNT = GetEntArrayByClass_Expensive( "info_target" ).len()
+	foreach ( idx, info in infoArray )
+	{
+		CreateInfoTarget( info.origin, info.angles, name + "_" + ( ENT_TARGET_COUNT + 1 ), info.target )
+		ENT_TARGET_COUNT++
+	}
+}
+
+function CreateInfoFrontlineFromArray( infoArray, team, name = "info_frontline" )
+{
+	local ENT_FRONTLINE_COUNT = GetEntArrayByClass_Expensive( "info_frontline" ).len()
+	foreach ( idx, info in infoArray )
+	{
+		CreateInfoFrontline( info.origin, info.angles, team, name + "_" + ( ENT_FRONTLINE_COUNT + 1 ), info.group )
+		ENT_FRONTLINE_COUNT++
 	}
 }
 

@@ -532,7 +532,7 @@ function UpdateChallengeData(player,category,statName,value,weaponName)
 function Stats_IncrementStat( player, category, statName, value, weaponName = null )
 {
 
-    if ( GetMapName() == "mp_npe" ) // disable stats on training
+    if ( IsTrainingLevel() ) // disable stats on training
 		return
 
     if ( player == null )

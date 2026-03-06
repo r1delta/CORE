@@ -80,7 +80,7 @@ function OnOpenInGameMenu()
 			file.BtnRanked.Hide()
 		}
 
-		if ( GetActiveLevel() == "mp_npe" )
+		if ( IsTrainingLevel() )
 		{
 			local leaveGameButtons = GetElementsByClassname( GetMenu( "InGameMenu" ), "LeaveGameButtonClass" )
 			foreach ( leaveGameButton in leaveGameButtons )

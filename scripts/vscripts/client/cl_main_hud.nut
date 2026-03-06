@@ -1163,7 +1163,7 @@ function TitanBuildAnchorThink( cockpit, player )
 
 function TitanBuildBarThink( cockpit, player )
 {
-	if(GetMapName() == "mp_npe") // do not show the "READY" hud element on training
+	if ( IsTrainingLevel() ) // do not show the "READY" hud element on training
 		return
 	cockpit.EndSignal( "OnDestroy" )
 	player.EndSignal( "OnDestroy" )

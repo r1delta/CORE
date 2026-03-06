@@ -112,6 +112,7 @@ function InitPersistence()
 	    mp_sandtrap	= 25			// DLC 3
 		mp_nest2 = 26
 		mp_mia = 27
+		mp_npe = 28
     }
 
     AddPersistenceEnum("maps", maps)

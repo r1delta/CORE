@@ -506,7 +506,7 @@ function ShowInvertLookMenu( isConfirming )
 	//printt( "SERVER CALLBACK SHOW INVERT LOOK MENU")
 
 	waitthread WaitForNoDialog()
-	if ( GetActiveLevel() != "mp_npe" )
+	if ( !IsTrainingLevel() )
 		return
 
 	// confirming the settings (second menu)
@@ -565,7 +565,7 @@ function ShowInvertLookMenu( isConfirming )
 
 function WaitForNoDialog()
 {
-	while( uiGlobal.activeDialog && GetActiveLevel() == "mp_npe" )
+	while( uiGlobal.activeDialog && IsTrainingLevel() )
 	{
 		wait 0
 	}
@@ -893,7 +893,7 @@ function ClosePlaylistAnnounceDialog( button )
 
 function ShowPortForwardWarning( port = 27015 )
 {
-	if ( GetActiveLevel() == "mp_npe" ) // do not show this on training, we aren't expecting more than one player to join.
+	if ( IsTrainingLevel() ) // do not show this on training, we aren't expecting more than one player to join.
 		return
     local isDefaultPort = (port == 27015)
     local message = isDefaultPort ?

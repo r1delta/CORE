@@ -200,6 +200,9 @@ function GetClassicMPMode()
 
 function IsTrainingLevel()
 {
+	if ( !IsTrainingMode() )
+		return false
+
 	if ( IsUI() )
 	{
 		local levelname = GetActiveLevel()
@@ -210,6 +213,17 @@ function IsTrainingLevel()
 	}
 	else
 		return level.isTrainingLevel
+}
+
+function IsTrainingMode()
+{
+	if ( !IsServer() )
+	{
+		if ( !IsConnected() )
+			return false
+	}
+
+	return GetCurrentPlaylistName() == "training"
 }
 
 function SortLowest( a, b )
@@ -291,7 +305,10 @@ function GetEnemyTeam( team )
 
 function GetMapDisplayName( mapname )
 {
-	return "#" + mapname
+	if ( mapname == "mp_npe" && !IsTrainingMode() )
+		return "#" + mapname + "_MULTIPLAYER"
+	else
+		return "#" + mapname
 }
 
 function GetCampaignMapDisplayName( mapname )
@@ -301,7 +318,10 @@ function GetCampaignMapDisplayName( mapname )
 
 function GetMapDisplayDesc( mapname )
 {
-	return "#" + mapname + "_CLASSIC_DESC"
+	if ( mapname == "mp_npe" && !IsTrainingMode() )
+		return "#" + mapname + "_MULTIPLAYER_CLASSIC_DESC"
+	else
+		return "#" + mapname + "_CLASSIC_DESC"
 }
 
 function ArrayContains( array, testVal )
