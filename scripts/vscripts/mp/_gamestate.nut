@@ -1931,7 +1931,7 @@ function TimeLimit_Complete()
 	if ( !GetCinematicMode() )
 	{
 		local timeLeftSeconds
-        if ( level.nv.gameEndTime != 0.0 )
+        if ( level.nv.gameEndTime && level.nv.gameEndTime != 0.0  )
             timeLeftSeconds = (level.nv.gameEndTime - Time()).tointeger()
         else
             timeLeftSeconds = GameTime.TimeLeftSeconds()
