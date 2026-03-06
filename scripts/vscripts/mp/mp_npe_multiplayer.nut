@@ -153,6 +153,24 @@ function NPE_CreateSpawnpoints()
 		{ origin = Vector( 866.776, 1695.97, 6680.03 ), angles = Vector( 0, 179.996, 0 ) },
 	]
 
+	local NPE_TITAN_SPAWNSTART_MILITIA = [
+		{ origin = Vector( -1197.84, 2443.52, 6372.8 ), angles = Vector( 0, 4.15304, 0 ) },
+		{ origin = Vector( -925.166, 2115.2, 6465.09 ), angles = Vector( 0, -44.1209, 0 ) },
+		{ origin = Vector( -1090.61, 1579.68, 6393.48 ), angles = Vector( 0, 44.523, 0 ) },
+		{ origin = Vector( -1344.9, 2085.31, 6368.4 ), angles = Vector( 0, 9.87305, 0 ) },
+		{ origin = Vector( -1398.02, 2520.1, 6392.22 ), angles = Vector( 0, -63.1437, 0 ) },
+		{ origin = Vector( -703.893, 2447.94, 6406.03 ), angles = Vector( 0, 37.4538, 0 ) },
+	]
+
+	local NPE_TITAN_SPAWNSTART_IMC = [
+		{ origin = Vector( 2684.45, 1624.51, 6346.82 ), angles = Vector( 0, -137.667, 0 ) },
+		{ origin = Vector( 2585.83, 1397.25, 6339.88 ), angles = Vector( 0, 149.508, 0 ) },
+		{ origin = Vector( 2092.86, 1590.46, 6383.08 ), angles = Vector( 0, 168.026, 0 ) },
+		{ origin = Vector( 2608.51, 2493.89, 6360.52 ), angles = Vector( 0, 163.68, 0 ) },
+		{ origin = Vector( 2367.87, 2819.52, 6399.1 ), angles = Vector( 0, -159.474, 0 ) },
+		{ origin = Vector( 2526.46, 3125.29, 6404.53 ), angles = Vector( 0, 143.308, 0 ) },
+	]
+
 	local NPE_FLAG_SPAWN_MILITIA = [
 		{ origin = Vector( 2304.18, 2080.34, 6400.03 ), angles = Vector( 0, 180, 0 ) },
 	]
@@ -237,14 +255,18 @@ function NPE_CreateSpawnpoints()
 	// At the moment, start spawns will also be spawns when you die, would this go wrong? absolutely (not (probably))
 	CreatePilotStartSpawnPointFromArray( NPE_GENERIC_PILOT_SPAWNSTART_IMC, TEAM_IMC )
 	CreatePilotStartSpawnPointFromArray( NPE_GENERIC_PILOT_SPAWNSTART_MILITIA, TEAM_MILITIA )
+	CreatePilotSpawnPointFromArray( NPE_GENERIC_PILOT_SPAWN, TEAM_UNASSIGNED )
+
+	CreateTitanPilotStartSpawnPointFromArray( NPE_TITAN_SPAWNSTART_MILITIA, TEAM_MILITIA )
+	CreateTitanPilotSpawnPointFromArray( NPE_TITAN_SPAWNSTART_MILITIA, TEAM_UNASSIGNED )
+	CreateTitanPilotStartSpawnPointFromArray( NPE_TITAN_SPAWNSTART_IMC, TEAM_IMC )
+	CreateTitanPilotSpawnPointFromArray( NPE_TITAN_SPAWNSTART_IMC, TEAM_UNASSIGNED )
 
 	CreateDropPodStartSpawnPointFromArray( NPE_DROPPOD_SPAWN_IMC, TEAM_IMC )
 	CreateDropPodSpawnPointFromArray( NPE_DROPPOD_SPAWN_IMC, TEAM_IMC )
 	CreateDropPodStartSpawnPointFromArray( NPE_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA )
 	CreateDropPodSpawnPointFromArray( NPE_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA )
 	CreateDropPodSpawnPointFromArray( NPE_GENERIC_DROPPOD_SPAWN, TEAM_UNASSIGNED )
-
-	CreatePilotSpawnPointFromArray( NPE_GENERIC_PILOT_SPAWN, TEAM_UNASSIGNED )
 
 	CreateInfoFrontlineFromArray( NPE_FRONTLINES_IMC, TEAM_IMC )
 	CreateInfoFrontlineFromArray( NPE_FRONTLINES_MILITIA, TEAM_MILITIA )
