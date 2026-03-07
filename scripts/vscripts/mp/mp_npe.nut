@@ -1,13 +1,8 @@
 const FX_LIGHT_ORANGE 	= "runway_light_orange"
 const FX_LIGHT_GREEN 	= "runway_light_green"
 const FX_POD_LASER 		= "P_pod_scan_laser_FP"
-const FX_POD_GLOWLIGHT 	= "P_pod_door_glow_FP"
 const FX_POD_SCREEN_IN	= "P_pod_screen_lasers_IN"
 const FX_POD_SCREEN_OUT	= "P_pod_screen_lasers_OUT"
-const FX_POD_DLIGHT_CONSOLE1 		= "P_pod_Dlight_console1"
-const FX_POD_DLIGHT_CONSOLE2 		= "P_pod_Dlight_console2"
-const FX_POD_DLIGHT_BACKLIGHT_SIDE 	= "P_pod_Dlight_backlight_side"
-const FX_POD_DLIGHT_BACKLIGHT_TOP 	= "P_pod_Dlight_backlight_top"
 const FX_SWAPDOOR_CLOSED 		= "P_npe_door_closed_sml"
 const FX_SWAPDOOR_OPEN 			= "P_npe_door_open_sml"
 const FX_SWAPDOOR_CLOSED_TITAN 	= "P_npe_door_closed_titan"
@@ -18,13 +13,8 @@ const FX_SWAPDOOR_OPEN_ARCH 	= "P_npe_door_open_arch"
 PrecacheParticleSystem( FX_LIGHT_ORANGE )
 PrecacheParticleSystem( FX_LIGHT_GREEN )
 PrecacheParticleSystem( FX_POD_LASER )
-PrecacheParticleSystem( FX_POD_GLOWLIGHT )
 PrecacheParticleSystem( FX_POD_SCREEN_IN )
 PrecacheParticleSystem( FX_POD_SCREEN_OUT )
-PrecacheParticleSystem( FX_POD_DLIGHT_CONSOLE1 )
-PrecacheParticleSystem( FX_POD_DLIGHT_CONSOLE2 )
-PrecacheParticleSystem( FX_POD_DLIGHT_BACKLIGHT_SIDE )
-PrecacheParticleSystem( FX_POD_DLIGHT_BACKLIGHT_TOP )
 PrecacheParticleSystem( FX_SWAPDOOR_CLOSED )
 PrecacheParticleSystem( FX_SWAPDOOR_OPEN )
 PrecacheParticleSystem( FX_SWAPDOOR_CLOSED_TITAN )
@@ -68,7 +58,12 @@ function main()
 		return
 
 	Riff_ForceSetSpawnAsTitan( eSpawnAsTitan.Never )
+	Riff_ForceTitanExitEnabled( eTitanExitEnabled.Default )
 	level.nv.allowNPCs = eAllowNPCs.Default
+	level.nv.aiLethality = eAILethality.Default
+	level.nv.minimapState = eMinimapState.Default
+	level.nv.ammoLimit = eAmmoLimit.Default
+	level.nv.floorIsLava = eFloorIsLava.Default
 
 	AddCallback_OnClientConnected( NPE_PlayerConnected )
 	AddClientCommandCallback( "topTarget", ClientCommand_LookTarget_Top )

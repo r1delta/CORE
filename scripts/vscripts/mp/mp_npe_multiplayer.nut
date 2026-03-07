@@ -1,24 +1,14 @@
 const FX_LIGHT_ORANGE 	= "runway_light_orange"
 const FX_LIGHT_GREEN 	= "runway_light_green"
 const FX_POD_LASER 		= "P_pod_scan_laser_FP"
-const FX_POD_GLOWLIGHT 	= "P_pod_door_glow_FP"
 const FX_POD_SCREEN_IN	= "P_pod_screen_lasers_IN"
 const FX_POD_SCREEN_OUT	= "P_pod_screen_lasers_OUT"
-const FX_POD_DLIGHT_CONSOLE1 		= "P_pod_Dlight_console1"
-const FX_POD_DLIGHT_CONSOLE2 		= "P_pod_Dlight_console2"
-const FX_POD_DLIGHT_BACKLIGHT_SIDE 	= "P_pod_Dlight_backlight_side"
-const FX_POD_DLIGHT_BACKLIGHT_TOP 	= "P_pod_Dlight_backlight_top"
 
 PrecacheParticleSystem( FX_LIGHT_ORANGE )
 PrecacheParticleSystem( FX_LIGHT_GREEN )
 PrecacheParticleSystem( FX_POD_LASER )
-PrecacheParticleSystem( FX_POD_GLOWLIGHT )
 PrecacheParticleSystem( FX_POD_SCREEN_IN )
 PrecacheParticleSystem( FX_POD_SCREEN_OUT )
-PrecacheParticleSystem( FX_POD_DLIGHT_CONSOLE1 )
-PrecacheParticleSystem( FX_POD_DLIGHT_CONSOLE2 )
-PrecacheParticleSystem( FX_POD_DLIGHT_BACKLIGHT_SIDE )
-PrecacheParticleSystem( FX_POD_DLIGHT_BACKLIGHT_TOP )
 
 const CUSTOM_INTRO_LENGTH = 25.0
 
@@ -63,22 +53,8 @@ function main()
 
 function EntitiesDidLoad()
 {
-    // VDU support
-    local vduCamera = CreateEntity( "info_target" )
-    vduCamera.SetName( "vdu_camera_ref" )
-    vduCamera.SetOrigin( Vector( -13560, -4768, 0 ) )
-    vduCamera.SetAngles( Vector( 0, 90, 0 ) )
-    vduCamera.kv.spawnflags = 2
-    DispatchSpawn( vduCamera )
-
-    local vduCharacter = CreateEntity( "info_target" )
-    vduCharacter.SetName( "vdu_character_ref" )
-    vduCharacter.SetOrigin( Vector( -13560, -4704, 0 ) )
-    vduCharacter.SetAngles( Vector( 0, -90, 0 ) )
-    vduCharacter.kv.spawnflags = 2
-    DispatchSpawn( vduCharacter )
-
 	NPE_KillUnusedEntities()
+	NPE_CreateMiscEntities()
 	NPE_CreateSpawnpoints()
 
 	// Disable if you want the map to be more accurate to the normal training map
@@ -126,6 +102,28 @@ function NPE_KillUnusedEntities()
 	}
 }
 
+function NPE_CreateMiscEntities()
+{
+	// VDU support
+	local vduCamera = CreateEntity( "info_target" )
+	vduCamera.SetName( "vdu_camera_ref" )
+	vduCamera.SetOrigin( Vector( -13560, -4768, 0 ) )
+	vduCamera.SetAngles( Vector( 0, 90, 0 ) )
+	vduCamera.kv.spawnflags = 2
+	DispatchSpawn( vduCamera )
+
+	local vduCharacter = CreateEntity( "info_target" )
+	vduCharacter.SetName( "vdu_character_ref" )
+	vduCharacter.SetOrigin( Vector( -13560, -4704, 0 ) )
+	vduCharacter.SetAngles( Vector( 0, -90, 0 ) )
+	vduCharacter.kv.spawnflags = 2
+	DispatchSpawn( vduCharacter )
+
+	local intermission = GetEnt( "info_intermission_1" )
+	intermission.SetOrigin( Vector( -516.749, 3391.6, 6377.14 ) )
+	intermission.SetAngles( Vector( -10.34, -50.511, 0 ) )
+}
+
 function NPE_CreateSpawnpoints()
 {
 	local NPE_GENERIC_PILOT_SPAWNSTART_MILITIA = [
@@ -169,10 +167,6 @@ function NPE_CreateSpawnpoints()
 		{ origin = Vector( 2608.51, 2493.89, 6360.52 ), angles = Vector( 0, 163.68, 0 ) },
 		{ origin = Vector( 2367.87, 2819.52, 6399.1 ), angles = Vector( 0, -159.474, 0 ) },
 		{ origin = Vector( 2526.46, 3125.29, 6404.53 ), angles = Vector( 0, 143.308, 0 ) },
-	]
-
-	local NPE_FLAG_SPAWN_MILITIA = [
-		{ origin = Vector( 2304.18, 2080.34, 6400.03 ), angles = Vector( 0, 180, 0 ) },
 	]
 
 	// MoshPit_PlayerMopsUpAsTitan
@@ -221,7 +215,7 @@ function NPE_CreateSpawnpoints()
 		{ origin = Vector( -491.32, 3581.26, 6400.28 ), angles = Vector( 0, 0, 0 ), group = "spawn_militia" }
 		{ origin = Vector( -491.32, 581.26, 6384.6 ), angles = Vector( 0, 0, 0 ), group = "spawn_militia" }
 
-		// frontline mid militia side
+		// frontline mid - militia side
 		{ origin = Vector( 291.32, 2081.26, 6384.38 ), angles = Vector( 0, 0, 0 ), group = "mid" }
 		{ origin = Vector( 291.32, 3581.26, 6400.28 ), angles = Vector( 0, 0, 0 ), group = "mid" }
 		{ origin = Vector( 291.32, 581.26, 6384.6 ), angles = Vector( 0, 0, 0 ), group = "mid" }

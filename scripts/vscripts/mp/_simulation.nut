@@ -1,4 +1,16 @@
 
+const FX_POD_GLOWLIGHT 	= "P_pod_door_glow_FP"
+const FX_POD_DLIGHT_CONSOLE1 		= "P_pod_Dlight_console1"
+const FX_POD_DLIGHT_CONSOLE2 		= "P_pod_Dlight_console2"
+const FX_POD_DLIGHT_BACKLIGHT_SIDE 	= "P_pod_Dlight_backlight_side"
+const FX_POD_DLIGHT_BACKLIGHT_TOP 	= "P_pod_Dlight_backlight_top"
+
+PrecacheParticleSystem( FX_POD_GLOWLIGHT )
+PrecacheParticleSystem( FX_POD_DLIGHT_CONSOLE1 )
+PrecacheParticleSystem( FX_POD_DLIGHT_CONSOLE2 )
+PrecacheParticleSystem( FX_POD_DLIGHT_BACKLIGHT_SIDE )
+PrecacheParticleSystem( FX_POD_DLIGHT_BACKLIGHT_TOP )
+
 function main()
 {
 	if ( reloadingScripts )
@@ -344,13 +356,20 @@ if ( !IsTrainingLevel() )
 					EmitSoundToIntroPlayers( "diag_tut_npeLevel_NP275_01_01_neut_tutai" )
 					wait 3
 					break
+				
+				default:
+					// "Prepare for combat."
+					EmitSoundToIntroPlayers( "diag_dlc1_WG_pod_getready" )
+					wait 2.4
+					break
 			}
 		}
-
-		// "Prepare for combat."
-		EmitSoundToIntroPlayers( "diag_dlc1_WG_pod_getready" )
-
-		wait 2.4
+		else
+		{
+			// "Prepare for combat."
+			EmitSoundToIntroPlayers( "diag_dlc1_WG_pod_getready" )
+			wait 2.4
+		}
 
 	    local modeAliases = {}
 	    modeAliases[ ATTRITION ] 					<- "diag_dlc1_WG136_01_01_neut_tutai"  // "Attrition."

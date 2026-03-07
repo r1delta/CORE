@@ -40,6 +40,10 @@ function main()
 	level.nodeInfo <- {}
 	level.spectreJumpTraverseNodesInUse <- []
 
+	file.oreSpawnBlockerVolumes <- []
+	file.oreSpawnSafeVolumes <- []
+	file.volumesDebug <- false
+
 	if ( "CodeCallback_OnTouchHealthKit" in getroottable() )
 		delete getroottable().CodeCallback_OnTouchHealthKit
 
@@ -62,6 +66,14 @@ function EntitiesDidLoad()
 	SetupAssaultPointKeyValues()
 
 	InitOreDumpSpots()
+
+	switch ( GetMapName() )
+	{
+		// Only allow ores to spawn on the main area
+		case "mp_npe":
+			AddOreSafeVolume( Vector( -1621.94, 118.551, 6236.52 ), Vector( 3278.4, 4478.8, 6977.34 ) )
+			break
+	}
 
 	//Init for using nodes
 	local nodeCount = GetNodeCount()
@@ -101,20 +113,37 @@ function EntitiesDidLoad()
 	thread OreCreator()
 }
 
+function AddOreBlockerVolume( volumeMins, volumeMaxs )
+{
+	Assert( volumeMins.x < volumeMaxs.x )
+	Assert( volumeMins.y < volumeMaxs.y )
+	Assert( volumeMins.z < volumeMaxs.z )
+
+	file.oreSpawnBlockerVolumes.append( { mins = volumeMins, maxs = volumeMaxs } )
+}
+
+function AddOreSafeVolume( volumeMins, volumeMaxs )
+{
+	Assert( volumeMins.x < volumeMaxs.x )
+	Assert( volumeMins.y < volumeMaxs.y )
+	Assert( volumeMins.z < volumeMaxs.z )
+
+	file.oreSpawnSafeVolumes.append( { mins = volumeMins, maxs = volumeMaxs } )
+}
+
 function IsValidSpawnNode( node )
 {
-	//if ( level.isTestmap )
-	//	return true
-
-	//local traverseType = traverseNode.kv.traverseType.tointeger() //Is string instead of integer at first
-
-	//if ( traverseType == 8 || traverseType == 9 || traverseType == 10 ) //8: Jump Up/Down 160, 9: Jump Up/Down 320, 10: Jump Up/Down 512
+	local origin = node.GetOrigin()
+	foreach ( volume in file.oreSpawnBlockerVolumes )
 	{
-		return !NodeNearOreDumpSpot( node.GetOrigin(), ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT )
+		if ( IsServer() && file.volumesDebug )
+			DebugDrawBox( Vector( 0.0, 0.0, 0.0 ), volume.mins, volume.maxs, 255, 255, 0, 1, 0.1 )
 
+		if ( PointIsWithinBounds( origin, volume.mins, volume.maxs ) )
+			return false
 	}
 
-	return false
+	return !NodeNearOreDumpSpot( origin, ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT )
 }
 
 function InitOreDumpSpots()
@@ -202,7 +231,6 @@ function SpawnStartOres()
 {
 	//wait 5.0
 	//PrintFunc()
-	local nodes = GetNodeCount()
 
 	local totalRandomOre = randomOreSpawned - file.totalOre[ oreTypes.RANDOM ]
 	local totalRoofOre = roofOreSpawned - file.totalOre[ oreTypes.ROOF ]
@@ -274,6 +302,18 @@ function TrySpawnOreOnNode( nodeIndex, oreType, oreModels )
 			return false
 
 	local nodePos = GetNodePos( nodeIndex, 0 )
+
+	if ( file.oreSpawnSafeVolumes.len() > 0 )
+	{
+		foreach ( volume in file.oreSpawnSafeVolumes )
+		{
+			if ( IsServer() && file.volumesDebug )
+				DebugDrawBox( Vector( 0.0, 0.0, 0.0 ), volume.mins, volume.maxs, 255, 255, 0, 1, 0.1 )
+
+			if ( !PointIsWithinBounds( nodePos, volume.mins, volume.maxs ) )
+				return false
+		}
+	}
 
 	if ( NodeNearPlayer( nodePos ) )
 		return false
