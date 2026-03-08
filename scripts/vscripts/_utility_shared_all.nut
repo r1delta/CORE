@@ -217,11 +217,8 @@ function IsTrainingLevel()
 
 function IsTrainingMode()
 {
-	if ( !IsServer() )
-	{
-		if ( !IsConnected() )
-			return false
-	}
+	if ( !IsServer() && !IsConnected() )
+		return false
 
 	return GetCurrentPlaylistName() == "training"
 }
@@ -953,4 +950,16 @@ function IsFFABased()
 		return level.ui.ffaBased
 
 	return level.nv.ffaBased
+}
+
+// For easier copy pastes when printing
+// (vector : (-560.000000, 544.000000, 352.031250)) -> Vector( -560, 544, 352.031 )
+function PrettyVector( vec )
+{
+    return "Vector( " + vec.x + ", " + vec.y + ", " + vec.z + " )"
+}
+
+function PrintVector( vec )
+{
+	printt( PrettyVector( vec ) )
 }
