@@ -104,7 +104,7 @@
 			"dlc_promo"	"1"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -265,7 +265,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -404,7 +404,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -537,7 +537,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -940,7 +940,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -1103,7 +1103,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -1266,7 +1266,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -1429,7 +1429,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -1592,7 +1592,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -1761,7 +1761,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -1924,7 +1924,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -2087,7 +2087,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -2234,7 +2234,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -2397,7 +2397,7 @@
 	// 		"ranked_decay_days" "2.0"
 	//		"private_match" "0"
 
-	//		"SCV_scorelimit"	"50"
+	//		"SCV_scorelimit"	"125"
 	//		"SCV_timelimit"		"15"
 	//		"TTDM_scorelimit"	"65"
 	//		"TTDM_timelimit"	"12"
@@ -2558,7 +2558,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -2721,7 +2721,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -2883,7 +2883,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -3046,7 +3046,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -3209,7 +3209,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -3372,7 +3372,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "0"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"
@@ -3489,7 +3489,7 @@
 			"ranked_decay_days" "2.0"
 			"private_match" "1"
 
-			"SCV_scorelimit"	"50"
+			"SCV_scorelimit"	"125"
 			"SCV_timelimit"		"15"
 			"TTDM_scorelimit"	"65"
 			"TTDM_timelimit"	"12"

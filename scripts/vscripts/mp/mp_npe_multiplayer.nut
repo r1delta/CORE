@@ -11,6 +11,7 @@ PrecacheParticleSystem( FX_POD_SCREEN_IN )
 PrecacheParticleSystem( FX_POD_SCREEN_OUT )
 
 const CUSTOM_INTRO_LENGTH = 25.0
+const DEV_DISABLE_INTRO = false
 
 function main()
 {
@@ -24,7 +25,7 @@ function main()
 	PrecacheEntity( "beam_spotlight" )
 
 	// --- custom classic MP scripting after here ---
-	if ( !GetClassicMPMode() )
+	if ( DEV_DISABLE_INTRO || !GetClassicMPMode() )
 		return
 
 	level.trainingPod <- null
@@ -120,7 +121,7 @@ function NPE_CreateMiscEntities()
 	DispatchSpawn( vduCharacter )
 
 	local intermission = GetEnt( "info_intermission_1" )
-	intermission.SetOrigin( Vector( -516.749, 3391.6, 6377.14 ) )
+	intermission.SetOrigin( Vector( -516.749, 3391.6, 6477.14 ) )
 	intermission.SetAngles( Vector( -10.34, -50.511, 0 ) )
 }
 

@@ -39,6 +39,7 @@ function main()
 	level.nodesInUse <- {}
 	level.nodeInfo <- {}
 	level.spectreJumpTraverseNodesInUse <- []
+	level.titanNodesInUse <- []
 
 	file.oreSpawnBlockerVolumes <- []
 	file.oreSpawnSafeVolumes <- []
@@ -92,7 +93,7 @@ function EntitiesDidLoad()
 	local traverseNodes = GetEntArrayByClass_Expensive( "info_spawnpoint_droppod" ) //Slow... but maybe ok to do this at start?
 	foreach( traverse in traverseNodes )
 	{
-		if ( IsValidSpawnNode( traverse ) )
+		if ( IsValidSpawnNode( traverse, true ) )
 			level.spectreJumpTraverseNodes.append( traverse )
 	}
 
@@ -131,7 +132,7 @@ function AddOreSafeVolume( volumeMins, volumeMaxs )
 	file.oreSpawnSafeVolumes.append( { mins = volumeMins, maxs = volumeMaxs } )
 }
 
-function IsValidSpawnNode( node )
+function IsValidSpawnNode( node, TEMP_droppod_hack = false )
 {
 	local origin = node.GetOrigin()
 	foreach ( volume in file.oreSpawnBlockerVolumes )
@@ -143,7 +144,11 @@ function IsValidSpawnNode( node )
 			return false
 	}
 
-	return !NodeNearOreDumpSpot( origin, ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT )
+	// Ignoring distance for droppod nodes until we get proper spawns, if ever
+	if ( TEMP_droppod_hack )
+		return true
+	else
+		return !NodeNearOreDumpSpot( origin, ORE_ROOF_DISTANCE_SQUARED_FROM_DUMP_SPOT )
 }
 
 function InitOreDumpSpots()
@@ -299,7 +304,7 @@ function TrySpawnOre( nodes, oreType, totalOreType, oreModels, spawnFunc )
 function TrySpawnOreOnNode( nodeIndex, oreType, oreModels )
 {
 	if ( nodeIndex in level.nodesInUse ) //Not true at first
-			return false
+		return false
 
 	local nodePos = GetNodePos( nodeIndex, 0 )
 
@@ -315,10 +320,23 @@ function TrySpawnOreOnNode( nodeIndex, oreType, oreModels )
 		}
 	}
 
+	local collisionTest = CreateInfoTarget( nodePos, Vector( 0, 0, 0 ), "" )
+	if ( EntityInSolid( collisionTest ) )
+	{
+		collisionTest.Destroy()
+		return false
+	}
+
+	collisionTest.Destroy()
+
 	if ( NodeNearPlayer( nodePos ) )
 		return false
 
-	if ( NodeNearOreDumpSpot( nodePos, ORE_DISTANCE_SQUARED_FROM_DUMP_SPOT ) )
+	local maxDist = ORE_DISTANCE_SQUARED_FROM_DUMP_SPOT
+	if ( GetMapName() == "mp_npe" || GetMapName() == "mp_box" )
+		maxDist *= 0.5
+
+	if ( NodeNearOreDumpSpot( nodePos, maxDist ) )
 		return false
 
 	SpawnRandomOreNugget( nodeIndex, nodePos, oreModels, oreType )
@@ -329,10 +347,11 @@ function TrySpawnOreOnNode( nodeIndex, oreType, oreModels )
 
 function TrySpawnOreOnSpectreTraverseNode( node, oreType, oreModels )
 {
-	/*if ( node.GetEntIndex() in level.spectreJumpTraverseNodesInUse ) //Not true at first
-			return false*/
+	if ( node in level.spectreJumpTraverseNodesInUse ) //Not true at first
+		return false
 
 	local nodePos = node.GetOrigin()
+	nodePos += Vector( 0, 0, 16 )
 
 	if ( NodeNearPlayer( nodePos ) )
 		return false
@@ -342,6 +361,7 @@ function TrySpawnOreOnSpectreTraverseNode( node, oreType, oreModels )
 		return false*/
 
 	SpawnSpectreJumpTraverseOreNugget( nodePos, oreModels, oreType )
+	level.spectreJumpTraverseNodesInUse.append( node )
 
 	return true
 
@@ -358,7 +378,11 @@ function TrySpawnOreOnSpectreTraverseNode( node, oreType, oreModels )
 
 function TrySpawnTitanOreOnTitanSpawnpointNode( node, oreType, oreModels )
 {
+	if ( node in level.titanNodesInUse ) //Not true at first
+		return false
+
 	local nodePos = node.GetOrigin()
+	nodePos += Vector( 0, 0, 16 )
 
 	if ( NodeNearPlayer( nodePos ) )
 		return false
@@ -368,10 +392,9 @@ function TrySpawnTitanOreOnTitanSpawnpointNode( node, oreType, oreModels )
 		return false*/
 
 	SpawnTitanSpawnpointOreNugget( nodePos, oreModels, oreType )
+	level.titanNodesInUse.append( node )
 
 	return true
-
-
 }
 
 function NodeNearPlayer( nodePos ) //Todo: Fill out this function
@@ -470,36 +493,34 @@ function SpawnThrownOreNugget( deadEntity, damageInfo ) //TODO: Make this worth 
 	if ( collectedOreBeforeDeath == 0 )
 		return
 
-	// ??????
-	//if (  IsSuicide( damageInfo.GetAttacker(), deadEntity, damageInfo.GetDamageSourceIdentifier() ) )
-	//	return
-
 	local origin = deadEntity.GetOrigin()
+	local lifetimeOverride = -1
+	
+	if ( ( "outOfBoundsTriggersTouched" in deadEntity.s ) && deadEntity.s.outOfBoundsTriggersTouched > 0 )
+	{
+		lifetimeOverride = 30
+	}
 
 	// Instead of spawning multiple ores (looks ugly and causes too many sounds to play at the same time)
 	// We now spawn a single, buffed ore
+	local oreNugget = SpawnOreNugget( origin, level.scavengerSmallRocks, oreTypes.THROWN, lifetimeOverride )
 
-	//for ( local i = 0; i < totalThrownOreGenerated; ++i )
-	{
-		local oreNugget = SpawnOreNugget( origin, level.scavengerSmallRocks, oreTypes.THROWN )
+	oreNugget.kv.rendercolor = "0 162 232 255" //blue, to indicate that this is player created and may have random values
+	oreNugget.SetTeam( deadEntity.GetTeam() )
+	oreNugget.s.rewardAmount = collectedOreBeforeDeath
 
-		oreNugget.kv.rendercolor = "0 162 232 255" //blue, to indicate that this is player created and may have random values
-		oreNugget.SetTeam( deadEntity.GetTeam() )
-		oreNugget.s.rewardAmount = collectedOreBeforeDeath
+	local angleThrown = Vector( 0, RandomInt( 360 ), 0 )
+	oreNugget.SetVelocity( ( angleThrown.AnglesToForward() + Vector( 0,0,1.25 ) ) * 400  )
 
-		local angleThrown = Vector( 0, RandomInt( 360 ), 0 )
-		oreNugget.SetVelocity( ( angleThrown.AnglesToForward() + Vector( 0,0,1.25 ) ) * 400  )
-
-		// TODO: unique icon?
-		DisplayOreNuggetOnMinimap( oreNugget, "vgui/HUD/minimap_goal_friendly", true )
-	}
+	// TODO: unique icon?
+	DisplayOreNuggetOnMinimap( oreNugget, "vgui/HUD/minimap_goal_friendly", true )
 
 	//EmitSoundOnEntity( deadEntity, "ui_ingame_burncardearned" ) //TODO: need sounds
 }
 
 Globalize( SpawnThrownOreNugget )
 
-function SpawnOreNugget( nodePos, models, oreType )
+function SpawnOreNugget( nodePos, models, oreType, lifetimeOverride = -1 )
 {
 	local model = Random( models )
 
@@ -532,14 +553,15 @@ function SpawnOreNugget( nodePos, models, oreType )
 	if ( oreType == oreTypes.TITAN || oreType == oreTypes.THROWN )
 		lifetime = 120
 
+	if ( lifetimeOverride != -1 )
+		lifetime = lifetimeOverride
+
 	thread DestroyOreAfterDelay( oreNugget, oreType, lifetime )
 
-	/*if ( GamePlaying() )
+	if ( GamePlaying() )
 	{
-		printt( "playing spawn sound" )
-		EmitSoundOnEntity( oreNugget, "Menu_BurnCard_InspectMultipleCards" )
-
-	}*/
+		EmitSoundOnEntity( oreNugget, "Wargames_Materialize" )
+	}
 
 	return oreNugget
 }
@@ -601,12 +623,25 @@ function DestroyOreAfterDelay( oreNugget, oreType, lifetime )
 	if ( IsValid( oreNugget ) )
 	{
 		file.totalOre[ oreType ]--
-		if ( oreType == oreTypes.RANDOM )
+		switch ( oreType )
 		{
-			delete level.nodesInUse[ oreNugget.s.nodeID ]
+			case oreTypes.RANDOM:
+				delete level.nodesInUse[ oreNugget.s.nodeID ]
+				break
+
+			case oreTypes.ROOF:
+				ArrayRemove( level.spectreJumpTraverseNodesInUse, oreNugget )
+				break
+
+			case oreTypes.TITAN:
+				ArrayRemove( level.titanNodesInUse, oreNugget )
+				break
 		}
 
 		oreNugget.s.disablePickup = true
+		oreNugget.Minimap_Hide( TEAM_IMC, null )
+		oreNugget.Minimap_Hide( TEAM_MILITIA, null )
+
 		oreNugget.Dissolve( ENTITY_DISSOLVE_CORE, Vector( 0, 0, 0 ), 500 )
 		EmitSoundAtPosition( origin, "Object_Dissolve" )
 
@@ -627,11 +662,8 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 
 	if ( oreNugget.s.oreType == oreTypes.ORE_DUMP_SPOT )
 	{
-			//printt( "OreDumpSpot touched!" )
-
 		if ( oreNugget.GetTeam() == player.GetTeam() )
 		{
-
 			local collectedOre = player.GetDefenseScore()
 			if ( collectedOre > 0 )
 			{
@@ -663,7 +695,7 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 	{
 		if ( !player.IsTitan() )
 		{
-			EmitSoundOnEntityOnlyToPlayer( player, player, "Operator.Ability_offline" )
+			PlayOrePickupDeniedSound( player )
 			Remote.CallFunction_Replay( player, "SCB_CantPickupMegaOre" ) //TODO: Can't actually ship this!
 			return false
 		}
@@ -671,7 +703,7 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 
 	if ( player.GetDefenseScore() >= MAX_ORE_PLAYER_CAN_CARRY )
 	{
-		EmitSoundOnEntityOnlyToPlayer( player, player, "Operator.Ability_offline" )
+		PlayOrePickupDeniedSound( player )
 		return false
 	}
 
@@ -722,6 +754,16 @@ function CodeCallback_OnTouchHealthKit( player, oreNugget )
 	return true
 }
 
+function PlayOrePickupDeniedSound( player )
+{
+	local time = Time()
+	if ( time - player.s.lastOreDeniedTime < 1.0 )
+		return
+
+	player.s.lastOreDeniedTime = time
+	EmitSoundOnEntityOnlyToPlayer( player, player, "Operator.Ability_offline" )
+}
+
 function OreCreator()
 {
 	for ( ;; )
@@ -737,6 +779,7 @@ function GameMode_Scavenger_PlayerConnected( player )
 {
 	//printt( "Player: " + player.GetEntIndex() + " has connected" )
 	player.s.collectedOreEffect <- null
+	player.s.lastOreDeniedTime <- 0
 }
 Globalize( GameMode_Scavenger_PlayerConnected )
 
@@ -758,7 +801,6 @@ function Scavenger_TitanBecomesPilot( player, npc_titan )
 		//printt( "Transfer effect? Titan Becomes Pilot" )
 		player.s.collectedOreEffect.SetParent( player, "chestFocus" )
 	}
-
 }
 
 function Scavenger_WinnerDeterminedEnter( )

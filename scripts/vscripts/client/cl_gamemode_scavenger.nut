@@ -11,6 +11,9 @@ function main()
 	level.teamOreDumpSpot[TEAM_IMC] <- null
 	level.teamOreDumpSpot[TEAM_MILITIA] <- null
 
+	level.aliveOres <- []
+
+	thread ScavengerOreSparks()
 }
 
 function CreateScavengerOre( ore, isRecreate )
@@ -22,7 +25,7 @@ function CreateScavengerOre( ore, isRecreate )
 	}
 	else
 	{
-		//thread ScavengerOreSparks( ore )
+		level.aliveOres.append( ore )
 	}
 }
 
@@ -47,23 +50,31 @@ function ClearCarryingLabel( player )
 	oreCarryingLabel.Hide()
 }
 
-function ScavengerOreSparks( ore )
+// Looks VERY artificial, but its probably better than creating a thread for each individual ore
+function ScavengerOreSparks()
 {
-	ore.EndSignal( "OnDestroy" )
 	local fxID = GetParticleSystemIndex( "xo_spark_med" )
-	local origin = ore.GetOrigin() + Vector(0,0,16)
-	local angles = ore.GetAngles()
+	local origin
+	local angles
 
-	while( true )
+	for ( ;; )
 	{
-		OreSparkFunc( ore, fxID, origin, angles )
+		ArrayRemoveInvalid( level.aliveOres )
+
+		foreach( ore in level.aliveOres )
+		{
+			origin = ore.GetOrigin()
+			angles = ore.GetAngles()
+
+			OreSparkFunc( ore, fxID, origin, angles )
+		}
 		wait ( RandomFloat( 3.0, 6.0 ) )
 	}
 }
 
 function OreSparkFunc( ore, fxID, origin, angles )
 {
-	local newAngles = angles.AnglesCompose( Vector(90,0,0) )
+	local newAngles = angles.AnglesCompose( Vector( -90, 0, 0 ) )
 
 	StartParticleEffectInWorld( fxID, origin, newAngles )
 	EmitSoundOnEntity( ore, "titan_damage_spark" )
@@ -92,19 +103,19 @@ function Scavenger_InitPlayerScripts( player )
 
 	player.hudElems.FriendlyFlagIcon.SetClampToScreen( CLAMP_RECT )
 	player.hudElems.FriendlyFlagIcon.SetClampBounds( CL_HIGHLIGHT_ICON_X, CL_HIGHLIGHT_ICON_Y )
-	//player.hudElems.FriendlyFlagIcon.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
+	player.hudElems.FriendlyFlagIcon.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
 
 	player.hudElems.EnemyFlagIcon.SetClampToScreen( CLAMP_RECT )
 	player.hudElems.EnemyFlagIcon.SetClampBounds( CL_HIGHLIGHT_ICON_X, CL_HIGHLIGHT_ICON_Y )
-	//player.hudElems.EnemyFlagIcon.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
+	player.hudElems.EnemyFlagIcon.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
 
 	player.hudElems.FriendlyFlagLabel.SetClampToScreen( CLAMP_RECT )
 	player.hudElems.FriendlyFlagLabel.SetClampBounds( CL_HIGHLIGHT_LABEL_X, CL_HIGHLIGHT_LABEL_Y )
-	//player.hudElems.FriendlyFlagLabel.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
+	player.hudElems.FriendlyFlagLabel.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
 
 	player.hudElems.EnemyFlagLabel.SetClampToScreen( CLAMP_RECT )
 	player.hudElems.EnemyFlagLabel.SetClampBounds( CL_HIGHLIGHT_LABEL_X, CL_HIGHLIGHT_LABEL_Y )
-	//player.hudElems.EnemyFlagLabel.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
+	player.hudElems.EnemyFlagLabel.SetADSFade( deg_cos( 5 ), deg_cos( 2 ), 0, 1 )
 
 
 	/*if ( GetGameState() != eGameState.Playing )
@@ -115,13 +126,6 @@ function Scavenger_InitPlayerScripts( player )
 	{
 		player.InitHudElem( "PlayerOreCarryingLabel" + i )
 	}
-
-	player.hudElems.FriendlyFlagArrow.Show()
-	player.hudElems.FriendlyFlagIcon.Show()
-	player.hudElems.FriendlyFlagLabel.Show()
-	player.hudElems.EnemyFlagArrow.Show()
-	player.hudElems.EnemyFlagIcon.Show()
-	player.hudElems.EnemyFlagLabel.Show()
 
 	thread ScavengerHudThink( player )
 }
@@ -149,7 +153,7 @@ function OnOreDumpSpotCreatedCreated( oreDumpEnt, isRecreate )
 		player.hudElems.FriendlyFlagIcon.SetEntityOverhead( oreDumpEnt, Vector( 0, 0, 64 ), 0.5, 1.0 )
 		player.hudElems.FriendlyFlagArrow.SetEntity( oreDumpEnt, Vector( 0, 0, 64 ), 0.5, 1.0 )
 		player.hudElems.FriendlyFlagLabel.SetEntityOverhead( oreDumpEnt, Vector( 0, 0, 64 ), 0.5, 0.25 )
-		player.hudElems.FriendlyFlagLabel.Show()
+		//player.hudElems.FriendlyFlagLabel.Show()
 		player.hudElems.FriendlyFlagLabel.SetAutoTextVector( "#GAMEMODE_SCAVENGER_FRIENDLY_BASE_DISTANCE", HATT_DISTANCE_METERS, oreDumpEnt.GetOrigin() )
 	}
 	else
@@ -157,7 +161,7 @@ function OnOreDumpSpotCreatedCreated( oreDumpEnt, isRecreate )
 		player.hudElems.EnemyFlagIcon.SetEntityOverhead( oreDumpEnt, Vector( 0, 0, 64 ), 0.5, 1.0 )
 		player.hudElems.EnemyFlagArrow.SetEntity( oreDumpEnt, Vector( 0, 0, 64 ), 0.5, 1.0 )
 		player.hudElems.EnemyFlagLabel.SetEntityOverhead( oreDumpEnt, Vector( 0, 0, 64 ), 0.5, 0.25 )
-		player.hudElems.EnemyFlagLabel.Show()
+		//player.hudElems.EnemyFlagLabel.Show()
 		player.hudElems.EnemyFlagLabel.SetAutoTextVector( "#GAMEMODE_SCAVENGER_ENEMY_BASE_DISTANCE", HATT_DISTANCE_METERS, oreDumpEnt.GetOrigin() )
 	}
 }
@@ -169,6 +173,13 @@ function ScavengerHudThink( player )
 
 	while ( GetGameState() < eGameState.Playing )
 		wait 0
+
+	player.hudElems.FriendlyFlagArrow.Show()
+	player.hudElems.FriendlyFlagIcon.Show()
+	player.hudElems.FriendlyFlagLabel.Show()
+	player.hudElems.EnemyFlagArrow.Show()
+	player.hudElems.EnemyFlagIcon.Show()
+	player.hudElems.EnemyFlagLabel.Show()
 
 	while( true )
 	{
