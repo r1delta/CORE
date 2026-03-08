@@ -283,8 +283,8 @@ function SetDLCButtonsEnabled( doEnable )
 
 function SetupDLCButtons()
 {
-	local lobbyType = GetLobbyTypeScript()
-	if ( (lobbyType == eLobbyType.MATCH) || (lobbyType == eLobbyType.PRIVATE_MATCH) )
+	//local lobbyType = GetLobbyTypeScript()
+	//if ( (lobbyType == eLobbyType.MATCH) || (lobbyType == eLobbyType.PRIVATE_MATCH) )
 	{
 		SetDLCButtonsEnabled( false )
 		return
