@@ -193,6 +193,16 @@ function NPE_CreateSpawnpoints()
 		{ origin = Vector( 2112.81, 3324.86, 6408.69 ), angles = Vector( 0, -159.543, 0 ) },
 	]
 
+	local NPE_DROPSHIP_SPAWN_MILITIA = [
+		{ origin = Vector( -1116.73, 2444.92, 6369.01 ), angles = Vector( 0, 20.4007, 0 ) },
+		{ origin = Vector( -947.797, 1990.81, 6390.45 ), angles = Vector( 0, 21.8237, 0 ) },
+	]
+
+	local NPE_DROPSHIP_SPAWN_IMC = [
+		{ origin = Vector( 2502.68, 1585.22, 6370.08 ), angles = Vector( 0, 151.737, 0 ) },
+		{ origin = Vector( 2626.71, 2588.06, 6372.57 ), angles = Vector( 0, -134.298, 0 ) },
+	]
+
 	local NPE_FRONTLINES_IMC = [
 		// frontline imc spawn
 		{ origin = Vector( 1708.68, 2081.26, 6371.22 ), angles = Vector( 0, 180, 0 ), group = "spawn_imc" }
@@ -262,6 +272,11 @@ function NPE_CreateSpawnpoints()
 	CreateDropPodStartSpawnPointFromArray( NPE_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA )
 	CreateDropPodSpawnPointFromArray( NPE_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA )
 	CreateDropPodSpawnPointFromArray( NPE_GENERIC_DROPPOD_SPAWN, TEAM_UNASSIGNED )
+
+	CreateDropShipStartSpawnPointFromArray( NPE_DROPSHIP_SPAWN_IMC, TEAM_IMC )
+	CreateDropShipSpawnPointFromArray( NPE_DROPSHIP_SPAWN_IMC, TEAM_IMC )
+	CreateDropShipStartSpawnPointFromArray( NPE_DROPSHIP_SPAWN_MILITIA, TEAM_MILITIA )
+	CreateDropShipSpawnPointFromArray( NPE_DROPSHIP_SPAWN_MILITIA, TEAM_MILITIA )
 
 	CreateInfoFrontlineFromArray( NPE_FRONTLINES_IMC, TEAM_IMC )
 	CreateInfoFrontlineFromArray( NPE_FRONTLINES_MILITIA, TEAM_MILITIA )

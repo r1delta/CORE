@@ -1990,6 +1990,22 @@ function CreateDropPodSpawnPointFromArray( locationArray, team, name = "info_spa
 	}
 }
 
+function CreateDropShipStartSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_dropship_start" ) {
+	local ENT_STARTSPAWNDROPSHIP_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_dropship_start").len()
+	foreach( idx, location in locationArray) {
+		CreateDropShipStartSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_STARTSPAWNDROPSHIP_COUNT+1))
+		ENT_STARTSPAWNDROPSHIP_COUNT++
+	}
+}
+
+function CreateDropShipSpawnPointFromArray( locationArray, team, name = "info_spawnpoint_dropship" ) {
+	local ENT_SPAWNDROPSHIP_COUNT = GetEntArrayByClass_Expensive("info_spawnpoint_dropship").len()
+	foreach( idx, location in locationArray) {
+		CreateDropShipSpawnPoint(location.origin, location.angles, team, name + "_" + (ENT_SPAWNDROPSHIP_COUNT+1))
+		ENT_SPAWNDROPSHIP_COUNT++
+	}
+}
+
 function CreateInfoTargetFromArray( infoArray, name = "info_target" )
 {
 	local ENT_TARGET_COUNT = GetEntArrayByClass_Expensive( "info_target" ).len()
