@@ -47,6 +47,8 @@ function main()
 	PrecacheHUDMaterial( "../loadscreens/mp_mia_widescreen" )
 	PrecacheHUDMaterial( "../loadscreens/mp_nest2_widescreen" )
 	PrecacheHUDMaterial( "../loadscreens/mp_npe_widescreen" )
+	PrecacheHUDMaterial( "../ui/menu/common/menu_background_neutral_legacy" )
+	PrecacheHUDMaterial( "../ui/menu/common/menu_background_neutral_legacy_blur" )
 
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_1_installed" )
 	PrecacheHUDMaterial( "../ui/menu/dlc_menu_grid/dlc_menu_grid_1_not_installed" )

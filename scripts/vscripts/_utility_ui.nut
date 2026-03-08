@@ -26,6 +26,8 @@ const LOBBY_BACKGROUND_DEFAULT = "../ui/menu/common/menu_background_neutral"
 const LOBBY_BACKGROUND_IMC = "../ui/menu/common/menu_background_imc"
 const LOBBY_BACKGROUND_MILITIA = "../ui/menu/common/menu_background_militia"
 
+const LOBBY_BACKGROUND_DEFAULT_LEGACY = "../ui/menu/common/menu_background_neutral_legacy"
+
 s_lobbyBackgrounds <- [
 	LOBBY_BACKGROUND_IMC,
 	LOBBY_BACKGROUND_MILITIA
@@ -35,16 +37,27 @@ const BACKGROUND_COUNT = 2
 function GetMatchLobbyBackground()
 {
 	if ( IsPrivateMatch() )
-		return LOBBY_BACKGROUND_DEFAULT
+		return GetDefaultLobbyBackground()
 
 	if ( IsCoopMatch() )
 		return LOBBY_BACKGROUND_MILITIA
 
 	local index = uiGlobal.matchLobbyBackgroundIndex;
 	if ( index < 0 )
-		return LOBBY_BACKGROUND_DEFAULT
+		return GetDefaultLobbyBackground()
 
 	return s_lobbyBackgrounds[index]
+}
+
+function GetDefaultLobbyBackground()
+{
+	local unixTime = Daily_GetCurrentTime()
+	local timeParts = GetUnixTimeParts( unixTime )
+
+	if ( timeParts["month"] == 3 && timeParts["day"] == 11 )
+		return LOBBY_BACKGROUND_DEFAULT_LEGACY
+
+	return LOBBY_BACKGROUND_DEFAULT
 }
 
 function UpdateMatchLobbyBackgroundSelection( type )
@@ -67,7 +80,7 @@ function GetLobbyBackgroundImage()
 	if ( uiGlobal.activeMenu != null )
 		menuName = uiGlobal.activeMenu.GetName()
 
-	local image = LOBBY_BACKGROUND_DEFAULT
+	local image = GetDefaultLobbyBackground()
 	if ( (GetLobbyTypeScript() == eLobbyType.MATCH) )
 		image = GetMatchLobbyBackground()
 

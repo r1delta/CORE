@@ -403,7 +403,7 @@ function OnServerButtonFocused(button)
 
     if(server.map_name == "mp_lobby") {
         menu.GetChild("StarsLabel").SetText( "#LOBBY" )
-		menu.GetChild("NextMapImage").SetImage("../ui/menu/common/menu_background_neutral")
+		menu.GetChild("NextMapImage").SetImage(GetDefaultLobbyBackground())
     }
     else if (server.map_name == "mp_mia" || server.map_name == "mp_nest2" || server.map_name == "mp_box" || server.map_name == "mp_npe") {
         menu.GetChild("StarsLabel").SetText( "#" + server.map_name )
