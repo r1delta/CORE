@@ -234,10 +234,10 @@ function InitScoreboard()
 
 function InitScoreboard_Think()
 {
-	FlagWait( "EntitiesDidLoad" ) // Have to do this because the nv that determines if ffaBased or not might not get set yet
+	//FlagWait( "EntitiesDidLoad" ) // Have to do this because the nv that determines if ffaBased or not might not get set yet
 
-	if ( IsFFABased() )
-		return
+	//if ( IsFFABased() )
+	//	return
 
 	local localPlayer = GetLocalClientPlayer()
 	local myTeam = localPlayer.GetTeam()
