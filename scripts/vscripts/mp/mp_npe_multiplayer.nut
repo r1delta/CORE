@@ -327,9 +327,9 @@ function NPE_CreateCollisionBlockers()
 	local tunnel2 = CreatePropDynamic( "models/door/bunker_door_open_96x120.mdl", Vector( 950.426, 2800.36, 6408.03 ), null, 6 )
 	local tunnel3 = CreatePropDynamic( "models/door/bunker_door_open_96x120.mdl", Vector( 950.426, 2540.36, 6408.03 ), null, 6 )
 
-	tunnel1.MakeInvincible()
-	tunnel2.MakeInvincible()
-	tunnel3.MakeInvincible()
+	tunnel1.MakeInvisible()
+	tunnel2.MakeInvisible()
+	tunnel3.MakeInvisible()
 }
 
 // Cant spawn them from script, and they instantly crash the game when spawned via ent_create
