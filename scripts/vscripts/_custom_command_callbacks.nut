@@ -15,6 +15,14 @@ function main()
 	AddClientCommandCallback( "vanish", ClientCommand_Vanish )
 
 	AddClientCommandCallback( "giveallammo", ClientCommand_GiveAllAmmo )
+
+	// "getpos" is already taken but doesnt work
+	AddClientCommandCallback( "getposs", ClientCommand_GetPos )
+	AddClientCommandCallback( "getmypos", ClientCommand_GetPos )
+	AddClientCommandCallback( "getplayerpos", ClientCommand_GetPos )
+	AddClientCommandCallback( "getscriptpos", ClientCommand_GetScriptPos )
+	AddClientCommandCallback( "setpos", ClientCommand_SetPos )
+	AddClientCommandCallback( "setang", ClientCommand_SetAng )
 }
 
 function ClientCommand_ToggleNotarget( player, ... )
@@ -116,6 +124,77 @@ function ClientCommand_GiveAllAmmo( player, ... )
 
 	RestockPlayerAmmo( player )
 	EmitSoundOnEntity( player, "Coop_AmmoBox_AmmoRefill" )
+
+	return true
+}
+
+function ClientCommand_GetPos( player, ... )
+{
+	printt( "==========================" )
+
+	local pos = player.GetOrigin()
+	local ang = VectorToAngles( player.GetViewVector() )
+
+	printt( PrettyVector( pos ) + ", " + PrettyVector( ang ) )
+	printt( format( "setpos %f %f %f; setang %f %f", pos.x, pos.y, pos.z, ang.x, ang.y ) )
+
+	printt( "==========================" )
+
+	return true
+}
+
+function ClientCommand_GetScriptPos( player, ... )
+{
+	printt( "==========================" )
+
+	local pos = player.GetOrigin()
+	local ang = VectorToAngles( player.GetViewVector() )
+
+	printt( "origin = " + PrettyVector( pos ) + ", " + "angles = " + PrettyVector( ang ) )
+	printt( format( "setpos %f %f %f; setang %f %f", pos.x, pos.y, pos.z, ang.x, ang.y ) )
+
+	printt( "==========================" )
+
+	return true
+}
+
+function ClientCommand_SetPos( player, ... )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	if ( !CanUseKillCommands( player ) )
+		return true
+
+	if ( vargc < 3 )
+		return true
+
+	local pos = Vector( vargv[0].tofloat(), vargv[1].tofloat(), vargv[2].tofloat() )
+	ClampToWorldspace( pos )
+
+	player.SetOrigin( pos )
+	PrintVector( pos )
+
+	return true
+}
+
+function ClientCommand_SetAng( player, ... )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	if ( !CanUseKillCommands( player ) )
+		return true
+
+	if ( vargc < 2 )
+		return true
+
+	local x = clamp( vargv[0].tofloat(), -360.0, 360.0 )
+	local y = clamp( vargv[1].tofloat(), -360.0, 360.0 )
+
+	local ang = Vector( x, y, 0 )
+	player.SetAngles( ang )
+	PrintVector( ang )
 
 	return true
 }
