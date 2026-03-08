@@ -60,6 +60,7 @@ function EntitiesDidLoad()
 
 	// Disable if you want the map to be more accurate to the normal training map
 	NPE_CreateExtraCover_Visibility()
+	NPE_CreateCollisionBlockers()
 
 	if ( EvacEnabled() )
 		NPE_EvacSetup()
@@ -317,6 +318,18 @@ function NPE_CreateExtraCover_Visibility()
 
 	beam_spotlight.Fire( "LightOn" )
 */
+}
+
+function NPE_CreateCollisionBlockers()
+{
+	// Improve wallrun in the tunnel
+	local tunnel1 = CreatePropDynamic( "models/door/bunker_door_open_96x120.mdl", Vector( 950.426, 3054.36, 6408.03 ), null, 6 )
+	local tunnel2 = CreatePropDynamic( "models/door/bunker_door_open_96x120.mdl", Vector( 950.426, 2800.36, 6408.03 ), null, 6 )
+	local tunnel3 = CreatePropDynamic( "models/door/bunker_door_open_96x120.mdl", Vector( 950.426, 2540.36, 6408.03 ), null, 6 )
+
+	tunnel1.MakeInvincible()
+	tunnel2.MakeInvincible()
+	tunnel3.MakeInvincible()
 }
 
 // Cant spawn them from script, and they instantly crash the game when spawned via ent_create

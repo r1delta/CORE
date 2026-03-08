@@ -2026,6 +2026,8 @@ function CreateInfoFrontlineFromArray( infoArray, team, name = "info_frontline" 
 	}
 }
 
+// TODO: Could theoretically create hardpoint spawns like this as well
+
 // Debug thing
 function KillAllEntitiesOfType( name )
 {
@@ -2038,4 +2040,33 @@ function KillAllEntitiesOfType( name )
 	}
 }
 
-// TODO: Could theoretically create hardpoint spawns like this as well
+function SpawnPropAtCrosshair( player, model, angles = null, scale = 1, solidType = 0 )
+{
+	local trace = GetPlayerViewTrace( player )
+	PrintVector( trace.endPos )
+
+	local prop = CreatePropDynamic( model, trace.endPos, angles, solidType )
+	prop.kv.scale = scale
+
+	if ( !( "crosshairProps" in player.s ) )
+		player.s.crosshairProps <- []
+
+	player.s.crosshairProps.append( prop )
+
+	return prop
+}
+
+function SpawnPropAtCrosshair_Destroy( player, model, angles = null, scale = 1, solidType = 0 )
+{
+	if ( "crosshairProps" in player.s )
+	{
+		foreach ( prop in player.s.crosshairProps )
+			prop.Destroy()
+
+		ArrayRemoveInvalid( player.s.crosshairProps )
+	}
+
+	local prop = SpawnPropAtCrosshair( player, model, angles, scale, solidType )
+
+	return prop
+}
