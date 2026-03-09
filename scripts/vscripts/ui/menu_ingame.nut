@@ -52,6 +52,9 @@ function InitMenuInGame( menu )
 
 	local buttons = GetElementsByClassname( menu, "RankedButtonClass" )
 	file.BtnRanked <- buttons[0]
+
+	file.BtnPilotLoadout <- GetElementsByClassname( menu, "PilotLoadoutButtonClass" )[0]
+	file.BtnTitanLoadout <- GetElementsByClassname( menu, "TitanLoadoutButtonClass" )[0]
 }
 Globalize( InitMenuInGame )
 
@@ -98,6 +101,16 @@ function OnOpenInGameMenu()
 		{
 			file.BtnEndGame.Hide()
 		}
+
+		if ( GetConVarString( "mp_gamemode" ) == "ps" ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
+			file.BtnTitanLoadout.SetLocked( true )
+		else
+			file.BtnTitanLoadout.SetLocked( false )
+
+		if ( IsTitanOnlyMode() )
+			file.BtnPilotLoadout.SetLocked( true )
+		else
+			file.BtnPilotLoadout.SetLocked( false )
 
 		thread UpdateTrackedChallenges()
 

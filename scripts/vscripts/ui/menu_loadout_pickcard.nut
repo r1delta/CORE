@@ -63,7 +63,10 @@ function BurnCardsNavigateBack()
 	if ( GetConVarString( "mp_gamemode" ) != "ps" ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
 		AdvanceMenu( GetMenu( "TitanLoadoutsMenu" ) )
 	else
-		AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
+	{
+		if ( !IsTitanOnlyMode() )
+		   	AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
+	}
 }
 
 function OnOpenMenu_BurnCardsPickCard()

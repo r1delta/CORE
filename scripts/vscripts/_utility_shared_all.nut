@@ -963,3 +963,23 @@ function PrintVector( vec )
 {
 	printt( PrettyVector( vec ) )
 }
+
+function IsTitanOnlyMode()
+{
+	if ( !IsServer() && !IsConnected() )
+		return false
+
+	switch ( GetConVarString( "mp_gamemode" ) )
+	{
+		case TITAN_BRAWL:
+		case TITAN_BRAWL_AUTO:
+		case TITAN_MFD:
+		case TITAN_MFD_PRO:
+			return true
+			break
+
+		default:
+			return false
+			break
+	}
+}

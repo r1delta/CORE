@@ -683,8 +683,10 @@ function UICodeCallback_LevelInit( levelname )
 		    	AdvanceMenu( GetMenu( "BurnCards_pickcard" ) )
 
 			if ( gameModeString != "ps" ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
-		    	AdvanceMenu( GetMenu( "TitanLoadoutsMenu" ) )
-		    AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
+				AdvanceMenu( GetMenu( "TitanLoadoutsMenu" ) )
+
+			if ( !IsTitanOnlyMode() )
+				AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
 	    }
 	    else
 	    {
