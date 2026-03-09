@@ -54,7 +54,7 @@ function GetDefaultLobbyBackground()
 	local unixTime = Daily_GetCurrentTime()
 	local timeParts = GetUnixTimeParts( unixTime )
 
-	if ( timeParts["month"] == 3 && timeParts["day"] == 11 )
+	if ( timeParts["month"] == 3 && ( timeParts["day"] == 11 || timeParts["day"] == 12 || timeParts["day"] == 13 ) )
 		return LOBBY_BACKGROUND_DEFAULT_LEGACY
 
 	return LOBBY_BACKGROUND_DEFAULT
