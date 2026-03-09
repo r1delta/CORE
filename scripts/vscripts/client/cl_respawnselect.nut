@@ -112,6 +112,8 @@ function ShowRespawnSelect( ... )
 
 	if ( !CanSpawnAsTitan() )
 		file.lastKnownSpawnAsTitan = false
+	else if ( Riff_TitanEjectIsDisabled() )
+		file.lastKnownSpawnAsTitan = true
 
 	level.selectedBurnCardID = null
 
@@ -361,6 +363,9 @@ function CanSpawnAsTitan()
 	if ( IsValid( player.GetPetTitan() ) )
 		return false
 
+	if ( Riff_TitanEjectIsDisabled() )
+		return true
+
 	local nextTitanTime = player.GetNextTitanRespawnAvailable()
 
 	if ( nextTitanTime <= 0 )
@@ -426,12 +431,27 @@ function RefreshRespawnSelectPilotTitan( titanReady = false )
 			file.respawnSelectHud[ 0 ].hover.SetColor( 224, 224, 224, 255 )
 		}
 
+		if ( Riff_TitanEjectIsDisabled() )
+		{
+			file.respawnSelectHud[ 1 ].notReady.SetText( "#SETTING_DISABLED" )
+
+			file.respawnSelectHud[ 1 ].notReady.SetColor( 128, 128, 128, 255 )
+			file.respawnSelectHud[ 1 ].image.SetColor( 150, 150, 150, 255 )
+			file.respawnSelectHud[ 1 ].hover.SetColor( 224, 224, 224, 255 )
+		}
+		else
+		{
+			file.respawnSelectHud[ 1 ].notReady.SetText( "" )
+
+			file.respawnSelectHud[ 1 ].notReady.SetColor( 224, 224, 224, 255 )
+			file.respawnSelectHud[ 1 ].image.SetColor( 255, 255, 255, 255 )
+		}
+
 		if ( PlayerIsFemale( player ) )
 			file.respawnSelectHud[ 1 ].image.SetImage( IMAGE_SELECT_FEMALE )
 		else
 			file.respawnSelectHud[ 1 ].image.SetImage( IMAGE_SELECT_PILOT )
 
-		file.respawnSelectHud[ 1 ].image.SetColor( 255, 255, 255, 255 )
 		file.respawnSelectHud[ 1 ].hover.Hide()
 	}
 	else
@@ -479,7 +499,25 @@ function RefreshRespawnSelectPilotTitan( titanReady = false )
 			}
 		}
 
-		file.respawnSelectTitle.SetText( "#RESPAWNSELECT_PILOT" )
+		if ( Riff_TitanEjectIsDisabled() )
+		{
+			file.respawnSelectTitle.SetText( "#SETTING_DISABLED" )
+			file.respawnSelectHud[ 1 ].notReady.SetText( "#SETTING_DISABLED" )
+
+			if ( PlayerIsFemale( player ) )
+				file.respawnSelectHud[ 1 ].image.SetImage( IMAGE_SELECT_FEMALE )
+			else
+				file.respawnSelectHud[ 1 ].image.SetImage( IMAGE_SELECT_PILOT )
+
+			file.respawnSelectHud[ 1 ].notReady.SetColor( 128, 128, 128, 255 )
+			file.respawnSelectHud[ 1 ].image.SetColor( 150, 150, 150, 255 )
+			file.respawnSelectHud[ 1 ].hover.SetColor( 224, 224, 224, 255 )
+		}
+		else
+		{
+			file.respawnSelectTitle.SetText( "#RESPAWNSELECT_PILOT" )
+			file.respawnSelectHud[ 1 ].notReady.SetText( "" )
+		}
 	}
 }
 
@@ -723,7 +761,11 @@ function PlayerPressed_RespawnSelectRight( player )
 	{
 		case SELECT_TITAN_PILOT:
 			local oldSpawnAsTitan = file.lastKnownSpawnAsTitan
-			player.ClientCommand( "CC_SelectRespawn 2" )
+			if ( !Riff_TitanEjectIsDisabled() )
+				player.ClientCommand( "CC_SelectRespawn 2" )
+			else
+				player.ClientCommand( "CC_SelectRespawn 1" )
+
 			file.lastKnownSpawnAsTitan = false
 
 			if ( oldSpawnAsTitan != file.lastKnownSpawnAsTitan )

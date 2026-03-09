@@ -316,6 +316,16 @@ function OnEditTitanLoadoutButton_Activate( button )
 
 		AdvanceMenu( editMenu )
 	}
+
+	if ( IsTitanOnlyMode() )
+	{
+		SetLoadoutSelectionFinished()
+
+		if ( !uiGlobal.loadoutSelectionFinished )
+			CloseTopMenu()
+		else
+			CloseAllInGameMenus()
+	}
 }
 
 function RegisterTitanLoadoutsIngameEditCallbacks()
@@ -347,7 +357,16 @@ function TitanLoadoutsNavigateBack()
 	if ( uiGlobal.loadoutSelectionFinished )
 		return true
 
-	AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
+	if ( IsTitanOnlyMode() )
+	{
+		SetLoadoutSelectionFinished()
+		CloseAllInGameMenus()
+		return false
+	}
+	else
+	{
+		AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
+	}
 }
 
 function TitanLoadoutsIngameEditClick(player)
