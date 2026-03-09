@@ -173,7 +173,7 @@ function ClientCommand_SetPos( player, ... )
 	ClampToWorldspace( pos )
 
 	player.SetOrigin( pos )
-	PrintVector( pos )
+	//PrintVector( pos )
 
 	return true
 }
@@ -194,7 +194,7 @@ function ClientCommand_SetAng( player, ... )
 
 	local ang = Vector( x, y, 0 )
 	player.SetAngles( ang )
-	PrintVector( ang )
+	//PrintVector( ang )
 
 	return true
 }
