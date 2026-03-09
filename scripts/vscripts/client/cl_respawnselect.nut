@@ -452,6 +452,7 @@ function RefreshRespawnSelectPilotTitan( titanReady = false )
 		else
 			file.respawnSelectHud[ 1 ].image.SetImage( IMAGE_SELECT_PILOT )
 
+		file.respawnSelectHud[ 1 ].notReady.Show()
 		file.respawnSelectHud[ 1 ].hover.Hide()
 	}
 	else
@@ -503,6 +504,7 @@ function RefreshRespawnSelectPilotTitan( titanReady = false )
 		{
 			file.respawnSelectTitle.SetText( "#SETTING_DISABLED" )
 			file.respawnSelectHud[ 1 ].notReady.SetText( "#SETTING_DISABLED" )
+			file.respawnSelectHud[ 1 ].notReady.Show()
 
 			if ( PlayerIsFemale( player ) )
 				file.respawnSelectHud[ 1 ].image.SetImage( IMAGE_SELECT_FEMALE )
@@ -808,8 +810,15 @@ function PlayerPressed_Respawn( player )
 			}
 			else
 			{
-				SetRespawnSelectState( SELECT_DEAD )
-				player.ClientCommand( "CC_RespawnPlayer Pilot" )
+				if ( !Riff_TitanEjectIsDisabled() )
+				{
+					SetRespawnSelectState( SELECT_DEAD )
+					player.ClientCommand( "CC_RespawnPlayer Pilot" )
+				}
+				else
+				{
+					EmitSoundOnEntity( player, "Menu.Deny" )
+				}
 			}
 			break
 
