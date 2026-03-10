@@ -477,6 +477,9 @@ if ( !IsModelViewer() )
 	}
 }
 
+if ( GameRules.GetGameMode() == BIG_BROTHER || GetMapName() == "mp_nest2" )
+	Remote.RegisterFunction( "ServerCallback_BBTurretRefresh" )
+
 RegisterString( "#GAMEMODE_NO_TITANS_REMAINING" )
 RegisterString( "#GAMEMODE_ENEMY_TITANS_DESTROYED" )
 RegisterString( "#GAMEMODE_FRIENDLY_TITANS_DESTROYED" )

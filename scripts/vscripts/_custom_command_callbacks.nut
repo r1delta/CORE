@@ -66,7 +66,7 @@ function ClientCommand_ToggleDemigod( player, ... )
 
 function CanUseKillCommands( player )
 {
-	// Pretty much exacly what i need
+	// Pretty much exactly what i need
 	if ( !IsReplacementTitanAvailableForGameState() )
 		return false
 
@@ -135,6 +135,9 @@ function ClientCommand_GetPos( player, ... )
 	local pos = player.GetOrigin()
 	local ang = VectorToAngles( player.GetViewVector() )
 
+	if ( vargc > 0 )
+		ang.x = 0
+
 	printt( PrettyVector( pos ) + ", " + PrettyVector( ang ) )
 	printt( format( "setpos %f %f %f; setang %f %f", pos.x, pos.y, pos.z, ang.x, ang.y ) )
 
@@ -150,7 +153,10 @@ function ClientCommand_GetScriptPos( player, ... )
 	local pos = player.GetOrigin()
 	local ang = VectorToAngles( player.GetViewVector() )
 
-	printt( "origin = " + PrettyVector( pos ) + ", " + "angles = " + PrettyVector( ang ) )
+	if ( vargc > 0 )
+		ang.x = 0
+
+	printt( "{ origin = " + PrettyVector( pos ) + ", " + "angles = " + PrettyVector( ang ) + " }," )
 	printt( format( "setpos %f %f %f; setang %f %f", pos.x, pos.y, pos.z, ang.x, ang.y ) )
 
 	printt( "==========================" )

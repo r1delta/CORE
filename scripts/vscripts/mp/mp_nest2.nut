@@ -7,13 +7,34 @@ function main()
 
 function EntitiesDidLoad()
 {
+	Nest2_CreateSpawnpoints()
+	Nest2_CreateCollisionBlockers()
+
+	if ( EvacEnabled() )
+		Nest2_EvacSetup()
+
+	GM_SetObserverFunc( ObserverFunc )
+	BBPanelCamSetup()
+}
+
+function Nest2_CreateSpawnpoints()
+{
 	// P7 [TODO] - Maybe fill these later with some generic spawns
 	//	  [TODO2] - Is it necessary? Some modes already fills up these and I have no idea why yet.
 	local NEST2_GENERIC_PILOT_SPAWNSTART_MILITIA = [
-		{ origin = Vector( 3141, 3204, 176 ), angles = Vector( 0, -77, 0 )}
+		{ origin = Vector( 3141, 3204, 176 ), angles = Vector( 0, -77, 0 ) },
+		{ origin = Vector( 2764.96, 3174.21, 176.031 ), angles = Vector( 0, -84.4777, 0 ) },
+		{ origin = Vector( 2564.25, 3128.28, 186.657 ), angles = Vector( 0, -77.2176, 0 ) },
+		{ origin = Vector( 3079.23, 3130.63, 176.031 ), angles = Vector( 0, -93.0576, 0 ) },
+		{ origin = Vector( 3531.1, 3043.02, 50.0313 ), angles = Vector( 0, -119.898, 0 ) },
 	]
 	local NEST2_GENERIC_PILOT_SPAWNSTART_IMC = [
-		{ origin = Vector( -3705, 179, 336 ), angles = Vector( 0, 6, 0 )}
+		//{ origin = Vector( -3705, 179, 336 ), angles = Vector( 0, 6, 0 ) }
+		{ origin = Vector( -39.436, -3274.24, 136.031 ), angles = Vector( 0, 89.1924, 0 ) },
+		{ origin = Vector( 242.494, -3370.37, 136.031 ), angles = Vector( 0, 104.922, 0 ) },
+		{ origin = Vector( 456.191, -3334.33, -1.96875 ), angles = Vector( 0, 105.362, 0 ) },
+		{ origin = Vector( -406.324, -3385.17, 0.03125 ), angles = Vector( 0, 92.932, 0 ) },
+		{ origin = Vector( -829.142, -2975.24, -1.96875 ), angles = Vector( 0, 56.082, 0 ) },
 	]
 	// Generic pilot spawns sponsored by xFrann - 45 spawns more or less idk
 	local NEST2_GENERIC_PILOT_SPAWN = [
@@ -190,9 +211,54 @@ function EntitiesDidLoad()
 		{ origin = Vector( 112, 1952, -191 ), angles = Vector( 0, -175, 0 ) },
 	]
 
+	local NEST2_GENERIC_DROPPOD_SPAWN = [
+		{ origin = Vector( -673.623, -1412.29, 0.03125 ), angles = Vector( 0, 75.0139, 0 ) },
+		{ origin = Vector( -727.578, -253.802, 12.0313 ), angles = Vector( 0, 25.1548, 0 ) },
+		{ origin = Vector( -7.7491, 91.5279, 0.03125 ), angles = Vector( 0, -109.497, 0 ) },
+		{ origin = Vector( 2020.45, 1823.17, -94.1221 ), angles = Vector( 0, -170.78, 0 ) },
+		{ origin = Vector( 3504.53, 705.637, -10.9681 ), angles = Vector( 0, 170.062, 0 ) },
+		{ origin = Vector( 3205.43, -88.1618, 8.03125 ), angles = Vector( 0, -155.398, 0 ) },
+		{ origin = Vector( 3138.02, -2273.79, 8.03125 ), angles = Vector( 0, 109.229, 0 ) },
+		{ origin = Vector( 1981.47, -2159.31, -223.969 ), angles = Vector( 0, 149.788, 0 ) },
+		{ origin = Vector( 840.004, -3207.2, 0.03125 ), angles = Vector( 0, 129.362, 0 ) },
+		{ origin = Vector( 673.246, -3780.59, -1.96875 ), angles = Vector( 0, 116.382, 0 ) },
+		{ origin = Vector( -1501.43, -3747.24, 2.03205 ), angles = Vector( 0, 99.2442, 0 ) },
+		{ origin = Vector( -1772.85, -3569.95, 0.03125 ), angles = Vector( 0, 94.4043, 0 ) },
+		{ origin = Vector( -1597.2, 3525.52, -65.9688 ), angles = Vector( 0, -65.7223, 0 ) },
+		{ origin = Vector( -2175.48, 3333.25, -65.9688 ), angles = Vector( 0, -20.8422, 0 ) },
+	]
+
+	level.NEST2_GENERIC_DROPPOD_SPAWN <- NEST2_GENERIC_DROPPOD_SPAWN
+
+	local NEST2_DROPPOD_SPAWN_MILITIA = [
+		{ origin = Vector( 2697.06, 2344.49, 50.0313 ), angles = Vector( 0, -67.6571, 0 ) },
+		{ origin = Vector( 3005.62, 2279.1, 50.0313 ), angles = Vector( 0, -92.4071, 0 ) },
+		{ origin = Vector( 3466.49, 2812.1, 50.0313 ), angles = Vector( 0, -115.037, 0 ) },
+		{ origin = Vector( 2184.3, 1805.94, -68.8908 ), angles = Vector( 0, -47.9101, 0 ) },
+		{ origin = Vector( 2266.88, 3292.64, 128.031 ), angles = Vector( 0, -51.6151, 0 ) },
+	]
+
+	local NEST2_DROPPOD_SPAWN_IMC = [
+		{ origin = Vector( -701.153, -3909.8, 16.0313 ), angles = Vector( 0, 67.7912, 0 ) },
+		{ origin = Vector( -50.3674, -3818.78, 3.03125 ), angles = Vector( 0, 31.1612, 0 ) },
+		{ origin = Vector( 744.242, -3062.71, 26.5026 ), angles = Vector( 0, 93.4213, 0 ) },
+		{ origin = Vector( -622.826, -2509.79, 2.85157 ), angles = Vector( 0, 89.1149, 0 ) },
+		{ origin = Vector( -1677.74, -3153.56, 0.03125 ), angles = Vector( 0, 106.935, 0 ) },
+	]
+
+	local NEST2_CTF_DROPPOD_SPAWN_IMC = [
+		{ origin = Vector( -2627.51, -1717.51, 0.03125 ), angles = Vector( 0, -64.0753, 0 ) },
+		{ origin = Vector( -2350.17, -1705.78, -6.58115 ), angles = Vector( 0, -84.0954, 0 ) },
+		{ origin = Vector( -2359.96, -2083.77, -5.96875 ), angles = Vector( 0, -72.1053, 0 ) },
+		{ origin = Vector( -2808.57, 2036.17, -63.9688 ), angles = Vector( 0, -34.996, 0 ) },
+		{ origin = Vector( -3055.6, 2807.91, -67.9688 ), angles = Vector( 0, -12.2261, 0 ) },
+		{ origin = Vector( -2525.43, 2418.38, -63.9688 ), angles = Vector( 0, 98.7638, 0 ) },
+	]
+
 	switch(GameRules.GetGameMode()) {
 		case "ctf":
 		case "ctfp":
+		case "scavenger":
 			// P7: [CTF] Fix flag spawns
 			//	   Flags on this map were on the air so... we need to create new ones
 			// Flags
@@ -214,21 +280,86 @@ function EntitiesDidLoad()
 			CreatePilotSpawnPointFromArray(NEST2_CTF_PILOT_SPAWN_IMC, TEAM_UNASSIGNED)
 			// new titan spawns for ctf
 			CreateTitanPilotSpawnPointFromArray(NEST2_CTF_TITAN_SPAWN, TEAM_UNASSIGNED)
+
+			CreateDropPodStartSpawnPointFromArray( NEST2_CTF_DROPPOD_SPAWN_IMC, TEAM_IMC )
 			break
 		default:
 			// Generic pilot spawnpoints for the rest of gamemodes that might require them
 			CreatePilotStartSpawnPointFromArray(NEST2_GENERIC_PILOT_SPAWNSTART_MILITIA, TEAM_MILITIA)
 			CreatePilotStartSpawnPointFromArray(NEST2_GENERIC_PILOT_SPAWNSTART_IMC, TEAM_IMC)
 			CreatePilotSpawnPointFromArray(NEST2_GENERIC_PILOT_SPAWN, TEAM_UNASSIGNED)
+
+			CreateDropPodStartSpawnPointFromArray( NEST2_DROPPOD_SPAWN_IMC, TEAM_IMC )
 			break
 	}
 	// Titan spawn setup
 	CreateTitanPilotSpawnPointFromArray(NEST2_GENERIC_TITAN_SPAWN, TEAM_UNASSIGNED)
 
-	FlagWait( "ReadyToStartMatch" ) // maaaaybe it just works here as well?
+	CreateDropPodSpawnPointFromArray( NEST2_DROPPOD_SPAWN_IMC, TEAM_IMC )
+	CreateDropPodStartSpawnPointFromArray( NEST2_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA )
+	CreateDropPodSpawnPointFromArray( NEST2_DROPPOD_SPAWN_MILITIA, TEAM_MILITIA )
 
-	GM_SetObserverFunc( ObserverFunc )
-	BBPanelCamSetup()
+	CreateDropPodSpawnPointFromArray( NEST2_GENERIC_DROPPOD_SPAWN, TEAM_UNASSIGNED )
+}
+
+function Nest2_CreateCollisionBlockers()
+{
+	local container = "models/imc_base/cargo_container_imc_01_red.mdl"
+
+	// New red container on the side of the ramp on the militia spawn
+	// The ramp has its bottom blocked by an invisible wall, and it looks fully enterable
+	// So its better to block it entirely with a prop
+	local milSpawn1 = CreatePropDynamic( container, Vector( 3400, 2914, 50 ), Vector( 0, 90, 0 ), 6 )
+
+	// Panels on the side of the first evac spot. You can see them coming from IMC spawn
+	// They look like they have collision, but actually dont lol
+	local evac1Panels1 = CreatePropDynamic( container, Vector( 2711.16, -2262.53, -169.636 ), Vector( 0, 90, 0 ), 6 )
+	local evac1Panels2 = CreatePropDynamic( container, Vector( 2711.16, -2342.53, -169.636 ), Vector( 0, 90, 0 ), 6 )
+	local evac1Panels3 = CreatePropDynamic( container, Vector( 2711.16, -2422.53, -169.636 ), Vector( 0, 90, 0 ), 6 )
+	local evac1Panels4 = CreatePropDynamic( container, Vector( 2711.16, -2502.53, -169.636 ), Vector( 0, 90, 0 ), 6 )
+	local evac1Panels5 = CreatePropDynamic( container, Vector( 2711.16, -2552.53, -169.636 ), Vector( 0, 90, 0 ), 6 )
+	evac1Panels1.MakeInvisible()
+	evac1Panels2.MakeInvisible()
+	evac1Panels3.MakeInvisible()
+	evac1Panels4.MakeInvisible()
+	evac1Panels5.MakeInvisible()
+
+	// Bad clipping, can somewhat clip into be panels and be semi invisible
+	// Also lets you touch an out of bounds trigger
+	local evac3Platform1 = CreatePropDynamic( container, Vector( 3796, 1975.47, 44.0313 ), null, 6 )
+	local evac3Platform2 = CreatePropDynamic( container, Vector( 3676, 1975.47, 44.0313 ), null, 6 )
+	local evac3Platform3 = CreatePropDynamic( container, Vector( 3556, 1975.47, 44.0313 ), null, 6 )
+	local evac3Platform4 = CreatePropDynamic( container, Vector( 3436, 1975.47, 44.0313 ), null, 6 ) // Not sure about this one
+	evac3Platform1.MakeInvisible()
+	evac3Platform2.MakeInvisible()
+	evac3Platform3.MakeInvisible()
+	evac3Platform4.MakeInvisible()
+}
+
+function Nest2_EvacSetup()
+{
+	local verticalAnims = Evac_CreateAnimPackage( "dropship_VTOL_evac_start", "dropship_VTOL_evac_idle", "dropship_VTOL_evac_end" )
+
+	local locationNode1 = CreateInfoTarget( Vector( 3695.69, -4577.89, -12.6243 ), Vector( 0, 0, 0 ), "evac_location1" )
+	local locationNode2 = CreateInfoTarget( Vector( 140.533, -2854.89, 319.991 ), Vector( 0, -90, 0 ), "evac_location2" )
+	local locationNode3 = CreateInfoTarget( Vector( 3419.84, 908.497, 371.647 ), Vector( 0, -90, 0 ), "evac_location3" )
+	local locationNode4 = CreateInfoTarget( Vector( -1891.79, 3041.32, 272.946 ), Vector( 0, 90, 0 ), "evac_location4" )
+
+	local spectatorNode1 = CreateInfoTarget( Vector( 2105.43, -2248.05, 579.907 ), Vector( 16.7823, -40.6, 0 ), "spec_cam1", locationNode1.GetName() )
+	local spectatorNode2 = CreateInfoTarget( Vector( -796.967, -3269.23, 530.653 ), Vector( 31.7428, 41.26, 0 ), "spec_cam2", locationNode2.GetName() )
+	local spectatorNode3 = CreateInfoTarget( Vector( 2458.85, 524.449, 688.262 ), Vector( 31.0828, 39.3098, 0 ), "spec_cam3", locationNode3.GetName() )
+	local spectatorNode4 = CreateInfoTarget( Vector( -2770.36, 1627.29, 698.897 ), Vector( 33.7227, 31.6098, 0 ), "spec_cam4", locationNode4.GetName() )
+
+	Evac_AddLocation( "evac_location1", spectatorNode1.GetOrigin(), spectatorNode1.GetAngles() )
+	Evac_AddLocation( "evac_location2", spectatorNode2.GetOrigin(), spectatorNode2.GetAngles() )
+	Evac_AddLocation( "evac_location3", spectatorNode3.GetOrigin(), spectatorNode3.GetAngles() )
+	Evac_AddLocation( "evac_location4", spectatorNode4.GetOrigin(), spectatorNode4.GetAngles(), verticalAnims )
+
+	// Garbage, need a better spot
+	local spacenode = CreateInfoTarget( Vector( -8515.06, -12795.5, -9496.63 ), Vector( 6.16003, 52.4097, 0 ), "end_spacenode" )
+	Evac_SetSpaceNode( spacenode )
+
+	Evac_SetupDefaultVDUs()
 }
 
 function BBPanelCamSetup()
@@ -294,6 +425,9 @@ function ObserverFunc( player )
 //	else
 
 	{
+		player.SetObserverModeStaticPosition( level.ExtractLocations[ level.SelectedExtractLocationIndex ].spectatorPos )
+		player.SetObserverModeStaticAngles( level.ExtractLocations[ level.SelectedExtractLocationIndex ].spectatorAng )
+
 		player.StartObserverMode( OBS_MODE_CHASE )
 		player.SetObserverTarget( null )
 	}

@@ -972,6 +972,7 @@ enum eRocketPodState
 PLAYER_HEALTH_BAR_CLASSNAMES 							<- {}
 PLAYER_HEALTH_BAR_CLASSNAMES["npc_dropship"]			<- true
 PLAYER_HEALTH_BAR_CLASSNAMES["npc_turret_mega"]			<- true
+PLAYER_HEALTH_BAR_CLASSNAMES["npc_turret_mega_bb"]		<- true
 PLAYER_HEALTH_BAR_CLASSNAMES["npc_turret_sentry"]		<- true
 
 const HEALTH_BARS_ENABLED_SP							= 1			// Turn on/off health bar drawing

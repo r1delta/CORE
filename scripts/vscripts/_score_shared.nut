@@ -1785,6 +1785,7 @@ function ScoreEventForNPCKilled(npc, damageInfo)
 	switch ( classname )
 	{
 		case "npc_turret_mega":
+		case "npc_turret_mega_bb":
 			return "KillHeavyTurret"
 
 		case "npc_turret_sentry":

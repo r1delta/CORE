@@ -16,6 +16,7 @@ if ( !reloadingScripts )
 	level.stickyClasses[ "npc_titan" ]			<- true
 	level.stickyClasses[ "npc_spectre" ]		<- true
 	level.stickyClasses[ "npc_turret_mega" ]	<- true
+	level.stickyClasses[ "npc_turret_mega_bb" ]	<- true
 	level.stickyClasses[ "npc_turret_sentry" ]	<- true
 	level.stickyClasses[ "npc_dropship" ]		<- true
 	level.stickyClasses[ "prop_dynamic" ]		<- true

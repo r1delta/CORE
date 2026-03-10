@@ -62,6 +62,7 @@ bodyGroupSkeletons <- {}
 disallowDissolveList <- {}
 disallowDissolveList[ "npc_spectre" ]		<- true
 disallowDissolveList[ "npc_turret_mega" ]	<- true
+disallowDissolveList[ "npc_turret_mega_bb" ]	<- true
 disallowDissolveList[ "npc_turret_sentry" ] <- true
 disallowDissolveList[ "npc_dropship" ] 		<- true
 

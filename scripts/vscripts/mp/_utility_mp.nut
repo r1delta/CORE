@@ -2026,6 +2026,18 @@ function CreateInfoFrontlineFromArray( infoArray, team, name = "info_frontline" 
 	}
 }
 
+function TestSpawnpointArray( spawnpoints, waitTime = 5 )
+{
+	local player = GetPlayerArray()[0]
+
+	foreach( spawn in spawnpoints )
+	{
+		player.SetOrigin( spawn.origin )
+		player.SetAngles( spawn.angles )
+		wait waitTime
+	}
+}
+
 // TODO: Could theoretically create hardpoint spawns like this as well
 
 // Debug thing
@@ -2040,7 +2052,7 @@ function KillAllEntitiesOfType( name )
 	}
 }
 
-function SpawnPropAtCrosshair( player, model, angles = null, scale = 1, solidType = 0 )
+function SpawnPropAtCrosshair( player, model, angles = null, solidType = 6, scale = 1 )
 {
 	local trace = GetPlayerViewTrace( player )
 	PrintVector( trace.endPos )
@@ -2056,7 +2068,17 @@ function SpawnPropAtCrosshair( player, model, angles = null, scale = 1, solidTyp
 	return prop
 }
 
-function SpawnPropAtCrosshair_Destroy( player, model, angles = null, scale = 1, solidType = 0 )
+function SpawnPropAtCrosshair_Destroy( player, model, angles = null, solidType = 6, scale = 1 )
+{
+	DestroyCrosshairProps( player )
+
+	wait 0.1
+
+	local prop = SpawnPropAtCrosshair( player, model, angles, solidType, scale )
+	return prop
+}
+
+function DestroyCrosshairProps( player )
 {
 	if ( "crosshairProps" in player.s )
 	{
@@ -2065,8 +2087,4 @@ function SpawnPropAtCrosshair_Destroy( player, model, angles = null, scale = 1, 
 
 		ArrayRemoveInvalid( player.s.crosshairProps )
 	}
-
-	local prop = SpawnPropAtCrosshair( player, model, angles, scale, solidType )
-
-	return prop
 }
