@@ -304,6 +304,7 @@ function Nest2_CreateSpawnpoints()
 
 function Nest2_CreateCollisionBlockers()
 {
+	// So it doesnt get in the way of evacing players
 	local oob8 = GetEnt( "trigger_out_of_bounds_8" )
 	oob8.SetOrigin( Vector( 3849, 1104, -1304 ) )
 
