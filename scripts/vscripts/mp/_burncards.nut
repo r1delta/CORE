@@ -783,8 +783,6 @@ function RunSpawnBurnCard( player, cardRef )
 			else
 				pilotSettings = "pilot_spectre"
 
-            player.s.bc_PlayerSettingsOverride <- pilotSettings
-
             player.SetPlayerSettings( pilotSettings )
             player.SetPlayerPilotSettings( pilotSettings )
             break
