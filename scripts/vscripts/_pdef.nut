@@ -226,6 +226,7 @@ function InitPersistence()
 	    explosive_rounds = 54
 	    burn_mod_valkyrie = 55
 	    burn_mod_twinb = 56
+	    hydraulic_launcher = 57
     }
 
     AddPersistenceEnum("pilotMod", pilotMod)
@@ -620,7 +621,9 @@ function InitPersistence()
 		mp_weapon_mega2_burn_mod_twinb = 120,
 
 		mp_weapon_mega3_burn_mod_thunderbolt = 121,
-		mp_weapon_mega4_burn_mod_charge_cannon = 122
+		mp_weapon_mega4_burn_mod_charge_cannon = 122,
+
+		mp_titanweapon_triple_threat_hydraulic_launcher = 123
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)

@@ -221,7 +221,7 @@ WeaponData
 		{
 			//Hydraulic Launcher - Charge to increase distance fired.
 			"charge_time" 									"3.0"
-			"fire_rate"   									"1.0"
+			"fire_rate"   									"0.7"
 		}
 		spread_increase_ttt
 		{
