@@ -200,8 +200,7 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 			player.SetPlayerPilotSettings( player.s.customPlayerSettings )
 			delete player.s.customPlayerSettings
 
-			local head = player.GetPlayerHeadIndex()
-			SelectHead(player, head)
+			RandomizeHead( player )
 			return
 		}
 
@@ -248,12 +247,7 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 
 	}
 
-	local head = player.GetPlayerHeadIndex()
-	if ( table.playerSetFile.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
-		head = player.GetTeam() == TEAM_MILITIA ? 1 : 0
-	else
-		head = 0
-	SelectHead(player, head)
+	RandomizeHead( player )
 
 	if ( level.onChangeLoadoutCallbacks )
 		foreach ( callbackInfo in level.onChangeLoadoutCallbacks )
@@ -479,12 +473,6 @@ function Wallrun_CreateCopyOfPilotModel( player )
 	model.SetTeam( player.GetTeam() )
 
 	local skin
-	local head = player.GetPlayerHeadIndex()
-
-	if ( modelName.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
-		head = player.GetTeam() == TEAM_MILITIA ? 1 : 0
-	else
-		head = 0
 
 	if ( modelName.find("female") != null )  //JFS. Hard Assumption that females are the only pilot models that are skin swaps Should come up with a more elegant way to do this.
 		skin = player.GetTeam() == TEAM_MILITIA ? 1 : 0
@@ -493,7 +481,7 @@ function Wallrun_CreateCopyOfPilotModel( player )
 
 	model.SetSkin( skin )
 
-	SelectHead(model, head)
+	RandomizeHead( model )
 
 	return model
 }

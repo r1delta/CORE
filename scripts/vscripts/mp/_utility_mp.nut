@@ -1171,15 +1171,25 @@ function RandomizeHeadByTeam( model, headIndex, numOfHeads ) //Randomize head ac
 {
 	local midPoint =  numOfHeads / 2
 
+	// This models head bodygroup is weird
+	local isFemaleCQ = model == "models/humans/pilot/female_cq/pilot_female_cq.mdl"
+
 	local randomHeadIndex = 0
 	if ( model.GetTeam() == TEAM_IMC )
 	{
-		randomHeadIndex = RandomInt( 0, midPoint )
+		if ( isFemaleCQ )
+			randomHeadIndex = CoinFlip() ? 0 : 2
+		else
+			randomHeadIndex = RandomInt( 0, midPoint )
 	}
 	else if ( model.GetTeam() == TEAM_MILITIA )
 	{
-		randomHeadIndex = RandomInt( midPoint, numOfHeads )
+		if ( isFemaleCQ )
+			randomHeadIndex = CoinFlip() ? 1 : 3
+		else
+			randomHeadIndex = RandomInt( midPoint, numOfHeads )
 	}
+
 	//printt( "Set head to: : " + randomHeadIndex )
 	model.SetBodygroup( headIndex, randomHeadIndex )
 }

@@ -2439,12 +2439,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				player.SetSkin( skin )
 				printt("Autobalance: SET SKIN " + skin)
 
-				local head = 0 // Reset head based on skin logic
-				if ( classSettings.find("female") != null )
-					head = newTeam == TEAM_MILITIA ? 1 : 0
-				else
-					head = 0
-				SelectHead(player, head)
+				RandomizeHead( player )
 
 				ChangeWeaponSkin( player, newTeam )
 			}
