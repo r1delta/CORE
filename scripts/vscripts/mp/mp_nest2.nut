@@ -304,6 +304,9 @@ function Nest2_CreateSpawnpoints()
 
 function Nest2_CreateCollisionBlockers()
 {
+	local oob8 = GetEnt( "trigger_out_of_bounds_8" )
+	oob8.SetOrigin( Vector( 3849, 1104, -1304 ) )
+
 	local container = "models/imc_base/cargo_container_imc_01_red.mdl"
 
 	// New red container on the side of the ramp on the militia spawn

@@ -804,6 +804,11 @@ function InitSafeSpawnpoints()
 			MoveSpawn( "info_spawnpoint_dropship_start_1", Vector( 98.213234, -3542.985596, 548.725464 ), Vector( 0, 74, 0 ) )
 			MoveSpawn( "info_spawnpoint_dropship_start_2", Vector( -666.602173, -3538.318115, 544.031250 ), Vector( 0, 77, 0 ) )
 			break
+
+		case "mp_nest2":
+			MoveSpawn( "info_spawnpoint_dropship_start_2", Vector( -159.759, -3303.23, 136.031 ), Vector( 0, 90, 0 ) )
+			MoveSpawn( "info_spawnpoint_dropship_start_3", Vector( 60.69, -3303.23, 436.031 ), Vector( 0, 90, 0 ) )
+			break
 	}
 
 	FlagSet( "SafeSpawnpointsInitialized" )
