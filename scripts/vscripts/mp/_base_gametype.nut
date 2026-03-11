@@ -2402,12 +2402,17 @@ function AutoBalancePlayer( player, forceSwitch = false )
 
 		// Update player model based on new team
 		local classDataTable = GetPlayerClassDataTable( player, neededClass )
-		if ( classDataTable.playerSetFile && IsAlive( player ) )
+		local classSettings = classDataTable.playerSetFile
+
+		if ( !isTitan && ( "bc_PlayerSettingsOverride" in player.s ) )
+			classSettings = player.s.bc_PlayerSettingsOverride
+
+		if ( classSettings && IsAlive( player ) )
 		{
-			player.SetPlayerSettings( classDataTable.playerSetFile ) // Re-apply settings to potentially trigger model updates
+			player.SetPlayerSettings( classSettings ) // Re-apply settings to potentially trigger model updates
 
 			if ( !isTitan )
-				player.SetPlayerPilotSettings( classDataTable.playerSetFile )
+				player.SetPlayerPilotSettings( classSettings )
 
 			local modelFieldName
 			if ( newTeam == TEAM_MILITIA )
@@ -2419,14 +2424,14 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				modelFieldName = "bodymodel_imc"
 			}
 
-			local correctModelName = GetPlayerSettingsFieldForClassName( classDataTable.playerSetFile, modelFieldName )
+			local correctModelName = GetPlayerSettingsFieldForClassName( classSettings, modelFieldName )
 			if ( correctModelName != null && correctModelName != "" )
 			{
-				printt( "Autobalance: Setting model for player " + player + " (New Team: " + newTeam + ") using " + modelFieldName + " from " + classDataTable.playerSetFile + " -> " + correctModelName )
+				printt( "Autobalance: Setting model for player " + player + " (New Team: " + newTeam + ") using " + modelFieldName + " from " + classSettings + " -> " + correctModelName )
 				player.SetModel( correctModelName )
 
 				local skin = 0
-				if ( classDataTable.playerSetFile.find("female") != null || isTitan )
+				if ( classSettings.find("female") != null || isTitan )
 					skin = newTeam == TEAM_MILITIA ? 1 : 0
 				else
 					skin = 0 // Assuming non-female models use skin 0 regardless of team, adjust if needed
@@ -2435,7 +2440,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				printt("Autobalance: SET SKIN " + skin)
 
 				local head = 0 // Reset head based on skin logic
-				if ( classDataTable.playerSetFile.find("female") != null )
+				if ( classSettings.find("female") != null )
 					head = newTeam == TEAM_MILITIA ? 1 : 0
 				else
 					head = 0
@@ -2445,7 +2450,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 			}
 			else
 			{
-				printt( "Autobalance: WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + classDataTable.playerSetFile + "' and field '" + modelFieldName + "'" )
+				printt( "Autobalance: WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + classSettings + "' and field '" + modelFieldName + "'" )
 			}
 		}
 
