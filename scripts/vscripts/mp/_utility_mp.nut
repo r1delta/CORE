@@ -1171,7 +1171,7 @@ function RandomizeHeadByTeam( model, headIndex, numOfHeads ) //Randomize head ac
 {
 	local midPoint =  numOfHeads / 2
 
-	// This models head bodygroup is weird
+	// This models head bodygroup setup is weird
 	local isFemaleCQ = model == "models/humans/pilot/female_cq/pilot_female_cq.mdl"
 
 	local randomHeadIndex = 0

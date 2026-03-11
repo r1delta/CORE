@@ -309,6 +309,8 @@ function Nest2_CreateCollisionBlockers()
 	oob8.SetOrigin( Vector( 3849, 1104, -1304 ) )
 
 	local container = "models/imc_base/cargo_container_imc_01_red.mdl"
+	local fence = "models/imc_base/chain_link_imc_01.mdl"
+	local shield = "models/imc_base/garage_blast_shield_imc_01.mdl"
 
 	// New red container on the side of the ramp on the militia spawn
 	// The ramp has its bottom blocked by an invisible wall, and it looks fully enterable
@@ -328,6 +330,7 @@ function Nest2_CreateCollisionBlockers()
 	evac1Panels4.MakeInvisible()
 	evac1Panels5.MakeInvisible()
 
+	// Platform for evac spot 3, near militia spawn
 	// Bad clipping, can somewhat clip into be panels and be semi invisible
 	// Also lets you touch an out of bounds trigger
 	local evac3Platform1 = CreatePropDynamic( container, Vector( 3796, 1975.47, 44.0313 ), null, 6 )
@@ -338,6 +341,45 @@ function Nest2_CreateCollisionBlockers()
 	evac3Platform2.MakeInvisible()
 	evac3Platform3.MakeInvisible()
 	evac3Platform4.MakeInvisible()
+
+	// Mid building with the chain link fences, can get kicked off wallrun
+	local midBuilding1 = CreatePropDynamic( fence, Vector( 55.3401, -161.595, 43.0313 ), null, 6 )
+	local midBuilding2 = CreatePropDynamic( fence, Vector( 55.3401, -286.595, 43.0313 ), null, 6 )
+	local midBuilding3 = CreatePropDynamic( fence, Vector( 55.3401, -411.595, 43.0313 ), null, 6 )
+	local midBuilding4 = CreatePropDynamic( fence, Vector( 55.3401, -536.595, 43.0313 ), null, 6 )
+	midBuilding1.MakeInvisible()
+	midBuilding2.MakeInvisible()
+	midBuilding3.MakeInvisible()
+	midBuilding4.MakeInvisible()
+
+	// Mid prison cells on the walls, WILL get kicked off wallrun
+	// Collision is still kinda weird due to the shape of these props
+	local midWall1 = CreatePropDynamic( shield, Vector( -156.235, 835.66, 390.152 ), Vector( 0, 90, 0 ), 6 )
+	local midWall2 = CreatePropDynamic( shield, Vector( -156.235, 835.66, 510.152 ), Vector( 0, 90, 0 ), 6 )
+	local midWall3 = CreatePropDynamic( shield, Vector( -156.235, 835.66, 630.152 ), Vector( 0, 90, 0 ), 6 )
+	local midWall4 = CreatePropDynamic( shield, Vector( -900.248, 99.5108, 421.748 ), null, 6 )
+	local midWall5 = CreatePropDynamic( shield, Vector( -900.248, 99.5108, 541.748 ), null, 6 )
+	local midWall6 = CreatePropDynamic( shield, Vector( -900.248, 99.5108, 661.748 ), null, 6 )
+	local midWall7 = CreatePropDynamic( shield, Vector( -900.248, -404.418, 421.748 ), null, 6 )
+	local midWall8 = CreatePropDynamic( shield, Vector( -900.248, -404.418, 541.748 ), null, 6 )
+	local midWall9 = CreatePropDynamic( shield, Vector( -900.248, -404.418, 661.748 ), null, 6 )
+	midWall1.MakeInvisible()
+	midWall2.MakeInvisible()
+	midWall3.MakeInvisible()
+	midWall4.MakeInvisible()
+	midWall5.MakeInvisible()
+	midWall6.MakeInvisible()
+	midWall7.MakeInvisible()
+	midWall8.MakeInvisible()
+	midWall9.MakeInvisible()
+
+	// These dont have collision when on TEAM_UNASSIGNED for some reason
+	local turretCollision
+	foreach ( turret in GetEntArrayByClass_Expensive( "npc_turret_mega_bb" ) )
+	{
+		turretCollision = CreatePropDynamic( "models/turrets/turret_imc_lrg.mdl", turret.GetOrigin(), turret.GetAngles(), 6 )
+		turretCollision.MakeInvisible()
+	}
 }
 
 function Nest2_EvacSetup()
