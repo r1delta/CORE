@@ -757,6 +757,8 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             Stats_IncrementStat( attacker, "kills_stats", "spectres", 1 )
         if ( victim.IsSoldier() )
             Stats_IncrementStat( attacker, "kills_stats", "grunts", 1 )
+        if ( victim.IsMarvin() )
+            Stats_IncrementStat( attacker, "kills_stats", "marvins", 1 )
         if ( victim.IsTitan() )
         {
             Stats_IncrementStat( attacker , "kills_stats", "titans", 1 )
@@ -965,7 +967,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
 		    if ( victim.IsSoldier() )
 			    Stats_IncrementStat( attacker, "weapon_kill_stats", "grunts", 1.0,source )
             if ( victim.IsMarvin() )
-                Stats_IncrementStat( attacker, "kills_stats", "marvins", 1.0,source )
+                Stats_IncrementStat( attacker, "weapon_kill_stats", "marvins", 1.0,source )
 
             if (IsPilot(victim) && victim.pilotEjecting )
 		        Stats_IncrementStat( attacker, "weapon_kill_stats", "ejecting_pilots", 1.0,source )
