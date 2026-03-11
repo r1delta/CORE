@@ -1,0 +1,321 @@
+WeaponData
+{
+	// General
+	"printname"   									"#WPN_TITAN_TRIPLE_THREAT"
+    "shortprintname"                              	"#WPN_TITAN_TRIPLE_THREAT_SHORT"
+	"description" 									"#WPN_TITAN_TRIPLE_THREAT_DESC"
+	"longdesc"										"#WPN_TITAN_TRIPLE_THREAT_LONGDESC"
+	"weaponClass" 									"titan"
+	"fire_mode"   									"auto"
+	"server_vscript"  								"weapons/mp_titanweapon_triple_threat"
+	"client_vscript"  								"weapons/mp_titanweapon_triple_threat"
+	"projectile_vscript"							"weapons/mp_projectile_titanweapon_triple_threat"
+	"projectile_vortex_vscript"						"weapons/mp_projectile_titanweapon_triple_threat"
+	"pickup_hold_prompt"  							"Hold [USE] [WEAPONNAME]"
+	"pickup_press_prompt" 							"[USE] [WEAPONNAME]"
+	"minimap_reveal_distance"						"32000"
+
+	// Menu Stats
+	"stat_damage" 									"50"
+	"stat_range"  									"20"
+	"stat_accuracy"   								"20"
+	"stat_rof"										"35"
+
+	// Models
+	"viewmodel"   									"models/weapons/titan_triple_threat/atpov_titan_triple_threat.mdl"
+	"playermodel" 									"models/weapons/titan_triple_threat/w_titan_triple_threat.mdl"
+	"projectilemodel" 								"models/weapons/bullets/triple_threat_projectile.mdl"
+	"anim_prefix" 									"ar2"
+
+	// Effects
+	"impact_effect_table" 							"triplethreat_frag"
+	"projectile_trail_effect_0" 					"wpn_grenade_TT"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_trip_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_trip"
+	"vortex_absorb_sound"							"Vortex_Shield_AbsorbRocket"
+	"vortex_drain"									".077"
+	"adjust_to_gun_barrel"							"1"
+
+	"fx_muzzle_flash_view"							"wpn_muzzleflash_xo_triple_fp"
+	"fx_muzzle_flash_world"							"wpn_muzzleflash_xo_triple"
+	"fx_muzzle_flash_attach"						"muzzle_flash"
+
+	"sound_dryfire"									"titan_dryfire"
+
+	"critical_hit"									"0"
+
+	// Damage - When Used by Players
+	"damage_type" 									"burn"
+	"damage_near_distance"							"1500"
+	"damage_far_distance" 							"3000"
+	"damage_near_value"   							"150"
+	"damage_far_value"								"150"
+	"damage_near_value_titanarmor"					"0"
+	"damage_far_value_titanarmor" 					"0"
+	"explosion_damage"								"350"
+	"explosion_damage_heavy_armor"					"1200"
+
+	// Damage - When Used by NPCs
+	"npc_explosion_damage"							"350"
+	"npc_explosion_damage_heavy_armor"				"1200"
+
+	"explosionradius" 								"320"
+	"explosion_inner_radius"						"140"
+	"impulse_force"   								"15000"
+
+	// Ammo
+	"ammo_stockpile_max"							"1503"
+	"ammo_clip_size"   								"9"
+	"ammo_default_total"							"1503"
+
+	// Behavior
+	"fire_rate"   									"1.3"
+	"zoom_time_in"									"0.2"
+	"zoom_time_out"   								"0.2"
+	"reload_time" 									"3.0"
+	"reload_time_late1" 							"2.4"
+	"reload_time_late2" 							"0.69"
+	"reloadempty_time"								"3.0"
+	"reloadempty_time_late1"						"2.4"
+	"reloadempty_time_late2"						"0.69"
+	"holster_time"									".45"
+	"deploy_time" 									".85"
+	"lower_time"  									".1"
+	"raise_time"  									".4"
+	"vortex_refire_behavior"  						"titan_grenade"
+	"zoom_effects"									"1"
+	"allow_empty_fire"								"0"
+	"reload_enabled"  								"1"
+	"allow_empty_click"   							"1"
+	"empty_reload_only"   							"0"
+	"trigger_snipercam"   							"1"
+	"allow_headshots" 								"0"
+	"grenade_impact_velocity_dampen_factor"			"0.7"
+
+	// Spread
+	"spread_stand_hip"  							"0"
+	"spread_stand_ads"   							"0"
+	"spread_npc"  									"5"
+
+
+	// View Kick
+	"viewkick_spring" 								"titan_launcher"
+
+	"viewkick_pitch_base" 							"-3.0"
+	"viewkick_pitch_random"   						"1.0"
+	"viewkick_pitch_softScale"						"1.0"
+	"viewkick_pitch_hardScale"						"3.0"
+
+	"viewkick_yaw_base"   							"-0.25"
+	"viewkick_yaw_random" 							"0.5"
+	"viewkick_yaw_softScale"  						"0.3"
+	"viewkick_yaw_hardScale"  						"2.0"
+
+	"viewkick_roll_base"  							"0.0"
+	"viewkick_roll_randomMin" 						"0.6"
+	"viewkick_roll_randomMax" 						"0.8"
+	"viewkick_roll_softScale" 						"0.2"
+	"viewkick_roll_hardScale" 						"2.0"
+
+	"viewkick_hipfire_weaponFraction" 				"0.3"
+	"viewkick_hipfire_weaponFraction_vmScale" 		"0.5"
+	"viewkick_ads_weaponFraction" 					"0.2"
+	"viewkick_ads_weaponFraction_vmScale" 			"0.5"
+
+
+	// Bob
+	"bob_cycle_time"  								"0.7"
+	"bob_vert_dist"   								"0.5"
+	"bob_horz_dist"   								"1"
+	"bob_max_speed"   								"150"
+	"bob_pitch"   									"1"
+	"bob_yaw" 										"1"
+	"bob_roll"										"-0.75"
+
+	// View Drift
+	"viewdrift_hipfire_stand_scale_pitch" 			"0.1"
+	"viewdrift_hipfire_crouch_scale_pitch"			"0.1"
+	"viewdrift_hipfire_air_scale_pitch"   			"0.1"
+	"viewdrift_hipfire_stand_scale_yaw"   			"0.075"
+	"viewdrift_hipfire_crouch_scale_yaw"  			"0.075"
+	"viewdrift_hipfire_air_scale_yaw" 				"0.075"
+	"viewdrift_hipfire_speed_pitch"   				"0.6"
+	"viewdrift_hipfire_speed_yaw" 					"1.22"
+
+	"viewdrift_ads_stand_scale_pitch" 				"0.1"
+	"viewdrift_ads_crouch_scale_pitch"				"0.1"
+	"viewdrift_ads_air_scale_pitch"   				"0.1"
+	"viewdrift_ads_stand_scale_yaw"   				"0.075"
+	"viewdrift_ads_crouch_scale_yaw"  				"0.075"
+	"viewdrift_ads_air_scale_yaw" 					"0.075"
+	"viewdrift_ads_speed_pitch"   					"0.6"
+	"viewdrift_ads_speed_yaw" 						"1.22"
+
+	// Rumble
+	"fire_rumble"									"titan_triple_threat"
+
+	// Sway
+	"sway_rotate_attach"  							"SWAY_ROTATE"
+	"sway_min_x"  									"-0.3"
+	"sway_min_y"  									"-0.5"
+	"sway_min_z"  									"-0.5"
+	"sway_max_x"  									"0.3"
+	"sway_max_y"  									"0.5"
+	"sway_max_z"  									"0.1"
+	"sway_min_pitch"  								"-3"
+	"sway_min_yaw"									"-3.5"
+	"sway_min_roll"   								"-1"
+	"sway_max_pitch"  								"3"
+	"sway_max_yaw"									"3.5"
+	"sway_max_roll"   								"2"
+	"sway_translate_gain" 							"10"
+	"sway_rotate_gain"								"12"
+	"sway_move_forward_translate_x"   				"0"
+	"sway_move_forward_translate_z"   				"-0.5"
+	"sway_move_back_translate_x"  					"-2"
+	"sway_move_back_translate_z"  					"-1"
+	"sway_move_left_translate_y"  					"-1"
+	"sway_move_left_translate_z"  					"-0.5"
+	"sway_move_left_rotate_roll"  					"-1"
+	"sway_move_right_translate_y" 					"1"
+	"sway_move_right_translate_z" 					"-0.5"
+	"sway_move_right_rotate_roll" 					"2"
+	"sway_move_up_translate_z"						"-1"
+	"sway_move_down_translate_z"  					"1"
+	"sway_turn_left_rotate_yaw"   					"-1"
+	"sway_turn_right_rotate_yaw"  					"1"
+	"sway_turn_up_rotate_pitch"   					"1"
+	"sway_turn_down_rotate_pitch" 					"-1"
+	"sway_enable_zoomed"							"0"
+
+	// NPC
+	"proficiency_very_good_spreadscale"   			"2.0"
+	"proficiency_very_good_bias"  					"1.0"
+	"proficiency_perfect_spreadscale" 				"1.6"
+	"proficiency_perfect_bias"						"1.0"
+
+	"npc_min_range"   								"0"
+	"npc_max_range"   								"2500"
+
+	"npc_min_burst"									"1"
+	"npc_max_burst"									"2"
+	"rest_time_between_bursts_min"					"2.4"
+	"rest_time_between_bursts_max"					"3.0"
+
+	// WeaponED Unhandled Key/Values and custom script Key/Values
+	"projectile_vscript"	  						"weapons/mp_titanweapon_triple_threat"
+
+	// Crosshair
+	"red_crosshair_range" 							"1500"
+
+	Mods
+	{
+		mine_field
+		{
+			 //Mine Field - Instead of exploding, they plant into the ground and wait 20 seconds until targets come nearby to explode.
+			"explosion_damage"								"*.7"
+			"explosion_damage_heavy_armor"					"*.7"
+		}
+		hydraulic_launcher
+		{
+			//Hydraulic Launcher - Charge to increase distance fired.
+			"charge_time" 									"3.0"
+			"fire_rate"   									"1.0"
+		}
+		spread_increase_ttt
+		{
+			//Increases cone size
+		}
+		spread_decrease_ttt
+		{
+			//Narrows cone FoV
+		}
+		impact_fuse
+		{
+			//Explodes on contact with any surface
+		}
+		rolling_rounds
+		{
+			//Travels faster when hitting surfaces.
+		}
+		extended_ammo
+		{
+			"ammo_stockpile_max"							"480"
+			"ammo_clip_size"   								"12"
+			"ammo_default_total"							"480"
+		}
+		burn_mod_titan_triple_threat
+		{
+			"crosshair_index"								"1"
+			"is_burn_mod"		"1"
+			"projectile_trail_effect_0" 					"wpn_grenade_TT_mag"
+		}
+		arc_triple_threat
+		{
+			"impact_effect_table" 							"triplethreat_frag"
+		}
+	}
+
+	CrosshairData
+	{
+		BaseWeapon
+		{
+			DefaultElementBehavior
+			{
+				"fade_while_sprinting"	"1"
+				"fade_while_reloading"	"1"
+			}
+			Element0
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/titan_triple_threat_vertical"
+				"size_x"					"90"
+				"size_y"					"90"
+				"draw_while_ads"			"0"
+				"draw_while_zooming"		"0"
+				"rotation"					"90"
+				"offset_x"					"-13"
+				"offset_y"					"0"
+			}
+			Element1
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/titan_triple_threat_vertical_shadow"
+				"size_x"					"90"
+				"size_y"					"90"
+				"draw_while_ads"			"0"
+				"draw_while_zooming"		"0"
+				"rotation"					"90"
+				"offset_x"					"-13"
+				"offset_y"					"0"
+			}
+			Element2
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/titan_triple_threat_vertical"
+				"size_x"					"90"
+				"size_y"					"90"
+				"draw_while_hip"			"0"
+				"draw_while_reloading"		"0"
+			}
+			Element3
+			{
+				"type"						"static"
+				"material"					"hud/crosshairs/titan_triple_threat_vertical_shadow"
+				"size_x"					"90"
+				"size_y"					"90"
+				"draw_while_hip"			"0"
+				"draw_while_reloading"		"0"
+			}
+		}
+		Burn_Card_Mod
+		{
+			"inherit_data_from"			"BaseWeapon"
+
+			DefaultElementBehavior
+			{
+				"default_color"			"243 134 40 255"
+			}
+		}
+	}
+}
