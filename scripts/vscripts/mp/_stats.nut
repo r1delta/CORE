@@ -424,7 +424,11 @@ function DistanceAndTimeStats_Think( player )
         }
 
         if ( timeSeconds <= 0 )
-            break
+        {
+            wait 0
+            continue
+        }
+
         Stats_IncrementStat(player,"game_stats","hoursPlayed",timeHours)
         Stats_IncrementStat( player, "time_stats", "hours_total", timeHours )
         if(player.IsTitan())
