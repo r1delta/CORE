@@ -2404,7 +2404,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 		local classDataTable = GetPlayerClassDataTable( player, neededClass )
 		local classSettings = classDataTable.playerSetFile
 
-		if ( !isTitan && GetPlayerActiveBurnCard( player ) == "bc_spectre_camo" )
+		if ( !isTitan && GetPlayerActiveBurnCard( player ) == "bc_play_spectre" )
 			classSettings = GetMapName() == "mp_corporate" ? "pilot_spectre_corporate" : "pilot_spectre"
 
 		if ( classSettings && IsAlive( player ) )
