@@ -82,6 +82,7 @@ WeaponData
 	"deploy_time" 									".85"
 	"lower_time"  									".1"
 	"raise_time"  									".4"
+	"charge_end_forces_fire"						"1"
 	"vortex_refire_behavior"  						"titan_grenade"
 	"zoom_effects"									"1"
 	"allow_empty_fire"								"0"
