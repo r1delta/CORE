@@ -456,14 +456,17 @@ function DistanceAndTimeStats_Think( player )
             Stats_IncrementStat( player, "weapon_stats", "hoursUsed" ,timeHours, weaponName )
             foreach( weapon in player.GetMainWeapons() )
             {
-                Stats_IncrementStat( player, "weapon_stats", "hoursEquipped" ,timeHours, weaponName )
+                Stats_IncrementStat( player, "weapon_stats", "hoursEquipped" ,timeHours, weapon.GetClassname() )
             }
         }
 
         local ordnanceWeapon = player.GetOffhandWeapon( OFFHAND_RIGHT )
 
         if ( IsValid( ordnanceWeapon ) )
+        {
             Stats_IncrementStat( player, "weapon_stats", "hoursUsed" ,timeHours, ordnanceWeapon )
+            Stats_IncrementStat( player, "weapon_stats", "hoursEquipped" ,timeHours, ordnanceWeapon.GetClassname() )
+        }
 
 
         player.s.lastPosForDistanceStat = player.GetOrigin()
@@ -976,7 +979,7 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
             if (IsPilot(victim) && victim.pilotEjecting )
 		        Stats_IncrementStat( attacker, "weapon_kill_stats", "ejecting_pilots", 1.0,source )
 
-            if ( victim.IsTitan() && !victim.IsNPC() )
+            if ( victim.IsTitan() )
             {
                 local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
            	    local titanSettings = titanDataTable.playerSetFile
@@ -984,14 +987,11 @@ function HandleWeaponKillStats( victim, attacker, damageInfo ) {
                 printt("titan name: " + titanName)
                 // titans_atlas
                 Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
-                Stats_IncrementStat( attacker, "weapon_kill_stats", "titans_" + titanName, 1.0,source )
-            }
-            if (victim.IsTitan() && victim.IsNPC() ) {
-                local titanDataTable = GetPlayerClassDataTable( attacker, "titan" )
-           	    local titanSettings = titanDataTable.playerSetFile
-                local titanName = StringReplaceAll( titanSettings, "titan_", "" )
-                Stats_IncrementStat( attacker, "weapon_kill_stats", "titansTotal", 1.0,source )
-                Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0,source )
+
+                if ( !victim.IsNPC() )
+                    Stats_IncrementStat( attacker, "weapon_kill_stats", "titans_" + titanName, 1.0,source )
+                else
+                    Stats_IncrementStat( attacker, "weapon_kill_stats", "npcTitans_" + titanName, 1.0,source )
             }
             if ( IsValidHeadShot( damageInfo, victim ) )
             {
