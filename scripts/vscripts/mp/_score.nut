@@ -721,7 +721,7 @@ function ScoreCheck_MultiKill( attacker, killed, currentTime )
 
 			local weapon = attacker.GetActiveWeapon()
 
-			if ( weapon.GetClassname() == "mp_titanweapon_arc_cannon" )
+			if ( IsValid( weapon ) && weapon.GetClassname() == "mp_titanweapon_arc_cannon" )
 				Stats_IncrementStat( attacker, "misc_stats", "arcCannonMultiKills", 1 )
 		}
 	}
