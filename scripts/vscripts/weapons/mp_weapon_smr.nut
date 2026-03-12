@@ -6,15 +6,6 @@ if ( IsServer() )
 	ROCKET_IMPACT_FX_TABLE			<- PrecacheImpactEffectTable( "orbital_strike" )
 }
 
-function OnWeaponActivate( activateParams )
-{
-	UpdateViewmodelAmmo()
-}
-
-function OnWeaponDeactivate( deactivateParams )
-{
-}
-
 function OnWeaponPrimaryAttack( attackParams )
 {
 	self.EmitWeaponSound( "Weapon_ARL.Single" )
@@ -99,4 +90,21 @@ function OnWeaponStartZoomIn()
 function OnWeaponStartZoomOut()
 {
 	HandleWeaponSoundZoomOut( self, "Weapon_ARL.ADS_Out" )
+}
+
+// .txt isn't enough to change the ammo for some reason
+function OnWeaponActivate( weapon, player = null )
+{
+	UpdateViewmodelAmmo()
+
+	// Check if the tank_buster mod is equipped
+	if ( self.HasMod( "tank_buster" ) )
+	{
+		self.SetWeaponPrimaryClipCount( 12 )
+	}
+}
+
+
+function OnWeaponDeactivate( deactivateParams )
+{
 }
