@@ -14,10 +14,10 @@ WeaponData
 	"minimap_reveal_distance"						"32000"
 
 	// Menu Stats
-	"stat_damage" 									"65"
-	"stat_range"  									"75"
-	"stat_accuracy"   								"80"
-	"stat_rof"										"75"
+	"stat_damage" 									"50"
+	"stat_range"  									"65"
+	"stat_accuracy"   								"55"
+	"stat_rof"										"80"
 
 	// Models
 	"viewmodel"   									"models/weapons/titan_minigun/atpov_titan_minigun.mdl"
@@ -54,12 +54,12 @@ WeaponData
 
 	// Damage - When Used by Players
 	"damage_type" 									"bullet"
-	"damage_near_distance"							"2100"
-	"damage_far_distance" 							"2700"
+	"damage_near_distance"							"1900"
+	"damage_far_distance" 							"2500"
 	"damage_near_value"   							"100"
 	"damage_far_value"								"85"
-	"damage_near_value_titanarmor"					"93"
-	"damage_far_value_titanarmor" 					"85"
+	"damage_near_value_titanarmor"					"73"
+	"damage_far_value_titanarmor" 					"65"
 
 	// Damage - When Used by NPCs
 	"npc_damage_near_distance"						"2700"
@@ -70,37 +70,39 @@ WeaponData
 	"npc_damage_far_value_titanarmor" 				"85"
 
 	"impulse_force"   								"2500"
-	//"critical_hit_damage_scale"						"0" 
+	"critical_hit_damage_scale"						"2.0" 
 
 	// Ammo
 	"ammo_stockpile_max"							"50000"
-	"ammo_clip_size"   								"50000" //"60"
+	"ammo_clip_size"   								"100" //"60"
 	"ammo_default_total"							"50000"
 
 	// Behavior
 	"fire_rate"										"5"
 	"fire_rate_max"									"15"
-	"fire_rate_max_time_speedup"					"5.0"
-	"fire_rate_max_time_cooldown"					"0.1"
+	"fire_rate_max_time_speedup"					"2.0"
+	"fire_rate_max_time_cooldown"					"2.0"
 	"zoom_time_in"									"0.2"
 	"zoom_time_out"   								"0.2"
 	"zoom_fov"										"33"
-	"reload_time" 									"4.6"
-	"reloadempty_time"								"4.6"
+	"reload_time" 									"5"
+	"reloadempty_time"								"5"
 	"holster_time"									".45"
 	"deploy_time" 									".85"
 	"lower_time"  									".1"
 	"raise_time"  									".4"
 	"vortex_refire_behavior"  						"bullet"
+
 	"allow_empty_fire"								"0"
 	"reload_enabled"  								"1"
-	"allow_empty_click"   							"1"
-	"empty_reload_only"   							"0"
+	"allow_empty_click"   							"0"
+	"empty_reload_only"   							"1"
+
 	"trigger_snipercam"   							"1"
 	"allow_headshots" 								"1"
 	"headshot_distance" 							"5000"
 	"damage_headshot_scale"							"1.5"
-	"critical_hit"									"0"
+	"critical_hit"									"1"
 
 	"ads_move_speed_scale"							"0.5"
 	// "move_speed_modifier"							"0.65"
@@ -110,10 +112,10 @@ WeaponData
 
 
 	// Charge Behavior
-	"charge_time" 									"0.1"
-	"charge_cooldown_time"							"3.0"
+	"charge_time" 								"0.5" //	"0.01"
+	"charge_cooldown_time"							"3.5"
 	"charge_cooldown_delay"   						"0.1"
-	"charge_end_forces_fire"						"1"
+	"charge_end_forces_fire"						 "1"
 		
 	// Spread //tfo-556
 	"spread_stand_hip"								"1" //"4"
@@ -284,6 +286,13 @@ WeaponData
 		// "ads_move_faster"			"59041"
 		// "titan_suppressor"			"59051"
 		// "improve_rifling"			"59061"
+
+
+		"extended_ammo"
+		{
+			"ammo_clip_size"   								"120"
+		}
+
 
 		//new mods added by kwanyongjung
 
