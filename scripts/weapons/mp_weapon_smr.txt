@@ -73,7 +73,7 @@ WeaponData
 	"npc_damage_near_value_titanarmor"				"197"
 	"npc_damage_far_value_titanarmor" 				"197"
 
-	//If increasing explosion radius check if SMR_DamagedPlayerOrNPC is still necessary. It's manually applying rodeo splash damage.
+	// If increasing explosion radius check if SMR_DamagedPlayerOrNPC is still necessary. It's manually applying rodeo splash damage.
 	"explosion_inner_radius"  						"1"
 	"explosionradius" 								"16"
 	"impulse_force"   								"1000"
@@ -293,8 +293,10 @@ WeaponData
 			"damage_far_value"								"20"
 			"damage_near_value_titanarmor"					"150"
 			"damage_far_value_titanarmor"					"150"
-            "ammo_clip_size"                                "*0.5"
+            		"ammo_clip_size"                                "12"
+			"fire_rate"   					"5.0"
 		}
+
 		stabilized_warhead
 		{
 			"fire_rate"   									"6.5"
