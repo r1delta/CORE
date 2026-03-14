@@ -175,7 +175,17 @@ function ClientCommand_SetPos( player, ... )
 	if ( vargc < 3 )
 		return true
 
-	local pos = Vector( vargv[0].tofloat(), vargv[1].tofloat(), vargv[2].tofloat() )
+	// Stupid BS in case a value is a string
+	local why = [ 0, 0, 0 ]
+	for( local i = 0; i < vargc; i++ )
+	{
+		why[i] = vargv[i].tofloat()
+
+		if ( why[i] == null )
+			return true
+	}
+
+	local pos = Vector( why[0], why[1], why[2] )
 	ClampToWorldspace( pos )
 
 	player.SetOrigin( pos )
@@ -195,8 +205,18 @@ function ClientCommand_SetAng( player, ... )
 	if ( vargc < 2 )
 		return true
 
-	local x = clamp( vargv[0].tofloat(), -360.0, 360.0 )
-	local y = clamp( vargv[1].tofloat(), -360.0, 360.0 )
+	// Stupid BS in case a value is a string
+	local why = [ 0, 0, 0 ]
+	for( local i = 0; i < vargc; i++ )
+	{
+		why[i] = vargv[i].tofloat()
+
+		if ( why[i] == null )
+			return true
+	}
+
+	local x = clamp( why[0], -360.0, 360.0 )
+	local y = clamp( why[1], -360.0, 360.0 )
 
 	local ang = Vector( x, y, 0 )
 	player.SetAngles( ang )
