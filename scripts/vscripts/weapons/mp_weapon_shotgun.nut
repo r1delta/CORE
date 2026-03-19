@@ -63,5 +63,30 @@ function OnWeaponStartZoomOut()
 
 function OnWeaponActivate( activateParams )
 {
+	local weaponOwner = self.GetWeaponOwner()
+	if ( !IsValid_ThisFrame( weaponOwner ) )
+		return
 
+	if ( !IsServer() )
+		return
+
+	if ( !self.HasMod( "burn_mod_shotgun" ) )
+		return
+
+	if ( "preventCatchAnimation" in self.s )
+		return
+
+	if ( RandomInt( 0, 20 ) == 0 )
+		self.EnableCatchAnimation()
+
+	self.s.preventCatchAnimation <- true
+}
+
+function OnWeaponOwnerChanged( changeParams )
+{
+	if ( !IsServer() )
+		return
+
+	if ( "preventCatchAnimation" in self.s )
+		delete self.s.preventCatchAnimation
 }
