@@ -84,7 +84,7 @@ function OnWeaponTossReleaseAnimEvent( attackParams )
 	{
 		if ( IsServer() )
 		{
-			thread EnableTrapWarningSound( satchel, 0, "Weapon_R1_LaserMine.ArmedBeep" )
+			thread EnableTrapWarningSound( satchel, 0, "Weapon_R1_Satchel.ArmedBeep_Fixed" )
 			EmitSoundOnEntityExceptToPlayer( player, player, "weapon_r1_satchel.throw" )
 			Grenade_Init( satchel, self )
 			Satchel_PostFired_Init( satchel, player )
