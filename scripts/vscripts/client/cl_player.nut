@@ -319,6 +319,10 @@ function DrawTitanRodeoPrompt( player, entity )
 		if ( player.IsZiplining() )
 			return
 
+		// Cant rodeo while wallhanging apparently
+		if ( player.IsWallHanging() )
+			return
+
 		if ( !IsValidTitanRodeoPromptEnt( player, entity ) )
 			return
 
