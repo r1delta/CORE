@@ -218,11 +218,16 @@ function WorldUsePrompt( player )
 	player.EndSignal( "SettingsChanged" )
 	player.EndSignal( "OnDestroy" )
 	local usePromptEnt
+	local rodeoPromptEnt
 	for ( ;; )
 	{
 		usePromptEnt = GetPlayerUsePromptEnt( player )
+		rodeoPromptEnt = GetTitanRodeoPromptEnt( player )
+
 		if ( usePromptEnt != null )
 			waitthread DrawWorldUsePrompt( player, usePromptEnt )
+		else if ( rodeoPromptEnt != null )
+			waitthread DrawTitanRodeoPrompt( player, rodeoPromptEnt )
 
 		wait 0
 	}
@@ -291,6 +296,84 @@ function DrawWorldUsePrompt( player, entity )
 	}
 }
 
+function DrawTitanRodeoPrompt( player, entity )
+{
+	OnThreadEnd(
+		function () : ( player, entity )
+		{
+			StopUsePrompt( player, entity )
+		}
+	)
+
+	DrawUsePrompt( player, entity )
+
+	for ( ;; )
+	{
+		if ( HoldToRodeoState( player ) == 0 )
+			return
+
+		if ( player.GetParent() )
+			return
+		if ( player.GetUsePromptEntity() != null )
+			return
+		if ( player.IsZiplining() )
+			return
+
+		if ( !IsValidTitanRodeoPromptEnt( player, entity ) )
+			return
+
+		wait 0
+	}
+}
+
+function GetTitanRodeoPromptEnt( player )
+{
+	local entity = null
+	if ( HoldToRodeoState( player ) == 0 )
+		return entity
+
+	local titans = GetClientEntArrayBySignifier( "npc_titan" )
+	foreach ( target in titans )
+	{
+		if ( !IsValidTitanRodeoPromptEnt( player, target ) )
+			continue
+
+		entity = target
+	}
+
+	local players = GetPlayerArray()
+	foreach ( target in players )
+	{
+		if ( !IsValidTitanRodeoPromptEnt( player, target ) )
+			continue
+
+		entity = target
+	}
+
+	return entity
+}
+Globalize( GetTitanRodeoPromptEnt )
+
+function IsValidTitanRodeoPromptEnt( player, entity )
+{
+	if ( !IsAlive( entity ) )
+		return false
+
+	if ( !entity.IsTitan() )
+		return false
+
+	if ( player.GetPetTitan() && target.IsNPC() && target == player.GetPetTitan() )
+		return false
+
+	if ( player.GetTeam() != entity.GetTeam() && HoldToRodeoState( player ) == 2 )
+		return false
+
+	if ( !IsValidTitanRodeoTarget( player, entity ) )
+		return false
+
+	return ( PlayerFallingOntoTitan( player, entity ) || FindPlayerJumponSpot( player, entity ) )
+}
+Globalize( IsValidTitanRodeoPromptEnt )
 
 function ClientCodeCallback_PlayerSpawned( player )
 {

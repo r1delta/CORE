@@ -334,6 +334,7 @@ function FindPlayerJumponSpot( player, titan )
 
 	return true
 }
+Globalize( FindPlayerJumponSpot )
 
 function CreateRodeoPackageForJumpingOn( player, titan )
 {
