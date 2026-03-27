@@ -3300,7 +3300,7 @@ function UsePromptDrawForUsableEnt( ent )
 	usePrompt.ent <- ent
 	ent.EndSignal( "OnDeath" )
 
-	local msg = "#RIDE"
+	local msg = ent.IsTitan() ? "#DEATH_TITAN_RODEO" : "#RIDE"
 
 	InfoFlyout_TitleShow( "#USE_KEY_BINDING", msg, ent, "HATCH_HEAD" )
 	//InfoFlyout_IconShow( "HUD/loadout/xbutton", msg, ent, "HATCH_HEAD" )
