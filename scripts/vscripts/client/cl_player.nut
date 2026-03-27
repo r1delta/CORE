@@ -362,7 +362,7 @@ function IsValidTitanRodeoPromptEnt( player, entity )
 	if ( !entity.IsTitan() )
 		return false
 
-	if ( player.GetPetTitan() && target.IsNPC() && target == player.GetPetTitan() )
+	if ( player.GetPetTitan() && entity.IsNPC() && entity == player.GetPetTitan() )
 		return false
 
 	if ( player.GetTeam() != entity.GetTeam() && HoldToRodeoState( player ) == 2 )
