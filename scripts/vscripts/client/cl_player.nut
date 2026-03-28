@@ -372,6 +372,9 @@ function IsValidTitanRodeoPromptEnt( player, entity )
 	if ( player.GetTeam() != entity.GetTeam() && HoldToRodeoState( player ) == 2 )
 		return false
 
+	if ( player.IsWallHanging() )
+		return false
+
 	if ( !IsValidTitanRodeoTarget( player, entity ) )
 		return false
 
