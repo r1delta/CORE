@@ -297,6 +297,28 @@ WeaponData
 			"ammo_clip_size"   								"12"
 			"ammo_default_total"							"1500"
 		}
+
+
+		"auto_converter"
+		{
+			"fire_rate"                                       "3"
+    		"burst_fire_count"				  "1"
+			"burst_fire_delay"				  "0.3"
+
+			"npc_min_burst"                                   "1"
+			"npc_max_burst"                                   "9"
+			"rest_time_between_bursts_min"                    "0.1"
+			"rest_time_between_bursts_max"                    "1.5"
+
+			"viewkick_pitch_base" 				"*2.0"
+			"viewkick_pitch_random" 			"*2.0"
+
+			"viewkick_yaw_base" 				"*2.0"
+			"viewkick_yaw_random" 				"*2.0"
+			"viewkick_scale_max_hipfire"                    "*2.0"
+			"fire_mode"                                     "auto"
+		}
+
 		burn_mod_titan_shotgun
 		{
 			// TODO

@@ -2816,12 +2816,12 @@ function ClientCodeCallback_OnSelectedWeaponChanged( selectedWeapon )
 			else
 				HideChargeAmmoBar( selectedWeapon, player )
 			break
-
+/*
 		case "mp_weapon_mega3":
 			DisplayChargeAmmoBar( selectedWeapon, player, 1, 0, cockpit )
 //			HideWeaponAmmoUI( cockpit )
 			break
-
+*/
 		default:
 			HideChargeAmmoBar( selectedWeapon, player )
 			break
