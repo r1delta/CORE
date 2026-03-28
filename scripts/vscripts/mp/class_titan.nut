@@ -197,6 +197,8 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 	if (!existingTitan)
 	  	thread ApplyTitanBurnCards_Threaded( titan )
 
+	ChangeWeaponSkin( titan, titan.GetTeam() )
+
 	if ( level.onChangeLoadoutCallbacks )
 		foreach ( callbackInfo in level.onChangeLoadoutCallbacks )
 			callbackInfo.func.acall( [callbackInfo.scope, player, table, true] )
@@ -221,6 +223,8 @@ function GiveHotDropTitanWeaponsForPlayer( player, titan )
 
 	if ( LoadoutContainsRocketPodWeapon( player ) )
 		CreateTitanRocketPods( soul, titan )
+
+	ChangeWeaponSkin( titan, titan.GetTeam() )
 }
 
 
@@ -239,6 +243,8 @@ function GiveTitanWeaponsForLoadoutData( titan, table )
 
 	if ( table.special )
 		titan.GiveOffhandWeapon( table.special, 1, [] )
+
+	ChangeWeaponSkin( titan, titan.GetTeam() )
 }
 
 

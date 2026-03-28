@@ -131,6 +131,8 @@ function GiveWeaponsFromStoredArray( array, ent, GiveFuncName )
 			break
 		}
 	}
+
+	ChangeWeaponSkin( ent, ent.GetTeam() )
 }
 
 function StoreWeapons( ent )

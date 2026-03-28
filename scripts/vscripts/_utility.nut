@@ -5898,6 +5898,9 @@ function SetWeaponSkinForTeam( weapon, team )
 
 function ChangeWeaponSkin( entity, team )
 {
+	local name = entity.IsPlayer() ? entity.GetPlayerName() : entity.GetName()
+	printt( "ChangeWeaponSkin: Setting team skins for entity: " + name )
+
 	if ( HasSoul( entity ) )
 	{
 		local soul = entity.GetTitanSoul()
@@ -5916,7 +5919,7 @@ function ChangeWeaponSkin( entity, team )
 			SetSkinForTeam( shouldTurret, team )
 		}
 	}
-/*
+
 	local weaponsArray = entity.GetMainWeapons()
 	weaponsArray.extend( entity.GetOffhandWeapons() )
 
@@ -5924,9 +5927,7 @@ function ChangeWeaponSkin( entity, team )
 	{
 		if ( weapon )
 		{
-			//printt( "Setting team for weapon models" )
 			SetWeaponSkinForTeam( weapon, team )
 		}
 	}
-*/
 }

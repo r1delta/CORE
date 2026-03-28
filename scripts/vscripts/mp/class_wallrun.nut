@@ -248,6 +248,7 @@ function Wallrun_GiveLoadout( player, loadoutTable )
 	}
 
 	RandomizeHead( player )
+	ChangeWeaponSkin( player, player.GetTeam() )
 
 	if ( level.onChangeLoadoutCallbacks )
 		foreach ( callbackInfo in level.onChangeLoadoutCallbacks )
