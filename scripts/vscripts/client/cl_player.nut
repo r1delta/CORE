@@ -372,10 +372,13 @@ function IsValidTitanRodeoPromptEnt( player, entity )
 	if ( player.GetTeam() != entity.GetTeam() && HoldToRodeoState( player ) == 2 )
 		return false
 
-	if ( player.IsWallHanging() )
+	if ( Distance( player.GetOrigin(), GetTitanHijackOrigin( entity ) ) > 180 )
 		return false
 
 	if ( !IsValidTitanRodeoTarget( player, entity ) )
+		return false
+
+	if ( player.IsWallHanging() )
 		return false
 
 	return ( PlayerFallingOntoTitan( player, entity ) || FindPlayerJumponSpot( player, entity ) )
