@@ -189,10 +189,17 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 		soul.rocketPod.model.Kill()
 	soul.rocketPod.model = null
 
+	if ( IsValid( soul.chargeCannon.model ) )
+		soul.chargeCannon.model.Kill()
+	soul.chargeCannon.model = null
+
 	if ( LoadoutContainsRocketPodWeapon( player ) )
 	{
 		CreateTitanRocketPods( soul, titan )
 	}
+
+	if ( LoadoutContainsChargeCannon( player ) )
+		CreateChargeCannon( soul, titan )
 
 	if (!existingTitan)
 	  	thread ApplyTitanBurnCards_Threaded( titan )
@@ -218,11 +225,15 @@ function GiveHotDropTitanWeaponsForPlayer( player, titan )
 	local soul = titan.GetTitanSoul()
 	Assert( IsValid( soul ) )
 	Assert( !IsValid( soul.rocketPod.model ) )
+	Assert( !IsValid( soul.chargeCannon.model ) )
 
 	wait 0.1
 
 	if ( LoadoutContainsRocketPodWeapon( player ) )
 		CreateTitanRocketPods( soul, titan )
+
+	if ( LoadoutContainsChargeCannon( player ) )
+		CreateChargeCannon( soul, titan )
 
 	ChangeWeaponSkin( titan, titan.GetTeam() )
 }

@@ -37,7 +37,7 @@ WeaponData
 	"adjust_to_gun_barrel"							"1"
 
 	"fx_muzzle_flash_view"							"wpn_muzzleflash_xo_sniper_FP"
-	"fx_muzzle_flash_world"							"wpn_muzzleflash_xo_sniper"
+	"fx_muzzle_flash_world"							""
 	"fx_muzzle_flash_attach"						"muzzle_flash"
 
 	"sound_dryfire"									"titan_dryfire"
@@ -246,6 +246,7 @@ WeaponData
 
 		burn_mod_charge_cannon
 		{
+			"bodygroup2_set"								"1"	
 			"crosshair_index"								"1"
 		}
 	}

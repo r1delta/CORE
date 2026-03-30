@@ -21,9 +21,6 @@ function LauncherPrecache( weapon )
 	PrecacheParticleSystem( CHARGE_FX )
 	PrecacheParticleSystem( CHARGE_FX_FP )
 	PrecacheParticleSystem( "defender_charge_CH_dlight" )
-
-	PrecacheParticleSystem( "wpn_muzzleflash_arc_cannon_fp" )
-	PrecacheParticleSystem( "wpn_muzzleflash_arc_cannon" )
 }
 
 LauncherPrecache( self )
@@ -32,11 +29,16 @@ function OnWeaponActivate( activateParams )
 {
 	//self.EmitWeaponSound( "Weapon_Charge_cannon_chaRgeStart" )
 
-	chargeDownSoundDuration = self.GetWeaponInfoFileKeyField( "charge_cooldown_time" )
+	chargeDownSoundDuration = self.GetWeaponModSetting( "charge_cooldown_time" )
 
 	if ( !( "maxAmmoCharges" in self.s ) )
 		self.s.maxAmmoCharges <- LAUNCHER_MAX_CHARGES
 
+	if ( IsServer() )
+	{
+		self.s.shoulderChargeEffect1 <- null
+		self.s.shoulderChargeEffect2 <- null
+	}
 }
 
 function OnWeaponDeactivate( deactivateParams )
@@ -78,8 +80,13 @@ function OnWeaponChargeBegin( chargeParams )
 
 	printt("------------charge begin------------")
 
-	self.PlayWeaponEffect( CHARGE_FX_FP, CHARGE_FX_FP, "muzzle_flash" )
-	self.PlayWeaponEffect( null, "defender_charge_CH_dlight", "muzzle_flash" )	
+	self.PlayWeaponEffect( CHARGE_FX_FP, null, "muzzle_flash" )
+
+	if ( IsServer() )
+	{
+		self.s.shoulderChargeEffect1 = PlayShoulderCannonFX( CHARGE_FX, true )
+		self.s.shoulderChargeEffect2 = PlayShoulderCannonFX( "defender_charge_CH_dlight", true )
+	}
 }
 
 function OnWeaponCustomActivityStart()
@@ -91,8 +98,13 @@ function OnWeaponCustomActivityStart()
 
 	StopSoundOnEntity( self, "Weapon_Titan_Charge_Cannon_Loop" )
 
-	self.StopWeaponEffect( CHARGE_FX_FP, CHARGE_FX_FP )
-	self.StopWeaponEffect( "defender_charge_CH_dlight", "defender_charge_CH_dlight" )
+	self.StopWeaponEffect( CHARGE_FX_FP, null )
+
+	if ( IsServer() )
+	{
+		StopShoulderCannonFX( self.s.shoulderChargeEffect1 )
+		StopShoulderCannonFX( self.s.shoulderChargeEffect2 )
+	}
 }
 
 function OnWeaponChargeEnd( chargeParams )
@@ -111,7 +123,7 @@ function OnWeaponChargeEnd( chargeParams )
 
 	StopSoundOnEntity( self, "Weapon_Charge_Cannon_ChargeStart" )
 
-	printt("charge end!! %f, %f", seekFrac, seekTime)
+	printt( format( "charge end!! %f, %f", seekFrac, seekTime ) )
 }
 
 function OnClientAnimEvent( name ) //총구에서 발사되도록 수정 KWANYONG
@@ -162,111 +174,6 @@ function OnWeaponChargeLevelIncreased()
 	}
 }
 
-/*function FireSniper( weapon, attackParams, playerFired )
-{
-	local chargeLevel = GetTitanSniperChargeLevel( weapon )
-	local maxLevel = self.GetWeaponChargeLevelMax();
-	local weaponOwner = self.GetWeaponOwner()
-	
-	if ( chargeLevel == 0 )
-		return 0
-
-	if( chargeLevel > maxLevel )
-	{
-		chargeLevel = maxLevel
-	}
-
-	// 발사 직후 hud ui 게이지 강제로 비워주는 코드. test 용
-	self.ForceRelease()
-	self.SetWeaponChargeFractionForced(1.0)
-
-	//printt( "GetTitanSniperChargeLevel():", chargeLevel )
-
-	if ( chargeLevel > 4 )
-		self.EmitWeaponSound( "Weapon_Titan_Sniper_Level_4" )
-	else if ( chargeLevel > 3  )
-		self.EmitWeaponSound( "Weapon_Titan_Sniper_Level_3" )
-	else if ( chargeLevel > 2  )
-		self.EmitWeaponSound( "Weapon_Titan_Sniper_Level_2" )
-	else
-		self.EmitWeaponSound( "Weapon_Titan_Sniper_Level_1" )
-
-	self.EmitWeaponNpcSound( LOUD_WEAPON_AI_SOUND_RADIUS_MP, 0.2 * chargeLevel )
-
-	if ( chargeLevel > 5 )
-	{
-		self.SetAttackKickScale( 1.0 )
-		self.SetAttackKickRollScale( 3.0 )
-	}
-	else if ( chargeLevel > 4 )
-	{
-		self.SetAttackKickScale( 0.75 )
-		self.SetAttackKickRollScale( 2.5 )
-	}
-	else if ( chargeLevel > 3 )
-	{
-		self.SetAttackKickScale( 0.60 )
-		self.SetAttackKickRollScale( 2.0 )
-	}
-	else if ( chargeLevel > 2 )
-	{
-		self.SetAttackKickScale( 0.45 )
-		self.SetAttackKickRollScale( 1.60 )
-	}
-	else if ( chargeLevel > 1 )
-	{
-		self.SetAttackKickScale( 0.30 )
-		self.SetAttackKickRollScale( 1.35 )
-	}
-	else
-	{
-		self.SetAttackKickScale( 0.20 )
-		self.SetAttackKickRollScale( 1.0 )
-	}
-
-	local shouldCreateProjectile = false
-	if ( IsServer() || self.ShouldPredictProjectiles() )
-		shouldCreateProjectile = true
-	if ( IsClient() && !playerFired )
-		shouldCreateProjectile = false
-
-	if ( !shouldCreateProjectile )
-		return 1
-
-	local bolt = self.FireWeaponBolt( attackParams.pos, attackParams.dir, SNIPER_PROJECTILE_SPEED, DF_GIB | DF_BULLET | DF_ELECTRICAL, DF_EXPLOSION | DF_RAGDOLL | DF_SPECTRE_GIB, playerFired )
-	bolt.kv.gravity = 0.001
-	bolt.kv.bounceFrac = 0.0
-	if ( weaponOwner.IsNPC() )
-		bolt.s.bulletsToFire <- 0
-	else
-		bolt.s.bulletsToFire <- chargeLevel
-		bolt.s.extraDamagePerBullet <- self.GetWeaponInfoFileKeyField( "damage_additional_bullets" )
-		bolt.s.extraDamagePerBullet_Titan <- self.GetWeaponInfoFileKeyField( "damage_additional_bullets_titanarmor" )
-	
-	if ( chargeLevel > 4 )
-		bolt.SetProjectilTrailEffectIndex( 2 )
-	else if ( chargeLevel > 2 )
-		bolt.SetProjectilTrailEffectIndex( 1 )
-
-	if ( IsServer() )
-	{
-		local weaponOwner = self.GetWeaponOwner()
-		bolt.SetOwner( weaponOwner )
-	}
-
-	StopSoundOnEntity( self, "Weapon_Titan_Charge_Cannon_Loop" )
-
-	if (IsServer())
-	{
-		self.StopWeaponEffect( CHARGE_FX_FP, CHARGE_FX )
-		self.StopWeaponEffect( "defender_charge_CH_dlight", "defender_charge_CH_dlight" )
-	}
-
-	thread RegenerateAmmo()
-	
-	return 1
-}*/
-
 function RegenerateAmmo()
 {
 	wait chargeDownSoundDuration
@@ -308,7 +215,6 @@ function GetTitanSniperChargeLevel( weapon )
 	return (1 + charges)
 }
 
-
 function CooldownBarFracFunc()
 {
 	if ( !IsValid( self ) )
@@ -327,13 +233,21 @@ function FireChargeCannon( weapon, attackParams, playerFired)
 {
 	StopSoundOnEntity( self, "Weapon_Titan_Charge_Cannon_Loop" )
 
-	self.StopWeaponEffect( CHARGE_FX_FP, CHARGE_FX_FP )
-	self.StopWeaponEffect( "defender_charge_CH_dlight", "defender_charge_CH_dlight" )
+	self.StopWeaponEffect( CHARGE_FX_FP, null )
+
+	if ( IsServer() )
+	{
+		StopShoulderCannonFX( self.s.shoulderChargeEffect1 )
+		StopShoulderCannonFX( self.s.shoulderChargeEffect2 )
+	}
 
 	local chargeLevel = GetTitanSniperChargeLevel( weapon )
 	local maxLevel = self.GetWeaponChargeLevelMax();
 	local weaponOwner = self.GetWeaponOwner()
-	
+
+	PlayShoulderCannonFX( "wpn_muzzleflash_xo_sniper", true )
+	//PlayShoulderCannonFX( "P_wpn_defender_beam", false, some_angle ) // TODO
+
 	if ( chargeLevel == 0 )
 		return 0
 
@@ -410,4 +324,58 @@ function FireChargeCannon( weapon, attackParams, playerFired)
 	thread RegenerateAmmo()
 
 	return 1
+}
+
+function PlayShoulderCannonFX( effect, parentToCannon, optionalRotation = null )
+{
+	if ( IsClient() )
+		return
+
+	local weaponOwner = self.GetWeaponOwner()
+	if ( !weaponOwner )
+		return
+
+	local soul = weaponOwner.GetTitanSoul()
+	if ( !soul )
+		return
+
+	local chargeCannon = soul.chargeCannon.model
+	if ( !chargeCannon )
+		return
+
+	local attachID = chargeCannon.LookupAttachment( "muzzle_flash" )
+	local visibilityFlags = null // use null to view effects in thirdperson when testing
+
+	if ( parentToCannon )
+		PlayFXOnEntity( effect, chargeCannon, "muzzle_flash", null, optionalRotation, visibilityFlags, weaponOwner )
+	else
+		PlayFXOnEntity( effect, null, null, chargeCannon.GetAttachmentOrigin( attachID ), chargeCannon.GetAttachmentAngles( attachID ), visibilityFlags, weaponOwner )
+}
+
+function StopShoulderCannonFX( effect )
+{
+	if ( IsClient() )
+		return
+
+	local weaponOwner = self.GetWeaponOwner()
+	if ( !weaponOwner )
+		return
+
+	local soul = weaponOwner.GetTitanSoul()
+	if ( !soul )
+		return
+
+	local chargeCannon = soul.chargeCannon.model
+	if ( !chargeCannon )
+		return
+
+	if ( !IsValid_ThisFrame( effect ) )
+		return
+
+	StopFX( effect )
+	effect.Fire( "Destroy" )
+	StopFX_DestroyImmediately( effect )
+	effect.ClearParent()
+	effect.Destroy()
+	effect = null
 }

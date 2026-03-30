@@ -541,12 +541,19 @@ function GiveLoadouts( player )
 					soul.rocketPod.model.Kill()
 				soul.rocketPod.model = null
 
+				if ( IsValid( soul.chargeCannon.model ) )
+					soul.chargeCannon.model.Kill()
+				soul.chargeCannon.model = null
+
 				soul.passives = 0 //Clear out passives on soul
 
 				CreateTitanRocketPods( soul, soul.GetTitan() )
 				GiveTitanWeaponsForPlayer( player, player )
 				SetTitanOSForPlayer( player )
 				SetDecalForTitan( player )
+			
+				if ( LoadoutContainsChargeCannon( player ) )
+					CreateChargeCannon( soul, titan )
 			}
 			else
 			{

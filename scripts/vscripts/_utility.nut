@@ -5918,6 +5918,13 @@ function ChangeWeaponSkin( entity, team )
 			//printt( "Setting team for shoulder turret" )
 			SetSkinForTeam( shouldTurret, team )
 		}
+
+		local chargeCannon = soul.chargeCannon.model
+		if ( IsValid( chargeCannon ) )
+		{
+			//printt( "Setting team for shoulder turret" )
+			SetSkinForTeam( chargeCannon, team )
+		}
 	}
 
 	local weaponsArray = entity.GetMainWeapons()

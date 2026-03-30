@@ -285,9 +285,7 @@ const TURRET_WEAPON_ROCKETS = "mp_turretweapon_rockets"
 
 //rocket pod models:
 const ROCKET_POD_MODEL_ATLAS_LEFT = "models/Weapons/titan_rocket_pod/titan_rocket_pod_atlas_L.mdl"
-
 const ROCKET_POD_MODEL_STRYDER_LEFT = "models/Titans/stryder/stryder_titan_l_rocket_pod.mdl"
-
 const ROCKET_POD_MODEL_OGRE_LEFT = "models/Titans/ogre/ogre_titan_L_rocket_pod.mdl"
 
 //------------------------
@@ -2492,3 +2490,16 @@ enum eMenuType
 	TEXT = 2,
 	ENTRY = 3
 }
+
+const SHOULDER_CHARGE_CANNON_MODEL = "models/weapons/titan_destroyer_railgun/w_destro_railgun_shoulder.mdl"
+enum eChargeCannonState
+{
+	reloading
+	ready
+	last_eChargeCannonState
+}
+
+const WEAPON_VALKYRIE_NAME = "mp_weapon_mega1"
+const WEAPON_TWINB_NAME = "mp_weapon_mega2"
+const WEAPON_THUNDERBOLT_NAME = "mp_weapon_mega3"
+const WEAPON_CHARGE_CANNON_NAME = "mp_weapon_mega4"

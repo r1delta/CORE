@@ -2353,7 +2353,8 @@ function AutoBalancePlayer( player, forceSwitch = false )
 		if ( GetTitanSoulBeingRodeoed( player ) != null )
 			player.Signal( "RodeoOver" )
 
-		if ( isTitan && IsValid( player.GetTitanSoul() ) )
+		local playerSoul = player.GetTitanSoul()
+		if ( isTitan && IsValid( playerSoul ) )
 		{
 			local rodeoEnt = GetPlayerRodeoing( player )
 
@@ -2388,6 +2389,9 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				local settings = GetSoulPlayerSettings(soul)
 				ApplyModelSkinToEntity( petTitan, settings, newTeam ) // Use the entity-applying function
 				ChangeWeaponSkin( petTitan, newTeam )
+
+				if ( IsValid( soul.chargeCannon.model ) )
+					soul.chargeCannon.model.SetTeam( newTeam )
 
 				local rodeoEnt = GetPlayerRodeoing( petTitan )
 
@@ -2442,6 +2446,11 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				RandomizeHead( player )
 
 				ChangeWeaponSkin( player, newTeam )
+				if ( isTitan && IsValid( playerSoul ) )
+				{
+					if ( IsValid( playerSoul.chargeCannon.model ) )
+						playerSoul.chargeCannon.model.SetTeam( newTeam )
+				}
 			}
 			else
 			{
