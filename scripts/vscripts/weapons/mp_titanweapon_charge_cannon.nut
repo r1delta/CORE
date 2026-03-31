@@ -344,7 +344,7 @@ function PlayShoulderCannonFX( effect, parentToCannon, optionalRotation = null )
 		return
 
 	local attachID = chargeCannon.LookupAttachment( "muzzle_flash" )
-	local visibilityFlags = null // use null to view effects in thirdperson when testing
+	local visibilityFlags = 6 // use null to view effects in thirdperson when testing
 
 	if ( parentToCannon )
 		PlayFXOnEntity( effect, chargeCannon, "muzzle_flash", null, optionalRotation, visibilityFlags, weaponOwner )
