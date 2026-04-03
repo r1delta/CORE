@@ -58,16 +58,16 @@ WeaponData
 	"damage_far_distance" 							"2500"
 	"damage_near_value"   							"100"
 	"damage_far_value"								"85"
-	"damage_near_value_titanarmor"					"73"
-	"damage_far_value_titanarmor" 					"65"
+	"damage_near_value_titanarmor"					"90"
+	"damage_far_value_titanarmor" 					"80"
 
 	// Damage - When Used by NPCs
 	"npc_damage_near_distance"						"2700"
 	"npc_damage_far_distance" 						"3200"
 	"npc_damage_near_value"   						"100"
 	"npc_damage_far_value"							"85"
-	"npc_damage_near_value_titanarmor"				"93"
-	"npc_damage_far_value_titanarmor" 				"85"
+	"npc_damage_near_value_titanarmor"				"90"
+	"npc_damage_far_value_titanarmor" 				"80"
 
 	"impulse_force"   								"2500"
 	"critical_hit_damage_scale"						"2.0" 
