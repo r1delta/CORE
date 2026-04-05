@@ -315,22 +315,6 @@ function OnDamaged( ent, damageInfo )
 
 }
 
-function AddCallback_OnWeaponAttack( callbackFunc)
-{
-    Assert( "onWeaponAttackCallbacks" in level )
-	Assert( type( this ) == "table", "AddCallback_OnWeaponAttack can only be added on a table. " + type( this ) )
-
-	local name = FunctionToString( callbackFunc )
-    Assert( !( name in level.onWeaponAttackCallbacks ), "Already added " + name + " with AddCallback_OnPlayerRespawned" )
-
-	local callbackInfo = {}
-	callbackInfo.name <- name
-	callbackInfo.func <- callbackFunc
-	callbackInfo.scope <- this
-
-	level.onWeaponAttackCallbacks[name] <- callbackInfo
-}
-
 function OnPlayerRespawned(player) {
     player.s.lastPosForDistanceStat <- player.GetOrigin()
 	thread SetLastPosForDistanceStatValid( player, true )
