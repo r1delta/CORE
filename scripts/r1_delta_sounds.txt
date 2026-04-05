@@ -2268,6 +2268,16 @@
 
 }
 
+"Vote_Success"
+{
+	"mixgroup"		"ui,SFX,SFX_UI,SFX_UI_Menu"
+	"volume"		"4.0"
+//	"soundlevel"	"SNDLVL_45dB"
+	"pitch"			"100"
+	"wave"			"ui/operator_collect_points.wav"
+
+}
+
 ///////////////////////////////////
 // Misc fixed/edited sounds
 ///////////////////////////////////

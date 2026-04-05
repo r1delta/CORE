@@ -480,6 +480,18 @@ if ( !IsModelViewer() )
 if ( GameRules.GetGameMode() == BIG_BROTHER || GetMapName() == "mp_nest2" )
 	Remote.RegisterFunction( "ServerCallback_BBTurretRefresh" )
 
+if ( !IsLobby() )
+{
+	Remote.RegisterFunction( "ServerCallback_NewVoteAnnounceCards" )
+	Remote.RegisterFunction( "ServerCallback_VoteEnded" )
+	Remote.RegisterFunction( "ServerCallback_EndCurrentVote" )
+
+	RegisterServerVar( "voteInProgress", false )
+	RegisterServerVar( "votePeriodInProgress", false )
+	RegisterServerVar( "playersVotingYes", 0 )
+	RegisterServerVar( "playersVotingNo", 0 )
+}
+
 RegisterString( "#GAMEMODE_NO_TITANS_REMAINING" )
 RegisterString( "#GAMEMODE_ENEMY_TITANS_DESTROYED" )
 RegisterString( "#GAMEMODE_FRIENDLY_TITANS_DESTROYED" )

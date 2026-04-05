@@ -370,6 +370,7 @@ function Cl_MapspawnMain()
 		PerfInitLabels()
 	}
 	IncludeFile("client/cl_discord")
+	IncludeFile( "client/cl_vote_hud" )
 }
 
 function CodeCallback_RunClientConnectScripts( player )

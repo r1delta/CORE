@@ -983,3 +983,22 @@ function IsTitanOnlyMode()
 			break
 	}
 }
+
+function IsMultiGamemodePlaylist( playlist = null )
+{
+	if ( !IsServer() && !IsConnected() )
+		return false
+
+	if ( !playlist )
+		playlist = GetCurrentPlaylistName()
+
+	switch ( playlist )
+	{
+		case CAMPAIGN:
+		case VARIETY_PACK:
+		case DEADLY_GROUND:
+			return true
+	}
+
+	return false
+}

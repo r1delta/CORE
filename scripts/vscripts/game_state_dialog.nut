@@ -1127,6 +1127,8 @@ function RegisterR1DeltaConversations()
 	RegisterConversation( "CoopTD_SpectreRodeoWarning", 			VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player- HACK the priority is super high so players will hear it
 	RegisterConversation( "CoopTD_SpectreRodeoWarning_Short", 		VO_PRIORITY_GAMESTATE ) // Spectre rodeoing player (short duration variant)
 
+	RegisterConversation( "PlayerKicked",				    		VO_PRIORITY_PLAYERSTATE )
+
 	if ( IsServer() )
 		return
 
@@ -1148,6 +1150,10 @@ function RegisterR1DeltaConversations()
 	AddVDULineForBlisk( "NoEject", "diag_gm_tidm_noEjectNote_imc_Blisk" )
 	AddVDULineForBlisk( "NoDisembark", "diag_gm_tidm_noDisembarkNote_imc_Blisk" )
 
+	AddVDULineForBlisk( "PlayerKicked", "diag_imc_blisk_kc_pilotejectkill_03" ) //Blisk: You almost feel bad for them.
+	AddVDULineForBlisk( "PlayerKicked", "diag_imc_blisk_kc_iced_01" ) //Blisk: That should cool him off.
+	AddVDULineForBlisk( "PlayerKicked", "diag_imc_blisk_kc_dominating_04" ) //Blisk: He's going to hold a grudge.
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Militia
@@ -1167,6 +1173,10 @@ function RegisterR1DeltaConversations()
 
 	AddVDULineForBish( "NoEject", "diag_gm_tidm_noEjectNote_mcor_Bish" )
 	AddVDULineForBish( "NoDisembark", "diag_gm_tidm_noDisembarkNote_mcor_Bish" )
+
+	AddVDULineForBish( "PlayerKicked", "diag_kc_bish_pilotejectkill_03" ) //Bish: You almost feel bad for them... Naah
+	AddVDULineForBish( "PlayerKicked", "diag_kc_bish_iced_01" ) //Bish: That should cool him off.
+	AddVDULineForBish( "PlayerKicked", "diag_kc_bish_dominating_04" ) //Bish: He's going to hold a grudge.
 
 	// Spectre rodeoing player
 	AddVDULineForSarah( "CoopTD_SpectreRodeoWarning", "diag_gm_coop_spectreRodeo_mcor_Sarah" )

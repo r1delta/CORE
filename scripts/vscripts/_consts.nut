@@ -58,6 +58,8 @@ const EXFILTRATION = "exfil"
 const TITAN_TAG = "tt"
 const SCAVENGER = "scv"
 const TITAN_ESCORT = "te"
+const VARIETY_PACK = "all"
+const DEADLY_GROUND = "lava"
 const DEVTEST = "devtest"
 const FFA = "ffa"
 const TITAN_BRAWL = "ttdm"
@@ -2489,6 +2491,22 @@ enum eMenuType
 	MENU = 1,
 	TEXT = 2,
 	ENTRY = 3
+}
+
+enum eVoteType
+{
+	kickPlayer, //0
+	mapChange, //1
+	nextMap, //2
+	nextMode, //3
+	teamScramble, //4
+	toggleAlltalk, //5
+	restartMatch, //6
+	serverCustom, //7
+
+	voteTargetInfo,
+	voteYes,
+	voteNo,
 }
 
 const SHOULDER_CHARGE_CANNON_MODEL = "models/weapons/titan_destroyer_railgun/w_destro_railgun_shoulder.mdl"

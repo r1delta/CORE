@@ -56,3 +56,5 @@
 "blank"					"=========================="
 "jpeg"					"#SCREENSHOT"
 "toggleconsole"			"#CONSOLE_TITLE"
+"+voteYes"				"#VOTE_YES"
+"+voteNo"				"#VOTE_NO"

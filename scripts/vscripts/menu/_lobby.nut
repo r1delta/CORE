@@ -537,15 +537,7 @@ function PrivateMatchLobbyLogic()
 
 	printt( "Launch it!" )
 	if (modeName == "campaign_carousel") {
-		// we need to get gamemode, mv does not want to hardcode maps and gamemodes here so we're grabbing off playlist
-		local gamemodeForMap = null
-		for (local i = 0; i < GetMapCountForPlaylist(modeName); i++) {
-			if (GetPlaylistMapByIndex(modeName, i) == mapName)
-				gamemodeForMap = GetPlaylistGamemodeByIndex(modeName, i)
-		}
-		ServerCommand( "playlist " + modeName )
-		ServerCommand( "mp_gamemode " + gamemodeForMap )
-		ServerCommand( "changelevel " + mapName )
+		GameRules_ChangeCampaignMap( mapName )
 	} else {
 		GameRules_ChangeMap( mapName, modeName )
 	}
@@ -1310,6 +1302,19 @@ function Lobby_PickNextMapModeCombo( allowedMaps = null )
 	//PrintTable( selectionPool )
 
 	local nextCombo = Random( selectionPool )
+
+	if ( GetNextVotedMode() != GameRules.GetGameMode() )
+	{
+		nextCombo.modeName = GetNextVotedMode()
+		ServerCommand( "delta_vote_next_mode \"\"" )
+	}
+
+	if ( GetNextVotedMap() != GetMapName() )
+	{
+		nextCombo.mapName = GetNextVotedMap()
+		nextCombo.score = 10000
+		ServerCommand( "delta_vote_next_map \"\"" )
+	}
 
 	printt( "==============================================" )
 	printt( "Next Game Map/Mode" )
