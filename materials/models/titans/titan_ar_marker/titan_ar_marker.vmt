@@ -1,0 +1,95 @@
+"UnlitTwoTexture"
+{
+	"$surfaceprop" "metal"
+	//"$basetexture" "models\titans\titan_ar_marker\titan_ar_marker_col"
+	"$basetexture" "effects\white"
+	"$texture2" "effects\dev_scanline_sparse"
+
+	$nofog 1
+	$alpha 1
+
+	$translucent 1
+	$screenblend 1
+
+	$screenspacecoordssquare2 1
+
+	$layercolor1 "[1 0.1 0.1]"
+	$layeralpha1 "1"
+	$layercolor2 "[1 0.1 0.1]"
+	$layeralpha2 "1"
+	$addlayers 1
+
+
+	$fresnel 1
+
+	$fresnelSharpness1 1.0
+	$fresnelOuterStrength1 0.0
+	$fresnelInnerStrength1 1.0
+
+	$fresnelSharpness2 0.0
+	$fresnelOuterStrength2 1.0
+	$fresnelInnerStrength2 0.0
+
+/////////////////////////////////////////////////////////
+
+	"$valuezero"	"0"
+
+	"$colorzero"		"[0 0 0]"
+	"$colorblind_color"	"[1 1 1]"
+
+	$newLayercolor "[1 0.1 0.1]"
+
+	Proxies
+	{
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_ColorBlindRed"
+			resultVar $colorblind_color
+		}
+
+		//	if ( srcVar1 > srcVar2 )
+		//		resultVar = greaterVar
+		//	else
+		//		resultVar = LessEqualVar
+		LessOrEqual
+		{
+			lessEqualVar	$newLayercolor
+			greaterVar		$colorblind_color
+			srcVar1			$colorblind_color
+			srcVar2			$valuezero
+			resultVar		$layercolor1
+		}
+
+		LessOrEqual
+		{
+			lessEqualVar	$newLayercolor
+			greaterVar		$colorblind_color
+			srcVar1			$colorblind_color
+			srcVar2			$valuezero
+			resultVar		$layercolor2
+		}
+
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_MPEntityARAlpha"
+			resultVar $alpha
+		}
+
+
+//		"TextureScroll"
+//		{
+//			"texturescrollvar" "$basetexturetransform"
+//			"texturescrollrate" 0.25
+//			"texturescrollangle" 0
+//			"texturescale"	0.5
+//		}
+
+
+		"TextureScroll"
+		{
+			"texturescrollvar" "$texture2transform"
+			"texturescrollrate" 2
+			"texturescrollangle" -90
+		}
+	}
+}
