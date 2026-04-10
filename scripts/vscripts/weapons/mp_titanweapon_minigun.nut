@@ -6,8 +6,6 @@ const MINIGUN_COOL_DELAY = 0.5
 const TITAN_SLOW_SPEED = 0.5
 const MINIGUN_REGEN_RATE = 20.0
 
-// Managed to shorten the code by about 80 lines
-
 function OnWeaponActivate( activateParams )
 {
     UpdateViewmodelAmmo()

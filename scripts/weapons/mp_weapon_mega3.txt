@@ -58,16 +58,16 @@ WeaponData
 	"damage_far_distance" 							"2500"
 	"damage_near_value"   							"100"
 	"damage_far_value"								"85"
-	"damage_near_value_titanarmor"					"90"
-	"damage_far_value_titanarmor" 					"80"
+	"damage_near_value_titanarmor"					"93"
+	"damage_far_value_titanarmor" 					"85"
 
 	// Damage - When Used by NPCs
 	"npc_damage_near_distance"						"2700"
 	"npc_damage_far_distance" 						"3200"
 	"npc_damage_near_value"   						"100"
 	"npc_damage_far_value"							"85"
-	"npc_damage_near_value_titanarmor"				"90"
-	"npc_damage_far_value_titanarmor" 				"80"
+	"npc_damage_near_value_titanarmor"				"93"
+	"npc_damage_far_value_titanarmor" 				"85"
 
 	"impulse_force"   								"2500"
 	"critical_hit_damage_scale"						"2.0" 
@@ -112,11 +112,11 @@ WeaponData
 
 
 	// Charge Behavior
-	"charge_time" 								"0.5" //	"0.01"
+	"charge_time" 						 			"0.5" //	"0.01"
 	"charge_cooldown_time"							"3.5"
 	"charge_cooldown_delay"   						"0.1"
 	"charge_end_forces_fire"						 "1"
-		
+
 	// Spread //tfo-556
 	"spread_stand_hip"								"1" //"4"
 	"spread_stand_hip_run"							"1" //"8.0"
