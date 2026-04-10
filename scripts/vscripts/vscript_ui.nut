@@ -1218,6 +1218,7 @@ function InitMenus()
 			button.Show()
 	}
 
+	AddEventHandlerToButtonClass( menu, "ServerBrowserButtonClass", UIE_CLICK, AdvanceMenuEventHandler( GetMenu( "ServerBrowserMenu" ) ) )
 	AddEventHandlerToButtonClass( menu, "VoteButtonClass", UIE_CLICK, AdvanceMenuEventHandler( GetMenu( "VoteMenu" ) ) )
 	AddEventHandlerToButtonClass( menu, "VoteTargetButtonClass", UIE_CLICK, AdvanceMenuEventHandler( GetMenu( "VoteTargetMenu" ) ) )
 

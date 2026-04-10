@@ -76,16 +76,30 @@ resource/ui/menus/ingame.menu
 			InheritProperties		TitanfallLogoSmall
 		}
 
+		BtnServerBrowser
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				ServerBrowserButtonClass
+			xpos					30
+			ypos					86
+			navUp					BtnDev
+			navDown					BtnPilotLoadout
+			tabPosition				1
+			labelText				"#SERVER_BROWSER"
+		}
+
 		BtnPilotLoadout
 		{
 			ControlName				BaseModHybridButton
 			InheritProperties		DefaultButton
 			classname				PilotLoadoutButtonClass
-			xpos					30
-			ypos					86
-			navUp					BtnDev
+			pin_to_sibling			BtnServerBrowser
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					11
+			navUp					BtnServerBrowser
 			navDown					BtnTitanLoadout
-			tabPosition				1
 			labelText				"#MENU_PILOT_LOADOUT"
 		}
 
@@ -139,8 +153,21 @@ resource/ui/menus/ingame.menu
 			pin_to_sibling_corner	2
 			ypos					11
 			navUp					BtnOptions
-			navDown					BtnLeaveGame
+			navDown					BtnVote
 			labelText				"#RANKED_GAME_MENU_ENABLE"
+		}
+
+		BtnVote
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				VoteButtonClass
+			pin_to_sibling			BtnRanked
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnRanked
+			navDown					BtnLeaveGame
+			labelText				"#START_VOTE"
 		}
 
 		BtnLeaveGame
@@ -148,10 +175,10 @@ resource/ui/menus/ingame.menu
 			ControlName				BaseModHybridButton
 			InheritProperties		DefaultButton
 			classname 				LeaveGameButtonClass
-			pin_to_sibling			BtnRanked
+			pin_to_sibling			BtnVote
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
-			navUp					BtnRanked
+			navUp					BtnVote
 			navDown					BtnEndGame
 			labelText				"#LEAVE_MATCH"
 		}
@@ -179,7 +206,7 @@ resource/ui/menus/ingame.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			navUp					BtnEndGame
-			navDown					BtnPilotLoadout
+			navDown					BtnServerBrowser
 			labelText				"Dev"
 			visible 				0
 		}
