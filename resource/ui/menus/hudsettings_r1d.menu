@@ -118,7 +118,7 @@ resource/ui/menus/hudsettings_r1d.menu
 			navUp					SwchWatermark
 			navDown					SwchLegacyProgressbar
 			tabPosition				1
-			labelText				"DAMAGE NUMBERS"
+			labelText				"#MENU_DAMAGE_NUMBERS"
 			ConVar					"delta_damage_numbers"
 			list
 			{
@@ -138,7 +138,7 @@ resource/ui/menus/hudsettings_r1d.menu
 			pin_to_sibling_corner	2
 			navUp					SwchDamageNumbers
 			navDown					SwchScriptNotification
-			labelText				"LEGACY PROGRESS BAR"
+			labelText				"#MENU_OLD_PROGRESS"
 			ConVar					"delta_useLegacyProgressBar"
 			list
 			{
@@ -158,7 +158,7 @@ resource/ui/menus/hudsettings_r1d.menu
 			pin_to_sibling_corner	2
 			navUp					SwchLegacyProgressbar
 			navDown					SwchWatermark
-			labelText				"SCRIPT ERROR NOTIFICATIONS"
+			labelText				"#MENU_ERROR_NOTIFICATION"
 			ConVar					"delta_script_errors_notification"
 			list
 			{
@@ -178,7 +178,7 @@ resource/ui/menus/hudsettings_r1d.menu
 			pin_to_sibling_corner	2
 			navUp					SwchScriptNotification
 			navDown					SwchDamageNumbers
-			labelText				"WATERMARK"
+			labelText				"#MENU_DELTA_WATERMARK"
 			ConVar					"delta_watermark"
 			list
 			{

@@ -171,12 +171,12 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchExtendedColorBlind
 			navDown					SldObjectiveOpacity
-			labelText				"GRENADE INDICATOR STYLE"
+			labelText				"#MENU_GRENADE_INDICATOR"
 			ConVar					"delta_hud_grenade_style"
 			list
 			{
-				"2D TEXTURE"				0
-				"3D MODEL"					1
+				"#SETTING_2D"				0
+				"#SETTING_3D"				1
 			}
 		}
 
@@ -209,7 +209,7 @@ resource/ui/menus/hudsettings.menu
 				pinCorner				0
 				visible					0 ///////////
 				enabled					0 ///////////
-				labelText				"OBJECTIVE MARKER OPACITY"
+				labelText				"#MENU_OBJECTIVE_MARKER"
 				style					LeftDialogButton
 				allcaps					1
 				command					""
@@ -286,7 +286,7 @@ resource/ui/menus/hudsettings.menu
 			xpos					10
 			navUp					SldObjectiveOpacity
 			navDown					SwchChatMessages
-			labelText				"ANTI-TITAN HINT"
+			labelText				"#MENU_AT_HINT"
 			ConVar					"delta_hud_show_AT_hint"
 			list
 			{
@@ -306,7 +306,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchATHint
 			navDown					SwchCrosshair
-			labelText				"CHAT MESSAGES"
+			labelText				"#MENU_CHAT_MESSAGES"
 			ConVar					"delta_hud_show_chat"
 			list
 			{
@@ -326,7 +326,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchChatMessages
 			navDown					SwchHitmarkers
-			labelText				"Crosshair"
+			labelText				"#MENU_CROSSHAIR"
 			ConVar					"crosshair_enabled"
 			list
 			{
@@ -346,14 +346,14 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchCrosshair
 			navDown					SwchFlyout
-			labelText				"HITMARKERS"
+			labelText				"#MENU_HITMARKERS"
 			ConVar					"delta_hud_show_hitmarkers"
 			list
 			{
 				"#SETTING_OFF"				0
-				"All"						1
-				"Normal Only"				2
-				"Weak/Critical Only"		3
+				"#SETTING_ALL"				1
+				"#SETTING_NORMAL_ONLY"		2
+				"#SETTING_WEAK_CRIT_ONLY"	3
 			}
 		}
 
@@ -368,7 +368,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchHitmarkers
 			navDown					SwchKeybindIcons
-			labelText				"WEAPON FLYOUTS"
+			labelText				"#MENU_WEAPON_FLYOUTS"
 			ConVar					"delta_hud_show_flyout"
 			list
 			{
@@ -388,7 +388,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchFlyout
 			navDown					SwchChallengeCompleted
-			labelText				"KEYBIND ICONS"
+			labelText				"#MENU_KEYBIND_ICONS"
 			ConVar					"delta_hud_show_keybind_icons"
 			visible 				0 ///////////
 			enabled 				0 ///////////
@@ -410,7 +410,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchKeybindIcons
 			navDown					SwchLevelup
-			labelText				"CHALLENGE COMPLETED NOTIFICATIONS"
+			labelText				"#MENU_CHALLENGE_COMP"
 			ConVar					"delta_hud_show_challenge_completed"
 			list
 			{
@@ -430,7 +430,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchChallengeCompleted
 			navDown					SwchObituaries
-			labelText				"LEVEL UP NOTIFICATIONS"
+			labelText				"#MENU_LEVELUP"
 			ConVar					"delta_hud_show_levelup"
 			list
 			{
@@ -453,7 +453,7 @@ resource/ui/menus/hudsettings.menu
 			ypos					0
 			navUp					SwchLevelup
 			navDown					SwchTitanEarnings
-			labelText				"OBITUARIES"
+			labelText				"#MENU_OBITUARIES"
 			ConVar					"delta_hud_show_obituaries"
 			list
 			{
@@ -473,7 +473,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchObituaries
 			navDown					SwchVDU
-			labelText				"TITAN EARNINGS"
+			labelText				"#MENU_TITAN_EARNINGS"
 			ConVar					"delta_hud_show_titan_earnings"
 			list
 			{
@@ -493,7 +493,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchTitanEarnings
 			navDown					SwchXPBar
-			labelText				"CHARACTER VDU"
+			labelText				"#MENU_CHARACTER_VDU"
 			ConVar					"delta_hud_show_vdu"
 			list
 			{
@@ -513,7 +513,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchVDU
 			navDown					SwchHudWarp
-			labelText				"XP BAR"
+			labelText				"#MENU_XP_BAR"
 			ConVar					"delta_hud_show_xpbar"
 			list
 			{
@@ -533,7 +533,7 @@ resource/ui/menus/hudsettings.menu
 			pin_to_sibling_corner	2
 			navUp					SwchXPBar
 			navDown					SwchSafeArea
-			labelText				"HUD WARPING"
+			labelText				"#MENU_HUD_WARPING"
 			ConVar					"hudwarp_disable"
 			list
 			{

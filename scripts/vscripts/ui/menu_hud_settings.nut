@@ -9,27 +9,31 @@ function main()
 
 function InitHudSettingsMenu( menu )
 {
-	// TODO: keybind icons, grenade style, objective marker opacity
-	SetupButton( menu.GetChild( "BtnHudSettingsR1D" ), "Change options for R1Delta specific HUD elemens." )
+	// TODO: keybind icons, objective marker opacity
+	SetupButton( menu.GetChild( "BtnHudSettingsR1D" ), "#OPTIONS_MENU_HUD_R1D_DESC" )
 
 	SetupButton( menu.GetChild( "SwchColorBlindMode" ), "#OPTIONS_MENU_COLORBLIND_TYPE_DESC" )
 	SetupButton( menu.GetChild( "SwchExtendedColorBlind" ), "#OPTIONS_MENU_EXTENDED_COLORBLIND_DESC" )
-	SetupButton( menu.GetChild( "SwchGrenadeIndicator" ), "Change grenade indicator style. \n\n0: 2D Texture. \n\n1: 3D Model." )
+	SetupButton( menu.GetChild( "SwchGrenadeIndicator" ), "#OPTIONS_MENU_GRENADE_INDICATOR_DESC" )
 
-	SetupButton( menu.GetChild( "SwchATHint" ), "Show anti-titan weapon hint." )
-	SetupButton( menu.GetChild( "SwchChatMessages" ), "Show chat messages." )
-	SetupButton( menu.GetChild( "SwchCrosshair" ), "Show crosshair. Note: disabling this will also hide all hitmarkers." )
-	SetupButton( menu.GetChild( "SwchHitmarkers" ), "Show hitmarkers. Note: disabling the crosshair will also hide all hitmarkers." )
-	SetupButton( menu.GetChild( "SwchFlyout" ), "Show information about your weapons when you switch between them." )
-	SetupButton( menu.GetChild( "SwchKeybindIcons" ), "Show persistent button prompts for your weapons and abilities on the HUD." )
-	SetupButton( menu.GetChild( "SwchChallengeCompleted" ), "Show challenge completed notifications." )
-	SetupButton( menu.GetChild( "SwchLevelup" ), "Show level up notifications." )
-	SetupButton( menu.GetChild( "SwchObituaries" ), "Show obituaries for player kills and deaths." )
-	SetupButton( menu.GetChild( "SwchTitanEarnings" ), "Show titan timer earnings below the crosshair." )
-	SetupButton( menu.GetChild( "SwchVDU" ), "Show character VDUs on the top right." )
-	SetupButton( menu.GetChild( "SwchXPBar" ), "Show XP Bar." )
-	SetupButton( menu.GetChild( "SwchHudWarp" ), "Enable spherical warp distortion for the HUD. Disabling it may help performance." )
+	SetupButton( menu.GetChild( "SwchATHint" ), "#OPTIONS_MENU_AT_HINT_DESC" )
+	SetupButton( menu.GetChild( "SwchChatMessages" ), "#OPTIONS_MENU_CHAT_MESSAGES_DESC" )
+	SetupButton( menu.GetChild( "SwchCrosshair" ), "#OPTIONS_MENU_CROSSHAIR_DESC" )
+	SetupButton( menu.GetChild( "SwchHitmarkers" ), "#OPTIONS_MENU_HITMARKERS_DESC" )
+	SetupButton( menu.GetChild( "SwchFlyout" ), "#OPTIONS_MENU_WEAPON_FLYOUTS_DESC" )
+	SetupButton( menu.GetChild( "SwchKeybindIcons" ), "#OPTIONS_MENU_KEYBIND_ICONS_DESC" )
+	SetupButton( menu.GetChild( "SwchChallengeCompleted" ), "#OPTIONS_MENU_CHALLENGE_COMP_DESC" )
+	SetupButton( menu.GetChild( "SwchLevelup" ), "#OPTIONS_MENU_LEVELUP_DESC" )
+	SetupButton( menu.GetChild( "SwchObituaries" ), "#OPTIONS_MENU_OBITUARIES_DESC" )
+	SetupButton( menu.GetChild( "SwchTitanEarnings" ), "#OPTIONS_MENU_TITAN_EARNINGS_DESC" )
+	SetupButton( menu.GetChild( "SwchVDU" ), "#OPTIONS_MENU_CHARACTER_VDU_DESC" )
+	SetupButton( menu.GetChild( "SwchXPBar" ), "#OPTIONS_MENU_XP_BAR_DESC" )
+	SetupButton( menu.GetChild( "SwchHudWarp" ), "#OPTIONS_MENU_HUD_WARPING_DESC" )
 	SetupButton( menu.GetChild( "SwchSafeArea" ), "#OPTIONS_MENU_SAFE_AREA_DESC" )
+
+	// Convar currently doesnt do anything
+	menu.GetChild( "SwchHudWarp" ).SetLocked( true )
+	menu.GetChild( "SwchHudWarp" ).SetEnabled( false )
 
 	AddEventHandlerToButtonClass( menu, "HudSettingsR1DButtonClass", UIE_CLICK, ReplaceMenuEventHandlerNoPop( GetMenu( "HudSettingsR1DMenu" ) ) ) //AdvanceMenuEventHandler
 	AddEventHandlerToButtonClass( menu, "ObjectiveOpacityClass", UIE_GET_FOCUS, ObjectiveOpacityClass_Focused )

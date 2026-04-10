@@ -140,6 +140,6 @@ function HoldToRodeo_Focused( button )
 function HudSettings_Focused( button )
 {
 	local menu = GetMenu( "OptionsMenu" )
-	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "" )
+	SetElementsTextByClassname( menu, "MenuItemDescriptionClass", "#OPTIONS_MENU_HUD_DESC" )
 }
 

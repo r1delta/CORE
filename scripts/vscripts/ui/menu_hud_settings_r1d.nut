@@ -8,10 +8,10 @@ function main()
 
 function InitHudSettingsR1DMenu( menu )
 {
-	SetupButton( menu.GetChild( "SwchDamageNumbers" ), "Show TF2-style floating damage numbers on hit." )
-	SetupButton( menu.GetChild( "SwchLegacyProgressbar" ), "Show the classic Source engine loading bar on loadscreen." )
-	SetupButton( menu.GetChild( "SwchScriptNotification" ), "Show a notification whenever a script error occurs." )
-	SetupButton( menu.GetChild( "SwchWatermark" ), "Show R1Delta watermark with version information." )
+	SetupButton( menu.GetChild( "SwchDamageNumbers" ), "#OPTIONS_MENU_DAMAGE_NUMBERS_DESC" )
+	SetupButton( menu.GetChild( "SwchLegacyProgressbar" ), "#OPTIONS_MENU_OLD_PROGRESS_DESC" )
+	SetupButton( menu.GetChild( "SwchScriptNotification" ), "#OPTIONS_MENU_ERROR_NOTIFICATION_DESC" )
+	SetupButton( menu.GetChild( "SwchWatermark" ), "#OPTIONS_MENU_DELTA_WATERMARK_DESC" )
 
 	AddEventHandlerToButtonClass( menu, "PCFooterButtonClass", UIE_GET_FOCUS, PCFooterButtonClass_Focused )
 }
