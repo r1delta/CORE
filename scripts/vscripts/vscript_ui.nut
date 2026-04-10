@@ -44,6 +44,8 @@ IncludeFile( "ui/menu_serverbrowser" )
 IncludeFile( "ui/menu_addons")
 IncludeFile( "ui/menu_hud_settings")
 IncludeFile( "ui/menu_hud_settings_r1d")
+IncludeFile( "ui/menu_vote" )
+IncludeFile( "ui/menu_vote_target" )
 IncludeFile( "ui/menu_options" )
 IncludeFile( "ui/menu_black_market_main" )
 IncludeFile( "ui/menu_black_market" )
@@ -99,6 +101,8 @@ IncludeFile( "ui/menu_mode_select" )
 IncludeFile( "ui/menu_ranked_mode_info" )
 IncludeScript( "_pdef_client" )
 
+IncludeScript( "_vote_shared_all" )
+
 function main()
 {
 	uiGlobal <- {}
@@ -145,6 +149,7 @@ function main()
 	uiGlobal.ui_ChallengeProgress <- {}
 	uiGlobal.doTraining <- false
 	uiGlobal.setServerPublicNextPrivateLobby <- false
+	uiGlobal.selectedVote <- -1
 
 	RegisterSignal( "LevelShutdown" )
 	RegisterSignal( "CleanupInGameMenus" )
@@ -1006,6 +1011,8 @@ function InitMenus()
 	AddMenu( "Addons", "resource/ui/menus/addons.menu", "ADDONS" )
 	AddMenu( "HudSettingsMenu", "resource/ui/menus/hudsettings.menu", "#HUD_SETTINGS" )
 	AddMenu( "HudSettingsR1DMenu", "resource/ui/menus/hudsettings_r1d.menu", "#HUD_SETTINGS_R1D" )
+	AddMenu( "VoteMenu", "resource/ui/menus/vote.menu", "#START_VOTE" )
+	AddMenu( "VoteTargetMenu", "resource/ui/menus/votetarget.menu", "#VOTETYPE_TARGET" )
 
 	AddMenu( "BlackMarketMenu", "resource/ui/menus/blackMarket.menu", "#SHOP_TITLE" )
 	AddMenu( "BlackMarketMainMenu", "resource/ui/menus/blackMarket_main.menu", "#SHOP_TITLE" )
@@ -1093,6 +1100,8 @@ function InitMenus()
 
 	InitHudSettingsMenu( GetMenu( "HudSettingsMenu" ) )
 	InitHudSettingsR1DMenu( GetMenu( "HudSettingsR1DMenu" ) )
+	InitVoteMenu( GetMenu( "VoteMenu" ) )
+	InitVoteTargetMenu( GetMenu( "VoteTargetMenu" ) )
 
 	// Intro
 	InitIntroMenu( GetMenu( "IntroMenu" ) )
@@ -1208,6 +1217,9 @@ function InitMenus()
 		foreach ( button in buttons )
 			button.Show()
 	}
+
+	AddEventHandlerToButtonClass( menu, "VoteButtonClass", UIE_CLICK, AdvanceMenuEventHandler( GetMenu( "VoteMenu" ) ) )
+	AddEventHandlerToButtonClass( menu, "VoteTargetButtonClass", UIE_CLICK, AdvanceMenuEventHandler( GetMenu( "VoteTargetMenu" ) ) )
 
 	// In Game SP
 	local menu = GetMenu( "InGameSPMenu" )
@@ -1858,6 +1870,14 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenHudSettingsR1DMenu( menu )
 			break
 
+		case "VoteMenu":
+			OnOpenVoteMenu( menu )
+			break
+
+		case "VoteTargetMenu":
+			OnOpenVoteTargetMenu( menu )
+			break
+
 		default:
 			break
 	}
@@ -2051,6 +2071,14 @@ function CloseMenuWrapper( menu )
 
 		case "HudSettingsR1DMenu":
 			OnCloseHudSettingsR1DMenu( menu )
+			break
+
+		case "VoteMenu":
+			OnCloseVoteMenu( menu )
+			break
+
+		case "VoteTargetMenu":
+			OnCloseVoteTargetMenu( menu )
 			break
 
 		default:

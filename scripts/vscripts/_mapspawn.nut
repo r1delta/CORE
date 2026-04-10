@@ -369,6 +369,10 @@
 	IncludeFile( "_custom_command_callbacks" )
 	IncludeFile( "mp/_vote" )
 
+	IncludeFile( "_vote_shared" )
+	IncludeScript( "_vote_shared_all" )
+
+
 	// NOTE this should run after level scripts get a chance to override default behavior
 	if ( IsMultiplayer() && GetClassicMPMode() && !IsLobby() )
 		ClassicMP_TryDefaultIntroSetup()

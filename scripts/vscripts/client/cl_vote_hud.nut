@@ -4,8 +4,6 @@ function main()
 	if ( IsLobby() )
 		return
 
-	IncludeFile( "_vote_shared" )
-
 	RegisterServerVarChangeCallback( "playersVotingYes", 		HudCallback_PlayerVotedYes )
 	RegisterServerVarChangeCallback( "playersVotingNo", 		HudCallback_PlayerVotedNo )
 
@@ -20,7 +18,6 @@ function main()
 	level.voteAnnounceList_lastUpdateTime 	<- -1
 	level.lastVoteCardDisplayTime 			<- -1
 	level.voteAnnounceHeaderCard 			<- null
-	level.voteAnnounceFooterCard 			<- null
 
 	level.voteTypeID						<- -1
 	level.voteCaller						<- null
@@ -34,8 +31,6 @@ function main()
 	AddCreateMainHudCallback( VoteHUD_CockpitCreatedCallback )
 	AddCreatePilotCockpitCallback( VoteHUD_CockpitCreatedCallback )
 	AddCreateTitanCockpitCallback( VoteHUD_CockpitCreatedCallback )
-
-	RegisterSignal( "NewVoteAnnounce_StopFooterPositionUpdate" )
 
 	Globalize( ServerCallback_NewVoteAnnounceCards )
 	Globalize( ServerCallback_VoteEnded )
@@ -196,11 +191,6 @@ function VoteAnnounce_ReprocessQueue()
 			thread NewVoteAnnounce_DisplayCard( player, cardInfo )
 			NewVoteAnnounce_RemoveFromQueue( voteTypeID )
 
-			if ( level.voteAnnounceFooterCard == null )
-				thread NewVoteAnnounce_DisplayFooter( player )
-			else
-				thread NewVoteAnnounce_UpdateFooterPosition( player )
-
 			local nextTick = Time() + COOP_NEWENEMY_ANNOUNCE_CARD_ADD_DELAY
 		}
 	}
@@ -214,77 +204,6 @@ function NewVoteAnnounce_DisplayHeader( player )
 
 	local cardInfo = "HEADER"  // HACK
 	thread NewVoteAnnounce_DisplayCard( player, cardInfo )
-}
-
-function NewVoteAnnounce_DisplayFooter( player )
-{
-	Assert( level.voteAnnounceFooterCard == null )
-
-	local player = GetLocalViewPlayer()
-
-	local cardInfo = "FOOTER"  // HACK
-	thread NewVoteAnnounce_DisplayCard( player, cardInfo )
-}
-
-function NewVoteAnnounce_UpdateFooterPosition( player )
-{
-	if ( !IsValid( player ) )
-		return
-
-	if ( level.voteAnnounceFooterCard == null )  // might be called by the last card sliding away
-		return
-
-	level.ent.Signal( "NewVoteAnnounce_StopFooterPositionUpdate" )
-	level.ent.EndSignal( "NewVoteAnnounce_StopFooterPositionUpdate" )
-
-	local cockpit = player.GetCockpit()
-	local vgui = level.voteAnnounceFooterCard.vgui
-
-	player.EndSignal( "OnDeath" )
-	player.EndSignal( "OnDestroy" )
-	cockpit.EndSignal( "OnDestroy" )
-	vgui.EndSignal( "OnDestroy" )
-
-	local cardInfo = "FOOTER"
-	local cardDisplayInfo = NewVoteAnnounce_GetCardDisplayInfo( player, cardInfo )
-	local midOrigin 	= cardDisplayInfo.midOrigin
-	local vguiWidth 	= cardDisplayInfo.vguiWidth
-	local vguiHeight 	= cardDisplayInfo.vguiHeight
-
-	// use this origin as a fallback, this gives us the offscreen start position for a card sliding in, not the current footer origin.
-	//  - (Fallback because we want the footer update move to look like a vertical slide down, not a horizontal slide out.)
-	local startOrigin 	= cardDisplayInfo.startOrigin
-
-	// HACK As a Titan, the cockpit GetOrigin returns a location near the player's face. HOWEVER as a player the cockpit is rendered differently, so it returns a location that is offset from the worldspawn.
-	//  Fix here is just to store it ourselves for future reference. -SRS
-	if ( level.voteAnnounceFooterCard.lastMidOrigin != null )
-		startOrigin = level.voteAnnounceFooterCard.lastMidOrigin
-
-	//printt( "Footer start/midOrigin:", startOrigin, midOrigin )
-
-	if ( midOrigin == startOrigin )
-		return
-
-	level.voteAnnounceFooterCard.lastMidOrigin = midOrigin
-
-	local startTime = Time()
-	local moveTime = COOP_NEWENEMY_ANNOUNCE_CARD_MOVE_TIME
-	local endTime = startTime + moveTime
-
-	while( 1 )
-	{
-		if ( Time() >= endTime )
-			break
-
-		// the vgui can be deparented from the player before either of them are destroyed
-		if ( !IsValid( vgui.GetParent() ) )
-			break
-
-		local result = Interpolate( startTime, moveTime, 0, moveTime )
-		InterpolateBurnCard( vgui, result, startTime, moveTime, startOrigin, midOrigin, COOP_NEWENEMY_ANNOUNCE_CARD_SCALE_OUT, COOP_NEWENEMY_ANNOUNCE_CARD_SCALE_IN, vguiWidth, vguiHeight )
-
-		wait 0
-	}
 }
 
 function VoteAnnounce_AddToDisplayList( voteTypeID )
@@ -349,16 +268,8 @@ function NewVoteAnnounce_DisplayCard( player, cardInfo )
 				if ( level.voteAnnounceHeaderCard != null )
 					level.voteAnnounceHeaderCard = null
 			}
-			else if ( cardInfo == "FOOTER" )
-			{
-				if ( level.voteAnnounceFooterCard != null )
-					level.voteAnnounceFooterCard = null
-			}
 			else
 			{
-				if ( IsValid( player ) )
-					thread NewVoteAnnounce_UpdateFooterPosition( player )
-
 				if ( pageEndingCard == true && level.voteAnnounce_pageWaiting == true )
 					level.voteAnnounce_pageWaiting = false
 
@@ -516,10 +427,6 @@ function NewVoteAnnounce_GetCardDisplayInfo( player, cardInfo, listIdx = -1 )
 	local header_upOrgScalar 	= 4.0
 	local cardstart_upOrgScalar = header_upOrgScalar - 1.6  // controls whitespace between header and start of list items
 
-	// HACK the footer always tacks onto the bottom
-	if ( cardInfo == "FOOTER" )
-		listIdx = level.voteAnnounceDisplayList.len()
-
 	Assert( listIdx != -1 )
 
 	local upOrgScalar = cardstart_upOrgScalar
@@ -531,9 +438,6 @@ function NewVoteAnnounce_GetCardDisplayInfo( player, cardInfo, listIdx = -1 )
 	else if ( listIdx != 0 )  // normal card or footer
 	{
 		upOrgScalar = cardstart_upOrgScalar - ( listIdx * scaledHeight )
-
-		if ( cardInfo == "FOOTER" )
-			upOrgScalar += ( vguiHeight * 0.275 )
 	}
 
 	local origin = Vector( 0, 0, 0 )
@@ -592,7 +496,6 @@ function VoteAnnounce_CreateCard( previewPanel, cardInfo )
 	allCardElems.append( "PreviewCard_description" )
 	allCardElems.append( "PreviewCard_icon1" )
 	allCardElems.append( "PreviewCard_numEnemies" )
-	allCardElems.append( "PreviewCard_FooterTitle" )
 
 	local table = {}
 	local panel = previewPanel.GetPanel()
@@ -620,27 +523,17 @@ function VoteAnnounceCard_HideInactiveElems( previewCardTable, cardInfo )
 							"PreviewCard_numEnemies",
 						]
 
-	local footerElems = [ 	"PreviewCard_FooterTitle" ]
-
 	local activeElems, inactiveElems
 
 	if ( cardInfo == "HEADER" )
 	{
 		activeElems = headerElems
 		inactiveElems = normalElems
-		inactiveElems.extend( footerElems )
-	}
-	else if ( cardInfo == "FOOTER" )
-	{
-		activeElems = footerElems
-		inactiveElems = normalElems
-		inactiveElems.extend( headerElems )
 	}
 	else
 	{
 		activeElems = normalElems
 		inactiveElems = headerElems
-		inactiveElems.extend( footerElems )
 	}
 
 	foreach ( name in inactiveElems )
@@ -661,8 +554,6 @@ function VoteAnnounce_SetCard( previewCardTable, cardInfo )
 
 	if ( cardInfo == "HEADER" )
 		VoteAnnounce_SetHeaderCard( previewCardTable, cardInfo )
-	else if ( cardInfo == "FOOTER" )
-		VoteAnnounce_SetFooterCard( previewCardTable, cardInfo )
 	else
 		VoteAnnounce_SetVoteCard( previewCardTable, cardInfo )
 
@@ -692,20 +583,6 @@ function VoteAnnounce_UpdateHeaderText()
 	local titleElem = level.voteAnnounceHeaderCard.PreviewCard_HeaderTitle
 	titleElem.SetText( title )
 	titleElem.SetSize( 1024, titleElem.GetBaseHeight() )
-}
-
-function VoteAnnounce_SetFooterCard( previewCardTable, cardInfo )
-{
-	Assert ( cardInfo == "FOOTER" )
-
-	level.voteAnnounceFooterCard = previewCardTable
-
-	level.voteAnnounceFooterCard.lastMidOrigin <- null
-
-	//previewCardTable.PreviewCard_FooterTitle.SetText( "" )
-	previewCardTable.PreviewCard_FooterTitle.Hide()
-	previewCardTable.PreviewCard_FooterTitle.EnableKeyBindingIcons()
-
 }
 
 function VoteAnnounce_SetVoteCard( previewCardTable, cardInfo )
@@ -778,7 +655,7 @@ function ServerCallback_EndCurrentVote()
 
 function HudCallback_PlayerVotedYes()
 {
-	if ( !level.nv.voteInProgress )
+	if ( !IsVoteInProgress() )
 		return
 
 	local votes = level.nv.playersVotingYes
@@ -794,7 +671,7 @@ function HudCallback_PlayerVotedYes()
 
 function HudCallback_PlayerVotedNo()
 {
-	if ( !level.nv.voteInProgress )
+	if ( !IsVoteInProgress() )
 		return
 
 	local votes = level.nv.playersVotingNo

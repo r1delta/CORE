@@ -1,8 +1,6 @@
 
 function main()
 {
-	IncludeFile( "_vote_shared" )
-
 	if ( IsLobby() )
 		return
 
@@ -14,6 +12,7 @@ function main()
 
 	level.playerVoteOwner <- null
 	level.nextTimeCanVote <- {}
+	level.targetOverrideEnt <- null
 	for ( local i = 0; i < eVoteType.voteTargetInfo; i++ )
 	{
 		level.nextTimeCanVote[i] <- 0
@@ -50,25 +49,33 @@ function ClientCommand_PressedStartVote( player, ... )
 	if ( vargc <= 0 )
 		return true
 
-	if ( level.nv.voteInProgress )
+	if ( IsVoteInProgress() )
 		return true
 
 	if ( PlayerHasAlreadyVoted( player ) )
 		return true
 
 	if ( Time() < player.s.nextVoteCreateTime && GetPlayerArray().len() > 1 )
-		return false
+		return true
 
 	if ( player == level.playerVoteOwner )
 		return true
 
 	local choice = vargv[0].tointeger()
 	if ( choice == null )
-		return
+		return true
 
 	local target = null
 	if ( vargc > 1 )
-		target = vargv[1].tointeger()
+	{
+		if ( VoteTypeNeedsString( choice ) )
+			target = vargv[1]
+		else
+			target = vargv[1].tointeger()
+	}
+
+	if ( choice == eVoteType.serverCustom )
+		return true
 
 	thread StartVoteUI( player, choice, target )
 
@@ -99,16 +106,33 @@ function StartVoteUI( caller, choice, target, ignoreNextVoteTime = false )
 
 	level.nv.voteInProgress = true
 	level.nv.votePeriodInProgress = true
+	level.ui.voteInProgress = true
+
 	level.playerVoteOwner = caller
 
 	local callerEHandle = null
 	if ( callerIsPlayer )
 		callerEHandle = caller.GetEncodedEHandle()
 
+	// HACK - We cant send strings via a ServerCallback
+	// WOW this is stupid
+	local targetOverride = target
+	if ( VoteTypeNeedsString( choice ) )
+	{
+		local fakeTargetEnt = CreateEntity( "info_target" )
+		fakeTargetEnt.SetName( target )
+		fakeTargetEnt.SetOrigin( Vector( 0, 0, 0 ) )
+		fakeTargetEnt.SetAngles( Vector( 0, 0, 0 ) )
+		fakeTargetEnt.kv.spawnflags = 2
+		DispatchSpawn( fakeTargetEnt )
+
+		level.targetOverrideEnt <- fakeTargetEnt
+		targetOverride = fakeTargetEnt.GetEncodedEHandle()
+	}
+
 	foreach( player in GetPlayerArray() )
 	{
-		printt( "a" )
-		Remote.CallFunction_NonReplay( player, "ServerCallback_NewVoteAnnounceCards", choice, callerEHandle, target )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_NewVoteAnnounceCards", choice, callerEHandle, targetOverride )
 	}
 
 	wait GetVoteDuration()
@@ -124,9 +148,8 @@ function VoteEnded( caller, choice, target )
 
 	foreach( player in GetPlayerArray() )
 	{
-		printt( "b" )
-		printt( "level.nv.playersVotingYes " + level.nv.playersVotingYes )
-		printt( "level.nv.playersVotingNo " + level.nv.playersVotingNo )
+		printt( "VOTE SYSTEM: level.nv.playersVotingYes " + level.nv.playersVotingYes )
+		printt( "VOTE SYSTEM: level.nv.playersVotingNo " + level.nv.playersVotingNo )
 		Remote.CallFunction_NonReplay( player, "ServerCallback_VoteEnded", choice, success )
 	}
 
@@ -134,6 +157,7 @@ function VoteEnded( caller, choice, target )
 	{
 		printt( "VOTE SYSTEM: vote failed" )
 		level.nv.voteInProgress = false
+		level.ui.voteInProgress = false
 		level.playerVoteOwner = null
 		level.nv.playersVotingYes = 0
 		level.nv.playersVotingNo = 0
@@ -149,12 +173,16 @@ function VoteEnded( caller, choice, target )
 			level.customVote_FailureFunc = null
 		}
 
+		if ( level.targetOverrideEnt )
+			level.targetOverrideEnt.Destroy()
+
 		return
 	}
 
 	wait 3.0
 
 	level.nv.voteInProgress = false
+	level.ui.voteInProgress = false
 	level.playerVoteOwner = null
 	level.nv.playersVotingYes = 0
 	level.nv.playersVotingNo = 0
@@ -202,6 +230,9 @@ function VoteEnded( caller, choice, target )
 			serverCustom()
 			break
 	}
+
+	if ( level.targetOverrideEnt )
+		level.targetOverrideEnt.Destroy()
 }
 
 function KickPlayer( target )
@@ -331,7 +362,7 @@ function SetPlayerHasVotekickImmunity( player, state )
 // failureFunction = function called when the vote fails
 function StartCustomServerVote( startFunction, successFunction, failureFunction )
 {
-	if ( level.nv.voteInProgress )
+	if ( IsVoteInProgress() )
 		return
 
 	level.customVote_StartFunc = startFunction
@@ -343,7 +374,7 @@ function StartCustomServerVote( startFunction, successFunction, failureFunction 
 
 function StartServerVote( choice, target = null )
 {
-	if ( level.nv.voteInProgress )
+	if ( IsVoteInProgress() )
 		return
 
 	thread StartVoteUI( level.ent, choice, target, true )
@@ -361,7 +392,7 @@ function EndCurrentVote()
 
 function Dev_ForcePlayerStartVote( player, choice, target = null )
 {
-	if ( level.nv.voteInProgress )
+	if ( IsVoteInProgress() )
 		return
 
 	thread StartVoteUI( player, choice, target )
@@ -369,7 +400,7 @@ function Dev_ForcePlayerStartVote( player, choice, target = null )
 
 function Dev_ForcePlayerVote( player, choice )
 {
-	if ( !level.nv.voteInProgress )
+	if ( !IsVoteInProgress() )
 		return
 
 	if ( choice != 0 )
@@ -381,7 +412,7 @@ function Dev_ForcePlayerVote( player, choice )
 // Probably not good to use in a real game, but theyre debug functions so who cares
 function Dev_ForceVoteWin()
 {
-	if ( !level.nv.voteInProgress )
+	if ( !IsVoteInProgress() )
 		return
 
 	level.nv.playersVotingYes = 32
@@ -389,7 +420,7 @@ function Dev_ForceVoteWin()
 
 function Dev_ForceVoteLose()
 {
-	if ( !level.nv.voteInProgress )
+	if ( !IsVoteInProgress() )
 		return
 
 	level.nv.playersVotingNo = 32

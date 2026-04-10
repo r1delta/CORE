@@ -1918,7 +1918,7 @@ function InitPersistence()
     AddPersistenceKey("savedCoopData.players.enemyType.killCount", "int")
     AddPersistenceKey("savedCoopData.players.enemyType.turretKillCount", "int")
 
-    AddPersistenceArray("mapHistory", 24)
+    AddPersistenceArray("mapHistory", "maps")
     AddPersistenceKey("mapHistory", "int")
     AddPersistenceArray("modeHistory", 10)
     AddPersistenceKey("modeHistory", "int")

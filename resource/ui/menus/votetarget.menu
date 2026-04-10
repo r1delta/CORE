@@ -1,0 +1,236 @@
+resource/ui/menus/votetarget.menu
+{
+	VoteTargetMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#VOTETYPE_TARGET"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		NextMapImage
+		{
+			ControlName				ImagePanel
+			xpos 					r532
+			ypos					74
+			wide					493
+			tall					186
+			visible					1
+			scaleImage				1
+			image					""
+			zpos					1
+		}
+		NextMapImageFrame
+		{
+			ControlName				ImagePanel
+			pin_to_sibling			NextMapImage
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			wide					493
+			tall					186
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_image_frame"
+			zpos					1
+		}
+		NextModeImageBackground
+		{
+			ControlName				ImagePanel
+			xpos 					r532
+			ypos					74
+			wide					493
+			tall					186
+			visible					1
+			scaleImage				1
+			image					"white"
+			drawColor				"32 32 32 255"
+			zpos					0
+		}
+		NextModeImage
+		{
+			ControlName				ImagePanel
+			pin_to_sibling			NextMapImageFrame
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+			wide					160
+			tall					160
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_image_frame"
+			zpos					2
+		}
+
+		NextMapName
+		{
+			ControlName				Label
+			pin_to_sibling			NextMapImage
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-11
+			ypos					-9
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			font					NextMapFont
+			allcaps					1
+			fgcolor_override		"204 234 255 255"
+			zpos					1
+		}
+
+		NextMapDesc
+		{
+			ControlName				Label
+			pin_to_sibling			NextMapName
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					0
+			ypos					0
+			wide					471
+			wrap					1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			textalignment			north-west
+			font					NextGameModeFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+			zpos					1
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		LblMenuItemDescription
+		{
+			ControlName				Label
+			InheritProperties		OptionMenuTooltip
+			classname 				MenuItemDescriptionClass
+			pin_to_sibling			ImgTopBar
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Works just fine for this
+		MapButtonsPanel
+		{
+			ControlName				CNestedPanel
+			xpos					30
+			ypos					94
+			zpos					200
+			wide					300
+			tall					306
+			visible					1
+			controlSettingsFile		"resource/UI/menus/map_buttons.res"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		PCScrollUpButton
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonUp
+			classname					MapListScrollUpClass
+
+			pin_to_sibling				MapButtonsPanel
+			pin_corner_to_sibling		6
+			pin_to_sibling_corner		4
+
+			ypos						-2
+
+			navUp						MapButton23
+			navDown						MapButton0
+		}
+
+		PCScrollDownButton
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonDown
+			classname 					MapListScrollDownClass
+
+			pin_to_sibling				MapButtonsPanel
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+
+			ypos						-18
+
+			navUp						MapButton23
+			navDown						MapButton0
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+    }
+}

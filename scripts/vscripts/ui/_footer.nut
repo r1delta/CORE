@@ -356,6 +356,8 @@ function UpdateFooterButtons( menuName = null )
 		case "ViewStatsMenu":
 		case "ChallengesMenu":
 		case "HudSettingsR1DMenu":
+		case "VoteMenu":
+		case "VoteTargetMenu":
 			footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
 
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )

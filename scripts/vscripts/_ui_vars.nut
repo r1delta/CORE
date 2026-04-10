@@ -126,3 +126,5 @@ RegisterUIVar( "isDedicatedServer", false )
 RegisterUIVar( "listenHostUsernameHash", null )
 
 RegisterUIVar( "ffaBased", false )
+
+RegisterUIVar( "voteInProgress", false )

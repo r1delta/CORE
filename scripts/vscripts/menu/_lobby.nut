@@ -1303,11 +1303,13 @@ function Lobby_PickNextMapModeCombo( allowedMaps = null )
 
 	local nextCombo = Random( selectionPool )
 
+	/*
 	if ( GetNextVotedMode() != GameRules.GetGameMode() )
 	{
 		nextCombo.modeName = GetNextVotedMode()
 		ServerCommand( "delta_vote_next_mode \"\"" )
 	}
+	*/
 
 	if ( GetNextVotedMap() != GetMapName() )
 	{

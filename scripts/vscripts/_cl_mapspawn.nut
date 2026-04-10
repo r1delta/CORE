@@ -371,6 +371,9 @@ function Cl_MapspawnMain()
 	}
 	IncludeFile("client/cl_discord")
 	IncludeFile( "client/cl_vote_hud" )
+
+	IncludeFile( "_vote_shared" )
+	IncludeScript( "_vote_shared_all" )
 }
 
 function CodeCallback_RunClientConnectScripts( player )

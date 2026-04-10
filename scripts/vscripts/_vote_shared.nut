@@ -6,7 +6,6 @@ function main()
 	level.voteAnnounceCardInfos <- {}
 	Vote_CreateAnnounceCards()
 
-	Globalize( VoteTypeNeedsTarget )
 	Globalize( PlayerCanVote )
 	Globalize( PlayerHasAlreadyVoted )
 	Globalize( PlayerVotedYes )
@@ -17,8 +16,6 @@ function main()
 	Globalize( GetVoteDuration )
 	Globalize( GetNextVotedMap )
 	Globalize( GetNextVotedMode )
-
-	Globalize( CanCreateVoteOfType )
 }
 
 // -------------------------
@@ -80,26 +77,12 @@ function ValidateVoteTypeIdx( voteTypeIdx )
 }
 Globalize( ValidateVoteTypeIdx )
 
-function VoteTypeNeedsTarget( voteTypeID )
-{
-	switch( voteTypeID )
-	{
-		case eVoteType.kickPlayer:
-		case eVoteType.mapChange:
-		case eVoteType.nextMap:
-		case eVoteType.nextMode:
-			return true
-	}
-
-	return false
-}
-
 function PlayerCanVote( player )
 {
 	if ( !IsValid( player ) )
 		return false
 
-	if ( !level.nv.voteInProgress )
+	if ( !IsVoteInProgress() )
 		return false
 
 	if ( PlayerHasAlreadyVoted( player ) )
@@ -148,7 +131,7 @@ function GetPlayerVoteOption( player )
 
 function GetVoteTargetInfo( voteTypeID, target )
 {
-	local info = null
+	local info = target
 	switch ( voteTypeID )
 	{
 		case eVoteType.kickPlayer:
@@ -160,7 +143,14 @@ function GetVoteTargetInfo( voteTypeID, target )
 			break
 
 		case eVoteType.mapChange:
-			info = GetMapDisplayName( GetCurrentPlaylistMapByIndex( target ) )
+		case eVoteType.nextMap:
+			if ( IsClient() )
+				info = GetMapDisplayName( GetEntityFromEncodedEHandle( target ).GetName() )
+			break
+
+		case eVoteType.nextMode:
+			if ( IsClient() )
+				info = GAMETYPE_TEXT[ GetEntityFromEncodedEHandle( target ).GetName() ] //GetGameModeDisplayName
 			break
 	}
 
@@ -186,55 +176,6 @@ function GetNextVotedMode()
 		return GetConVarString( "delta_vote_next_mode" )
 
 	return GameRules.GetGameMode()
-}
-
-function CanCreateVoteOfType( voteTypeID, target, ignoreNextVoteTime = false )
-{
-	if ( !GetConVarBool( "delta_vote_allowed" ) )
-		return false
-
-	if ( GetGameState() < eGameState.Playing || GetGameState() == eGameState.Postmatch )
-		return false
-
-	if ( level.nv.voteInProgress )
-		return false
-
-	if ( IsServer() )
-	{
-		if ( Time() < level.nextTimeCanVote[voteTypeID] && !ignoreNextVoteTime )
-			return false
-	}
-
-	if ( !IsValid( target ) && VoteTypeNeedsTarget( voteTypeID ) )
-		return false
-
-	switch( voteTypeID )
-	{
-		case eVoteType.kickPlayer:
-			if ( target.s.voteKickImmunity == true )
-				return false
-			break
-
-		case eVoteType.mapChange:
-			if ( !GetCurrentPlaylistMapByIndex( target ) )
-				return false
-			break
-		
-		case eVoteType.nextMode:
-			if ( GetCinematicMode() )
-				return false
-			break
-	}
-
-	local noCoop = [ eVoteType.teamScramble, eVoteType.toggleAlltalk ]
-	if ( GAMETYPE == COOPERATIVE && ( voteTypeID in noCoop ) )
-		return false
-
-	local TEMP_DISABLEDVOTES = [ eVoteType.kickPlayer, eVoteType.teamScramble ]
-	if ( voteTypeID in TEMP_DISABLEDVOTES )
-		return false
-
-	return voteTypeID < eVoteType.voteTargetInfo
 }
 
 main()
