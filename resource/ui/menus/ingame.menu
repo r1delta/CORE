@@ -1,0 +1,246 @@
+resource/ui/menus/ingame.menu
+{
+	InGameMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+		//ImgGuide
+		//{
+		//	ControlName				ImagePanel
+		//	xpos					0
+		//	ypos					0
+		//	wide					f0
+		//	tall					f0
+		//	image 					"../ui/menu/menu_bg"
+		//	visible					1
+		//	scaleImage				1
+		//}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#GAME"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		ChallengeTrackerBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuChallengeTrackerBackground
+			classname				ChallengeTrackerBackground
+			visible					0
+		}
+
+		ChallengeTrackerTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuChallengeTrackerText
+			labelText				"#CHALLENGE_TRACKER_TITLE"
+			classname				ChallengeTrackerTitle
+			visible					0
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		BtnPilotLoadout
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				PilotLoadoutButtonClass
+			xpos					30
+			ypos					86
+			navUp					BtnDev
+			navDown					BtnTitanLoadout
+			tabPosition				1
+			labelText				"#MENU_PILOT_LOADOUT"
+		}
+
+		BtnTitanLoadout
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				TitanLoadoutButtonClass
+			pin_to_sibling			BtnPilotLoadout
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnPilotLoadout
+			navDown					BtnBurnCardMenu
+			labelText				"#MENU_TITAN_LOADOUT"
+		}
+
+		BtnBurnCardMenu
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				BurnCardMenuButtonClass
+			pin_to_sibling			BtnTitanLoadout
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnTitanLoadout
+			navDown					BtnOptions
+			labelText				"#MENU_BURNCARD_MENU"
+		}
+
+		BtnOptions
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				OptionsButtonClass
+			pin_to_sibling			BtnBurnCardMenu
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					11
+			navUp					BtnBurnCardMenu
+			navDown					BtnRanked
+			labelText				"#OPTIONS"
+		}
+
+		BtnRanked
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				RankedButtonClass
+			pin_to_sibling			BtnOptions
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					11
+			navUp					BtnOptions
+			navDown					BtnLeaveGame
+			labelText				"#RANKED_GAME_MENU_ENABLE"
+		}
+
+		BtnLeaveGame
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				LeaveGameButtonClass
+			pin_to_sibling			BtnRanked
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnRanked
+			navDown					BtnEndGame
+			labelText				"#LEAVE_MATCH"
+		}
+
+		BtnEndGame
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				EndGameButtonClass
+			pin_to_sibling			BtnLeaveGame
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnLeaveGame
+			navDown					BtnDev
+			labelText				"#END_MATCH"
+			visible					0
+		}
+
+		BtnDev
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				DevButtonClass
+			pin_to_sibling			BtnEndGame
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnEndGame
+			navDown					BtnPilotLoadout
+			labelText				"Dev"
+			visible 				0
+		}
+
+		BtnTrackedChallenge_0
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		TrackedChallengeListButton
+			classname 				BtnTrackedChallenge_0
+			scriptID				13
+			xpos					465
+			ypos					99
+			zpos 					3
+			navUp					BtnTrackedChallenge_2
+			navDown					BtnTrackedChallenge_1
+			visible					0
+		}
+
+		BtnTrackedChallenge_1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		TrackedChallengeListButton
+			classname 				BtnTrackedChallenge_1
+			scriptID				14
+			navUp					BtnTrackedChallenge_0
+			navDown					BtnTrackedChallenge_2
+
+			pin_to_sibling			BtnTrackedChallenge_0
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					-12
+			visible					0
+		}
+
+		BtnTrackedChallenge_2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		TrackedChallengeListButton
+			classname 				BtnTrackedChallenge_2
+			scriptID				15
+			navUp					BtnTrackedChallenge_1
+			navDown					BtnTrackedChallenge_0
+
+			pin_to_sibling			BtnTrackedChallenge_1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					-12
+			visible					0
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}
