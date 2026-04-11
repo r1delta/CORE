@@ -10,20 +10,50 @@ UnlitTwoTexture
 	"$translucent" "1"
 	
 
-  "$basetexture" "models\weapons\attachments\hcog_reticle_field_emitter_col"
+	"$basetexture" "models\weapons\attachments\hcog_reticle_field_emitter_col"
 	"$Texture2" "dev\noise_post"
-	"$color" "[1 1 1]"
-	"$color2" "[2.5 1 0]"
-	
+
 	"$t2offset" 0
-	"$t2scale" 3
+	"$t2scale" 60
 	"$t2rot" 0
 	"$scroll" "[0 2]"
 	
 	$holoOffset "[0 0]"
-	
+
+	//custom colours
+	"$color" "[1 1 1]"
+	"$color2" "[1 1 1]"
+
+/////////////////////////////////////////////////////////
+
+	"$valuezero"	"0"
+
+	"$colorzero"		"[0 0 0]"
+	"$colorblind_color"		"[1 1 1]"
+
+	"$clroffsetzero"	"[2.5 1 0]"
+
 	"Proxies"
 	{
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_ColorBlindRed"
+			resultVar $colorblind_color
+		}
+
+		//	if ( srcVar1 > srcVar2 )
+		//		resultVar = greaterVar
+		//	else
+		//		resultVar = LessEqualVar
+		LessOrEqual
+		{
+			lessEqualVar	$clroffsetzero
+			greaterVar		$colorblind_color
+			srcVar1			$colorblind_color
+			srcVar2			$valuezero
+			resultVar		$color2
+		}
+
 		//Horizontal movement speed
 		"UniformNoise"
 		{
@@ -46,7 +76,6 @@ UnlitTwoTexture
 			"rotateVar" "$t2rot"
 			"resultvar" "$texture2transform"
 		}
-		
 		// flicker
 		"UniformNoise"
 		{
@@ -54,10 +83,17 @@ UnlitTwoTexture
 			"maxVal" 1.00
 			"resultVar" "$color"
 		}
-		
+
 		"HoloSight"
 		{
 			resultVar $alpha
+		}
+		"Clamp"
+		{
+			min	"0.1"
+			max	".5"
+			srcVar1	$alpha
+			resultVar	$alpha
 		}
 	}
 }
