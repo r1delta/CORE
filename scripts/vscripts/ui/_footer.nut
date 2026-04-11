@@ -101,8 +101,8 @@ function UpdateFooterButtons( menuName = null )
 
 			if ( !Origin_IsEnabled() && !Origin_IsOnline() )
 			{
-				footerData.pc.append( { label = "#GAMEUI_DATACENTERNAME", func = OpenOfflineNameDialogButton_Activate } )
-				footerData.gamepad.append( { label = "#EDIT_USERNAME", func = OpenOfflineNameDialogButton_Activate } )
+				footerData.pc.append( { label = "#EDIT_USERNAME", func = OpenOfflineNameDialogButton_Activate } )
+				footerData.gamepad.append( { label = "#GAMEPAD_EDIT_USERNAME", func = OpenOfflineNameDialogButton_Activate } )
 			}
             footerData.pc.append( { label = "#DISCORD", func = OpenDiscordLink })
 			footerData.gamepad.append( { label = "#GAMEPAD_DISCORD", func = OpenDiscordLink })
