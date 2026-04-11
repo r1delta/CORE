@@ -1,0 +1,559 @@
+WeaponData
+{
+	// General
+	"printname"   									"#WPN_TITAN_SNIPER"
+    "shortprintname"                              	"#WPN_TITAN_SNIPER_SHORT"
+	"description" 									"#WPN_TITAN_SNIPER_DESC"
+	"longdesc"										"#WPN_TITAN_SNIPER_LONGDESC"
+	"weaponClass" 									"titan"
+	"fire_mode"   									"semi-auto"
+	"server_vscript"  								"weapons/mp_titanweapon_sniper"
+	"client_vscript"  								"weapons/mp_titanweapon_sniper"
+	"projectile_vscript"  							"weapons/mp_projectile_titanweapon_sniper"
+	"pickup_hold_prompt"  							"Hold [USE] [WEAPONNAME]"
+	"pickup_press_prompt" 							"[USE] [WEAPONNAME]"
+	"minimap_reveal_distance"						"32000"
+
+	// Menu Stats
+	"stat_damage" 									"95"
+	"stat_range"  									"98"
+	"stat_accuracy"   								"90"
+	"stat_rof"										"15"
+
+	// Models
+	"viewmodel"   									"models/weapons/atpov_titan_sniper_rifle/atpov_titan_sniper_rifle.mdl"
+	"playermodel" 									"models/weapons/titan_sniper_rifle/w_titan_sniper_rifle.mdl"
+	"anim_prefix" 									"ar2"
+	"projectilemodel" 								"models/weapons/bullets/projectile_40mm.mdl"
+
+	// Effects
+	//"tracer_effect"   								"weapon_tracers_40mm"
+	"tracer_effect"   								"weapon_tracers_sniper"
+	"tracer_effect_first_person"  					"weapon_tracers_sniper"
+	"projectile_trail_effect_0" 					"P_titan_sniper1"
+	"projectile_trail_effect_1" 					"P_titan_sniper2"
+	"projectile_trail_effect_2" 					"P_titan_sniper3"
+	"impact_effect_table" 							"titan_sniper"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_40mm_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_40mm"
+	"vortex_absorb_sound"							"Vortex_Shield_AbsorbBulletLarge"
+	"adjust_to_gun_barrel"							"1"
+
+	"fx_muzzle_flash_view"							"wpn_muzzleflash_xo_sniper_FP"
+	"fx_muzzle_flash_world"							"wpn_muzzleflash_xo_sniper"
+	"fx_muzzle_flash_attach"						"muzzle_flash"
+
+	"sound_dryfire"									"titan_dryfire"
+
+	// Damage - When Used by Players
+	"damage_type" 									"bullet"
+	"damage_near_distance"							"800"
+	"damage_far_distance" 							"3000"
+	"damage_near_value"   							"300"
+	"damage_far_value"								"300"
+	"damage_additional_bullets"						"300"		// each additional bullet after the first does this much
+	"damage_near_value_titanarmor"					"500"
+	"damage_far_value_titanarmor" 					"500"
+	"damage_additional_bullets_titanarmor"			"500"		// each additional bullet after the first does this much
+
+	// Damage - When Used by NPCs
+	"npc_damage_near_distance"						"800"
+	"npc_damage_far_distance" 						"3000"
+	"npc_damage_near_value"   						"150"
+	"npc_damage_far_value"							"150"
+	"npc_damage_near_value_titanarmor"				"1500"
+	"npc_damage_far_value_titanarmor" 				"1500"
+
+	"impulse_force"   								"15000"
+	"critical_hit_damage_scale"						"2.5"
+
+	// Ammo
+	"ammo_stockpile_max"							"1000"
+	"ammo_clip_size"   								"4"
+	"ammo_default_total"							"1000"
+
+	// Behavior
+	"fire_rate"   									"0.9"
+	"zoom_time_in"									"0.2"
+	"zoom_time_out"   								"0.15"
+	"zoom_fov"										"35"
+	"reload_time" 									"3"
+	"reload_time_late1" 							"2.14"
+	"reload_time_late2" 							"1.16"
+	"reloadempty_time"								"3"
+	"reloadempty_time_late1"						"2.14"
+	"reloadempty_time_late2"						"1.16"
+	"holster_time"									".45"
+	"deploy_time" 									".85"
+	"lower_time"  									".1"
+	"raise_time"  									".3"
+	"vortex_refire_behavior"  						"explosive_round"
+	"allow_empty_fire"								"0"
+	"reload_enabled"  								"1"
+	"allow_empty_click"   							"1"
+	"empty_reload_only"   							"0"
+	"trigger_snipercam"   							"1"
+	"allow_headshots" 								"1"
+	"damage_headshot_scale"							"1.5"
+	"headshot_distance" 							"15000"
+	"aimassist_disable_hipfire"						"1"
+	"aimassist_disable_ads"							"1"
+	"ads_fov_zoomfrac_start"						"0.3"
+	"ads_fov_zoomfrac_end"							"1.0"
+	"charge_time" 									"3.0"
+	"charge_levels"									"5"
+	"charge_cooldown_time"							"1.0"
+	"charge_cooldown_delay"   						"0.0"
+	"charge_is_triggered_by_ADS"					"1"
+	"charge_end_forces_fire"						"0"
+
+	// Spread
+	"spread_stand_hip"								"8"
+	"spread_stand_hip_run"							"10"
+	"spread_stand_ads"								"0"
+	"spread_crouch_hip"   							"7"
+	"spread_crouch_ads"   							"0"
+	"spread_air_hip"  								"10"
+	"spread_air_ads"  								"0"
+	"spread_npc"  									"0.2"
+
+
+	// View Kick
+	"viewkick_spring" 								"titan_railgun"
+
+	"viewkick_pitch_base" 							"-3.5"
+	"viewkick_pitch_random"   						"1.0"
+	"viewkick_pitch_softScale"						"0.5"
+	"viewkick_pitch_hardScale"						"2.0"
+
+	"viewkick_yaw_base"   							"0.25"
+	"viewkick_yaw_random" 							"1.5"
+	"viewkick_yaw_softScale"  						"1.5"
+	"viewkick_yaw_hardScale"  						"1.5"
+
+	"viewkick_roll_base"  							"0.0"
+	"viewkick_roll_randomMin" 						"0.7"
+	"viewkick_roll_randomMax" 						"0.9"
+	"viewkick_roll_softScale" 						"0.2"
+	"viewkick_roll_hardScale" 						"2.0"
+
+	"viewkick_hipfire_weaponFraction" 				"0.5"
+	"viewkick_hipfire_weaponFraction_vmScale" 		"0.4"
+	"viewkick_ads_weaponFraction" 					"0.5"
+	"viewkick_ads_weaponFraction_vmScale" 			"0.4"
+
+	"viewkick_perm_pitch_base" 						"0.0"
+	"viewkick_perm_pitch_random"   					"0.20"
+	"viewkick_perm_pitch_random_innerexclude"		"0.1"
+	"viewkick_perm_yaw_base"   						"0.0"
+	"viewkick_perm_yaw_random" 						"0.6"
+	"viewkick_perm_yaw_random_innerexclude" 		"0.2"
+
+	// Bob
+	"bob_cycle_time"  								".7"
+	"bob_vert_dist"   								"1"
+	"bob_horz_dist"   								"1"
+	"bob_max_speed"   								"300"
+
+	// View Drift
+
+	// Rumble
+	"fire_rumble"									"titan_sniper"
+
+	// Sway
+
+	// NPC
+	"proficiency_very_good_spreadscale"   			"11.5"
+	"proficiency_very_good_bias"  					"1.0"
+	"proficiency_perfect_spreadscale" 				"8.0"
+	"proficiency_perfect_bias"						"1.0"
+
+	"npc_min_range"   								"0"
+	"npc_max_range"   								"8000"
+	"npc_min_range_secondary" 						"0"
+	"npc_max_range_secondary" 						"2500"
+	"npc_vortex_block"								"0"
+	"rest_time_between_bursts_min"					"3.0"
+	"rest_time_between_bursts_max"					"3.5"
+
+	"npc_min_burst"									"1"
+	"npc_max_burst"									"1"
+	"rest_time_between_bursts_min"					"3.0"
+	"rest_time_between_bursts_max"					"3.0"
+
+	// WeaponED Unhandled Key/Values and custom script Key/Values
+	"critical_hit"  								"1"
+	"viewdrift_hipfire_stand_scale_pitch" 			"0.1"
+	"viewdrift_hipfire_crouch_scale_pitch"			"0.1"
+	"viewdrift_hipfire_air_scale_pitch"   			"0.1"
+	"viewdrift_hipfire_stand_scale_yaw"   			"0.075"
+	"viewdrift_hipfire_crouch_scale_yaw"  			"0.075"
+	"viewdrift_hipfire_air_scale_yaw" 				"0.075"
+	"viewdrift_hipfire_speed_pitch"   				"0.6"
+	"viewdrift_hipfire_speed_yaw" 					"1.22"
+	"viewdrift_ads_stand_scale_pitch" 				"0.05"
+	"viewdrift_ads_crouch_scale_pitch"				"0.05"
+	"viewdrift_ads_air_scale_pitch"   				"0.05"
+	"viewdrift_ads_stand_scale_yaw"   				"0.037"
+	"viewdrift_ads_crouch_scale_yaw"  				"0.037"
+	"viewdrift_ads_air_scale_yaw" 					"0.037"
+	"viewdrift_ads_speed_pitch"   					"0.6"
+	"viewdrift_ads_speed_yaw" 						"1.22"
+	"sway_turn_angle_factor"  						"-0.5"
+	"sway_turn_origin_factor" 						"0"
+	"sway_turn_angle_factor_zoomed"   				"0"
+	"sway_turn_origin_factor_zoomed"  				"0.05"
+	"sway_move_angle_factor"  						"0.5"
+	"sway_move_origin_factor" 						"0.5"
+	"sway_move_angle_factor_zoomed"   				"0"
+	"sway_move_origin_factor_zoomed"  				"0.03"
+	"sway_gain"   									"15.0"
+
+	// Crosshair
+	"red_crosshair_range" 							"10000"
+
+
+  // Bodygroups:
+  "clip_bodygroup"						"titan_sniper_rifle_magazine"
+  "clip_bodygroup_index_shown"			"0"
+  "clip_bodygroup_index_hidden"			"1"
+  "clip_bodygroup_show_for_milestone_0"	"1"
+  "clip_bodygroup_show_for_milestone_1"	"0"
+  "clip_bodygroup_show_for_milestone_2"	"1"
+	"clip_bodygroup_show_for_milestone_3"	"1"
+
+
+	Mods
+	{
+		fast_reload
+		{
+			"reload_time"								"*0.6"
+			"reload_time_late1"							"*0.6"
+			"reloadempty_time"							"*0.6"
+			"reloadempty_time_late1"					"*0.6"
+		}
+		extended_ammo
+		{
+			"ammo_clip_size"   								"5"
+		}
+		power_shot
+		{
+			"charge_levels"									"7"
+			"charge_time" 									"4.5"
+			"crosshair_index"								"2"
+		}
+		quick_shot
+		{
+			"charge_levels"									"3"
+			"charge_time" 									"1.4"
+			//Removed 4 charge crosshair index due to size limits
+			//"crosshair_index"								"1"
+		}
+		instant_shot
+		{
+			"charge_levels"									"1"
+			"charge_time" 									"0.05"
+			"crosshair_index"								"1"
+			"critical_hit_damage_scale"						"2.5"
+			"zoom_fov"										"20"
+			"ammo_clip_size"   								"5"
+			"projectile_trail_effect_0" 					"P_titan_sniper2"
+			"projectile_trail_effect_1" 					"P_titan_sniper2"
+			"projectile_trail_effect_2" 					"P_titan_sniper2"
+		}
+		burn_mod_titan_sniper
+		{
+			"crosshair_index"								"3"
+			"charge_time" 									"*.6"
+
+			"is_burn_mod"		"1"
+		}
+	}
+
+	CrosshairData
+	{
+		BaseWeapon
+		{
+			DefaultElementBehavior
+			{
+				"draw_while_hip"		"1"
+				"draw_while_zooming"	"1"
+				"draw_while_ads"		"1"
+			}
+			Element0
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element1
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_shadow"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element2
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+			Element3
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar_shadow"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+			Element4
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/6Shot/6Shot"
+				"size_x"					"40"
+				"size_y"					"80"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"0"
+				"draw_while_zooming"		"0"
+				"stationary"				"1"
+				"fixed_color"				"255 255 255 255"
+			}
+			Element5
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/6Shot/6Shot_Shadow"
+				"size_x"					"40"
+				"size_y"					"80"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"0"
+				"draw_while_zooming"		"0"
+				"stationary"				"1"
+			}
+		}
+		TwoShot
+		{
+			DefaultElementBehavior
+			{
+				"draw_while_hip"		"1"
+				"draw_while_zooming"	"1"
+				"draw_while_ads"		"1"
+			}
+			Element0
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element1
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_shadow"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element2
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar"
+				//"rotation"					"180"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+			Element3
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar_shadow"
+				//"rotation"					"180"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+		}
+		EightShot
+		{
+			DefaultElementBehavior
+			{
+				"draw_while_hip"		"1"
+				"draw_while_zooming"	"1"
+				"draw_while_ads"		"1"
+			}
+			Element0
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element1
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_shadow"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element2
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar"
+				//"rotation"					"180"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+			Element3
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar_shadow"
+				//"rotation"					"180"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+			Element4
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/8Shot/8Shot"
+				"size_x"					"40"
+				"size_y"					"120"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"0"
+				"draw_while_zooming"		"0"
+				"stationary"				"1"
+				"fixed_color"				"1"
+			}
+			Element5
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/8Shot/8Shot_Shadow"
+				"size_x"					"40"
+				"size_y"					"120"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"0"
+				"draw_while_zooming"		"0"
+				"stationary"				"1"
+				"fixed_color"			"1"
+			}
+		}
+		Burn_Card_Mod
+		{
+			DefaultElementBehavior
+			{
+				"draw_while_hip"		"1"
+				"draw_while_zooming"	"1"
+				"draw_while_ads"		"1"
+				"default_color"			"246 134 40 255"
+			}
+			Element0
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element1
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_shadow"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_initial_angle"		"270"
+				"spread_max_icons"			"1"
+				"spread_initial_offset"		"-2"
+			}
+			Element2
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+			Element3
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/titan_sniper_bar_shadow"
+				"size_x"					"64"
+				"size_y"					"64"
+				"spread_delta_angle"		"180"
+				"spread_max_icons"			"2"
+				"spread_initial_offset"		"14"
+			}
+			Element4
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/6Shot/6Shot"
+				"size_x"					"40"
+				"size_y"					"80"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"0"
+				"draw_while_zooming"		"0"
+				"stationary"				"1"
+				"fixed_color"				"255 255 255 255"
+			}
+			Element5
+			{
+				"type"						"static"
+				"material"					"/hud/crosshairs/titan_sniper/6Shot/6Shot_Shadow"
+				"size_x"					"40"
+				"size_y"					"80"
+				"offset_x"					"80"
+				"offset_y"					"0"
+				"draw_while_reloading"		"0"
+				"draw_while_hip"			"0"
+				"draw_while_zooming"		"0"
+				"stationary"				"1"
+			}
+		}
+	}
+}
