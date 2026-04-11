@@ -13,6 +13,14 @@ function OnWeaponActivate( activateParams )
 		}
 	}
 
+	if ( !( "burstFireCount" in self.s ) )
+	{
+		if ( self.HasMod( "burst" ) )
+			self.s.burstFireCount <- self.GetWeaponModSetting( "burst_fire_count" )
+		else
+			self.s.burstFireCount <- 0
+	}
+
 	if ( !self.HasMod( "accelerator" ) && !self.HasMod( "burst" ) )
 	{
 		SetLoopingWeaponSound_1p3p( "Weapon.XO16_fire_first", "Weapon.XO16_fire_loop", "Weapon.XO16_fire_last",
@@ -46,10 +54,42 @@ function OnWeaponPrimaryAttack( attackParams )
 
 function OnWeaponNpcPrimaryAttack( attackParams )
 {
+	Assert( IsServer() )
+
+	// EXTREMELY HACKY WAY TO GET NPC TITANS TO ACTUALLY USE THE BURST MOD
+	if ( self.HasMod( "burst" ) )
+	{
+		if ( "npcNextFireTime" in self.s && Time() < self.s.npcNextFireTime )
+			return
+
+		if ( !( "burstShotsRemaining" in self.s ) )
+			self.s.burstShotsRemaining <- self.s.burstFireCount
+
+		if ( !( "burstActive" in self.s ) )
+			self.s.burstActive <- false
+	}
+
 	self.EmitWeaponNpcSound( LOUD_WEAPON_AI_SOUND_RADIUS, 0.2 )
 
-	Assert( IsServer() );
-	self.FireWeaponBullet( attackParams.pos, attackParams.dir, 1, damageTypes.LargeCaliber | DF_STOPS_TITAN_REGEN )
+	local damageType = damageTypes.LargeCaliber | DF_STOPS_TITAN_REGEN
+
+	if ( self.HasMod( "burn_mod_titan_xo16" ) )
+		damageType = damageType | damageTypes.Electric
+
+	self.FireWeaponBullet( attackParams.pos, attackParams.dir, 1, damageType )
+
+	if ( self.HasMod( "burst" ) )
+	{
+		self.s.burstActive = true
+		self.s.burstShotsRemaining--
+
+		if ( self.s.burstShotsRemaining <= 0 )
+		{
+			self.s.burstActive = false
+			self.s.burstShotsRemaining = self.s.burstFireCount
+			self.s.npcNextFireTime <- Time() + 0.6
+		}
+	}
 }
 
 function OnWeaponStartZoomIn()
