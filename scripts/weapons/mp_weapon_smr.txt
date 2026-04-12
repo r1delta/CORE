@@ -293,10 +293,10 @@ WeaponData
 			"damage_far_value"								"20"
 			"damage_near_value_titanarmor"					"150"
 			"damage_far_value_titanarmor"					"150"
-			"ammo_stockpile_max"							"132"
+			"ammo_stockpile_max"							"144"
 			"ammo_clip_size"   								"12"
-			"ammo_default_total"							"132"
-			"fire_rate"										"5.5"
+			"ammo_default_total"							"144"
+			"fire_rate"										"7.0" //5.5
 		}
 		stabilized_warhead
 		{
