@@ -324,7 +324,6 @@ function UpdateCategoryButtons( category )
 											eChallengeCategory.WEAPON_DMR,
 											eChallengeCategory.WEAPON_SNIPER,
 											eChallengeCategory.WEAPON_VALKYRIE,
-											eChallengeCategory.WEAPON_TWINB,
 										 ] )
 			break
 
@@ -340,6 +339,7 @@ function UpdateCategoryButtons( category )
 			ShowCategories( [ 	eChallengeCategory.WEAPON_AUTOPISTOL,
 											eChallengeCategory.WEAPON_SEMIPISTOL,
 											eChallengeCategory.WEAPON_WINGMAN,
+											eChallengeCategory.WEAPON_TWINB,
 										 ] )
 			break
 

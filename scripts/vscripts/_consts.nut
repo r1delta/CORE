@@ -2108,7 +2108,6 @@ enum eChallengeCategory
 	WEAPON_DMR,
 	WEAPON_SNIPER,
 	WEAPON_VALKYRIE,
-	WEAPON_TWINB,
 
 	PILOT_SECONDARY,	// Only used by challenges menu
 
@@ -2122,6 +2121,7 @@ enum eChallengeCategory
 	WEAPON_AUTOPISTOL,
 	WEAPON_SEMIPISTOL
 	WEAPON_WINGMAN,
+	WEAPON_TWINB,
 
 	PILOT_ORDNANCE,
 
