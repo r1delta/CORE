@@ -537,7 +537,7 @@ function PrivateMatchLobbyLogic()
 
 	printt( "Launch it!" )
 	if (modeName == "campaign_carousel") {
-		GameRules_ChangeCampaignMap( mapName )
+		GameRules_ChangeCampaignMap( mapName, modeName )
 	} else {
 		GameRules_ChangeMap( mapName, modeName )
 	}
