@@ -13,7 +13,7 @@ function GameRules_ChangeMap( mapName, mode )
     ServerCommand( "changelevel " + mapName )
 }
 
-function GameRules_ChangeCampaignMap( mapName, modeName )
+function GameRules_ChangeCampaignMap( mapName, modeName = null )
 {
 	// we need to get gamemode, mv does not want to hardcode maps and gamemodes here so we're grabbing off playlist
 	local gamemodeForMap = null
