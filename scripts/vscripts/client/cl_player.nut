@@ -381,6 +381,9 @@ function IsValidTitanRodeoPromptEnt( player, entity )
 	if ( player.IsWallHanging() )
 		return false
 
+	if ( player.IsOnGround() )
+		return false
+
 	return ( PlayerFallingOntoTitan( player, entity ) || FindPlayerJumponSpot( player, entity ) )
 }
 Globalize( IsValidTitanRodeoPromptEnt )
