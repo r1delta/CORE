@@ -141,64 +141,92 @@ function main()
 	RegisterSignal("Stop_SimulateGrenadeThink")
 }
 
-function ClientCommand_SpawnViewGrunt( player, team )
+function ClientCommand_SpawnViewGrunt( player, ... )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
+
+	local team = GetOtherTeam( player )
+	if ( vargc > 0 )
+		team = vargv[0]
 
 	SpawnViewMinion( player, team, SpawnGrunt )
 	return true
 }
 
-function ClientCommand_SpawnViewShieldGrunt( player, team )
+function ClientCommand_SpawnViewShieldGrunt( player, ... )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
+
+	local team = GetOtherTeam( player )
+	if ( vargc > 0 )
+		team = vargv[0]
 
 	SpawnViewMinion( player, team, SpawnBubbleShieldGrunt_Signal )
 	return true
 }
 
-function ClientCommand_SpawnViewCaptainGrunt( player, team )
+function ClientCommand_SpawnViewCaptainGrunt( player, ... )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
+
+	local team = GetOtherTeam( player )
+	if ( vargc > 0 )
+		team = vargv[0]
 
 	SpawnViewMinion( player, team, SpawnGruntCaptain )
 	return true
 }
 
-function ClientCommand_SpawnViewSpectre( player, team )
+function ClientCommand_SpawnViewSpectre( player, ... )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
+
+	local team = GetOtherTeam( player )
+	if ( vargc > 0 )
+		team = vargv[0]
 
 	SpawnViewMinion( player, team, SpawnSpectre )
 	return true
 }
 
-function ClientCommand_SpawnViewShieldSpectre( player, team )
+function ClientCommand_SpawnViewShieldSpectre( player, ... )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
+
+	local team = GetOtherTeam( player )
+	if ( vargc > 0 )
+		team = vargv[0]
 
 	SpawnViewMinion( player, team, SpawnBubbleShieldSpectre_Signal )
 	return true
 }
 
-function ClientCommand_SpawnViewSuicideSpectre( player, team )
+function ClientCommand_SpawnViewSuicideSpectre( player, ... )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
+
+	local team = GetOtherTeam( player )
+	if ( vargc > 0 )
+		team = vargv[0]
 
 	SpawnViewMinion( player, team, SpawnSuicideSpectre )
 	return true
 }
 
-function ClientCommand_SpawnViewSniperSpectre( player, team )
+function ClientCommand_SpawnViewSniperSpectre( player, ... )
 {
 	if ( !GetConVarBool( "sv_cheats" ) )
 		return true
+
+	local team = GetOtherTeam( player )
+	if ( vargc > 0 )
+		team = vargv[0]
 
 	SpawnViewMinion( player, team, SpawnSniperSpectre )
 	return true
