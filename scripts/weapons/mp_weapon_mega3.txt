@@ -14,9 +14,9 @@ WeaponData
 	"minimap_reveal_distance"						"32000"
 
 	// Menu Stats
-	"stat_damage" 									"50"
+	"stat_damage" 									"65"
 	"stat_range"  									"65"
-	"stat_accuracy"   								"55"
+	"stat_accuracy"   								"75"
 	"stat_rof"										"80"
 
 	// Models
@@ -58,7 +58,7 @@ WeaponData
 	"damage_far_distance" 							"2500"
 	"damage_near_value"   							"100"
 	"damage_far_value"								"85"
-	"damage_near_value_titanarmor"					"93"
+	"damage_near_value_titanarmor"					"95"
 	"damage_far_value_titanarmor" 					"85"
 
 	// Damage - When Used by NPCs
@@ -66,7 +66,7 @@ WeaponData
 	"npc_damage_far_distance" 						"3200"
 	"npc_damage_near_value"   						"100"
 	"npc_damage_far_value"							"85"
-	"npc_damage_near_value_titanarmor"				"93"
+	"npc_damage_near_value_titanarmor"				"95"
 	"npc_damage_far_value_titanarmor" 				"85"
 
 	"impulse_force"   								"2500"
