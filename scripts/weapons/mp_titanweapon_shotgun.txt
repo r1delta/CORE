@@ -58,7 +58,7 @@ WeaponData
     "damage_type"                                    "buckshot"
     "damage_near_distance"                           "150" //"300"
     "damage_far_distance"                            "1500" //"2000"
-    "damage_near_value"                              "215"
+    "damage_near_value"                              "250"
     "damage_far_value"                               "60"
     "damage_falloff_type"                            "inverse"
     "damage_inverse_distance"                        "350"
@@ -74,7 +74,7 @@ WeaponData
     "npc_damage_far_distance"                         "2000" //"1200"
     "npc_damage_near_value"                           "180"
     "npc_damage_far_value"                            "60"
-    "npc_damage_near_value_titanarmor"                "100" //"1050" //basically have to neuter them because they deal a SHIT ton of damage
+    "npc_damage_near_value_titanarmor"                "250" //"1050" //basically have to neuter them because they deal a SHIT ton of damage
     "npc_damage_far_value_titanarmor"                 "100" //"400"
 
 
@@ -299,24 +299,39 @@ WeaponData
 		}
 
 
-		"auto_converter"
+		"semi_converter"
 		{
-			"fire_rate"                                       "3"
-    		"burst_fire_count"				  "1"
-			"burst_fire_delay"				  "0.3"
+            "critical_hit_damage_scale"                     "1.5"
+            
+            "fire_rate"                                       "0.8"
+            "fire_mode"                                       "semi-auto"
+            "ammo_clip_size"   								  "6"
+    		"burst_fire_count"			                	  "1"
+			"burst_fire_delay"				                  "0"
+            "impact_effect_table"                             "titan_sniper"
+
+            "fire_sound_1"                                  "Weapon_Titan_Sniper_Level_4"
+
+
+            "damage_near_value_titanarmor"                "*2.5"
+            "damage_far_value_titanarmor"                 "*2.5"
+            "npc_damage_near_value_titanarmor"                "*2.5"
+            "npc_damage_far_value_titanarmor"                 "*2.5"
 
 			"npc_min_burst"                                   "1"
-			"npc_max_burst"                                   "9"
-			"rest_time_between_bursts_min"                    "0.1"
-			"rest_time_between_bursts_max"                    "1.5"
+			"npc_max_burst"                                   "1"
+			"rest_time_between_bursts_min"                    "1.5"
+			"rest_time_between_bursts_max"                    "2.0"
 
-			"viewkick_pitch_base" 				"*2.0"
-			"viewkick_pitch_random" 			"*2.0"
+			"viewkick_pitch_base" 				"*4.0"
+			"viewkick_pitch_random" 			"*4.0"
+			"viewkick_yaw_base" 				"*4.0"
+			"viewkick_yaw_random" 				"*4.0"
+			"viewkick_scale_max_hipfire"                    "*4.0"
 
-			"viewkick_yaw_base" 				"*2.0"
-			"viewkick_yaw_random" 				"*2.0"
-			"viewkick_scale_max_hipfire"                    "*2.0"
-			"fire_mode"                                     "auto"
+            "spread_stand_hip"                                  "15"
+            "spread_stand_ads"                                  "12" //"10"
+            "spread_npc"                                        "15"
 		}
 
 		burn_mod_titan_shotgun
