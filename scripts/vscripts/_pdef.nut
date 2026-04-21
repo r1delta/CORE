@@ -163,7 +163,10 @@ function InitPersistence()
 	    mp_weapon_mega2 = 41 // Twin-B
 	    mp_weapon_mega3 = 42 // Thunderbolt (minigun)
 	    mp_weapon_mega4 = 43 // Charge Cannon
-	    mp_titanweapon_shoulder_turret = 44
+	    
+		// mp_weapon_mega9 = 44 // Unfinished R101 SMG
+
+		// mp_titanweapon_shoulder_turret = 44
     }
 
     AddPersistenceEnum("loadoutItems", loadoutItems)
@@ -226,7 +229,7 @@ function InitPersistence()
 	    explosive_rounds = 54
 	    burn_mod_valkyrie = 55
 	    burn_mod_twinb = 56
-	    hydraulic_launcher = 57
+		// auto_converter = 57
     }
 
     AddPersistenceEnum("pilotMod", pilotMod)
@@ -271,6 +274,8 @@ function InitPersistence()
 	    burn_mod_titan_shotgun = 27
 	    burn_mod_thunderbolt = 28
 	    burn_mod_charge_cannon = 29
+		hydraulic_launcher = 30
+		semi_converter = 31
     }
 
     AddPersistenceEnum("titanMod", titanMod)
@@ -596,12 +601,12 @@ function InitPersistence()
 
 	    ["mp_weapon_wingman_silencer"] = 101,
 
-	    ["mp_titanweapon_shotgun_extended_ammo"] = 102
+	    ["mp_titanweapon_shotgun_extended_ammo"] = 102,
 
 		mp_weapon_wingman_explosive_rounds = 103,
 		mp_weapon_semipistol_match_trigger = 104,
 		mp_weapon_autopistol_starburst = 105,
-		mp_weapon_autopistol_recoil_compensator = 106
+		mp_weapon_autopistol_recoil_compensator = 106,
 
 		mp_weapon_smr_tank_buster = 107,
 		mp_weapon_smr_stabilized_warhead = 108,
@@ -622,8 +627,23 @@ function InitPersistence()
 
 		mp_weapon_mega3_burn_mod_thunderbolt = 121,
 		mp_weapon_mega4_burn_mod_charge_cannon = 122,
+		mp_titanweapon_triple_threat_hydraulic_launcher = 123,
+		
+		mp_titanweapon_shotgun_semi_converter = 124,
+		mp_weapon_mega3_extended_ammo = 125,
+		
+		// mp_weapon_shotgun_auto_converter = 126,
+		
+		// mp_weapon_g2_auto_converter = 127,
+		// mp_weapon_hemlok_auto_converter = 128,
 
-		mp_titanweapon_triple_threat_hydraulic_launcher = 123
+		// mp_weapon_mega9_extended_ammo = 126,
+		// mp_weapon_mega9_silencer = 127,
+		// mp_weapon_mega9_iron_sights = 128,
+		// mp_weapon_mega9_hcog = 129,
+		
+		
+		
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
