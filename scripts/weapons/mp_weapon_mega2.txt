@@ -56,7 +56,7 @@ WeaponData
 	"damage_near_distance"							"300"
 	"damage_far_distance" 							"700"
 	"damage_near_value"   							"220"
-	"damage_far_value"								"25"
+	"damage_far_value"								"35"
 	"damage_falloff_type"							"inverse"
 	"damage_inverse_distance"						"130"
 	"damage_near_value_titanarmor"					"130"
@@ -64,12 +64,12 @@ WeaponData
 	"damage_rodeo" 									"700"
 
 	// Damage - When Used by NPCs
-	"npc_damage_near_distance"						"100"
-	"npc_damage_far_distance" 						"1200"
-	"npc_damage_near_value"   						"40"
-	"npc_damage_far_value"							"20"
-	"npc_damage_near_value_titanarmor"				"40"
-	"npc_damage_far_value_titanarmor" 				"0"
+	"npc_damage_near_distance"						"300"
+	"npc_damage_far_distance" 						"700"
+	"npc_damage_near_value"   						"220"
+	"npc_damage_far_value"							"35"
+	"npc_damage_near_value_titanarmor"				"130"
+	"npc_damage_far_value_titanarmor" 				"10"
 
 	"impulse_force"   								"800"
 
@@ -77,9 +77,9 @@ WeaponData
 	"critical_hit"									"1"
 
 	// Ammo
-	"ammo_stockpile_max"							"40"
+	"ammo_stockpile_max"							"30"
 	"ammo_clip_size"   								"2"
-	"ammo_default_total"							"40"
+	"ammo_default_total"							"30"
 
 	// Behavior
 	"fire_rate"   									"2.5"
@@ -323,7 +323,7 @@ WeaponData
 			"viewkick_yaw_random" 							"*0.7"
 
 			"damage_near_distance"							"250"
-			"damage_near_value"   							"210"
+			//"damage_near_value"   							"210"
 			"damage_far_value"								"28"
 
 			"fire_sound_1_player_1p"						"SG_Twin_B.Fire_Suppressed"
@@ -348,8 +348,8 @@ WeaponData
 			"spread_crouch_ads"  							"10"
 			"spread_air_hip"	   							"10"
 			"spread_air_ads"   								"10"
-			"damage_near_value"   							"/1.2"
-			"damage_far_value"								"/1.2"
+			"damage_near_value"   							"/1.1"
+			"damage_far_value"								"/1.1"
 		}
 		pas_run_and_gun
 		{
@@ -368,6 +368,16 @@ WeaponData
 			"ammo_stockpile_max"							"400"
 			"ammo_clip_size"   								"10"
 			"ammo_default_total"							"400"
+		}
+		dev_primary
+		{
+			"damage_near_value"   							"220"
+			"damage_far_value"								"25"
+
+			"ammo_stockpile_max"							"40"
+			"ammo_default_total"							"40"
+
+			"fire_rate"   									"2.5"
 		}
 	}
 
