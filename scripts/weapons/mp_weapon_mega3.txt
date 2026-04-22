@@ -369,6 +369,7 @@ WeaponData
 		burn_mod_thunderbolt
 		{
 			"crosshair_index"								"1"
+			"is_burn_mod"		"1"
 		}
 	}
 

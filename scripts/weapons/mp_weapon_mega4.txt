@@ -246,8 +246,10 @@ WeaponData
 
 		burn_mod_charge_cannon
 		{
-			"bodygroup2_set"								"1"	
+			"bodygroup2_set"								"1"
+			"charge_time" 									"*0.5"
 			"crosshair_index"								"1"
+			"is_burn_mod"		"1"
 		}
 	}
 

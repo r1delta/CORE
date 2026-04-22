@@ -359,8 +359,16 @@ WeaponData
 		burn_mod_twinb
 		{
 			"crosshair_index"								"1"
+			"damage_near_distance"							"100++"
+			"damage_far_distance" 							"100++"
+			"damage_near_value"   							"220"
+			"damage_far_value"								"25"
 
-			"is_burn_mod"		"1"
+			"ammo_stockpile_max"							"10++"
+			"ammo_default_total"							"10++"
+
+			"fire_rate"   									"2.5"
+			"is_burn_mod"									"1"
 		}
 
 		dev_10shells
@@ -374,8 +382,8 @@ WeaponData
 			"damage_near_value"   							"220"
 			"damage_far_value"								"25"
 
-			"ammo_stockpile_max"							"40"
-			"ammo_default_total"							"40"
+			"ammo_stockpile_max"							"10++"
+			"ammo_default_total"							"10++"
 
 			"fire_rate"   									"2.5"
 		}

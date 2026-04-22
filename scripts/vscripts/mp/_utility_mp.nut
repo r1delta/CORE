@@ -1598,7 +1598,12 @@ function GetBurnCardSetForIndex(setIndex) {
     "bc_titan_vortex_shield_m2",
     "bc_titan_electric_smoke_m2",
     "bc_titan_shield_wall_m2",
-    "bc_extra_dash"]
+    "bc_extra_dash",
+	"bc_valkyrie_m2",			
+	"bc_twinb_m2",			
+	"bc_titan_shotgun_m2",	
+	"bc_thunderbolt_m2",		
+	"bc_titan_charge_cannon_m2",]
 			break
 		case 2:
 			deck = []

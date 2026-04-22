@@ -790,6 +790,11 @@ function InitPersistence()
 	    ["bc_titan_shield_wall_m2"] = 72,
 	    ["bc_titan_melee_m2"] = 73,
 	    ["bc_extra_dash"] = 74,
+	    bc_valkyrie_m2 = 75,			
+	    bc_twinb_m2 = 76,			
+	    bc_titan_shotgun_m2 = 77,	
+	    bc_thunderbolt_m2 = 78,		
+	    bc_titan_charge_cannon_m2 = 79,
     }
 	::struct_activeBurnCardData <- {
 		cardRef = null,
