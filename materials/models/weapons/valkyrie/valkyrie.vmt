@@ -5,7 +5,7 @@
 	"$vertexcolor" "1"
 	//"$vertexalpha" "1"
 
-    "$surfaceprop" "metal"
+        "$surfaceprop" "metal"
 	"$basetexture" "models\weapons\valkyrie\valkyrie_col"
 	"$bumpmap" "models\weapons\valkyrie\valkyrie_nml"
 	"$envmap" "env_cubemap"
@@ -16,12 +16,13 @@
 	"$fresnelintensity" "5"
 	"$fresnelcurvesharpness" "1"
 	"$envmapfresnel" "1"
-	"$envmapLambertian" "2"
-	"$envmaptint" "[1 1 1]"
-	"$EnvmapSharpnessBias" "-2"
-	"$specularboost" "1"
+	"$envmapLambertian" "3"
+	"$envmaptint" "[1.5 1.5 1.5]"
+	"$EnvmapSharpnessBias" "0"
+	"$specularboost" "2"
 	"$speculartint" "[1 1 1]"
 	"$shininess" "models\weapons\valkyrie\valkyrie_exp"
 	"$selfillum" "1"
 	"$selfillummask" "models\weapons\valkyrie\valkyrie_ilm"
+
 }
