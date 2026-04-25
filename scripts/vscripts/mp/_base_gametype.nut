@@ -2413,37 +2413,16 @@ function AutoBalancePlayer( player, forceSwitch = false )
 
 		if ( classSettings && IsAlive( player ) )
 		{
-			player.SetPlayerSettings( classSettings ) // Re-apply settings to potentially trigger model updates
+			SetPlayerSetFile( player, classSettings )
 
-			if ( !isTitan )
-				player.SetPlayerPilotSettings( classSettings )
-
-			local modelFieldName
+			local modelFieldName = "bodymodel_imc"
 			if ( newTeam == TEAM_MILITIA )
-			{
 				modelFieldName = "bodymodel_militia"
-			}
-			else // Assume IMC or other default
-			{
-				modelFieldName = "bodymodel_imc"
-			}
 
 			local correctModelName = GetPlayerSettingsFieldForClassName( classSettings, modelFieldName )
 			if ( correctModelName != null && correctModelName != "" )
 			{
 				printt( "Autobalance: Setting model for player " + player + " (New Team: " + newTeam + ") using " + modelFieldName + " from " + classSettings + " -> " + correctModelName )
-				player.SetModel( correctModelName )
-
-				local skin = 0
-				if ( classSettings.find("female") != null || isTitan )
-					skin = newTeam == TEAM_MILITIA ? 1 : 0
-				else
-					skin = 0 // Assuming non-female models use skin 0 regardless of team, adjust if needed
-
-				player.SetSkin( skin )
-				printt("Autobalance: SET SKIN " + skin)
-
-				RandomizeHead( player )
 
 				ChangeWeaponSkin( player, newTeam )
 				if ( isTitan && IsValid( playerSoul ) )
@@ -2451,10 +2430,6 @@ function AutoBalancePlayer( player, forceSwitch = false )
 					if ( IsValid( playerSoul.chargeCannon.model ) )
 						playerSoul.chargeCannon.model.SetTeam( newTeam )
 				}
-			}
-			else
-			{
-				printt( "Autobalance: WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + classSettings + "' and field '" + modelFieldName + "'" )
 			}
 		}
 

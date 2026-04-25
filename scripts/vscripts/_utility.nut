@@ -5954,3 +5954,41 @@ function AddCallback_OnWeaponAttack( callbackFunc )
 
 	level.onWeaponAttackCallbacks[name] <- callbackInfo
 }
+
+function SetPlayerSetFile( player, classSettings )
+{
+	if ( !IsValid( player ) )
+		return
+
+	if ( !IsAlive( player ) )
+		return
+
+	player.SetPlayerSettings( classSettings )
+
+	local team = player.GetTeam()
+	local isTitan = player.IsTitan()
+	if ( !isTitan )
+		player.SetPlayerPilotSettings( classSettings )
+
+	local modelFieldName = "bodymodel_imc"
+	if ( team == TEAM_MILITIA )
+		modelFieldName = "bodymodel_militia"
+
+	local correctModelName = GetPlayerSettingsFieldForClassName( classSettings, modelFieldName )
+	if ( correctModelName != null && correctModelName != "" )
+	{
+		player.SetModel( correctModelName )
+
+		local skin = 0 // Assuming non-female models use skin 0 regardless of team, adjust if needed
+		if ( classSettings.find( "female" ) != null || isTitan )
+			skin = team == TEAM_MILITIA ? 1 : 0
+
+		player.SetSkin( skin )
+
+		RandomizeHead( player )
+	}
+	else
+	{
+		printt( "WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + classSettings + "' and field '" + modelFieldName + "'" )
+	}
+}

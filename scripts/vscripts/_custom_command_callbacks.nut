@@ -23,6 +23,9 @@ function main()
 	AddClientCommandCallback( "getscriptpos", ClientCommand_GetScriptPos )
 	AddClientCommandCallback( "setpos", ClientCommand_SetPos )
 	AddClientCommandCallback( "setang", ClientCommand_SetAng )
+
+	AddClientCommandCallback( "setfile", ClientCommand_SetFile )
+	AddClientCommandCallback( "togglemask", ClientCommand_ToggleMask )
 }
 
 function ClientCommand_ToggleNotarget( player, ... )
@@ -221,6 +224,40 @@ function ClientCommand_SetAng( player, ... )
 	local ang = Vector( x, y, 0 )
 	player.SetAngles( ang )
 	//PrintVector( ang )
+
+	return true
+}
+
+function ClientCommand_SetFile( player, ... )
+{
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	if ( !IsAlive( player ) )
+		return true
+
+	if ( vargc < 1 )
+		return true
+
+	SetPlayerSetFile( player, vargv[0] )
+
+	return true
+}
+
+function ClientCommand_ToggleMask( player, ... )
+{
+	// Realistically this doesnt need sv_cheats but whatever
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
+	if ( !IsAlive( player ) )
+		return true
+
+	if ( !( "maskVisible" in player.s ) )
+		player.s.maskVisible <- false
+
+	player.s.maskVisible = !player.s.maskVisible
+	SetRebreatherMaskVisible( player, player.s.maskVisible )
 
 	return true
 }
