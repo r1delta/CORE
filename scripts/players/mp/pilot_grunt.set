@@ -1,0 +1,13 @@
+#base "pilot_male_cq.set"
+
+"pilot_grunt"
+{
+	"global"
+	{
+		model				"models/humans/imc_grunt/battle_rifle/imc_grunt_battle_rifle.mdl"
+		bodymodel_imc		"models/humans/imc_grunt/battle_rifle/imc_grunt_battle_rifle.mdl"
+		bodymodel_militia	"models/humans/mcor_grunt/battle_rifle/mcor_grunt_battle_rifle.mdl.mdl"
+		armsmodel_imc		"models/weapons/arms/pov_imc_grunt_battle_rifle.mdl"
+		armsmodel_militia	"models/weapons/arms/pov_mcor_grunt_captain.mdl" // should be pov_mcor_grunt_battle_rifle but the model is fucked
+	}
+}

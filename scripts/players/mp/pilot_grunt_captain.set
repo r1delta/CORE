@@ -1,0 +1,13 @@
+#base "pilot_male_cq.set"
+
+"pilot_grunt_captain"
+{
+	"global"
+	{
+		model				"models/humans/imc_grunt/captain/imc_grunt_captain.mdl"
+		bodymodel_imc		"models/humans/imc_grunt/captain/imc_grunt_captain.mdl"
+		bodymodel_militia	"models/humans/mcor_grunt/captain/mcor_grunt_captain.mdl"
+		armsmodel_imc		"models/weapons/arms/pov_imc_grunt_captain.mdl"
+		armsmodel_militia	"models/weapons/arms/pov_mcor_grunt_captain.mdl"
+	}
+}

@@ -28,6 +28,8 @@
 	import	"model_viewer.set"
 
 	import	"pilot_spectre_corporate.set"
+	import	"pilot_grunt.set"
+	import	"pilot_grunt_captain.set"
 
 //	old
 //	import	"fireteam.set"
