@@ -981,6 +981,9 @@ function DoneWaitingForPlayers()
 	if ( level.doneWaitingForPlayersTimeout == 0 )
 		level.doneWaitingForPlayersTimeout = Time() + GetCurrentPlaylistVarInt( "waiting_for_players_timeout_seconds", 30 )
 
+	if (GetConVarBool("delta_skip_waiting_for_players") )
+		return true
+
 	local minPlayers = GetCurrentPlaylistVarInt( "min_players", 0 )
 	local knownPlayersCount = GetConnectingAndConnectedPlayerArray().len() + GetPendingClientsCount()
 	local expectedPlayers = max( minPlayers, knownPlayersCount )
