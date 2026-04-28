@@ -113,6 +113,7 @@ function main()
 	AddCinematicEventFlagChangedCallback( CE_FLAG_INTRO, CinematicEventFlagChanged )
 	AddCinematicEventFlagChangedCallback( CE_FLAG_CLASSIC_MP_SPAWNING, CinematicEventFlagChanged )
 	AddCinematicEventFlagChangedCallback( CE_FLAG_EOG_STAT_DISPLAY, CinematicEventFlagChanged )
+	AddCinematicEventFlagChangedCallback( CE_FLAG_PERMANENT_HIDEHUD, CinematicEventFlagChanged )
 
 	RegisterConCommandTriggeredCallback( "weaponSelectOrdnance", SwitchedToOrdnance )
 
@@ -3335,6 +3336,9 @@ function ShouldMainHudBeVisible( player )
 		return false
 
 	if ( ceFlags & CE_FLAG_EOG_STAT_DISPLAY )
+		return false
+
+	if ( ceFlags & CE_FLAG_PERMANENT_HIDEHUD )
 		return false
 
 	local gameState = GetGameState()

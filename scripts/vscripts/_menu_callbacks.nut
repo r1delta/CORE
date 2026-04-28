@@ -25,10 +25,11 @@ function main()
 	AddClientCommandCallback("BCActivateCard", ClientCommand_ActivateBurnCard )
 	AddClientCommandCallback("BCDeActivateCard", ClientCommand_DeActivateCard )
 AddClientCommandCallback("OpenBurnCardMenu", ClientCommand_OpenBurnCardMenu )
-	if ( GetDeveloperLevel() > 0 )
+	//if ( GetDeveloperLevel() > 0 )
 	{
 		AddClientCommandCallback( "ToggleBubbleShield", ClientCommand_ToggleBubbleShield )
 		AddClientCommandCallback( "ToggleHUD", ClientCommand_ToggleHUD )
+		AddClientCommandCallback( "togglehud", ClientCommand_ToggleHUD )
 		AddClientCommandCallback( "ToggleOffhandLowRecharge", ClientCommand_ToggleOffhandLowRecharge )
 	}
 	AddClientCommandCallback( "UpdateProgressionOption", ClientCommand_UpdateProgressionOption )
@@ -427,6 +428,9 @@ function ClientCommand_LeaveMatchSolo( player, ... )
 
 function ClientCommand_ToggleBubbleShield( player, ... )
 {
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
 	level.bubbleShieldEnabled = !level.bubbleShieldEnabled
 	return true
 
@@ -434,16 +438,19 @@ function ClientCommand_ToggleBubbleShield( player, ... )
 
 function ClientCommand_ToggleHUD( player, ... )
 {
-	if ( HasCinematicFlag( player, CE_FLAG_INTRO ) )
-		RemoveCinematicFlag( player, CE_FLAG_INTRO )
+	if ( HasCinematicFlag( player, CE_FLAG_PERMANENT_HIDEHUD ) )
+		RemoveCinematicFlag( player, CE_FLAG_PERMANENT_HIDEHUD )
 	else
-		AddCinematicFlag( player, CE_FLAG_INTRO )
+		AddCinematicFlag( player, CE_FLAG_PERMANENT_HIDEHUD )
 
 	return true
 }
 
 function ClientCommand_ToggleOffhandLowRecharge( player, ... )
 {
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
 	if ( player.HasExtraWeaponMod( "dev_mod_low_recharge" ) )
 		player.TakeExtraWeaponMod( "dev_mod_low_recharge" )
 	else
