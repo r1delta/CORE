@@ -3275,6 +3275,9 @@ function CheckForEmptyTeamVictory()
 	if ( IsRoundBased() && level.nv.gameEndTime )
 		return
 
+	if (GetConVarBool("delta_allow_empty_server"))
+		return
+
 	if ( GamePlayingOrSuddenDeath() && (GameTime.PlayingTime() >= START_SPAWN_GRACE_PERIOD) )
 	{
 		// if the other team drops completely
