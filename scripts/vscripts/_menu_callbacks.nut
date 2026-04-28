@@ -438,6 +438,9 @@ function ClientCommand_ToggleBubbleShield( player, ... )
 
 function ClientCommand_ToggleHUD( player, ... )
 {
+	if ( !GetConVarBool( "sv_cheats" ) )
+		return true
+
 	if ( HasCinematicFlag( player, CE_FLAG_PERMANENT_HIDEHUD ) )
 		RemoveCinematicFlag( player, CE_FLAG_PERMANENT_HIDEHUD )
 	else
