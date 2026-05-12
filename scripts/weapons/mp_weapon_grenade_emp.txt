@@ -15,7 +15,7 @@ WeaponData
 	// Menu Stats
 
 	// Models
-	"viewmodel"   									"models/weapons/grenades/ptpov_frag_grenade.mdl"
+	"viewmodel"   									"models/weapons/grenades/ptpov_arc_grenade.mdl"
 	"playermodel"									"models/weapons/empty_handed/w_empty_handed_human.mdl"
 	"projectilemodel" 								"models/weapons/grenades/arc_grenade.mdl"
 	"anim_prefix" 									"Grenade"
