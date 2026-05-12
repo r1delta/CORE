@@ -1,0 +1,172 @@
+WeaponData
+{
+	// General
+	"printname"   									"#WPN_GRENADE_EMP"
+	"shortprintname"								"#WPN_GRENADE_EMP_SHORT"
+	"description" 									"#WPN_GRENADE_EMP_DESC"
+	"longdesc" 										"#WPN_GRENADE_EMP_LONGDESC"
+	"weaponClass" 									"human"
+	"fire_mode"   									"offhand"
+	"offhand_toss"									"1"
+	"server_vscript"  								"weapons/mp_weapon_grenade_emp"
+	"client_vscript"  								"weapons/mp_weapon_grenade_emp"
+	"minimap_reveal_distance"						"32000"
+
+	// Menu Stats
+
+	// Models
+	"viewmodel"   									"models/weapons/grenades/ptpov_frag_grenade.mdl"
+	"playermodel"									"models/weapons/empty_handed/w_empty_handed_human.mdl"
+	"projectilemodel" 								"models/weapons/grenades/arc_grenade.mdl"
+	"anim_prefix" 									"Grenade"
+
+	// Effects
+	"impact_effect_table" 							"exp_emp"
+	"projectile_trail_effect_0" 					"wpn_grenade_frag_blue"
+	"vortex_absorb_effect"							"wpn_vortex_projectile_frag_FP"
+	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_frag"
+	"vortex_absorb_sound"							"Vortex_Shield_AbsorbBulletLarge"
+	"adjust_to_gun_barrel"							"1"
+
+	"critical_hit"									"0"
+
+	// Damage - When Used by Players
+	"damage_type" 									"burn"
+	"damage_near_distance"							"1000"
+	"damage_far_distance" 							"3000"
+	"damage_near_value"   							"0"
+	"damage_far_value"								"0"
+	"damage_near_value_titanarmor"					"0"
+	"damage_far_value_titanarmor" 					"0"
+	"explosion_damage"								"350"
+	"explosion_inner_radius"  						"300"
+	"explosionradius" 								"500"
+	"impulse_force"   								"3000"
+	"explosion_shake_radius"						"500"
+	"explosion_shake_amplitude"						"20"
+	"explosion_shake_frequency"						"45"
+	"explosion_shake_duration"						"0.25"
+
+	// Ammo
+	"ammo_clip_size"   								"2"
+	"ammo_default_total"							"2"
+
+	// Behavior
+	"fire_rate"   									"2"
+	"deploy_time" 									"0.5"
+	"vortex_refire_behavior"  						"frag_grenade"
+	"allow_empty_fire"								"0"
+	"reload_enabled"  								"1"
+	"allow_empty_click"   							"1"
+	"empty_reload_only"   							"0"
+	"trigger_snipercam"   							"0"
+	"allow_headshots" 								"0"
+	"grenade_impact_velocity_dampen_factor"			"0.9"
+	"aimassist_disable_hipfire"						"1"
+	"aimassist_disable_ads"							"1"
+	"move_speed_modifier" 							"0.95238"//Bug with move speed > 1.0, temporary work around.
+	"toss_pullout_time"								"0.3"
+	"toss_time"										"0.2"
+	"toss_overhead_time"							"0.2"
+
+	// Spread
+
+
+	// View Kick
+	"viewkick_spring" 								"pistol"
+
+
+
+
+
+
+	// Bob
+
+	// View Drift
+	"viewdrift_hipfire_stand_scale_pitch" 			"0.325"
+	"viewdrift_hipfire_crouch_scale_pitch"			"0.275"
+	"viewdrift_hipfire_air_scale_pitch"   			"0.5"
+	"viewdrift_hipfire_stand_scale_yaw"   			"0.12"
+	"viewdrift_hipfire_crouch_scale_yaw"  			"0.10"
+	"viewdrift_hipfire_air_scale_yaw" 				"0.22"
+	"viewdrift_hipfire_speed_pitch"   				"0.6"
+	"viewdrift_hipfire_speed_yaw" 					"1.22"
+
+	// Rumble
+	"rumble"  										"3"
+
+	// Sway
+
+	// NPC
+
+
+	// WeaponED Unhandled Key/Values and custom script Key/Values
+	"fire_anim_rate"  								"1"
+	"projectile_vscript"  							"weapons/mp_weapon_grenade_emp"
+	"hud_icon"										"HUD/dpad_emp_grenade"
+
+	Mods
+	{
+		pas_ordnance_pack
+		{
+			"ammo_clip_size"   						"1++"
+			"ammo_default_total"					"1++"
+		}
+
+		bc_arc_refill
+		{
+		}
+		burn_mod_emp_grenade
+		{
+			"crosshair_index"								"1"
+			"is_burn_mod"		"1"
+		}
+	}
+
+	CrosshairData
+	{
+		BaseWeapon
+		{
+			DefaultElementBehavior
+			{
+				"rotation"					"90"
+				"size_x"					"44"
+				"size_y"					"44"
+			}
+			Element0
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/standard_plus"
+				"spread_initial_offset"		"-12"
+			}
+			Element1
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/standard_plus_shadow"
+				"spread_initial_offset"		"-12"
+			}
+		}
+		Burn_Mod //Match BaseWeapon + default color change until override setting.
+		{
+			DefaultElementBehavior
+			{
+				"rotation"					"90"
+				"size_x"					"44"
+				"size_y"					"44"
+				"default_color"				"246 134 40 255"
+			}
+			Element0
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/standard_plus"
+				"spread_initial_offset"		"-12"
+			}
+			Element1
+			{
+				"type"						"spread"
+				"material"					"hud/crosshairs/standard_plus_shadow"
+				"spread_initial_offset"		"-12"
+			}
+		}
+	}
+}
