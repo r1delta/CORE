@@ -1,0 +1,8 @@
+Basic
+{
+	$basetexture		"ui/menu/items/mod_icons/accelerator_v2"
+	$translucent		1
+	$vertexcolor		1
+	$vertexalpha		1
+	$ignorez			1
+}
