@@ -1,0 +1,1 @@
+hxd models/weapons/grenades/grenades -> models/weapons/grenades/arc_grenade
