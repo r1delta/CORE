@@ -624,6 +624,10 @@ function InitPersistence()
 		mp_weapon_mega4_burn_mod_charge_cannon = 122,
 
 		mp_titanweapon_triple_threat_hydraulic_launcher = 123
+		mp_weapon_sniper_scope_10x = 124,
+		mp_weapon_sniper_scope_12x = 125
+		mp_weapon_dmr_scope_10x = 126,
+		mp_weapon_dmr_scope_12x = 127
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
