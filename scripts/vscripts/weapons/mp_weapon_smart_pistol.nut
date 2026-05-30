@@ -1,3 +1,4 @@
+
 self.s.damageValue <- self.GetWeaponInfoFileKeyField( "damage_near_value" )
 SmartAmmo_SetAllowUnlockedFiring( self, true )
 SmartAmmo_SetUnlockAfterBurst( self, (SMART_AMMO_PLAYER_MAX_LOCKS > 1) )
@@ -6,12 +7,17 @@ SmartAmmo_SetUnlockAfterBurst( self, (SMART_AMMO_PLAYER_MAX_LOCKS > 1) )
 // things that
 function InitForAllClients()
 {
-	SmartAmmo_SetWarningIndicatorDelay( self, 9999.0 )
+	SmartAmmo_SetWarningIndicatorDelay( self, 0.0 )
 }
 
 function OnWeaponActivate( activateParams )
 {
-	SmartAmmo_Start( self )
+    local owner = self.GetWeaponOwner()
+    // Only activate the lock-on logic if a player is holding it
+    if ( IsValid( owner ) && owner.IsPlayer() )
+    {
+        SmartAmmo_Start( self )
+    }
 }
 
 function OnWeaponDeactivate( deactivateParams )
@@ -22,6 +28,13 @@ function OnWeaponDeactivate( deactivateParams )
 function OnWeaponPrimaryAttack( attackParams )
 {
 	return SmartAmmo_FireWeapon( self, attackParams, damageTypes.Instant | damageTypes.Bullet )
+}
+
+function OnWeaponNpcPrimaryAttack( attackParams )
+{
+    self.EmitWeaponSound( "Weapon_SmartPistol.Fire" )
+    self.FireWeaponBullet( attackParams.pos, attackParams.dir, 1, damageTypes.Instant | damageTypes.Bullet )
+    return 1
 }
 
 function OnWeaponStartZoomIn()
