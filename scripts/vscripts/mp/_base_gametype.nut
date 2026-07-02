@@ -2431,6 +2431,11 @@ function AutoBalancePlayer( player, forceSwitch = false )
 						playerSoul.chargeCannon.model.SetTeam( newTeam )
 				}
 			}
+
+			// Fix rodeo viewmodel not changing skin
+			local viewModel = player.GetFirstPersonProxy()
+			if ( viewModel )
+				viewModel.SetSkin( player.GetSkin() )
 		}
 
 		NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
