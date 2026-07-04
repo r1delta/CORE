@@ -840,6 +840,14 @@ function RunSpawnBurnCard( player, cardRef )
 
             BCSpiderSense( player )
             break
+
+        case "bc_stim_forever":
+            if ( player.IsTitan() )
+                player.WaitSignal( "OnLeftTitan" ); wait 0.5
+
+            player.stimmedForever = true
+		    StimPlayer( player, USE_TIME_INFINITE )
+            break
     }
 }
 
