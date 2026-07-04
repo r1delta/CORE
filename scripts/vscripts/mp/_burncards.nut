@@ -176,8 +176,12 @@ function RefillWeaponAmmo( player )
             if ( PlayerHasPassive( player, PAS_ORDNANCE_PACK))
                 maxAmmo = 3
 
-            if(currentAmmo != maxAmmo)
+            if ( currentAmmo != maxAmmo )
+            {
 		        offhand.SetWeaponPrimaryClipCount( currentAmmo + 1 )
+
+                EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_GrenadeRefill_Refill" )
+            }
 		}
 
         wait 8
