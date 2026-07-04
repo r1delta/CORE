@@ -470,6 +470,19 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
             return false
     }
 
+    // CT_WEAPON is only used by pilot weapons
+    if ( ( cardData.ctFlags & CT_PILOT && cardRef != "bc_rematch" ) || cardData.ctFlags & CT_WEAPON )
+    {
+        if ( Riff_TitanExitIsDisabled() )
+            return false
+    }
+
+    if ( cardData.ctFlags & CT_SPECIAL && cardRef != "bc_auto_sonar" && cardRef != "bc_sonar_forever" )
+    {
+        if ( Riff_TitanExitIsDisabled() )
+            return false
+    }
+
     return true
 }
 
