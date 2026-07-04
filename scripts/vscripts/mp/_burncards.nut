@@ -471,6 +471,7 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
     }
 
     // CT_WEAPON is only used by pilot weapons
+    // CT_SPECTRE could probably be disabled as well but it doesnt really matter. Dont wanna go all "no fun allowed"
     if ( ( cardData.ctFlags & CT_PILOT && cardRef != "bc_rematch" ) || cardData.ctFlags & CT_WEAPON )
     {
         if ( Riff_TitanExitIsDisabled() )
