@@ -811,7 +811,7 @@ function GetBestClosestSpawnpoint( player, originPoint, spawnpoints, spawnpointT
 
 	foreach ( point in spawnpoints )
 	{
-		if ( Distance( point.GetOrigin(), originPoint ) > 500 ) // Is < 500 actually close enough? idk
+		if ( Distance( point.GetOrigin(), originPoint ) > 500 ) // Is > 500 actually too far? idk
 			ArrayRemove( spawnpoints, point )
 	}
 
