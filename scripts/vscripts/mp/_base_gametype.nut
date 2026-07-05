@@ -1036,7 +1036,7 @@ function PostDeathThread( player, damageInfo )
 
 		if(IsValid(player)) {
 			// don't bother showing message if you killed yourself
-			if( attacker != player )
+			if( attacker != player && attacker.IsPlayer() )
 				MessageToPlayer( attacker, eEventNotifications.BurnCardRematch, player, null )
 		}
 	}
@@ -1867,7 +1867,7 @@ function RespawnTitanPilot( player, rematchOrigin = null )
 		if ( GetWaveSpawnType() != eWaveSpawnType.DISABLED && level.waveSpawnByDropship == true )
 			MessageToPlayer( player, eEventNotifications.Clear )
 
-		thread TitanPlayerHotDropsIntoLevel( player )
+		thread TitanPlayerHotDropsIntoLevel( player, rematchOrigin )
 
 		TitanDeployed( player )
 
@@ -2004,7 +2004,7 @@ function ShouldStartSpawn( player )
 }
 
 
-function TitanPlayerHotDropsIntoLevel( player )
+function TitanPlayerHotDropsIntoLevel( player, rematchOrigin = null )
 {
 	printl( "TitanPlayerHotDropsIntoLevel" )
 
@@ -2023,6 +2023,10 @@ function TitanPlayerHotDropsIntoLevel( player )
 	if ( startSpawn )
 	{
 		spawnPoint = FindStartSpawnPoint( player, true )
+	}
+	else if ( rematchOrigin && Riff_TitanExitIsDisabled() )
+	{
+		spawnPoint = FindClosestSpawnPoint( player, rematchOrigin, true )
 	}
 	else
 	{

@@ -52,6 +52,7 @@ function main()
 	Globalize( FilterSpawnpointsByTeam )
 	Globalize( FindSpawnPoint )
 	Globalize( FindStartSpawnPoint )
+	Globalize( FindClosestSpawnPoint )
 	//Globalize( CodeCallback_SpawnpointDebugText )
 	Globalize( GameModeRemove )
 
@@ -683,6 +684,66 @@ function FindStartSpawnPoint( player, isTitan = false )
 	return spawnpoint
 }
 
+function FindClosestSpawnPoint( player, originPoint, isTitan = false )
+{
+	Assert( IsValid( player ), player + " is invalid!" )
+	//printl( "***************************************************************************" )
+	//printl( "***************************************************************************" )
+	//printl( "***************************************************************************\n" )
+	//printt( "FindSpawnPoint( " + player + ")" )
+	local spawnpointType
+	if ( isTitan )
+ 		spawnpointType = "info_spawnpoint_titan"
+ 	else
+ 		spawnpointType = "info_spawnpoint_human"
+
+ 	printl( "FindSpawnPoint: isTitan = " + isTitan + ", spawnpointType = " + spawnpointType )
+
+	if ( file.cycleSpawns )
+	{
+		local index = file.cycleSpawnIndex
+		file.cycleSpawnIndex = ( file.cycleSpawnIndex + 1 ) % file.cycleSpawnArray.len()
+
+		printt( "Spawn", index ,"of", file.cycleSpawnArray.len() )
+
+		return file.cycleSpawnArray[ index ]
+	}
+
+	local team = player.GetTeam()
+ 	local spawnpoints = isTitan ? SpawnPoints_GetTitan() : SpawnPoints_GetPilot()
+	//printt( "spawnpoints.len()" + spawnpoints.len() )
+
+	if ( !spawnpoints.len() )
+		return NoSpawnpointsFallback()
+
+	SpawnPoints_ScriptInitRatings( player )
+
+	if ( isTitan )
+	{
+		foreach ( spawnpoint in spawnpoints )
+			level.spawnRatingFunc_Generic( TD_TITAN, spawnpoint, team, player )
+
+		SpawnPoints_SortTitan()
+	}
+	else
+	{
+		foreach ( spawnpoint in spawnpoints )
+			level.spawnRatingFunc_Pilot( TD_WALLRUN, spawnpoint, team, player )
+
+		SpawnPoints_SortPilot()
+	}
+
+	spawnpoints = isTitan ? SpawnPoints_GetTitan() : SpawnPoints_GetPilot()
+
+	local spawnpoint = GetBestClosestSpawnpoint( player, originPoint, spawnpoints, spawnpointType )
+	Assert( spawnpoint )
+
+	spawnpoint.s.lastUsedTime = Time()
+	player.SetLastSpawnPoint( spawnpoint )
+
+	return spawnpoint
+}
+
 function FilterSpawnpointsByTeam( spawnpoints, team )
 {
 	local oldspawnpoints = clone spawnpoints
@@ -713,6 +774,48 @@ function GetBestSpawnpoint( player, spawnpoints, spawnpointType, loopAll = false
 
 	if ( loopAll )
 		count = spawnpoints.len()
+
+	local spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, count )
+
+	if ( !spawnpoint )
+	{
+		spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, spawnpoints.len(), true )
+
+		if ( !spawnpoint )
+		{
+			PrintNoValidSpawnpoint( spawnpointType, spawnpoints, player, team )
+			spawnpoint = spawnpoints[0]
+		}
+
+		//if ( !level.isTestmap )
+			NotifyClientOfBadSpawn( player, "SpawnIssueInvalid" )
+	}
+
+	//if ( !level.isTestmap )
+		DebugCheckSpawnpointVsEnemies( player, spawnpoint, team )
+
+	return spawnpoint
+}
+
+function GetBestClosestSpawnpoint( player, originPoint, spawnpoints, spawnpointType, loopAll = false )
+{
+	// lets not loop through all spawnpoints. The bottom batch is not good for spawning even if they are valid.
+	// if no valid spawnpoints go for the first that is invalid due to visibility.
+	// should always return a spawnpoint.
+
+	local team = player.GetTeam()
+	local count = (spawnpoints.len() + 1) / 2
+
+	if ( loopAll )
+		count = spawnpoints.len()
+
+	foreach ( point in spawnpoints )
+	{
+		if ( Distance( point.GetOrigin(), originPoint ) > 500 ) // Is < 500 actually close enough? idk
+			ArrayRemove( spawnpoints, point )
+	}
+
+	spawnpoints = ArrayClosest( spawnpoints, originPoint )
 
 	local spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, count )
 
