@@ -1108,20 +1108,34 @@ function RefillGrenadeAmmo( player )
         return
 
     if ( !IsAlive( player ) || player.IsTitan() )
-        return
-
-    if ( player.s.bc_grenadesPendingForRefill <= 0 )
     {
+        player.s.bc_grenadesPendingForRefill = 0
         player.s.bc_grenadeRefillInProgress = false
         return
     }
 
     local offhand = player.GetOffhandWeapon( 0 )
 	if ( !offhand )
+    {
+        player.s.bc_grenadesPendingForRefill = 0
+        player.s.bc_grenadeRefillInProgress = false
         return
+    }
 
     local currentAmmo = offhand.GetWeaponPrimaryClipCount()
     local maxAmmo = player.GetWeaponAmmoMaxLoaded( offhand )
+
+    if ( player.s.bc_grenadesPendingForRefill <= 0 )
+    {
+        player.s.bc_grenadeRefillInProgress = false
+        return
+    }
+    else if ( player.s.bc_grenadesPendingForRefill > 0 && currentAmmo >= maxAmmo )
+    {
+        player.s.bc_grenadesPendingForRefill = 0
+        player.s.bc_grenadeRefillInProgress = false
+        return
+    }
 
     if ( currentAmmo != maxAmmo )
     {
