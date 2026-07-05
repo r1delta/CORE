@@ -470,17 +470,18 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
             return false
     }
 
-    // CT_WEAPON is only used by pilot weapons
-    // CT_SPECTRE could probably be disabled as well but it doesnt really matter. Dont wanna go all "no fun allowed"
-    if ( ( cardData.ctFlags & CT_PILOT && cardRef != "bc_rematch" ) || cardData.ctFlags & CT_WEAPON )
+    if ( Riff_TitanExitIsDisabled() )
     {
-        if ( Riff_TitanExitIsDisabled() )
+        // CT_WEAPON is only used by pilot weapons
+        // CT_SPECTRE could probably be disabled as well but it doesnt really matter. Dont wanna go all "no fun allowed"
+        if ( ( cardData.ctFlags & CT_PILOT && cardRef != "bc_rematch" ) || cardData.ctFlags & CT_WEAPON )
             return false
-    }
 
-    if ( cardData.ctFlags & CT_SPECIAL && cardRef != "bc_auto_sonar" && cardRef != "bc_sonar_forever" )
-    {
-        if ( Riff_TitanExitIsDisabled() )
+        if ( cardData.ctFlags & CT_SPECIAL && cardRef != "bc_auto_sonar" && cardRef != "bc_sonar_forever" )
+            return false
+
+        // Just switch loadouts...
+        if ( cardRef == "bc_summon_atlas" || cardRef == "bc_summon_ogre" || cardRef == "bc_summon_stryder" )
             return false
     }
 
