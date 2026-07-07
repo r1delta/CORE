@@ -451,7 +451,8 @@ function PilotBecomesTitan( player, titan, fullCopy = true )
 
 	player.SetPetTitan( null )
 
-	ClearPlayerActiveObjective( player )
+	// WHy??
+	//ClearPlayerActiveObjective( player )
 
 	// puts the weapons into a table
 	StorePilotWeapons( player )
