@@ -31,6 +31,11 @@ CBaseEntity.invulnerable <- 0
 CBaseEntity.__KeyValueFromString <- CBaseEntity.SetValueForKey
 CBaseEntity.__KeyValueFromInt <- CBaseEntity.SetValueForKey
 
+// Allow kill replays again
+CBaseEntity.connectTime <- null
+CBaseEntity.hasSpawned <- true
+CBaseEntity.firstSpawnTime <- null
+
 class KeyValueInterface
 {
 	self = null

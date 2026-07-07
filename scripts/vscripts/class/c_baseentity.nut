@@ -17,11 +17,6 @@ C_BaseEntity.hudVisible <- null
 C_BaseEntity.useFunction <- null // should match on server/client
 C_BaseEntity._entityVars <- null
 
-// Allow kill replays again
-C_BaseEntity.connectTime <- null
-C_BaseEntity.hasSpawned <- true
-C_BaseEntity.firstSpawnTime <- null
-
 function C_BaseEntity::constructor()
 {
 	this.s = {}
