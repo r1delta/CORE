@@ -51,6 +51,7 @@ const VORTEX_REFIRE_TITAN_GRENADE		= "titan_grenade"
 
 vortexIgnoreClassnames <- {}
 vortexIgnoreClassnames["mp_weapon_defender"] <- true
+vortexIgnoreClassnames[WEAPON_CHARGE_CANNON_NAME] <- true
 
 vortexImpactWeaponInfo <- {}
 
