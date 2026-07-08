@@ -13,6 +13,17 @@ chargeDownSoundDuration <- 1.0 //"charge_cooldown_time"
 const CHARGE_FX = "P_wpn_defender_charge" //"P_wpn_charge_cannon_charge"
 const CHARGE_FX_FP = "P_wpn_defender_charge_FP" //"P_wpn_charge_cannon_charge_FP"
 
+// Rumble
+const CHARGE_CANNON_RUMBLE_CHARGE_MIN		= 10
+const CHARGE_CANNON_RUMBLE_CHARGE_MAX		= 30
+const CHARGE_CANNON_RUMBLE_TYPE_INDEX		= 14		// These are defined in code, 14 = RUMBLE_FLAT_BOTH
+
+const CHARGE_CANNON_SIGNAL_DEACTIVATED = "ChargeCannonDeactivated"
+RegisterSignal( CHARGE_CANNON_SIGNAL_DEACTIVATED )
+
+const CHARGE_CANNON_SIGNAL_CHARGEEND = "ChargeCannonChargeEnd"
+RegisterSignal( CHARGE_CANNON_SIGNAL_CHARGEEND )
+
 function LauncherPrecache( weapon )
 {
 	if ( WeaponIsPrecached( self ) )
@@ -44,10 +55,24 @@ function OnWeaponActivate( activateParams )
 function OnWeaponDeactivate( deactivateParams )
 {
 	self.StopWeaponSound( "Weapon_Titan_Charge_Cannon_Loop" )
+
+	self.Signal( CHARGE_CANNON_SIGNAL_DEACTIVATED )
 }
 
 function OnWeaponOwnerChanged( changeParams )
 {
+	if ( changeParams.newOwner == null && changeParams.oldOwner != null )
+	{
+		if ( IsClient() )
+		{
+			if ( changeParams.oldOwner == GetLocalViewPlayer() )
+				self.Signal( CHARGE_CANNON_SIGNAL_DEACTIVATED )
+		}
+		else
+		{
+			self.Signal( CHARGE_CANNON_SIGNAL_DEACTIVATED )
+		}
+	}
 }
 
 function OnWeaponPrimaryAttack( attackParams )
@@ -72,7 +97,10 @@ function OnWeaponChargeBegin( chargeParams )
 	//StopSoundOnEntity( self, "Weapon_Titan_Sniper_WindDown" )
 
 	if( IsClient() )
-		EmitSoundOnEntityWithSeek( self, "Weapon_Charge_Cannon_ChargeStart", chargeTime )	
+	{
+		EmitSoundOnEntityWithSeek( self, "Weapon_Charge_Cannon_ChargeStart", chargeTime )
+		thread cl_ChargeRumble( self, CHARGE_CANNON_RUMBLE_TYPE_INDEX, CHARGE_CANNON_RUMBLE_CHARGE_MIN, CHARGE_CANNON_RUMBLE_CHARGE_MAX, CHARGE_CANNON_SIGNAL_CHARGEEND )
+	}
 	else
 	{
 		EmitSoundOnEntityExceptToPlayerWithSeek( self, self.GetWeaponOwner(), "Weapon_Charge_Cannon_ChargeStart", chargeTime )
@@ -124,6 +152,11 @@ function OnWeaponChargeEnd( chargeParams )
 	StopSoundOnEntity( self, "Weapon_Charge_Cannon_ChargeStart" )
 
 	printt( format( "charge end!! %f, %f", seekFrac, seekTime ) )
+
+	if ( IsClient() )
+	{
+		self.Signal( CHARGE_CANNON_SIGNAL_CHARGEEND )
+	}
 }
 
 function OnClientAnimEvent( name ) //총구에서 발사되도록 수정 KWANYONG
