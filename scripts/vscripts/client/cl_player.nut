@@ -2108,11 +2108,7 @@ function GrenadeArrowThink( player, grenade, weaponName, damageRadius, startDela
 
 				if ( requireLos )
 				{
-					//TraceResults result = TraceLine( origin, GetRandomOriginWithinBounds( player ), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
-					local result = TraceLine( origin, player.GetOrigin(), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
-
-					if ( result.fraction != 1.0 )
-						result = TraceLine( origin, player.EyePosition(), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+					local result = TraceLine( origin, GetRandomOriginWithinBounds( player ), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
 
 					if ( result.fraction == 1.0 )
 						tracePassed = true
@@ -2210,54 +2206,6 @@ function GrenadeArrow_PostThink( player, grenade, arrow, mdl )
 */
 }
 
-function PlayerHudTest()
-{
-	local player = GetLocalViewPlayer()
-
-	local cockpit = player.GetCockpit()
-	if ( !cockpit )
-		return
-
-	thread PlayerHudTestThink( player, cockpit )
-}
-Globalize( PlayerHudTest )
-
-function PlayerHudTestThink( player, cockpit )
-{
-	player.EndSignal( "OnDeath" )
-	cockpit.EndSignal( "OnDestroy" )
-
-	local model = CreateClientSidePropDynamicClone( player, player.GetModelName() )
-
-	OnThreadEnd(
-		function() : ( model )
-		{
-			model.Destroy()
-		}
-	)
-
-	model.SetParent( cockpit, "CAMERA_BASE" )
-	model.SetAttachOffsetOrigin( Vector( 100.0, 0.0, -4.0 ) )
-
-	if ( player.GetTeam() == TEAM_MILITIA )
-		model.SetSkin( 1 )
-
-	model.DisableRenderWithViewModelsNoZoom()
-	model.EnableRenderWithCockpit()
-	model.EnableRenderAlways()
-
-	while( true )
-	{
-		if ( IsValid( player) && IsAlive( player ) )
-		{
-			model.SetOrigin( player.GetOrigin() )
-			model.SetAngles( player.GetAngles() )
-		}
-
-		WaitFrame()
-	}
-}
-
 function ToggleGrenadeIndicators()
 {
 	level.grenadeIndicatorEnabled = !level.grenadeIndicatorEnabled
@@ -2321,6 +2269,16 @@ function CalcAbsoluteIndicatorDir( player, enemyPos )
 	local y = dirOnPlane.Dot( planeForward )
 
 	return [x, y]
+}
+
+function GetRandomOriginWithinBounds( ent )
+{
+	local boundingMins = ent.GetBoundingMins()
+	local boundingMaxs = ent.GetBoundingMaxs()
+
+	local randomOffset = Vector( RandomFloat( boundingMins.x, boundingMaxs.x ), RandomFloat( boundingMins.y, boundingMaxs.y ), RandomFloat( boundingMins.z, boundingMaxs.z ) )
+
+	return ent.GetOrigin() + randomOffset
 }
 
 function ServerCallback_OnEntityKilled( attackerEHandle, victimEHandle, scriptDamageType, damageSourceId )
