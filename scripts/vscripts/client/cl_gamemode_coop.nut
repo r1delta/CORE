@@ -1230,8 +1230,8 @@ function ButtonCallback_InitTurretPlacement( player )
 	RegisterConCommandTriggeredCallback( "+weaponPickupAndCycle", ButtonCallback_AbortTurretPlacement )
 	RegisterConCommandTriggeredCallback( "+scriptCommand1", ButtonCallback_AbortTurretPlacement )
 
-	RegisterConCommandTriggeredCallback( "+reload", ButtonCallback_RotateTurret )
-	RegisterConCommandTriggeredCallback( "+useAndReload", ButtonCallback_RotateTurret )
+	//RegisterConCommandTriggeredCallback( "+reload", ButtonCallback_RotateTurret )
+	//RegisterConCommandTriggeredCallback( "+useAndReload", ButtonCallback_RotateTurret )
 
 	// this will holster the weapon of the player on the server.
 	player.ClientCommand( "InitSentryTurretPlacement" )
