@@ -1256,8 +1256,8 @@ function TurretPlacementCleanupThread( player )
 			DeregisterConCommandTriggeredCallback( "+weaponPickupAndCycle", ButtonCallback_AbortTurretPlacement )
 			DeregisterConCommandTriggeredCallback( "+scriptCommand1", ButtonCallback_AbortTurretPlacement )
 
-			DeregisterConCommandTriggeredCallback( "+reload", ButtonCallback_RotateTurret )
-			DeregisterConCommandTriggeredCallback( "+useAndReload", ButtonCallback_RotateTurret )
+			//DeregisterConCommandTriggeredCallback( "+reload", ButtonCallback_RotateTurret )
+			//DeregisterConCommandTriggeredCallback( "+useAndReload", ButtonCallback_RotateTurret )
 
 			TurretPlacementHintVisiblity( false )
 			TurretPlacementHintInvalid( false )
