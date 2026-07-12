@@ -8,6 +8,8 @@ function main()
 	RegisterServerVarChangeCallback( "attackingTeam", UpdateExfilIcons )
 	RegisterServerVarChangeCallback( "gameState", Exfil_GameStateChanged )
 
+	AddCallback_OnPlayerAutoBalanced( Exfil_PlayerAutoBalanced )
+
 	RegisterSignal( "FlagUpdate" )
 
 	level.exfilPanels <- [ null, null ]
@@ -126,4 +128,9 @@ function Exfil_GameStateChanged()
 	{
 		CE_ResetVisualSettings( GetLocalViewPlayer() )
 	}
+}
+
+function Exfil_PlayerAutoBalanced( balancedPlayer, oldTeam, newTeam )
+{
+	UpdateExfilIcons()
 }

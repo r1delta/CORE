@@ -40,6 +40,7 @@ function main()
 
 	AddCreateCallback( "info_hardpoint", OnHardpointCreated )
 
+	AddCallback_OnPlayerAutoBalanced( Uplink_PlayerAutoBalanced )
 }
 // INITIALIZATION
 
@@ -239,7 +240,7 @@ function HardpointChanged( hardpoint )
 		if ( hardpoint.GetTeam() == player.GetTeam() )
 			player.s.statusText.SetAutoText( "#DEFEND_COUNTDOWNTIME", HATT_GAME_COUNTDOWN_SECONDS, hardpoint.GetEstimatedCaptureTime() )
 		else
-			player.s.statusText.SetText( "HACK" )
+			player.s.statusText.SetText( "#GAMEMODE_EXFIL_HACK" )
 	}
 
 	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
@@ -400,4 +401,10 @@ function CapturePointUpdateCockpitThread( cockpit )
 		level.ent.WaitSignal( CAPTURE_POINT_UI_UPDATE )
 		UpdateHardpointVisibility()
 	}
+}
+
+function Uplink_OnPlayerAutoBalanced( balancedPlayer, oldTeam, newTeam )
+{
+	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
+	UpdateHardpointVisibility()
 }

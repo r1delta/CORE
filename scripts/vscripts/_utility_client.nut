@@ -758,6 +758,19 @@ function AddCallback_LocalViewPlayerSpawned( callbackFunc )
 	level.onLocalViewPlayerSpawnedCallbacks.append( callbackInfo )
 }
 
+function AddCallback_OnPlayerAutoBalanced( callbackFunc )
+{
+	Assert( "onPlayerAutoBalancedCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnPlayerAutoBalanced can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 3, "entity, oldTeam, newTeam" )
+
+	local callbackInfo = {}
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onPlayerAutoBalancedCallbacks.append( callbackInfo )
+}
+
 function PlayerProgressionAllowed( player = null )
 {
 	if ( IsPrivateMatch() )

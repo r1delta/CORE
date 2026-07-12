@@ -2444,7 +2444,33 @@ function AutoBalancePlayer( player, forceSwitch = false )
 
 		NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
 
-		thread PostAutoBalanceThink( player, newTeam )
+		local ai = GetNPCArrayByClass( "npc_soldier" )
+		ai.extend( GetNPCArrayByClass( "npc_spectre" ) )
+
+		foreach( npc in ai )
+		{
+			// Swap hacked Spectres and conscripted grunts
+			if ( npc.GetBossPlayer() == player )
+				npc.SetTeam( newTeam )
+
+			// Only these two NPCs use the overhead teammate indicator
+			local eHandle = npc.GetEncodedEHandle()
+			Remote.CallFunction_Replay( player, "ServerCallback_UpdateOverheadIconForNPC", eHandle )
+		}
+
+		local turrets = GetNPCArrayByClass( "npc_turret_mega" )
+		turrets.extend( GetNPCArrayByClass( "npc_turret_mega_bb" ) )
+		turrets.extend( GetNPCArrayByClass( "npc_turret_sentry" ) )
+
+		foreach ( npc in turrets )
+		{
+			// Swap hacked turrets
+			if ( npc.GetBossPlayer() == player )
+				npc.SetTeam( newTeam )
+
+			if ( npc.GetClassname() == "npc_turret_sentry" )
+				npc.SetSkin( player.GetSkin() )
+		}
 
 		foreach ( callbackInfo in level.onPostAutoBalanceCallbacks )
 		{
@@ -2464,10 +2490,21 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 	if ( GameRules.GetGameMode() == COOPERATIVE )
 		return false
 
+	if ( GameRules.GetGameMode() == WINGMAN_LAST_TITAN_STANDING )
+		return false
+
 	if ( IsFFABased() )
 		return false
 
 	if ( player.s.respawnCount < 1 )
+		return false
+
+	if ( player.ContextAction_IsMeleeExecution() || player.ContextAction_IsLeeching() )
+		return false
+
+	// Prevent the player controlling the titan in ctt from changing teams
+	// level.teamFlag = the titans soul
+	if ( GameRules.GetGameMode() == CAPTURE_THE_TITAN && level.teamFlag && level.teamFlag.GetBossPlayer() == player )
 		return false
 
 	if ( !forceSwitch )
@@ -2481,11 +2518,13 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
         local playerUID = player.GetUID()
         if ( playerUID in level.lastForceSwitchTime )
         {
+			local autobalanceCooldown = 15.0
+
             local timeSinceLastSwitch = Time() - level.lastForceSwitchTime[playerUID]
-            if ( timeSinceLastSwitch < 15.0 )
+            if ( timeSinceLastSwitch < autobalanceCooldown )
             {	                
-				local timeRemaining = ceil( 15.0 - timeSinceLastSwitch )
-                printt( "Force switch on cooldown for player " + player.GetPlayerName() + " - " + (15.0 - timeSinceLastSwitch) + " seconds remaining" )
+				local timeRemaining = ceil( autobalanceCooldown - timeSinceLastSwitch )
+                printt( "Force switch on cooldown for player " + player.GetPlayerName() + " - " + (autobalanceCooldown - timeSinceLastSwitch) + " seconds remaining" )
 				// MessageToPlayer( player, eEventNotifications.AutoBalanceCooldown, null, timeRemaining )
 				// send a hud text message instead of event notification
 				SendHudMessage( player, "You can switch teams again in " + timeRemaining + " seconds", -1, 0.4, 255, 255, 255, 255, 1.0, 2.0, 1.0 )
@@ -2495,29 +2534,6 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
     }
 
 	return true
-}
-
-function PostAutoBalanceThink( player, newTeam )
-{
-	// Only these two NPCs use the overhead teammate indicator
-	local ai = GetNPCArrayByClass( "npc_soldier" )
-	ai.extend( GetNPCArrayByClass( "npc_spectre" ) )
-
-	foreach( npc in ai )
-	{
-		// Swap hacked Spectres and (probably) conscripted grunts
-		if ( npc.GetBossPlayer() == player )
-			npc.SetTeam( newTeam )
-
-		local eHandle = npc.GetEncodedEHandle()
-
-		Remote.CallFunction_Replay( player, "ServerCallback_UpdateOverheadIconForNPC", eHandle )
-	}
-
-	wait 2
-
-	if ( player )
-		player.s.forceDisableFlagTouch = false
 }
 
 function GameStart_AutoBalanceCooldown()
@@ -2723,7 +2739,7 @@ function CodeCallback_OnClientConnectionStarted( player )
 
 	player.s.lastNagTime <- 0
 
-	player.s.forceDisableFlagTouch <- false
+	player.s.nextFlagTouchTime <- 0
 
 	Assert( !player._entityVars )
 	InitEntityVars( player )

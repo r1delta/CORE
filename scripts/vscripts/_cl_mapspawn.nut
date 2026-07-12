@@ -114,6 +114,7 @@ function Cl_MapspawnMain()
 	level.onLocalPlayerDidDamageCallbacks <- []
 	level.onLocalClientPlayerSpawnedCallbacks <- []
 	level.onLocalViewPlayerSpawnedCallbacks <- []
+	level.onPlayerAutoBalancedCallbacks <- []
 
 	buttonPressedCallbacks <- {}
 	buttonReleaseCallbacks <- {}

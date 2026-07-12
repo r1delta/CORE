@@ -994,6 +994,11 @@ function ServerCallback_PlayerChangedTeams( player_eHandle, oldTeam, newTeam )
 
 	Obituary_Print( playerName, changedString, teamString, playerNameColor, OBITUARY_COLOR_WEAPON, playerNameColor )
 	//"Switching " + player.GetPlayerName() + " from " + GetTeamStr( team1 ) + " to " + GetTeamStr( team2 )
+
+	foreach ( callbackInfo in level.onPlayerAutoBalancedCallbacks )
+	{
+		callbackInfo.func.acall( [callbackInfo.scope, player, oldTeam, newTeam] )
+	}
 }
 
 function ServerCallback_PlayerConnectedOrDisconnected( player_eHandle, state )
