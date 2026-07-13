@@ -390,10 +390,17 @@ if ( !IsTrainingLevel() )
 
 		// make sure we have VO for the game mode
 		local mode = GameRules.GetGameMode()
+		local modeAlias
 		if ( !( mode in modeAliases ) )
 		{
-			printt( "Couldn't find alias VO for gamemode", mode,", finishing training pod VO early." )
-			return
+			modeAlias = modeAliases[ TEAM_DEATHMATCH ]
+			printt( "Couldn't find alias VO for gamemode", mode,". Defaulting to pilot hunter." )
+			//printt( "Couldn't find alias VO for gamemode", mode,", finishing training pod VO early." )
+			//return
+		}
+		else
+		{
+			modeAlias = modeAliases[ mode ]
 		}
 
 	    // "Simulation mode is:"
@@ -401,7 +408,7 @@ if ( !IsTrainingLevel() )
 
 	    wait 1.5
 
-	    EmitSoundToIntroPlayers( modeAliases[ mode ] )
+	    EmitSoundToIntroPlayers( modeAlias )
 	}
 
 	function EmitSoundToIntroPlayers( alias )
