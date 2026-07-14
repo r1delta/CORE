@@ -457,6 +457,10 @@ function ShouldDoReplay( player, attacker, replayTime )
 	if ( !( "connectTime" in player ) || !( "connectTime" in attacker ) )
 		return false
 
+	// Both players must have valid connectTime
+	if ( player.connectTime == null || attacker.connectTime == null )
+		return false
+
 	// Additional defensive check: Ensure minimum replay buffer time
 	if ( Time() - player.connectTime <= minimumReplayTime || Time() - attacker.connectTime <= minimumReplayTime )
 		return false
