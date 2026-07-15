@@ -19,6 +19,8 @@ function main()
 
 	FlagSet( "CinematicOutro" ) //-->deprecated? do we even need this anymore?
 
+	// AddSpawnCallback( "npc_spectre", SpectreDefaultSpawnFracture )
+
 	FlagInit( "IntroGoMilitia" )
 	FlagInit( "MCOR_captain_anim" )
 	FlagInit( "IMC_captain_anim" )
@@ -63,6 +65,7 @@ function main()
 	PrecacheParticleSystem( FX_TITAN_COCKPIT_LIGHT )
 	PrecacheParticleSystem( FX_DROPSHIP_WARPOUT_SPACE )
 	PrecacheParticleSystem( "bish_comp_glow_01" )
+	PrecacheParticleSystem( "veh_carrier_warp_out_full_SB" )
 
 	RegisterSignal( "dialogue" )
 	RegisterSignal( "StopShaking" )
@@ -76,6 +79,18 @@ function main()
 		SetGameModeAnnouncement( "GameModeAnnounce_CP" )
 	}
 }
+
+/*
+function SpectreDefaultSpawnFracture( spectre )
+{
+	// Force all spectres to use Mk. I model on Fracture in campaign
+	if ( GetCurrentPlaylistName() == "campaign_carousel" )
+	{
+		if ( spectre.GetModelName() != MILITIA_SPECTRE_MODEL )
+			spectre.SetModel( MILITIA_SPECTRE_MODEL )
+	}
+}
+*/
 
 function EntitiesDidLoad()
 {
@@ -705,6 +720,10 @@ function IntroMilitiaCaptain()
 			{
 				titan.SetEfficientMode( false )
 				DeleteAnimEvent( titan, "cockpitOpen", ChangCockpitOpen )
+				AllowTeamRodeo( titan, true )
+				GiveTitanPilot( titan, true )
+				GiveTitanPilotModel( titan, TEAM_MILITIA_CAPTAIN_MDL )
+
 				thread IntroCaptainMCORFight( titan )
 			}
 		}
@@ -1220,6 +1239,10 @@ function IntroIMCCaptain( test = false )
 				titan.SetTitle( "#NPC_CAPTAIN_RIGGS" )
 				titan.SetShortTitle( "#NPC_CAPTAIN_RIGGS" )
 				titan.SetEfficientMode( false )
+				AllowTeamRodeo( titan, true )
+				GiveTitanPilot( titan, true )
+				GiveTitanPilotModel( titan, TEAM_IMC_CAPTAIN_MDL )
+
 				thread IntroCaptainIMCFight( titan )
 			}
 		}

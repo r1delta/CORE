@@ -472,6 +472,9 @@ function IntroMilitiaNPC()
 			{
 				titan.SetEfficientMode( false )
 				EnableRodeo( titan )
+				AllowTeamRodeo( titan, true )
+				GiveTitanPilot( titan, true )
+				GiveTitanPilotModel( titan, TEAM_MILITIA_CAPTAIN_MDL )
 			}
 		}
 	)
@@ -761,6 +764,9 @@ function IntroIMCNPC( restart = false )
 			{
 				titan.SetEfficientMode( false )
 				EnableRodeo( titan )
+				AllowTeamRodeo( titan, true )
+				GiveTitanPilot( titan, true )
+				GiveTitanPilotModel( titan, TEAM_IMC_CAPTAIN_MDL )
 			}
 
 			foreach ( grunt in grunts )

@@ -3386,8 +3386,15 @@ function DrawTracerOverTime( origin, vector, time )
 //------------------------------------------------------------
 function CreatePropDynamic( model, origin = null, angles = null, solidType = 0, fadeDist = -1 )
 {
-	local prop_dynamic = CreateEntity( "prop_dynamic" )
-	prop_dynamic.kv.model = model
+	if ( typeof model != "string" || model == "" )
+    {
+        printl( "WARNING: CreatePropDynamic called with invalid model: " + model )
+        model = "models/dev/empty_model.mdl" // Fallback to a safe model
+    }
+
+    local prop_dynamic = CreateEntity( "prop_dynamic" )
+    prop_dynamic.__KeyValueFromString( "model", model )
+	
 	prop_dynamic.kv.fadedist = fadeDist
 	prop_dynamic.kv.renderamt = 255
 	prop_dynamic.kv.rendercolor = "255 255 255"
@@ -5953,42 +5960,4 @@ function AddCallback_OnWeaponAttack( callbackFunc )
 	callbackInfo.scope <- this
 
 	level.onWeaponAttackCallbacks[name] <- callbackInfo
-}
-
-function SetPlayerSetFile( player, classSettings )
-{
-	if ( !IsValid( player ) )
-		return
-
-	if ( !IsAlive( player ) )
-		return
-
-	player.SetPlayerSettings( classSettings )
-
-	local team = player.GetTeam()
-	local isTitan = player.IsTitan()
-	if ( !isTitan )
-		player.SetPlayerPilotSettings( classSettings )
-
-	local modelFieldName = "bodymodel_imc"
-	if ( team == TEAM_MILITIA )
-		modelFieldName = "bodymodel_militia"
-
-	local correctModelName = GetPlayerSettingsFieldForClassName( classSettings, modelFieldName )
-	if ( correctModelName != null && correctModelName != "" )
-	{
-		player.SetModel( correctModelName )
-
-		local skin = 0 // Assuming non-female models use skin 0 regardless of team, adjust if needed
-		if ( classSettings.find( "female" ) != null || isTitan )
-			skin = team == TEAM_MILITIA ? 1 : 0
-
-		player.SetSkin( skin )
-
-		RandomizeHead( player )
-	}
-	else
-	{
-		printt( "WARNING - Could not determine correct model name for player " + player + " using playerSetFile '" + classSettings + "' and field '" + modelFieldName + "'" )
-	}
 }

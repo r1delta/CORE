@@ -38,12 +38,14 @@ function AB_IntroTDM()
 	thread AB_IntroIMCTDM()
 	thread AB_IntroMilitiaTDM()
 
-/*	FlagWait( "IMCIntroTitansReady1" )
+	// Wait for actual intro sequences to complete instead of hardcoded time
+	FlagWait( "IMCIntroTitansReady1" )
 	FlagWait( "IMCIntroTitansReady2" )
 	FlagWait( "MCORIntroTitansReady1" )
-	FlagWait( "MCORIntroTitansReady2" )*/
+	FlagWait( "MCORIntroTitansReady2" )
 
-	wait INTROCUSTOMLENGTH_TDM + 4.0
+	wait 2.0  // Small buffer to let everything settle
+
 	FlagSet( "IntroDone" )
 }
 
@@ -492,7 +494,9 @@ function IntroIMCTitanAlavi()
 
 	if ( IsAlive( pilot ) )
 		pilot.Kill()
-
+	AllowTeamRodeo( titan, true )
+	GiveTitanPilot( titan, true )
+	GiveTitanPilotModel( titan, TEAM_IMC_CAPTAIN_MDL  )
 
 	titan.SetTitle( name )
 	waitthread PlayAnim( titan, "at_MP_embark" )
@@ -593,7 +597,9 @@ function IntroIMCTitanGates()
 
 	if ( IsAlive( pilot ) )
 		pilot.Kill()
-
+	AllowTeamRodeo( titan, true )
+	GiveTitanPilot( titan, true )
+	GiveTitanPilotModel( titan, TEAM_IMC_CAPTAIN_MDL  )
 
 	titan.SetTitle( name )
 	titan.SetEfficientMode( false )

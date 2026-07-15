@@ -51,6 +51,7 @@ function main()
 	Globalize( GetMaxAICount )
 	Globalize( GetSpawnSquadSize )
 	Globalize( SetLevelAICount )
+	Globalize( TitanHasPilotInTitan )
 
 	FlagInit( "FrontlineInitiated" )
 	RegisterSignal( "FreeAISlotsUpdated" )
@@ -151,10 +152,228 @@ function main()
 //	file.debug = DEBUG_FRONTLINE_SWITCHED
 //	file.debug = DEBUG_NPC_SPAWN // + DEBUG_ASSAULTPOINT // + DEBUG_KPS // + DEBUG_FRONTLINE_SELECTED
 	// end debug stuff
+	file.pilotedtitans <- []
+	file.pilots <- []
+	file.pilotedtitanmodels <- {}
+	file.spawnedtitans <- {}
+	file.pilotmodels <- [
+	"models/Humans/mcor_pilot/male_br/mcor_pilot_male_br.mdl",
+	"models/Humans/mcor_pilot/male_cq/mcor_pilot_male_cq.mdl",
+	"models/Humans/mcor_pilot/male_dm/mcor_pilot_male_dm.mdl",
+	"models/Humans/imc_pilot/male_br/imc_pilot_male_br.mdl",
+	"models/humans/imc_pilot/male_cq/imc_pilot_male_cq.mdl",
+	"models/humans/imc_pilot/male_dm/imc_pilot_male_dm.mdl"
+	]
+	file.militiapilotmodels <- [
+	"models/Humans/mcor_pilot/male_br/mcor_pilot_male_br.mdl",
+	"models/Humans/mcor_pilot/male_cq/mcor_pilot_male_cq.mdl",
+	"models/Humans/mcor_pilot/male_dm/mcor_pilot_male_dm.mdl"
+	]
+	file.imcpilotmodels <- [
+	"models/Humans/imc_pilot/male_br/imc_pilot_male_br.mdl",
+	"models/humans/imc_pilot/male_cq/imc_pilot_male_cq.mdl",
+	"models/humans/imc_pilot/male_dm/imc_pilot_male_dm.mdl"
+	]
+	AddDamageByCallback( "npc_titan", Execution )
+	AddDamageCallback( "npc_titan", NoPain )
+	AddDamageCallback( "npc_soldier", NoPain )
 
 	SpawnPoints_SetRatingMultipliers_Enemy( TD_AI, -2.0, -0.25, 0.0 )
 	SpawnPoints_SetRatingMultipliers_Friendly( TD_AI, 0.5, 0.25, 0.0 )
 }
+
+function TitanHasPilotInTitan( titan )
+{
+	local pilotedtitans = []
+	foreach( npc in file.pilotedtitans )
+	if ( IsValid( npc ) && IsAlive( npc ) )
+	    pilotedtitans.append( npc )
+	file.pilotedtitans = pilotedtitans
+	foreach( npc in pilotedtitans )
+	    if ( npc == titan )
+	        return true
+
+	return false
+}
+
+function NPCIsPilot( pilot )
+{
+	local pilots = []
+	foreach( npc in file.pilots )
+	if ( IsValid( npc ) && IsAlive( npc ) )
+	    pilots.append( npc )
+	file.pilots = pilots
+	foreach( npc in pilots )
+	    if ( npc == pilot )
+	        return true
+
+	return false
+}
+
+function Execution( ent, damageInfo )
+{
+	local attacker = damageInfo.GetAttacker()
+	if ( !ent.IsTitan() || damageInfo.GetDamageSourceIdentifier() != eDamageSourceId.titan_melee || !TitanHasPilotInTitan( attacker ) || !ent.GetDoomedState() || !CodeCallback_IsValidMeleeExecutionTarget( attacker, ent ) )
+	    return
+
+    damageInfo.SetDamage( 0 )
+	thread PlayerTriesExecutionMelee( attacker, ent )
+}
+
+function NoPain( ent, damageInfo )
+{
+    // If it's a Titan without a pilot, allow standard damage processing
+    if ( ent.IsTitan() && !TitanHasPilotInTitan( ent ) )
+        return
+
+    // If it's a Pilot NPC, ensure they can still take damage
+    if ( !ent.IsTitan() && NPCIsPilot( ent ) )
+    {
+        damageInfo.AddDamageFlags( DAMAGEFLAG_NOPAIN ) // Optional: prevents flinching
+        return // Exit here so damage isn't set to 0
+    }
+
+    // Default behavior for other NPCs
+    damageInfo.AddDamageFlags( DAMAGEFLAG_NOPAIN )
+}
+
+function GiveTitanPilot( titan, enable )
+{
+    if ( !IsValid( titan ) )
+        return
+
+    if ( !( "pilotedtitans" in file ) )
+        file.pilotedtitans <- []
+
+    if ( enable )
+    {
+        if ( !( titan in file.pilotedtitans ) )
+            file.pilotedtitans.append( titan )
+    }
+    else
+    {
+        if ( titan in file.pilotedtitans )
+            file.pilotedtitans.remove( titan )
+    }
+}
+Globalize( GiveTitanPilot )
+
+function GiveTitanPilotModel( titan, model )
+{
+    if ( !IsValid( titan ) )
+        return
+
+    if ( !( "pilotedtitanmodels" in file ) )
+        file.pilotedtitanmodels <- {}
+
+    // store model associated with this titan (the map/intro code reads this to show the cockpit pilot model)
+    file.pilotedtitanmodels[ titan ] <- model
+}
+Globalize( GiveTitanPilotModel )
+
+// Create a prop copy for the pilot model and return it.
+function CreateCopyOfPilotModel( titan )
+{
+    if ( !IsValid( titan ) )
+        return null
+
+    local model = null
+
+	// prefer explicit per-titan model if set
+	if ( ( "pilotedtitanmodels" in file ) && ( titan in file.pilotedtitanmodels ) )
+		model = file.pilotedtitanmodels[ titan ]
+
+	// fallback based on team
+	if ( model == null )
+	{
+		if ( titan.GetTeam() == TEAM_IMC && file.imcpilotmodels && file.imcpilotmodels.len() )
+			model = Random( file.imcpilotmodels )
+		else if ( titan.GetTeam() == TEAM_MILITIA && file.militiapilotmodels && file.militiapilotmodels.len() )
+			model = Random( file.militiapilotmodels )
+		else if ( file.pilotmodels && file.pilotmodels.len() )
+			model = Random( file.pilotmodels )
+		else
+			return null
+	}
+
+	// Create the prop. CreatePropDynamic in this build already returns a spawned entity,
+	local prop = CreatePropDynamic( model )
+	if ( !IsValid( prop ) )
+		return null
+
+	// set team/owner so rendering/collision are correct and engine knows the relationship
+	prop.SetTeam( titan.GetTeam() )
+	prop.SetOwner( titan )
+
+	// parent it to the titan cockpit attachment (use the hijack attachment)
+	prop.SetParent( titan, "HIJACK" )
+	prop.MarkAsNonMovingAttachment()
+
+	// store a reference on the titan for later cleanup / checks
+	if ( !("s" in titan) )
+		titan.s <- {}
+
+	titan.s.pilotprop <- prop
+
+	// ensure the prop is removed when the titan dies (best-effort)
+	OnThreadEnd(
+		function() : ( prop, titan )
+		{
+			thread function() : ( prop, titan )
+			{
+				titan.WaitSignal( "OnDestroy" )
+				if ( IsValid( prop ) )
+					prop.Kill()
+			}()
+		}
+	)
+
+	return prop
+}
+Globalize( CreateCopyOfPilotModel )
+
+
+// Attach (and store) a pilot prop to the titan's cockpit attachment.
+// If the titan already has a pilot prop, this will not create another.
+function AttachPilotModelToTitan( titan )
+{
+    if ( !IsValid( titan ) )
+        return null
+
+    // don't recreate if already attached
+    if ( "s" in titan && "pilotprop" in titan.s && IsValid( titan.s.pilotprop ) )
+        return titan.s.pilotprop
+
+    local prop = CreateCopyOfPilotModel( titan )
+    if ( !IsValid( prop ) )
+        return null
+
+    // parent the prop to the titan cockpit (HIJACK attachment used in the intro code)
+    prop.SetParent( titan, "HIJACK" )
+    prop.MarkAsNonMovingAttachment()
+
+    // store reference for cleanup / checks
+    if ( !("s" in titan) )
+        titan.s <- {}
+
+    titan.s.pilotprop <- prop
+
+    // Make sure the prop is removed when titan is destroyed (best-effort)
+	OnThreadEnd(
+		function() : ( prop, titan )
+		{
+			thread function() : ( prop, titan )
+			{
+				titan.WaitSignal( "OnDestroy" )
+				if ( IsValid( prop ) )
+					prop.Kill()
+			}()
+		}
+	)
+
+    return prop
+}
+Globalize( AttachPilotModelToTitan )
 
 function SetupLevelAICount()
 {

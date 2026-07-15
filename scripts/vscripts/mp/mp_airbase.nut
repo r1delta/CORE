@@ -313,6 +313,14 @@ function AB_IntroAITitanDrop( name, team, pilotNode, titanNode, flag, weapon = n
 
 	if ( IsValid( pilot ) )
 		pilot.Kill()
+	AllowTeamRodeo( titan, true )
+	GiveTitanPilot( titan, true )
+
+	if ( team == TEAM_MILITIA )
+		GiveTitanPilotModel( titan, TEAM_MILITIA_CAPTAIN_MDL )
+	else
+		GiveTitanPilotModel( titan, TEAM_IMC_CAPTAIN_MDL )
+
 
 	titan.SetTitle( name )
 	titan.SetEfficientMode( false )

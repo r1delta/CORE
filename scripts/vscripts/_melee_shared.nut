@@ -60,7 +60,7 @@ function main()
 	Globalize( CodeCallback_MeleeAttackLunge )
 	Globalize( IsPlayerTitanAttackerMeleeingVictim )
 	Globalize( CreateMeleeScriptMoverBetweenEnts )
-
+    Globalize( PlayerTriesExecutionMelee )
 	Globalize( FindBestMeleeAction )
 	Globalize( GetMeleeActions )
 	Globalize( AddMeleeAction )
@@ -156,11 +156,14 @@ function CodeCallback_IsValidMeleeExecutionTarget( attacker, target )
 		return false
 
 	//No necksnaps while wall running or mantling
-	if ( attacker.IsWallRunning() )
-		return false
+	if ( attacker.IsPlayer() )
+	{
+	    if ( attacker.IsWallRunning() )
+		    return false
 
-	if ( attacker.IsMantling() )
-		return false
+	    if ( attacker.IsMantling() )
+		    return false
+	}
 
 	if ( target.IsPlayer() ) //Disallow execution on a bunch of player-only actions
 	{
@@ -203,7 +206,7 @@ function CodeCallback_IsValidMeleeExecutionTarget( attacker, target )
 
 	if ( IsMultiplayer() )
 	{
-		if ( ShouldPreventFriendlyFire( target, attacker ) )
+		if ( attacker.GetTeam() == target.GetTeam() && GAMETYPE != FFA )
 			return false
 
 		if ( IsServer() )
@@ -234,11 +237,14 @@ function CodeCallback_IsValidMeleeExecutionTarget( attacker, target )
 	if ( !action )
 		return false
 
-	if ( !PlayerMelee_IsExecutionReachable( attacker, target, 0.65 ) )
-		return false
+    if ( attacker.IsPlayer() )
+	{
+	    if ( !PlayerMelee_IsExecutionReachable( attacker, target, 0.65 ) )
+		    return false
 
-	if ( !ShouldPlayerExecuteTarget( attacker, target ) )
-		return false
+	    if ( !ShouldPlayerExecuteTarget( attacker, target ) )
+		    return false
+	}
 
 	level.meleeHintActive = true
 	return true
@@ -261,7 +267,7 @@ function CodeCallback_IsValidMeleeAttackTarget( attacker, target )
 	if ( !CanBeMeleed( target ) )
 		return false
 
-	if ( ShouldPreventFriendlyFire( target, attacker ) )
+	if ( attacker.GetTeam() == target.GetTeam() )
 			return false
 
 	if ( IsServer() )
@@ -376,6 +382,9 @@ function ShouldHolsterWeaponForMelee( player )
 	if ( !IsServer() )
 		return true
 
+	if ( !player.IsPlayer() )
+	    return false
+
 	if ( !player.IsTitan() )
 		return true
 
@@ -400,7 +409,7 @@ function PlayerTriesExecutionMelee( player, target )
 		return
 	}
 
-	if ( player.IsTitan() )
+	if ( player.IsTitan() && player.IsPlayer() )
 	{
 		if ( IsServer() )
 		{
@@ -411,7 +420,7 @@ function PlayerTriesExecutionMelee( player, target )
 			player.PlayerMelee_SetState( PLAYER_MELEE_STATE_TITAN_EXECUTION_PREDICTED )
 		}
 	}
-	else
+	else if( player.IsPlayer() )
 	{
 		if ( IsServer() )
 		{
@@ -463,12 +472,12 @@ function DoSynchedMelee( player, target )
 
 	Assert( actions, "No melee action for " + player + " vs " + target )
 
-	if ( IsServer() )
+	if ( IsServer() && player.IsPlayer() )
 		PlayerMelee_StartLagCompensateTarget( player, target )
 
 	local action = FindBestMeleeAction( player, target, actions )
 
-	if ( IsServer() )
+	if ( IsServer() && player.IsPlayer() )
 		PlayerMelee_FinishLagCompensateTarget( player )
 
 	if ( !action )

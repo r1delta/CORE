@@ -4,6 +4,7 @@ function main()
 	Globalize( CodeCallback_IsValidRodeoTarget )
 	Globalize( GetTitanSoulBeingRodeoed )
 	Globalize( GetTitanBeingRodeoed )
+	Globalize( AllowTeamRodeo )
 	Globalize( GetPlayerRodeoing )
 	Globalize( GetRodeoPackage )
 	Globalize( GetFriendlyRodeoPlayer )
@@ -22,6 +23,7 @@ function main()
 	Globalize( SetRodeoAnimsFromPackage )
 	Globalize( DebugRodeoTimes )
 	Globalize( SetDebugRodeoAnim ) // Set to force a particular rodeo anim to occur
+	Globalize( CreateRodeoPackageForJumpingOn )
 
 	RegisterSignal( "RodeoStarted" )
 	RegisterSignal( "RodeoOver" )
@@ -215,6 +217,43 @@ function main()
 
 		AddCallback_OnClientConnected( Rodeo_OnClientConnected )
 	}
+
+	file.allowedarray <- []
+}
+
+function AllowTeamRodeo( titan, trueorfalse )
+{
+	local allowedarray = []
+	foreach ( npc in file.allowedarray )
+	    if ( IsValid( npc ) && IsAlive( npc ) )
+	        allowedarray.append( npc )
+	if ( !IsValid( titan ) || !IsAlive( titan ) )
+	    return
+	if ( trueorfalse == true )
+	    allowedarray.append( titan )
+	if ( trueorfalse == false )
+	{
+		local newallowedarray = []
+		foreach ( npc in allowedarray )
+		    if ( npc != titan )
+		        newallowedarray.append( npc )
+		allowedarray = newallowedarray
+	}
+	file.allowedarray = allowedarray
+}
+
+function IsAllowedTeamRodeo( titan )
+{
+	local validallowedarray = []
+	foreach ( npc in file.allowedarray )
+	    if ( IsValid( npc ) && IsAlive( npc ) )
+	        validallowedarray.append( npc )
+	file.allowedarray = validallowedarray
+	foreach ( npc in validallowedarray )
+	    if ( npc == titan )
+	        return true
+
+	return false
 }
 
 function CodeCallback_OnRodeoAttach( player, titan )
@@ -300,7 +339,7 @@ function IsValidTitanRodeoTarget( player, titan )
 			return false
 		if ( !IsValid( soul.GetBossPlayer() ) )
 		{
-			if ( player.GetTeam() == titan.GetTeam() )
+			if ( player.GetTeam() == titan.GetTeam() && !IsAllowedTeamRodeo( titan ) )
 				return false
 		}
 	}
@@ -334,7 +373,6 @@ function FindPlayerJumponSpot( player, titan )
 
 	return true
 }
-Globalize( FindPlayerJumponSpot )
 
 function CreateRodeoPackageForJumpingOn( player, titan )
 {
@@ -1239,6 +1277,7 @@ function SpectreFallingOntoTitan( spectre, titan )
 
 	return true
 }
+Globalize( SpectreFallingOntoTitan )
 
 function HoldToRodeoEnabled( player )
 {
