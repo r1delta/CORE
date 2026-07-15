@@ -43,6 +43,7 @@ function main()
 	Globalize( GetHardpointCount )
 
 	RegisterServerVarChangeCallback( "gameState", VarChangedCallback_GameStateChanged )
+	RegisterServerVarChangeCallback( "activeUplinkID", VarChangedCallback_GameStateChanged )
 
 	AddPlayerFunc( Bind( CapturePoint_AddPlayer ) )
 
@@ -84,6 +85,7 @@ function OnHardpointCreated( hardpoint, isRecreate )
 {
 	hardpoint.s.previousOwnerTeam <- -1	// force the icons etc to be updated on connect
 	hardpoint.s.currentProgress <- 0
+	hardpoint.s.lastCappingTeam <- null
 	hardpoint.s.lastOwner <- null
 	hardpoint.s.pulseSpeed <- null
 
@@ -134,7 +136,11 @@ function InitializeHardpoint( hardpoint )
 	hardpoint.s.labelText <- HudElement( "CaptureBarLabel_" + index )
 
 	UpdateHardpointIconPosition( player, hardpoint )
-	hardpoint.s.worldIcon.Show()
+
+	if ( IsUplinkMode() && !IsUplinkHardpoint( hardpoint ) )
+		hardpoint.s.worldIcon.Hide()
+	else
+		hardpoint.s.worldIcon.Show()
 
 	if ( !( index in level.hardpointIDsToOwner ) )
 		level.hardpointIDsToOwner[index] <- null
@@ -172,7 +178,7 @@ function ShowHardpointHUD( hardpoint )
 
 	local player = GetLocalViewPlayer()
 	local currentHardpoint = player.GetHardpointEntity()
-	if ( hardpoint == currentHardpoint )
+	if ( hardpoint == currentHardpoint || IsUplinkHardpoint( hardpoint ) )
 		hardpoint.s.labelText.Show()
 	else
 		hardpoint.s.labelText.Hide()
@@ -181,6 +187,8 @@ Globalize( ShowHardpointHUD )
 
 function UpdateHardpointIconPosition( player, hardpoint )
 {
+	Assert( hardpoint )
+
 	local terminal = hardpoint.GetTerminal()
 	Assert( terminal, "No terminal" )
 
@@ -188,8 +196,12 @@ function UpdateHardpointIconPosition( player, hardpoint )
 	{
 		// attach icon hud element to the hardpoint at the location of the ICON attachment of the terminal
 		// offset is based on a box of 120 x 80 and a icon 48 x 48 in the lower left corner
-		local id = terminal.LookupAttachment( "ICON" )
-		local offset = terminal.GetAttachmentOrigin( id ) - terminal.GetOrigin()
+		local offset = Vector( 0, 0, 0 )
+		if ( !IsUplinkMode() )
+		{
+			local id = terminal.LookupAttachment( "ICON" )
+			offset = terminal.GetAttachmentOrigin( id ) - terminal.GetOrigin()
+		}
 
 		local worldIcon = hardpoint.s.worldIcon
 		local statusText = hardpoint.s.statusText
@@ -254,7 +266,15 @@ function UpdateHardpointVisibility()
 	{
 		foreach ( hardpoint in player.s.hardpointArray )
 		{
-			ShowHardpointHUD( hardpoint )
+			if ( IsUplinkMode() )
+			{
+				if ( IsUplinkHardpoint( hardpoint ) )
+					ShowHardpointHUD( hardpoint )
+				else
+					HideHardpointHUD( hardpoint )
+			}
+			else
+				ShowHardpointHUD( hardpoint )
 		}
 	}
 	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
@@ -282,7 +302,7 @@ function HardpointEntityChanged( player )
 		UpdateHardpointIconPosition( player, hardpoint )
 	}
 
-	local hardpoint = player.GetHardpointEntity()
+//	local hardpoint = player.GetHardpointEntity()
 
 //	if we skip this we don't get the flash of "Contested" before the correct status text shows up under the icon.
 //	the text will remain the distance and change when ClientCodeCallback_OnHardpointChanged happens one frame later.
@@ -302,71 +322,138 @@ function HardpointChanged( hardpoint )
 	if ( !IsValid( player ) )
 		return
 
-	local powerTable = GetCapPower( hardpoint )
-	local cappingTeam = powerTable.strongerTeam
-
-	local color = GetColorForTeam( hardpoint, cappingTeam )
-	local IconName = GetIconNameForTeam( hardpoint.GetTeam(), hardpoint.GetHardpointID() )
-
-	local worldIcon = hardpoint.s.worldIcon
-	local capturePointIcon = worldIcon.GetElement( "CapturePointIcon_" + index ) // gotta be a better way
-
-	capturePointIcon.SetImage( IconName )
-	//capturePointIcon.SetColor( color.r, color.g, color.b )
-
-	SmartGlass_UpdateHardpoint( hardpoint, cappingTeam )
-	UpdateHardpointLabelAndColor( player, hardpoint, cappingTeam )
-
-	local pulsate = false
-	if ( hardpoint.GetHardpointState() == CAPTURE_POINT_STATE_CAPPING )
+	if ( IsUplinkMode() )
 	{
-		if ( powerTable.strongerTeam != hardpoint.GetTeam() )
-			pulsate = true
-	}
+		UpdateHardpointVisibility()
+		local state = hardpoint.GetHardpointState()
 
-	local worldIcon = hardpoint.s.worldIcon
+		local team = hardpoint.GetTeam()
+		local color = GetColorForTeam( hardpoint, team )
+		local IconName = GetIconNameForTeam( team, hardpoint.GetHardpointID() )
 
-	if ( pulsate )
-	{
-		local modifier = Graph( powerTable.power, 0, 5, 1, 2 )
-		local pulseSpeed = CAPTURE_POINT_MAX_PULSE_SPEED * modifier
-		//worldIcon.SetPulsate( 0.1, 0.95, pulseSpeed )
-		hardpoint.s.pulseSpeed = pulseSpeed
+		local worldIcon = hardpoint.s.worldIcon
+		local capturePointIcon = worldIcon.GetElement( "CapturePointIcon_" + index ) // gotta be a better way
+
+		capturePointIcon.SetImage( IconName )
+		capturePointIcon.SetColor( color.r, color.g, color.b )
+
+		UpdateHardpointLabelAndColor( player, hardpoint, team )
+		///HardpointProgressBarUpdate( player, hardpoint )
+
+		if ( hardpoint.GetEstimatedCaptureTime() > Time() && state != CAPTURE_POINT_STATE_NEXT )
+		{
+			local startTime = hardpoint.GetHardpointProgressRefPoint()
+			local endTime = hardpoint.GetEstimatedCaptureTime()
+			local currentProgress = GraphCapped( Time(), startTime, endTime, 1.0, 0.0 )
+
+			printt( startTime, endTime, currentProgress, endTime - Time() )
+
+			hardpoint.s.progressBar.SetBarProgressOverTime( currentProgress, 0.0, endTime - Time() )
+		}
+		else
+		{
+			hardpoint.s.progressBar.SetBarProgress( 0.0 )
+		}
+
+		hardpoint.s.progressBar.SetColor( color.r, color.g, color.b, color.a )
+
+		if ( hardpoint.s.statusText.IsAutoText() )
+			hardpoint.s.statusText.DisableAutoText()
+
+		if ( state == CAPTURE_POINT_STATE_NEXT )
+		{
+			hardpoint.s.statusText.SetAutoText( "", HATT_COUNTDOWN_TIME, hardpoint.GetEstimatedCaptureTime() )
+			hardpoint.s.statusText.EnableAutoText()
+		}
+		else
+		{
+			if ( hardpoint.GetTeam() == player.GetTeam() )
+				hardpoint.s.statusText.SetAutoText( "#DEFEND_COUNTDOWNTIME", HATT_GAME_COUNTDOWN_SECONDS, hardpoint.GetEstimatedCaptureTime() )
+			else
+				hardpoint.s.statusText.SetText( "#GAMEMODE_EXFIL_HACK" )
+		}
 	}
 	else
 	{
-		//worldIcon.ClearPulsate()
-		//worldIcon.SetAlpha( 240 )
-		hardpoint.s.pulseSpeed = null
+		local powerTable = GetCapPower( hardpoint )
+		local cappingTeam = powerTable.strongerTeam
+
+		local color = GetColorForTeam( hardpoint, cappingTeam )
+		local IconName = GetIconNameForTeam( hardpoint.GetTeam(), hardpoint.GetHardpointID() )
+
+		local worldIcon = hardpoint.s.worldIcon
+		local capturePointIcon = worldIcon.GetElement( "CapturePointIcon_" + index ) // gotta be a better way
+
+		capturePointIcon.SetImage( IconName )
+		//capturePointIcon.SetColor( color.r, color.g, color.b )
+
+		SmartGlass_UpdateHardpoint( hardpoint, cappingTeam )
+		UpdateHardpointLabelAndColor( player, hardpoint, cappingTeam )
+
+		local pulsate = false
+		if ( hardpoint.GetHardpointState() == CAPTURE_POINT_STATE_CAPPING )
+		{
+			if ( powerTable.strongerTeam != hardpoint.GetTeam() )
+				pulsate = true
+		}
+
+		local worldIcon = hardpoint.s.worldIcon
+
+		if ( pulsate )
+		{
+			local modifier = Graph( powerTable.power, 0, 5, 1, 2 )
+			local pulseSpeed = CAPTURE_POINT_MAX_PULSE_SPEED * modifier
+			//worldIcon.SetPulsate( 0.1, 0.95, pulseSpeed )
+			hardpoint.s.pulseSpeed = pulseSpeed
+		}
+		else
+		{
+			//worldIcon.ClearPulsate()
+			//worldIcon.SetAlpha( 240 )
+			hardpoint.s.pulseSpeed = null
+		}
+
+		HardpointProgressBarUpdate( player, hardpoint, cappingTeam )
+
+		if ( hardpoint.s.durationToCapture )
+			hardpoint.s.progressBar.SetBarProgressOverTime( hardpoint.s.startProgress, hardpoint.s.goalProgress, hardpoint.s.durationToCapture )
+		else
+			hardpoint.s.progressBar.SetBarProgress( hardpoint.s.startProgress )
+
+		hardpoint.s.progressBar.SetColor( hardpoint.s.color.r, hardpoint.s.color.g, hardpoint.s.color.b, hardpoint.s.color.a )
 	}
-
-	HardpointProgressBarUpdate( player, hardpoint, cappingTeam )
-
-	if ( hardpoint.s.durationToCapture )
-		hardpoint.s.progressBar.SetBarProgressOverTime( hardpoint.s.startProgress, hardpoint.s.goalProgress, hardpoint.s.durationToCapture )
-	else
-		hardpoint.s.progressBar.SetBarProgress( hardpoint.s.startProgress )
-
-	hardpoint.s.progressBar.SetColor( hardpoint.s.color.r, hardpoint.s.color.g, hardpoint.s.color.b, hardpoint.s.color.a )
 
 	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
 }
 
-function HardpointProgressBarUpdate( player, hardpoint, cappingTeam )
+function HardpointProgressBarUpdate( player, hardpoint )
 {
 	UpdateCapturePointEnemyCount( player, hardpoint )
 	local estCaptureTime = hardpoint.GetEstimatedCaptureTime()
 	local progressRefPoint = hardpoint.GetHardpointProgressRefPoint()
 	local startProgress = fabs( progressRefPoint )
+	local lastCappingTeam = hardpoint.s.lastCappingTeam
 	local durationToCapture = estCaptureTime - Time()
 
 	local goalProgress = 0
-	if ( progressRefPoint == 0 && durationToCapture < 0 )
-		goalProgress = 0
-	else if ( cappingTeam == TEAM_IMC && progressRefPoint <= 0 )
-		goalProgress = 1.0
-	else if ( cappingTeam == TEAM_MILITIA && progressRefPoint >= 0 )
-		goalProgress = 1.0
+
+	if ( IsUplinkMode() )
+	{
+		goalProgress = 1
+		if ( lastCappingTeam == TEAM_IMC && progressRefPoint > 0 )
+			goalProgress = 0
+		if ( lastCappingTeam == TEAM_MILITIA && progressRefPoint < 0 )
+			goalProgress = 0
+	}
+	else
+	{
+		if ( progressRefPoint == 0 && durationToCapture < 0 )
+			goalProgress = 0
+		else if ( cappingTeam == TEAM_IMC && progressRefPoint <= 0 )
+			goalProgress = 1.0
+		else if ( cappingTeam == TEAM_MILITIA && progressRefPoint >= 0 )
+			goalProgress = 1.0
+	}
 
 	if ( estCaptureTime > 0 )
 	{
@@ -403,8 +490,6 @@ function UpdateCapturePointEnemyCount( player, hardpoint )
 	local friendlyCount = GetFriendlyCount( hardpoint, player )
 	local powerTable = GetCapPower( hardpoint )
 
-	//local arrowsUp = [ "#HUD_ARROWS_UP_1", "#HUD_ARROWS_UP_2", "#HUD_ARROWS_UP_3"]
-	//local arrowsDown = [ "#HUD_ARROWS_DOWN_1", "#HUD_ARROWS_DOWN_2", "#HUD_ARROWS_DOWN_3"]
 	local arrowsUp = [ "#HUD_ARROWS_UP_1", "#HUD_ARROWS_UP_2", "#HUD_ARROWS_UP_3"]
 	local arrowsDown = [ "#HUD_ARROWS_DOWN_1", "#HUD_ARROWS_DOWN_2", "#HUD_ARROWS_DOWN_3"]
 	local arrowCount = floor( GraphCapped( powerTable.power, 0, CAPTURE_POINT_MAX_CAP_POWER, 0, 2 ) )
@@ -532,24 +617,37 @@ function GetFgColorState( hardpoint, cappingTeam )
 	// based on what the progressRefPoint is etc.
 
 	local playerTeam = GetLocalViewPlayer().GetTeamNumber()
-	local progressRefPoint = hardpoint.GetHardpointProgressRefPoint()
 
-	/*
-		the bar will be blue if the progressRefPoint is closer to the friendly side.
-		the bar will be red if the progressRefPoint is closer to the enemy side.
-		if progressRefPoint is 0 the bar will be blue if the player is on the capping team
-		and red if he is not on the capping team.
-	*/
+	if ( IsUplinkMode() )
+	{
+		if ( cappingTeam == TEAM_UNASSIGNED )
+			return TEAM_NEUTRAL
+		else if ( cappingTeam == playerTeam )
+			return TEAM_FRIENDLY
+		else
+			return TEAM_ENEMY
+	}
+	else
+	{
+		local progressRefPoint = hardpoint.GetHardpointProgressRefPoint()
 
-	// if the progress bar is on the side of the opposing team return 'enemy'
-	if ( playerTeam == TEAM_IMC && progressRefPoint > 0 )
-		return TEAM_ENEMY
-	if ( playerTeam == TEAM_MILITIA && progressRefPoint < 0 )
-		return TEAM_ENEMY
-	if ( progressRefPoint == 0 && cappingTeam == GetOtherTeam( playerTeam ) )
-		return TEAM_ENEMY
+		/*
+			the bar will be blue if the progressRefPoint is closer to the friendly side.
+			the bar will be red if the progressRefPoint is closer to the enemy side.
+			if progressRefPoint is 0 the bar will be blue if the player is on the capping team
+			and red if he is not on the capping team.
+		*/
 
-	return TEAM_FRIENDLY
+		// if the progress bar is on the side of the opposing team return 'enemy'
+		if ( playerTeam == TEAM_IMC && progressRefPoint > 0 )
+			return TEAM_ENEMY
+		if ( playerTeam == TEAM_MILITIA && progressRefPoint < 0 )
+			return TEAM_ENEMY
+		if ( progressRefPoint == 0 && cappingTeam == GetOtherTeam( playerTeam ) )
+			return TEAM_ENEMY
+
+		return TEAM_FRIENDLY
+	}
 }
 
 function GetColorForTeam( hardpoint, cappingTeam )
@@ -563,7 +661,7 @@ function UpdateHardpointLabelAndColor( player, hardpoint, cappingTeam )
 	// sets the color of the bar for the local players team
 	local team = hardpoint.GetTeam()
 	local color = GetColorForTeam( hardpoint, cappingTeam )
-	if ( hardpoint == player.GetHardpointEntity() )
+	if ( hardpoint == player.GetHardpointEntity() || IsUplinkHardpoint( hardpoint ) )
 	{
 		player.s.captureBarData.color = color
 		player.s.captureBarData.labelText = GetHardpointName( hardpoint.GetHardpointID() )
@@ -575,10 +673,11 @@ function UpdateHardpointLabelAndColor( player, hardpoint, cappingTeam )
 	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
 }
 
-
 function VarChangedCallback_GameStateChanged()
 {
 	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
+	//if ( IsUplinkMode() )
+	//	UpdateHardpointVisibility()
 }
 
 
@@ -762,3 +861,17 @@ function SmartGlass_UpdateHardpoint( hardpoint, cappingTeam )
 	SmartGlass_SetGameStateProperty( "hardpoint_" + letter + "_cappingteam", cappingTeam.tostring() )
 	//printt( "hardpoint_" + letter + "_cappingteam", cappingTeam )
 }
+
+function IsUplinkMode()
+{
+	return GameRules.GetGameMode() == UPLINK
+}
+
+function IsUplinkHardpoint( hardpoint )
+{
+	if ( IsCaptureMode() )
+		return false
+
+	return hardpoint.GetHardpointID() == level.nv.activeUplinkID
+}
+Globalize( IsUplinkHardpoint )

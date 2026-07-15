@@ -280,7 +280,7 @@ if ( IsClient() )
 	GameMode_SetIcon( UPLINK, "../ui/menu/playlist/tdm" )
 	GameMode_AddServerScript( UPLINK, "mp/uplink" )
 	GameMode_AddClientScript( UPLINK, "client/cl_uplink" )
-	GameMode_SetDefaultScoreLimits( UPLINK, 5, 0 )
+	GameMode_SetDefaultScoreLimits( UPLINK, 160, 0 )
 	
 
 	GameMode_Create( TITAN_BRAWL )

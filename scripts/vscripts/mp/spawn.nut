@@ -175,6 +175,10 @@ function GameModeRemove( spawnpoint )
 			gameMode = CAPTURE_THE_FLAG
 			break
 
+		case UPLINK:
+			gameMode = CAPTURE_POINT
+			break
+
 		case CAPTURE_THE_TITAN:
 		case BIG_BROTHER:
 		case CAPTURE_THE_FLAG:
