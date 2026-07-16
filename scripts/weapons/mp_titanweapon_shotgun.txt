@@ -49,7 +49,7 @@ WeaponData
 
     // Sound
     //"looping_sounds"                                "1"
-    "fire_sound_1"                                  "Weapon_40mm_Fire_Burst"
+    "fire_sound_1"                                  "Weapon_40mm_Fire_Burst" //titan_shotgun_mega_fire
     "fire_sound_2"                                  "Weapon_bulletCasings.Bounce"
     "sound_dryfire"                                   "titan_dryfire"
 
@@ -106,8 +106,10 @@ WeaponData
 
     "reload_time"                                 "3.0"
     "reload_time_late1"                     "2.4"
+	"reload_time_late2" 							"1.6"
     "reloadempty_time"                        "3.0"
     "reloadempty_time_late1"            "2.4"
+	"reloadempty_time_late2" 					"1.6"
 
     // Spread
     "spread_stand_hip"                                  "10"

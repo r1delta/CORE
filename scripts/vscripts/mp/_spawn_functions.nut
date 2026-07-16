@@ -262,6 +262,8 @@ function SpawnNPCSoldier( soldier )
 	//			break
 	//	}
 	//}
+
+	FixKillReplayForNPC( soldier )
 }
 
 function TriggerHurtSpawned( triggerEnt )
@@ -337,6 +339,8 @@ function SpawnSpectreFunction( spectre )
 	UpdateAIMinimapStatusToOtherPlayers( spectre )
 
 	thread SpectreEyeGlow( spectre )
+
+	FixKillReplayForNPC( spectre )
 }
 
 function SpawnMarvin_for_MP( self )
@@ -445,6 +449,8 @@ function SpawnMegaTurret( turret )
 		turret.Minimap_AlwaysShow( TEAM_MILITIA, null )
 		turret.Minimap_SetClampToEdge( true )
 	}
+
+	FixKillReplayForNPC( turret )
 }
 
 function SpawnBBTurret( turret )
@@ -467,11 +473,15 @@ function SpawnBBTurret( turret )
 		turret.Minimap_AlwaysShow( TEAM_MILITIA, null )
 		turret.Minimap_SetClampToEdge( true )
 	}
+
+	FixKillReplayForNPC( turret )
 }
 
 function SpawnSmallTurret( turret )
 {
 	turret.SetAimAssistAllowed( false )
+
+	FixKillReplayForNPC( turret )
 }
 
 
@@ -513,6 +523,8 @@ function SpawnTitan( self )
 	// self.SetTacticalAbility( self.GetOffhandWeapon( 1 ), TTA_SMOKE )
 
 	UpdateTitanMinimapStatusToOtherPlayers( self )
+
+	FixKillReplayForNPC( self )
 }
 
 function SpawnDropship( vehicle )
@@ -588,4 +600,11 @@ function SpawnInfoHint( ent )
 
 	local hint = ent.kv.hotspot.tolower()
 	Assert( hint in level.hotspotHints, "info_hint at " + ent.GetOrigin() + " has unknown hotspot hint: " + hint )
+}
+
+function FixKillReplayForNPC( entity )
+{
+	entity.connectTime = Time()
+	entity.hasSpawned = true
+	entity.firstSpawnTime = Time()
 }

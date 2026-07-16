@@ -54,6 +54,7 @@ function InitPersistence()
         tmfd = 14
         tmfdp = 15
 		bb = 16
+		uplink = 17
     }
 
     AddPersistenceEnum("gameModes", gameModes)

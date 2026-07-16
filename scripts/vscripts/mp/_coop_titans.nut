@@ -100,13 +100,15 @@ function UseSettingsOnTitanTemplate( table, settings )
 {
 	local model, title = null
 
+/*
 	local titanName = settings
 	if ( Native_GetTitanTypeByName( titanName ) != null )
 	{
 		table.model = GetPlayerSettingsFieldForClassName(titanName, "titanmodel")
 		table.title = GetPlayerSettingsFieldForClassName(titanName, "nametext")
 	}
-/*
+*/
+
 	switch( settings )
 	{
 		case "titan_atlas":
@@ -124,7 +126,7 @@ function UseSettingsOnTitanTemplate( table, settings )
 			table.title = "#CHASSIS_STRYDER_NAME"
 			break
 	}
-*/
+
 	table.settings  = settings
 }
 Globalize( UseSettingsOnTitanTemplate )

@@ -73,15 +73,12 @@ function EntitiesDidLoad()
 
 function InitializeHardpointsForUplink()
 {
-	local hardpoints = GetEntArrayByClass_Expensive( "info_hardpoint" )
-	foreach ( hardpoint in hardpoints )
-		hardpoint.SetHardpointID( -1 )
-
 	// local uplinkArray = GetEntArrayByName_Expensive( UPLINK )
 
 	local uplinkArray = GetEntArrayByClass_Expensive( "info_hardpoint" )
 
-	level.hardpoints = uplinkArray
+	// do gamemode independed init
+	InitializeHardpoints( uplinkArray )
 
 	// initialize final capture point hardpoints
 	foreach( i, uplinkPoint in uplinkArray )
@@ -93,9 +90,9 @@ function InitializeHardpointsForUplink()
 		// setup minimap data
 		local hardpointStringID = GetHardpointStringID( uplinkPoint.GetHardpointID() )
 
-		uplinkPoint.Minimap_SetDefaultMaterial( GetMinimapMaterial( "hardpoint_neutral_a" ) )
-		uplinkPoint.Minimap_SetFriendlyMaterial( GetMinimapMaterial( "hardpoint_friendly_a" ) )
-		uplinkPoint.Minimap_SetEnemyMaterial( GetMinimapMaterial( "hardpoint_enemy_a" ) )
+		uplinkPoint.Minimap_SetDefaultMaterial( GetMinimapMaterial( "hardpoint_neutral_" + hardpointStringID ) )
+		uplinkPoint.Minimap_SetFriendlyMaterial( GetMinimapMaterial( "hardpoint_friendly_" + hardpointStringID ) )
+		uplinkPoint.Minimap_SetEnemyMaterial( GetMinimapMaterial( "hardpoint_enemy_" + hardpointStringID ) )
 		uplinkPoint.Minimap_SetObjectScale( 0.11 )
 		uplinkPoint.Minimap_SetAlignUpright( true )
 		uplinkPoint.Minimap_SetClampToEdge( true )
@@ -104,8 +101,8 @@ function InitializeHardpointsForUplink()
 		uplinkPoint.Minimap_SetZOrder( 10 )
 
 		// show on all minimaps
-		//uplinkPoint.Minimap_Hide( TEAM_IMC, null )
-		//uplinkPoint.Minimap_Hide( TEAM_MILITIA, null )
+		uplinkPoint.Minimap_AlwaysShow( TEAM_IMC, null )
+		uplinkPoint.Minimap_AlwaysShow( TEAM_MILITIA, null )
 
 		local racksModel = CreatePropDynamic( "models/commercial/rack_spectre_triple.mdl", uplinkPoint.GetOrigin(), uplinkPoint.GetAngles(), 6 )
 
@@ -132,14 +129,18 @@ function InitializeHardpointsForUplink()
 	return true
 }
 
-
+RanFirstUplink <- false
 function UplinkThink()
 {
 	WaittillGameStateOrHigher( eGameState.Playing )
 
 	while ( GetGameState() == eGameState.Playing )
 	{
-		local uplinkPoint = GetHardpointByID(  1 /*RandomInt( level.hardpoints.len() )*/  ) 
+		// TODO: make the first uplinkPoint be far away from all spawns, then go somewhat random
+		local uplinkPoint = GetHardpointByID( RandomInt( level.hardpoints.len() ) ) 
+
+		//if ( !RanFirstUplink )
+		//	RanFirstUplink = true
 
 		waitthread UplinkControl( uplinkPoint )
 
@@ -153,7 +154,7 @@ function UplinkThink()
 
 const UPLINK_ACTIVATION_DELAY = 10.0
 const UPLINK_UPLOAD_TIME = 40.0
-const UPLINK_MAX_SPECTRES = 21
+const UPLINK_MAX_SPECTRES = 12 // 21
 
 function UplinkControl( uplinkPoint )
 {
@@ -303,12 +304,10 @@ function Uplink_TeamChanged( hardpoint, team )
 
 	//Spawning_HardpointChangedTeams( hardpoint, previousTeam, team )
 
-	/*
 	// Give points for the team change to the appropriate people
-	CapturePoint_AwardPlayerPoints( hardpoint )
+	//CapturePoint_AwardPlayerPoints( hardpoint )
 	thread CapturePoint_AwardTeamOwnedPoints( hardpoint )
 	thread CapturePoint_AwardPlayerHoldPoints( hardpoint )
-	*/
 }
 Globalize( Uplink_TeamChanged )
 

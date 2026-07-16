@@ -182,7 +182,8 @@ function InitializeHardpoint( hardpoint )
 	InitializeHardpointAssaultEnts( hardpoint )
 	InitializeHardpointTurrets( hardpoint )
 
-	thread SetupHardpointTerminal( hardpoint )
+	if ( GameRules.GetGameMode() != UPLINK )
+		thread SetupHardpointTerminal( hardpoint )
 }
 
 

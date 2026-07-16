@@ -98,6 +98,16 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 
 	local cardRef = GetBurnCardFromSlot(player, index)
 	local cardIndex = GetBurnCardIndexByRef(cardRef)
+
+	if ( GetBurnCardFlags( cardRef ) & CT_TITAN_WPN || cardRef == "bc_extra_dash" )
+	{
+		SendHudMessage( player, "#GAMEMODE_CHANGE_BURNCARD_NEXT_TITAN", -1, 0.4, 255, 255, 255, 255, 1.0, 2.0, 1.0 )
+	}
+	else if ( IsAlive( player ) && !player.s.inGracePeriod )
+	{
+		SendHudMessage( player, "#GAMEMODE_CHANGE_BURNCARD_NEXT_SPAWN", -1, 0.4, 255, 255, 255, 255, 1.0, 2.0, 1.0 )
+	}
+
 	SetPlayerBurnCardOnDeckIndex(player, index)
 	EmitSoundOnEntityOnlyToPlayer( player, player, "UI_InGame_ActivateBurnCard" )
 	Remote.CallFunction_UI( player, "SCB_RefreshBurnCardSelector" )
@@ -825,19 +835,7 @@ function GetPersistentPilotLoadout( player, isCustom, loadoutIndex )
 	loadout.passive2 <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].passive2" )
 	loadout.race <- player.GetPersistentVar( "pilotLoadouts[" + loadoutIndex + "].race" )
 
-	foreach ( property, value in loadout )
-	{
-		if ( ValidateLoadoutProperty( player, "pilot", loadoutIndex, property, value ) )
-			continue
-
-		// invalid choice invalidates the whole loadout
-		printt( "Pilot player " + player + " has invalid loadout item " + value )
-		InitPilotLoadoutFromPreset( player, loadoutIndex, 0 )
-
-		file.hasInvalidLoadout = true
-
-		return pilotLoadouts[0]
-	}
+	SanitizeLoadoutProperties( player, "pilot", loadoutIndex, loadout )
 
 	return loadout
 }
@@ -869,37 +867,102 @@ function GetPersistentTitanLoadout( player, isCustom, loadoutIndex )
 	loadout.decal <- player.GetPersistentVar( "titanLoadouts[" + loadoutIndex + "].decal" )
 	loadout.voiceChoice <- player.GetPersistentVar( "titanLoadouts[" + loadoutIndex + "].voiceChoice" )
 
-	foreach ( property, value in loadout )
-	{
-		if ( ValidateLoadoutProperty( player, "titan", loadoutIndex, property, value ) )
-			continue
-
-		printt( "Titan player " + player + " has invalid loadout item " + value )
-		InitTitanLoadoutFromPreset( player, loadoutIndex, 0 )
-
-		file.hasInvalidLoadout = true
-
-		return titanLoadouts[0]
-	}
+	SanitizeLoadoutProperties( player, "titan", loadoutIndex, loadout )
 
 	return loadout
+}
+
+function SanitizeLoadoutProperties( player, loadoutType, loadoutIndex, loadout )
+{
+	foreach ( property, value in loadout )
+	{
+		if ( loadoutType == "pilot" && !IsValidPilotLoadoutProperty( property ) )
+			continue
+
+		if ( loadoutType == "titan" && !IsValidTitanLoadoutProperty( property ) )
+			continue
+
+		if ( ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, value ) )
+			continue
+
+		local fallback = GetDefaultLoadoutPropertyValue( player, loadoutType, loadoutIndex, property )
+
+		printt( "Invalid", loadoutType, "loadout property", property, "value", value, "resetting to", fallback )
+
+		loadout[property] = fallback
+		player.SetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "]." + property, fallback )
+
+		file.hasInvalidLoadout = true
+	}
+}
+
+function GetDefaultLoadoutPropertyValue( player, loadoutType, loadoutIndex, property )
+{
+	switch ( property )
+	{
+		case "primaryAttachment":
+		case "primaryMod":
+		case "sidearmMod":
+		case "secondaryMod":
+		case "decal":
+			return null
+	}
+
+	local isTitanLoadout = loadoutType == "titan"
+	local type = GetItemTypeFromPropertyName( property, isTitanLoadout )
+	if ( type != null )
+	{
+		local fallbackRef = GetFirstUnlockedLoadoutItem( player, type )
+		if ( fallbackRef != null )
+			return fallbackRef
+	}
+
+	return GetPresetLoadoutDefaultValue( loadoutType, property )
+}
+
+function GetFirstUnlockedLoadoutItem( player, type )
+{
+	if ( type == itemType.RACE )
+		return "race_human_male"
+
+	if ( type == itemType.TITAN_DECAL )
+		return null
+
+	local items = GetAllItemsOfType( type )
+	foreach ( item in items )
+	{
+		if ( !IsItemLocked( item.ref, null, player ) )
+			return item.ref
+	}
+
+	return null
+}
+
+function GetPresetLoadoutDefaultValue( loadoutType, property )
+{
+	local defaultLoadout
+	if ( loadoutType == "pilot" )
+		defaultLoadout = pilotLoadouts[0]
+	else
+		defaultLoadout = titanLoadouts[0]
+
+	if ( property in defaultLoadout )
+		return defaultLoadout[property]
+
+	return null
 }
 
 function ValidateCustomLoadouts( player )
 {
 	file.hasInvalidLoadout = false
 
-	GetPersistentPilotLoadout( player, true, 0 )
-	GetPersistentPilotLoadout( player, true, 1 )
-	GetPersistentPilotLoadout( player, true, 2 )
-	GetPersistentPilotLoadout( player, true, 3 )
-	GetPersistentPilotLoadout( player, true, 4 )
+	local pilotLoadoutCount = PersistenceGetArrayCount( "pilotLoadouts" )
+	for ( local i = 0; i < pilotLoadoutCount; i++ )
+		GetPersistentPilotLoadout( player, true, i )
 
-	GetPersistentTitanLoadout( player, true, 0 )
-	GetPersistentTitanLoadout( player, true, 1 )
-	GetPersistentTitanLoadout( player, true, 2 )
-	GetPersistentTitanLoadout( player, true, 3 )
-	GetPersistentTitanLoadout( player, true, 4 )
+	local titanLoadoutCount = PersistenceGetArrayCount( "titanLoadouts" )
+	for ( local i = 0; i < titanLoadoutCount; i++ )
+		GetPersistentTitanLoadout( player, true, i )
 
 	if ( file.hasInvalidLoadout && !IsLobby() )
 		Remote.CallFunction_UI( player, "ServerCallback_LoadoutsUpdated" )
@@ -1136,73 +1199,83 @@ function SetPersistentSpawnLoadout( player, loadoutType, isCustom, loadoutIndex 
 
 function ValidateLoadoutProperty( player, loadoutType, loadoutIndex, property, ref )
 {
-//    printt(player, loadoutType, loadoutIndex, property, ref)
+	if ( property == "name" )
+		return true
+
 	local childRef = null
+	local isSubitemProperty = false
 	switch ( property )
 	{
 		case "primaryMod":
 		case "primaryAttachment":
+			isSubitemProperty = true
 			childRef = ref
 			ref = player.GetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "].primary" )
-			//local key = loadoutType + "Loadouts[" + loadoutIndex + "].primary"
-			//local value = GetPersistentStringForClient(player, key, "pdata_null")
-			//local unpackedKey = UnpackKey(key)
-			//local type = pdef_keys[unpackedKey]
-			//printt("DEBUG: ", value, unpackedKey, type)
 			break
 		case "sidearmMod":
+			isSubitemProperty = true
 			childRef = ref
 			ref = player.GetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "].sidearm" )
 			break
 		case "secondaryMod":
+			isSubitemProperty = true
 			childRef = ref
 			ref = player.GetPersistentVar( loadoutType + "Loadouts[" + loadoutIndex + "].secondary" )
 			break
 	}
 
-	// invalid attachment
-	if ( childRef && !TMPHasSubitem( ref, childRef ) )
-		return false
-
 	local isTitanLoadout = loadoutType == "titan"
+	local expectedType = GetItemTypeFromPropertyName( property, isTitanLoadout )
 
-	if(childRef) {
+	if ( isSubitemProperty )
+	{
+		if ( childRef == null )
+			return true
+
+		if ( ref == null || !ItemDefined( ref ) )
+			return false
+
+		local parentData = GetItemData( ref )
+		if ( !( "subitems" in parentData ) )
+			return false
+
+		if ( !TMPHasSubitem( ref, childRef ) )
+			return false
+
 		local itemData = GetSubitemData( ref, childRef )
 		if ( itemData == null )
 			return false
 
-		if(itemData.type == itemType.PILOT_PRIMARY_MOD && itemData.displayInMenu == false)
+		if ( expectedType != null && itemData.type != expectedType )
 			return false
 
-		if(itemData.type == itemType.PILOT_SIDEARM_MOD && itemData.displayInMenu == false)
+		if ( ( "displayInMenu" in itemData ) && itemData.displayInMenu == false )
 			return false
 
-		if(itemData.type == itemType.PILOT_SECONDARY_MOD && itemData.displayInMenu == false)
+		if ( IsItemLocked( ref, childRef, player ) )
 			return false
 
+		return true
 	}
 
-// TODO
-/*
-	if ( childRef )
-	{
-		local type = GetItemTypeFromPropertyName( property, isTitanLoadout )
-		if ( ItemTypeSupportsMods( type ) || ItemTypeIsMod( type ) || ItemTypeIsAttachment( type ) )
-		{
-			local itemData = null
-			if ( childRef != null )
-				itemData = GetSubitemData( ref, childRef )
-			else
-				itemData = GetItemData( ref )
+	if ( ref == null )
+		return property == "decal"
 
-			if ( itemData == null )
-				return false
+	if ( !ItemDefined( ref ) )
+		return false
 
-			if ( ( "displayInMenu" in itemData ) && itemData.displayInMenu == false )
-				return false
-		}
-	}
-*/
+	local itemData = GetItemData( ref )
+	if ( itemData == null )
+		return false
+
+	if ( expectedType != null && GetItemType( ref ) != expectedType )
+		return false
+
+	if ( ( "displayInMenu" in itemData ) && itemData.displayInMenu == false )
+		return false
+
+	if ( IsItemLocked( ref, null, player ) )
+		return false
 
 	return true
 }

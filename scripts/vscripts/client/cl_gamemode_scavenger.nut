@@ -7,6 +7,7 @@ function main()
 	RegisterSignal( "TouchedMegaOre" )
 
 	AddCallback_OnInitPlayerScripts( Scavenger_InitPlayerScripts )
+	AddCallback_OnPlayerAutoBalanced( Scavenger_PlayerAutoBalanced )
 	level.teamOreDumpSpot <- {}
 	level.teamOreDumpSpot[TEAM_IMC] <- null
 	level.teamOreDumpSpot[TEAM_MILITIA] <- null
@@ -25,6 +26,7 @@ function CreateScavengerOre( ore, isRecreate )
 	}
 	else
 	{
+		ore.s.nextSparkTime <- 0
 		level.aliveOres.append( ore )
 	}
 }
@@ -50,34 +52,35 @@ function ClearCarryingLabel( player )
 	oreCarryingLabel.Hide()
 }
 
-// Looks VERY artificial, but its probably better than creating a thread for each individual ore
 function ScavengerOreSparks()
 {
-	local fxID = GetParticleSystemIndex( "xo_spark_med" )
-	local origin
-	local angles
-
 	for ( ;; )
 	{
 		ArrayRemoveInvalid( level.aliveOres )
 
 		foreach( ore in level.aliveOres )
 		{
-			origin = ore.GetOrigin()
-			angles = ore.GetAngles()
-
-			OreSparkFunc( ore, fxID, origin, angles )
+			OreSparkFunc( ore )
 		}
-		wait ( RandomFloat( 3.0, 6.0 ) )
+		wait 1.0
 	}
 }
 
-function OreSparkFunc( ore, fxID, origin, angles )
+function OreSparkFunc( ore )
 {
+	if ( Time() < ore.s.nextSparkTime )
+		return
+
+	local fxID = GetParticleSystemIndex( "xo_spark_med" )
+
+	local origin = ore.GetOrigin()
+	local angles = ore.GetAngles()
 	local newAngles = angles.AnglesCompose( Vector( -90, 0, 0 ) )
 
 	StartParticleEffectInWorld( fxID, origin, newAngles )
 	EmitSoundOnEntity( ore, "titan_damage_spark" )
+
+	ore.s.nextSparkTime = Time() + RandomFloat( 3.0, 6.0 )
 }
 
 function Scavenger_InitPlayerScripts( player )
@@ -146,6 +149,11 @@ function OnOreDumpSpotCreatedCreated( oreDumpEnt, isRecreate )
 {
 	level.teamOreDumpSpot[ oreDumpEnt.GetTeam() ] = oreDumpEnt
 
+	UpdateOreDumpIcon( oreDumpEnt )
+}
+
+function UpdateOreDumpIcon( oreDumpEnt )
+{
 	local player = GetLocalViewPlayer()
 
 	if ( oreDumpEnt.GetTeam() == player.GetTeam() )
@@ -274,7 +282,6 @@ function HideHudElements( player )
 
 }
 
-
 function SCB_DeliveredOre( deliveredOre )
 {
 	ClearEventNotification()
@@ -323,3 +330,11 @@ function GetPlayerOreCarryingLabel( player )
 	return localClientPlayer.hudElems[ "PlayerOreCarryingLabel" + player.GetEntIndex() ]
 }
 
+function Scavenger_PlayerAutoBalanced( player, oldTeam, newTeam )
+{
+	if ( level.teamOreDumpSpot[ oldTeam ] )
+		UpdateOreDumpIcon( level.teamOreDumpSpot[ oldTeam ] )
+
+	if ( level.teamOreDumpSpot[ newTeam ] )
+		UpdateOreDumpIcon( level.teamOreDumpSpot[ newTeam ] )
+}

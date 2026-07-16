@@ -30,7 +30,7 @@ WeaponData
 
 	// Effects
 	"tracer_effect"   								"weapon_tracers_sniper"
-	"tracer_effect_first_person"  					"weapon_tracers_sniper"
+	"tracer_effect_first_person"  					"" //weapon_tracers_sniper
 	"impact_effect_table" 							"titan_bullet"
 	// "projectile_trail_effect_0" 					"garand_trail_smoke"
 	"projectile_do_predict_impact_effects"			"0"
