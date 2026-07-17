@@ -892,11 +892,6 @@ function CapturePoint_PlayerAutoBalanced( balancedPlayer, oldTeam, newTeam )
 	UpdateHardpointIcons( player, cockpit )
 }
 
-function IsUplinkMode()
-{
-	return GameRules.GetGameMode() == UPLINK
-}
-
 function IsUplinkHardpoint( hardpoint )
 {
 	if ( IsCaptureMode() )

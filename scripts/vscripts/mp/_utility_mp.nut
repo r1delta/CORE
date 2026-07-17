@@ -2085,6 +2085,11 @@ function SpawnPropAtCrosshair( player, model, angles = null, solidType = 6, scal
 
 function SpawnPropAtCrosshair_Destroy( player, model, angles = null, solidType = 6, scale = 1 )
 {
+	thread SpawnPropAtCrosshairDestroy_Thread( player, model, angles, solidType, scale )
+}
+
+function SpawnPropAtCrosshairDestroy_Thread( player, model, angles = null, solidType = 6, scale = 1 )
+{
 	DestroyCrosshairProps( player )
 
 	wait 0.1

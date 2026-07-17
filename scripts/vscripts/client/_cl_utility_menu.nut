@@ -1313,6 +1313,14 @@ function EventNotification( eventID, entity, eventVal = null )
 			// SetTimedEventNotificationHATT( (eventVal + Time()) / 2, "#AUTOBALANCE_COOLDOWN", HATT_GAME_COUNTDOWN_SECONDS, eventVal )
 			break
 
+		case eEventNotifications.UplinkLocatingNextPanel:
+				if ( eventVal - Time() > 2.0 )
+				{
+					thread LoopSoundForDuration( eventVal, "UI_InGame_MarkedForDeath_CountdownToYouAreMarked" )
+					SetTimedEventNotificationHATT( ( eventVal - Time() ) - 1.0, "#UPLINK_LOCATING_NEXT_PANEL_IN", HATT_GAME_COUNTDOWN_SECONDS, eventVal )
+				}
+			break
+
 		default:
 			ClearEventNotification()
 			break

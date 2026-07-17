@@ -3628,3 +3628,16 @@ function ShouldPreventFriendlyFire( victim, attacker )
 
 	return false
 }
+
+function IsUplinkMode()
+{
+	return GameRules.GetGameMode() == UPLINK
+}
+
+function GetActiveUplinkPoint()
+{
+	if ( level.nv.activeUplinkID == null )
+		return null
+
+	return GetHardpointByID( level.nv.activeUplinkID )
+}

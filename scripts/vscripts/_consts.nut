@@ -1694,6 +1694,7 @@ enum eEventNotifications
 	YouWillBeAutobalanced,
 	MarkedForDeathMarkedAutobalanced,
 	AutoBalanceCooldown,
+	UplinkLocatingNextPanel,
 }
 
 enum ePrivateMatchStartState

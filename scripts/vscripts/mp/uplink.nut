@@ -20,25 +20,15 @@ PrecacheParticleSystem( FX_SPECTRE_RACK_RESET_MID )
 PrecacheParticleSystem( FX_SPECTRE_RACK_RESET_BOTTOM )
 PrecacheParticleSystem( FX_SPECTRE_RACK_RESET_BOTTOM_IMC )
 
-const CP_AWARD_TEAM_OWNED_POINTS_SIGNAL = "CP_AWARD_TEAM_OWNED_POINTS_SIGNAL"
-const CP_AWARD_PLAYER_HOLD_POINTS_SIGNAL = "CP_AWARD_PLAYER_HOLD_POINTS_SIGNAL"
-const CP_END_CAPPING_WAIT_SIGNAL = "CP_END_CAPPING_WAIT_SIGNAL"
-const CP_LEAVE_TRIGGER = "CP_LEAVE_TRIGGER"
-const CP_REINFORCE_INTERVAL = 1.0
-const CP_CAPTURE_HINT_RADIUS = 1536
-
 function main()
 {
-	RegisterSignal( CP_AWARD_TEAM_OWNED_POINTS_SIGNAL )
-	RegisterSignal( CP_AWARD_PLAYER_HOLD_POINTS_SIGNAL )
-	RegisterSignal( CP_END_CAPPING_WAIT_SIGNAL )
-	RegisterSignal( CP_LEAVE_TRIGGER )
-
 	AddCallback_PlayerOrNPCKilled( CapturePoint_OnPlayerOrNPCKilled )
 
 	SetGameModeAnnouncement( "GameModeAnnounce_CP" )
 
 	level.cpCustomSpawnFunc <- null
+	level.customPlayerEliminatedMessage = "#UPLINK_RESPAWN_NEXT_SWAP"
+	level.lastUplinkID <- -1
 
 	RegisterSignal( "CapturePointStateChange" )
 	RegisterSignal( "CapturePointUpdate" )
@@ -71,6 +61,7 @@ function EntitiesDidLoad()
 	//	thread SetupCapturePointNPCs( level.hardpoints )
 
 	thread UplinkThink()
+	thread HardpointRadiusCheck()
 }
 
 
@@ -79,14 +70,14 @@ function InitializeHardpointsForUplink()
 	// local uplinkArray = GetEntArrayByName_Expensive( UPLINK )
 
 	local uplinkArray = GetEntArrayByClass_Expensive( "info_hardpoint" )
+	uplinkArray = SortHardpointsByGroup( uplinkArray )
 
 	// do gamemode independed init
 	InitializeHardpoints( uplinkArray )
 
 	// initialize final capture point hardpoints
-	foreach( i, uplinkPoint in uplinkArray )
+	foreach( i, uplinkPoint in level.hardpoints )
 	{
-		uplinkPoint.SetHardpointID( i )
 		uplinkPoint.SetTeam( TEAM_UNASSIGNED )
 		uplinkPoint.SetName( UPLINK )
 
@@ -105,7 +96,10 @@ function InitializeHardpointsForUplink()
 		uplinkPoint.Minimap_AlwaysShow( TEAM_IMC, null )
 		uplinkPoint.Minimap_AlwaysShow( TEAM_MILITIA, null )
 
-		local racksModel = CreatePropDynamic( "models/commercial/rack_spectre_triple.mdl", uplinkPoint.GetOrigin(), uplinkPoint.GetAngles(), 6 )
+		local origin = GetUplinkPointPosInfo( uplinkPoint ).origin
+		local angles = GetUplinkPointPosInfo( uplinkPoint ).angles
+
+		local racksModel = CreatePropDynamic( "models/commercial/rack_spectre_triple.mdl", origin, angles, 6 )
 
 		local panel = CreateEntity( "prop_control_panel" )
 		panel.kv.model = "models/communication/terminal_usable_imc_01.mdl"
@@ -113,21 +107,19 @@ function InitializeHardpointsForUplink()
 
 		DispatchSpawn( panel, false )
 
-		panel.SetOrigin( uplinkPoint.GetOrigin() )
-		panel.SetAngles( uplinkPoint.GetAngles() )
+		panel.SetOrigin( origin )
+		panel.SetAngles( angles )
 
 		panel.SetTeam( TEAM_UNASSIGNED )
 		panel.UnsetUsable()
 		panel.s.uplinkMinimapUsable <- false
-
-		//thread UplinkPanelThink( panel, uplinkPoint )
 
 		local table = {}
 		table.useFunc <- UseUplinkControlPanel
 		table.useEnt <- uplinkPoint
 		table.scope <- this
 
-		AddControlPanelUseFuncTable( panel, table)
+		AddControlPanelUseFuncTable( panel, table )
 
 		uplinkPoint.SetTerminal( panel )
 
@@ -139,6 +131,36 @@ function InitializeHardpointsForUplink()
 	return true
 }
 
+function GetUplinkPointPosInfo( uplinkPoint )
+{
+	local origin = uplinkPoint.GetOrigin()
+	local angles = uplinkPoint.GetAngles()
+	local id = uplinkPoint.GetHardpointID()
+
+	// Map specific hacks
+	switch( GetMapName() )
+	{
+		case "mp_boneyard":
+			break
+	}
+
+	if ( angles.x < 0 )
+		angles.x += 360
+	else if ( angles.x > 360 )
+		angles.x -= 360
+
+	if ( angles.y < 0 )
+		angles.y += 360
+	else if ( angles.y > 360 )
+		angles.y -= 360
+
+	return { origin = origin, angles = angles }
+}
+
+const UPLINK_ACTIVATION_DELAY = 10.0
+const UPLINK_UPLOAD_TIME = 40.0
+const UPLINK_MAX_SPECTRES = 21
+
 RanFirstUplink <- false
 function UplinkThink()
 {
@@ -146,27 +168,40 @@ function UplinkThink()
 
 	while ( GetGameState() == eGameState.Playing )
 	{
-		// TODO: make the first uplinkPoint be far away from all spawns, then go somewhat random
-		local uplinkPoint = GetHardpointByID( RandomInt( level.hardpoints.len() ) ) 
-
-		//if ( !RanFirstUplink )
-		//	RanFirstUplink = true
+		local uplinkPoint = GetNewUplinkHardpoint()
 
 		waitthread UplinkControl( uplinkPoint )
 
 		SetActiveUplinkPoint( null )
 		SetLockedHardpointIcons( uplinkPoint, true )
 
-		wait 10.0
+		wait 5.0
+		MessageToAll( eEventNotifications.UplinkLocatingNextPanel, null, null, Time() + UPLINK_ACTIVATION_DELAY )
+		wait UPLINK_ACTIVATION_DELAY
 	}
 
 	SetActiveUplinkPoint( null )
 }
 
+function GetNewUplinkHardpoint()
+{
+	local id = 1
+	if ( !RanFirstUplink )
+	{
+		if ( GetMapName() == "mp_nexus" )
+			id = RandomInt( level.hardpoints.len() )
 
-const UPLINK_ACTIVATION_DELAY = 10.0
-const UPLINK_UPLOAD_TIME = 40.0
-const UPLINK_MAX_SPECTRES = 21
+		RanFirstUplink = true
+	}
+	else
+	{
+		id = RandomInt( level.hardpoints.len() )
+		while( id == level.nv.activeUplinkID )
+			id = RandomInt( level.hardpoints.len() )
+	}
+
+	return GetHardpointByID( id )
+}
 
 function UplinkControl( uplinkPoint )
 {
@@ -235,7 +270,8 @@ function UseUplinkControlPanel( panel, player, hardpoint )
 
 	local player  = panel.GetBossPlayer()
 	Uplink_TeamChanged( hardpoint, player.GetTeam() )
-	AddPlayerScore( player, "LeechUplinkPanel")
+	AddPlayerScore( player, "LeechUplinkPanel" )
+	hardpoint.s.lastCappingTeam = hardpoint.GetTeam()
 }
 
 
@@ -295,16 +331,6 @@ function SetActiveUplinkPoint( hardpoint )
 }
 Globalize( SetActiveUplinkPoint )
 
-
-function GetActiveUplinkPoint()
-{
-	if ( level.nv.activeUplinkID == null )
-		return null
-
-	return GetHardpointByID( level.nv.activeUplinkID )
-}
-
-
 function ResetUplinkPoint( hardpoint )
 {
 	hardpoint.SetHardpointState( CAPTURE_POINT_STATE_UNASSIGNED )
@@ -316,10 +342,13 @@ function ResetUplinkPoint( hardpoint )
 
 function Uplink_TeamChanged( hardpoint, team )
 {
-	hardpoint.SetTeam( team )
-
 	if ( team != TEAM_UNASSIGNED )
+	{
+		hardpoint.s.previousOwner = hardpoint.GetTeam()
 		hardpoint.Signal( "UplinkEstablished" )
+	}
+
+	hardpoint.SetTeam( team )
 
 	local panel = hardpoint.GetTerminal()
 	panel.SetTeam( team )
@@ -331,168 +360,30 @@ function Uplink_TeamChanged( hardpoint, team )
 	}
 	else
 	{
+		CapturePoint_AwardPlayerPoints( hardpoint )
 		panel.SetUsableByGroup( "enemies pilot" )
 		panel.s.uplinkMinimapUsable = true
+
+		HardpointVO_Captured( hardpoint )
 	}
 
 	//Spawning_HardpointChangedTeams( hardpoint, previousTeam, team )
 
 	// Give points for the team change to the appropriate people
-	//CapturePoint_AwardPlayerPoints( hardpoint )
 	thread CapturePoint_AwardTeamOwnedPoints( hardpoint )
 	thread CapturePoint_AwardPlayerHoldPoints( hardpoint )
 }
 Globalize( Uplink_TeamChanged )
 
-
-/*
-both teams have 1.5 points for full duration
-one point should award scoreLimit / 1.5 / timeLimitMinutes points per minute
-*/
-function CapturePoint_AwardTeamOwnedPoints( hardpoint )
+function PlayersInOuterRadius( team, hardpoint )
 {
-	hardpoint.s.trigger.Signal( CP_AWARD_TEAM_OWNED_POINTS_SIGNAL )
-	EndSignal( hardpoint.s.trigger, CP_AWARD_TEAM_OWNED_POINTS_SIGNAL )
-
-	if ( hardpoint.GetTeam() == TEAM_UNASSIGNED )
-		return
-
-	//GameScore.AddTeamScore( hardpoint.GetTeam(), TEAMPOINTVALUE_HARDPOINT_CAPTURE )
-
-	while( GetGameState() == eGameState.Playing )
+	local playerArray = GetPlayerArrayOfTeam( team )
+	foreach( player in playerArray )
 	{
-		Wait( TEAM_OWNED_SCORE_FREQ )
-		GameScore.AddTeamScore( hardpoint.GetTeam(), TEAMPOINTVALUE_HARDPOINT_OWNED )
-	}
-}
-
-function CapturePoint_AwardPlayerHoldPoints( hardpoint )
-{
-	hardpoint.s.trigger.Signal( CP_AWARD_PLAYER_HOLD_POINTS_SIGNAL )
-	EndSignal( hardpoint.s.trigger, CP_AWARD_PLAYER_HOLD_POINTS_SIGNAL )
-
-	if ( hardpoint.GetTeam() == TEAM_UNASSIGNED )
-		return
-
-	while( GetGameState() == eGameState.Playing )
-	{
-		Wait( PLAYER_HELD_SCORE_FREQ )
-		CapturePoint_AwardPlayerHoldPointsInternal( hardpoint )
-	}
-}
-
-function CapturePoint_AwardPlayerPoints( hardpoint )
-{
-	if( GetGameState() != eGameState.Playing )
-		return
-
-	local teamToGetPoints = hardpoint.GetTeam()
-	if ( hardpoint.GetTeam() == TEAM_UNASSIGNED )
-		teamToGetPoints = hardpoint.s.lastCappingTeam
-
-	/*
-	if ( teamToGetPoints == TEAM_UNASSIGNED )
-		printl( "TRYING TO AWARD PLAYER POINTS FOR TEAM: UNASSIGNED" )
-	else if ( teamToGetPoints == TEAM_IMC )
-		printl( "TRYING TO AWARD PLAYER POINTS FOR TEAM: IMC" )
-	else if ( teamToGetPoints == TEAM_MILITIA )
-		printl( "TRYING TO AWARD PLAYER POINTS FOR TEAM: MILITIA" )
-	*/
-
-	// There should be some players in the array, otherwise not sure how it could have possibly changed ownership
-	Assert( teamToGetPoints != TEAM_UNASSIGNED )
-	//Assert( hardpoint.s.teamPlayersTouching[ teamToGetPoints ].len() > 0 )
-
-	// Find the player who was in the trigger first
-	local earliestPlayer = null
-	local earliestTime = Time() + 1000
-
-	foreach( player, time in hardpoint.s.teamPlayersTouching[ teamToGetPoints ] )
-	{
-		if ( !IsValid_ThisFrame( player ) )
-			continue
-
-		if ( time < earliestTime )
-		{
-			earliestPlayer = player
-			earliestTime = time
-		}
-	}
-
-	if ( !IsValid( earliestPlayer ) )
-		return // lone player capping hardpoint probably disconnected
-
-	local operatorControlled = false
-	if ( !IsPlayer( earliestPlayer ) )
-	{
-		earliestPlayer = earliestPlayer.GetOwnerPlayer()
-		//printl( "earliestPlayer was a marvin, owner = " + earliestPlayer.GetClassname() )
-		if ( !earliestPlayer || !IsPlayer( earliestPlayer ) )
-			return
-		operatorControlled = true
-	}
-
-	// Award points to the player who was in the trigger the soonest
-	if ( hardpoint.GetTeam() == TEAM_UNASSIGNED )
-		AddPlayerScore( earliestPlayer, "ControlPointNeutralize" )
-	else
-		AddPlayerScore( earliestPlayer, "ControlPointCapture" )
-
-	// Give points to everyone else also standing in the trigger when it changed
-	// Make an array of players instead of looping through them so we can avoid duplicates, because if an operator has multiple marvins in the trigger you dont want to award points for each OnEndTouch
-	local playersToGetPoints = {}
-	foreach( player, time in hardpoint.s.teamPlayersTouching[ teamToGetPoints ] )
-	{
-		if ( !IsPlayer( player ) )
-		{
-			player = player.GetOwnerPlayer()
-			if ( !IsPlayer( player ) )
-				continue
-		}
-
-		if ( player == earliestPlayer )
-			continue
-
-		if ( player in playersToGetPoints )
-			continue
-
-		playersToGetPoints[ player ] <- true
-	}
-
-	// loop through the players array and award the points
-	foreach( player, val in playersToGetPoints )
-	{
-		if ( hardpoint.GetTeam() == TEAM_UNASSIGNED )
-			AddPlayerScore( player, "ControlPointNeutralizeAssist" )
-		else
-			AddPlayerScore( player, "ControlPointCaptureAssist" )
-	}
-}
-
-function CapturePoint_AwardPlayerHoldPointsInternal( hardpoint )
-{
-	if( GetGameState() != eGameState.Playing )
-		return
-
-	local teamToGetPoints = hardpoint.GetTeam()
-	if ( teamToGetPoints == TEAM_UNASSIGNED )
-		teamToGetPoints = hardpoint.s.lastCappingTeam
-
-	local players = GetPlayerArrayOfTeam( teamToGetPoints )
-
-	foreach ( player in players )
-	{
-		Assert( "curHardpoint" in player.s && "curHardpointTime" in player.s )
-
-		if ( !IsAlive( player ) || player.s.curHardpoint == null || player.s.curHardpointTime == null )
-			continue
-
 		if ( player.s.curHardpoint == hardpoint )
-		{
-			if ( (Time() - player.s.curHardpointTime) >= PLAYER_HELD_SCORE_FREQ )
-				AddPlayerScore( player, "ControlPointHold" )
-		}
+			return true
 	}
+	return false
 }
 
 function CapturePoint_OnPlayerOrNPCKilled( entity, attacker, damageInfo )
@@ -582,7 +473,47 @@ function CapturePointKillScoreEvent( victim, player )
 	}
 }
 
+function HardpointVO_Captured( hardpoint )
+{
+	local hpTrig = hardpoint.s.trigger
+	local players = GetPlayerArray()
+	local hardpointStringID = GetHardpointStringID( hardpoint.GetHardpointID() )
 
+	local cappingTeam = hardpoint.s.lastCappingTeam
+	local previousOwner = hardpoint.s.previousOwner
+	local enemyClose = false
+
+	foreach( player in players )
+	{
+		// if opposing team and curHardpoint is hardpoint there is an enemy close
+		if ( player.GetTeam() != cappingTeam && ( "curHardpoint" in player.s && player.s.curHardpoint == hardpoint ) )
+		{
+			enemyClose = true
+			break
+		}
+	}
+
+	foreach ( player in players )
+	{
+		local team = player.GetTeam()
+
+		if ( team != cappingTeam )
+		{
+			// not on the capping team
+			if  ( team == previousOwner )
+			{
+				// team used to control the hardpoint
+				local convAlias = "hardpoint_lost_" + hardpointStringID
+
+				PlayConversationToPlayer( convAlias, player )
+			}
+			continue
+		}
+
+		local convAlias = "hardpoint_captured_" + hardpointStringID
+		PlayConversationToPlayer( convAlias, player )
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 function SpectreRackSetup( rack )
@@ -626,6 +557,15 @@ function SpectreRackSetup( rack )
 		spectreSpawnModel.s.posSpawnFxBottom <- spawnPos
 		spectreSpawnModel.s.angSpawnFxBottom <- spawnAng + Vector( 0, -90, 0 ) + Vector( 0, 90, 0 )
 		spectreSpawnModel.Hide()
+
+		local angles = [ spectreSpawnModel.s.angSpawnFxTop, spectreSpawnModel.s.angSpawnFxMid, spectreSpawnModel.s.angSpawnFxBottom ]
+		foreach ( ang in angles )
+		{
+			if ( ang.y < 0 )
+				ang.y += 360
+			else if ( ang.y > 360 )
+				ang.y -= 360
+		}
 
 		rack.s.spectreSpawnModels.append( spectreSpawnModel )
 	}

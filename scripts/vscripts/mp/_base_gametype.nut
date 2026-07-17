@@ -59,6 +59,8 @@ function main()
 		level.shouldPlayerBeEliminatedFuncTable <- null
     	level.lastForceSwitchTime <- {} // Track last force switch time per player
 
+		level.customPlayerEliminatedMessage <- null
+
 		CreateTeamColorControlPoints()
 
 		AddClientCommandCallback( "CC_SelectRespawn", ClientCommand_SelectRespawn ) //
@@ -1728,7 +1730,11 @@ function DecideRespawnPlayer( player, rematchOrigin = null )
 		// printt( "are we observing?" )
 		if ( IsPlayerEliminated( player ) && GetGameState() == eGameState.Playing )
 		{
-			SendHudMessage( player, "#GAMEMODE_RESPAWN_NEXT_ROUND", -1, 0.4, 255, 255, 255, 255, 1.0, 6.0, 1.0 )
+			// Can also be replaced with a custom function if people need it
+			if ( level.customPlayerEliminatedMessage )
+				SendHudMessage( player, level.customPlayerEliminatedMessage, -1, 0.4, 255, 255, 255, 255, 1.0, 6.0, 1.0 )
+			else
+				SendHudMessage( player, "#GAMEMODE_RESPAWN_NEXT_ROUND", -1, 0.4, 255, 255, 255, 255, 1.0, 6.0, 1.0 )
 		}
 
 		thread ObserverThread( player )
