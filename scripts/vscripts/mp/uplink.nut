@@ -54,6 +54,9 @@ function main()
 
 function EntitiesDidLoad()
 {
+	Uplink_RegisterMinimapMaterial( "hardpoint_locked", "vgui/hud/capture_point_minimap_locked" )
+	Uplink_RegisterMinimapMaterial( "hardpoint_locked_grey", "vgui/hud/capture_point_minimap_locked_grey" )
+
 	//SpawnPoints_SetRatingMultipliers_Enemy( "ai", -2.0, -0.25, 0.0 )
 	//SpawnPoints_SetRatingMultipliers_Friendly( "ai", 0.0, 0.0, 0.0 )
 
@@ -90,9 +93,7 @@ function InitializeHardpointsForUplink()
 		// setup minimap data
 		local hardpointStringID = GetHardpointStringID( uplinkPoint.GetHardpointID() )
 
-		uplinkPoint.Minimap_SetDefaultMaterial( GetMinimapMaterial( "hardpoint_neutral_" + hardpointStringID ) )
-		uplinkPoint.Minimap_SetFriendlyMaterial( GetMinimapMaterial( "hardpoint_friendly_" + hardpointStringID ) )
-		uplinkPoint.Minimap_SetEnemyMaterial( GetMinimapMaterial( "hardpoint_enemy_" + hardpointStringID ) )
+		SetLockedHardpointIcons( uplinkPoint, true )
 		uplinkPoint.Minimap_SetObjectScale( 0.11 )
 		uplinkPoint.Minimap_SetAlignUpright( true )
 		uplinkPoint.Minimap_SetClampToEdge( true )
@@ -117,13 +118,22 @@ function InitializeHardpointsForUplink()
 
 		panel.SetTeam( TEAM_UNASSIGNED )
 		panel.UnsetUsable()
+		panel.s.uplinkMinimapUsable <- false
 
-		thread UplinkPanelThink( panel, uplinkPoint )
+		//thread UplinkPanelThink( panel, uplinkPoint )
+
+		local table = {}
+		table.useFunc <- UseUplinkControlPanel
+		table.useEnt <- uplinkPoint
+		table.scope <- this
+
+		AddControlPanelUseFuncTable( panel, table)
 
 		uplinkPoint.SetTerminal( panel )
 
 		SpectreRackSetup( racksModel )
 		uplinkPoint.s.racks <- racksModel
+		uplinkPoint.s.ambientSound <- ""
 	}
 
 	return true
@@ -145,6 +155,8 @@ function UplinkThink()
 		waitthread UplinkControl( uplinkPoint )
 
 		SetActiveUplinkPoint( null )
+		SetLockedHardpointIcons( uplinkPoint, true )
+
 		wait 10.0
 	}
 
@@ -154,7 +166,7 @@ function UplinkThink()
 
 const UPLINK_ACTIVATION_DELAY = 10.0
 const UPLINK_UPLOAD_TIME = 40.0
-const UPLINK_MAX_SPECTRES = 12 // 21
+const UPLINK_MAX_SPECTRES = 21
 
 function UplinkControl( uplinkPoint )
 {
@@ -164,16 +176,32 @@ function UplinkControl( uplinkPoint )
 	level.nv.activeUplinkTime = Time() + UPLINK_ACTIVATION_DELAY
 	uplinkPoint.SetHardpointEstimatedCaptureTime( level.nv.activeUplinkTime )
 
+	SetLockedHardpointIcons( uplinkPoint, false )
+	thread PlayUplinkAlert( uplinkPoint )
+
 	wait UPLINK_ACTIVATION_DELAY
 
 	uplinkPoint.SetHardpointEstimatedCaptureTime( -1 )
 	uplinkPoint.SetHardpointState( CAPTURE_POINT_STATE_UNASSIGNED )
-	uplinkPoint.GetTerminal().SetUsableByGroup( "pilot" )
+
+	local panel = uplinkPoint.GetTerminal()
+	panel.SetUsableByGroup( "pilot" )
+	panel.s.uplinkMinimapUsable = true
+
+	SetDefaultHardpointIcons( uplinkPoint )
 
 	uplinkPoint.WaitSignal( "UplinkEstablished" )
 
-	local panel = uplinkPoint.GetTerminal()
-	panel.EndSignal( "PanelReprogram_Success" )
+	local ambientSound = "amb_fracture_computer_console_0" + RandomInt( 1, 10 )
+	EmitSoundOnEntity( uplinkPoint, ambientSound )
+	uplinkPoint.s.ambientSound <- ambientSound
+
+	OnThreadEnd(
+		function() : ( uplinkPoint )
+		{
+			StopSoundOnEntity( uplinkPoint, uplinkPoint.s.ambientSound )
+		}
+	)
 
 	uplinkPoint.SetHardpointEstimatedCaptureTime( Time() + UPLINK_UPLOAD_TIME )
 	uplinkPoint.SetHardpointProgressRefPoint( Time() )
@@ -189,27 +217,25 @@ function UplinkControl( uplinkPoint )
 function UplinkSpectreSpawnThink( uplinkPoint, duration )
 {
 	local panel = uplinkPoint.GetTerminal()
-	panel.EndSignal( "PanelReprogram_Success" )
 
 	local spawnDelay = max( 8.0, duration / (UPLINK_MAX_SPECTRES / 3) )
-
 	local endTime = Time() + duration
 
 	while ( Time() < endTime )
 	{
 		waitthread SpawnSpectres( uplinkPoint.s.racks, uplinkPoint.GetTeam(), UniqueString() )
+		wait spawnDelay
 	}
 }
 
-function UplinkPanelThink( panel, hardpoint )
+function UseUplinkControlPanel( panel, player, hardpoint )
 {
-	while( true )
-	{
-		local results = panel.WaitSignal( "PanelReprogram_Success" )
-		printt("results" + results)
-		local player  = panel.GetBossPlayer()
-		Uplink_TeamChanged( hardpoint, player.GetTeam() )
-	}
+	if ( hardpoint != GetActiveUplinkPoint() )
+		return
+
+	local player  = panel.GetBossPlayer()
+	Uplink_TeamChanged( hardpoint, player.GetTeam() )
+	AddPlayerScore( player, "LeechUplinkPanel")
 }
 
 
@@ -296,11 +322,18 @@ function Uplink_TeamChanged( hardpoint, team )
 		hardpoint.Signal( "UplinkEstablished" )
 
 	local panel = hardpoint.GetTerminal()
+	panel.SetTeam( team )
 
 	if ( team == TEAM_UNASSIGNED )
+	{
 		panel.UnsetUsable()
+		panel.s.uplinkMinimapUsable = false
+	}
 	else
+	{
 		panel.SetUsableByGroup( "enemies pilot" )
+		panel.s.uplinkMinimapUsable = true
+	}
 
 	//Spawning_HardpointChangedTeams( hardpoint, previousTeam, team )
 
@@ -581,7 +614,7 @@ function SpectreRackSetup( rack )
 			spawnPos = PositionOffsetFromEnt( rack, -16, -24, 0 )
 		}
 
-		spectreSpawnModel = CreatePropDynamic( MILITIA_SPECTRE_MODEL, spawnPos, spawnAng, 8 ) //<- 8 = "hitboxes only"
+		spectreSpawnModel = CreatePropDynamic( NEUTRAL_SPECTRE_MODEL, spawnPos, spawnAng, 8 ) //<- 8 = "hitboxes only"
 		spectreSpawnModel.s.spawnPos <- spawnPos
 		spectreSpawnModel.s.spawnAng <- spawnAng
 		spectreSpawnModel.s.animEnt <- CreateScriptRef( spawnPos, spawnAng )
@@ -632,6 +665,7 @@ function SpawnRackedSpectre( spectreSpawnModel, team, squadName )
 	// Hide fake spectre and spawn a real one
 	//-----------------------------------------
 	local spectre = Spawn_TrackedSpectre( team, squadName, spectreSpawnModel.GetOrigin(), spectreSpawnModel.GetAngles(), true, null, true )// <---hidden when spawned
+	spectre.SetModel( NEUTRAL_SPECTRE_MODEL )
 	MakeInvincible( spectre )
 	thread PlayAnimTeleport( spectre, "sp_med_bay_dropidle_A", spectreSpawnModel.s.animEnt )
 	local weapon = spectre.GetActiveWeapon()
@@ -655,6 +689,72 @@ function SpawnRackedSpectre( spectreSpawnModel, team, squadName )
 	wait 1
 
 	level.ent.Signal( "SpectreSpawnComplete" )
+}
+
+function SetDefaultHardpointIcons( uplinkPoint )
+{
+	local icons = GetDefaultHardpointIcons( uplinkPoint )
+
+	uplinkPoint.Minimap_SetDefaultMaterial( icons.neutral )
+	uplinkPoint.Minimap_SetFriendlyMaterial( icons.friendly )
+	uplinkPoint.Minimap_SetEnemyMaterial( icons.enemy )
+}
+
+function GetDefaultHardpointIcons( uplinkPoint )
+{
+	local hardpointStringID = GetHardpointStringID( uplinkPoint.GetHardpointID() )
+
+	local table = {}
+	table.neutral <- GetMinimapMaterial( "hardpoint_neutral_" + hardpointStringID )
+	table.friendly <- GetMinimapMaterial( "hardpoint_friendly_" + hardpointStringID )
+	table.enemy <- GetMinimapMaterial( "hardpoint_enemy_" + hardpointStringID )
+
+	return table
+}
+
+function SetLockedHardpointIcons( uplinkPoint, grey )
+{
+	local icon = grey ? GetMinimapMaterial( "hardpoint_locked_grey" ) : GetMinimapMaterial( "hardpoint_locked" )
+
+	uplinkPoint.Minimap_SetDefaultMaterial( icon )
+	uplinkPoint.Minimap_SetFriendlyMaterial( icon )
+	uplinkPoint.Minimap_SetEnemyMaterial( icon )
+}
+
+// Blatantly copied form scavenger loll
+function PlayUplinkAlert( uplinkPoint )
+{
+	uplinkPoint.EndSignal( "UplinkEstablished" )
+
+	while ( true )
+	{
+		EmitSoundOnEntity( uplinkPoint, "TEMP_Scavenger_Titan_Ore_Ping" )
+
+		local pingCount = 5
+
+		while( pingCount )
+		{
+			local icon = uplinkPoint.GetTerminal().s.uplinkMinimapUsable ? GetDefaultHardpointIcons( uplinkPoint ).neutral : GetMinimapMaterial( "hardpoint_locked" )
+			Minimap_CreatePingForTeam( TEAM_IMC, uplinkPoint.GetOrigin(), icon, 0.5 )
+			Minimap_CreatePingForTeam( TEAM_MILITIA, uplinkPoint.GetOrigin(), icon, 0.5 )
+			--pingCount
+			wait 0.4
+		}
+
+		wait 3.0
+	}
+}
+
+// Literally only here so i dont have to add yet another random file to the repo
+function Uplink_RegisterMinimapMaterial( materialRef, material )
+{
+	Assert( !( materialRef in level.minimapMaterials ) )
+	Assert( level.allowRegisterMinimapMaterials )
+
+	level.minimapMaterials[ materialRef ] <- material
+
+	if( IsServer() )
+		Minimap_PrecacheMaterial( material )
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

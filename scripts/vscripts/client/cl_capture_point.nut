@@ -52,6 +52,10 @@ function main()
 
 	AddCreateCallback( "info_hardpoint", OnHardpointCreated )
 
+	AddCallback_OnPlayerAutoBalanced( CapturePoint_PlayerAutoBalanced )
+	AddCreatePilotCockpitCallback( CapturePointHudInit )
+	AddCreateTitanCockpitCallback( CapturePointHudInit )
+
 	level.hardpointIDsToOwner <- {}
 }
 
@@ -367,10 +371,13 @@ function HardpointChanged( hardpoint )
 		}
 		else
 		{
-			if ( hardpoint.GetTeam() == player.GetTeam() )
-				hardpoint.s.statusText.SetAutoText( "#DEFEND_COUNTDOWNTIME", HATT_GAME_COUNTDOWN_SECONDS, hardpoint.GetEstimatedCaptureTime() )
-			else
-				hardpoint.s.statusText.SetText( "#GAMEMODE_EXFIL_HACK" )
+			if ( IsUplinkHardpoint( hardpoint ) )
+			{
+				if ( hardpoint.GetTeam() == player.GetTeam() )
+					hardpoint.s.statusText.SetAutoText( "#DEFEND_COUNTDOWNTIME", HATT_GAME_COUNTDOWN_SECONDS, hardpoint.GetEstimatedCaptureTime() )
+				else
+					hardpoint.s.statusText.SetText( "#GAMEMODE_EXFIL_HACK" )
+			}
 		}
 	}
 	else
@@ -426,7 +433,7 @@ function HardpointChanged( hardpoint )
 	level.ent.Signal( CAPTURE_POINT_UI_UPDATE )
 }
 
-function HardpointProgressBarUpdate( player, hardpoint )
+function HardpointProgressBarUpdate( player, hardpoint, cappingTeam )
 {
 	UpdateCapturePointEnemyCount( player, hardpoint )
 	local estCaptureTime = hardpoint.GetEstimatedCaptureTime()
@@ -683,6 +690,11 @@ function VarChangedCallback_GameStateChanged()
 
 // THIS SECTION DRAWS ON THE COCKPIT
 
+function CapturePointHudInit( cockpit, player )
+{
+	OnHardpointCockpitCreated( cockpit, cockpit.s.mainVGUI.s.panel, HudElementGroup( "scoreboardProgress" ) )
+}
+
 function OnHardpointCockpitCreated( cockpit, panel, scoreGroup )
 {
 	Assert( GameModeHasCapturePoints() )
@@ -860,6 +872,24 @@ function SmartGlass_UpdateHardpoint( hardpoint, cappingTeam )
 	// Hardpoint Capping Team
 	SmartGlass_SetGameStateProperty( "hardpoint_" + letter + "_cappingteam", cappingTeam.tostring() )
 	//printt( "hardpoint_" + letter + "_cappingteam", cappingTeam )
+}
+
+function CapturePoint_PlayerAutoBalanced( balancedPlayer, oldTeam, newTeam )
+{
+	local player = GetLocalViewPlayer()
+	if ( !player || balancedPlayer != player )
+		return
+
+	foreach( hardpoint in player.s.hardpointArray )
+	{
+		HardpointChanged( hardpoint )
+	}
+
+	local cockpit = player.GetCockpit()
+	if ( !cockpit )
+		return
+
+	UpdateHardpointIcons( player, cockpit )
 }
 
 function IsUplinkMode()

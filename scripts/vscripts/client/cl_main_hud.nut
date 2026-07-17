@@ -221,9 +221,6 @@ function PilotMainHud( cockpit, player )
 	cockpit.s.coreFXHandle <- null
 
 	local scoreGroup = HudElementGroup( "scoreboardProgress" )
-	local gameMode = GameRules.GetGameMode()
-	if ( gameMode == CAPTURE_POINT || gameMode == UPLINK )
-		OnHardpointCockpitCreated( cockpit, panel, scoreGroup )
 
 	MainHud_InitScoreBars( mainVGUI, player, scoreGroup )
 
@@ -401,9 +398,6 @@ function TitanMainHud( cockpit, player )
 	MainHud_InitTargetHealthBars( cockpit, player )
 
 	local scoreGroup = HudElementGroup( "scoreboardProgress" )
-	local gameMode = GameRules.GetGameMode()
-	if ( gameMode == CAPTURE_POINT || gameMode == UPLINK )
-		OnHardpointCockpitCreated( cockpit, panel, scoreGroup )
 
 	MainHud_InitScoreBars( mainVGUI, player, scoreGroup )
 

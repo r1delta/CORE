@@ -2465,11 +2465,34 @@ function AutoBalancePlayer( player, forceSwitch = false )
 		foreach ( npc in turrets )
 		{
 			// Swap hacked turrets
-			if ( npc.GetBossPlayer() == player )
-				npc.SetTeam( newTeam )
+			if ( npc.GetBossPlayer() != player )
+				continue
 
-			if ( npc.GetClassname() == "npc_turret_sentry" )
-				npc.SetSkin( player.GetSkin() )
+			switch( npc.GetClassname() )
+			{
+				case "npc_turret_sentry":
+					npc.SetTeam( newTeam )
+					npc.SetSkin( player.GetSkin() )
+					break
+
+				case "npc_tureet_mega_bb":
+					BBTurretChangeTeam( npc, newTeam )
+
+					local terminal = npc.GetControlPanel()
+					if ( terminal )
+						terminal.SetTeam( newTeam )
+					
+					break
+
+				default:
+					TurretChangeTeam( npc, newTeam )
+
+					local terminal = npc.GetControlPanel()
+					if ( terminal )
+						terminal.SetTeam( newTeam )
+
+					break
+			}
 		}
 
 		foreach ( callbackInfo in level.onPostAutoBalanceCallbacks )

@@ -1546,6 +1546,18 @@ function InitScoreEvents()
 	event.SetSplashText( "#SCORE_EVENT_IMMORTAL" )
 	event.SetXPType( XP_TYPE.SPECIAL )
 	event.SetShouldStackDisplay( true )
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	event = cScoreEvent( "LeechPanel" )
+	event.SetPointValue( POINTVALUE_CONTROL_PANEL_ACTIVATE )
+	event.SetSplashText( "#SCORE_EVENT_LEECHED_PANEL" )
+	event.SetXPType( XP_TYPE.HACKING )
+
+	event = cScoreEvent( "LeechUplinkPanel" )
+	event.SetPointValue( POINTVALUE_CONTROL_PANEL_ACTIVATE )
+	event.SetSplashText( "#SCORE_EVENT_LEECHED_UPLINK_PANEL" )
+	event.SetXPType( XP_TYPE.HACKING )
 }
 
 function ScaleScoreForAutoTitan( eventPoints )

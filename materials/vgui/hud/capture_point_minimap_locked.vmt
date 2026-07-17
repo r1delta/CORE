@@ -1,0 +1,9 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"Basic"
+{
+
+	"$surfaceprop" "default"
+	"$basetexture" "vgui\HUD\capture_point_minimap_locked"
+	"$translucent" "1"
+}
