@@ -781,7 +781,7 @@ function UpdateDashBarColor( player )
 	local alpha = dashBar.GetBaseAlpha()
 	local alpha_FG = dashBarFG.GetBaseAlpha()
 
-	if ( PlayerHasPassive( player, PAS_FUSION_CORE ) )
+	if ( PlayerHasPassive( player, PAS_FUSION_CORE ) && GetConVarBool( "delta_hud_misc_changes" ) )
 	{
 		col = [ SHIELD_BOOST_R, SHIELD_BOOST_G, SHIELD_BOOST_B ]
 		col_FG = [ SHIELD_BOOST_R, SHIELD_BOOST_G, SHIELD_BOOST_B ]
@@ -790,7 +790,6 @@ function UpdateDashBarColor( player )
 	dashBar.ColorOverTime( col[0], col[1], col[2], alpha, 0.5, INTERPOLATOR_DEACCEL )
 	dashBarFG.ColorOverTime( col_FG[0], col_FG[1], col_FG[2], alpha_FG, 0.5, INTERPOLATOR_DEACCEL )
 }
-Globalize( UpdateDashBarColor )
 
 // TMP.. there are more efficient ways to do this like HudAnimations.txt... but they take too long to setup right now
 function TitanShieldBarPulseThink( cockpit, player )

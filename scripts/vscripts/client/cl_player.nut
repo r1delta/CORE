@@ -1148,7 +1148,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	if ( IsValid( victim ) )
 	{
 		// Hit indicator hud icon
-		if ( isCritShot || isHeadShot )
+		if ( isCritShot || ( isHeadShot && GetConVarBool( "delta_hud_misc_changes" ) ) )
 			hitWeakpoint = true
 
 		victimIsTitan = victim.IsTitan()
@@ -1242,13 +1242,13 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	}
 	// --- R1DELTA DAMAGE NUMBERS END ---
 
-	if ( IsValid( victim ) && playKillSound )
+	if ( IsValid( victim ) && playKillSound && GetConVarBool( "delta_play_killsounds" ) )
 	{
 		PlayKillShotSound( attacker, victim, damageType, isHeadShot )
 	}
 
 	// Play a hit sound effect if we didn't play a kill shot sound, and other conditions are met
-	if ( playHitSound )
+	if ( playHitSound && GetConVarBool( "delta_play_hitsounds" ) )
 	{
 		if ( damageFlags & DAMAGEFLAG_VICTIM_INVINCIBLE )
 			EmitSoundOnEntity( attacker, "Player.HitbeepInvincible" )
