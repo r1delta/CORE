@@ -395,15 +395,15 @@ function InitScoreboard_Think()
 	foreach( elem in file.columnLines )
 		elem.Show()
 
-	local gamepadButtons = []
-	gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton0", scoreboard ) )
-	//gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton1", scoreboard ) )
+	file.gamepadButtons <- []
+	file.gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton0", scoreboard ) )
+	//file.gamepadButtons.append( HudElement( "ScoreboardGamepadFooterButton1", scoreboard ) )
 
-	gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton0", scoreboard ) )
-	gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton1", scoreboard ) )
-	gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton2", scoreboard ) )
+	file.gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton0", scoreboard ) )
+	file.gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton1", scoreboard ) )
+	file.gamepadButtons.append( HudElement( "ScoreboardKeyboardFooterButton2", scoreboard ) )
 
-	foreach ( button in gamepadButtons )
+	foreach ( button in file.gamepadButtons )
 		button.EnableKeyBindingIcons()
 
 	//delaythread(2) ShowScoreboard()
@@ -946,6 +946,17 @@ function ShowScoreboard()
 
 		teamPlayers[myTeam].clear()
 		teamPlayers[enemyTeam].clear()
+
+		local i = 0
+		foreach ( button in file.gamepadButtons )
+		{
+			if ( i > 0 && !GetConVarBool( "delta_hud_misc_changes" ) )
+				button.Hide()
+			else
+				button.Show()
+
+			i++
+		}
 
 		wait 0
 	}
