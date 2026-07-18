@@ -2331,7 +2331,7 @@ Globalize( CapturePoint_AwardPlayerPoints )
 //////////////////////////////////////////////////////////
 function CapturePointVO_Allowed( player )
 {
-	return ( GetGameState() == eGameState.Playing && player.s.hasDoneTryGameModeAnnouncement )
+	return ( GetGameState() == eGameState.Playing && player.s.hasDoneTryGameModeAnnouncement && TimeSpentInCurrentState() > 10.0 )
 }
 
 
