@@ -154,6 +154,9 @@ function main()
 
 	SpawnPoints_SetRatingMultipliers_Enemy( TD_AI, -2.0, -0.25, 0.0 )
 	SpawnPoints_SetRatingMultipliers_Friendly( TD_AI, 0.5, 0.25, 0.0 )
+
+	AddSpawnCallback( "npc_titan", SetupFakePilotValues )
+	AddDamageByCallback( "npc_titan", TryNPCTitanExecution )
 }
 
 function SetupLevelAICount()
@@ -1635,7 +1638,12 @@ function FrontlineDeathNPC( ent, damageInfo )
 function FrontlineDeath( ent, damageInfo )
 {
 	if ( ent.IsTitan() && !ent.GetTitanSoul().GetBossPlayer() )
+	{
+		if ( ent.s.fakePilotProp )
+			ent.s.fakePilotProp.Kill()
+
 		return	// don't care about npc_titans that wasn't controlled by a player
+	}
 
 	if ( ent.IsNPC() && !ent.IsTitan() )
 	{
@@ -2351,4 +2359,87 @@ function AssaultTDM( guys, index )
 
 	//ok we got everyone - lets assault some shit
 	thread SquadAssaultFrontline( squad, index )
+}
+
+function TitanHasPilotInTitan( titan )
+{
+	if ( titan.IsPlayer() )
+		return
+
+	return titan.IsTitan() && titan.s.fakePilotModel != ""
+}
+Globalize( TitanHasPilotInTitan )
+
+function GiveTitanPilotModel( titan, model )
+{
+    if ( !IsValid( titan ) )
+        return
+
+    // store model associated with this titan (the map/intro code reads this to show the cockpit pilot model)
+    titan.s.fakePilotModel = model
+}
+Globalize( GiveTitanPilotModel )
+
+// Create a prop copy for the pilot model and return it.
+function NPC_CreateCopyOfPilotModel( titan )
+{
+    if ( !IsValid( titan ) )
+        return null
+
+    local model = TEAM_IMC_CAPTAIN_MDL
+
+	// prefer explicit per-titan model if set
+	if ( titan.s.fakePilotModel != "" )
+		model = titan.s.fakePilotModel
+
+	// Create the prop. CreatePropDynamic in this build already returns a spawned entity,
+	local prop = CreatePropDynamic( model )
+	if ( !IsValid( prop ) )
+		return null
+
+	// set team/owner so rendering/collision are correct and engine knows the relationship
+	prop.SetTeam( titan.GetTeam() )
+	prop.SetOwner( titan )
+
+	// parent it to the titan cockpit attachment (use the hijack attachment)
+	prop.SetParent( titan, "HIJACK" )
+	prop.MarkAsNonMovingAttachment()
+
+	titan.s.fakePilotProp <- prop
+	return prop
+}
+Globalize( NPC_CreateCopyOfPilotModel )
+
+function SetupFakePilotValues( titan )
+{
+	titan.s.fakePilotModel <- ""
+	titan.s.fakePilotProp <- null
+
+	titan.s.npc_AllowTeamRodeo <- false
+}
+
+const NPC_TITAN_EXECUTIONS = 0
+function TryNPCTitanExecution( ent, damageInfo )
+{
+	if ( !NPC_TITAN_EXECUTIONS )
+		return
+
+	local attacker = damageInfo.GetAttacker()
+	if ( !ent.IsTitan() )
+	    return
+
+	if ( damageInfo.GetDamageSourceIdentifier() != eDamageSourceId.titan_melee )
+		return
+
+	if ( !TitanHasPilotInTitan( attacker ) )
+		return
+
+	if ( !ent.GetDoomedState() )
+		return
+
+	if ( !CodeCallback_IsValidMeleeExecutionTarget( attacker, ent ) )
+		return
+
+    damageInfo.SetDamage( 0 )
+	thread PlayerTriesExecutionMelee( attacker, ent )
 }

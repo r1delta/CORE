@@ -217,6 +217,22 @@ function main()
 	}
 }
 
+function AllowTeamRodeo( titan, trueorfalse )
+{
+	titan.s.npc_AllowTeamRodeo = trueorfalse
+}
+Globalize( AllowTeamRodeo )
+
+function IsAllowedTeamRodeo( titan )
+{
+	// Only bad thing about this is that it makes the rodeo popup not show up
+	// But at least it works i guess?
+	if ( IsClient() )
+		return false
+
+	return titan.s.npc_AllowTeamRodeo
+}
+
 function CodeCallback_OnRodeoAttach( player, titan )
 {
 	local package = GetRodeoPackage( player, titan )
@@ -300,7 +316,7 @@ function IsValidTitanRodeoTarget( player, titan )
 			return false
 		if ( !IsValid( soul.GetBossPlayer() ) )
 		{
-			if ( player.GetTeam() == titan.GetTeam() )
+			if ( player.GetTeam() == titan.GetTeam() && !IsAllowedTeamRodeo( titan ) )
 				return false
 		}
 	}
@@ -1239,6 +1255,7 @@ function SpectreFallingOntoTitan( spectre, titan )
 
 	return true
 }
+Globalize( SpectreFallingOntoTitan )
 
 function HoldToRodeoEnabled( player )
 {

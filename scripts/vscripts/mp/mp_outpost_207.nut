@@ -3018,7 +3018,9 @@ function IntroTitan_MCOR( isDev = false )
 			if ( IsAlive( titan ) )
 			{
 				IntroTitan_PostAnim( titan )
-
+				AllowTeamRodeo( titan, true )
+    			GiveTitanPilotModel( titan, TEAM_MILITIA_CAPTAIN_MDL )
+				
 				local assaultPos = Vector( 240, 665, -333 )
 				thread IntroTitan_GoFight( titan, assaultPos )
 			}
@@ -3321,6 +3323,12 @@ function IntroTitan_IMC( isDev = false )
 				IntroTitan_PostAnim( titan )
 				ClearInvincible( titan )
 				DeleteAnimEvent( titan, "hatch_closed", IntroTitan_IMC_HatchClosed )
+				AllowTeamRodeo( titan, true )
+
+				// Respawn set this pilot to use a grunt model
+				// Not sure if that was intentional, it probably was, so ill make it use the same one
+    			GiveTitanPilotModel( titan, TEAM_IMC_GRUNT_MDL ) // TEAM_IMC_CAPTAIN_MDL
+
 
 				local assaultPos = Vector( 1570, 378, -323 )
 
