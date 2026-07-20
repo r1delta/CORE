@@ -1601,8 +1601,8 @@ function GetBurnCardSetForIndex(setIndex) {
     "bc_extra_dash",
 	"bc_valkyrie_m2",			
 	"bc_twinb_m2",			
-	"bc_titan_shotgun_m2",	
-	"bc_thunderbolt_m2",		
+	//"bc_titan_shotgun_m2",	
+	//"bc_thunderbolt_m2",		
 	"bc_titan_charge_cannon_m2",]
 			break
 		case 2:
