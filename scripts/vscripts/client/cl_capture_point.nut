@@ -897,6 +897,6 @@ function IsUplinkHardpoint( hardpoint )
 	if ( IsCaptureMode() )
 		return false
 
-	return hardpoint.GetHardpointID() == level.nv.activeUplinkID
+	return GetActiveUplinkPoint() == hardpoint
 }
 Globalize( IsUplinkHardpoint )
