@@ -1376,8 +1376,12 @@ function CodeCallback_OnPlayerKilled( player, damageInfo )
 {
 	Remote.CallFunction_NonReplay( player, "ServerCallback_YouDied" )
 
+	// Nexon clears the objective when doing this because they used the objective system
+	// To show people how to deploy their titan etc
+	// We dont use any of that, so getting rid of this
+
 	// [LJS] hud 에 탈출 알람 or 타이탄 알람 삭제.
-	ClearPlayerActiveObjective( player )
+	//ClearPlayerActiveObjective( player )
 
 	local team = player.GetTeam()
 	Assert( player.GetTeam() > TEAM_SPECTATOR )

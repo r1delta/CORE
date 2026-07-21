@@ -451,7 +451,9 @@ function PilotBecomesTitan( player, titan, fullCopy = true )
 
 	player.SetPetTitan( null )
 
-	// WHy??
+	// Nexon clears the objective when doing this because they used the objective system
+	// To show people how to deploy their titan etc
+	// We dont use any of that, so getting rid of this
 	//ClearPlayerActiveObjective( player )
 
 	// puts the weapons into a table

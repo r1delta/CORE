@@ -578,7 +578,10 @@ function UpdateSoulDeath( soul )
 
 	player.OnDestroyTitan()
 
-	ClearPlayerActiveObjective( player )
+	// Nexon clears the objective when doing this because they used the objective system
+	// To show people how to deploy their titan etc
+	// We dont use any of that, so getting rid of this
+	//ClearPlayerActiveObjective( player )
 }
 
 
