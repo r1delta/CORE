@@ -198,10 +198,10 @@ function main()
 
 	level.hasMatchLossProtection <- false
 
-	RegisterConCommandTriggeredCallback( "+useAndReload", PlayerPressed_Rodeo )
+	//RegisterConCommandTriggeredCallback( "+useAndReload", PlayerPressed_Rodeo )
 	RegisterConCommandTriggeredCallback( "+use", PlayerPressed_Rodeo )
 
-	RegisterConCommandTriggeredCallback( "-useAndReload", PlayerReleased_Rodeo )
+	//RegisterConCommandTriggeredCallback( "-useAndReload", PlayerReleased_Rodeo )
 	RegisterConCommandTriggeredCallback( "-use", PlayerReleased_Rodeo )
 
 	AddCreateCallback( "player", ClRodeo_OnClientScriptInit )
@@ -4011,12 +4011,16 @@ function ClRodeo_OnClientScriptInit( player, isRecreate )
 	if ( isRecreate )
 		return
 
-	player.ClientCommand( "HoldToRodeo " + HoldToRodeoState( player ) )
-
 	if ( !( "rodeoPressed" in player.s ) )
 	{
 		player.s.rodeoPressed <- false
 	}
+
+	// Prevent console spam when watching a kill replay
+	if ( IsWatchingKillReplay() )
+		return
+
+	player.ClientCommand( "HoldToRodeo " + HoldToRodeoState( player ) )
 }
 Globalize( ClRodeo_OnClientScriptInit )
 
