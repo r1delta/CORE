@@ -2,8 +2,6 @@
 function main()
 {
 	Globalize( InitHudSettingsR1DMenu )
-	Globalize( OnOpenHudSettingsR1DMenu )
-	Globalize( OnCloseHudSettingsR1DMenu )
 }
 
 function InitHudSettingsR1DMenu( menu )
@@ -14,14 +12,6 @@ function InitHudSettingsR1DMenu( menu )
 	SetupButton( menu.GetChild( "SwchWatermark" ), "#OPTIONS_MENU_DELTA_WATERMARK_DESC" )
 
 	AddEventHandlerToButtonClass( menu, "PCFooterButtonClass", UIE_GET_FOCUS, PCFooterButtonClass_Focused )
-}
-
-function OnOpenHudSettingsR1DMenu( menu )
-{
-}
-
-function OnCloseHudSettingsR1DMenu( menu )
-{
 }
 
 function PCFooterButtonClass_Focused( button )

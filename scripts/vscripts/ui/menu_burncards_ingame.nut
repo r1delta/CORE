@@ -3,15 +3,10 @@ function main()
 {
 	printt("MENU BURN CARDS IN GAME")
 	Globalize( InitBurnCardInGameMenu )
-	Globalize( OnCloseMenu_BurnCardsInGame )
-	Globalize( OnOpenMenu_BurnCardsInGame )
 	Globalize( ShowCoins )
 
 	RegisterSignal( "StopBurnCardAnalogInput" )
 	RegisterSignal( "ClosedBurnCardMenu" )
-
-	file.bindings <- false
-
 	RegisterSignal( "StopChangingPages" )
 	file.scale <- 0
 	file.nextMoveTime <- 0
@@ -56,7 +51,10 @@ function InitBurnCardInGameMenu( menu )
 	file.menu <- menu
 	file.currentPile <- 0
 
+	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenMenu_BurnCardsInGame )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseMenu_BurnCardsInGame )
 	uiGlobal.navigateBackCallbacks[ menu ] <- Bind( BurnCardsInGameNavigateBack )
+
 	level.BurnCardsMenuTitle <- menu.GetChild( "BurnCardsMenuTitle" )
 	file.nextMoveTime <- 0
 	file.nextMoveBuffer <- 0
@@ -206,10 +204,12 @@ function RemoveBlurDelayed()
 }
 
 
-function OnOpenMenu_BurnCardsInGame( menu )
+function OnOpenMenu_BurnCardsInGame()
 {
 	if ( !IsFullyConnected() )
 		return
+
+	local menu = file.menu
 
 	UpdateBurnCardDeckStatus( file.BurnCardStashStatus, 0 )
 	UpdateAutofill()

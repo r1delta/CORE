@@ -9,8 +9,8 @@ const EXPENSIVE_ITEM_WARNING_THRESHOLD = 25000
 function main()
 {
 	Globalize( InitBlackMarketMenu )
-	Globalize( OnOpenBlackMarketMenu )
-	Globalize( OnCloseBlackMarketMenu )
+	//Globalize( OnOpenBlackMarketMenu )
+	//Globalize( OnCloseBlackMarketMenu )
 	Globalize( ServerCallback_ShopPurchaseStatus )
 	Globalize( ServerCallback_ShopOpenBurnCardPack )
 	Globalize( ServerCallback_ShopOpenGenericItem )
@@ -76,6 +76,9 @@ function main()
 
 function InitBlackMarketMenu( menu )
 {
+	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenBlackMarketMenu )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseBlackMarketMenu )
+
 	level.shopMenu.menu 			= menu
 	level.shopMenu.itemMenuPanel    = menu.GetChild( "ItemMenuPanel" )
 	level.shopMenu.title 			= menu.GetChild( "Title" )
@@ -132,7 +135,7 @@ function InitCoins()
 }
 
 
-function OnOpenBlackMarketMenu( menu )
+function OnOpenBlackMarketMenu()
 {
 	if ( !IsFullyConnected() )
 	{

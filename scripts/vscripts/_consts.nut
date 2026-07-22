@@ -2524,3 +2524,11 @@ const WEAPON_VALKYRIE_NAME = "mp_weapon_mega1"
 const WEAPON_TWINB_NAME = "mp_weapon_mega2"
 const WEAPON_THUNDERBOLT_NAME = "mp_weapon_mega3"
 const WEAPON_CHARGE_CANNON_NAME = "mp_weapon_mega4"
+
+enum eUIEvent
+{
+	MENU_OPEN,
+	MENU_CLOSE,
+	MENU_NAVIGATE_BACK,
+	MENU_INPUT_MODE_CHANGED
+}

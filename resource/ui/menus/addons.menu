@@ -43,11 +43,13 @@ resource/ui/menus/addons.menu
 			ControlName				ImagePanel
 			xpos 					r532
 			ypos					74
+			zpos					4
 			wide					493
 			tall					186
-			visible					1
+			visible					0
 			scaleImage				1
-			image					""
+			image					"white"
+			drawColor				"32 32 32 255"
 		}
 		AddonImageFrame
 		{
@@ -55,9 +57,10 @@ resource/ui/menus/addons.menu
 			pin_to_sibling			AddonImage
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	0
+			zpos					5
 			wide					493
 			tall					186
-			visible					1
+			visible					0
 			scaleImage				1
 			image					"../ui/menu/lobby/map_image_frame"
 		}
@@ -70,6 +73,7 @@ resource/ui/menus/addons.menu
 			pin_to_sibling_corner	0
 			xpos					-11
 			ypos					-9
+			zpos					6
 			auto_wide_tocontents 	1
 			auto_tall_tocontents	1
 			visible					1
@@ -87,6 +91,7 @@ resource/ui/menus/addons.menu
 			pin_to_sibling_corner	2
 			xpos					0
 			ypos					0
+			zpos					6
 			wide					471
 			wrap					1
 			auto_tall_tocontents	1
@@ -104,6 +109,7 @@ resource/ui/menus/addons.menu
 			classname 				StarsLabelKeyboard
 			xpos					-11
 			ypos					60
+			zpos					6
 			auto_wide_tocontents 	1
 			auto_tall_tocontents	1
 			visible					1
@@ -122,6 +128,7 @@ resource/ui/menus/addons.menu
 			classname 				VersionLabel
 			xpos					-11
 			ypos					75
+			zpos					6
 			auto_wide_tocontents 	1
 			auto_tall_tocontents	1
 			visible					1

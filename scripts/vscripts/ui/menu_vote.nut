@@ -2,8 +2,6 @@
 function main()
 {
 	Globalize( InitVoteMenu )
-	Globalize( OnOpenVoteMenu )
-	Globalize( OnCloseVoteMenu )
 
 	RegisterSignal( "OnCloseVoteMenu" )
 }
@@ -18,16 +16,19 @@ function InitVoteMenu( menu )
 	SetupButton( menu.GetChild( "BtnToggleAlltalk" ), "#VOTETYPE_ALLTALK_DESC" )
 	SetupButton( menu.GetChild( "BtnRestartMatch" ), "#VOTETYPE_RESTART_MATCH_DESC" )
 
+	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenVoteMenu )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseVoteMenu )
+
 	AddEventHandlerToButtonClass( menu, "VoteTypeButtonClass", UIE_CLICK, VoteTypeButtonClass_Clicked )
 	AddEventHandlerToButtonClass( menu, "PCFooterButtonClass", UIE_GET_FOCUS, PCFooterButtonClass_Focused )
 }
 
-function OnOpenVoteMenu( menu )
+function OnOpenVoteMenu()
 {
-	thread SetVotetypeAvailability( menu )
+	thread SetVotetypeAvailability( GetMenu( "VoteMenu" ) )
 }
 
-function OnCloseVoteMenu( menu )
+function OnCloseVoteMenu()
 {
 	Signal( uiGlobal.signalDummy, "OnCloseVoteMenu" )
 }

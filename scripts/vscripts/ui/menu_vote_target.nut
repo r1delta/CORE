@@ -5,14 +5,15 @@ const MAP_LIST_SCROLL_SPEED = 0
 function main()
 {
 	Globalize( InitVoteTargetMenu )
-	Globalize( OnOpenVoteTargetMenu )
-	Globalize( OnCloseVoteTargetMenu )
 
 	RegisterSignal( "OnCloseVoteTargetMenu" )
 }
 
 function InitVoteTargetMenu( menu )
 {
+	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenVoteTargetMenu )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseVoteTargetMenu )
+
 	AddEventHandlerToButtonClass( menu, "MapButtonClass", UIE_GET_FOCUS, Bind( MapButton_Focused ) )
 	AddEventHandlerToButtonClass( menu, "MapButtonClass", UIE_LOSE_FOCUS, Bind( MapButton_LostFocus ) )
 	AddEventHandlerToButtonClass( menu, "MapButtonClass", UIE_CLICK, Bind( MapButton_Activate ) )
@@ -25,8 +26,10 @@ function InitVoteTargetMenu( menu )
 	file.mapListScrollState <- 0
 }
 
-function OnOpenVoteTargetMenu( menu )
+function OnOpenVoteTargetMenu()
 {
+	local menu = GetMenu( "VoteTargetMenu" )
+
 	local buttons = file.buttons
 	file.options <- GetVoteOptionsArray()
 	local optionsArray = file.options
@@ -125,7 +128,7 @@ function GetVoteOptionText( optionsArray, buttonID )
 	return text
 }
 
-function OnCloseVoteTargetMenu( menu )
+function OnCloseVoteTargetMenu()
 {
 	Signal( uiGlobal.signalDummy, "OnCloseVoteTargetMenu" )
 

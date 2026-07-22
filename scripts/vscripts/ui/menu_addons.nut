@@ -5,31 +5,29 @@ function main()
 	Globalize( InitAddonsMenu )
 	Globalize( UpdateAddonPaths )
 	Globalize( ResetUIScript )
-	Globalize( OnOpenAddonsMenu )
 	Globalize( OpenAddonFolder )
-	Globalize( OnCloseAddonsMenu )
 }
 
 
-function OnOpenAddonsMenu(menu) {
-	printt(menu)
-	uiGlobal.menu = menu	
-	file.menu = menu
-	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
-	file.menu.GetChild("AddonImage").SetVisible( true )
+function OnOpenAddonsMenu() {
+
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
-	local var = GetMods()
-	uiGlobal.addons <- {}
-	uiGlobal.addons = var
+	file.addons = GetMods()
 
 	RegisterButtonPressedCallback( BUTTON_X, UpdateAddonPaths )
 	RegisterButtonPressedCallback( BUTTON_SHOULDER_RIGHT, OpenAddonFolder ) // BUTTON_Y
+
+	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
+	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
 }
 
-function OnCloseAddonsMenu( menu )
+function OnCloseAddonsMenu()
 {
 	DeregisterButtonPressedCallback( BUTTON_X, UpdateAddonPaths )
 	DeregisterButtonPressedCallback( BUTTON_SHOULDER_RIGHT, OpenAddonFolder ) // BUTTON_Y
+
+	DeregisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
+	DeregisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
 }
 
 function InitAddonsMenu( menu )
@@ -37,14 +35,19 @@ function InitAddonsMenu( menu )
 	file.menu <- menu
 	file.mapListScrollState <- 0
 	file.numMapButtonsOffScreen <- null
-	uiGlobal.menu <- menu	
+
+	local var = GetMods()
+	file.addons <- {}
+	file.addons = var
+
+	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenAddonsMenu )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseAddonsMenu )
+
 	file.menu.GetChild("MapButtonsPanel").SetVisible( true )
 	AddEventHandlerToButtonClass( menu, "MapListScrollUpClass", UIE_CLICK, Bind( OnMapListScrollUp_Activate ) )
 	AddEventHandlerToButtonClass( menu, "MapListScrollDownClass", UIE_CLICK, Bind( OnMapListScrollDown_Activate ) )
 	file.buttons <- GetElementsByClassname( menu, "MapButtonClass" )
-	local var = GetMods()
-	uiGlobal.addons <- {}
-	uiGlobal.addons = var
+
 	foreach(i,button in file.buttons) {
 		button.SetVisible( false )
 	}
@@ -54,13 +57,9 @@ function InitAddonsMenu( menu )
 		// file.buttons[i].SetScriptID( i )
 		file.buttons[i].SetSelected(table["enabled"])
 		file.buttons[i].AddEventHandler( UIE_CLICK, OnAddonsMenu )
-		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, ChangePreviewUI )
+		file.buttons[i].AddEventHandler( UIE_GET_FOCUS, Bind( ChangePreviewUI ) )
 	}
-	uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
-	file.menu.GetChild("AddonImage").SetVisible( true )
 	file.numMapButtonsOffScreen = 32 - MAP_LIST_VISIBLE_ROWS
-	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnMapListScrollUp_Activate )
-	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnMapListScrollDown_Activate )
 }	
 
 function ScrollDown( button )
@@ -73,18 +72,22 @@ function ChangePreviewUI( button )
 {
 
 	local script_id = button.GetScriptID().tointeger()
-	local table = uiGlobal.addons[script_id]
+	local table = file.addons[script_id]
 	local name = table["name"]
 	local desc = table["description"]
 	local author = table["author"]
 	local version = table["version"]
 
+	file.menu.GetChild( "AddonImage" ).SetVisible( true )
+	file.menu.GetChild( "AddonImageFrame" ).SetVisible( true )
+
 	if(table["image"] != "common/l4d_spinner") {
-		uiGlobal.menu.GetChild("AddonImage").SetVisible( true )
-		uiGlobal.menu.GetChild("AddonImage").SetImage( table["image"] )
+		file.menu.GetChild("AddonImage").SetImage( table["image"] )
+		file.menu.GetChild("AddonImage").SetColor( 255, 255, 255 )
 	}
 	else {
-		uiGlobal.menu.GetChild("AddonImage").SetImage("../ui/menu/lobby/map_image_frame")
+		file.menu.GetChild("AddonImage").SetImage("white")
+		file.menu.GetChild("AddonImage").ReturnToBaseColor()
 	}
 
 	if( desc == "Description_Here" )
@@ -96,15 +99,15 @@ function ChangePreviewUI( button )
 	if( version == "Version_Here" )
 		version = "No Version"
 
-	uiGlobal.menu.GetChild("AddonName").SetVisible( true)
-	uiGlobal.menu.GetChild("AddonName").SetText( name)
+	file.menu.GetChild("AddonName").SetVisible( true)
+	file.menu.GetChild("AddonName").SetText( name)
 
-	uiGlobal.menu.GetChild("AddonDesc").SetVisible( true )
-	uiGlobal.menu.GetChild("AddonDesc").SetText( desc )
+	file.menu.GetChild("AddonDesc").SetVisible( true )
+	file.menu.GetChild("AddonDesc").SetText( desc )
 
-	uiGlobal.menu.GetChild("StarsLabel").SetText(author)
-	uiGlobal.menu.GetChild("VersionLabel").SetVisible( true )
-	uiGlobal.menu.GetChild("VersionLabel").SetText( version )
+	file.menu.GetChild("StarsLabel").SetText(author)
+	file.menu.GetChild("VersionLabel").SetVisible( true )
+	file.menu.GetChild("VersionLabel").SetText( version )
 
 }
 

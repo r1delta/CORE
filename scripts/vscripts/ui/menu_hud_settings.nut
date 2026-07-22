@@ -35,14 +35,17 @@ function InitHudSettingsMenu( menu )
 	menu.GetChild( "SwchHudWarp" ).SetLocked( true )
 	menu.GetChild( "SwchHudWarp" ).SetEnabled( false )
 
+	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenHudSettingsMenu )
+	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseHudSettingsMenu )
+
 	AddEventHandlerToButtonClass( menu, "HudSettingsR1DButtonClass", UIE_CLICK, ReplaceMenuEventHandlerNoPop( GetMenu( "HudSettingsR1DMenu" ) ) ) //AdvanceMenuEventHandler
 	AddEventHandlerToButtonClass( menu, "ObjectiveOpacityClass", UIE_GET_FOCUS, ObjectiveOpacityClass_Focused )
 	AddEventHandlerToButtonClass( menu, "PCFooterButtonClass", UIE_GET_FOCUS, PCFooterButtonClass_Focused )
 }
 
-function OnOpenHudSettingsMenu( menu )
+function OnOpenHudSettingsMenu()
 {
-	local buttons = GetElementsByClassname( menu, "SafeAreaSwitchClass" )
+	local buttons = GetElementsByClassname( uiGlobal.activeMenu, "SafeAreaSwitchClass" )
 
 	local enable = true
 	if ( IsConnected() )
@@ -54,7 +57,7 @@ function OnOpenHudSettingsMenu( menu )
 	RegisterButtonPressedCallback( BUTTON_Y, RestoreDefaultHUDDialog )
 }
 
-function OnCloseHudSettingsMenu( menu )
+function OnCloseHudSettingsMenu()
 {
 	if ( IsConnected() && CanRunClientScript() )
 	{

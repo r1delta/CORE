@@ -2,7 +2,7 @@
 function main()
 {
 	Globalize( InitBlackMarketMainMenu )
-	Globalize( OnOpenBlackMarketMainMenu )
+	//Globalize( OnOpenBlackMarketMainMenu )
 	Globalize( BlackMarketMain_FooterData )
 
 	level.shopMainMenu						<- {}
@@ -17,6 +17,8 @@ function InitBlackMarketMainMenu( menu )
 	level.shopMainMenu.menu = menu
 	level.shopMainMenu.categoryKeyArt = level.shopMainMenu.menu.GetChild( "CategoryKeyArt" )
 	level.shopMainMenu.categoryDesc = level.shopMainMenu.menu.GetChild( "CategoryInfoLabel" )
+
+	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenBlackMarketMainMenu )
 
 	InitCategoryItemButtons()
 
