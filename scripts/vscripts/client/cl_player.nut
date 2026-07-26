@@ -1225,6 +1225,11 @@ function ClientCodeCallback_PlayerDidDamage( params )
 		Tracker_PlayerAttackedTarget( player, victim )
 
 		TryShowHitIndicator( hitWeakpoint, hitIneffective )
+
+		// Shotguns report your origin instead of the damage position on client
+		// damagePosition isnt used anywhere in the regular game, but it might help someone eventually
+		if ( isShotgun )
+			damagePosition = victim.GetWorldSpaceCenter()
 	}
 	// --- R1DELTA DAMAGE NUMBERS START ---
 	if ( GetConVarInt( "delta_damage_numbers" ) == 1 && IsValid( victim ) )
