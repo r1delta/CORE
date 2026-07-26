@@ -618,35 +618,21 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
     if ( GAMETYPE == COOPERATIVE )
     {
-        if ( attacker.IsTurret() )
-        {
-            local bossPlayer = attacker.GetBossPlayer()
-
-            if ( !IsValid( bossPlayer ) )
-                return
-
-            Stats_IncrementStat( bossPlayer, "kills_stats", "coopChallenge_Turret_Kills", 1.0 )
-        }
-
-        if ( attacker.IsNPC() && IsSniperSpectre( attacker ) )
-        {
-            local damageHistory = attacker.s.recentDamageHistory
-
-            foreach( entry in damageHistory )
-            {
-                local attackerWeakRef = entry.attackerWeakRef
-
-                if ( !IsValid( attackerWeakRef ) )
-                    continue
-
-                if ( attackerWeakRef.IsPlayer() )
-                    Stats_IncrementStat( attackerWeakRef, "kills_stats", "coopChallenge_SuicideSpectre_Kills", 1.0 )
-            }
-        }
-
-
         if ( !attacker.IsPlayer() )
             return
+
+	    local inflictor = damageInfo.GetInflictor()
+	    inflictor = InflictorOwner( inflictor ) // turns env_explosion into a player or npc
+
+        if ( IsPlayerControlledTurret( inflictor ) )
+        {
+            Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_Turret_Kills", 1.0 )
+        }
+
+        if ( damageSource == eDamageSourceId.suicideSpectreAoE )
+        {
+            Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_SuicideSpectre_Kills", 1.0 )
+        }
 
         if ( IsSniperSpectre( victim ) )
         {
