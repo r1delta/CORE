@@ -840,6 +840,9 @@ function InitPersistence()
     AddPersistenceArray("currentBurnCardOffset", 3)
     AddPersistenceKey("currentBurnCardOffset", "int")
 
+    AddPersistenceKey("currentBurnCardSortType", "int")
+    AddPersistenceKey("currentBurnCardSortIsReversed", "bool")
+
     AddPersistenceArray("burnCardDeck", 1000)
     AddPersistenceKey("burnCardDeck", "burnCard")
     AddPersistenceArray("pm_burnCardDeck", 1000)

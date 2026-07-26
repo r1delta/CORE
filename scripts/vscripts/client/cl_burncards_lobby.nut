@@ -2742,41 +2742,6 @@ function MoveSelectedBurnCardToFront( player, slotForCard )
 	return true
 }
 
-function BurnCardNumericSort( card1, card2 )
-{
-	local index1 = GetBurnCardIndex( card1.cardRef )
-	local index2 = GetBurnCardIndex( card2.cardRef )
-	if ( index1 > index2 )
-		return 1
-	if ( index1 < index2 )
-		return -1
-
-	return 0
-}
-
-function BurnCardGroupSort( card1, card2 )
-{
-	local group1 = GetBurnCardGroup( card1.cardRef )
-	local group2 = GetBurnCardGroup( card2.cardRef )
-
-	if ( group1 > group2 )
-		return -1
-	if ( group1 < group2 )
-		return 1
-
-	if ( group1 == group2 )
-	{
-		local index1 = GetBurnCardIndex( card1.cardRef )
-		local index2 = GetBurnCardIndex( card2.cardRef )
-		if ( index1 > index2 )
-			return -1
-		if ( index1 < index2 )
-			return 1
-	}
-
-	return 0
-}
-
 function AddBurnCardToTables( burncard, burnCardTables )
 {
 	foreach ( index, card in burnCardTables )

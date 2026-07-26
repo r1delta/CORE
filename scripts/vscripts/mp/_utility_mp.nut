@@ -1649,7 +1649,9 @@ function FillBurnCardDeckFromArray( player, array )
 		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + i + "]", false )
 	}
 
-	foreach (index,card in array)
+	local sortedArray = GetSortedBurnCards( array, player )
+
+	foreach (index,card in sortedArray)
 	{
 		if(card == null)
 			player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", null )
@@ -1657,6 +1659,9 @@ function FillBurnCardDeckFromArray( player, array )
 		player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", card.cardRef )
 		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + index + "]", card.new )
 	}
+
+	if ( IsLobby() )
+		Remote.CallFunction_NonReplay( player, "SCB_RefreshCards" )
 }
 
 function Ranked_PlayerConnected( player )

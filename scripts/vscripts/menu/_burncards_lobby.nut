@@ -12,6 +12,9 @@ function main()
 	AddClientCommandCallback( "BCClearNew", BCClearNew )
 	AddClientCommandCallback( "ToggleAutofill", ToggleAutofill )
 
+	AddClientCommandCallback( "BCSetSortType", BCSetSortType )
+	AddClientCommandCallback( "BCToggleReverse", BCToggleReverse )
+
 	RegisterSignal( "NewDiscard" )
 }
 
@@ -290,3 +293,26 @@ function GiveDiscardReward( player, cardRef )
 	player.SetPersistentVar( "cu8achievement.ach_burncardsDiscarded", discardLifetimeTotal + 1 )
 }
 
+function BCSetSortType( player, type )
+{
+	type = type.tointeger()
+	if ( type == null )
+		return
+
+	if ( type >= 0 )
+		player.SetPersistentVar( "currentBurnCardSortType", type )
+
+	FillBurnCardDeckFromArray( player, GetPlayerBurnCardDeck( player ) )
+
+	return true
+}
+
+function BCToggleReverse( player )
+{
+	local reverse = player.GetPersistentVar( "currentBurnCardSortIsReversed" )
+	reverse = !reverse
+	player.SetPersistentVar( "currentBurnCardSortIsReversed", reverse )
+	FillBurnCardDeckFromArray( player, GetPlayerBurnCardDeck( player ) )
+
+	return true
+}

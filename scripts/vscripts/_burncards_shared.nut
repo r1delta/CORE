@@ -1948,3 +1948,191 @@ function GetSellCostOfRarity( rarity )
 			break
 	}
 }
+
+// Careful when touching this specific function or your entire deck will probably shit itself
+// The game doesnt like it when you dont sort arrays in a specific way
+function GetSortedBurnCards( deckArray, player = null )
+{
+	local sortedArray = deckArray
+	local sortType = GetPlayerBurnCardSortFunction( player )
+
+	if ( !ShouldReverseBurnCardDeck( player ) )
+		sortedArray.sort( sortType.normal )
+	else
+		sortedArray.sort( sortType.reversed )
+
+	return sortedArray
+}
+
+function GetPlayerBurnCardSortFunction( player = null )
+{
+	local sortType = {}
+	sortType.normal <- null
+	sortType.reversed <- null
+
+	local type
+	if ( player )
+		type = player.GetPersistentVar( "currentBurnCardSortType" )
+	else
+		type = GetPersistentVar( "currentBurnCardSortType" )
+
+	switch( type )
+	{
+		case 1:
+			sortType.normal = BurnCardGroupSort
+			sortType.reversed = BurnCardGroupSortReversed
+			break
+
+		case 2:
+			sortType.normal = BurnCardRaritySort
+			sortType.reversed = BurnCardRaritySortReversed
+			break
+
+		default:
+			sortType.normal = BurnCardNumericSort
+			sortType.reversed = BurnCardNumericSortReversed
+			break
+	}
+
+	return sortType
+}
+
+function BurnCardNumericSort( card1, card2 )
+{
+	local index1 = GetBurnCardIndex( card1.cardRef )
+	local index2 = GetBurnCardIndex( card2.cardRef )
+
+	if ( index1 > index2 )
+		return 1
+	if ( index1 < index2 )
+		return -1
+
+	return 0
+}
+
+function BurnCardNumericSortReversed( card1, card2 )
+{
+	local index1 = GetBurnCardIndex( card1.cardRef )
+	local index2 = GetBurnCardIndex( card2.cardRef )
+
+	if ( index1 > index2 )
+		return -1
+	if ( index1 < index2 )
+		return 1
+
+	return 0
+}
+
+function BurnCardGroupSort( card1, card2 )
+{
+	local group1 = GetBurnCardGroup( card1.cardRef )
+	local group2 = GetBurnCardGroup( card2.cardRef )
+
+	if ( group1 > group2 )
+		return -1
+	if ( group1 < group2 )
+		return 1
+
+	if ( group1 == group2 )
+	{
+		local index1 = GetBurnCardIndex( card1.cardRef )
+		local index2 = GetBurnCardIndex( card2.cardRef )
+		if ( index1 > index2 )
+			return 1
+		if ( index1 < index2 )
+			return -1
+	}
+
+	return 0
+}
+
+function BurnCardGroupSortReversed( card1, card2 )
+{
+	local group1 = GetBurnCardGroup( card1.cardRef )
+	local group2 = GetBurnCardGroup( card2.cardRef )
+
+	if ( group1 > group2 )
+		return 1
+	if ( group1 < group2 )
+		return -1
+
+	if ( group1 == group2 )
+	{
+		local index1 = GetBurnCardIndex( card1.cardRef )
+		local index2 = GetBurnCardIndex( card2.cardRef )
+		if ( index1 > index2 )
+			return -1
+		if ( index1 < index2 )
+			return 1
+	}
+
+	return 0
+}
+
+function BurnCardRaritySort( card1, card2 )
+{
+	local rarity1 = GetBurnCardRarity( card1.cardRef )
+	local rarity2 = GetBurnCardRarity( card2.cardRef )
+
+	if ( rarity1 > rarity2 )
+		return 1
+	if ( rarity1 < rarity2 )
+		return -1
+
+	if ( rarity1 == rarity2 )
+	{
+		local index1 = GetBurnCardIndex( card1.cardRef )
+		local index2 = GetBurnCardIndex( card2.cardRef )
+
+		if ( index1 > index2 )
+			return 1
+		if ( index1 < index2 )
+			return -1
+	}
+
+	return 0
+}
+
+function BurnCardRaritySortReversed( card1, card2 )
+{
+	local rarity1 = GetBurnCardRarity( card1.cardRef )
+	local rarity2 = GetBurnCardRarity( card2.cardRef )
+
+	if ( rarity1 > rarity2 )
+		return -1
+	if ( rarity1 < rarity2 )
+		return 1
+
+	if ( rarity1 == rarity2 )
+	{
+		local index1 = GetBurnCardIndex( card1.cardRef )
+		local index2 = GetBurnCardIndex( card2.cardRef )
+
+		if ( index1 > index2 )
+			return -1
+		if ( index1 < index2 )
+			return 1
+	}
+
+	return 0
+}
+
+function ShouldReverseBurnCardDeck( player = null )
+{
+	if ( !player )
+		return GetPersistentVar( "currentBurnCardSortIsReversed" )
+
+	return player.GetPersistentVar( "currentBurnCardSortIsReversed" )
+}
+
+Globalize( GetSortedBurnCards )
+Globalize( GetPlayerBurnCardSortFunction )
+
+Globalize( BurnCardNumericSort )
+Globalize( BurnCardNumericSortReversed )
+Globalize( BurnCardGroupSort )
+Globalize( BurnCardGroupSortReversed )
+Globalize( BurnCardRaritySort )
+Globalize( BurnCardRaritySortReversed )
+
+Globalize( ShouldReverseBurnCardDeck )
