@@ -1054,6 +1054,9 @@ function BurncardButton_Reverse( ... )
 
 function UpdateReverseButton( forced = null )
 {
+	if ( IsControllerModeActive() )
+		EmitUISound( "Menu.Accept" )
+
 	if ( forced != null )
 	{
 		file.Image_BurnCardsReverse_chicklet.SetVisible( forced )
@@ -1068,6 +1071,9 @@ function BurncardButton_Sort( ... )
 {
 	if ( !IsFullyConnected() )
 		return
+
+	if ( IsControllerModeActive() )
+		EmitUISound( "Menu.Accept" )
 
 	local type = GetPersistentVar( "currentBurnCardSortType" ) + 1
 	if ( type > MAX_CARD_SORT_TYPE )
