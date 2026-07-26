@@ -891,6 +891,10 @@ function BCOnPlayerKilled( player, damageInfo )
     player.s.bc_grenadesPendingForRefill = 0
     player.s.bc_grenadeRefillInProgress = false
 
+    local cardData = GetBurnCardData( cardRef )
+    if ( cardData.serverFlags )
+        TakeServerFlag( player, cardData.serverFlags )
+
     BurnCardOnDeath( player, damageInfo, BC_NEXTDEATH )
 
     if ( cardRef == "bc_rematch" )
