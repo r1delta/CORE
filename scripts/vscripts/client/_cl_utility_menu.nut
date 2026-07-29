@@ -1321,6 +1321,27 @@ function EventNotification( eventID, entity, eventVal = null )
 				}
 			break
 
+		case eEventNotifications.TeammateSwitchedTeams:
+				local announcement = CAnnouncement( "" )
+				announcement.SetSubText( "#TEAMMATE_SWITCHED_TEAMS" )
+				announcement.SetPurge( false )
+				AnnouncementFromClass( player, announcement )
+			break
+
+		case eEventNotifications.EnemySwitchedTeams:
+				local announcement = CAnnouncement( "" )
+				announcement.SetSubText( "#ENEMY_SWITCHED_TEAMS" )
+				announcement.SetPurge( false )
+				AnnouncementFromClass( player, announcement )
+			break
+
+		case eEventNotifications.YouSwitchedTeams:
+				local announcement = CAnnouncement( "" )
+				announcement.SetSubText( "#YOU_SWITCHED_TEAMS" )
+				announcement.SetPurge( false )
+				AnnouncementFromClass( player, announcement )
+			break
+
 		default:
 			ClearEventNotification()
 			break

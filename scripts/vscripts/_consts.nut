@@ -1695,6 +1695,9 @@ enum eEventNotifications
 	MarkedForDeathMarkedAutobalanced,
 	AutoBalanceCooldown,
 	UplinkLocatingNextPanel,
+	TeammateSwitchedTeams,
+	EnemySwitchedTeams,
+	YouSwitchedTeams,
 }
 
 enum ePrivateMatchStartState

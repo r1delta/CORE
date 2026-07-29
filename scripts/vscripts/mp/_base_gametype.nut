@@ -68,6 +68,8 @@ function main()
 
 		AddClientCommandCallback( "PrivateMatchEndMatch", ClientCommand_PrivateMatchEndMatch )
 
+		AddClientCommandCallback( "SwitchMe", ClientCommand_SwitchMe )
+
 		AddCallback_GameStateEnter( eGameState.Playing, GameStart_AutoBalanceCooldown )
 
 		MarkTeamsAsBalanced_Off()
@@ -2313,7 +2315,7 @@ function CodeCallback_OnPlayerRespawned( player )
 		{
 			printt( "Forcing player " + player.GetPlayerName() + " back to Militia on respawn in Cooperative mode." )
 			player.SetTeam( TEAM_MILITIA )
-			NotifyClientsOfTeamChange( player, GetOtherTeam(TEAM_MILITIA), TEAM_MILITIA ) // Notify clients about the team change
+			NotifyClientsOfTeamChange( player, GetOtherTeam(TEAM_MILITIA), TEAM_MILITIA, true ) // Notify clients about the team change
 		}
 	}
 	// Standard autobalance for other modes
@@ -2325,7 +2327,7 @@ function CodeCallback_OnPlayerRespawned( player )
 }
 
 // TODO: dont use this yet, its still missing a lot of checks for if the player is still alive and doing something
-function AutoBalancePlayer_Delayed( player, delay, forceSwitch = false )
+function AutoBalancePlayer_Delayed( player, delay, manual = false, forceSwitch = false )
 {
 	player.EndSignal( "OnDeath" )
 	player.EndSignal( "OnDestroy" )
@@ -2337,9 +2339,12 @@ function AutoBalancePlayer_Delayed( player, delay, forceSwitch = false )
 		AutoBalancePlayer( player, forceSwitch )
 }
 
-function AutoBalancePlayer( player, forceSwitch = false )
+// manualSwitch is basically just the *old* forceswitch
+// The *NEW* forceSwitch is meant to be a dev thing, so we dont need to wait the 15 seconds
+// Every time we want to switch teams when testing something
+function AutoBalancePlayer( player, manualSwitch = false, forceSwitch = false )
 {
-	if ( !ShouldAutoBalancePlayer( player, forceSwitch ) )
+	if ( !ShouldAutoBalancePlayer( player, manualSwitch, forceSwitch ) )
 		return
 
 	local currentTeam = player.GetTeam()
@@ -2353,7 +2358,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 
 	// Check if current team is over target and other team is under target
 	// TODO: potentially check the players KDR and autobalance them if its too crazy?
-	if ( forceSwitch || ( currentTeamCount > targetPerTeam && otherTeamCount < targetPerTeam ) )
+	if ( manualSwitch || forceSwitch || ( currentTeamCount > targetPerTeam && otherTeamCount < targetPerTeam ) )
 	{
 		printt( "AutoBalancing player " + player.GetPlayerName() + " from team " + currentTeam + " to team " + otherTeam )
 
@@ -2384,9 +2389,9 @@ function AutoBalancePlayer( player, forceSwitch = false )
 		// Switch player team
 		player.TrueTeamSwitch()
 		local newTeam = player.GetTeam() // Get the new team after switching
-		if ( forceSwitch )
+		if ( manualSwitch )
         {
-			printt( "AutoBalancePlayer: Forcing team switch for player " + player.GetPlayerName() )
+			printt( "AutoBalancePlayer: Doing manual team switch for player " + player.GetPlayerName() )
             level.lastForceSwitchTime[player.GetUID()] <- Time()
         }
 		// Switch pet titan team if it exists
@@ -2452,7 +2457,7 @@ function AutoBalancePlayer( player, forceSwitch = false )
 				viewModel.SetSkin( player.GetSkin() )
 		}
 
-		NotifyClientsOfTeamChange( player, currentTeam, newTeam ) // Notify clients about the team change
+		NotifyClientsOfTeamChange( player, currentTeam, newTeam, ( manualSwitch || forceSwitch ) ) // Notify clients about the team change
 
 		local ai = GetNPCArrayByClass( "npc_soldier" )
 		ai.extend( GetNPCArrayByClass( "npc_spectre" ) )
@@ -2512,12 +2517,9 @@ function AutoBalancePlayer( player, forceSwitch = false )
 	}
 }
 
-function ShouldAutoBalancePlayer( player, forceSwitch )
+function ShouldAutoBalancePlayer( player, manualSwitch, forceSwitch = false )
 {
 	if ( !GamePlayingOrSuddenDeath() )
-		return false
-
-	if ( GetGameState() >= eGameState.Epilogue )
 		return false
 
 	if ( GameRules.GetGameMode() == COOPERATIVE )
@@ -2532,6 +2534,7 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 	if ( player.s.respawnCount < 1 )
 		return false
 
+	// Cant be executing or hacking
 	if ( player.ContextAction_IsMeleeExecution() || player.ContextAction_IsLeeching() )
 		return false
 
@@ -2540,13 +2543,17 @@ function ShouldAutoBalancePlayer( player, forceSwitch )
 	if ( GameRules.GetGameMode() == CAPTURE_THE_TITAN && level.teamFlag && level.teamFlag.GetBossPlayer() == player )
 		return false
 
-	if ( !forceSwitch )
+	// Cant be evacing
+	if ( player in level.playersOnDropship )
+		return false
+
+	if ( !manualSwitch && !forceSwitch )
 	{
 		// Game is about to end anyways
 		if ( GetMatchProgress() >= 90 )
 			return false
 	}
-	else
+	else if ( manualSwitch && !forceSwitch )
     {
         local playerUID = player.GetUID()
         if ( playerUID in level.lastForceSwitchTime )
@@ -2575,6 +2582,14 @@ function GameStart_AutoBalanceCooldown()
 	{
 		level.lastForceSwitchTime[ player.GetUID() ] <- Time()
 	}
+}
+
+function ClientCommand_SwitchMe( player, ... )
+{
+	if ( GetConVarBool( "sv_cheats" ) && vargc > 0 && vargv[0].tointeger() == 1 )
+		AutoBalancePlayer( player, false, true )
+	else
+		AutoBalancePlayer( player, true )
 }
 
 function GetEmbarkPlayer( titan )
@@ -3183,7 +3198,7 @@ function NotifyClientsOfConnection( player, state )
 	}
 }
 
-function NotifyClientsOfTeamChange( player, oldTeam, newTeam )
+function NotifyClientsOfTeamChange( player, oldTeam, newTeam, wasManual )
 {
 	local playerEHandle = player.GetEncodedEHandle()
 	local players = GetPlayerArray()
@@ -3192,17 +3207,34 @@ function NotifyClientsOfTeamChange( player, oldTeam, newTeam )
 		//if ( ent != player )
 		Remote.CallFunction_Replay( ent, "ServerCallback_PlayerChangedTeams", playerEHandle, oldTeam, newTeam )
 
+		local message = null
+
 		if ( player != ent )
 		{
 			if ( ent.GetTeam() == oldTeam )
-				MessageToPlayer( ent, eEventNotifications.TeammateAutobalanced, null, null )
+			{
+				if ( wasManual )
+					message = eEventNotifications.TeammateSwitchedTeams
+				else
+					message = eEventNotifications.TeammateAutobalanced
+			}
 			else if ( ent.GetTeam() == newTeam )
-				MessageToPlayer( ent, eEventNotifications.EnemyAutobalanced, null, null )
+			{
+				if ( wasManual )
+					message = eEventNotifications.EnemySwitchedTeams
+				else
+					message = eEventNotifications.EnemyAutobalanced
+			}
 		}
 		else
 		{
-			MessageToPlayer( ent, eEventNotifications.YouWereAutobalanced, null, null )
+			if ( wasManual )
+				message = eEventNotifications.YouSwitchedTeams
+			else
+				message = eEventNotifications.YouWereAutobalanced
 		}
+
+		MessageToPlayer( ent, message, null, null )
 	}
 }
 
