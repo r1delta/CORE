@@ -1115,6 +1115,11 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	if ( !IsValid( player ) )
 		return
 
+	// Theyre broken here and display things you did
+	// Instead of the things the person that killed you did
+	if ( IsWatchingKillReplay() )
+		return
+
 	local victim = params.victim
 	local damagePosition = params.damagePosition
 	local hitBox = params.hitBox
@@ -1227,7 +1232,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 		TryShowHitIndicator( hitWeakpoint, hitIneffective )
 
 		// Shotguns report your origin instead of the damage position on client
-		// damagePosition isnt used anywhere in the regular game, but it might help someone eventually
+		// damagePosition isnt used here in the regular game, but it might help someone eventually
 		if ( isShotgun )
 			damagePosition = victim.GetWorldSpaceCenter()
 	}
@@ -1652,6 +1657,11 @@ function DamageIndicators( damageTable, playerIsTitan )
 		return
 
 	if ( !level.clientScriptInitialized )
+		return
+
+	// Theyre broken here and display damage you took
+	// Instead of damage the person that killed you did
+	if ( IsWatchingKillReplay() )
 		return
 
 	local attacker = damageTable.attackerWeakRef
