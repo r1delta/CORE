@@ -1246,8 +1246,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	        pos.z += 10
 			if (victim.IsTitan())
 				pos.z += 30
-	        // Pass victim.GetEntIndex() as the 7th parameter for batching
-	        AddDamageNumber( damageAmount, pos.x, pos.y, pos.z, isCritical || isHeadShot || playKillSound, victim.GetEntIndex() )
+	        AddDamageNumber( damageAmount, pos.x, pos.y, pos.z, isCritical || isHeadShot, playKillSound, victim.GetEntIndex() )
 	    }
 	}
 	// --- R1DELTA DAMAGE NUMBERS END ---
