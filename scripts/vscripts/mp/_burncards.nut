@@ -242,6 +242,39 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
         player.SetActiveWeapon(weaponData.weapon)
     }
+
+    // This fucking sucks i hate this bug
+    for ( ;; )
+    {
+        if ( player.IsTitan() && ( cardData.ctFlags & CT_WEAPON ) )
+        {
+            local weapons = player.GetMainWeapons()
+            foreach( weapon in weapons )
+            {
+                local className = weapon.GetClassname()
+                if ( className == weaponData.weapon && weapon.GetMods() == weaponData.mods )
+                {
+                    player.TakeWeapon( className )
+                    printt( "Removed burncard weapon ", className, " from player ", player.GetPlayerName() )
+                }
+            }
+
+            // Dont think this one can actually happen
+            /*
+            local i = 0
+            weapons = player.GetOffhandWeapons()
+            foreach( weapon in weapons )
+            {
+                if ( weapon.GetClassname() == weaponData.weapon && weapon.GetMods() == weaponData.mods )
+                    player.TakeOffhandWeapon( i )
+                i++
+            }
+            */
+
+        }
+
+        wait 0.1
+    }
 }
 
 function DoSummonTitanBurnCard( player, cardRef )
