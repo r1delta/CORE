@@ -248,7 +248,7 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 
 
 	if ( ShouldPreventFriendlyFire( titan, attacker ) )
-		return false
+		return
 
 	if ( player.IsPlayer())
 		player.SetTitanKillCount( player.GetTitanKillCount() + 1 )
@@ -283,31 +283,26 @@ function ScoreEvent_TitanKilled( titan, attacker, inflictor, damageSourceId, wea
 	if ( attacker.IsPlayer() && !attacker.IsTitan() )
 	{
 		local settings = titan.GetPlayerSettings()
-		local scriptName = GetPlayerSettingsFieldForClassName( settings, "scriptName" )
 
-		if (!scriptName)
-			return
-
-		scoreEvent = "Kill" + scriptName
-
-		switch ( footstepType )
+		switch ( settings )
 		{
-			case "stryder":
+			case "titan_stryder":
 				scoreEvent = "KillStryder"
 				break
 
-			case "slammer":
-				scoreEvent = "KillSlammer"
-				break
+			//case "titan_slammer":
+			//	scoreEvent = "KillSlammer"
+			//	break
 
-			case "atlas":
+			case "titan_atlas":
 				scoreEvent = "KillAtlas"
 				break
 
-			case "ogre":
+			case "titan_ogre":
 				scoreEvent = "KillOgre"
 				break
 		}
+
 		if ( GAMETYPE == COOPERATIVE )
 		{
 			if ( IsNukeTitan( titan ) )
