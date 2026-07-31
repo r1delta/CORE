@@ -619,7 +619,7 @@ function PopulateScoreboardData()
 
         // Process IMC players
         local imcPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_IMC)
-        for (local i = 0; i < min(imcPlayers.len(), 8); i++)
+        for (local i = 0; i < min(imcPlayers.len(), 9); i++)
         {
             local imcPlayer = imcPlayers[i]
             player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].name", imcPlayer.GetPlayerName())
@@ -640,7 +640,7 @@ function PopulateScoreboardData()
 
         // Process MCOR players
         local mcorPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_MILITIA)
-        for (local i = 0; i < min(mcorPlayers.len(), 8); i++)
+        for (local i = 0; i < min(mcorPlayers.len(), 9); i++)
         {
             local mcorPlayer = mcorPlayers[i]
             player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].name", mcorPlayer.GetPlayerName())

@@ -1771,6 +1771,153 @@
 		pin_to_sibling_corner	0
 	}
 
+	ScoreboardTeammateBackground8
+	{
+		ControlName				ImagePanel
+		InheritProperties		ScoreboardPlayer
+		pin_to_sibling			ScoreboardTeammateBackground7
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+	ScoreboardTeammateSelection8
+	{
+		ControlName				ImagePanel
+		InheritProperties		ScoreboardPlayerSelection
+		pin_to_sibling			ScoreboardTeammateBackground8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammatePlayerNumber8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerNumber
+		pin_to_sibling			ScoreboardTeammateBackground8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammateMic8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerMic
+		pin_to_sibling			ScoreboardTeammatePlayerNumber8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardTeammateStatus8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerStatus
+		pin_to_sibling			ScoreboardTeammateMic8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardTeammateArt8
+	{
+		ControlName				CNestedPanel
+		InheritProperties 		ScoreboardPlayerArt
+		pin_to_sibling			ScoreboardTeammateStatus8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardTeammateLvl8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardPlayerLevel
+		pin_to_sibling			ScoreboardTeammateArt8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardTeammateName8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardPlayerName
+		pin_to_sibling			ScoreboardTeammateLvl8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardTeammatePartyLeader8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerPartyLeader
+		pin_to_sibling			ScoreboardTeammateName8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammateConnection8
+	{
+		ControlName				ImagePanel	[$GAMECONSOLE]
+		ControlName				Label 		[!$GAMECONSOLE]
+		InheritProperties 		ScoreboardColumnConnection
+		pin_to_sibling			ScoreboardTeammateBackground8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	1
+	}
+	ScoreboardTeammatePing8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardPing
+		pin_to_sibling			ScoreboardTeammateBackground8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardTeammateColumn6_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardTeammateConnection8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+		xpos					1
+	}
+	ScoreboardTeammateColumn5_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardTeammateColumn6_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammateColumn4_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardTeammateColumn5_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammateColumn3_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardTeammateColumn4_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammateColumn2_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardTeammateColumn3_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammateColumn1_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardTeammateColumn2_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardTeammateColumn0_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardTeammateColumn1_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+
 	// Enemy players
 
 	ScoreboardOpponentBackground0
@@ -2946,6 +3093,153 @@
 		ControlName				Label
 		InheritProperties 		ScoreboardColumnData
 		pin_to_sibling			ScoreboardOpponentColumn1_7
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+
+	ScoreboardOpponentBackground8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayer
+		pin_to_sibling			ScoreboardOpponentBackground7
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+	ScoreboardOpponentSelection8
+	{
+		ControlName				ImagePanel
+		InheritProperties		ScoreboardPlayerSelection
+		pin_to_sibling			ScoreboardOpponentBackground8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentPlayerNumber8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerNumber
+		pin_to_sibling			ScoreboardOpponentBackground8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentMic8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerMic
+		pin_to_sibling			ScoreboardOpponentPlayerNumber8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardOpponentStatus8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerStatus
+		pin_to_sibling			ScoreboardOpponentMic8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardOpponentArt8
+	{
+		ControlName				CNestedPanel
+		InheritProperties 		ScoreboardPlayerArt
+		pin_to_sibling			ScoreboardOpponentStatus8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardOpponentLvl8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardPlayerLevel
+		pin_to_sibling			ScoreboardOpponentArt8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardOpponentName8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardPlayerName
+		pin_to_sibling			ScoreboardOpponentLvl8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardOpponentPartyLeader8
+	{
+		ControlName				ImagePanel
+		InheritProperties 		ScoreboardPlayerPartyLeader
+		pin_to_sibling			ScoreboardOpponentName8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentConnection8
+	{
+		ControlName				ImagePanel	[$GAMECONSOLE]
+		ControlName				Label 		[!$GAMECONSOLE]
+		InheritProperties 		ScoreboardColumnConnection
+		pin_to_sibling			ScoreboardOpponentBackground8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	1
+	}
+	ScoreboardOpponentPing8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardPing
+		pin_to_sibling			ScoreboardOpponentBackground8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+	ScoreboardOpponentColumn6_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardOpponentConnection8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+		xpos					1
+	}
+	ScoreboardOpponentColumn5_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardOpponentColumn6_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentColumn4_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardOpponentColumn5_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentColumn3_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardOpponentColumn4_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentColumn2_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardOpponentColumn3_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentColumn1_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardOpponentColumn2_8
+		pin_corner_to_sibling	1
+		pin_to_sibling_corner	0
+	}
+	ScoreboardOpponentColumn0_8
+	{
+		ControlName				Label
+		InheritProperties 		ScoreboardColumnData
+		pin_to_sibling			ScoreboardOpponentColumn1_8
 		pin_corner_to_sibling	1
 		pin_to_sibling_corner	0
 	}

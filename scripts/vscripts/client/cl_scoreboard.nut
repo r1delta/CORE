@@ -1,4 +1,7 @@
 const MAX_SCORE_COLUMNS = 7
+const SCOREBOARD_PLAYER_HEIGHT = 20
+const SCOREBOARD_PLAYER_HEIGHT_9V9 = 18
+const SCOREBOARD_PLAYER_SEPARATOR_HEIGHT = 1
 const SCOREBOARD_MATERIAL_GEN1 = "../ui/menu/generation_icons/generation_0"
 const SCOREBOARD_MATERIAL_GEN2 = "../ui/menu/generation_icons/generation_1"
 const SCOREBOARD_MATERIAL_GEN3 = "../ui/menu/generation_icons/generation_2"
@@ -371,6 +374,26 @@ function InitScoreboard_Think()
 				}
 			}
 
+			if ( numTeamPlayers > 8 )
+			{
+				local compactHeight = (SCOREBOARD_PLAYER_HEIGHT_9V9 * level.screenSize[1] / 480.0).tointeger()
+				table.background.SetHeight( compactHeight )
+				table.selection.SetHeight( compactHeight )
+				table.playerNumber.SetHeight( compactHeight )
+				table.status.SetHeight( compactHeight )
+				art.SetHeight( compactHeight )
+				table.lvl.SetHeight( compactHeight )
+				table.name.SetHeight( compactHeight )
+				table.mic.SetHeight( compactHeight )
+				table.leader.SetHeight( compactHeight )
+				table.connection.SetHeight( compactHeight )
+				if ( file.developer )
+					table.ping.SetHeight( compactHeight )
+
+				foreach ( varName, columnElem in file.columnLabels )
+					table[varName].SetHeight( compactHeight )
+			}
+
 			file.playerElems[team].append( table )
 		}
 	}
@@ -438,10 +461,11 @@ function ShowScoreboard()
 	local resMultiplier = screenSize[1] / 480.0
 
 	local numTeamPlayers = GetNumTeamPlayers()
-	local playerSeperatorHeight = (1 * resMultiplier).tointeger()
-	local playerHeight = (20 * resMultiplier).tointeger()
+	local playerHeightUnits = numTeamPlayers > 8 ? SCOREBOARD_PLAYER_HEIGHT_9V9 : SCOREBOARD_PLAYER_HEIGHT
+	local playerSeperatorHeight = (SCOREBOARD_PLAYER_SEPARATOR_HEIGHT * resMultiplier).tointeger()
+	local playerHeight = (playerHeightUnits * resMultiplier).tointeger()
 	local teamSeparatorHeight = (8 * resMultiplier).tointeger()
-	local losingTeamYOffset = (((21 * numTeamPlayers) + 5) * resMultiplier).tointeger()
+	local losingTeamYOffset = ((((playerHeightUnits + SCOREBOARD_PLAYER_SEPARATOR_HEIGHT) * numTeamPlayers) + 5) * resMultiplier).tointeger()
 
 	file.background.Show()
 	file.header.background.Show()

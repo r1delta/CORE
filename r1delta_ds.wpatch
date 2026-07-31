@@ -204,7 +204,5 @@ engine_ds.dll,text,0x6E430,E9,B0 01 C3
 
 engine_ds.dll,rdata,0x430EF4,"1200","1150"
 
-; snapshot/kill-replay history bounds: retail uses 19 entries, dedicated uses 17
-engine_ds.dll,text,0x50C33,83 F9 11,83 F9 13
-engine_ds.dll,text,0x50CBD,83 FF 11,83 FF 13
-engine_ds.dll,text,0x50D3D,41 83 FC 11,41 83 FC 13
+; Keep the stock dedicated snapshot/kill-replay history bound at 17.
+; Raising it to the retail 19-entry bound has not been validated for old dedicated.

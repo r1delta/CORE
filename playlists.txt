@@ -2017,7 +2017,7 @@
 			"name"	"#PL_pilot_skirmish"
 			"lobbytitle"	"#PL_pilot_skirmish_lobby"
 			"description"	"#PL_pilot_skirmish_desc"
-			"max players"	"16"
+			"max players"	"18"
 			"cmdlineMapLoad"	"0"
 			"max teams"	"2"
 			"visible"	"1"
