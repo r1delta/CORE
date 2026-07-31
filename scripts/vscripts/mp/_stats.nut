@@ -506,9 +506,15 @@ function UpdateChallengeData(player,category,statName,value,weaponName)
 
                 local burncards = GetChallengeBurnCardRewards(challRef,tier,player)
                 local deck = GetPlayerBurnCardDeck( player )
-                if(deck.len() < 99) {
+                if(deck.len() < GetPlayerMaxStoredBurnCards( player ) ) {
                     foreach( card in burncards ) {
                         deck.append( { cardRef = card, new = true } )
+
+                        // Not sure if the other ones are used in vanilla
+                        if ( GetBurnCardRarity( card ) == BURNCARD_RARE )
+                            AddPlayerScore( player, "EarnedBurnCard_ChallengeRare" )
+                        else
+                            AddPlayerScore( player, "EarnedBurnCard_ChallengeCommon" )
                     }
                     FillBurnCardDeckFromArray( player, deck )
                     shouldPopup = true
