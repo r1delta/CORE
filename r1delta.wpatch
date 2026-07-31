@@ -10,6 +10,11 @@ engine_r1o.dll,rdata,0x558629,"\x00\x00\x00\x00","_imc"
 ; filesystem_stdio.dll,rdata,0xd0774,"client_%s.bsp.pak000%s\x00\x00\x00\x00\x00\x00-s","englishclient_%s.bsp.pak000%s\x00"
 ; unhide fatal_script_errors
 launcher.dll,text,0xd550b,02,00
+; Give R1Delta its own Source launcher singleton without overwriting the
+; adjacent rdata strings.  Store the longer name in existing rdata padding and
+; redirect the sole CreateMutexA reference to it.
+launcher.dll,rdata,0xDBC50,00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00,"titanfall_singleton_mutex\x00"
+launcher.dll,text,0x67697,B5 FA 06 00,B5 45 07 00
 ; unhide ai_ainRebuildOnMapStart
 server.dll,text,0x2ea44,02,00
 ; unhide mp_dev_wait_for_other_player (lmao)

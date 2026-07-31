@@ -277,13 +277,10 @@ resource/ui/menus/main.menu
 		VersionDisplay2
 		{
 			ControlName				Label
+			xpos					90
+			ypos					410
 			auto_wide_tocontents 	1
 			auto_tall_tocontents 	1
-			pin_to_sibling			VersionDisplay
-			pin_corner_to_sibling	0
-			pin_to_sibling_corner	2
-			xpos 					0
-			ypos 					0
 			labelText				""
 			font					MOTDFont
 			visible					0
@@ -295,9 +292,9 @@ resource/ui/menus/main.menu
 			ControlName				ImagePanel
 			pin_to_sibling 			VersionDisplay2
 			pin_corner_to_sibling	0
-			pin_to_sibling_corner	0
+			pin_to_sibling_corner	1
 			ypos 2
-			xpos -68
+			xpos 4
 			wide					16
 			tall					16
 			visible					1
