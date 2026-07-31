@@ -556,8 +556,11 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
 	fixedSaveVar = var
     fixedSaveVarInt = var
 
-    fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameModeName )
-    fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameMode )
+    if ( gameMode != -1 )
+    {
+        fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameModeName )
+        fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameMode )
+    }
 
     local mapNameIndex = PersistenceGetEnumIndexForItemName( "maps", mapName )
     if(mapNameIndex != -1)
