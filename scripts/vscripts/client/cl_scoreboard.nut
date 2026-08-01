@@ -315,7 +315,7 @@ function InitScoreboard_Think()
 		else
 			prefix = "ScoreboardOpponent"
 
-		for ( local elem = 0; elem < level.maxTeamSize; elem++  )
+		for ( local elem = 0; elem < numTeamPlayers; elem++  )
 		{
 			local elemNum = elem.tostring()
 
@@ -510,8 +510,26 @@ function ShowScoreboard()
 		data_highlight_bg_color[myTeam] <- [0, 138, 166]
 		data_highlight_bg_color[enemyTeam] <- [156, 71, 6]
 
-		teamPlayers[myTeam] = GetSortedPlayers( compareFunc, myTeam )
-		teamPlayers[enemyTeam] = GetSortedPlayers( compareFunc, enemyTeam )
+		if ( IsFFABased() )
+		{
+			// The scoreboard resource has two columns of nine rows. FFA puts every
+			// player on one gameplay team, so split the globally sorted player list
+			// across the two visual columns instead of overflowing the first one.
+			local players = GetSortedPlayers( compareFunc, null )
+			local rowsPerColumn = file.playerElems[myTeam].len()
+			foreach ( playerIndex, player in players )
+			{
+				if ( playerIndex < rowsPerColumn )
+					teamPlayers[myTeam].append( player )
+				else if ( playerIndex < rowsPerColumn * 2 )
+					teamPlayers[enemyTeam].append( player )
+			}
+		}
+		else
+		{
+			teamPlayers[myTeam] = GetSortedPlayers( compareFunc, myTeam )
+			teamPlayers[enemyTeam] = GetSortedPlayers( compareFunc, enemyTeam )
+		}
 
 		Assert( file.showingScoreboard )
 		if ( !IsValid( file.selectedPlayer ) )
@@ -651,7 +669,7 @@ function ShowScoreboard()
 				{
 					TitanBrawlAuto_FillScoreboardRow( elemTable, player, team, data_highlight_bg_color, nameMeasureElem )
 					index++
-					if ( index >= level.maxTeamSize )
+					if ( index >= file.playerElems[team].len() )
 						break
 					continue
 				}
@@ -866,7 +884,7 @@ function ShowScoreboard()
 
 				index++
 
-				if ( index >= level.maxTeamSize )
+				if ( index >= file.playerElems[team].len() )
 					break
 			}
 
@@ -878,7 +896,7 @@ function ShowScoreboard()
 				local numDone = 0
 				for ( local idx = 0; idx < (reservedCount + connectingCount + loadingCount); idx++ )
 				{
-					if ( index >= level.maxTeamSize )
+					if ( index >= file.playerElems[team].len() )
 						continue
 
 					elemTable = file.playerElems[team][index]
@@ -913,7 +931,7 @@ function ShowScoreboard()
 				}
 			}
 
-			while ( index < level.maxTeamSize )
+			while ( index < file.playerElems[team].len() )
 			{
 				elemTable = file.playerElems[team][index]
 
