@@ -3658,5 +3658,9 @@ function GetActiveUplinkPoint()
 // For FFA
 function GetWinningPlayer()
 {
-	return GetSortedPlayers( GetScoreboardCompareFunc(), null )[0]
+	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
+	if ( players.len() == 0 )
+		return null
+
+	return players[0]
 }
