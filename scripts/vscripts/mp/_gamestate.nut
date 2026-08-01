@@ -460,7 +460,7 @@ function GameStateEnter_WinnerDetermined()
 
 	DoEndRoundFunctions() // TEMP, replace with gamestate functions
 
-	AnnounceWinner( level.nv.winningTeam )
+	AnnounceWinner( level.nv.winningTeam, GetWinningPlayer()  )
 
 	level.nv.gameEndTime = Time()
 
@@ -1162,7 +1162,6 @@ function SetWinLossReasons( winString, lossString )
 	level.lossString = lossString
 }
 
-
 function SetWinner( winningTeam )
 {
 	Assert( GamePlayingOrSuddenDeath() )
@@ -1800,6 +1799,19 @@ function ScoreLimit_Complete()
 	if ( !GameRules.AllowMatchEnd() )
 		return false
 
+	if ( IsFFABased() )
+	{
+		local winningPlayer = GetWinningPlayer()
+		if ( winningPlayer && winningPlayer.GetAssaultScore() >= scoreLimit )
+		{
+			SetWinLossReasons( "#GAMEMODE_SCORE_LIMIT_REACHED", "#GAMEMODE_SCORE_LIMIT_REACHED" )
+			SetWinner( null )
+			return true
+		}
+
+		return false
+	}
+
 	local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
 	local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
@@ -1820,8 +1832,6 @@ function ScoreLimit_Complete()
 		SetWinner( winningTeam )
 		return true
 	}
-	local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
-	local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
 	if ( IsSwitchSidesBased() && !HasSwitchedSides() )
 	{
@@ -2003,16 +2013,22 @@ function TimeLimit_Complete()
 			return true
 		}
 
+		if ( IsFFABased() )
+		{
+			SetWinLossReasons( "#GAMEMODE_TIME_LIMIT_REACHED", "#GAMEMODE_TIME_LIMIT_REACHED" )
+			SetWinner( null )
+			return true
+		}
+
 		local winningTeam = TEAM_UNASSIGNED
 
+		local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
+		local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
-			local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
-			local imcScore = GameRules.GetTeamScore( TEAM_IMC )
-
-			if ( imcScore > militiaScore )
-				winningTeam = TEAM_IMC
-			else if ( imcScore < militiaScore )
-				winningTeam = TEAM_MILITIA
+		if ( imcScore > militiaScore )
+			winningTeam = TEAM_IMC
+		else if ( imcScore < militiaScore )
+			winningTeam = TEAM_MILITIA
 
 
 		SetWinLossReasons( "#GAMEMODE_TIME_LIMIT_REACHED", "#GAMEMODE_TIME_LIMIT_REACHED" )
@@ -2736,7 +2752,7 @@ function SetMatchProgressAnnouncements( progression, announcements )
 
 }
 
-function AnnounceWinner( winningTeam )
+function AnnounceWinner( winningTeam, winningPlayer )
 {
 	if ( winningTeam ) //No announcement if draw
 	{
@@ -2783,6 +2799,33 @@ function AnnounceWinner( winningTeam )
 		PlayConversationToTeam( GetGameWonAnnouncement(), winningTeam )
 		PlayConversationToTeam( GetGameLostAnnouncement(), losingTeam )
 	}
+	else if ( winningPlayer )
+	{
+		if ( GetGameWonAnnouncement() == null ) //If a custom announcement is set already, use that
+		{
+			if ( ShouldRunEvac()  )
+				SetGameWonAnnouncement( "WonAnnouncementWithEvac" )
+			else
+				SetGameWonAnnouncement( "WonAnnouncement" )
+		}
+
+		if ( GetGameLostAnnouncement() == null ) //If a custom announcement is set already, use that
+		{
+			if ( ShouldRunEvac()  )
+				SetGameLostAnnouncement( "LostAnnouncementWithEvac" )
+			else
+				SetGameLostAnnouncement( "LostAnnouncement" )
+		}
+
+		//printt( "Winners " + winningTeam + " " + TEAM_IMC + " " + TEAM_MILITIA )
+
+		PlayConversationToPlayer( GetGameWonAnnouncement(), GetWinningPlayer() )
+		foreach( p in GetPlayerArray() )
+		{
+			if ( p != GetWinningPlayer() )
+				PlayConversationToPlayer( GetGameLostAnnouncement(), p )
+		}
+	}
 	else
 		GameRules.MarkGameStateWinnerDetermined(0)
 
@@ -2796,7 +2839,7 @@ function AnnounceWinner( winningTeam )
 
 		local subString
 
-		if (IsWinningTeam(player.GetTeam()))
+		if ( IsWinningTeam( player.GetTeam() ) || ( IsFFABased() && player == GetWinningPlayer() ) )
 			subString = level.winString
 		else
 			subString = level.lossString
