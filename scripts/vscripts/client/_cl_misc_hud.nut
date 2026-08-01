@@ -828,9 +828,16 @@ function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDetermi
 	if ( subStringIndex )
 		subString = GetStringFromID( subStringIndex )
 
-	local isFFAWinner = player == GetWinningPlayer()
+	local winningPlayer = null
+	if ( IsFFABased() )
+	{
+		local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
+		if ( players.len() )
+			winningPlayer = players[0]
+	}
+	local isFFAWinner = player == winningPlayer
 
-	if ( !level.nv.winningTeam && !GetWinningPlayer() )
+	if ( !level.nv.winningTeam && !winningPlayer )
 	{
 		local outcomeAnnouncement = CAnnouncement( "#GAMEMODE_DRAW" )
 		outcomeAnnouncement.SetSubText( subString )

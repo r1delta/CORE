@@ -383,10 +383,23 @@ function InitScoreboard_Think()
 	file.header.gametypeAndMap.Show()
 	file.header.gametypeDesc.Show()
 
-	file.teamElems[myTeam].logo.Show()
-	file.teamElems[myTeam].score.Show()
-	file.teamElems[enemyTeam].logo.Show()
-	file.teamElems[enemyTeam].score.Show()
+	if ( IsFFABased() )
+	{
+		// FFA uses both nine-row HUD groups as one continuous 18-player list.
+		// Team branding and scores would make the second group look like an
+		// opposing team even though every entry is an individual competitor.
+		file.teamElems[myTeam].logo.Hide()
+		file.teamElems[myTeam].score.Hide()
+		file.teamElems[enemyTeam].logo.Hide()
+		file.teamElems[enemyTeam].score.Hide()
+	}
+	else
+	{
+		file.teamElems[myTeam].logo.Show()
+		file.teamElems[myTeam].score.Show()
+		file.teamElems[enemyTeam].logo.Show()
+		file.teamElems[enemyTeam].score.Show()
+	}
 
 	foreach( elem in file.columnIconBackgrounds )
 		elem.Show()
@@ -447,7 +460,8 @@ function ShowScoreboard()
 	local playerSeperatorHeight = (SCOREBOARD_PLAYER_SEPARATOR_HEIGHT * resMultiplier).tointeger()
 	local playerHeight = (playerHeightUnits * resMultiplier).tointeger()
 	local teamSeparatorHeight = (8 * resMultiplier).tointeger()
-	local losingTeamYOffset = ((((playerHeightUnits + SCOREBOARD_PLAYER_SEPARATOR_HEIGHT) * numTeamPlayers) + 5) * resMultiplier).tointeger()
+	local teamGroupGap = IsFFABased() ? 0 : 5
+	local losingTeamYOffset = ((((playerHeightUnits + SCOREBOARD_PLAYER_SEPARATOR_HEIGHT) * numTeamPlayers) + teamGroupGap) * resMultiplier).tointeger()
 
 	file.background.Show()
 	file.header.background.Show()
@@ -488,6 +502,15 @@ function ShowScoreboard()
 	playerSlotEmpty[myTeam] <- SCOREBOARD_MATERIAL_FRIENDLY_SLOT
 	playerSlotEmpty[enemyTeam] <- SCOREBOARD_MATERIAL_ENEMY_SLOT
 
+	if ( IsFFABased() )
+	{
+		// The second HUD group is rows 10-18 in FFA, not an enemy team.
+		teamColors[enemyTeam] = teamColors[myTeam]
+		playerSlotFilledEven[enemyTeam] = playerSlotFilledEven[myTeam]
+		playerSlotFilledOdd[enemyTeam] = playerSlotFilledOdd[myTeam]
+		playerSlotEmpty[enemyTeam] = playerSlotEmpty[myTeam]
+	}
+
 	local teamScore = {}
 	teamScore[myTeam] <- []
 	teamScore[enemyTeam] <- []
@@ -509,6 +532,8 @@ function ShowScoreboard()
 		local data_highlight_bg_color = {}
 		data_highlight_bg_color[myTeam] <- [0, 138, 166]
 		data_highlight_bg_color[enemyTeam] <- [156, 71, 6]
+		if ( IsFFABased() )
+			data_highlight_bg_color[enemyTeam] = data_highlight_bg_color[myTeam]
 
 		if ( IsFFABased() )
 		{

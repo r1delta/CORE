@@ -46,7 +46,10 @@ function UpdateFFAScoreBars()
 	if ( !player )
 		return
 
-	local winningPlayer = GetWinningPlayer()
+	local winningPlayer = null
+	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
+	if ( players.len() )
+		winningPlayer = players[0]
 
 	local cockpit = player.GetCockpit()
 	if ( !cockpit )
