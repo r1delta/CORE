@@ -828,7 +828,9 @@ function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDetermi
 	if ( subStringIndex )
 		subString = GetStringFromID( subStringIndex )
 
-	if ( !level.nv.winningTeam )
+	local isFFAWinner = player == GetWinningPlayer()
+
+	if ( !level.nv.winningTeam && !GetWinningPlayer() )
 	{
 		local outcomeAnnouncement = CAnnouncement( "#GAMEMODE_DRAW" )
 		outcomeAnnouncement.SetSubText( subString )
@@ -840,7 +842,7 @@ function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDetermi
 
 		SmartGlass_SendEvent( "MatchDraw", "", "", "" )
 	}
-	else if ( player.GetTeam() == level.nv.winningTeam )
+	else if ( player.GetTeam() == level.nv.winningTeam || isFFAWinner )
 	{
 		local outcomeAnnouncement = CAnnouncement( "#GAMEMODE_VICTORY" )
 		outcomeAnnouncement.SetSubText( subString )
@@ -852,7 +854,7 @@ function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDetermi
 
 		SmartGlass_SendEvent( "MatchVictory", "", "", "" )
 	}
-	else if ( level.nv.winningTeam != TEAM_UNASSIGNED )
+	else if ( level.nv.winningTeam != TEAM_UNASSIGNED || !isFFAWinner )
 	{
 		local outcomeAnnouncement = CAnnouncement( "#GAMEMODE_DEFEATED" )
 		outcomeAnnouncement.SetSubText( subString )
