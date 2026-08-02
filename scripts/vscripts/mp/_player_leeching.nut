@@ -398,7 +398,10 @@ function LeechSurroundingSpectres( origin, player )
 {
 	local enemyTeam = GetOtherTeam( player.GetTeam() )
 
-	local enemySpectreArray = GetNPCArrayEx( "npc_spectre", enemyTeam, player.GetOrigin(), level.leechRange  )
+	// This was originally using player.GetOrigin() as the origin, instead of the variable used when calling this
+	// I dont think this is intentional, because 1: why would they even add the variable
+	// And 2: the other call in this file wants to use it instead
+	local enemySpectreArray = GetNPCArrayEx( "npc_spectre", enemyTeam, origin, level.leechRange  )
 
 	if ( !enemySpectreArray.len() )
 		return
