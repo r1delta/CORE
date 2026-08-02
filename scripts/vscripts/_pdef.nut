@@ -34,7 +34,10 @@ function InitPersistence()
     AddPersistenceKey("spawnAsTitan", "bool")
     AddPersistenceKey("haveSeenCustomCoop", "bool")
 
+	Globalize( add_setfile_persistance )
 
+	//IncludeFile( "Yoshi's_All-Stars" )
+	//IncludeFile("Yoshi's_TitanCreator")
 
     ::gameModes <- {
         tdm = 0
@@ -54,7 +57,6 @@ function InitPersistence()
         tmfd = 14
         tmfdp = 15
 		bb = 16
-		uplink = 17
     }
 
     AddPersistenceEnum("gameModes", gameModes)
@@ -113,7 +115,6 @@ function InitPersistence()
 	    mp_sandtrap	= 25			// DLC 3
 		mp_nest2 = 26
 		mp_mia = 27
-		mp_npe = 28
     }
 
     AddPersistenceEnum("maps", maps)
@@ -165,6 +166,7 @@ function InitPersistence()
 	    mp_weapon_mega3 = 42 // Thunderbolt (minigun)
 	    mp_weapon_mega4 = 43 // Charge Cannon
 	    mp_titanweapon_shoulder_turret = 44
+		mp_weapon_mega5 = 45
     }
 
     AddPersistenceEnum("loadoutItems", loadoutItems)
@@ -236,9 +238,17 @@ function InitPersistence()
 	    titan_atlas = 1
 	    titan_ogre = 2
 	    titan_stryder = 3
+		//titan_legion = 4
     }
 
     AddPersistenceEnum("titanSetFile", titanSetFile)
+
+	IncludeFile( "Yoshi's_All-Stars" )
+	//IncludeFile("Yoshi's_TitanCreator")
+
+	//IncludeFile("Yoshi's_TitanCreator")
+
+	//setUp( 2 )
 
     ::titanMod <- {
         NULL = 0
@@ -271,7 +281,7 @@ function InitPersistence()
 	    burn_mod_titan_shotgun = 27
 	    burn_mod_thunderbolt = 28
 	    burn_mod_charge_cannon = 29
-	    hydraulic_launcher = 30
+		full_burst = 30
     }
 
     AddPersistenceEnum("titanMod", titanMod)
@@ -313,7 +323,11 @@ function InitPersistence()
 	    pas_hyper_core = 8
 	    pas_marathon_core = 9
 	    pas_build_up_nuclear_core = 10
-    }
+		pas_burst_boosters = 11
+		pas_flight_core = 12
+		//pas_pilot_link = 13
+		//pas_dual_tactical = 14
+    }//watch my new passives bite me in the ass later, my game seems to crash every so often already cause of the amount of stuff i added.
 
     AddPersistenceEnum("titanPassive", titanPassive)
 
@@ -487,6 +501,10 @@ function InitPersistence()
     AddPersistenceKey("titanLoadouts.passive2", "titanPassive")
     AddPersistenceKey("titanLoadouts.decal", "titanDecals")
     AddPersistenceKey("titanLoadouts.voiceChoice", "titanOS")
+	
+
+	//I hate loadout validation so much
+	//You can bypass ts with a single UI script but when I try to mod legitimately I'm screwed over
 
     ::modsCombined <- {
 	    mp_weapon_car_iron_sights = 0,
@@ -622,13 +640,9 @@ function InitPersistence()
 		mp_weapon_mega2_burn_mod_twinb = 120,
 
 		mp_weapon_mega3_burn_mod_thunderbolt = 121,
-		mp_weapon_mega4_burn_mod_charge_cannon = 122,
-
-		mp_titanweapon_triple_threat_hydraulic_launcher = 123
-		mp_weapon_sniper_scope_10x = 124,
-		mp_weapon_sniper_scope_12x = 125
-		mp_weapon_dmr_scope_10x = 126,
-		mp_weapon_dmr_scope_12x = 127
+		mp_weapon_mega4_burn_mod_charge_cannon = 122
+		
+		mp_titanweapon_shotgun_full_burst = 123
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
@@ -719,6 +733,8 @@ function InitPersistence()
     AddPersistenceArray("newTitanDecals", "titanDecals")
     AddPersistenceKey("newTitanDecals", "bool")
 
+	
+
     ::burnCard <- {
 	    NULL = 0,
 	    bc_conscription = 1,
@@ -795,11 +811,6 @@ function InitPersistence()
 	    ["bc_titan_shield_wall_m2"] = 72,
 	    ["bc_titan_melee_m2"] = 73,
 	    ["bc_extra_dash"] = 74,
-	    bc_valkyrie_m2 = 75,			
-	    bc_twinb_m2 = 76,			
-	    bc_titan_shotgun_m2 = 77,	
-	    bc_thunderbolt_m2 = 78,		
-	    bc_titan_charge_cannon_m2 = 79,
     }
 	::struct_activeBurnCardData <- {
 		cardRef = null,
@@ -839,9 +850,6 @@ function InitPersistence()
     AddPersistenceKey("currentBurnCardPile", "int")
     AddPersistenceArray("currentBurnCardOffset", 3)
     AddPersistenceKey("currentBurnCardOffset", "int")
-
-    AddPersistenceKey("currentBurnCardSortType", "int")
-    AddPersistenceKey("currentBurnCardSortIsReversed", "bool")
 
     AddPersistenceArray("burnCardDeck", 1000)
     AddPersistenceKey("burnCardDeck", "burnCard")
@@ -1868,7 +1876,7 @@ function InitPersistence()
     AddPersistenceKey("savedScoreboardData.campaign", "bool")
     AddPersistenceKey("savedScoreboardData.ranked", "bool")
     AddPersistenceKey("savedScoreboardData.hadMatchLossProtection", "bool")
-    AddPersistenceArray("savedScoreboardData.playersIMC", 9)
+    AddPersistenceArray("savedScoreboardData.playersIMC", 8)
     AddPersistenceKey("savedScoreboardData.playersIMC.name", "string")
     AddPersistenceKey("savedScoreboardData.playersIMC.xuid", "string")
     AddPersistenceKey("savedScoreboardData.playersIMC.level", "int")
@@ -1883,7 +1891,7 @@ function InitPersistence()
     AddPersistenceKey("savedScoreboardData.playersIMC.playingRanked", "bool")
     AddPersistenceKey("savedScoreboardData.playersIMC.rank", "int")
     AddPersistenceKey("savedScoreboardData.playersIMC.matchPerformance", "float")
-    AddPersistenceArray("savedScoreboardData.playersMCOR", 9)
+    AddPersistenceArray("savedScoreboardData.playersMCOR", 8)
     AddPersistenceKey("savedScoreboardData.playersMCOR.name", "string")
     AddPersistenceKey("savedScoreboardData.playersMCOR.xuid", "string")
     AddPersistenceKey("savedScoreboardData.playersMCOR.level", "int")
@@ -1931,7 +1939,7 @@ function InitPersistence()
     AddPersistenceKey("savedCoopData.players.enemyType.killCount", "int")
     AddPersistenceKey("savedCoopData.players.enemyType.turretKillCount", "int")
 
-    AddPersistenceArray("mapHistory", "maps")
+    AddPersistenceArray("mapHistory", 24)
     AddPersistenceKey("mapHistory", "int")
     AddPersistenceArray("modeHistory", 10)
     AddPersistenceKey("modeHistory", "int")
@@ -1996,8 +2004,11 @@ function InitPersistence()
 
     AddPersistenceKey("playlistAnnouncementSeen", "bool")
 	AddPersistenceKey("delta.everythingUnlocked", "bool")
+
+	//AddPersistenceArray( "BlackMarketAutoRun", 15 )// Keep it short, the menu can't handle THAT much
+
 }
-InitPersistence()
+
 function IsDelta() {
     return !GetConVarBool("net_secure")
 }
@@ -2187,3 +2198,11 @@ function testpdef() {
     for (local k = 0; k < PersistenceGetEnumCount("unlockRefs"); k++)
 		printt(k, PersistenceGetEnumItemNameForIndex("unlockRefs", k))
 }
+
+function add_setfile_persistance( file, placement )
+{
+	::titanSetFile[ file ] <- placement
+	printt(::titanSetFile)
+}
+
+InitPersistence()

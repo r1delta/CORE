@@ -198,10 +198,10 @@ function main()
 
 	level.hasMatchLossProtection <- false
 
-	//RegisterConCommandTriggeredCallback( "+useAndReload", PlayerPressed_Rodeo )
+	RegisterConCommandTriggeredCallback( "+useAndReload", PlayerPressed_Rodeo )
 	RegisterConCommandTriggeredCallback( "+use", PlayerPressed_Rodeo )
 
-	//RegisterConCommandTriggeredCallback( "-useAndReload", PlayerReleased_Rodeo )
+	RegisterConCommandTriggeredCallback( "-useAndReload", PlayerReleased_Rodeo )
 	RegisterConCommandTriggeredCallback( "-use", PlayerReleased_Rodeo )
 
 	AddCreateCallback( "player", ClRodeo_OnClientScriptInit )
@@ -488,7 +488,7 @@ function CoreReadyMessage( player )
 		return
 
 	local soul = player.GetTitanSoul()
-	local titanType = GetSoulTitanType( soul )
+	local titanType = player.GetPlayerSettingsField( "footstep_type" )
 
 	switch ( titanType )
 	{
@@ -503,6 +503,46 @@ function CoreReadyMessage( player )
 		case "stryder":
 			AnnouncementMessage( player, "#HUD_CORE_ONLINE_STRYDER", "#HUD_CORE_ONLINE_STRYDER_HINT" )
 			break
+		
+		default:
+			local loop_max = MasterModdedTitans.len()
+			for( local E = 0; E < loop_max; E++ )
+			{
+				if( loop_max > 0 )
+				{
+					local t_a = MasterModdedTitans[ E ]
+
+					if( t_a.setfile == GetSoulPlayerSettings( soul ) )
+					{
+						AnnouncementMessage( player, t_a.hud_core_name, t_a.hud_core_hint )
+						break
+					}
+				}
+			}
+		/*
+		case "smart_core":
+			AnnouncementMessage( player, "Smart Core Online", "SMART XO-16 loaded and primed." )
+			break
+
+		case "missile_core":
+			AnnouncementMessage( player, "Ordnance Core Online", "Route reserve power into ordnance system." )
+			break
+		
+		case "bullet_storm":
+			AnnouncementMessage( player, "Bullet Storm Online", "High-capacity XO-16 loaded and primed." )
+			break
+		
+		case "piercer_core":
+			AnnouncementMessage( player, "Piercer Cannon Online", "Auxillery Cannon cooled and calibrated." )
+			break
+		
+		case "auto_burst_core":
+			AnnouncementMessage( player, "Ripper Shotgun Online", "Automatic WYS404 ammuniton loaded." )
+			break
+		
+		case "flight_core":
+			AnnouncementMessage( player, "Flight Core Online", "Flight boosters and navigational systems calibrated." )
+			break*/
 	}
 }
 
@@ -994,11 +1034,6 @@ function ServerCallback_PlayerChangedTeams( player_eHandle, oldTeam, newTeam )
 
 	Obituary_Print( playerName, changedString, teamString, playerNameColor, OBITUARY_COLOR_WEAPON, playerNameColor )
 	//"Switching " + player.GetPlayerName() + " from " + GetTeamStr( team1 ) + " to " + GetTeamStr( team2 )
-
-	foreach ( callbackInfo in level.onPlayerAutoBalancedCallbacks )
-	{
-		callbackInfo.func.acall( [callbackInfo.scope, player, oldTeam, newTeam] )
-	}
 }
 
 function ServerCallback_PlayerConnectedOrDisconnected( player_eHandle, state )
@@ -1115,11 +1150,6 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	if ( !IsValid( player ) )
 		return
 
-	// Theyre broken here and display things you did
-	// Instead of the things the person that killed you did
-	if ( IsWatchingKillReplay() )
-		return
-
 	local victim = params.victim
 	local damagePosition = params.damagePosition
 	local hitBox = params.hitBox
@@ -1153,7 +1183,7 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	if ( IsValid( victim ) )
 	{
 		// Hit indicator hud icon
-		if ( isCritShot || ( isHeadShot && GetConVarBool( "delta_hud_misc_changes" ) ) )
+		if ( isCritShot || isHeadShot )
 			hitWeakpoint = true
 
 		victimIsTitan = victim.IsTitan()
@@ -1230,11 +1260,6 @@ function ClientCodeCallback_PlayerDidDamage( params )
 		Tracker_PlayerAttackedTarget( player, victim )
 
 		TryShowHitIndicator( hitWeakpoint, hitIneffective )
-
-		// Shotguns report your origin instead of the damage position on client
-		// damagePosition isnt used here in the regular game, but it might help someone eventually
-		if ( isShotgun )
-			damagePosition = victim.GetWorldSpaceCenter()
 	}
 	// --- R1DELTA DAMAGE NUMBERS START ---
 	if ( GetConVarInt( "delta_damage_numbers" ) == 1 && IsValid( victim ) )
@@ -1246,18 +1271,19 @@ function ClientCodeCallback_PlayerDidDamage( params )
 	        pos.z += 10
 			if (victim.IsTitan())
 				pos.z += 30
-	        AddDamageNumber( damageAmount, pos.x, pos.y, pos.z, isCritical || isHeadShot, playKillSound, victim.GetEntIndex() )
+	        // Pass victim.GetEntIndex() as the 7th parameter for batching
+	        AddDamageNumber( damageAmount, pos.x, pos.y, pos.z, isCritical || isHeadShot || playKillSound, victim.GetEntIndex() )
 	    }
 	}
 	// --- R1DELTA DAMAGE NUMBERS END ---
 
-	if ( IsValid( victim ) && playKillSound && GetConVarBool( "delta_play_killsounds" ) )
+	if ( IsValid( victim ) && playKillSound )
 	{
 		PlayKillShotSound( attacker, victim, damageType, isHeadShot )
 	}
 
 	// Play a hit sound effect if we didn't play a kill shot sound, and other conditions are met
-	if ( playHitSound && GetConVarBool( "delta_play_hitsounds" ) )
+	if ( playHitSound )
 	{
 		if ( damageFlags & DAMAGEFLAG_VICTIM_INVINCIBLE )
 			EmitSoundOnEntity( attacker, "Player.HitbeepInvincible" )
@@ -1656,11 +1682,6 @@ function DamageIndicators( damageTable, playerIsTitan )
 		return
 
 	if ( !level.clientScriptInitialized )
-		return
-
-	// Theyre broken here and display damage you took
-	// Instead of damage the person that killed you did
-	if ( IsWatchingKillReplay() )
 		return
 
 	local attacker = damageTable.attackerWeakRef
@@ -2127,7 +2148,11 @@ function GrenadeArrowThink( player, grenade, weaponName, damageRadius, startDela
 
 				if ( requireLos )
 				{
-					local result = TraceLine( origin, GetRandomOriginWithinBounds( player ), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+					//TraceResults result = TraceLine( origin, GetRandomOriginWithinBounds( player ), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+					local result = TraceLine( origin, player.GetOrigin(), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+
+					if ( result.fraction != 1.0 )
+						result = TraceLine( origin, player.EyePosition(), grenade, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
 
 					if ( result.fraction == 1.0 )
 						tracePassed = true
@@ -2225,6 +2250,54 @@ function GrenadeArrow_PostThink( player, grenade, arrow, mdl )
 */
 }
 
+function PlayerHudTest()
+{
+	local player = GetLocalViewPlayer()
+
+	local cockpit = player.GetCockpit()
+	if ( !cockpit )
+		return
+
+	thread PlayerHudTestThink( player, cockpit )
+}
+Globalize( PlayerHudTest )
+
+function PlayerHudTestThink( player, cockpit )
+{
+	player.EndSignal( "OnDeath" )
+	cockpit.EndSignal( "OnDestroy" )
+
+	local model = CreateClientSidePropDynamicClone( player, player.GetModelName() )
+
+	OnThreadEnd(
+		function() : ( model )
+		{
+			model.Destroy()
+		}
+	)
+
+	model.SetParent( cockpit, "CAMERA_BASE" )
+	model.SetAttachOffsetOrigin( Vector( 100.0, 0.0, -4.0 ) )
+
+	if ( player.GetTeam() == TEAM_MILITIA )
+		model.SetSkin( 1 )
+
+	model.DisableRenderWithViewModelsNoZoom()
+	model.EnableRenderWithCockpit()
+	model.EnableRenderAlways()
+
+	while( true )
+	{
+		if ( IsValid( player) && IsAlive( player ) )
+		{
+			model.SetOrigin( player.GetOrigin() )
+			model.SetAngles( player.GetAngles() )
+		}
+
+		WaitFrame()
+	}
+}
+
 function ToggleGrenadeIndicators()
 {
 	level.grenadeIndicatorEnabled = !level.grenadeIndicatorEnabled
@@ -2290,16 +2363,6 @@ function CalcAbsoluteIndicatorDir( player, enemyPos )
 	return [x, y]
 }
 
-function GetRandomOriginWithinBounds( ent )
-{
-	local boundingMins = ent.GetBoundingMins()
-	local boundingMaxs = ent.GetBoundingMaxs()
-
-	local randomOffset = Vector( RandomFloat( boundingMins.x, boundingMaxs.x ), RandomFloat( boundingMins.y, boundingMaxs.y ), RandomFloat( boundingMins.z, boundingMaxs.z ) )
-
-	return ent.GetOrigin() + randomOffset
-}
-
 function ServerCallback_OnEntityKilled( attackerEHandle, victimEHandle, scriptDamageType, damageSourceId )
 {
 	local isHeadShot = scriptDamageType & DF_HEADSHOT
@@ -2352,7 +2415,7 @@ function ServerCallback_OnEntityKilled( attackerEHandle, victimEHandle, scriptDa
 
 	}
 
-	if( victim.IsPlayer() && victim != attacker && GetConVarBool( "delta_play_killsounds" ) )
+	if( victim.IsPlayer() && victim != attacker )
 	{
 		if( attacker == localPlayer )
 		{
@@ -4025,16 +4088,12 @@ function ClRodeo_OnClientScriptInit( player, isRecreate )
 	if ( isRecreate )
 		return
 
+	player.ClientCommand( "HoldToRodeo " + HoldToRodeoState( player ) )
+
 	if ( !( "rodeoPressed" in player.s ) )
 	{
 		player.s.rodeoPressed <- false
 	}
-
-	// Prevent console spam when watching a kill replay
-	if ( IsWatchingKillReplay() )
-		return
-
-	player.ClientCommand( "HoldToRodeo " + HoldToRodeoState( player ) )
 }
 Globalize( ClRodeo_OnClientScriptInit )
 

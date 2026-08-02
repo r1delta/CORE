@@ -102,6 +102,10 @@ function GivePassive( player, passive )
 		case PAS_MARATHON_CORE:
 			player.GiveExtraWeaponMod( "mod_marathon_core" )
 			break
+		
+		//case "pas_angled_boosters":
+			//player.GiveExtraWeaponMod( "pas_angled_boosters" )
+			//break
 	}
 }
 

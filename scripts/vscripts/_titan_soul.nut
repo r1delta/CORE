@@ -1,3 +1,4 @@
+
 function main()
 {
 	level.soulTransferFuncs <- {}
@@ -28,6 +29,12 @@ function main()
 	Globalize( GetSoulTitanType )
 	Globalize( SetCoreCharged )
 
+	Globalize( AddTitanMapping )
+
+	//::BlackMarketTitans <- {}
+	//IncludeFile( "Yoshi's_TitanCreator" )
+	//setUp( 1 )
+
 	RegisterSignal( "OnSoulTransfer" )
 	RegisterSignal( "OnTitanDeath" )
 	RegisterSignal( "OnTitanTaken" )
@@ -46,6 +53,8 @@ function main()
 	level.titanPlayerSettingsMapping <- {}
 	level.titanTypeMapping <- {}
 
+	//printl( BlackMarketTitans )
+
 	// need to put play settings onto the npc titans
 	AddTitanMapping( "titan_atlas", "atlas" )
 	AddTitanMapping( "titan_atlas_bronze", "atlas" )
@@ -53,9 +62,34 @@ function main()
 	AddTitanMapping( "titan_stryder", "stryder" )
 	AddTitanMapping( "titan_atlas_training", "atlas" )
 	AddTitanMapping( "titan_ctt", "ogre" )
-	AddTitanMapping("titan_destroyer_tier0", "destroyer")
-}
+	//AddTitanMapping("titan_destroyer_tier0", "destroyer")
+	
+	//AddTitanMapping( "titan_ion", "special_atlas" )
 
+	local loop_max = MasterModdedTitans.len()
+	for( local E = 0; E < loop_max; E++ )
+	{
+		if( loop_max > 0 )
+		{
+			local t_a = MasterModdedTitans[ E ]
+			AddTitanMapping( t_a.setfile, t_a.titan_type )
+		}
+	}
+}
+/*
+function BlackMarket_ACCESSTABLE( titan_name, titan_type, titan_emov )// emov being EMbarkOVerride
+{
+    
+	local titan_array = BlackMarketTitans[ arrayName ]
+
+	//printt( titan_array )
+	//The below will return everything needed in other scripts
+
+	return titan_array.name, titan_array.type, titan_array.emov
+
+	//printl( "Mission Failed, we'll get em next time." )
+}
+*/
 function AddTitanMapping( settings, titan )
 {
 	local num = level.titanPlayerSettingsMapping.len()

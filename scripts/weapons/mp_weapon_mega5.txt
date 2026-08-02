@@ -1,0 +1,92 @@
+WeaponData
+{
+	// General
+	"printname"   									"Titan Hover"
+    "shortprintname"                              	"Titan Hover"
+	"description" 									"Allows the titan to fly while activated."
+	"longdesc"										"Allows the titan to fly while activated, take-off height will deteriorate while hovering."
+	"weaponClass" 									"titan"
+	"server_vscript"  								"weapons/mp_titanability_hover"
+	"client_vscript"  								"weapons/mp_titanability_hover"
+	"minimap_reveal_distance"						"320"
+	"fire_mode"   									"offhand_instant"//"offhand"
+
+	"damage_type" 									"none"
+
+	// Menu Stats
+	"stat_damage" 									"0"
+	"stat_range"  									"50"
+	"stat_accuracy"   								"0"
+	"stat_rof"										"50"
+
+	"damage_near_distance"							"350"
+	"damage_far_distance"							"10"
+
+	// Models
+
+	// Effects
+
+	// Sound
+	//"looping_sounds"								"1"
+	//"fire_sound_1"									"Weapon_XO16.Single"
+
+	// Network
+	"net_optimize"		                            "1"
+
+	// Ammo
+	"ammo_stockpile_max"							"9999"
+	"ammo_clip_size"   								"-1"
+	"ammo_default_total"							"50"
+
+	//"offhand_blocks_sprint"							"1"
+
+	// Behavior
+	"fire_rate"   									"5.0"
+	//"charge_levels"									"3"
+	"charge_time" 									"5.0"
+	"charge_cooldown_time"							"5.0"
+	"charge_cooldown_delay"   						"2.0"
+
+	"holster_time"									".3"
+	"deploy_time" 									".1"
+	"lower_time"  									".1"
+	"raise_time"  									".1"
+
+	"offhand_blocks_sprint"							"1"
+	"allow_empty_fire"								"0"
+	"reload_enabled"  								"1"
+	"allow_empty_click"   							"0"
+	"empty_reload_only"   							"0"
+
+	// Rumble
+	"rumble"  										"6"
+
+	"hud_icon"										"../ui/menu/items/mod_icons/afterburners"
+
+	Mods
+	{
+		pas_defensive_core
+		{
+			"charge_cooldown_time"							"*0.5"
+			"charge_cooldown_delay"							"*0.5"
+			//idk what allows it to recharge anymore so throw something at the wall
+		}
+		burn_mod_titan_hover
+		{
+			"damage_far_distance"							"5"
+			"charge_time" 									"*1.5"
+		}
+	}
+	TextureData
+	{
+		"crosshair"
+		{
+		}
+		"crosshair_zoom"
+		{
+		}
+		"autoaim"
+		{
+		}
+	}
+}

@@ -297,7 +297,7 @@ function HideOgreMainWeaponFromEnemies( titan )
 	local rider = soul.GetRiderEnt()
 
 	local titanType = GetSoulTitanType( soul )
-	if ( titanType == "ogre" )
+	if ( titanType == "ogre" || titanType == "special_ogre" )
 	{
 		if ( IsAlive( rider ) && rider.GetTeam() != titan.GetTeam() )
 		{

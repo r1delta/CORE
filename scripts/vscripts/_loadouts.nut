@@ -596,6 +596,9 @@ function InitCustomLoadouts()
 		loadout.passive2 <- GetPersistentVar( "titanLoadouts[" + i + "].passive2" )
 		loadout.decal <- GetPersistentVar( "titanLoadouts[" + i + "].decal" )
 		loadout.voiceChoice <- GetPersistentVar( "titanLoadouts[" + i + "].voiceChoice" )
+		loadout.core <- GetPersistentVar( "titanLoadouts[" + i + "].core" )
+
+		
 
 		customTitanLoadouts.append( clone loadout )
 	}
