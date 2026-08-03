@@ -66,6 +66,7 @@ const TITAN_BRAWL = "ttdm"
 const TITAN_BRAWL_AUTO = "ttdm_auto"
 const TITAN_MFD = "tmfd"
 const TITAN_MFD_PRO = "tmfdp"
+const GUN_GAME = "gg"
 
 const MAX_TRACKED_CHALLENGES = 3
 
@@ -2527,6 +2528,7 @@ const WEAPON_VALKYRIE_NAME = "mp_weapon_mega1"
 const WEAPON_TWINB_NAME = "mp_weapon_mega2"
 const WEAPON_THUNDERBOLT_NAME = "mp_weapon_mega3"
 const WEAPON_CHARGE_CANNON_NAME = "mp_weapon_mega4"
+const WEAPON_THROWING_KNIFE_NAME = "mp_weapon_mega5"
 
 enum eUIEvent
 {

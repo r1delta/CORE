@@ -2278,6 +2278,25 @@
 
 }
 
+
+"Weapon_ThrowingKnife_Draw"
+{
+	"flags"				"drymix"
+	"mixgroup"			"weapon,SFX,SFX_Weapons,SFX_Weapons_Pilot_1P,SFX_Weapons_Pilot_1P_Gunfire,SFX_Weapons_Pilot_1P_Gunfire_FragGrenade"
+	"volume"			"1.5"
+	"radius"			"1000"
+	"pitch"				"100,120"
+
+
+	"rndwave"
+	{
+		"flags"				"spatialized"
+		"panwidth"			"45"
+		"folddownDistance"	"200"
+		"wave"				"player/dataknife_remove.wav"
+	}
+}
+
 ///////////////////////////////////
 // Misc fixed/edited sounds
 ///////////////////////////////////

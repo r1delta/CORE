@@ -670,6 +670,16 @@ function HumanNonSyncedMelee( player )
 			//printt("kick attack chosen")
 			attackerAnimGesture3p = "ACT_MELEE_ATTACK2"
 			attackerAnim1p = "ACT_VM_MELEE_ATTACK1"
+			local attackerAnim1pOverride = ""
+
+			local onehanded = ( player.IsWallHanging() || player.IsZiplining() || player.GetTitanSoulBeingRodeoed() != null )
+			//if ( onehanded )
+			//	attackerAnim1pOverride = "ACT_VM_ONEHANDED_MELEE_ATTACK1"
+			if ( !player.IsOnGround() )
+				attackerAnim1pOverride = "ACT_VM_AIRBORNE_MELEE_ATTACK1"
+
+			if ( attackerAnim1pOverride != "" && weapon.Anim_HasActivity( attackerAnim1pOverride ) )
+				attackerAnim1p = attackerAnim1pOverride
 
 			local footsteps = player.GetPlayerSettingsField( "footstep_type" )
 			if ( footsteps == "robot" )
@@ -704,7 +714,7 @@ function HumanNonSyncedMelee( player )
 		local aimAssistMultipler = GraphCapped( forwardVel.LengthSqr(), 0, 100000, HUMAN_MELEE_ATTACK_ASSIST_RANGE_MULTIPLIER_LOW_THRESHOLD, HUMAN_MELEE_ATTACK_ASSIST_RANGE_MULTIPLIER_HIGH_THRESHOLD ) //66000 is about sprint speed squared. Wall run max speed is about 240000.
 
 		local range = AdjustDownwardKickRange( player )
-		 range *=  aimAssistMultipler
+		range *=  aimAssistMultipler
 		//printt( "AimAssistMultiplier: " + aimAssistMultipler + ", range : " + range )
 
 		local angle =  HUMAN_MELEE_ATTACK_ASSIST_ANGLE
@@ -731,9 +741,12 @@ function HumanNonSyncedMelee( player )
 	{
 		EmitDifferentSoundsOnEntityForPlayerAndWorld( melee1pSound, melee3pSound, player, player )
 		player.Anim_PlayGesture( attackerAnimGesture3p )
+
+		player.Weapon_StartCustomActivity( attackerAnim1p, false )
 	}
 
-	player.Weapon_StartCustomActivity( attackerAnim1p, false )
+	// Moved above because client doesnt know custom melee anims (ACT_VM_ONEHANDED_MELEE_ATTACK1) exist
+	//player.Weapon_StartCustomActivity( attackerAnim1p, false )
 }
 
 function HumanAttack( human )

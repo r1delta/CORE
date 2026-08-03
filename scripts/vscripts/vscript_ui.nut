@@ -687,10 +687,10 @@ function UICodeCallback_LevelInit( levelname )
 		    if ( ShouldShowBurnCardMenu() )
 		    	AdvanceMenu( GetMenu( "BurnCards_pickcard" ) )
 
-			if ( gameModeString != "ps" ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
+			if ( gameModeString != PILOT_SKIRMISH && gameModeString != GUN_GAME ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
 				AdvanceMenu( GetMenu( "TitanLoadoutsMenu" ) )
 
-			if ( !IsTitanOnlyMode() )
+			if ( !IsTitanOnlyMode() && gameModeString != GUN_GAME )
 				AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
 	    }
 	    else
@@ -2488,6 +2488,10 @@ function ShouldShowBurnCardMenu()
 {
 	if ( GetActiveBurnCards().len() <= 0 )
 		return false
+
+	if ( GetConVarString( "mp_gamemode" ) == GUN_GAME )
+		return false
+
 	if ( GetGen() > 0 )
 		return true
 

@@ -28,7 +28,7 @@ function EntitiesDidLoad()
 
 function FFA_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 {
-	if ( GetGameState() > eGameState.WinnerDetermined )
+	if ( GetGameState() >= eGameState.WinnerDetermined )
 		return
 
 	if ( !victim.IsPlayer() )
