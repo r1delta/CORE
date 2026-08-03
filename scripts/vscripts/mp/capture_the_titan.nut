@@ -36,6 +36,34 @@ function main()
 }
 
 
+function GiveCaptureTitanLoadout( titan )
+{
+	local titanDataTable = GetPresetTitanLoadout( 0 )
+	titanDataTable.primary = "mp_titanweapon_xo16"
+	titanDataTable.secondary = "mp_weapon_mega3"
+	titanDataTable.ordnance = "mp_titanweapon_homing_rockets"
+	titanDataTable.special = null
+
+	TakeAllWeapons( titan )
+	GiveTitanWeaponsForLoadoutData( titan, titanDataTable )
+
+	titan.TakeOffhandWeapon( 2 )
+	titan.GiveOffhandWeapon( "mp_titanability_fusion_core", 2 )
+
+	local soul = titan.GetTitanSoul()
+	Assert( IsValid( soul ) )
+
+	if ( IsValid( soul.rocketPod.model ) )
+		soul.rocketPod.model.Kill()
+	soul.rocketPod.model = null
+
+	if ( IsValid( soul.chargeCannon.model ) )
+		soul.chargeCannon.model.Kill()
+	soul.chargeCannon.model = null
+	CreateChargeCannon( soul, titan )
+}
+
+
 function SpawnPoint_CaptureTheTitanScore( checkclass, spawnpoint, team, player = null )
 {
 	local soul = GetTitanFlag()
@@ -350,9 +378,7 @@ function FlagTakeThink( soul )
 
 		if ( !("embarked" in soul.s) )
 		{
-			local titanDataTable = GetPresetTitanLoadout( 0 )
-			//GiveTitanWeaponsForLoadoutData( soul.GetSoulOwner(), titanDataTable )
-			GiveTitanWeaponsForPlayer( titanPilot, titanPilot )
+			GiveCaptureTitanLoadout( titanPilot )
 			soul.s.embarked <- true
 		}
 
@@ -596,13 +622,9 @@ function ScriptCallback_OnClientConnecting( player )
 
 function CreateTitanForTeam( team, origin, angles )
 {
-	local titanDataTable = GetPresetTitanLoadout( 0 )
-	titanDataTable.setFile = "titan_ogre"
-	local settings = titanDataTable.setFile
-
-	local titan = CreateNPCTitanFromSettings( settings, team, origin, angles )
+	local titan = CreateNPCTitanFromSettings( "titan_ctt", team, origin, angles )
 	titan.GetTitanSoul().capturable = true
-	//GiveTitanWeaponsForLoadoutData( titan, titanDataTable )
+	GiveCaptureTitanLoadout( titan )
 	waitthread SuperHotDropGenericTitan( titan, origin, angles )
 
 	if ( IsRoundBased() )

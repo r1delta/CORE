@@ -1,0 +1,23 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+
+	"$surfaceprop" "metal"
+	"$basetexture" "models\titans\destroyer\dest_limb_red_col"
+	"$bumpmap" "models\titans\destroyer\dest_limb_nom"
+	"$envmap" "env_cubemap"
+	"$reflectiontint" "models\titans\destroyer\dest_limb_spc"
+	"$reflectiontintshininess" "models\titans\destroyer\dest_limb_spc"
+	"$reflectiontintcolor" "1"
+	"$fresnelamount" "1"
+	"$fresnelintensity" "20"
+	"$fresnelcurvesharpness" "0.98"
+	"$envmapfresnel" "1"
+	"$envmapLambertian" "3"
+	"$envmaptint" "[1 1 1]"
+	"$EnvmapSharpnessBias" "1"
+	"$specularboost" "3"
+	"$speculartint" "[1 1 1]"
+	//"$shininess" "models\titans\destroyer\dest_limb_spc"
+}
