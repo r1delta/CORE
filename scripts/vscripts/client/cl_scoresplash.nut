@@ -23,6 +23,8 @@ finishedSplashInit <- false
 lastSplashVisibleTimes <- []
 splashFadeDelay <- SPLASH_DURATION - SPLASH_FADE_OUT_DURATION
 
+splashTotalFadeDelay <- 2.0 - SPLASH_FADE_OUT_DURATION
+
 Assert( SPLASH_FADE_OUT_DURATION <= SPLASH_DURATION )
 
 function InitSplash()
@@ -125,6 +127,9 @@ function ServerCallback_PointSplashMultiplied( scoreEventInt, associatedEntityHa
 
 function ServerCallback_PointSplash( scoreEventInt, associatedEntityHandle = null, pointValueOverride = null, multiplied = false )
 {
+	if ( GetConVarInt( "delta_hud_show_xpsplash" ) == 0 )
+		return
+
 	local player = GetLocalClientPlayer()
 	if ( IsWatchingKillReplay() )
 		return
@@ -135,7 +140,7 @@ function ServerCallback_PointSplash( scoreEventInt, associatedEntityHandle = nul
 	if ( associatedEntityHandle != null )
 		associatedEntity = GetEntityFromEncodedEHandle( associatedEntityHandle )
 
-	if ( event.GetShouldStackDisplay() )
+	if ( event.GetShouldStackDisplay() && GetConVarBool( "delta_hud_xpsplash_stack" ) )
 		UpdateStackingSplash( event, associatedEntity, pointValueOverride, multiplied )
 	else
 		_CreateNewSplash( event, associatedEntity, pointValueOverride, multiplied )
@@ -252,7 +257,8 @@ function _CreateNewSplash( event, associatedEntity, pointValueOverride, multipli
 	if ( nextSplashIndexToUse >= NUM_SPLASH_LINES )
 		nextSplashIndexToUse = 0
 
-	//ShouldShowMultiScoreTotal()
+	if ( GetConVarInt( "delta_hud_show_xpsplash" ) == 2 )
+		ShouldShowMultiScoreTotal()
 }
 
 function UpdateStackingSplash( event, associatedEntity, pointValueOverride, multiplied = false )
@@ -376,7 +382,7 @@ function ShouldShowMultiScoreTotal()
 		UpdateMultiScoreText()
 		splashTotalHudGroup.ReturnToBaseColor()
 		splashTotalHudGroup.Show()
-		splashTotalHudGroup.FadeOverTimeDelayed( 0, SPLASH_FADE_OUT_DURATION, splashFadeDelay )
+		splashTotalHudGroup.FadeOverTimeDelayed( 0, SPLASH_FADE_OUT_DURATION, splashTotalFadeDelay )
 		lastMultiScoreShowTime = time
 	}
 }
