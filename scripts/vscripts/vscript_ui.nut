@@ -42,8 +42,8 @@ IncludeFile( "ui/menu_image_walk_through" )
 IncludeFile( "ui/menu_main" )
 IncludeFile( "ui/menu_serverbrowser" )
 IncludeFile( "ui/menu_addons")
-IncludeFile( "ui/menu_hud_settings")
-IncludeFile( "ui/menu_hud_settings_r1d")
+IncludeFile( "ui/menu_hud_settings" )
+IncludeFile( "ui/menu_hud_settings_r1d" )
 IncludeFile( "ui/menu_vote" )
 IncludeFile( "ui/menu_vote_target" )
 IncludeFile( "ui/menu_options" )
@@ -687,10 +687,10 @@ function UICodeCallback_LevelInit( levelname )
 		    if ( ShouldShowBurnCardMenu() )
 		    	AdvanceMenu( GetMenu( "BurnCards_pickcard" ) )
 
-			if ( gameModeString != "ps" ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
+			if ( gameModeString != PILOT_SKIRMISH && gameModeString != GUN_GAME ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
 				AdvanceMenu( GetMenu( "TitanLoadoutsMenu" ) )
 
-			if ( !IsTitanOnlyMode() )
+			if ( !IsTitanOnlyMode() && gameModeString != GUN_GAME )
 				AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
 	    }
 	    else
@@ -851,6 +851,13 @@ function UICodeCallback_NavigateBack()
 					    return
 			    }
 
+				if ( "navBackFunc" in uiGlobal.activeMenu.s )
+				{
+					uiGlobal.activeMenu.s.navBackFunc.acall( [ uiGlobal.activeMenu.s.scope ] )
+					printt( "Called navBackFunc for:", uiGlobal.activeMenu.GetName() )
+					return
+				}
+
 			    CloseTopMenu()
 		    }
 	    }
@@ -908,6 +915,17 @@ function GetMenu( menuName )
 function UICodeCallback_ControllerModeChanged( controllerModeEnabled )
 {
 	//printt( "CONTROLLER! " + controllerModeEnabled + ", " + IsControllerModeActive() )
+
+	local menu = uiGlobal.activeMenu
+	if ( !menu )
+		return
+
+	if ( "inputModeChangedFunc" in menu.s )
+	{
+		menu.s.inputModeChangedFunc.acall( [ menu.s.scope ] )
+		printt( "Called inputModeChangedFunc for:", menu.GetName() )
+		return
+	}
 }
 
 function UICodeCallback_OnVideoOver()
@@ -1082,7 +1100,7 @@ function InitMenus()
 	AddSubmenu( "AbilitySelectMenu", "resource/ui/menus/abilityselect.menu" )
 	AddSubmenu( "PassiveSelectMenu", "resource/ui/menus/passiveselect.menu" )
 	AddSubmenu( "TitanOSSelectMenu", "resource/ui/menus/titanosselect.menu" )
-	AddSubmenu( "TitanSelectMenuTTP", "resource/ui/menus/titanselectTTP.menu" )
+	AddSubmenu( "TitanSelectMenu", "resource/ui/menus/titanselect.menu" )
 	AddSubmenu( "DecalSelectMenu", "resource/ui/menus/decalselect.menu" )
 	if( developer() == 1 )
 	{
@@ -1180,7 +1198,7 @@ function InitMenus()
 	AddEventHandlerToButtonClass( menu, "PassiveSelectClass", UIE_LOSE_FOCUS, OnPassiveSelectButton_LostFocus )
 
 	// Select Titan
-	local menu = GetMenu( "TitanSelectMenuTTP" )
+	local menu = GetMenu( "TitanSelectMenu" )
 	AddEventHandlerToButtonClass( menu, "TitanSelectClass", UIE_GET_FOCUS, OnTitanSelectButton_Focused )
 	AddEventHandlerToButtonClass( menu, "TitanSelectClass", UIE_CLICK, OnTitanSelectButton_Activate )
 	AddEventHandlerToButtonClass( menu, "TitanSelectClass", UIE_LOSE_FOCUS, OnTitanSelectButton_LostFocus )
@@ -1639,10 +1657,6 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenLobbyMenu()
 			break
 
-		case "Addons":
-			OnOpenAddonsMenu(menu)
-			break
-
 		case "InGameMenu":
 			OnOpenInGameMenu()
 			break
@@ -1683,10 +1697,6 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenMenu_BurnCardsPickCard()
 			break
 
-		case "BurnCards_InGame":
-			OnOpenMenu_BurnCardsInGame( menu )
-			break
-
 		case "BurnCards_filters":
 			OnOpenMenu_BurnCardsFilters()
 			break
@@ -1707,7 +1717,7 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenTitanOSSelectMenu()
 			break
 
-		case "TitanSelectMenuTTP":
+		case "TitanSelectMenu":
 			OnOpenTitanSelectMenu()
 			break
 
@@ -1843,14 +1853,6 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenMatchSettingsMenu()
 			break
 
-		case "BlackMarketMainMenu":
-			OnOpenBlackMarketMainMenu()
-			break
-
-		case "BlackMarketMenu":
-			OnOpenBlackMarketMenu( menu )
-			break
-
 		case "RankedModesMenu":
 			OnOpenRankedModesMenu()
 			break
@@ -1863,23 +1865,12 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenServerBrowserMenu( menu );
 			break;
 
-		case "HudSettingsMenu":
-			OnOpenHudSettingsMenu( menu )
-			break
-
-		case "HudSettingsR1DMenu":
-			OnOpenHudSettingsR1DMenu( menu )
-			break
-
-		case "VoteMenu":
-			OnOpenVoteMenu( menu )
-			break
-
-		case "VoteTargetMenu":
-			OnOpenVoteTargetMenu( menu )
-			break
-
 		default:
+			if ( "openFunc" in menu.s )
+			{
+				menu.s.openFunc.acall( [ menu.s.scope ] )
+				printt( "Called openFunc for:", menu.GetName() )
+			}
 			break
 	}
 }
@@ -1951,15 +1942,11 @@ function CloseMenuWrapper( menu )
 			OnCloseViewStatsLevels()
 			break
 
-		case "BurnCards_InGame":
-			OnCloseMenu_BurnCardsInGame()
-			break
-
 		case "BurnCards_pickcard":
 			OnCloseMenu_BurnCardPickCard()
 			break
 
-		case "TitanSelectMenuTTP":
+		case "TitanSelectMenu":
 			OnCloseTitanSelectMenu()
 			break
 
@@ -2029,10 +2016,6 @@ function CloseMenuWrapper( menu )
 			OnCloseEditTitanLoadoutMenu()
 			break
 
-		case "BlackMarketMenu":
-			OnCloseBlackMarketMenu()
-			break
-
 		case "DecalSelectMenu":
 			OnCloseDecalSelectMenu()
 			break
@@ -2062,27 +2045,12 @@ function CloseMenuWrapper( menu )
 			OnCloseServerBrowserMenu( menu );
 			break;
 
-		case "Addons":
-			OnCloseAddonsMenu( menu )
-			break
-
-		case "HudSettingsMenu":
-			OnCloseHudSettingsMenu( menu )
-			break
-
-		case "HudSettingsR1DMenu":
-			OnCloseHudSettingsR1DMenu( menu )
-			break
-
-		case "VoteMenu":
-			OnCloseVoteMenu( menu )
-			break
-
-		case "VoteTargetMenu":
-			OnCloseVoteTargetMenu( menu )
-			break
-
 		default:
+			if ( "closeFunc" in menu.s )
+			{
+				menu.s.closeFunc.acall( [ menu.s.scope ] )
+				printt( "Called closeFunc for:", menu.GetName() )
+			}
 			break
 	}
 }
@@ -2213,7 +2181,6 @@ function GetLocalizedNameFromItemType( type )
 		case itemType.TITAN_PASSIVE1:
 		case itemType.TITAN_PASSIVE2:
 			return "#ITEM_TYPE_TITAN_PASSIVE"
-		
 
 		case itemType.PILOT_PRIMARY_ATTACHMENT:
 			return "#ITEM_TYPE_WEAPON_ATTACHMENT"
@@ -2363,7 +2330,6 @@ function PopulateNewUnlockTables()
 	uiGlobal.newMeta[itemType.TITAN_DECAL] 					<- { parentRef = "edit_titans", newCount = 0, isNew = false, persArrayName = null }
 	uiGlobal.newMeta[itemType.TITAN_OS] 				    <- { parentRef = "edit_titans", newCount = 0, isNew = false, persArrayName = null }
 
-
 	PopulateNewUnlockTable( uiGlobal.newMeta, "newLoadoutItems", "loadoutItems" )
 	PopulateNewUnlockTable( uiGlobal.newMeta, "newChassis", "titanSetFile" )
 	PopulateNewUnlockTable( uiGlobal.newMeta, "newPilotPassives", "pilotPassive" )
@@ -2469,18 +2435,6 @@ function HasAnyNewItem( refType, parentRef = null )
 {
 	if (!("newMeta" in uiGlobal))
 		return false
-
-	/*local loop_max = MasterModdedTitans.len()
-	for( local E = 0; E < loop_max; E++ )
-	{
-		if( loop_max > 0 )
-		{
-			local t_a = MasterModdedTitans[ E ]
-			
-			if( refType == t_a.setfile )
-				return false
-		}
-	}*/
 	return (uiGlobal.newMeta[refType].newCount > 0)
 }
 
@@ -2534,6 +2488,10 @@ function ShouldShowBurnCardMenu()
 {
 	if ( GetActiveBurnCards().len() <= 0 )
 		return false
+
+	if ( GetConVarString( "mp_gamemode" ) == GUN_GAME )
+		return false
+
 	if ( GetGen() > 0 )
 		return true
 
@@ -2569,6 +2527,12 @@ function ShowButtonDescription( button )
 {
 	SetElementsTextByClassname( uiGlobal.activeMenu, "MenuItemDescriptionClass", button.s.description )
 }
+
+function GetMapName()
+{
+	return GetActiveLevel()
+}
+Globalize( GetMapName )
 
 function AddMenuEventHandler( menu, event, func )
 {

@@ -3639,7 +3639,7 @@ function GetActiveUplinkPoint()
 	if ( level.nv.activeUplinkID == null )
 		return null
 
-	if ( IsClient )
+	if ( IsClient() )
 	{
 		local player = GetLocalClientPlayer()
 		local hardpoint = null

@@ -412,10 +412,14 @@ function ApplyAmpedTactical( player, cardRef )
 // account for edge cases where it makes no sense to actually use the card
 function IsBurnCardEdgeCaseUseValid( player, cardRef )
 {
-    local cardData = GetBurnCardData( cardRef )
+	// Just blanket ban all of them
+	if ( GameRules.GetGameMode() == GUN_GAME )
+		return false
 
-    if ( cardData.ctFlags & CT_TITAN || cardData.ctFlags & CT_BUILDTIME )
-    {
+	local cardData = GetBurnCardData( cardRef )
+
+	if ( cardData.ctFlags & CT_TITAN || cardData.ctFlags & CT_BUILDTIME )
+	{
         if ( Riff_TitanAvailability() == eTitanAvailability.Never )
             return false
 

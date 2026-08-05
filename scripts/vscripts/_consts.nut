@@ -1,10 +1,10 @@
 const PERSISTENCE_INIT_VERSION = 22
-
-const RANDOMIZE_BOT_LOADOUT	= 1
-
+  
 const BASE_TITAN_COUNT = 4 //Adds 3 for titans and 1 to make a valid array placement
 ::MasterModdedTitans <- []
 ::Titans_Enum_Placement <- 3
+
+const RANDOMIZE_BOT_LOADOUT	= 1
 
 const TESTCONST = 99
 const TEAM_ANY = -1
@@ -70,6 +70,7 @@ const TITAN_BRAWL = "ttdm"
 const TITAN_BRAWL_AUTO = "ttdm_auto"
 const TITAN_MFD = "tmfd"
 const TITAN_MFD_PRO = "tmfdp"
+const GUN_GAME = "gg"
 
 const MAX_TRACKED_CHALLENGES = 3
 
@@ -278,9 +279,6 @@ const REDEYE_MODEL = "models/vehicle/redeye/redeye2.mdl"
 const ATLAS_MODEL = "models/titans/atlas/atlas_titan.mdl"
 const OGRE_MODEL = "models/titans/ogre/ogre_titan.mdl"
 const STRYDER_MODEL = "models/titans/stryder/stryder_titan.mdl"
-//const DESTROYER_MODEL = "models/titans/stryder/stryder_titan.mdl"
-
-
 const IMC_SPECTRE_MODEL = "models/Robots/spectre/imc_spectre.mdl"
 const MILITIA_SPECTRE_MODEL = "models/Robots/spectre/mcor_spectre_assault.mdl"
 const NEUTRAL_SPECTRE_MODEL = "models/Robots/spectre/spectre_corporate.mdl"
@@ -1702,6 +1700,9 @@ enum eEventNotifications
 	MarkedForDeathMarkedAutobalanced,
 	AutoBalanceCooldown,
 	UplinkLocatingNextPanel,
+	TeammateSwitchedTeams,
+	EnemySwitchedTeams,
+	YouSwitchedTeams,
 }
 
 enum ePrivateMatchStartState
@@ -2531,6 +2532,7 @@ const WEAPON_VALKYRIE_NAME = "mp_weapon_mega1"
 const WEAPON_TWINB_NAME = "mp_weapon_mega2"
 const WEAPON_THUNDERBOLT_NAME = "mp_weapon_mega3"
 const WEAPON_CHARGE_CANNON_NAME = "mp_weapon_mega4"
+const WEAPON_THROWING_KNIFE_NAME = "mp_weapon_mega5"
 
 enum eUIEvent
 {

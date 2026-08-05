@@ -1,0 +1,48 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+
+	"$surfaceprop" "metal"
+	"$basetexture" "models\titans\destroyer_tier01\destroyer_add01_col"
+	"$bumpmap" "models\titans\destroyer_tier01\destroyer_add01_nml"
+	"$envmap" "env_cubemap"
+	"$reflectiontint" "models\titans\destroyer_tier01\destroyer_add01_spc"
+	"$reflectiontintshininess" "models\titans\destroyer_tier01\destroyer_add01_spc"
+	"$reflectiontintcolor" "1"
+	"$fresnelamount" "1"
+	"$fresnelintensity" "6"
+	"$fresnelcurvesharpness" "1"
+	"$envmapfresnel" "1"
+	"$envmapLambertian" "3"
+	"$envmaptint" "[1 1 1.2]"
+	"$EnvmapSharpnessBias" "-2"
+	"$specularboost" "2"
+	"$speculartint" "[1 1 1.5]"
+	"$shininess" "models\titans\destroyer_tier01\destroyer_add01_exp"
+	"$rimlight" "1"
+	"$rimlighttint" "[1 1 1]"
+	"$rimlightintensity" "1"
+	"$selfillum" "1"
+	"$selfillummask" "models\titans\destroyer_tier01\destroyer_add01_ilm"
+	//Start of freehand input from reVaMpT//
+
+	"$livery" "1"
+	"$liverymap" ""
+	"$liveryColor0" "[0.149 0.318 0.118]"
+	"$liveryColor1" "[0.439 0.463 0.247]"
+	"$liveryColor2" "[0.333 0.224 0.145]"
+	"$liverySpecular" "0.01"
+	"$liveryReflection" "0.01"
+	"$liveryOpThreshold" "-0.50"
+	"$seconduvset" "1"			
+	
+	Proxies
+	{
+		EntityIDLightColor
+		{
+			isTitan		1
+			resultvar	$selfillumtint
+		}
+	}
+}

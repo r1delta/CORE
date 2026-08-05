@@ -1,28 +1,6 @@
 
-//::BlackMarketTitans <- {}//Is this gonna be used? prolly not but best to cover my bases here
-
 const DEV_ENABLED = 1
 const DEV_DISABLED = 0
-
-/*
-const DMG_COR_IMG = "../ui/menu/items/ability_images/chassis_page_core_atlas"
-const DAS_COR_IMG = "../ui/menu/items/ability_images/chassis_page_core_stryder"
-const SHI_COR_IMG = "../ui/menu/items/ability_images/chassis_page_core_ogre"
-
-const DMG_COR_NAM = "#CHASSIS_ATLAS_CORE_NAME"
-const DMG_COR_DES = "#CHASSIS_ATLAS_CORE_DESCRIPTION"
-const DAS_COR_NAM = "#CHASSIS_STRYDER_CORE_NAME"
-const DAS_COR_DES = "#CHASSIS_STRYDER_CORE_DESCRIPTION"
-const SHI_COR_NAM = "#CHASSIS_OGRE_CORE_NAME"
-const SHI_COR_DES = "#CHASSIS_OGRE_CORE_DESCRIPTION"
-
-const ATLAS_IMG_IMC = "../ui/menu/loadouts/titan_chassis_atlas_imc"
-const ATLAS_IMG_MCO = "../ui/menu/loadouts/titan_chassis_atlas_mcor"
-const STRYDER_IMG_IMC = "../ui/menu/loadouts/titan_chassis_stryder_imc"
-const STRYDER_IMG_MCO = "../ui/menu/loadouts/titan_chassis_stryder_mcor"
-const OGRE_IMG_IMC = "../ui/menu/loadouts/titan_chassis_ogre_imc"
-const OGRE_IMG_MCO = "../ui/menu/loadouts/titan_chassis_ogre_mcor"
-*/
 
 ::unlockLevels <- {}
 
@@ -119,11 +97,9 @@ function main()
 
 	Globalize( GetDefaultAttachmentName )
 	Globalize( GetDefaultAttachmentIcon )
-
-	Globalize(  CreateR1DeltaItems )
-
-	Globalize( CreateBlackMarketModdedItems )
-	Globalize( BlackMarket_ITEMCALL )
+    
+  Globalize( CreateBlackMarketModdedItems )
+  Globalize( CheckBlackMarketModdedTitans )
 
 	if ( developer() > 0 )
 	{
@@ -280,8 +256,6 @@ function main()
 	unlockLevels[ "titan_stryder"]						<- 15
 	unlockLevels[ "titan_ogre"]							<- 30
 
-	unlockLevels[ "mp_titanability_hover" ]				<- 25
-
 
 	if ( IsServer() && IsMultiplayer() )
 	{
@@ -315,7 +289,7 @@ function main()
 
 function InitItems()
 {
-	::itemData <- {}//Hope globalizing this doesnt bite me in the ass later
+	::itemData <- {}
 	::combinedModData <- {}
 	::itemsOfType <- {}
 	::attachmentsOfType <- {}
@@ -326,9 +300,6 @@ function InitItems()
 
 	if ( IsClient() )
 		ClearItemTypes();
-	
-	//IncludeFile( "Yoshi's_All-Stars" )
-	//IncludeScript( "Yoshi's_TitanCreator" )
 
 	////////////////////
 	//PILOT WEAPON DATA
@@ -370,7 +341,9 @@ function InitItems()
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		null, 						null, 	"mp_weapon_dmr",		"scope_6x",		"#MOD_SCOPE_6X_NAME",		"#MOD_SCOPE_6X_DESC",		"#MOD_SCOPE_6X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_6x", 			"../ui/menu/items/attachment_icons/scope_6x" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_dmr_grunt_kills", 		0, 		"mp_weapon_dmr",		"aog",			"#MOD_AOG_NAME",			"#MOD_AOG_DESC",			"#MOD_AOG_LONGDESC",					"../ui/menu/items/attachment_icons/aog", 				"../ui/menu/items/attachment_icons/aog" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_dmr_kills",				1, 		"mp_weapon_dmr",		"scope_4x",		"#MOD_SCOPE_4X_NAME",		"#MOD_SCOPE_4X_DESC",		"#MOD_SCOPE_4X_LONGDESC",				"../ui/menu/items/attachment_icons/aog", 				"../ui/menu/items/attachment_icons/scope_4" )
-	//CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_dmr_pilot_kills",		2, 		"mp_weapon_dmr",		"scope_10x",	"#MOD_SCOPE_10X_NAME",		"#MOD_SCOPE_10X_DESC",		"#MOD_SCOPE_10X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_10x", 			"../ui/menu/items/attachment_icons/scope_10x" )
+	// CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_dmr_pilot_kills",		2, 		"mp_weapon_dmr",		"scope_10x",	"#MOD_SCOPE_10X_NAME",		"#MOD_SCOPE_10X_DESC",		"#MOD_SCOPE_10X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_10x", 			"../ui/menu/items/attachment_icons/scope_10x" )
+	// CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_dmr_kills", 			2, 		"mp_weapon_dmr",		"scope_12x",	"#MOD_SCOPE_12X_NAME",		"#MOD_SCOPE_12X_DESC",		"#MOD_SCOPE_12X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_12x", 			"../ui/menu/items/attachment_icons/scope_12x" )
+
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		null, 						null, 	"mp_weapon_g2",			"iron_sights",	"#MOD_IRON_SIGHTS_NAME",	"#MOD_IRON_SIGHTS_DESC",	"#MOD_IRON_SIGHTS_LONGDESC",			"../ui/menu/items/attachment_icons/iron_sights", 		"../ui/menu/items/attachment_icons/iron_sights" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_g2_grunt_kills", 		2, 		"mp_weapon_g2",			"hcog",			"#MOD_HCOG_NAME",			"#MOD_HCOG_DESC",			"#MOD_HCOG_LONGDESC",					"../ui/menu/items/attachment_icons/hcog", 				"../ui/menu/items/attachment_icons/hcog" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_g2_grunt_kills", 		1,		"mp_weapon_g2",			"holosight",	"#MOD_HOLOSIGHT_NAME",		"#MOD_HOLOSIGHT_DESC",		"#MOD_HOLOSIGHT_LONGDESC",				"../ui/menu/items/attachment_icons/holosight", 			"../ui/menu/items/attachment_icons/holosight" )
@@ -392,7 +365,8 @@ function InitItems()
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		null, 						null, 	"mp_weapon_sniper",		"scope_6x",		"#MOD_SCOPE_6X_NAME",		"#MOD_SCOPE_6X_DESC",		"#MOD_SCOPE_6X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_6x", 			"../ui/menu/items/attachment_icons/scope_6x" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_sniper_grunt_kills", 	0, 		"mp_weapon_sniper",		"aog",			"#MOD_AOG_NAME",			"#MOD_AOG_DESC",			"#MOD_AOG_LONGDESC",					"../ui/menu/items/attachment_icons/aog", 				"../ui/menu/items/attachment_icons/aog" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_sniper_kills", 			1, 		"mp_weapon_sniper",		"scope_4x",		"#MOD_SCOPE_4X_NAME",		"#MOD_SCOPE_4X_DESC",		"#MOD_SCOPE_4X_LONGDESC",				"../ui/menu/items/attachment_icons/aog", 				"../ui/menu/items/attachment_icons/scope_4" )
-	//CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_sniper_kills", 			2, 		"mp_weapon_sniper",		"scope_10x",	"#MOD_SCOPE_10X_NAME",		"#MOD_SCOPE_10X_DESC",		"#MOD_SCOPE_10X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_10x", 			"../ui/menu/items/attachment_icons/scope_10x" )
+	// CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_sniper_kills", 			2, 		"mp_weapon_sniper",		"scope_10x",	"#MOD_SCOPE_10X_NAME",		"#MOD_SCOPE_10X_DESC",		"#MOD_SCOPE_10X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_10x", 			"../ui/menu/items/attachment_icons/scope_10x" )
+	// CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_sniper_kills", 			2, 		"mp_weapon_sniper",		"scope_12x",	"#MOD_SCOPE_12X_NAME",		"#MOD_SCOPE_12X_DESC",		"#MOD_SCOPE_12X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_12x", 			"../ui/menu/items/attachment_icons/scope_12x" )
 
 
 	/////////////////
@@ -419,7 +393,7 @@ function InitItems()
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 								null, 	"mp_weapon_rspn101",		"recoil_compensator",			"#MOD_RECOIL_COMPENSATOR_NAME",	"#MOD_RECOIL_COMPENSATOR_DESC",		"#MOD_RECOIL_COMPENSATOR_LONGDESC",		0, 0, 0, 0, 0, 			"../ui/menu/items/mod_icons/recoil_compensator",	"../ui/menu/items/mod_icons/recoil_compensator",	HideFromMenus )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_rspn101_kills", 				1, 		"mp_weapon_rspn101",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_shotgun_spectre_kills",			1, 		"mp_weapon_shotgun",		"extended_ammo", 				"#MOD_EXTENDED_DRUM_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 			"../ui/menu/items/mod_icons/high_capacity_drum", 	"../ui/menu/items/mod_icons/high_capacity_drum" )
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_shotgun_pilot_kills",			1, 		"mp_weapon_shotgun",		"spread_increase_sg",			"#MOD_SPREAD_INCREASE_SG_NAME",	"#MOD_SPREAD_INCREASE_SG_DESC",		"#MOD_SPREAD_INCREASE_SG_LONGDESC",		-10, 10, 0, 0, 0, 		"../ui/menu/items/mod_icons/spread_increase_sg", 	"../ui/menu/items/mod_icons/spread_increase_sg" )
+	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_shotgun_pilot_kills",			1, 		"mp_weapon_shotgun",		"spread_increase_sg",			"#MOD_SPREAD_INCREASE_SG_NAME",	"#MOD_SPREAD_INCREASE_SG_DESC",		"#MOD_SPREAD_INCREASE_SG_LONGDESC",		-10, 10, 0, 0, 0, 		"../ui/menu/items/mod_icons/leadwall", 				"../ui/menu/items/mod_icons/leadwall" )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_shotgun_kills", 				1, 		"mp_weapon_shotgun",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, 5, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_smart_pistol_pilot_kills", 		1, 		"mp_weapon_smart_pistol",	"enhanced_targeting",			"#MOD_ENHANCED_TARGETING_NAME",	"#MOD_ENHANCED_TARGETING_DESC",		"#MOD_ENHANCED_TARGETING_LONGDESC",		0, 0, 10, 5, 0, 		"../ui/menu/items/mod_icons/enhanced_targeting", 	"../ui/menu/items/mod_icons/enhanced_targeting" )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_smart_pistol_spectre_kills", 	2, 		"mp_weapon_smart_pistol",	"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 6, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
@@ -502,27 +476,23 @@ function InitItems()
 	/////////////////
 	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_40mm_titan_kills", 				1, 		"mp_titanweapon_40mm",				"burst",				"#MOD_BURST_NAME",					"#MOD_BURST_TRIPLE_DESC",			"#MOD_BURST_TRIPLE_LONGDESC",			-20, -5, 0, 10, 9, 		"../ui/menu/items/mod_icons/burst", 				"../ui/menu/items/mod_icons/burst" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_40mm_kills", 					1, 		"mp_titanweapon_40mm",				"extended_ammo",		"#MOD_EXTENDED_MAG_NAME",			"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 4, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
-	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	null, 								null, 	"mp_titanweapon_40mm",				"fast_reload",			"#MOD_FAST_RELOAD_NAME",			"#MOD_FAST_RELOAD_DESC",			"#MOD_FAST_RELOAD_LONGDESC",			0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/fast_reload",	 		"../ui/menu/items/mod_icons/fast_reload")
+	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_DISABLED,	0, 	null, 								null, 	"mp_titanweapon_40mm",				"fast_reload",			"#MOD_FAST_RELOAD_NAME",			"#MOD_FAST_RELOAD_DESC",			"#MOD_FAST_RELOAD_LONGDESC",			0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/fast_reload",	 		"../ui/menu/items/mod_icons/fast_reload",	HideFromMenus)
 	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_arc_cannon_titan_kills", 		1, 		"mp_titanweapon_arc_cannon",		"capacitor",			"#MOD_CAPACITOR_NAME", 				"#MOD_CAPACITOR_DESC",				"#MOD_CAPACITOR_LONGDESC",				5, 5, 0, -5, 0, 		"../ui/menu/items/mod_icons/capacitor", 			"../ui/menu/items/mod_icons/capacitor" )
 	//CreateModData( itemType.TITAN_PRIMARY_MOD,	DEV_DISABLED,	0, 	null, 								null, 	"mp_titanweapon_arc_cannon",		"overcharge",			"#MOD_OVERCHARGE_NAME", 			"#MOD_OVERCHARGE_DESC",				"#MOD_OVERCHARGE_LONGDESC",				0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/overcharge",	 		"../ui/menu/items/mod_icons/overcharge",	HideFromMenus )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	null, 								null, 	"mp_titanweapon_rocket_launcher",	"afterburners",			"#MOD_AFTERBURNERS_NAME",			"#MOD_AFTERBURNERS_DESC",			"#MOD_AFTERBURNERS_LONGDESC",			0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/afterburners",	 		"../ui/menu/items/mod_icons/afterburners" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_rocket_launcher_kills",		 	1, 		"mp_titanweapon_rocket_launcher",	"extended_ammo",		"#MOD_EXTENDED_MAG_NAME",			"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 1, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_rocket_launcher_titan_kills", 	1, 		"mp_titanweapon_rocket_launcher",	"rapid_fire_missiles",	"#MOD_RAPID_FIRE_MISSILES_NAME",	"#MOD_RAPID_FIRE_MISSILES_DESC",	"#MOD_RAPID_FIRE_MISSILES_LONGDESC",	-30, 5, 0, 10, 13, 		"../ui/menu/items/mod_icons/rapid_fire_missiles", 	"../ui/menu/items/mod_icons/rapid_fire_missiles" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_titan_sniper_kills", 			1, 		"mp_titanweapon_sniper",			"extended_ammo",		"#MOD_EXTENDED_MAG_NAME",			"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 1, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
-	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	null, 								null, 	"mp_titanweapon_sniper",			"fast_reload",			"#MOD_FAST_RELOAD_NAME",			"#MOD_FAST_RELOAD_DESC",			"#MOD_FAST_RELOAD_LONGDESC",			0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/fast_reload",	 		"../ui/menu/items/mod_icons/fast_reload" )
+	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_DISABLED,	0, 	null, 								null, 	"mp_titanweapon_sniper",			"fast_reload",			"#MOD_FAST_RELOAD_NAME",			"#MOD_FAST_RELOAD_DESC",			"#MOD_FAST_RELOAD_LONGDESC",			0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/fast_reload",	 		"../ui/menu/items/mod_icons/fast_reload",	HideFromMenus )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_titan_sniper_titan_kills", 		0, 		"mp_titanweapon_sniper",			"instant_shot",			"#MOD_INSTANT_SHOT_NAME",			"#MOD_INSTANT_SHOT_DESC",			"#MOD_INSTANT_SHOT_LONGDESC",			-40, 0, 0, 30, 1, 		"../ui/menu/items/mod_icons/instant_shot", 			"../ui/menu/items/mod_icons/instant_shot" )
-	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	null, 								null, 	"mp_titanweapon_sniper",			"quick_shot",			"#MOD_QUICK_SHOT_NAME",				"#MOD_QUICK_SHOT_DESC",				"#MOD_QUICK_SHOT_LONGDESC",				0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/quick_shot",	 		"../ui/menu/items/mod_icons/quick_shot",	HideFromMenus )
+	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_DISABLED,	0, 	null, 								null, 	"mp_titanweapon_sniper",			"quick_shot",			"#MOD_QUICK_SHOT_NAME",				"#MOD_QUICK_SHOT_DESC",				"#MOD_QUICK_SHOT_LONGDESC",				0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/quick_shot",	 		"../ui/menu/items/mod_icons/quick_shot",	HideFromMenus )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_triple_threat_kills",		 	1, 		"mp_titanweapon_triple_threat",		"extended_ammo",		"#MOD_EXTENDED_MAG_NAME",			"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_triple_threat_titan_kills", 	1, 		"mp_titanweapon_triple_threat",		"mine_field",			"#MOD_MINE_FIELD_NAME",				"#MOD_MINE_FIELD_DESC",				"#MOD_MINE_FIELD_LONGDESC",				0, 10, -5, 0, 0, 		"../ui/menu/items/mod_icons/mine_field", 			"../ui/menu/items/mod_icons/mine_field" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_DISABLED,	0, 	null, 								null, 		"mp_titanweapon_triple_threat",		"arc_triple_threat",	"#MOD_ARC_TRIPLE_THREAT_NAME",		"#MOD_ARC_TRIPLE_THREAT_DESC",		"#MOD_ARC_TRIPLE_THREAT_LONGDESC",		0, 10, -5, 0, 0, 		"../ui/menu/items/mod_icons/mine_field", 			"../ui/menu/items/mod_icons/mine_field",	HideFromMenus  )
-	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_xo16_titan_kills", 				1, 		"mp_titanweapon_xo16",				"accelerator",			"#MOD_ACCELERATOR_NAME",			"#MOD_ACCELERATOR_DESC",			"#MOD_ACCELERATOR_LONGDESC",			0, -15, 0, 10, 90, 		"../ui/menu/items/mod_icons/accelerator", 			"../ui/menu/items/mod_icons/accelerator" )
+	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_xo16_titan_kills", 				1, 		"mp_titanweapon_xo16",				"accelerator",			"#MOD_ACCELERATOR_NAME",			"#MOD_ACCELERATOR_DESC",			"#MOD_ACCELERATOR_LONGDESC",			0, -15, 0, 10, 90, 		"../ui/menu/items/mod_icons/accelerator_v2", 			"../ui/menu/items/mod_icons/accelerator_v2" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	null, 								null, 	"mp_titanweapon_xo16",				"burst",				"#MOD_BURST_NAME",					"#MOD_BURST_LONGBURST_DESC",		"#MOD_BURST_LONGBURST_LONGDESC",		0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/burst",	 				"../ui/menu/items/mod_icons/burst" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_xo16_kills", 					1, 		"mp_titanweapon_xo16",				"extended_ammo",		"#MOD_EXTENDED_MAG_NAME",			"#MOD_EXTENDED_AMMO_DESC",			"#MOD_EXTENDED_AMMO_LONGDESC",			0, 0, 0, 0, 30, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
-	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	null, 								null, 	"mp_titanweapon_xo16",				"fast_reload",			"#MOD_FAST_RELOAD_NAME",			"#MOD_FAST_RELOAD_DESC",			"#MOD_FAST_RELOAD_LONGDESC",			0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/fast_reload",	 		"../ui/menu/items/mod_icons/fast_reload" )
-
-
-	//CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_DISABLED,	0, 	null, 								null, 	"mp_titanweapon_sniper",			"quick_shot",			"#MOD_QUICK_SHOT_NAME",				"#MOD_QUICK_SHOT_DESC",				"#MOD_QUICK_SHOT_LONGDESC",				0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/quick_shot",	 		"../ui/menu/items/mod_icons/quick_shot",	HideFromMenus )
-
+	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_DISABLED,	0, 	null, 								null, 	"mp_titanweapon_xo16",				"fast_reload",			"#MOD_FAST_RELOAD_NAME",			"#MOD_FAST_RELOAD_DESC",			"#MOD_FAST_RELOAD_LONGDESC",			0, 0, 0, 0, 0, 		"../ui/menu/items/mod_icons/fast_reload",	 		"../ui/menu/items/mod_icons/fast_reload",	HideFromMenus )
 
 	/////////////////////
 	//TITAN PASSIVE DATA
@@ -538,18 +508,7 @@ function InitItems()
 	CreatePassiveData( itemType.TITAN_PASSIVE2, 	DEV_ENABLED,	0, 	null, 	null, "pas_auto_eject", 			"#GEAR_AUTO_EJECT",			"#GEAR_AUTO_EJECT_DESC",			"#GEAR_AUTO_EJECT_LONGDESC",			"../ui/menu/items/passive_icons/auto_eject",				"../ui/menu/items/passive_icons/auto_eject" )
 	CreatePassiveData( itemType.TITAN_PASSIVE2, 	DEV_ENABLED,	0, 	null, 	null, "pas_titan_punch", 			"#GEAR_BIG_PUNCH",			"#GEAR_BIG_PUNCH_DESC",				"#GEAR_BIG_PUNCH_LONGDESC",				"../ui/menu/items/passive_icons/titan_punch",				"../ui/menu/items/passive_icons/titan_punch" )
 	CreatePassiveData( itemType.TITAN_PASSIVE2, 	DEV_ENABLED,	0, 	null, 	null, "pas_doomed_time", 			"#GEAR_SURVIVOR",			"#GEAR_SURVIVOR_DESC",				"#GEAR_SURVIVOR_LONGDESC",				"../ui/menu/items/passive_icons/doomed_time",				"../ui/menu/items/passive_icons/doomed_time" )
-	
-	//Modded
-	//CreatePassiveData( itemType.TITAN_PASSIVE1, 	DEV_ENABLED,	0, 	null, 	null, "pas_burst_boosters", 	"Burst Boosters",		"Drastic boost speed increase at the cost of boost recharge times.",			"Significantly increases titan boost speed at the cost of a longer boost recharge time.",			"../ui/menu/items/passive_icons/turbo_drop",		"../ui/menu/items/passive_icons/turbo_drop" )
-	//CreatePassiveData( itemType.TITAN_PASSIVE2, 	DEV_ENABLED,	0, 	null, 	null, "pas_pilot_link", 		"Tactical Link",	"Replaces titan tactical system with a pilot ability.",		"Replaces titan tactical systems with your pilot's ability if valid, otherwise a random pilot ability will be selected \nValid abilities include Sonar and Cloak.",		"../ui/menu/items/passive_icons/power_cell",			"../ui/menu/items/passive_icons/power_cell" )
-	//CreatePassiveData( itemType.TITAN_PASSIVE2, 	DEV_ENABLED,	0, 	null, 	null, "pas_dual_tactical", 		"Defensive Platform",	"Replace titan ordnance with an extra tactical.",		"Replaces titan ordnance systems with an extra tactical based on tactical/ordnance already selected.",		"../ui/menu/items/ability_icons/bubble_shield",			"../ui/menu/items/ability_icons/bubble_shield" )
-	//CreatePassiveData( itemType.TITAN_PASSIVE2, 	DEV_ENABLED,	0, 	null, 	null, "pas_armored_up", 	"Heavier Armor",		"Increases titan health but with a small impact to the boost system.",			"Increases titan health but reduces boost charge efficiency at heavier classes or reduces a dash at lighter classes.",			"../ui/menu/items/ability_icons/bubble_shield",		"../ui/menu/items/ability_icons/bubble_shield" )
-	
-	
-	
-	
-	//Modded
-	
+
 	/////////////////////
 	//TITAN OS DATA
 	/////////////////////
@@ -585,12 +544,6 @@ function InitItems()
 	CreateModData( itemType.TITAN_SPECIAL_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanability_smoke",				"burn_mod_titan_smoke",					"#BC_TITAN_ELECTRIC_SMOKE_M2", 		"#BC_TITAN_ELECTRIC_SMOKE_M2_FLYOUT_DESC",		"#BC_TITAN_ELECTRIC_SMOKE_M2_FLYOUT_DESC",		0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 	CreateModData( itemType.TITAN_SPECIAL_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanability_bubble_shield",		"burn_mod_titan_bubble_shield",			"#BC_TITAN_SHIELD_WALL_M2",			"#BC_TITAN_SHIELD_WALL_M2_FLYOUT_DESC",			"#BC_TITAN_SHIELD_WALL_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 
-	CreateModData( itemType.TITAN_ORDNANCE_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_salvo_rockets",		"dev_mod_low_recharge", 		"Missile Core Upgrade Salvo",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
-	CreateModData( itemType.TITAN_ORDNANCE_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_dumbfire_rockets",		"dev_mod_low_recharge", 		"Missile Core Upgrade Cluster",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
-	CreateModData( itemType.TITAN_ORDNANCE_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_homing_rockets",		"dev_mod_low_recharge", 		"Missile Core Upgrade Slaved",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
-	CreateModData( itemType.TITAN_ORDNANCE_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_shoulder_rockets",		"dev_mod_low_recharge", 		"Missile Core Upgrade Lock-On",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		"#BC_TITAN_SALVO_ROCKETS_M2_FLYOUT_DESC",		0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
-
-	//CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_xo16",				"smart_core", 					"Super Smort Gun",				"#BC_TITAN_40MM_M2_FLYOUT_DESC",				"#BC_TITAN_40MM_M2_FLYOUT_DESC",				0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 
 	/////////////////////
 	//EVENT PASSIVE DATA
@@ -610,12 +563,6 @@ function InitItems()
 	CreateSetFileData( itemType.TITAN_SETFILE,		DEV_ENABLED,	0,	null, 	null, "titan_atlas",		"#CHASSIS_ATLAS_NAME",		"#CHASSIS_ATLAS_DESCRIPTION",	"../ui/menu/loadouts/titan_chassis_atlas_imc",		"../ui/menu/loadouts/titan_chassis_atlas_mcor", 	"#CHASSIS_ATLAS_CORE_NAME", 	"#CHASSIS_ATLAS_CORE_DESCRIPTION", 		"../ui/menu/items/ability_images/chassis_page_core_atlas",  	85, 90, 76, 2	)
 	CreateSetFileData( itemType.TITAN_SETFILE,		DEV_ENABLED,	0, 	null, 	null, "titan_stryder",		"#CHASSIS_STRYDER_NAME",	"#CHASSIS_STRYDER_DESCRIPTION",	"../ui/menu/loadouts/titan_chassis_stryder_imc",	"../ui/menu/loadouts/titan_chassis_stryder_mcor", 	"#CHASSIS_STRYDER_CORE_NAME",	"#CHASSIS_STRYDER_CORE_DESCRIPTION",	"../ui/menu/items/ability_images/chassis_page_core_stryder", 	100, 100, 57, 3 )
 	CreateSetFileData( itemType.TITAN_SETFILE,		DEV_ENABLED,	0, 	null, 	null, "titan_ogre",			"#CHASSIS_OGRE_NAME",		"#CHASSIS_OGRE_DESCRIPTION",	"../ui/menu/loadouts/titan_chassis_ogre_imc",		"../ui/menu/loadouts/titan_chassis_ogre_mcor",		"#CHASSIS_OGRE_CORE_NAME",		"#CHASSIS_OGRE_CORE_DESCRIPTION", 		"../ui/menu/items/ability_images/chassis_page_core_ogre",  		70, 38, 100, 1 )
-	//CreateSetFileData( itemType.TITAN_SETFILE,		DEV_ENABLED,	0, 	null, 	null, "titan_destroyer_tier0",			"DESTROYER",		"I dunno, I had to put something.",	"../ui/menu/loadouts/titan_chassis_ogre_imc",		"../ui/menu/loadouts/titan_chassis_ogre_mcor",		"#CHASSIS_ATLAS_CORE_NAME",		"#CHASSIS_ATLAS_CORE_DESCRIPTION", 		"../ui/menu/items/ability_images/chassis_page_core_atlas",  		70, 38, 100, 1 )
-
-	//CreateSetFileData( itemType.TITAN_SETFILE,		DEV_ENABLED,	0, 	null, 	null, "titan_ion",			"Black Market Atlas",		"Modified Atlas unit with customizable core.",	"../ui/menu/loadouts/titan_chassis_atlas_imc",		"../ui/menu/loadouts/titan_chassis_atlas_mcor", 	"#CHASSIS_ATLAS_CORE_NAME", 	"#CHASSIS_ATLAS_CORE_DESCRIPTION", 		"../ui/menu/items/ability_images/chassis_page_core_atlas",  		85, 90, 76, 2 )
-	//Moved this ^
-
-	//setUp( 0 )
 
 	/////////////////////
 	// TITAN DECAL DATA
@@ -762,7 +709,6 @@ function InitItems()
 	itemsOfType[itemType.TITAN_PASSIVE1].sort( SortByUnlockReq )
 	itemsOfType[itemType.TITAN_PASSIVE2].sort( SortByUnlockReq )
 
-
 	if ( !IsUI() )
 	{
 		// Non-player weapons
@@ -784,9 +730,6 @@ function InitItems()
 		if ( IsClient() )
 			PrecacheHUDMaterial( MOD_ICON_NONE )
 	}
-
-	//IncludeFile( "Yoshi's_TitanCreator" )
-
 }
 
 function CreateR1DeltaItems()
@@ -812,36 +755,38 @@ function CreateR1DeltaItems()
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_spectre_kills", 		1, 		"mp_weapon_autopistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 10, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_kills", 				1, 		"mp_weapon_autopistol",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, -5, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_pilot_kills", 		1, 		"mp_weapon_autopistol",		"starburst",					"#MOD_STARBURST_NAME",			"#MOD_STARBURST_DESC",				"#MOD_STARBURST_AUTOPISTOL_LONGDESC",	0, -5, 0, 10, 0, 		"../ui/menu/items/mod_icons/starburst", 			"../ui/menu/items/mod_icons/starburst" )
-	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_headshots", 			1, 		"mp_weapon_autopistol",		"recoil_compensator",			"#MOD_RECOIL_COMPENSATOR_NAME",	"#MOD_RECOIL_COMPENSATOR_DESC",		"#MOD_RECOIL_COMPENSATOR_LONGDESC",		0, 0, 0, 0, 0, 			"../ui/menu/items/mod_icons/recoil_compensator",	"../ui/menu/items/mod_icons/recoil_compensator" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_autopistol_headshots", 			1, 		"mp_weapon_autopistol",		"recoil_compensator",			"#MOD_RECOIL_COMPENSATOR_NAME",	"#MOD_RECOIL_COMPENSATOR_DESC",		"#MOD_RECOIL_COMPENSATOR_LONGDESC",		0, 10, 0, 0, 0, 			"../ui/menu/items/mod_icons/recoil_compensator_v2",	"../ui/menu/items/mod_icons/recoil_compensator_v2" )
 
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_spectre_kills", 		1, 		"mp_weapon_semipistol",		"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_kills", 				1, 		"mp_weapon_semipistol",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, -5, -2, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
-	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_pilot_kills", 		1, 		"mp_weapon_semipistol",		"match_trigger",				"#MOD_MATCH_TRIGGER_NAME",		"#MOD_MATCH_TRIGGER_DESC",			"#MOD_MATCH_TRIGGER_LONGDESC",			0, -8, 0, 10, -2, 		"../ui/menu/items/mod_icons/match_trigger", 		"../ui/menu/items/mod_icons/match_trigger" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_semipistol_pilot_kills", 		1, 		"mp_weapon_semipistol",		"match_trigger",				"#MOD_MATCH_TRIGGER_NAME",		"#MOD_MATCH_TRIGGER_DESC",			"#MOD_MATCH_TRIGGER_LONGDESC",			0, -8, 0, 10, 0, 		"../ui/menu/items/mod_icons/match_trigger", 		"../ui/menu/items/mod_icons/match_trigger" )
 
 	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_wingman_kills", 				1, 		"mp_weapon_wingman",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-10, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
-	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_wingman_pilot_kills", 			1, 		"mp_weapon_wingman",		"explosive_rounds",				"#MOD_EXPLOSIVE_ROUNDS_NAME",	"#MOD_EXPLOSIVE_ROUNDS_DESC",		"#MOD_EXPLOSIVE_ROUNDS_DESC",			-10, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/rapid_fire_missiles", 	"../ui/menu/items/mod_icons/rapid_fire_missiles" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_wingman_pilot_kills", 			1, 		"mp_weapon_wingman",		"explosive_rounds",				"#MOD_EXPLOSIVE_ROUNDS_NAME",	"#MOD_EXPLOSIVE_ROUNDS_DESC",		"#MOD_EXPLOSIVE_ROUNDS_DESC",			15, 0, 0, -2, 0, 		"../ui/menu/items/mod_icons/explosive_rounds", 		"../ui/menu/items/mod_icons/explosive_rounds" )
 
-	CreateModData( itemType.PILOT_SECONDARY_MOD,	DEV_ENABLED,	0, 	"ch_smr_crits", 					1, 		"mp_weapon_smr",			"tank_buster",					"#MOD_TANK_BUSTER_NAME",		"#MOD_TANK_BUSTER_DESC",			"#MOD_TANK_BUSTER_DESC",				0, 0, 0, 0, 0, 			"../ui/menu/items/mod_icons/slammer",				"../ui/menu/items/mod_icons/slammer" )
-	CreateModData( itemType.PILOT_SECONDARY_MOD,	DEV_ENABLED,	0, 	"ch_smr_titan_kills", 				1, 		"mp_weapon_smr",			"stabilized_warhead",			"#MOD_STABILIZED_WARHEAD_NAME",	"#MOD_STABILIZED_WARHEAD_DESC",		"#MOD_STABILIZED_WARHEAD_DESC",			0, 0, 0, 0, 0, 			"../ui/menu/items/mod_icons/rapid_fire_missiles",	"../ui/menu/items/mod_icons/rapid_fire_missiles" )
+	CreateModData( itemType.PILOT_SECONDARY_MOD,	DEV_ENABLED,	0, 	"ch_smr_crits", 					1, 		"mp_weapon_smr",			"tank_buster",					"#MOD_TANK_BUSTER_NAME",		"#MOD_TANK_BUSTER_DESC",			"#MOD_TANK_BUSTER_DESC",				20, 0, 0, -10, -13, 	"../ui/menu/items/mod_icons/tank_buster",			"../ui/menu/items/mod_icons/tank_buster" )
+	CreateModData( itemType.PILOT_SECONDARY_MOD,	DEV_ENABLED,	0, 	"ch_smr_titan_kills", 				1, 		"mp_weapon_smr",			"stabilized_warhead",			"#MOD_STABILIZED_WARHEAD_NAME",	"#MOD_STABILIZED_WARHEAD_DESC",		"#MOD_STABILIZED_WARHEAD_DESC",			0, 15, 0, -13, 0, 		"../ui/menu/items/mod_icons/stabilized_warhead",	"../ui/menu/items/mod_icons/stabilized_warhead" )
 
 	CreateModData( itemType.PILOT_SECONDARY_MOD,	DEV_DISABLED,	0, 	"ch_archer_titan_kills", 			1, 		"mp_weapon_rocket_launcher","guided_missile",				"#MOD_GUIDED_MISSILE_NAME",		"#MOD_GUIDED_MISSILE_DESC",			"#MOD_GUIDED_MISSILE_DESC",				0, 0, 0, 0, 0, 			"../ui/menu/items/mod_icons/rapid_fire_missiles",	"../ui/menu/items/mod_icons/rapid_fire_missiles", HideFromMenus )
 
-	CreateModData( itemType.PILOT_SECONDARY_MOD,	DEV_ENABLED,	0, 	"ch_mgl_titan_kills", 				1, 		"mp_weapon_mgl",			"long_fuse",					"#MOD_LONG_FUSE_NAME",			"#MOD_LONG_FUSE_DESC",				"#MOD_LONG_FUSE_DESC",					0, 0, 0, 0, 0, 			"../ui/menu/items/mod_icons/mine_field",			"../ui/menu/items/mod_icons/mine_field" )
+	CreateModData( itemType.PILOT_SECONDARY_MOD,	DEV_ENABLED,	0, 	"ch_mgl_titan_kills", 				1, 		"mp_weapon_mgl",			"long_fuse",					"#MOD_LONG_FUSE_NAME",			"#MOD_LONG_FUSE_DESC",				"#MOD_LONG_FUSE_DESC",					0, 0, 0, 0, 0, 			"../ui/menu/items/mod_icons/long_fuse",				"../ui/menu/items/mod_icons/long_fuse" )
 
 	CreateWeaponData( itemType.PILOT_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_weapon_mega1", 				"../ui/menu/items/weapon_valkyrie" )
-	CreateWeaponData( itemType.PILOT_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_weapon_mega2", 				"../ui/menu/items/weapon_twinbshotgun" )
+	CreateWeaponData( itemType.PILOT_SIDEARM, 		DEV_ENABLED,	0, 		null, 	null, "mp_weapon_mega2", 				"../ui/menu/items/weapon_twinbshotgun" )
+
+	CreateWeaponData( itemType.PILOT_PRIMARY, 		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega5", 				"../ui/menu/items/weapon_valkyrie", null, null, HideFromMenus )
 
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		null, 						null, 	"mp_weapon_mega1",		"scope_6x",		"#MOD_SCOPE_6X_NAME",		"#MOD_SCOPE_6X_DESC",		"#MOD_SCOPE_6X_LONGDESC",				"../ui/menu/items/attachment_icons/scope_6x", 			"../ui/menu/items/attachment_icons/scope_6x" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_valkyrie_grunt_kills", 	0, 		"mp_weapon_mega1",		"aog",			"#MOD_AOG_NAME",			"#MOD_AOG_DESC",			"#MOD_AOG_LONGDESC",					"../ui/menu/items/attachment_icons/aog", 				"../ui/menu/items/attachment_icons/aog" )
 	CreateAttachmentData( itemType.PILOT_PRIMARY_ATTACHMENT,	DEV_ENABLED,	0, 		"ch_valkyrie_kills", 			1, 		"mp_weapon_mega1",		"scope_4x",		"#MOD_SCOPE_4X_NAME",		"#MOD_SCOPE_4X_DESC",		"#MOD_SCOPE_4X_LONGDESC",				"../ui/menu/items/attachment_icons/aog", 				"../ui/menu/items/attachment_icons/scope_4" )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_valkyrie_spectre_kills", 			0, 		"mp_weapon_mega1",			"extended_ammo",				"#MOD_EXTENDED_MAG_NAME",		"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 2, 			"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_valkyrie_kills", 					0, 		"mp_weapon_mega1",			"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-10, 0, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_valkyrie_pilot_kills", 			0, 		"mp_weapon_mega1",			"stabilizer",					"#MOD_STABILIZER_NAME",			"#MOD_STABILIZER_DESC",				"#MOD_STABILIZER_LONGDESC",				0, 6, 0, 0, 0, 			"../ui/menu/items/mod_icons/stabilizer", 			"../ui/menu/items/mod_icons/stabilizer" )
+	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_valkyrie_pilot_kills", 				0, 		"mp_weapon_mega1",			"stabilizer",					"#MOD_STABILIZER_NAME",			"#MOD_STABILIZER_DESC",				"#MOD_STABILIZER_LONGDESC",				0, 6, 0, 0, 0, 			"../ui/menu/items/mod_icons/stabilizer", 			"../ui/menu/items/mod_icons/stabilizer" )
 	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega1",			"burn_mod_valkyrie", 				"#BC_VALKYRIE_M2",			"#BC_VALKYRIE_M2_FLYOUT_DESC",			"#BC_VALKYRIE_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_twinb_pilot_kills",			1, 		"mp_weapon_mega2",		"spread_increase_sg",			"#MOD_SPREAD_INCREASE_SG_NAME",	"#MOD_SPREAD_INCREASE_SG_DESC",		"#MOD_SPREAD_INCREASE_SG_LONGDESC",		-10, 10, 0, 0, 0, 		"../ui/menu/items/mod_icons/spread_increase_sg", 	"../ui/menu/items/mod_icons/spread_increase_sg" )
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_ENABLED,	0, 	"ch_twinb_kills", 				1, 		"mp_weapon_mega2",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, 5, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
-	CreateModData( itemType.PILOT_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega2",			"burn_mod_twinb", 			"#BC_TWINB_SHOTGUN_M2",			"#BC_TWINB_SHOTGUN_M2_FLYOUT_DESC",			"#BC_TWINB_SHOTGUN_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_twinb_pilot_kills",			1, 		"mp_weapon_mega2",		"spread_increase_sg",			"#MOD_SPREAD_INCREASE_SG_NAME",	"#MOD_SPREAD_INCREASE_SG_DESC",		"#MOD_SPREAD_INCREASE_SG_LONGDESC",		-10, 10, 0, 0, 0, 		"../ui/menu/items/mod_icons/leadwall", 				"../ui/menu/items/mod_icons/leadwall" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_ENABLED,	0, 	"ch_twinb_kills", 				1, 		"mp_weapon_mega2",		"silencer",						"#MOD_SILENCER_NAME",			"#MOD_SILENCER_DESC",				"#MOD_SILENCER_LONGDESC",				-5, 5, -5, 0, 0, 		"../ui/menu/items/mod_icons/silencer", 				"../ui/menu/items/mod_icons/silencer" )
+	CreateModData( itemType.PILOT_SIDEARM_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega2",			"burn_mod_twinb", 			"#BC_TWINB_SHOTGUN_M2",			"#BC_TWINB_SHOTGUN_M2_FLYOUT_DESC",			"#BC_TWINB_SHOTGUN_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 
 	////////////////////
 	//TITAN WEAPON DATA
@@ -849,26 +794,21 @@ function CreateR1DeltaItems()
 	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_titanweapon_shotgun", 				"../ui/menu/items/titanweapon_shotgun" )
 
 	// DEV_DISABLED for now, they're extremely OP
-	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_ENABLED,	0, 		null, 	null, "mp_weapon_mega3", 				"../ui/menu/items/titanweapon_minigun", null, null )
+	CreateWeaponData( itemType.TITAN_PRIMARY, 		DEV_DISABLED,	0, 		null, 	null, "mp_weapon_mega3", 				"../ui/menu/items/titanweapon_minigun", null, null, HideFromMenus )
 	CreateWeaponData( itemType.TITAN_SPECIAL,		DEV_ENABLED,	0, 		null, 	null, "mp_weapon_mega4", 				"../ui/menu/items/ability_icons/charge_cannon",				"../ui/menu/items/ability_icons/charge_cannon", null )
 
-	CreateWeaponData( itemType.TITAN_ORDNANCE,		DEV_ENABLED,	0,		null, 	null, "mp_titanweapon_shoulder_turret", 	"../ui/menu/items/titanweapon_shoulder_rockets",		"HUD/coop/mini_turret_counter", 	"../ui/menu/items/titanweapon_shoulder_rockets" )
+	CreateWeaponData( itemType.TITAN_ORDNANCE,		DEV_ENABLED,	0,		null, 	null, "mp_titanweapon_shoulder_turret", 	"../ui/menu/items/titanweapon_shoulder_rockets",		"HUD/coop/mini_turret_counter", 	"../ui/menu/items/titanweapon_shoulder_rockets", HideFromMenus )
 
 	////////////////////
 	//TITAN MOD DATA
 	////////////////////
+	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_triple_threat_pilot_kills",		 	1, 		"mp_titanweapon_triple_threat",		"hydraulic_launcher",		"#MOD_HYDRAULIC_LAUNCHER_NAME",			"#MOD_HYDRAULIC_LAUNCHER_DESC",			"#MOD_HYDRAULIC_LAUNCHER_DESC",			0, 0, 7, -5, 0, 		"../ui/menu/items/mod_icons/hydraulic_launcher", 		"../ui/menu/items/mod_icons/hydraulic_launcher" )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,	 	DEV_ENABLED,	0, 	"ch_titan_shotgun_kills", 					1, 		"mp_titanweapon_shotgun",				"extended_ammo",		"#MOD_EXTENDED_MAG_NAME",			"#MOD_EXTENDED_MAG_DESC",			"#MOD_EXTENDED_MAG_LONGDESC",			0, 0, 0, 0, 3, 		"../ui/menu/items/mod_icons/extended_ammo", 		"../ui/menu/items/mod_icons/extended_ammo" )
 
 	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_shotgun",				"burn_mod_titan_shotgun", 					"#BC_TITAN_SHOTGUN_M2",				"#BC_TITAN_SHOTGUN_M2_FLYOUT_DESC",				"#BC_TITAN_SHOTGUN_M2_FLYOUT_DESC",				0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
-
 	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega3",			"burn_mod_thunderbolt", 			"#BC_TITAN_MINIGUN_M2",			"#BC_TITAN_MINIGUN_M2_FLYOUT_DESC",			"#BC_TITAN_MINIGUN_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
-
 	CreateModData( itemType.TITAN_SPECIAL_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega4",			"burn_mod_charge_cannon", 			"#BC_TITAN_CHARGE_CANNON_M2",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
-
-	//CreateWeaponData( itemType.TITAN_ORDNANCE,		DEV_DISABLED,	0,		null, 	null, "mp_titanweapon_salvo_rockets_core_right", 		"../ui/menu/items/titanweapon_salvo_rockets",			"../ui/menu/items/ability_icons/salvo_rockets",		"../ui/menu/items/titanweapon_salvo_rockets", HideFromMenus )
-	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_ENABLED,	0, 	null, 				1, 		"mp_titanweapon_shotgun",				"full_burst",				"Full-Burst",					"Allows firing every bullet in the magazine at a single trigger pull.",			"Allows firing every bullet in the magazine at a single trigger pull.",			-20, -5, 0, 10, 9, 		"../ui/menu/items/mod_icons/burst", 				"../ui/menu/items/mod_icons/burst" )
-	CreateWeaponData( itemType.TITAN_SPECIAL, 		DEV_ENABLED,	25,		null, 	null, "mp_weapon_mega5", 				"../ui/menu/items/mod_icons/afterburners",				"../ui/menu/items/mod_icons/afterburners", "../ui/menu/items/mod_icons/afterburners" )
-	CheckBlackMarketModdedTitans()
+  CheckBlackMarketModdedTitans()
 }
 	//BlackmarketCreation
 
@@ -1277,8 +1217,7 @@ function GetAllItemsOfType( type, parentRef = null )
 			type == itemType.TITAN_PASSIVE2 ||
 			type == itemType.EVENT_PASSIVE ||
 			type == itemType.TITAN_DECAL   ||
-			type == itemType.TITAN_OS	||
-
+			type == itemType.TITAN_OS
 		)
 
 	local items = []
@@ -1629,8 +1568,6 @@ function CreateSetFileData( type, dev_enabled, levelReq, challengeReq, challenge
 		if( coreImage )
 			PrecacheHUDMaterial( coreImage )
 	}
-
-	printl(ref)
 
 	itemData[ref] <- {}
 	itemData[ref].type <- type
@@ -2247,7 +2184,6 @@ function GetItemTypeFromPropertyName( property, isTitanProperty )
 		case "decal":
 			itemTypeName = itemType.TITAN_DECAL
 			break
-		
 	}
 
 	return itemTypeName

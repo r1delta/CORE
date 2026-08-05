@@ -1224,8 +1224,10 @@ function ButtonCallback_InitTurretPlacement( player )
 
 	level.sentryTurretProjection = true
 
-	RegisterButtonPressedCallback( MOUSE_LEFT, ButtonCallback_PlaceTurret )
-	RegisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, ButtonCallback_PlaceTurret )
+	//RegisterButtonPressedCallback( MOUSE_LEFT, ButtonCallback_PlaceTurret )
+	//RegisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, ButtonCallback_PlaceTurret )
+	RegisterConCommandTriggeredCallback( "+attack", ButtonCallback_PlaceTurret )
+
 	RegisterConCommandTriggeredCallback( "+weaponCycle", ButtonCallback_AbortTurretPlacement )
 	RegisterConCommandTriggeredCallback( "+weaponPickupAndCycle", ButtonCallback_AbortTurretPlacement )
 	RegisterConCommandTriggeredCallback( "+scriptCommand1", ButtonCallback_AbortTurretPlacement )
@@ -1250,8 +1252,10 @@ function TurretPlacementCleanupThread( player )
 		{
 			level.sentryTurretProjection = false
 
-			DeregisterButtonPressedCallback( MOUSE_LEFT, ButtonCallback_PlaceTurret )
-			DeregisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, ButtonCallback_PlaceTurret )
+			//DeregisterButtonPressedCallback( MOUSE_LEFT, ButtonCallback_PlaceTurret )
+			//DeregisterButtonPressedCallback( BUTTON_TRIGGER_RIGHT, ButtonCallback_PlaceTurret )
+			DeregisterConCommandTriggeredCallback( "+attack", ButtonCallback_PlaceTurret )
+
 			DeregisterConCommandTriggeredCallback( "+weaponCycle", ButtonCallback_AbortTurretPlacement )
 			DeregisterConCommandTriggeredCallback( "+weaponPickupAndCycle", ButtonCallback_AbortTurretPlacement )
 			DeregisterConCommandTriggeredCallback( "+scriptCommand1", ButtonCallback_AbortTurretPlacement )
