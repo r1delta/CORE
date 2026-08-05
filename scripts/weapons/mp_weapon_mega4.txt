@@ -251,6 +251,18 @@ WeaponData
 			"crosshair_index"								"1"
 			"is_burn_mod"		"1"
 		}
+		piercer_core
+		{
+			"printname"   									"Piercer Cannon"
+			"charge_end_forces_fire"						"0"
+			"charge_time" 									"*3" 
+			"damage_near_distance"							"*2"
+			"damage_far_distance" 							"*2"
+			"damage_near_value"   							"*2"
+			"damage_far_value"								"*2"
+			"damage_near_value_titanarmor"					"*2"
+			"damage_far_value_titanarmor" 					"*2" 
+		}
 	}
 
     // Crosshair

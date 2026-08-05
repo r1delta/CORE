@@ -97,6 +97,9 @@ function main()
 
 	Globalize( GetDefaultAttachmentName )
 	Globalize( GetDefaultAttachmentIcon )
+    
+  Globalize( CreateBlackMarketModdedItems )
+  Globalize( CheckBlackMarketModdedTitans )
 
 	if ( developer() > 0 )
 	{
@@ -286,11 +289,11 @@ function main()
 
 function InitItems()
 {
-	itemData <- {}
+	::itemData <- {}
 	::combinedModData <- {}
-	itemsOfType <- {}
-	attachmentsOfType <- {}
-	modsOfType <- {}
+	::itemsOfType <- {}
+	::attachmentsOfType <- {}
+	::modsOfType <- {}
 	::allItems <- []
 
 	local HideFromMenus = false
@@ -805,6 +808,48 @@ function CreateR1DeltaItems()
 	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_titanweapon_shotgun",				"burn_mod_titan_shotgun", 					"#BC_TITAN_SHOTGUN_M2",				"#BC_TITAN_SHOTGUN_M2_FLYOUT_DESC",				"#BC_TITAN_SHOTGUN_M2_FLYOUT_DESC",				0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega3",			"burn_mod_thunderbolt", 			"#BC_TITAN_MINIGUN_M2",			"#BC_TITAN_MINIGUN_M2_FLYOUT_DESC",			"#BC_TITAN_MINIGUN_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 	CreateModData( itemType.TITAN_SPECIAL_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega4",			"burn_mod_charge_cannon", 			"#BC_TITAN_CHARGE_CANNON_M2",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
+  CheckBlackMarketModdedTitans()
+}
+	//BlackmarketCreation
+
+function CheckBlackMarketModdedTitans()
+{
+	local loop_max = MasterModdedTitans.len()
+	for( local E = 0; E < loop_max; E++ )
+	{
+		if( loop_max > 0 )
+		{
+			local t_a = MasterModdedTitans[ E ]
+			
+			BlackMarket_ITEMCALL( t_a.setfile, t_a.unlock_level, t_a.print_name, t_a.print_desc, t_a.titan_img_imc, t_a.titan_img_mcor, t_a.core_name, t_a.core_desc, t_a.core_img, t_a.stat_speed, t_a.stat_accel, t_a.stat_health, t_a.stat_boost_count )
+		}
+	}
+}
+
+function CreateBlackMarketModdedItems( modded_titan_place )
+{
+	/*
+	local loop_max = MasterModdedTitans.len()
+	for( local E = 0; E < loop_max; E++ )
+	{
+		if( loop_max > 0 )
+		{
+			local t_a = MasterModdedTitans[ E ]
+			
+			BlackMarket_ITEMCALL( t_a.setfile, t_a.unlock_level, t_a.print_name, t_a.print_desc, t_a.titan_img_imc, t_a.titan_img_mcor, t_a.core_name, t_a.core_desc, t_a.core_img, t_a.stat_speed, t_a.stat_accel, t_a.stat_health, t_a.stat_boost_count )
+		}
+	}
+	*/
+	local t_a = MasterModdedTitans[ modded_titan_place ]
+	printl( "ADDING NEW MODDED TITAN" )
+	BlackMarket_ITEMCALL( t_a.setfile, t_a.unlock_level, t_a.print_name, t_a.print_desc, t_a.titan_img_imc, t_a.titan_img_mcor, t_a.core_name, t_a.core_desc, t_a.core_img, t_a.stat_speed, t_a.stat_accel, t_a.stat_health, t_a.stat_boost_count )
+
+}
+
+function BlackMarket_ITEMCALL( name, unlock_level, game_name, game_desc, titan_img_imc, titan_img_mcor, core_name, core_desc, core_img, statSpeed, statAccel, statHealth, statDash )
+{
+	CreateSetFileData( itemType.TITAN_SETFILE,		DEV_ENABLED,	0, 	null, 	null, name,			game_name,		game_desc,	titan_img_imc,		titan_img_mcor, 	core_name,  core_desc, 		core_img,  		statSpeed, statAccel, statHealth, statDash )
+	unlockLevels[ name ]	<- unlock_level
 }
 
 function CreateWeaponData( type, dev_enabled, levelReq, challengeReq, challengeTier, ref, image, icon = null, altImage = null, displayInMenu = true )

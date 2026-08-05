@@ -1,4 +1,8 @@
 const PERSISTENCE_INIT_VERSION = 22
+  
+const BASE_TITAN_COUNT = 4 //Adds 3 for titans and 1 to make a valid array placement
+::MasterModdedTitans <- []
+::Titans_Enum_Placement <- 3
 
 const RANDOMIZE_BOT_LOADOUT	= 1
 
