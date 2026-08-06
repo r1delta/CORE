@@ -1,0 +1,10 @@
+#base "pilot_titan_cockpit.set"
+
+"pilot_titan_cockpit_stryder"
+{
+	"global"
+	{
+		cockpitmodel		"models/weapons/arms/stryderpov_cockpit.mdl"
+	}
+}
+

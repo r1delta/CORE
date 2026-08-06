@@ -8,8 +8,8 @@
 	//import	"titan_destroyer_tier0.set"
 	//import	"titan_destroyer_tier1.set"
 	import	"titan_atlas_training.set"
-	import	"pilot_female_fastest.set"
-	import	"pilot_female_quickdraw.set"
+	//import	"pilot_female_fastest.set"
+	//import	"pilot_female_quickdraw.set"
 	import	"pilot_female_br.set"
 	import	"pilot_female_cq.set"
 	import	"pilot_female_dm.set"
@@ -30,6 +30,9 @@
 	import	"pilot_spectre_corporate.set"
 	import	"pilot_grunt.set"
 	import	"pilot_grunt_captain.set"
+
+	import	"pilot_titan_cockpit_stryder.set" // used for scripted sequences for pilot in titan
+	import	"pilot_titan_cockpit_ogre.set" // used for scripted sequences for pilot in titan
 
 //	old
 //	import	"fireteam.set"

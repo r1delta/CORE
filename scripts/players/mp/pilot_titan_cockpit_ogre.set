@@ -1,0 +1,10 @@
+#base "pilot_titan_cockpit.set"
+
+"pilot_titan_cockpit_ogre"
+{
+	"global"
+	{
+		cockpitmodel		"models/weapons/arms/ogrepov_cockpit.mdl"
+	}
+}
+

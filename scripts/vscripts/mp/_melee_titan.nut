@@ -364,8 +364,24 @@ function MeleeThread_TitanRipsPilot( e, actions, action, attacker, target )
     if ( target.IsPlayer() )
 	{
 	    e.oldPlayerSettings <- target.s.storedPlayerSettings
-	    target.s.storedPlayerSettings = "pilot_titan_cockpit" // needs to be per titan
-	    targetTitan = CreateTitanFromPlayer( target ) //TargetTitan is the NPC Titan that is created temporarily during execution
+
+		switch( GetSoulTitanType( soul ) )
+		{
+			case "stryder":
+				target.s.storedPlayerSettings = "pilot_titan_cockpit_stryder"
+				break
+
+			case "ogre":
+			case "destroyer":
+				target.s.storedPlayerSettings = "pilot_titan_cockpit_ogre"
+				break
+
+			default:
+				target.s.storedPlayerSettings = "pilot_titan_cockpit" // needs to be per titan
+				break
+		}
+
+		targetTitan = CreateTitanFromPlayer( target ) //TargetTitan is the NPC Titan that is created temporarily during execution
 	}
 
 //	if ( !( "isRodeoEnabled" in targetTitan.s ) )
