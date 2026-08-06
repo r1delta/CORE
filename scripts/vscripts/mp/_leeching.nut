@@ -231,10 +231,6 @@ function GetLeechedEnts( leecher = null )
 
 	local ents = []
 
-	// Shouldnt be happening
-	if ( !( "leechedEnts" in leecher.s ) )
-		return ents
-
 	foreach ( ent in leecher.s.leechedEnts )
 	{
 		if ( IsAlive( ent ) )

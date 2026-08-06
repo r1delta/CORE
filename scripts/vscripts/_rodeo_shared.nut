@@ -1295,11 +1295,7 @@ if ( IsServer() )
 		local holdToRodeoState = args.tointeger()
 		if ( holdToRodeoState < 0 || holdToRodeoState > 2)
 			return true
-
-		// Shouldnt be happening
-		if ( !( "holdToRodeoState" in player.s ) )
-			player.s.holdToRodeoState <- 0
-
+	
 		player.s.holdToRodeoState = holdToRodeoState
 	
 		return true
