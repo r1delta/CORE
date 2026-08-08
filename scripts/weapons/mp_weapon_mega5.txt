@@ -146,9 +146,9 @@ WeaponData
 	// Crosshair
 	"red_crosshair_range" 							"1500"
 
-	// Bodygroups:
-	"bodygroup1_name"	"knife"
-	"bodygroup1_set"	"0"
+    "clip_bodygroup"						"ptpov_data_knife"
+    "clip_bodygroup_index_shown"			"0"
+    "clip_bodygroup_index_hidden"			"1"
 
 	Mods
 	{
