@@ -1750,8 +1750,8 @@ $STRUCT_START eScoreboardData
 	bool 	campaign
 	bool    ranked
 	bool	hadMatchLossProtection
-	eScoreboardPlayer playersIMC[8]
-	eScoreboardPlayer playersMCOR[8]
+	eScoreboardPlayer playersIMC[9]
+	eScoreboardPlayer playersMCOR[9]
 $STRUCT_END
 
 eScoreboardData savedScoreboardData

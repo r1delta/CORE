@@ -303,7 +303,10 @@ function SpawnSpectreFunction( spectre )
 	CommonInit( spectre )
 	InitLeechable( spectre )
 	EnableLeeching( spectre )
-	spectre.SetUsableByGroup( "enemies pilot" )
+	if ( IsFFABased() && IsValid( GetEntityOwningPlayer( spectre ) ) )
+		spectre.SetUsableByGroup( "pilot" )
+	else
+		spectre.SetUsableByGroup( "enemies pilot" )
 
 	local health = 300
 

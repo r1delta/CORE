@@ -93,7 +93,7 @@ function IsValidShoulderTurretTarget( player, entity )
 	if ( !entity.IsPlayer() && !entity.IsNPC() )
 		return false
 
-	if ( entity.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( entity, player ) )
 		return false
 
 	return true

@@ -552,7 +552,7 @@ function ShouldPlayEMPEffectEvenWhenDamageIsZero( ent, attacker )
 	if  ( !IsValid( attacker ) )
 		return true
 
-	if ( attacker.GetTeam() != ent.GetTeam() )
+	if ( !ShouldPreventFriendlyFire( attacker, ent ) )
 		return true
 
 	return false

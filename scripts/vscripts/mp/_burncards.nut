@@ -871,23 +871,23 @@ function BCSpiderSense_Think( player )
             if ( !IsAlive( guy ) )
                 continue
 
-            if ( GetOtherTeam( player ) == guy.GetTeam() )
+            if ( ShouldPreventFriendlyFire( guy, player ) )
+                continue
+
+            local distance = Distance( player.GetOrigin(), guy.GetOrigin() )
+
+            if ( distance < 1000 && distance >= 500 )
             {
-                local distance = Distance( player.GetOrigin(), guy.GetOrigin() )
+                EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_SpiderSense_DistantWarn" )
+                Remote.CallFunction_Replay( player, "ServerCallback_SpiderSense" )
+                wait 1.25
+            }
 
-                if ( distance < 1000 && distance >= 500 )
-                {
-                    EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_SpiderSense_DistantWarn" )
-                    Remote.CallFunction_Replay( player, "ServerCallback_SpiderSense" )
-                    wait 1.25
-                }
-
-                if ( distance < 500 )
-                {
-                    EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_SpiderSense_CloseWarn" )
-                    Remote.CallFunction_Replay( player, "ServerCallback_SpiderSense" )
-                    wait 1.25
-                }
+            if ( distance < 500 )
+            {
+                EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_SpiderSense_CloseWarn" )
+                Remote.CallFunction_Replay( player, "ServerCallback_SpiderSense" )
+                wait 1.25
             }
         }
 

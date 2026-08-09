@@ -36,6 +36,12 @@ function LauncherPrecache( weapon )
 
 LauncherPrecache( self )
 
+if ( IsServer() )
+{
+	self.s.shoulderChargeEffect1 <- null
+	self.s.shoulderChargeEffect2 <- null
+}
+
 function OnWeaponActivate( activateParams )
 {
 	//self.EmitWeaponSound( "Weapon_Charge_cannon_chaRgeStart" )
@@ -45,11 +51,6 @@ function OnWeaponActivate( activateParams )
 	if ( !( "maxAmmoCharges" in self.s ) )
 		self.s.maxAmmoCharges <- LAUNCHER_MAX_CHARGES
 
-	if ( IsServer() )
-	{
-		self.s.shoulderChargeEffect1 <- null
-		self.s.shoulderChargeEffect2 <- null
-	}
 }
 
 function OnWeaponDeactivate( deactivateParams )
@@ -381,9 +382,9 @@ function PlayShoulderCannonFX( effect, parentToCannon, optionalRotation = null )
 	local visibilityFlags = 6 // use null to view effects in thirdperson when testing
 
 	if ( parentToCannon )
-		PlayFXOnEntity( effect, chargeCannon, "muzzle_flash", null, optionalRotation, visibilityFlags, weaponOwner )
+		return PlayFXOnEntity( effect, chargeCannon, "muzzle_flash", null, optionalRotation, visibilityFlags, weaponOwner )
 	else
-		PlayFXOnEntity( effect, null, null, chargeCannon.GetAttachmentOrigin( attachID ), chargeCannon.GetAttachmentAngles( attachID ), visibilityFlags, weaponOwner )
+		return PlayFXOnEntity( effect, null, null, chargeCannon.GetAttachmentOrigin( attachID ), chargeCannon.GetAttachmentAngles( attachID ), visibilityFlags, weaponOwner )
 }
 
 function StopShoulderCannonFX( effect )

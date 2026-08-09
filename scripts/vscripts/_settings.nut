@@ -333,7 +333,7 @@ if ( IsClient() )
 	GameMode_AddServerScript( GUN_GAME, "mp/_gamemode_gun_game" )
 	GameMode_AddClientScript( GUN_GAME, "client/cl_gamemode_gun_game" )
 	GameMode_SetDefaultScoreLimits( GUN_GAME, 20, 0 )
-	GameMode_SetDefaultTimeLimits( FFA, 15, 0 )
+	GameMode_SetDefaultTimeLimits( GUN_GAME, 15, 0 )
 
 // Don't remove items from this list once the game is in production
 // Durango online analytics needs the numbers for each mode to stay the same

@@ -5,6 +5,7 @@ function main()
 		level.musicEvents <- {}
 		level.musicEvents[ TEAM_IMC ] <- {}
 		level.musicEvents[ TEAM_MILITIA ] <- {}
+		level.winnerDeterminedMusicEvent <- null
 
 		Globalize( CreateTeamMusicEvent )
 		Globalize( PlayCurrentTeamMusicEventsOnPlayer )
@@ -33,6 +34,12 @@ function CreateTeamMusicEvent( team, musicPieceID, timeMusicStarted, shouldSeek 
 
 function PlayCurrentTeamMusicEventsOnPlayer( player )
 {
+	if ( IsFFABased() && level.winnerDeterminedMusicEvent != null )
+	{
+		PlayLevelWinnerDeterminedMusicEventOnPlayer( player )
+		return
+	}
+
 	//printt( "PlayCurrentTeamMusicEventsOnPlayer" )
 	local team = player.GetTeam()
 	local musicEvent = level.musicEvents[ team ]
@@ -49,10 +56,36 @@ function CreateLevelIntroMusicEvent()
 	CreateTeamMusicEvent( TEAM_MILITIA, eMusicPieceID.LEVEL_INTRO, Time() )
 }
 
+function PlayLevelWinnerDeterminedMusicEventOnPlayer( player )
+{
+	local musicPieceID
+	if ( level.winningPlayer == null )
+		musicPieceID = eMusicPieceID.LEVEL_DRAW
+	else if ( player == level.winningPlayer )
+		musicPieceID = eMusicPieceID.LEVEL_WIN
+	else
+		musicPieceID = eMusicPieceID.LEVEL_LOSS
+
+	local musicEvent = level.winnerDeterminedMusicEvent
+	Remote.CallFunction_NonReplay( player, "ServerCallback_PlayTeamMusicEvent", musicPieceID, musicEvent.timeMusicStarted, musicEvent.shouldSeek )
+}
+
 function CreateLevelWinnerDeterminedMusicEvent()
 {
 	//printt( "Creating CreateLevelWinnerDeterminedMusicEvent" )
 
+	if ( IsFFABased() )
+	{
+		level.winnerDeterminedMusicEvent = {
+			timeMusicStarted = Time(),
+			shouldSeek = true
+		}
+
+		foreach ( player in GetPlayerArray() )
+			PlayLevelWinnerDeterminedMusicEventOnPlayer( player )
+
+		return
+	}
 	local winningTeam = GetWinningTeam()
 
 	if (winningTeam)

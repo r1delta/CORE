@@ -1200,7 +1200,7 @@ function TitanEjectPlayer( ejectTitan, instant = false )
 		if ( ejectTitanIsPlayer )
 			thread TemporarilyNonSolidPlayer( e.player )
 
-		local lookDown = !IsAlive( ejectTitan ) || ( rider.GetTeam() != ejectTitan.GetTeam() )
+		local lookDown = !IsAlive( ejectTitan ) || !ShouldPreventFriendlyFire( rider, ejectTitan )
 		if ( rider.IsPlayer() )
 			ThrowRiderIntoAir( rider, titanOrigin, titan, ejectAngles, speed, lookDown )
 		else
@@ -1225,7 +1225,7 @@ function TitanEjectPlayer( ejectTitan, instant = false )
 		thread EjectFlightTracker( e.player )
 	}
 
-	if ( ejectTitanIsPlayer && IsAlive( rider ) && IsAlive( e.player ) && ( rider.GetTeam() != e.player.GetTeam() ) )
+	if ( ejectTitanIsPlayer && IsAlive( rider ) && IsAlive( e.player ) && !ShouldPreventFriendlyFire( rider, e.player ) )
 		thread LookAtEachOther( rider, e.player )
 
 	if ( ejectTitanIsPlayer )
@@ -1293,7 +1293,6 @@ function TitanEjectPlayer( ejectTitan, instant = false )
 function TitanEjectVO( player, titanOrigin )
 {
 	local titans = GetAllTitans()
-	local team = player.GetTeam()
 	local voEnum
 
 
@@ -1304,17 +1303,17 @@ function TitanEjectVO( player, titanOrigin )
 		if ( titan == player )
 			continue
 
-		if ( team == titan.GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, titan ) )
 		{
 			if ( DistanceSqr( titanOrigin, titan.GetOrigin() ) > file.titanVOEjectNotifyDist )
-				return
+				continue
 
 			voEnum = eTitanVO.FRIENDLY_EJECTED
 		}
 		else
 		{
 			if ( !ShouldCalloutEjection( player, titanOrigin, titan ) )
-				return
+				continue
 
 			voEnum = eTitanVO.ENEMY_EJECTED
 		}

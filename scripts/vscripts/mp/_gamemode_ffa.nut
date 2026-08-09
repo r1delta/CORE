@@ -1,11 +1,35 @@
 function main()
 {
 	AddCallback_PlayerOrNPCKilled( FFA_OnPlayerOrNPCKilled )
+	AddCallback_OnClientConnected( FFA_OnClientConnected )
+	AddCallback_OnClientDisconnected( FFA_OnClientDisconnected )
 
 	level.spawnRatingFunc_Pilot = RateSpawnpoint_Generic
 	level.spawnRatingFunc_Generic = RateSpawnpoint_Generic
 
 	SetFFABased( true )
+	thread FFAOwnedNPCRelationshipMonitor()
+}
+
+function FFA_OnClientConnected( player )
+{
+	UpdateFFAAutoTitanRelationships()
+}
+
+function FFA_OnClientDisconnected( player )
+{
+	thread FFA_UpdateAutoTitanRelationshipsAfterDisconnect( player )
+}
+
+function FFA_UpdateAutoTitanRelationshipsAfterDisconnect( player )
+{
+	if ( IsValid( player ) )
+		player.WaitSignal( "Disconnected" )
+
+	while ( IsValid( player ) )
+		wait 0
+
+	UpdateFFAAutoTitanRelationships()
 }
 
 function EntitiesDidLoad()
@@ -34,13 +58,12 @@ function FFA_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 	if ( !victim.IsPlayer() )
 		return
 
-	if ( !attacker.IsPlayer() )
+	local scoringPlayer = GetEntityOwningPlayer( attacker )
+	if ( !IsValid( scoringPlayer ) || !scoringPlayer.IsPlayer() )
 		return
-
-	local attackerTeam = attacker.GetTeam()
 
 	if ( ShouldPreventFriendlyFire( victim, attacker ) )
 		return
 
-	attacker.SetAssaultScore( attacker.GetAssaultScore() + 1 )
+	scoringPlayer.SetAssaultScore( scoringPlayer.GetAssaultScore() + 1 )
 }

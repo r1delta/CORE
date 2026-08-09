@@ -266,7 +266,7 @@ function VMTCallback_GetCloakFactor( ent )
 
 function VMTCallback_TeamColor( ent )
 {
-	if ( ent.GetTeam() == GetLocalViewPlayer().GetTeam() )
+	if ( ShouldPreventFriendlyFire( ent, GetLocalViewPlayer() ) )
 		return Vector( 0, 0, 1 )
 	else
 		return Vector( 1, 0, 0 )
@@ -326,7 +326,7 @@ function ShouldShowWeakpoints( ent )
 			return false
 	}
 
-	if ( ent.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( ent, player ) )
 		return false
 
 	local soul = ent.GetTitanSoul()

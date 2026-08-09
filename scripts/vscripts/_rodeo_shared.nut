@@ -265,7 +265,7 @@ function CodeCallback_IsValidRodeoTarget( player, titan )
 
 	if ( holdToRodeoState != HOLD_RODEO_DISABLED )
 	{
-		if ( holdToRodeoState != HOLD_RODEO_FRIENDLY || titan.GetTeam() == player.GetTeam() )
+		if ( holdToRodeoState != HOLD_RODEO_FRIENDLY || ShouldPreventFriendlyFire( titan, player ) )
 		{
 			if ( IsClient() )
 			{
@@ -311,7 +311,7 @@ function IsValidTitanRodeoTarget( player, titan )
 			return false
 		if ( !IsValid( soul.GetBossPlayer() ) )
 		{
-			if ( player.GetTeam() == titan.GetTeam() && !IsAllowedTeamRodeo( titan ) )
+			if ( ShouldPreventFriendlyFire( player, titan ) && !IsAllowedTeamRodeo( titan ) )
 				return false
 		}
 	}
@@ -1116,7 +1116,7 @@ function GetFriendlyRodeoPlayer( titan )
 	if ( !IsValid( rodeoPlayer ) )
 		return null
 
-	if ( rodeoPlayer.GetTeam() != titan.GetTeam() )
+	if ( !ShouldPreventFriendlyFire( rodeoPlayer, titan ) )
 		return null
 
 	return rodeoPlayer
@@ -1129,7 +1129,7 @@ function GetEnemyRodeoPlayer( titan )
 	if ( !IsValid( rodeoPlayer ) )
 		return null
 
-	if ( rodeoPlayer.GetTeam() == titan.GetTeam() )
+	if ( ShouldPreventFriendlyFire( rodeoPlayer, titan ) )
 		return null
 
 	return rodeoPlayer
@@ -1256,7 +1256,7 @@ function HoldToRodeoEnabled( player )
 {
 	if ( IsServer() )
 	{
-		return player.s.holdToRodeoState > 0
+		return HoldToRodeoState( player ) > HOLD_RODEO_DISABLED
 	}
 	else if ( IsClient() )
 	{
@@ -1271,6 +1271,9 @@ function HoldToRodeoState( player )
 {
 	if ( IsServer() )
 	{
+		if ( !( "holdToRodeoState" in player.s ) )
+			player.s.holdToRodeoState <- HOLD_RODEO_DISABLED
+
 		return player.s.holdToRodeoState
 	}
 	else if ( IsClient() )
@@ -1286,8 +1289,7 @@ if ( IsServer() )
 {
 	function Rodeo_OnClientConnected( player )
 	{
-		if ( !( "holdToRodeoState" in player.s ) )
-			player.s.holdToRodeoState <- 0
+		HoldToRodeoState( player )
 	}
 
 	function ClientCommand_HoldToRodeo( player, args )

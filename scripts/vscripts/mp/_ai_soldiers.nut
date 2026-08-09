@@ -1046,7 +1046,7 @@ function TrySpottedCallout( guy, enemy )
 				PlaySquadConversationToAll( "aichat_callout_titan", guy )
 		}
 
-		SetSpottedToTeam( enemy, guy.GetTeam(), 2.0 )
+		SetSpottedToTeam( enemy, guy.GetTeam(), 2.0, guy )
 	}
 	else if ( enemy.IsPlayer() )
 	{
@@ -1072,12 +1072,22 @@ function TrySpottedCallout( guy, enemy )
 					PlaySquadConversationToAll( "aichat_callout_pilot", guy )
 			}
 		}
-		SetSpottedToTeam( enemy, guy.GetTeam(), 2.0 )
+		SetSpottedToTeam( enemy, guy.GetTeam(), 2.0, guy )
 	}
 }
 
-function SetSpottedToTeam( entity, team, duration )
+function SetSpottedToTeam( entity, team, duration, spotter = null )
 {
+	if ( IsFFABased() && IsValid( spotter ) )
+	{
+		local owner = GetEntityOwningPlayer( spotter )
+		if ( IsValid( owner ) )
+		{
+			entity.SpottedToPlayer( owner, duration )
+			return
+		}
+	}
+
 	local players = GetPlayerArray()
 
 	//Minimap_CreatePingForTeam( team, entity.GetOrigin(), "vgui/HUD/firingPing", 0.25 )

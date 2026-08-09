@@ -815,6 +815,32 @@ function Dump( package, depth = 0 )
 	}
 }
 
+function GetEntityOwningPlayer( entity )
+{
+	if ( !IsValid( entity ) )
+		return null
+
+	local current = entity
+	for ( local depth = 0; depth < 4; depth++ )
+	{
+		if ( current.IsPlayer() )
+			return current
+
+		local bossPlayer = current.GetBossPlayer()
+		if ( IsValid( bossPlayer ) && bossPlayer.IsPlayer() )
+			return bossPlayer
+
+		local owner = current.GetOwner()
+		if ( !IsValid( owner ) || owner == current )
+			break
+
+		current = owner
+	}
+
+	return null
+}
+
+
 function GetOtherTeam( guy )
 {
 	local team
@@ -1960,6 +1986,9 @@ function GetShieldHealthFrac( titan )
 function EvacEnabled()
 {
 	if ( !IsMultiplayer() )
+		return false
+
+	if ( IsFFABased() )
 		return false
 
 	if ( GetCinematicMode() && GetMapName() == "mp_o2" )  //Special case for O2: No evac in campaign mode since EVERYONE DIES
@@ -3610,23 +3639,27 @@ function IsShoulderTurret( ent )
 	return ent.GetName().find( "turret_shoulder" ) != null
 }
 
-function ShouldPreventFriendlyFire( victim, attacker )
+function ShouldPreventFriendlyFire( entityA, entityB )
 {
-	local victimTeam = victim.GetTeam()
-	local attackerTeam = attacker.GetTeam()
+	if ( !IsValid( entityA ) || !IsValid( entityB ) )
+		return false
 
-	if ( victimTeam == attackerTeam )
+	if ( entityA == entityB )
+		return true
+
+	local ownerA = GetEntityOwningPlayer( entityA )
+	local ownerB = GetEntityOwningPlayer( entityB )
+
+	if ( IsValid( ownerA ) && IsValid( ownerB ) )
 	{
-		if ( victim == attacker )
+		if ( ownerA == ownerB )
 			return true
 
 		if ( IsFFABased() )
 			return false
-		
-		return true
 	}
 
-	return false
+	return entityA.GetTeam() == entityB.GetTeam()
 }
 
 function IsUplinkMode()
@@ -3658,8 +3691,12 @@ function GetActiveUplinkPoint()
 // For FFA
 function GetWinningPlayer()
 {
-	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
+	local compareFunc = GetScoreboardCompareFunc()
+	local players = GetSortedPlayers( compareFunc, null )
 	if ( players.len() == 0 )
+		return null
+
+	if ( players.len() > 1 && compareFunc( players[0], players[1] ) == 0 )
 		return null
 
 	return players[0]

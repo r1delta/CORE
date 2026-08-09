@@ -62,9 +62,9 @@ function UpdateVoiceHUD()
 			localPlayer.cv.voiceHUDArray[index].name.Show()
 
 			local color = [ 255, 255, 255, 255 ]
-			if ( allTalkEnabled )
+			if ( allTalkEnabled || IsFFABased() )
 			{
-				if ( teamPlayer.GetTeam() == localPlayer.GetTeam() && !IsFFABased() )
+				if ( ShouldPreventFriendlyFire( teamPlayer, localPlayer ) )
 					color = ColorStringToArray( OBITUARY_COLOR_FRIENDLY )
 				else
 					color = ColorStringToArray( OBITUARY_COLOR_ENEMY )

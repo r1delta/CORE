@@ -10,6 +10,7 @@ function main()
 	level.spawnRatingFunc_Generic = RateSpawnpoint_Generic
 
 	SetFFABased( true )
+	thread FFAOwnedNPCRelationshipMonitor()
 }
 
 function EntitiesDidLoad()
@@ -141,7 +142,7 @@ function GiveNextGunGameWeapon( player )
 
 function GetCurrentGunGameWeaponForPlayer( player )
 {
-	local score = clamp( player.GetAssaultScore(), 0, GetScoreLimit_FromPlaylist() )
+	local score = clamp( player.GetAssaultScore(), 0, level.gunGameWeapons.len() - 1 )
 	return level.gunGameWeapons[ score ]
 }
 Globalize( GetCurrentGunGameWeaponForPlayer )

@@ -999,7 +999,7 @@ function EventNotification( eventID, entity, eventVal = null )
 
 			local timeToDisplay = 3.0
 			local msg
-			local friendly = entity.GetTeam() == GetLocalClientPlayer().GetTeam()
+			local friendly = ShouldPreventFriendlyFire( entity, GetLocalClientPlayer() )
 			if ( attackerName )
 			{
 				if ( friendly )
@@ -1038,7 +1038,7 @@ function EventNotification( eventID, entity, eventVal = null )
 				if ( IsValid( attacker ) && attacker.IsPlayer() )
 				{
 					attackerName = attacker.GetPlayerName()
-					if ( attacker.GetTeam() == GetLocalViewPlayer().GetTeam() )
+					if ( ShouldPreventFriendlyFire( attacker, GetLocalViewPlayer() ) )
 						SetTimedEventNotification( 3.0, "#EVENTNOTIFY_FIRST_STRIKE_FRIENDLY", attackerName, entity.GetPlayerName() )
 					else
 						SetTimedEventNotification( 3.0, "#EVENTNOTIFY_FIRST_STRIKE_ENEMY", attackerName, entity.GetPlayerName() )
@@ -1120,7 +1120,7 @@ function EventNotification( eventID, entity, eventVal = null )
 					// else
 					// 	SetEventNotification( "#GAMEMODE_YOU_HAVE_THE_TITAN" )
 				}
-				else if ( entity.GetTeam() == GetLocalClientPlayer().GetTeam() )
+				else if ( ShouldPreventFriendlyFire( entity, GetLocalClientPlayer() ) )
 				{
 					SetTimedEventNotification( 3.0, "#GAMEMODE_PLAYER_HAS_ENEMY_TITAN", entity.GetPlayerName(), eventVal )
 				}
@@ -1136,7 +1136,7 @@ function EventNotification( eventID, entity, eventVal = null )
 			{
 				if ( entity == GetLocalClientPlayer() )
 					SetTimedEventNotification( 3.0, "#GAMEMODE_YOU_DESTROYED_THE_TITAN" )
-				else if ( entity.GetTeam() == GetLocalClientPlayer().GetTeam() )
+				else if ( ShouldPreventFriendlyFire( entity, GetLocalClientPlayer() ) )
 					SetTimedEventNotification( 3.0, "#GAMEMODE_PLAYER_DESTROYED_FRIENDLY_TITAN", entity.GetPlayerName(), eventVal )
 				else
 					SetTimedEventNotification( 3.0, "#GAMEMODE_PLAYER_DESTROYED_ENEMY_TITAN", entity.GetPlayerName(), eventVal )
@@ -1148,7 +1148,7 @@ function EventNotification( eventID, entity, eventVal = null )
 			{
 				if ( entity == GetLocalClientPlayer() )
 					SetTimedEventNotification( 3.0, "#GAMEMODE_YOU_CAPTURED_THE_TITAN" )
-				else if ( entity.GetTeam() == GetLocalClientPlayer().GetTeam() )
+				else if ( ShouldPreventFriendlyFire( entity, GetLocalClientPlayer() ) )
 					SetTimedEventNotification( 3.0, "#GAMEMODE_PLAYER_CAPTURED_ENEMY_TITAN", entity.GetPlayerName(), eventVal )
 				else
 					SetTimedEventNotification( 3.0, "#GAMEMODE_PLAYER_CAPTURED_FRIENDLY_TITAN", entity.GetPlayerName(), eventVal )

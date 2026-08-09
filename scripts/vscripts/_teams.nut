@@ -1,9 +1,9 @@
 if ( IsMultiplayer() )
 {
-	// IsFFABased() causes errors here too
-	if ( ( GAMETYPE == COOPERATIVE && GetCurrentPlaylistName() == COOPERATIVE ) || ( GAMETYPE == FFA && GetCurrentPlaylistName() == FFA ) )
+	// Cooperative uses one native team; FFA modes use both native teams only as
+	// balanced storage buckets while pairwise ownership defines hostility.
+	if ( GAMETYPE == COOPERATIVE && GetCurrentPlaylistName() == COOPERATIVE )
 	{
-		// all on one team
 		level.minTeamSize <- GetCurrentPlaylistVarInt( "min_players", 2 )
 		level.maxTeamSize <- GetCurrentPlaylistVarInt( "max players", 6 )
 	}

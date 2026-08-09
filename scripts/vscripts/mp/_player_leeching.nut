@@ -110,8 +110,36 @@ function LeechSuccessSound( player )
 		EmitSoundOnEntity( player, PLAYER_LEECH_SUCCESSFUL_SOUND )
 }
 
+function PlayerCanLeechTarget( player, target )
+{
+	if ( !IsValid( player ) || !IsValid( target ) )
+		return false
+
+	if ( !IsFFABased() || !target.IsSpectre() )
+		return true
+
+	if ( !IsValid( GetEntityOwningPlayer( target ) ) )
+		return true
+
+	return !ShouldPreventFriendlyFire( target, player )
+}
+
+function DoLeechAndUpdateSpectreUsability( target, player )
+{
+	if ( !PlayerCanLeechTarget( player, target ) )
+		return
+
+	DoLeech( target, player )
+
+	if ( IsFFABased() && IsValid( target ) && target.IsSpectre() && IsValid( GetEntityOwningPlayer( target ) ) )
+		target.SetUsableByGroup( "pilot" )
+}
+
 function CodeCallback_LeechStart( player, target )
 {
+	if ( !PlayerCanLeechTarget( player, target ) )
+		return
+
 	thread LeechStartThread( player, target )
 }
 
@@ -121,6 +149,9 @@ function LeechStartThread( player, target )
 		return
 
 	if ( !IsAlive( player ) )
+		return
+
+	if ( !PlayerCanLeechTarget( player, target ) )
 		return
 
 	if (target.IsSpectre())
@@ -276,7 +307,7 @@ function LeechStartThread( player, target )
 	if ( e.success  )
 	{
 		thread LeechSuccessSound( player )
-		DoLeech( target, player )
+		DoLeechAndUpdateSpectreUsability( target, player )
 		PlayerStopLeeching( player, target )
 
 		// this will kill a random leeched ent from within the team, exluding the current target. When it's not done elsewhere
@@ -324,7 +355,7 @@ function TellSquadmatesSpectreIsGettingLeeched( spectre, player )
 
 function ReleaseLeechOverflow( player, lastLeeched )
 {
-	local teamLeechedEnts = GetTeamLeechedEnts( player.GetTeam() )
+	local teamLeechedEnts = GetTeamLeechedEnts( player.GetTeam(), player )
 	local leechedEnts = GetLeechedEnts( player )
 	local globalOverflow = level.globalLeechLimit - teamLeechedEnts.len()
 	local playerOverflow = level.maxLeechable - leechedEnts.len()
@@ -342,15 +373,16 @@ function ReleaseLeechOverflow( player, lastLeeched )
 		if ( lastLeeched == ent )
 			continue
 
-		local owner = ent.GetBossPlayer()
-		Assert( IsPlayer( owner ) )
-
+		local owner = GetEntityOwningPlayer( ent )
+		if ( IsFFABased() && owner != player )
+			continue
 
 		// I think it's better to kill the overflow then have it become an enemy again.
 		ent.Die()
 //		thread ReleaseLeechedSpectre( ent )
 
-		delete owner.s.leechedEnts[ ent ]
+		if ( IsValid( owner ) && "leechedEnts" in owner.s && ent in owner.s.leechedEnts )
+			delete owner.s.leechedEnts[ ent ]
 		overflow--
 
 		if ( overflow == 0 )
@@ -385,7 +417,7 @@ Globalize( ReleaseLeechedSpectre )
 
 function GetMaxNumberOfLeechedEnts( player )
 {
-	local teamLeechedCount = GetTeamLeechedEnts( player.GetTeam() ).len()
+	local teamLeechedCount = GetTeamLeechedEnts( player.GetTeam(), player ).len()
 	local leechedEntsCount = GetLeechedEnts( player ).len()
 	local teamLimit = max( 0, level.globalLeechLimit - teamLeechedCount )
 	local maxSize = max( 0, level.maxLeechable - leechedEntsCount )
@@ -396,12 +428,20 @@ function GetMaxNumberOfLeechedEnts( player )
 
 function LeechSurroundingSpectres( origin, player )
 {
-	local enemyTeam = GetOtherTeam( player.GetTeam() )
+	local enemyTeam = IsFFABased() ? -1 : GetOtherTeam( player.GetTeam() )
 
 	// This was originally using player.GetOrigin() as the origin, instead of the variable used when calling this
 	// I dont think this is intentional, because 1: why would they even add the variable
 	// And 2: the other call in this file wants to use it instead
 	local enemySpectreArray = GetNPCArrayEx( "npc_spectre", enemyTeam, origin, level.leechRange  )
+	if ( IsFFABased() )
+	{
+		for ( local index = enemySpectreArray.len() - 1; index >= 0; index-- )
+		{
+			if ( ShouldPreventFriendlyFire( enemySpectreArray[ index ], player ) )
+				enemySpectreArray.remove( index )
+		}
+	}
 
 	if ( !enemySpectreArray.len() )
 		return
@@ -450,14 +490,14 @@ function LeechPropagate( spectre, player )
 
 	spectre.Event_LeechStart()
 
-	AddAnimEvent( spectre, "leech_switchteam", DoLeech, player )
+	AddAnimEvent( spectre, "leech_switchteam", DoLeechAndUpdateSpectreUsability, player )
 
 	OnThreadEnd(
 		function() : ( spectre )
 		{
 			if ( IsValid( spectre ) )
 			{
-				DeleteAnimEvent( spectre, "leech_switchteam", DoLeech )
+				DeleteAnimEvent( spectre, "leech_switchteam", DoLeechAndUpdateSpectreUsability )
 
 				if ( spectre.ContextAction_IsLeeching() )
 					spectre.Event_LeechEnd()

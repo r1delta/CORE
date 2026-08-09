@@ -44,7 +44,7 @@ function UpdateParticleSystem( turret )
 		return
 	}
 
-	if ( turret.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( turret, player ) )
 		turretFriendly = true
 
 	if ( turretFriendly == turret.s.turretFriendly )

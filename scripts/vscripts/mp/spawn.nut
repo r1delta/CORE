@@ -10,6 +10,7 @@ function main()
 	level.allSpawnpoints <- []
 
 	Globalize( IsSpawnpointValid )
+	Globalize( IsReservedSpawnpointValid )
 	Globalize( IsSpawnpointValidDrop )
 	Globalize( CreateNoSpawnArea )
 	Globalize( DeleteNoSpawnArea )
@@ -21,6 +22,7 @@ function main()
 	// spawn debug
 	Globalize( RecordSpawnData )
 	Globalize( StoreSpawnData )
+	Globalize( ResetSpawnData )
 	Globalize( PostDropSpawnData )
 
 	if ( IsHighPerfDevServer() )
@@ -88,6 +90,7 @@ function main()
 	local friendlyAIValue = 1.75
 	if ( GameModeHasCapturePoints() )
 		friendlyAIValue = 0.75
+	file.spawnRatingFriendlyAIValue <- friendlyAIValue
 
 	SpawnPoints_SetRatingMultipliers_Enemy( TD_TITAN, -10.0, -6.0, -1.0 )
 	SpawnPoints_SetRatingMultipliers_Friendly( TD_TITAN, 0.25, 1.75, friendlyAIValue )
@@ -573,7 +576,7 @@ function SpawnRandomTitan()
 	return SpawnNPCTitan( table )
 }
 
-function FindSpawnPoint( player, isTitan = false )
+function FindSpawnPoint( player, isTitan = false, spawnDataIndex = null )
 {
 	Assert( IsValid( player ), player + " is invalid!" )
 	//printl( "***************************************************************************" )
@@ -603,9 +606,10 @@ function FindSpawnPoint( player, isTitan = false )
 	//printt( "spawnpoints.len()" + spawnpoints.len() )
 
 	if ( !spawnpoints.len() )
-		return NoSpawnpointsFallback()
+		return null
 
 	SpawnPoints_ScriptInitRatings( player )
+	local spawnDataToken = BeginSpawnDataTelemetry( player, spawnDataIndex )
 
 	if ( isTitan )
 	{
@@ -621,11 +625,13 @@ function FindSpawnPoint( player, isTitan = false )
 
 		SpawnPoints_SortPilot()
 	}
+	EndSpawnDataTelemetry( player, spawnDataToken )
 
 	spawnpoints = isTitan ? SpawnPoints_GetTitan() : SpawnPoints_GetPilot()
 
 	local spawnpoint = GetBestSpawnpoint( player, spawnpoints, spawnpointType )
-	Assert( spawnpoint )
+	if ( !spawnpoint )
+		return null
 
 	spawnpoint.s.lastUsedTime = Time()
 	player.SetLastSpawnPoint( spawnpoint )
@@ -635,7 +641,7 @@ function FindSpawnPoint( player, isTitan = false )
 
 
 
-function FindStartSpawnPoint( player, isTitan = false )
+function FindStartSpawnPoint( player, isTitan = false, spawnDataIndex = null )
 {
 	printl( "***************************************************************************" )
 	printl( "***************************************************************************" )
@@ -660,10 +666,11 @@ function FindStartSpawnPoint( player, isTitan = false )
 	{
 		PrintHorribleWarning( "WARNING: THIS MAP (" + GetMapName() + ") HAS NO STARTSPAWNPOINTS FOR TEAM " + team )
 
-		return FindSpawnPoint( player, isTitan )
+		return FindSpawnPoint( player, isTitan, spawnDataIndex )
 	}
 
 	SpawnPoints_ScriptInitRatings( player )
+	local spawnDataToken = BeginSpawnDataTelemetry( player, spawnDataIndex )
 
 	if ( isTitan )
 	{
@@ -679,16 +686,19 @@ function FindStartSpawnPoint( player, isTitan = false )
 
 		SpawnPoints_SortPilotStart()
 	}
+	EndSpawnDataTelemetry( player, spawnDataToken )
 
 	local spawnpoint = GetBestSpawnpoint( player, spawnpoints, spawnpointType, true )
-	Assert( spawnpoint )
+	if ( !spawnpoint )
+		return null
 
+	spawnpoint.s.lastUsedTime = Time()
 	player.SetLastSpawnPoint( spawnpoint )
 
 	return spawnpoint
 }
 
-function FindClosestSpawnPoint( player, originPoint, isTitan = false )
+function FindClosestSpawnPoint( player, originPoint, isTitan = false, spawnDataIndex = null )
 {
 	Assert( IsValid( player ), player + " is invalid!" )
 	//printl( "***************************************************************************" )
@@ -718,9 +728,10 @@ function FindClosestSpawnPoint( player, originPoint, isTitan = false )
 	//printt( "spawnpoints.len()" + spawnpoints.len() )
 
 	if ( !spawnpoints.len() )
-		return NoSpawnpointsFallback()
+		return null
 
 	SpawnPoints_ScriptInitRatings( player )
+	local spawnDataToken = BeginSpawnDataTelemetry( player, spawnDataIndex )
 
 	if ( isTitan )
 	{
@@ -736,11 +747,13 @@ function FindClosestSpawnPoint( player, originPoint, isTitan = false )
 
 		SpawnPoints_SortPilot()
 	}
+	EndSpawnDataTelemetry( player, spawnDataToken )
 
 	spawnpoints = isTitan ? SpawnPoints_GetTitan() : SpawnPoints_GetPilot()
 
 	local spawnpoint = GetBestClosestSpawnpoint( player, originPoint, spawnpoints, spawnpointType )
-	Assert( spawnpoint )
+	if ( !spawnpoint )
+		return null
 
 	spawnpoint.s.lastUsedTime = Time()
 	player.SetLastSpawnPoint( spawnpoint )
@@ -769,9 +782,7 @@ function FilterSpawnpointsByTeam( spawnpoints, team )
 
 function GetBestSpawnpoint( player, spawnpoints, spawnpointType, loopAll = false )
 {
-	// lets not loop through all spawnpoints. The bottom batch is not good for spawning even if they are valid.
-	// if no valid spawnpoints go for the first that is invalid due to visibility.
-	// should always return a spawnpoint.
+	// Only fully safe spawnpoints are eligible. Exhaustion is handled by the retry owner.
 
 	local team = player.GetTeam()
 	local count = (spawnpoints.len() + 1) / 2
@@ -779,39 +790,33 @@ function GetBestSpawnpoint( player, spawnpoints, spawnpointType, loopAll = false
 	if ( loopAll )
 		count = spawnpoints.len()
 
-	local spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, count )
+	local spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, count, false, player )
+
+	if ( !spawnpoint && count < spawnpoints.len() )
+		spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, spawnpoints.len(), false, player )
 
 	if ( !spawnpoint )
 	{
-		spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, spawnpoints.len(), true )
-
-		if ( !spawnpoint )
-		{
-			PrintNoValidSpawnpoint( spawnpointType, spawnpoints, player, team )
-			spawnpoint = spawnpoints[0]
-		}
+		PrintNoValidSpawnpoint( spawnpointType, spawnpoints, player, team )
 
 		//if ( !level.isTestmap )
 			NotifyClientOfBadSpawn( player, "SpawnIssueInvalid" )
 	}
 
-	//if ( !level.isTestmap )
-		DebugCheckSpawnpointVsEnemies( player, spawnpoint, team )
+	if ( spawnpoint )
+	{
+		//if ( !level.isTestmap )
+			DebugCheckSpawnpointVsEnemies( player, spawnpoint, team )
+	}
 
 	return spawnpoint
 }
 
 function GetBestClosestSpawnpoint( player, originPoint, spawnpoints, spawnpointType, loopAll = false )
 {
-	// lets not loop through all spawnpoints. The bottom batch is not good for spawning even if they are valid.
-	// if no valid spawnpoints go for the first that is invalid due to visibility.
-	// should always return a spawnpoint.
+	// Only fully safe spawnpoints are eligible. Exhaustion is handled by the retry owner.
 
 	local team = player.GetTeam()
-	local count = (spawnpoints.len() + 1) / 2
-
-	if ( loopAll )
-		count = spawnpoints.len()
 
 	foreach ( point in spawnpoints )
 	{
@@ -819,35 +824,46 @@ function GetBestClosestSpawnpoint( player, originPoint, spawnpoints, spawnpointT
 			ArrayRemove( spawnpoints, point )
 	}
 
+	if ( !spawnpoints.len() )
+	{
+		PrintNoValidSpawnpoint( spawnpointType, spawnpoints, player, team )
+		NotifyClientOfBadSpawn( player, "SpawnIssueInvalid" )
+		return null
+	}
+
 	spawnpoints = ArrayClosest( spawnpoints, originPoint )
 
-	local spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, count )
+	local count = (spawnpoints.len() + 1) / 2
+	if ( loopAll )
+		count = spawnpoints.len()
+
+	local spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, count, false, player )
+
+	if ( !spawnpoint && count < spawnpoints.len() )
+		spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, spawnpoints.len(), false, player )
 
 	if ( !spawnpoint )
 	{
-		spawnpoint = GetFirstValidSpawnpoint( spawnpoints, team, spawnpoints.len(), true )
-
-		if ( !spawnpoint )
-		{
-			PrintNoValidSpawnpoint( spawnpointType, spawnpoints, player, team )
-			spawnpoint = spawnpoints[0]
-		}
+		PrintNoValidSpawnpoint( spawnpointType, spawnpoints, player, team )
 
 		//if ( !level.isTestmap )
 			NotifyClientOfBadSpawn( player, "SpawnIssueInvalid" )
 	}
 
-	//if ( !level.isTestmap )
-		DebugCheckSpawnpointVsEnemies( player, spawnpoint, team )
+	if ( spawnpoint )
+	{
+		//if ( !level.isTestmap )
+			DebugCheckSpawnpointVsEnemies( player, spawnpoint, team )
+	}
 
 	return spawnpoint
 }
 
-function GetFirstValidSpawnpoint( spawnpoints, team, count, ignoreVisible = false )
+function GetFirstValidSpawnpoint( spawnpoints, team, count, ignoreVisible = false, player = null )
 {
 	for( local i = 0; i < count; i++ )
 	{
-		if ( !IsSpawnpointValid( spawnpoints[i], team, ignoreVisible ) )
+		if ( !IsSpawnpointValid( spawnpoints[i], team, ignoreVisible, player ) )
 			continue
 
 		return spawnpoints[i]
@@ -933,7 +949,53 @@ function DebugPrintRatings( string, rating )
 }
 
 
-function AddSpawnPointDebugRatingData( spawnpoint, team, rating )
+function IsSpawnDataIndexValid( index )
+{
+	return index != null && type( index ) == "integer" && index >= 0 && index < level.spawnData.len()
+}
+
+
+function BeginSpawnDataTelemetry( player, index )
+{
+	if ( !IsHighPerfDevServer() || !IsSpawnDataIndexValid( index ) )
+		return null
+
+	if ( !( "spawnDataTelemetry" in player.s ) )
+		player.s.spawnDataTelemetry <- null
+
+	local token = UniqueString( "spawn_data" )
+	player.s.spawnDataTelemetry = { token = token, index = index }
+	return token
+}
+
+
+function EndSpawnDataTelemetry( player, token )
+{
+	if ( token == null || !IsValid( player ) )
+		return
+
+	if ( !( "spawnDataTelemetry" in player.s ) || player.s.spawnDataTelemetry == null )
+		return
+
+	if ( player.s.spawnDataTelemetry.token == token )
+		player.s.spawnDataTelemetry = null
+}
+
+
+function GetSpawnDataIndexForPlayer( player )
+{
+	if ( !IsValid( player ) || !( "spawnDataTelemetry" in player.s ) )
+		return null
+
+	local telemetry = player.s.spawnDataTelemetry
+	if ( telemetry == null || !IsSpawnDataIndexValid( telemetry.index ) )
+		return null
+
+	return telemetry.index
+}
+
+
+function AddSpawnPointDebugRatingData( spawnpoint, team, rating, player )
 {
 	// store data for the spawnpoint
 	local spawnpointTable = spawnpoint.GetRatingData()
@@ -943,14 +1005,14 @@ function AddSpawnPointDebugRatingData( spawnpoint, team, rating )
 	spawnpointTable.reason <- reason
 	spawnpointTable.isValid <- reason ? false : true
 
-	if ( level.spawnData.len() )
+	local spawnDataIndex = GetSpawnDataIndexForPlayer( player )
+	if ( spawnDataIndex != null )
 	{
 		// store rating for the spawnpoint
 		spawnpointTable.rating <- rating
 
-		// add this spawnpoint to the spawnpointData array
-		local spawnData = level.spawnData.top()
-		spawnData.spawnpointData.append( spawnpointTable )
+		// add this spawnpoint to the owning player's spawnpointData array
+		level.spawnData[ spawnDataIndex ].spawnpointData.append( spawnpointTable )
 	}
 }
 
@@ -966,7 +1028,149 @@ function RateFrontLinePlayerSpawnpoint( checkclass, spawnpoint, team, player = n
 	local rating = spawnpoint.CalculateRating( checkclass, team, frontlineRating, ratingWithPetTitan )
 
 	if ( IsHighPerfDevServer() )
-		AddSpawnPointDebugRatingData( spawnpoint, team, rating )
+		AddSpawnPointDebugRatingData( spawnpoint, team, rating, player )
+}
+
+
+function AccumulateFFASpawnEntityRelationship(
+	result,
+	spawnOrigin,
+	entity,
+	friendlyScale,
+	enemyScale )
+{
+	local friendlyNearDistance
+	local friendlyFarDistance
+	local enemyNearDistance
+	local enemyFarDistance
+	local friendlyMultiplier
+	local enemyMultiplier
+
+	if ( entity.IsTitan() )
+	{
+		friendlyNearDistance = 0.0
+		friendlyFarDistance = 1536.0
+		enemyNearDistance = 0.0
+		enemyFarDistance = 2048.0
+		friendlyMultiplier = 0.25
+		enemyMultiplier = -10.0
+	}
+	else if ( entity.IsPlayer() )
+	{
+		friendlyNearDistance = 0.0
+		friendlyFarDistance = 1536.0
+		enemyNearDistance = 0.0
+		enemyFarDistance = 2048.0
+		friendlyMultiplier = 1.75
+		enemyMultiplier = -6.0
+	}
+	else
+	{
+		friendlyNearDistance = 512.0
+		friendlyFarDistance = 1024.0
+		enemyNearDistance = 512.0
+		enemyFarDistance = 1024.0
+		friendlyMultiplier = file.spawnRatingFriendlyAIValue
+		enemyMultiplier = -1.0
+	}
+
+	local distance = Distance( spawnOrigin, entity.GetOrigin() )
+	local friendlyProximity = GraphCapped(
+		distance,
+		friendlyNearDistance,
+		friendlyFarDistance,
+		1.0,
+		0.0 )
+	local enemyProximity = GraphCapped(
+		distance,
+		enemyNearDistance,
+		enemyFarDistance,
+		1.0,
+		0.0 )
+
+	result.ratingDelta +=
+		enemyProximity * enemyMultiplier * enemyScale
+		- friendlyProximity * friendlyMultiplier * friendlyScale
+	if ( entity.IsTitan() )
+		result.enemyTitanRating += enemyProximity
+	else if ( entity.IsPlayer() )
+		result.enemyPilotRating += enemyProximity
+}
+
+
+function GetFFASpawnRelationshipDelta( spawnpoint, player )
+{
+	local result = {}
+	result.ratingDelta <- 0.0
+	result.enemyTitanRating <- 0.0
+	result.enemyPilotRating <- 0.0
+
+	local spawnOrigin = spawnpoint.GetOrigin()
+	local friendlyScale = 1.0
+	local enemyScale = 1.0
+	local petTitan = player.GetPetTitan()
+	local petRating = 0.0
+	if ( IsAlive( petTitan ) )
+	{
+		petRating = GraphCapped(
+			Distance( spawnOrigin, petTitan.GetOrigin() ),
+			0.0,
+			5000.0,
+			1.0,
+			0.0 )
+		if ( petRating > 0.0 )
+		{
+			friendlyScale = 0.25
+			enemyScale = 0.5
+		}
+	}
+
+	foreach ( otherPlayer in GetPlayerArray() )
+	{
+		if ( otherPlayer == player
+			|| otherPlayer.GetTeam() != player.GetTeam()
+			|| !IsAlive( otherPlayer ) )
+			continue
+
+		AccumulateFFASpawnEntityRelationship(
+			result,
+			spawnOrigin,
+			otherPlayer,
+			friendlyScale,
+			enemyScale )
+	}
+
+	foreach ( npc in GetNPCArray() )
+	{
+		if ( npc.GetTeam() != player.GetTeam() || !IsAlive( npc ) )
+			continue
+
+		local owner = GetEntityOwningPlayer( npc )
+		if ( !IsValid( owner ) || owner == player )
+			continue
+
+		AccumulateFFASpawnEntityRelationship(
+			result,
+			spawnOrigin,
+			npc,
+			friendlyScale,
+			enemyScale )
+	}
+
+	if ( petRating > 0.0 )
+	{
+		local nativeHasNearbyEnemy =
+			spawnpoint.NearbyEnemyScore( player.GetTeam(), "titan" ) > 0.2
+			|| spawnpoint.NearbyEnemyScore( player.GetTeam(), "wallrun" ) > 0.2
+		local ffaHasNearbyEnemy =
+			nativeHasNearbyEnemy
+			|| result.enemyTitanRating > 0.2
+			|| result.enemyPilotRating > 0.2
+		if ( !nativeHasNearbyEnemy && ffaHasNearbyEnemy )
+			result.ratingDelta += petRating * ( 1.75 - 10.0 )
+	}
+
+	return result.ratingDelta
 }
 
 
@@ -979,10 +1183,17 @@ function RateSpawnpoint_Generic( checkclass, spawnpoint, team, player = null )
 	if ( 0.0 > hardpointRating && hardpointRating > -3.5 )
 		ratingWithPetTitan = hardpointRating * 0.25
 
+	if ( IsFFABased() && IsValid( player ) )
+	{
+		local relationshipDelta = GetFFASpawnRelationshipDelta( spawnpoint, player )
+		hardpointRating += relationshipDelta
+		ratingWithPetTitan += relationshipDelta
+	}
+
 	local rating = spawnpoint.CalculateRating( checkclass, team, hardpointRating, ratingWithPetTitan )
 
 	if ( IsHighPerfDevServer() )
-		AddSpawnPointDebugRatingData( spawnpoint, team, rating )
+		AddSpawnPointDebugRatingData( spawnpoint, team, rating, player )
 }
 
 
@@ -1024,14 +1235,19 @@ function CodeCallback_SpawnpointDebugText( spawnpoint, team )
 }
 */
 
-function IsSpawnpointValid( spawnpoint, team, ingoreVisible = false )
+function IsSpawnpointVisibleToOpponents( spawnpoint, team )
 {
-	// check if drop pod is en route to this spawnpoint
-	if ( spawnpoint.s.inUse )
-	{
-		//printt( spawnpoint + ": inUse" )
-		return false;
-	}
+	if ( IsFFABased() )
+		return spawnpoint.IsVisibleToEnemies( TEAM_IMC ) || spawnpoint.IsVisibleToEnemies( TEAM_MILITIA )
+
+	return spawnpoint.IsVisibleToEnemies( team )
+}
+
+
+function IsSpawnpointSafeIgnoringReservation( spawnpoint, team, ingoreVisible = false, player = null )
+{
+	if ( !IsValid( spawnpoint ) )
+		return false
 
 	local spawnpointTeam = spawnpoint.GetTeam()
 
@@ -1041,33 +1257,38 @@ function IsSpawnpointValid( spawnpoint, team, ingoreVisible = false )
 	if ( (spawnpointTeam > 0) && (spawnpointTeam != team) )
 		return false
 
-	// ensure spawnpoint is not occupied (i.e. would spawn inside another player or object )
 	if ( spawnpoint.IsOccupied() )
-	{
-		//printt( spawnpoint + ": IsOccupied" )
-		return false;
-	}
-
-	if ( IsSpawnpointVisibleToTurret( spawnpoint, team ) )
-	{
 		return false
-	}
 
-	if ( IsSpawnpointNearGrenade( spawnpoint, team ) )
-	{
+	if ( IsSpawnpointVisibleToTurret( spawnpoint, team, player ) )
 		return false
-	}
 
-	if ( !( "ignoreVisible" in spawnpoint.s ) && spawnpoint.IsVisibleToEnemies( team ) && !ingoreVisible )
-	{
-		//printt( spawnpoint + ": IsVisibleToEnemies" )
+	if ( IsSpawnpointNearGrenade( spawnpoint, team, player ) )
 		return false
-	}
+
+	if ( !( "ignoreVisible" in spawnpoint.s ) && IsSpawnpointVisibleToOpponents( spawnpoint, team ) && !ingoreVisible )
+		return false
 
 	if ( IsSpawnpointInNoSpawnArea( spawnpoint, team ) )
-	{
 		return false
-	}
+
+	return true
+}
+
+
+function IsReservedSpawnpointValid( spawnpoint, team, player = null )
+{
+	return IsSpawnpointSafeIgnoringReservation( spawnpoint, team, false, player )
+}
+
+
+function IsSpawnpointValid( spawnpoint, team, ingoreVisible = false, player = null )
+{
+	if ( !IsValid( spawnpoint ) || spawnpoint.s.inUse )
+		return false
+
+	if ( !IsSpawnpointSafeIgnoringReservation( spawnpoint, team, ingoreVisible, player ) )
+		return false
 
 	if ( Time() < spawnpoint.s.lastUsedTime + SPAWNPOINT_USE_COOLDOWN )
 		return false
@@ -1076,14 +1297,25 @@ function IsSpawnpointValid( spawnpoint, team, ingoreVisible = false )
 }
 
 
-function IsSpawnpointNearGrenade( spawnpoint, team )
+function IsSpawnpointNearGrenade( spawnpoint, team, player = null )
 {
-	local enemyTeam = GetEnemyTeam( team )
-	local grenadeArray = GetProjectileArrayEx( "npc_grenade_frag", enemyTeam, spawnpoint.GetOrigin(), 1000 )
+	local grenadeArray
+	if ( IsFFABased() )
+	{
+		grenadeArray = GetProjectileArrayEx( "npc_grenade_frag", TEAM_IMC, spawnpoint.GetOrigin(), 1000 )
+		grenadeArray.extend( GetProjectileArrayEx( "npc_grenade_frag", TEAM_MILITIA, spawnpoint.GetOrigin(), 1000 ) )
+	}
+	else
+	{
+		grenadeArray = GetProjectileArrayEx( "npc_grenade_frag", GetEnemyTeam( team ), spawnpoint.GetOrigin(), 1000 )
+	}
 
 	foreach( grenade in grenadeArray )
 	{
  		if ( !IsValid( grenade ) )
+			continue
+
+		if ( IsFFABased() && IsValid( player ) && ShouldPreventFriendlyFire( grenade, player ) )
 			continue
 
  		local radius = grenade.GetDamageRadius() * 2.0
@@ -1096,7 +1328,7 @@ function IsSpawnpointNearGrenade( spawnpoint, team )
 	return false
 }
 
-function IsSpawnpointVisibleToTurret( spawnpoint, team )
+function IsSpawnpointVisibleToTurret( spawnpoint, team, player = null )
 {
 	if ( "visibleToTurret" in spawnpoint.s )
 	{
@@ -1110,8 +1342,18 @@ function IsSpawnpointVisibleToTurret( spawnpoint, team )
 				continue
 
 			local turretTeam = turret.GetTeam()
-			if ( turretTeam == team || turretTeam == TEAM_UNASSIGNED )
+			if ( turretTeam == TEAM_UNASSIGNED )
 				continue
+
+			if ( IsFFABased() )
+			{
+				if ( IsValid( player ) && ShouldPreventFriendlyFire( turret, player ) )
+					continue
+			}
+			else if ( turretTeam == team )
+			{
+				continue
+			}
 
 			// if I get to here an enemy turret is active and can see the spawnpoint
 			return true
@@ -1130,7 +1372,7 @@ function IsSpawnpointInNoSpawnArea( spawnpoint, team )
 
 	foreach( area in file.noSpawnArea )
 	{
-		if ( area.team == team )
+		if ( !IsFFABased() && area.team == team )
 			continue
 
 		if ( DistanceSqr( origin, area.origin ) > area.lengthSqr )
@@ -1243,7 +1485,7 @@ function PrintNoValidSpawnpoint( spawnpointType, spawnpoints, player, team )
 		if ( spawnpoint.s.inUse )
 			inUseCount++
 
-		if ( spawnpoint.IsVisibleToEnemies( team ) )
+		if ( IsSpawnpointVisibleToOpponents( spawnpoint, team ) )
 			visibleCount++
 
 		if ( spawnpoint.IsOccupied() )
@@ -1313,10 +1555,45 @@ function RecordSpawnData( player )
 	return ( level.spawnData.len() - 1 )
 }
 
-function StoreSpawnData( spawnpoint )
+function ResetSpawnData( index )
 {
-	if ( !IsHighPerfDevServer() )
+	if ( !IsHighPerfDevServer() || !IsSpawnDataIndexValid( index ) )
 		return
+
+	local spawnData = level.spawnData[ index ]
+	spawnData.spawnpointData.clear()
+
+	if ( "pickedSpawnpoint" in spawnData )
+		spawnData.pickedSpawnpoint = null
+	else
+		spawnData.pickedSpawnpoint <- null
+
+	if ( "rating" in spawnData )
+		spawnData.rating = 0
+	else
+		spawnData.rating <- 0
+}
+
+
+function StoreSpawnData( spawnpoint, index )
+{
+	if ( !IsHighPerfDevServer() || !IsSpawnDataIndexValid( index ) )
+		return
+
+	local spawnData = level.spawnData[ index ]
+	if ( !spawnpoint )
+	{
+		if ( "pickedSpawnpoint" in spawnData )
+			spawnData.pickedSpawnpoint = null
+		else
+			spawnData.pickedSpawnpoint <- null
+
+		if ( "rating" in spawnData )
+			spawnData.rating = 0
+		else
+			spawnData.rating <- 0
+		return
+	}
 
 //	if ( !( "rating" in spawnpoint.s ) )
 //	{
@@ -1324,9 +1601,15 @@ function StoreSpawnData( spawnpoint )
 //		return
 //	}
 
-	local spawnData = level.spawnData.top()
-	spawnData.pickedSpawnpoint <- spawnpoint.GetOrigin()
-	spawnData.rating <- 123.321
+	if ( "pickedSpawnpoint" in spawnData )
+		spawnData.pickedSpawnpoint = spawnpoint.GetOrigin()
+	else
+		spawnData.pickedSpawnpoint <- spawnpoint.GetOrigin()
+
+	if ( "rating" in spawnData )
+		spawnData.rating = 123.321
+	else
+		spawnData.rating <- 123.321
 //	spawnpoint.s.rating // code version doesn't store rating on the spawnpoint
 //	we can find the correct value based on the origin if needed
 
@@ -1335,7 +1618,7 @@ function StoreSpawnData( spawnpoint )
 
 function PostDropSpawnData( player, index )
 {
-	if ( !IsHighPerfDevServer() )
+	if ( !IsHighPerfDevServer() || !IsSpawnDataIndexValid( index ) )
 		return
 
 //	printt( "PostDropSpawnData" )
@@ -2344,7 +2627,7 @@ if ( IsHighPerfDevServer() )
 			return "Near Grenade"
 		}
 
-		if ( !( "ignoreVisible" in spawnpoint.s ) && spawnpoint.IsVisibleToEnemies( team ) )
+		if ( !( "ignoreVisible" in spawnpoint.s ) && IsSpawnpointVisibleToOpponents( spawnpoint, team ) )
 		{
 			//printt( spawnpoint + ": IsVisibleToEnemies" )
 			return "Visible"

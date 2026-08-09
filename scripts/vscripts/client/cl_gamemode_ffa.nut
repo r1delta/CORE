@@ -46,11 +46,16 @@ function UpdateFFAScoreBars()
 	if ( !player )
 		return
 
-	local winningPlayer = null
+	local leadingOpponent = null
 	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
-	if ( players.len() )
-		winningPlayer = players[0]
+	foreach ( candidate in players )
+	{
+		if ( candidate == player )
+			continue
 
+		leadingOpponent = candidate
+		break
+	}
 	local cockpit = player.GetCockpit()
 	if ( !cockpit )
 		return
@@ -65,8 +70,8 @@ function UpdateFFAScoreBars()
 	local winnerScore = 0
 	local scoreLimit = GetScoreLimit_FromPlaylist().tofloat()
 
-	if ( winningPlayer )
-		winnerScore = winningPlayer.GetAssaultScore()
+	if ( leadingOpponent )
+		winnerScore = leadingOpponent.GetAssaultScore()
 
 	// BAR DOESNT WORK
 	scoreBars.ScoresFriendly.SetBarProgressSource( ProgressSource.PROGRESS_SOURCE_SCRIPTED )
@@ -79,8 +84,10 @@ function UpdateFFAScoreBars()
 	scoreBars.ScoresEnemy.SetBarProgress( winnerScore.tofloat() / scoreLimit )
 	scoreBars.Enemy_Number.SetText( winnerScore.tostring() )
 
-	if ( winningPlayer )
-		scoreBars.Enemy_Team.SetText( winningPlayer.GetPlayerName() )
+	if ( leadingOpponent )
+		scoreBars.Enemy_Team.SetText( leadingOpponent.GetPlayerName() )
+	else
+		scoreBars.Enemy_Team.SetText( "" )
 }
 
 main()

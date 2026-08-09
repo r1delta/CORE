@@ -10,7 +10,7 @@ data_highlight_bg_color_friendly <- [0, 138, 166, 255]
 data_highlight_bg_color_enemy <- [156, 71, 6, 255]
 data_no_highlight_bg_color <- [0, 0, 0, 0]
 
-const MAX_PLAYERS_PER_TEAM = 8
+const MAX_PLAYERS_PER_TEAM = 9
 
 function main()
 {
@@ -110,6 +110,7 @@ function ShowScoreboard()
 
 	if ( storedMode != -1 )
 		storedModeString = PersistenceGetEnumItemNameForIndex( "gameModes", storedMode )
+	local ffaBased = storedModeString == FFA || storedModeString == GUN_GAME
 
 	local storedMap = GetPersistentVar( "savedScoreboardData.map" )
 	local storedMapString = "Dev map"
@@ -134,17 +135,27 @@ function ShowScoreboard()
 	//########################################
 
 	local winningTeamLogo = GetElem( menu, "ScoreboardWinningTeamLogo" )
-	winningTeamLogo.SetImage( logos[ winningTeam ] )
-
 	local losingTeamLogo = GetElem( menu, "ScoreboardLosingTeamLogo" )
-	losingTeamLogo.SetImage( logos[ losingTeam ] )
-
-	//########################################
-	// 			Team score totals
-	//########################################
-
-	GetElem( menu, "ScoreboardWinningTeamScore" ).SetText( scores[ winningTeam ].tostring() )
-	GetElem( menu, "ScoreboardLosingTeamScore" ).SetText( scores[ losingTeam ].tostring() )
+	local winningTeamScore = GetElem( menu, "ScoreboardWinningTeamScore" )
+	local losingTeamScore = GetElem( menu, "ScoreboardLosingTeamScore" )
+	if ( ffaBased )
+	{
+		winningTeamLogo.Hide()
+		losingTeamLogo.Hide()
+		winningTeamScore.Hide()
+		losingTeamScore.Hide()
+	}
+	else
+	{
+		winningTeamLogo.SetImage( logos[ winningTeam ] )
+		winningTeamLogo.Show()
+		losingTeamLogo.SetImage( logos[ losingTeam ] )
+		losingTeamLogo.Show()
+		winningTeamScore.SetText( scores[ winningTeam ].tostring() )
+		winningTeamScore.Show()
+		losingTeamScore.SetText( scores[ losingTeam ].tostring() )
+		losingTeamScore.Show()
+	}
 
 	//########################################
 	// 			Match loss protection
@@ -332,12 +343,15 @@ function ShowScoreboard()
 	local maxTeamPlayers = GetPersistentVar( "savedScoreboardData.maxTeamPlayers" )
 
 	// Winning team
+	local playerIndex = GetPersistentVar( "savedScoreboardData.playerIndex" )
 	local friendlyColor = friendlyTeam == winningTeam
 	local playerDataVar = playerDataVars[ winningTeam ]
 	for ( local i = 0 ; i < MAX_PLAYERS_PER_TEAM ; i++ )
 	{
 		local panelName = "WinningPlayer" + i
 		local buttonName = "BtnWinningPlayer" + i
+		if ( ffaBased )
+			friendlyColor = playerIndex == i
 		if ( i >= maxTeamPlayers )
 			UpdatePlayerBar( panelName, buttonName, friendlyColor, i, null, null, false )	// Completely hide player slot
 		else if ( i < numPlayers[ winningTeam ] )
@@ -346,13 +360,15 @@ function ShowScoreboard()
 			UpdatePlayerBar( panelName, buttonName, friendlyColor, i )	// empty player slot
 	}
 
-	// Losing team
+	// Losing team - for FFA this holds global ranks 9..17
 	friendlyColor = friendlyTeam == losingTeam
 	playerDataVar = playerDataVars[ losingTeam ]
 	for ( local i = 0 ; i < MAX_PLAYERS_PER_TEAM ; i++ )
 	{
 		local panelName = "LosingPlayer" + i
 		local buttonName = "BtnLosingPlayer" + i
+		if ( ffaBased )
+			friendlyColor = playerIndex == i + 9
 		if ( i >= maxTeamPlayers )
 			UpdatePlayerBar( panelName, buttonName, friendlyColor, i, null, null, false )	// Completely hide player slot
 		else if ( i < numPlayers[ losingTeam ] )
@@ -398,12 +414,23 @@ function UpdatePlayerBar( panelName, buttonName, friendlyColor, index, teamVar =
 		nameLabel.SetText( playerName )
 		nameLabel.Show()
 
-		if ( friendlyColor && GetPersistentVar( "savedScoreboardData.playerIndex" ) == index )
+		local isLocalPlayerRow = false
+		if ( friendlyColor )
+		{
+			// For FFA, friendlyColor already encodes exact per-row local-player check (including offset for second column)
+			local storedMode = GetPersistentVar( "savedScoreboardData.gameMode" )
+			local storedModeString = storedMode != -1 ? PersistenceGetEnumItemNameForIndex( "gameModes", storedMode ) : ""
+			local ffaBasedRow = storedModeString == FFA || storedModeString == GUN_GAME
+			if ( ffaBasedRow )
+				isLocalPlayerRow = true
+			else
+				isLocalPlayerRow = GetPersistentVar( "savedScoreboardData.playerIndex" ) == index
+		}
+		if ( isLocalPlayerRow )
 			nameLabel.SetColor( LOCALPLAYER_NAME_COLOR[0], LOCALPLAYER_NAME_COLOR[1], LOCALPLAYER_NAME_COLOR[2] )
 		else
 			nameLabel.SetColor( 230, 230, 230 )
 	}
-
 	// Player UID button
 	local button = GetElementsByClassname( menu, buttonName )[0]
 	Assert( button != null )

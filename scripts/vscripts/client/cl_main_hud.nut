@@ -980,7 +980,7 @@ function DidUpdateRodeoRideNameAndIcon( cockpit, player )
 	cockpit.s.mainVGUI.s.rodeoAlertIcon.Show()
 	cockpit.s.mainVGUI.s.rodeoAlertLabel.Show()
 
-	if ( titan.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( titan, player ) )
 	{
 		cockpit.s.mainVGUI.s.rodeoAlertIcon.SetImage( "HUD/riding_icon_friendly" )
 		cockpit.s.mainVGUI.s.rodeoAlertLabel.SetText( "#HUD_RODEO_RIDER_FRIENDLY", name )
@@ -3224,6 +3224,34 @@ function ScoreBarsTitanCountThink( vgui, player, friendlyTitanCountElem, friendl
 			friendlyTeam = player.GetTeam()
 			enemyTeam = friendlyTeam == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
 		}
+		if ( IsFFABased() )
+		{
+			local friendlyTitans = []
+			local enemyTitans = []
+			foreach ( titan in GetPlayerTitansOnTeam( friendlyTeam ) )
+			{
+				if ( ShouldPreventFriendlyFire( titan, player ) )
+					friendlyTitans.append( titan )
+				else
+					enemyTitans.append( titan )
+			}
+
+			local readyPlayers = GetPlayerTitansReadyOnTeam( friendlyTeam )
+			local friendlyTitanCount = friendlyTitans.len()
+			local friendlyBurnTitanCount = GetBurnTitanCount( friendlyTitans )
+			local friendlyTitanReadyCount = ArrayContains( readyPlayers, player ) ? 1 : 0
+			local enemyTitanCount = enemyTitans.len()
+			local enemyBurnTitanCount = GetBurnTitanCount( enemyTitans )
+			local opponentSlots = max( 1, GetPlayerArray().len() - 1 ).tofloat()
+
+			friendlyTitanCountElem.SetBarProgress( friendlyTitanCount.tofloat() )
+			friendlyTitanCountBurnElem.SetBarProgress( friendlyBurnTitanCount.tofloat() )
+			friendlyTitanReadyCountElem.SetBarProgress( ( friendlyTitanCount + friendlyTitanReadyCount ).tofloat() )
+			enemyTitanCountElem.SetBarProgress( enemyTitanCount.tofloat() / opponentSlots )
+			enemyTitanCountBurnElem.SetBarProgress( enemyBurnTitanCount.tofloat() / opponentSlots )
+			continue
+		}
+
 
 		local friendlyTitans = GetPlayerTitansOnTeam( friendlyTeam )
 		local friendlyTitanCount = friendlyTitans.len()

@@ -15,6 +15,7 @@ const ENDROUND_FREE = 3
 
 function main()
 {
+	R1Delta_SetFFABased( false )
 	RegisterSignal( "RoundEnd" )
 	RegisterSignal( "RoundStart" )
 
@@ -99,6 +100,7 @@ function main()
 
 	level.winString <- null
 	level.lossString <- null
+	level.winningPlayer <- null
 
 	level.gameStateFunctions <- []
 	level.gameStateFunctions.resize( eGameState._count_ )
@@ -460,7 +462,7 @@ function GameStateEnter_WinnerDetermined()
 
 	DoEndRoundFunctions() // TEMP, replace with gamestate functions
 
-	AnnounceWinner( level.nv.winningTeam, GetWinningPlayer()  )
+	AnnounceWinner( level.nv.winningTeam, level.winningPlayer )
 
 	level.nv.gameEndTime = Time()
 
@@ -528,10 +530,14 @@ function AwardEndOfMatchAwards( delayOverride = null )
 	local players = GetPlayerArray()
 	foreach ( player in players )
 	{
-		if (IsWinningTeam(player.GetTeam()))
-		{
+		local isWinner
+		if ( IsFFABased() )
+			isWinner = level.winningPlayer != null && player == level.winningPlayer
+		else
+			isWinner = IsWinningTeam( player.GetTeam() )
+
+		if ( isWinner )
 			AddPlayerScore( player, "MatchVictory" )
-		}
 
 		AddPlayerScore( player, "MatchComplete" )
 	}
@@ -582,11 +588,9 @@ function GetNumTeamPlayers()
 
 function PopulateScoreboardData()
 {
-    local i = 0
     foreach (player in GetPlayerArray())
     {
         local myTeam = player.GetTeam()
-        local enemyTeam = GetEnemyTeam(myTeam)
 
         // Get enum indices for game mode and map
         local enumModeIndex = 0
@@ -602,7 +606,6 @@ function PopulateScoreboardData()
         player.SetPersistentVar("savedScoreboardData.gameMode", enumModeIndex)
         player.SetPersistentVar("savedScoreboardData.map", enumMapIndex)
         player.SetPersistentVar("savedScoreboardData.playerTeam", myTeam)
-        player.SetPersistentVar("savedScoreboardData.playerIndex", i)
         player.SetPersistentVar("savedScoreboardData.maxTeamPlayers", GetNumTeamPlayers())
 
         // Team scores and counts
@@ -617,48 +620,106 @@ function PopulateScoreboardData()
         player.SetPersistentVar("savedScoreboardData.ranked", false)
         player.SetPersistentVar("savedScoreboardData.hadMatchLossProtection", player.s.hasMatchLossProtection)
 
-        // Process IMC players
-        local imcPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_IMC)
-        for (local i = 0; i < min(imcPlayers.len(), 9); i++)
+        if ( IsFFABased() )
         {
-            local imcPlayer = imcPlayers[i]
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].name", imcPlayer.GetPlayerName())
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].xuid", "0")
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].level", imcPlayer.GetLevel())
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].gen", imcPlayer.GetGen())
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assault", imcPlayer.GetAssaultScore())
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_defense", imcPlayer.GetDefenseScore())
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_kills", UpdateKills(imcPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_deaths", UpdateDeaths(imcPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_titanKills", UpdateTitanKills(imcPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_npcKills", UpdateNPCKills(imcPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assists", UpdateAssists(imcPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].playingRanked", imcPlayer.IsPlayingRanked())
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].rank", 0)
-            player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].matchPerformance", 0)
-        }
+            local sorted = GetSortedPlayers(GetScoreboardCompareFunc(player), null)
+            local rank = 0
+            for ( local r = 0; r < sorted.len(); r++ )
+                if ( sorted[r] == player ) { rank = r; break; }
+            player.SetPersistentVar("savedScoreboardData.playerIndex", rank)
 
-        // Process MCOR players
-        local mcorPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_MILITIA)
-        for (local i = 0; i < min(mcorPlayers.len(), 9); i++)
-        {
-            local mcorPlayer = mcorPlayers[i]
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].name", mcorPlayer.GetPlayerName())
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].xuid", "0")
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].level", mcorPlayer.GetLevel())
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].gen", mcorPlayer.GetGen())
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assault", mcorPlayer.GetAssaultScore())
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_defense", mcorPlayer.GetDefenseScore())
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_kills", UpdateKills(mcorPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_deaths", UpdateDeaths(mcorPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_titanKills", UpdateTitanKills(mcorPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_npcKills", UpdateNPCKills(mcorPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assists", UpdateAssists(mcorPlayer))
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].playingRanked", mcorPlayer.IsPlayingRanked())
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].rank", 0)
-            player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].matchPerformance", 0)
+            local numIMC = min(sorted.len(), 9)
+            local numMCOR = sorted.len() > 9 ? min(sorted.len() - 9, 9) : 0
+            player.SetPersistentVar("savedScoreboardData.numPlayersIMC", numIMC)
+            player.SetPersistentVar("savedScoreboardData.numPlayersMCOR", numMCOR)
+
+            for (local i = 0; i < 9; i++)
+            {
+                if ( i < numIMC )
+                {
+                    local p = sorted[i]
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].name", p.GetPlayerName())
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].xuid", "0")
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].level", p.GetLevel())
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].gen", p.GetGen())
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assault", p.GetAssaultScore())
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_defense", p.GetDefenseScore())
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_kills", UpdateKills(p))
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_deaths", UpdateDeaths(p))
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_titanKills", UpdateTitanKills(p))
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_npcKills", UpdateNPCKills(p))
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assists", UpdateAssists(p))
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].playingRanked", p.IsPlayingRanked())
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].rank", 0)
+                    player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].matchPerformance", 0)
+                }
+                if ( i < numMCOR )
+                {
+                    local q = sorted[i + 9]
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].name", q.GetPlayerName())
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].xuid", "0")
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].level", q.GetLevel())
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].gen", q.GetGen())
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assault", q.GetAssaultScore())
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_defense", q.GetDefenseScore())
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_kills", UpdateKills(q))
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_deaths", UpdateDeaths(q))
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_titanKills", UpdateTitanKills(q))
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_npcKills", UpdateNPCKills(q))
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assists", UpdateAssists(q))
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].playingRanked", q.IsPlayingRanked())
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].rank", 0)
+                    player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].matchPerformance", 0)
+                }
+            }
         }
-        i++
+        else
+        {
+            local imcPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_IMC)
+            local mcorPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_MILITIA)
+            local teamPlayers = myTeam == TEAM_IMC ? imcPlayers : mcorPlayers
+            local teamRank = 0
+            for ( local r = 0; r < teamPlayers.len(); r++ )
+                if ( teamPlayers[r] == player ) { teamRank = r; break; }
+            player.SetPersistentVar("savedScoreboardData.playerIndex", teamRank)
+
+            for (local i = 0; i < min(imcPlayers.len(), 9); i++)
+            {
+                local imcPlayer = imcPlayers[i]
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].name", imcPlayer.GetPlayerName())
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].xuid", "0")
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].level", imcPlayer.GetLevel())
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].gen", imcPlayer.GetGen())
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assault", imcPlayer.GetAssaultScore())
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_defense", imcPlayer.GetDefenseScore())
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_kills", UpdateKills(imcPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_deaths", UpdateDeaths(imcPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_titanKills", UpdateTitanKills(imcPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_npcKills", UpdateNPCKills(imcPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].score_assists", UpdateAssists(imcPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].playingRanked", imcPlayer.IsPlayingRanked())
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].rank", 0)
+                player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].matchPerformance", 0)
+            }
+            for (local i = 0; i < min(mcorPlayers.len(), 9); i++)
+            {
+                local mcorPlayer = mcorPlayers[i]
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].name", mcorPlayer.GetPlayerName())
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].xuid", "0")
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].level", mcorPlayer.GetLevel())
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].gen", mcorPlayer.GetGen())
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assault", mcorPlayer.GetAssaultScore())
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_defense", mcorPlayer.GetDefenseScore())
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_kills", UpdateKills(mcorPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_deaths", UpdateDeaths(mcorPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_titanKills", UpdateTitanKills(mcorPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_npcKills", UpdateNPCKills(mcorPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].score_assists", UpdateAssists(mcorPlayer))
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].playingRanked", mcorPlayer.IsPlayingRanked())
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].rank", 0)
+                player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].matchPerformance", 0)
+            }
+        }
     }
 }
 Globalize(PopulateScoreboardData)
@@ -993,7 +1054,7 @@ function DoneWaitingForPlayers()
 	if ( Time() < level.doneWaitingForPlayersTimeout )
 	{
 		// need at least one player from each team connected
-		if ( GAMETYPE != COOPERATIVE && !bothTeamsConnected )
+		if ( GAMETYPE != COOPERATIVE && !IsFFABased() && !bothTeamsConnected )
 			return false
 
 		// wait for minPlayers to connect or a portion of all expectedPlayers, whichever is greater
@@ -1055,6 +1116,7 @@ function GameRulesThink_Prematch()
 
 	SetGameState( eGameState.Playing )
 	level.nv.winningTeam = null
+	level.winningPlayer = null
 
 	GameRules.MarkGameStatePrematchEnding()
 }
@@ -1162,7 +1224,7 @@ function SetWinLossReasons( winString, lossString )
 	level.lossString = lossString
 }
 
-function SetWinner( winningTeam )
+function SetWinner( winningTeam, winningPlayer = null )
 {
 	Assert( GamePlayingOrSuddenDeath() )
 
@@ -1187,6 +1249,7 @@ function SetWinner( winningTeam )
 		SetGameState( eGameState.SuddenDeath )
 		return
 	}
+	level.winningPlayer = winningPlayer
 
 	if (winningTeam != null)
 		level.nv.winningTeam = winningTeam
@@ -1805,7 +1868,7 @@ function ScoreLimit_Complete()
 		if ( winningPlayer && winningPlayer.GetAssaultScore() >= scoreLimit )
 		{
 			SetWinLossReasons( "#GAMEMODE_SCORE_LIMIT_REACHED", "#GAMEMODE_SCORE_LIMIT_REACHED" )
-			SetWinner( null )
+			SetWinner( null, winningPlayer )
 			return true
 		}
 
@@ -2015,8 +2078,9 @@ function TimeLimit_Complete()
 
 		if ( IsFFABased() )
 		{
+			local winningPlayer = GetWinningPlayer()
 			SetWinLossReasons( "#GAMEMODE_TIME_LIMIT_REACHED", "#GAMEMODE_TIME_LIMIT_REACHED" )
-			SetWinner( null )
+			SetWinner( null, winningPlayer )
 			return true
 		}
 
@@ -2819,16 +2883,17 @@ function AnnounceWinner( winningTeam, winningPlayer )
 
 		//printt( "Winners " + winningTeam + " " + TEAM_IMC + " " + TEAM_MILITIA )
 
-		PlayConversationToPlayer( GetGameWonAnnouncement(), GetWinningPlayer() )
+		PlayConversationToPlayer( GetGameWonAnnouncement(), winningPlayer )
 		foreach( p in GetPlayerArray() )
 		{
-			if ( p != GetWinningPlayer() )
+			if ( p != winningPlayer )
 				PlayConversationToPlayer( GetGameLostAnnouncement(), p )
 		}
 	}
 	else
 		GameRules.MarkGameStateWinnerDetermined(0)
 
+	local hasWinningPlayer = winningPlayer != null
 	local players = GetPlayerArray()
 	foreach ( player in players )
 	{
@@ -2838,8 +2903,9 @@ function AnnounceWinner( winningTeam, winningPlayer )
 			SetWinLossReasons( null, null ) // TODO: set these accurately elsewhere, there might not always be an evac
 
 		local subString
+		local isWinningPlayer = player == winningPlayer
 
-		if ( IsWinningTeam( player.GetTeam() ) || ( IsFFABased() && player == GetWinningPlayer() ) )
+		if ( IsWinningTeam( player.GetTeam() ) || ( IsFFABased() && isWinningPlayer ) )
 			subString = level.winString
 		else
 			subString = level.lossString
@@ -2848,7 +2914,7 @@ function AnnounceWinner( winningTeam, winningPlayer )
 		if ( subString )
 			subStringIndex = GetStringID( subString )
 
-		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", 0, subStringIndex, GetWinnerDeterminedWait()  )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_AnnounceWinner", 0, subStringIndex, GetWinnerDeterminedWait(), hasWinningPlayer, isWinningPlayer )
 	}
 }
 
@@ -3075,6 +3141,7 @@ function SetFFABased( state )
 {
 	level.nv.ffaBased = state
 	level.ui.ffaBased = state
+	R1Delta_SetFFABased( state )
 }
 
 function GameStateControlCheck( player )

@@ -29,6 +29,8 @@ const CAPTURE_POINT_UI_UPDATE = "CapturePointUIUpdate"
 
 function main()
 {
+	level.hardpointIDsToOwner <- {}
+
 	Globalize( CapturePoint_AddPlayer )
 	Globalize( ShowHardpointIcons )
 	Globalize( HideHardpointIcons )
@@ -56,7 +58,6 @@ function main()
 	AddCreatePilotCockpitCallback( CapturePointHudInit )
 	AddCreateTitanCockpitCallback( CapturePointHudInit )
 
-	level.hardpointIDsToOwner <- {}
 }
 
 // INITIALIZATION
@@ -320,6 +321,12 @@ function HardpointChanged( hardpoint )
 		return
 
 	local index = hardpoint.GetHardpointID()
+	if ( index < 0 )
+		return
+
+	if ( !( index in level.hardpointIDsToOwner ) )
+		level.hardpointIDsToOwner[index] <- null
+
 	level.hardpointIDsToOwner[ index ] = hardpoint.GetTeam()
 
 	local player = GetLocalViewPlayer()

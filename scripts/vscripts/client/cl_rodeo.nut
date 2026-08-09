@@ -131,7 +131,7 @@ function CodeCallback_TitanRiderEntVarChanged( soul )
 
 		if ( !IsValid( player.s.previousRiderEnt ) )
 			return
-		if ( player.s.previousRiderEnt.GetTeam() == player.GetTeam() )
+		if ( ShouldPreventFriendlyFire( player.s.previousRiderEnt, player ) )
 		{
 			TitanCockpit_PlayDialog( GetLocalViewPlayer(), "rodeo_friendly_detach" )
 			player.s.previousRiderEnt = null
@@ -236,7 +236,7 @@ function ShouldEnableRodeoSmoothing( player )
 	if ( !IsValid( titan ) )
 		return false
 
-	return titan.GetTeam() == player.GetTeam()
+	return ShouldPreventFriendlyFire( titan, player )
 }
 
 function UpdateRodeoAttackHint( player )
@@ -269,7 +269,7 @@ function UpdateRodeoAttackHint( player )
 			break
 		}
 
-		if ( player.GetTeam() != GetOtherTeam( titan ) )
+		if ( ShouldPreventFriendlyFire( titan, player ) )
 		{
 			continue
 		}
@@ -723,7 +723,7 @@ function ShouldDrawRodeoVGUI( player )
 	if ( !IsValid( riderEnt ) )
 			return false
 
-	if ( riderEnt.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( riderEnt, player ) )
 		return true
 
 	return soul.GetLastRodeoHitTime() > 0
@@ -755,5 +755,5 @@ function HasEnemyRiderEnt( player )
 	if ( !IsValid( riderEnt ) )
 		return false
 
-	return ShouldPreventFriendlyFire( player, riderEnt )
+	return !ShouldPreventFriendlyFire( player, riderEnt )
 }

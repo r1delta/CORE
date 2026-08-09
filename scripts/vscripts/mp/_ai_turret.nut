@@ -352,6 +352,8 @@ function LinkToControlPanel( turret, func )
 		//Not super happy with this: if control panel controls multiple things,
 		//it will be associated with the last thing to add a use function to it.
 		AssociateControlPanelWithTurret( controlPanel, turret )
+		if ( turret.GetClassname() == "npc_turret_mega" )
+			controlPanel.useFunction = MegaTurretPanelCanUseFunction
 
 		// when a turret is created if the panel isn't being used set it to be usable by pilots.
 		local IsInUse = controlPanel.GetBossPlayer()
@@ -447,6 +449,25 @@ function GetMegaTurretLinkedToPanel( panel ) //Assume only 1 mega turret linked 
 
 Globalize( GetMegaTurretLinkedToPanel )
 
+function MegaTurretPanelCanUseFunction( player, panel )
+{
+	if ( !ControlPanel_CanUseFunction( player, panel ) )
+		return false
+
+	if ( !IsFFABased() )
+		return true
+
+	local turret = GetMegaTurretLinkedToPanel( panel )
+	if ( !IsAlive( turret ) || turret.GetTurretState() == TURRET_INACTIVE )
+		return true
+
+	if ( !IsValid( GetEntityOwningPlayer( turret ) ) )
+		return true
+
+	return !ShouldPreventFriendlyFire( turret, player )
+}
+
+//////////////////////////////////////////////////////////////////////
 function MegaTurretUsabilityFunc( turret, panel )
 {
 	if ( !IsAlive( turret ) )
@@ -460,6 +481,9 @@ function MegaTurretUsabilityFunc( turret, panel )
 	}
 	else if ( panel.GetTeam() == TEAM_IMC || panel.GetTeam() == TEAM_MILITIA  )
 	{
+		if ( IsFFABased() && IsValid( GetEntityOwningPlayer( turret ) ) )
+			return "pilot"
+
 		//printt( "Panel SetUsableByGroup Enemies Pilot, panel on team, MegaTurretUsabilityFunc" )
 		return "enemies pilot"
 	}
@@ -479,7 +503,11 @@ function CaptureTurret( turret, team, player )
 		return
 
 	//ToDo: Get duration of disable animation associated with turret, wait that amount + a bit, then reneable
-	if ( turret.GetTeam() == GetOtherTeam(player.GetTeam()))
+	local enemyTakeover = turret.GetTeam() == GetOtherTeam( player.GetTeam() )
+	if ( IsFFABased() && IsValid( GetEntityOwningPlayer( turret ) ) )
+		enemyTakeover = !ShouldPreventFriendlyFire( turret, player )
+
+	if ( enemyTakeover )
 	{
 		turret.DisableTurret()
 		//Don't let turret die while playing animation
@@ -497,6 +525,8 @@ function CaptureTurret( turret, team, player )
 	{
 		turret.SetShortTitle( "" )
 		turret.SetBossPlayer( player )
+		if ( IsFFABased() )
+			UpdateFFAOwnedNPCRelationships()
 	}
 	else
 	{
@@ -590,7 +620,15 @@ function FlipTurret( panel, player, turret )
 
 	thread CaptureTurret( turret, player.GetTeam(), player )
 	thread OnTurretDeathReleaseTurret( turret, panel )
-	PanelFlipsToPlayerTeamAndUsableByEnemies( panel, player )
+	if ( turret.GetClassname() == "npc_turret_mega" )
+	{
+		panel.SetTeam( player.GetTeam() )
+		panel.SetUsableByGroup( MegaTurretUsabilityFunc( turret, panel ) )
+	}
+	else
+	{
+		PanelFlipsToPlayerTeamAndUsableByEnemies( panel, player )
+	}
 	AddTurretCaptureScore( turret, player )
 	SetUsePromptForPanel( panel, turret )
 }

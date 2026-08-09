@@ -148,7 +148,7 @@ function TitanShouldKneel( titan )
 	if ( !IsAlive( rider ) )
 		return false
 
-	return rider.GetTeam() != titan.GetTeam()
+	return !ShouldPreventFriendlyFire( rider, titan )
 }
 
 function TitanWaitsToChangeStance( titan )
@@ -299,7 +299,7 @@ function HideOgreMainWeaponFromEnemies( titan )
 	local titanType = GetSoulTitanType( soul )
 	if ( titanType == "ogre" )
 	{
-		if ( IsAlive( rider ) && rider.GetTeam() != titan.GetTeam() )
+		if ( IsAlive( rider ) && !ShouldPreventFriendlyFire( rider, titan ) )
 		{
 			HideMainWeaponsFromEnemies( titan )
 		}

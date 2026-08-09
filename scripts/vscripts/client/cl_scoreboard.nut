@@ -537,6 +537,9 @@ function ShowScoreboard()
 
 		if ( IsFFABased() )
 		{
+			teamPlayers[myTeam] = []
+			teamPlayers[enemyTeam] = []
+
 			// The scoreboard resource has two columns of nine rows. FFA puts every
 			// player on one gameplay team, so split the globally sorted player list
 			// across the two visual columns instead of overflowing the first one.
@@ -717,7 +720,7 @@ function ShowScoreboard()
 
 				local hasActiveNonTitanBurnCard = DoesPlayerHaveActiveNonTitanBurnCard( player )
 				local hasActiveTitanBurnCard = DoesPlayerHaveActiveTitanBurnCard( player )
-				local isPlayerOnLocalTeam = myTeam == player.GetTeam()
+				local isPlayerOnLocalTeam = ShouldPreventFriendlyFire( player, GetLocalViewPlayer() )
 
 				if ( !IsAlive( player ) )
 				{

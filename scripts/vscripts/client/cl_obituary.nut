@@ -71,11 +71,7 @@ function Obituary_GetEntityInfo( ent, victimIsOwnedTitan = false, damageSourceId
 		info.petDisplayName = names.attackerPetName
 
 		local localPlayer = GetLocalClientPlayer()
-		if ( IsFFABased() ) {
-			info.displayColor = OBITUARY_COLOR_ENEMY
-		} else {
-			info.displayColor = localPlayer.GetTeamNumber() == ent.GetTeamNumber() ? OBITUARY_COLOR_FRIENDLY : OBITUARY_COLOR_ENEMY
-		}
+		info.displayColor = ShouldPreventFriendlyFire( ent, localPlayer ) ? OBITUARY_COLOR_FRIENDLY : OBITUARY_COLOR_ENEMY
 		if ( !IsWatchingKillReplay() )
 		{
 			local entBoss = ent.GetBossPlayer()

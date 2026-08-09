@@ -27,7 +27,6 @@ if ( IsServer() )
 		player.EndSignal( "OnDeath" )
 		player.EndSignal( "Disconnected" )
 
-		local otherTeam = GetOtherTeam( player.GetTeam() )
 
 		if ( setCEFlag )
 		{
@@ -51,7 +50,7 @@ if ( IsServer() )
 		{
 			//Potentially have different 1P/3P sounds for sonar pulse
 			//EmitDifferentSoundsOnEntityForPlayerAndWorld( "radarpulse_ping", "radarpulse_ping", player, player )
-			EmitSoundOnEntityToTeam( player, "radarpulse_ping", otherTeam  )
+			EmitSoundOnEntityToOpponents( player, "radarpulse_ping" )
 
 			local table = GetSonarDurationAndInterval( player )
 			player.s.sonarEndTime = Time() + table.duration
@@ -440,7 +439,6 @@ function SonarSoundThink( weapon, player, duration, uniqueEndSignal = null, puls
 	if( uniqueEndSignal )
 		player.EndSignal( uniqueEndSignal )
 
-	local enemyTeam = GetOtherTeam( player.GetTeam() )
 
 	local startTime = Time()
 	while ( Time() - startTime < (duration - SONAR_PULSE_DELAY) )
@@ -450,7 +448,7 @@ function SonarSoundThink( weapon, player, duration, uniqueEndSignal = null, puls
 		//if ( IsClient() )
 		//	EmitSoundOnEntityOnlyToPlayer( player, player, "radarpulse_ping" )
 		//else
-			EmitSoundOnEntityToTeam( player, "radarpulse_ping", enemyTeam )
+			EmitSoundOnEntityToOpponents( player, "radarpulse_ping" )
 	}
 }
 

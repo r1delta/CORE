@@ -233,7 +233,7 @@ function CodeCallback_Lunge( player, playerForwardDir, playerVelocity )
 		return playerVelocity
 	}
 
-	if ( target.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( target, player ) )
 	{
 		local targetPos = GetTitanHijackOrigin( target )
 		local angles = GetTitanHijackAngles( target )

@@ -120,7 +120,7 @@ function OnProjectileCollision( collisionParams )
 		{
 			LeechSurroundingSpectres( self.GetOrigin(), owner )
 			ActivateBurnCardSonar( owner, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true, null )
-			EmitSoundOnEntityToTeam( owner, "radarpulse_ping", GetOtherTeam( owner.GetTeam() ) )
+			EmitSoundOnEntityToOpponents( owner, "radarpulse_ping" )
 		}
 
 		self.s.playedScans <- true

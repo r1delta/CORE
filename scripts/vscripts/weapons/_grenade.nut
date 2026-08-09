@@ -408,7 +408,7 @@ function EMPGrenade_DamagedPlayerOrNPC( ent, damageInfo )
 
 	// Don't do arc beams to entities that are on the same team... except the owner
 	local attacker = damageInfo.GetAttacker()
-	if ( IsValid( attacker ) && attacker.GetTeam() == ent.GetTeam() && attacker != ent )
+	if ( IsValid( attacker ) && ShouldPreventFriendlyFire( ent, attacker ) && attacker != ent )
 		return
 
 	if ( ent.IsPlayer() )
@@ -660,7 +660,7 @@ function LaserMine_StartClientEffects( mine )
 	// blinking light FX
 	local handle_blinkylight = StartParticleEffectOnEntity( mine, GetParticleSystemIndex( "wpn_laser_blink" ), FX_PATTACH_POINT_FOLLOW, attachID )
 	local color
-	if ( player.GetTeam() == mine.GetTeam() )
+	if ( ShouldPreventFriendlyFire( mine, player ) )
 		color = FRIENDLY_COLOR_FX
 	else
 		color = ENEMY_COLOR_FX
@@ -892,7 +892,7 @@ function DisplayEnemyLaserMines( player )
 		}
 		else
 		{
-			if ( laserMine.GetTeam() != player.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( laserMine, player ) )
 				LaserMine_StartClientEffects( laserMine )
 		}
 	}
@@ -906,7 +906,7 @@ function HideEnemyLaserMines( player )
 			delete level._laserMines[ laserMine ]
 		else
 		{
-			if ( laserMine.GetTeam() != player.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( laserMine, player ) )
 				LaserMine_StopClientEffects( laserMine, true )
 		}
 	}
@@ -924,7 +924,7 @@ function EnableTrapWarningSound( trap, delay = 0, warningSound = DEFAULT_WARNING
 
 	while ( IsValid( trap ) )
 	{
-		EmitSoundOnEntityToTeam( trap, warningSound, GetOtherTeam( trap.GetTeam() ) )
+		EmitSoundOnEntityToOpponents( trap, warningSound )
 		wait 1.0
 	}
 }
@@ -966,6 +966,7 @@ function ProximityMineThink( proximityMine, owner )
 	wait PROXIMITY_MINE_ARMING_DELAY
 
 	local enemyTeam = proximityMine.GetTeam() == TEAM_IMC ? TEAM_MILITIA : TEAM_IMC
+	local isFFABased = IsFFABased()
 	local explodeRadius = proximityMine.GetDamageRadius()
 	local triggerRadius = ( ( explodeRadius * 0.75 ) + 0.5 ).tointeger()
 	local lastTimeNPCsChecked = 0
@@ -977,9 +978,13 @@ function ProximityMineThink( proximityMine, owner )
 	{
 		if ( lastTimeNPCsChecked + NPCTickRate <= Time() )
 		{
-			local nearbyNPCs = GetNPCArrayEx( "any", enemyTeam, proximityMine.GetOrigin(), triggerRadius )
+			local npcTeam = isFFABased ? -1 : enemyTeam
+			local nearbyNPCs = GetNPCArrayEx( "any", npcTeam, proximityMine.GetOrigin(), triggerRadius )
 			foreach( ent in nearbyNPCs )
 			{
+				if ( ShouldPreventFriendlyFire( proximityMine, ent ) )
+					continue
+
 				if ( ShouldSetOffProximityMine( proximityMine, ent ) )
 				{
 					ProximityMine_Explode( proximityMine, owner )
@@ -989,9 +994,17 @@ function ProximityMineThink( proximityMine, owner )
 			lastTimeNPCsChecked = Time()
 		}
 
-		local nearbyPlayers = GetPlayerArrayEx( "any", enemyTeam, proximityMine.GetOrigin(), triggerRadius )
+		local nearbyPlayers
+		if ( isFFABased )
+			nearbyPlayers = GetPlayerArrayEx( "any", -1, proximityMine.GetOrigin(), triggerRadius )
+		else
+			nearbyPlayers = GetPlayerArrayEx( "any", enemyTeam, proximityMine.GetOrigin(), triggerRadius )
+
 		foreach( ent in nearbyPlayers )
 		{
+			if ( ShouldPreventFriendlyFire( proximityMine, ent ) )
+				continue
+
 			if ( ShouldSetOffProximityMine( proximityMine, ent ) )
 			{
 				ProximityMine_Explode( proximityMine, owner )

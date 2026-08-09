@@ -440,40 +440,166 @@ if ( !IsTrainingLevel() )
 				FadeOutSoundOnEntity( player, alias, fadeTime )
 	}
 
+	function SimulationStartSpawnLifecycleIsValid( player, token )
+	{
+		if ( !IsValid( player )
+			|| !player.hasConnected
+			|| !IsAlive( player )
+			|| !( "simulationSpawnRetryToken" in player.s )
+			|| player.s.simulationSpawnRetryToken != token )
+		{
+			return false
+		}
+
+		switch ( GetGameState() )
+		{
+			case eGameState.Prematch:
+			case eGameState.Playing:
+			case eGameState.SuddenDeath:
+				break
+
+			default:
+				return false
+		}
+
+		if ( PlayerShouldObserve( player ) )
+			return false
+
+		if ( IsPlayerInCinematic( player )
+			&& ( !( "playersWatchingIntro" in level ) || !ArrayContains( level.playersWatchingIntro, player ) ) )
+		{
+			return false
+		}
+
+		return true
+	}
+
+	function ReleaseSimulationStartSpawnReservation( reservation, token )
+	{
+		local spawnPoint = reservation.spawnPoint
+		if ( IsValid( spawnPoint )
+			&& "simulationSpawnReservationToken" in spawnPoint.s
+			&& spawnPoint.s.simulationSpawnReservationToken == token )
+		{
+			spawnPoint.s.simulationSpawnReservationToken = null
+			spawnPoint.s.inUse = false
+		}
+
+		reservation.spawnPoint = null
+	}
+
+
 	function TeleportPlayerToRealStartSpawn( player )
 	{
-		player.EndSignal( "Disconnected" )
+		if ( !IsValid( player ) )
+			return
 
 		if ( IsRoundBased() && GetRoundsPlayed() > 0 )
 			return  // subsequent rounds don't do custom intro so gamestate scripts can handle spawning
 
+		if ( !( "simulationSpawnRetryToken" in player.s ) )
+			player.s.simulationSpawnRetryToken <- null
+		if ( player.s.simulationSpawnRetryToken != null )
+			return
+
+		local token = UniqueString( "simulation_start_spawn" )
+		player.s.simulationSpawnRetryToken = token
+		local reservation = {
+			spawnPoint = null
+		}
+
+		player.EndSignal( "Disconnected" )
+		player.EndSignal( "OnDeath" )
+
+		OnThreadEnd(
+			function() : ( player, token, reservation )
+			{
+				ReleaseSimulationStartSpawnReservation( reservation, token )
+
+				if ( IsValid( player )
+					&& "simulationSpawnRetryToken" in player.s
+					&& player.s.simulationSpawnRetryToken == token )
+				{
+					player.s.simulationSpawnRetryToken = null
+				}
+			}
+		)
+
+		if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+			return
+
 		if ( ShouldIntroSpawnAsTitan() )
 		{
-			// spawn as a titan
-			player.SetPlayerSettings( "spectator" )
-			TitanPlayerHotDropsIntoLevel( player )
+			// Titan spawning owns its own point reservation while this wrapper retains the simulation owner.
+			while ( SimulationStartSpawnLifecycleIsValid( player, token ) && !player.IsTitan() )
+			{
+				waitthread TitanPlayerHotDropsIntoLevel( player, null, null, true, token )
+				if ( SimulationStartSpawnLifecycleIsValid( player, token ) && !player.IsTitan() )
+					wait 0.1
+			}
+
+			if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+				return
 		}
 		else
 		{
-			// spawn as a pilot
-			local spawnpoint = FindStartSpawnPoint( player )
-			spawnpoint.s.inUse = true  // this makes subsequent players not choose the same spawn point
+			player.EndSignal( "OnRespawned" )
+			local spawnPoint
 
-			OnThreadEnd(
-				function() : ( spawnpoint )
+			while ( !spawnPoint )
+			{
+				while ( !spawnPoint )
 				{
-					if ( IsValid( spawnpoint ) )
-						spawnpoint.s.inUse = false
-				}
-			)
+					if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+						return
 
-			WaitEndFrame() // let the last function's OnThreadEnd clear parent before setting origin
+					spawnPoint = FindStartSpawnPoint( player )
+
+					if ( !spawnPoint )
+					{
+						if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+							return
+						wait 0.1
+					}
+				}
+
+				if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+					return
+
+				reservation.spawnPoint = spawnPoint
+				if ( !( "simulationSpawnReservationToken" in spawnPoint.s ) )
+					spawnPoint.s.simulationSpawnReservationToken <- null
+				spawnPoint.s.simulationSpawnReservationToken = token
+				spawnPoint.s.inUse = true
+
+				if ( !SimulationStartSpawnLifecycleIsValid( player, token )
+					|| spawnPoint.s.simulationSpawnReservationToken != token )
+				{
+					return
+				}
+
+				WaitEndFrame()
+				if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+					return
+
+				if ( !IsReservedSpawnpointValid( spawnPoint, player.GetTeam(), player ) )
+				{
+					ReleaseSimulationStartSpawnReservation( reservation, token )
+					spawnPoint = null
+					continue
+				}
+			}
+
 			Assert( player.GetParent() == null, "ERROR Can't teleport player to real start spawn because he's still parented to entity: " + player.GetParent() )
 
+			if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+				return
 			thread TeleportPlayer_MaterializeSFX( player, 0.4 )
 
-			player.SetOrigin( spawnpoint.GetOrigin() )
-			player.SetAngles( spawnpoint.GetAngles() )
+			if ( !SimulationStartSpawnLifecycleIsValid( player, token ) )
+				return
+			player.SetOrigin( spawnPoint.GetOrigin() )
+			player.SetAngles( spawnPoint.GetAngles() )
 
 			//printt( player, "teleported to real start spawn,", "origin:", spawnpoint.GetOrigin(), "angles:", spawnpoint.GetAngles() )
 		}

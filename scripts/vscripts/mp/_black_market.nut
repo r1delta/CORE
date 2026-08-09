@@ -39,7 +39,24 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
 
     switch(level.shopInventoryData[ string ].itemType) {
         case eShopItemType.BURNCARD_PACK:
+            local coinCount = player.GetPersistentVar( "bm.coinCount" )
+            local coinCost = level.shopInventoryData[ string ].coinCost
+
+            if ( coinCount < coinCost )
+            {
+                printt("ClientCommand_ShopPurchaseRequest: " + string + " not enough coins")
+                return false
+            }
+
             local cards = GenerateRandomBurnCardPack(level.shopInventoryData[ string ])
+
+            local deck = GetPlayerBurnCardDeck( player )
+            foreach( card in cards ) {
+                deck.append( { cardRef = level.indexToBurnCard[card], new = true } )
+            }
+            FillBurnCardDeckFromArray( player, deck )
+            player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
+
             // server callback wants the index as a list of params
             // so we need to convert the array to a list of params
             // this is a bit of a hack, but it works
@@ -63,21 +80,6 @@ function ClientCommand_ShopPurchaseRequest(player, ... ) {
                     Remote.CallFunction_UI(player,"ServerCallback_ShopOpenBurnCardPack", null, cards[0], cards[1], cards[2], cards[3], cards[4], cards[5] )
                     break
             }
-            local coinCount = player.GetPersistentVar( "bm.coinCount" )
-            local coinCost = level.shopInventoryData[ string ].coinCost
-            player.SetPersistentVar( "bm.coinCount", coinCount - coinCost )
-            local deck = GetPlayerBurnCardDeck( player )
-
-            if ( coinCount < coinCost )
-            {
-                printt("ClientCommand_ShopPurchaseRequest: " + string + " not enough coins")
-                return false
-            }
-
-            foreach( card in cards ) {
-                deck.append( { cardRef = level.indexToBurnCard[card], new = true } )
-            }
-            FillBurnCardDeckFromArray( player, deck )
             break
         case eShopItemType.PERISHABLE:
             local cardRef = level.indexToBurnCard[ level.shopInventoryData[ string ].itemID ]
@@ -266,20 +268,12 @@ function GenerateRandomBurnCardPack( pack_data )
 
 function MakeBlackMarketPerishable( player, cardRef, coinCost,i )
 {
-    local perishable = {}
-    perishable.nextRestockDate <- Daily_GetCurrentTime() + 86400
-    perishable.perishableType <- "perishable_burncard"
-    perishable.cardRef <- cardRef
-    perishable.coinCost <- coinCost
-
-    perishable.new <- true
-    player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "]", perishable )
-    player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "].nextRestockDate", perishable.nextRestockDate )
-    player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "].perishableType", perishable.perishableType )
-    player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "].cardRef", perishable.cardRef )
-    player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "].coinCost", perishable.coinCost )
-    player.SetPersistentVar( "bm.blackMarketPerishables[" + i + "].new", perishable.new )
-
+    local prefix = "bm.blackMarketPerishables[" + i + "]"
+    player.SetPersistentVar( prefix + ".nextRestockDate", Daily_GetCurrentTime() + 86400 )
+    player.SetPersistentVar( prefix + ".perishableType", "perishable_burncard" )
+    player.SetPersistentVar( prefix + ".cardRef", cardRef )
+    player.SetPersistentVar( prefix + ".coinCost", coinCost )
+    player.SetPersistentVar( prefix + ".new", true )
 }
 
 function OnBlackMarketConnect(player)

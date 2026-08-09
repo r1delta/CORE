@@ -480,7 +480,7 @@ function AOEDamageThread()
 			attacker = level.AOETrapAttacker
 			inflictor = level.AOETrapAttacker
 
-			if ( IsValid( attacker ) && player.GetTeam() == attacker.GetTeam() )
+			if ( IsValid( attacker ) && ShouldPreventFriendlyFire( player, attacker ) )
 				attacker = GetEntByIndex( 0 ) // worldspawn
 
 			player.TakeDamage( damage, attacker, inflictor, { scriptType = DF_INSTANT | DF_ELECTRICAL | DF_GIB, damageSourceId = eDamageSourceId.switchback_trap } )

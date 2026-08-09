@@ -36,7 +36,7 @@ function OnProjectileCollision( collisionParams )
 	local hitEnt = collisionParams.hitent
 	if( hitEnt != null && IsMagneticTarget( hitEnt ) )
 	{
-		if( hitEnt.GetTeam() != self.GetTeam() )
+		if( !ShouldPreventFriendlyFire( hitEnt, self ) )
 			self.Explode( Vector( 0, 0, 0 ) )
 	}
 }

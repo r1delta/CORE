@@ -57,7 +57,7 @@ function SetMissileTarget( missile, target, weaponOwner )
 	if ( !target.IsPlayer() && !target.IsNPC() )
 		return
 
-	if ( target.GetTeam() == weaponOwner.GetTeam() )
+	if ( ShouldPreventFriendlyFire( target, weaponOwner ) )
 		return
 
 	//if ( !target.IsTitan() )

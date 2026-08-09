@@ -167,8 +167,16 @@ function DoLeech( self, leecher = null )
 
 	if ( leecher.IsPlayer() )
 	{
+		local wasEnemy = !ShouldPreventFriendlyFire( self, leecher )
+		local previousOwner = GetEntityOwningPlayer( self )
+
 		if ( self.IsNPC() )
 			self.SetOwnerPlayer( leecher )
+		if ( IsFFABased() && IsValid( previousOwner ) && previousOwner != leecher )
+		{
+			if ( "leechedEnts" in previousOwner.s && self in previousOwner.s.leechedEnts )
+				delete previousOwner.s.leechedEnts[ self ]
+		}
 
 		TableRemoveDeadByKey( leecher.s.leechedEnts )
 
@@ -178,7 +186,7 @@ function DoLeech( self, leecher = null )
 		if ( level.wifiHackOverflowDies == true )
 			ReleaseLeechOverflow( leecher, self )
 
-		if ( self.GetTeam() != leecher.GetTeam() )
+		if ( wasEnemy )
 		{
 			if ( "burnCardLoot" in self.s )
 			{
@@ -192,6 +200,7 @@ function DoLeech( self, leecher = null )
 	{
 		self.ScriptOnLeeched()
 	}
+
 
 	// call a class specific leeching function for custom behavior
 	local targetCN = self.GetClassname()
@@ -208,11 +217,17 @@ function DoLeech( self, leecher = null )
 		OnPlayerLeech( self, leecher )
 }
 
-function GetTeamLeechedEnts( team )
+function GetTeamLeechedEnts( team, owner = null )
 {
-	local players = GetPlayerArrayOfTeam( team )
-	local totalCount = 0
+	if ( IsFFABased() )
+	{
+		if ( !IsValid( owner ) || !owner.IsPlayer() || owner.IsDisconnected() )
+			return []
 
+		return GetLeechedEnts( owner )
+	}
+
+	local players = GetPlayerArrayOfTeam( team )
 	local leechedArray = []
 	foreach( player in players )
 	{
@@ -230,11 +245,19 @@ function GetLeechedEnts( leecher = null )
 		leecher = level.player
 
 	local ents = []
+	if ( !IsValid( leecher ) || !leecher.IsPlayer() || !( "leechedEnts" in leecher.s ) )
+		return ents
+	if ( IsFFABased() && leecher.IsDisconnected() )
+		return ents
 
 	foreach ( ent in leecher.s.leechedEnts )
 	{
-		if ( IsAlive( ent ) )
-			ents.append( ent )
+		if ( !IsAlive( ent ) )
+			continue
+		if ( IsFFABased() && GetEntityOwningPlayer( ent ) != leecher )
+			continue
+
+		ents.append( ent )
 	}
 
 	return ents
@@ -389,6 +412,8 @@ function Leech_SpectreThread( self, leecher )
 
 	self.SetShortTitle( "" )
 	self.SetBossPlayer( leecher )
+	if ( IsFFABased() )
+		UpdateFFAOwnedNPCRelationships()
 
 	OnThreadEnd(
 		function() : ( self, leecher )

@@ -359,7 +359,6 @@ function ProximityTrigger( missile )
 
 	missile.EndSignal( "OnDestroy" )
 	local rangeCheck = PROX_MISSILE_RANGE
-	local team = missile.GetTeam()
 	local origin
 	while( 1 )
 	{
@@ -367,10 +366,10 @@ function ProximityTrigger( missile )
 		local entityArray = ArrayWithinCenter( GetProximityTargets(), origin, rangeCheck )
 		foreach( ent in entityArray )
 		{
-			if ( ent.GetTeam() == team )
+			if ( !IsAlive( ent ) )
 				continue
 
-			if( !IsAlive( ent ) )
+			if ( ShouldPreventFriendlyFire( missile, ent ) )
 				continue
 
 			foreach ( otherMissile in missile.s.spiralMissiles )
@@ -382,6 +381,7 @@ function ProximityTrigger( missile )
 				}
 			}
 			missile.Explode()
+			return
 		}
 
 		wait 0

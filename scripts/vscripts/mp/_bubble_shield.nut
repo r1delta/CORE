@@ -295,7 +295,6 @@ function MonitorLastFireTime( player )
 function DamageTitansWithinBubbleShield( bubbleShield, bubbleShieldPlayer, soulTable )
 {
 	local titans = GetAllTitans()
-	local ownerTeam = IsValid( bubbleShieldPlayer ) ?  bubbleShieldPlayer.GetTeam() : bubbleShield.GetTeam()
 
 	foreach ( titan in titans )
 	{
@@ -303,32 +302,35 @@ function DamageTitansWithinBubbleShield( bubbleShield, bubbleShieldPlayer, soulT
 		if ( !( soul in soulTable ) )
 			soulTable[ soul ] <- 0
 
-		if ( BubbleShieldShouldDamage( bubbleShield, ownerTeam, titan ) )
+		if ( BubbleShieldShouldDamage( bubbleShield, bubbleShieldPlayer, titan ) )
 			BubbleShieldDamageTitan( bubbleShield, bubbleShieldPlayer, titan, soulTable )
 	}
 }
 
 function DamagePilotsWithinBubbleShield( bubbleShield, bubbleShieldPlayer, pilotTable )
 {
-	local ownerTeam = IsValid( bubbleShieldPlayer ) ?  bubbleShieldPlayer.GetTeam() : bubbleShield.GetTeam()
-	local enemyTeam = GetOtherTeam( ownerTeam )
-	local enemyPilots = GetAllPilots( enemyTeam )
+	local ownerTeam = IsValid( bubbleShieldPlayer ) ? bubbleShieldPlayer.GetTeam() : bubbleShield.GetTeam()
+	local enemyPilots
+	if ( IsFFABased() )
+		enemyPilots = GetAllPilots()
+	else
+		enemyPilots = GetAllPilots( GetOtherTeam( ownerTeam ) )
 
 	foreach ( pilot in enemyPilots )
 	{
 		if ( !( pilot in pilotTable ) )
 			pilotTable[ pilot ] <- 0
 
-		if ( BubbleShieldShouldDamage( bubbleShield, ownerTeam, pilot ) )
+		if ( BubbleShieldShouldDamage( bubbleShield, bubbleShieldPlayer, pilot ) )
 			BubbleShieldDamagePilot( bubbleShield, bubbleShieldPlayer, pilot, pilotTable )
 	}
 }
 
 function DamageMinionsWithinBubbleShield( bubbleShield, bubbleShieldPlayer, npcTable )
 {
-	local ownerTeam = IsValid( bubbleShieldPlayer ) ?  bubbleShieldPlayer.GetTeam() : bubbleShield.GetTeam()
-	local enemyTeam = GetOtherTeam( ownerTeam )
-	local enemyMinions = GetNPCArrayEx( "any", enemyTeam, Vector(0,0,0), -1 )
+	local ownerTeam = IsValid( bubbleShieldPlayer ) ? bubbleShieldPlayer.GetTeam() : bubbleShield.GetTeam()
+	local minionTeam = IsFFABased() ? -1 : GetOtherTeam( ownerTeam )
+	local enemyMinions = GetNPCArrayEx( "any", minionTeam, Vector(0,0,0), -1 )
 
 	foreach ( npc in enemyMinions )
 	{
@@ -339,7 +341,7 @@ function DamageMinionsWithinBubbleShield( bubbleShield, bubbleShieldPlayer, npcT
 		if ( !( npc in npcTable ) )
 			npcTable[ npc ] <- 0
 
-		if ( BubbleShieldShouldDamage( bubbleShield, ownerTeam, npc ) )
+		if ( BubbleShieldShouldDamage( bubbleShield, bubbleShieldPlayer, npc ) )
 			BubbleShieldDamageMinion( bubbleShield, bubbleShieldPlayer, npc, npcTable )
 	}
 }
@@ -347,13 +349,20 @@ function DamageMinionsWithinBubbleShield( bubbleShield, bubbleShieldPlayer, npcT
 
 
 
-function BubbleShieldShouldDamage( bubbleShield, ownerTeam, ent )
+function BubbleShieldShouldDamage( bubbleShield, bubbleShieldPlayer, ent )
 {
 	if ( !IsAlive( ent ) )
 		return false
 
-	if ( ownerTeam == ent.GetTeam() )
+	if ( IsValid( bubbleShieldPlayer ) )
+	{
+		if ( ShouldPreventFriendlyFire( ent, bubbleShieldPlayer ) )
+			return false
+	}
+	else if ( bubbleShield.GetTeam() == ent.GetTeam() )
+	{
 		return false
+	}
 
 	if ( ent.IsTitan() && IsTitanWithinBubbleShield( ent ) )
 		return false

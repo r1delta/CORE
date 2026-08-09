@@ -22,14 +22,18 @@ function main()
 
 function TitanVO_TellPlayersThatAreAlsoFightingThisTarget( attacker, soul, team )
 {
+
 	local voEnum
 	if ( attacker.IsTitan() )
 		voEnum = eTitanVO.FRIENDLY_TITAN_HELPING
 	else
 		voEnum = eTitanVO.PILOT_HELPING
 
-	local atackerIsTitan = attacker.IsTitan()
-	local players = GetPlayerArrayOfTeam( team )
+	local players
+	if ( IsFFABased() )
+		players = GetPlayerArray()
+	else
+		players = GetPlayerArrayOfTeam( team )
 	foreach ( player in players )
 	{
 		if ( !player.IsTitan() )
@@ -37,6 +41,9 @@ function TitanVO_TellPlayersThatAreAlsoFightingThisTarget( attacker, soul, team 
 
 		// attacker gets a score callout
 		if ( player == attacker )
+			continue
+
+		if ( IsFFABased() && !ShouldPreventFriendlyFire( player, attacker ) )
 			continue
 
 		if ( soul != player.currentTargetPlayerOrSoul_Ent )
@@ -52,6 +59,7 @@ function TitanVO_TellPlayersThatAreAlsoFightingThisTarget( attacker, soul, team 
 
 function TitanVO_AlertTitansTargetingThisTitanOfRodeo( rodeoer, soul )
 {
+
 	local team = rodeoer.GetTeam()
 
 	local players = GetPlayerArray()
@@ -60,8 +68,15 @@ function TitanVO_AlertTitansTargetingThisTitanOfRodeo( rodeoer, soul )
 		if ( !player.IsTitan() )
 			continue
 
-		if ( player.GetTeam() != team )
+		if ( IsFFABased() )
+		{
+			if ( !ShouldPreventFriendlyFire( player, rodeoer ) )
+				continue
+		}
+		else if ( player.GetTeam() != team )
+		{
 			continue
+		}
 
 		if ( soul != player.currentTargetPlayerOrSoul_Ent )
 			continue
@@ -78,6 +93,7 @@ function TitanVO_DelayedTitanDown( entity )
 {
 	local titanOrigin = entity.GetOrigin()
 	local team = entity.GetTeam()
+	local titanOwner = GetEntityOwningPlayer( entity )
 
 	wait 0.9
 
@@ -93,29 +109,45 @@ function TitanVO_DelayedTitanDown( entity )
 		if ( DistanceSqr( titanOrigin, player.GetOrigin() ) > dist )
 			continue
 
-		if ( player.GetTeam() != team )
-			Remote.CallFunction_Replay( player, "SCB_TitanDialogue", eTitanVO.ENEMY_TITAN_DEAD )
-		else
+		local isFriendly = player.GetTeam() == team
+		if ( IsFFABased() && IsValid( titanOwner ) )
+			isFriendly = ShouldPreventFriendlyFire( player, titanOwner )
+
+		if ( isFriendly )
 			Remote.CallFunction_Replay( player, "SCB_TitanDialogue", eTitanVO.FRIENDLY_TITAN_DEAD )
+		else
+			Remote.CallFunction_Replay( player, "SCB_TitanDialogue", eTitanVO.ENEMY_TITAN_DEAD )
 	}
 }
 
 
 function TitanVO_AlertTitansIfTargetWasKilled( victim, attacker )
 {
-	local team = GetOtherTeam( victim.GetTeam() )
-	local players = GetPlayerArrayOfTeam( team )
+	local isFFA = IsFFABased()
+	local players
+	if ( isFFA )
+		players = GetPlayerArray()
+	else
+		players = GetPlayerArrayOfTeam( GetOtherTeam( victim.GetTeam() ) )
 
+	local victimRelationshipEntity = victim
 	if ( victim.IsTitan() )
 		victim = victim.GetTitanSoul()
+
+	local attackerOwner = GetEntityOwningPlayer( attacker )
 
 	foreach ( player in players )
 	{
 		if ( !player.IsTitan() )
 			continue
 
+		if ( isFFA && ShouldPreventFriendlyFire( player, victimRelationshipEntity ) )
+			continue
+
 		// attacker gets a score callout
 		if ( player == attacker )
+			continue
+		if ( isFFA && IsValid( attackerOwner ) && player == attackerOwner )
 			continue
 
 		if ( victim != player.currentTargetPlayerOrSoul_Ent )

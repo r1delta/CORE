@@ -187,12 +187,11 @@ function GetProjectileSpeed()
 function ShouldBleed( hitParams )
 {
 	local owner = self.GetWeaponOwner()
-	local myTeam = owner.GetTeam()
 	local victim = hitParams.hitEnt
 	local classname = hitParams.hitEnt.GetClassname()
 
 
-	if (victim.GetTeam() == myTeam)
+	if ( ShouldPreventFriendlyFire( victim, owner ) )
 		return false
 
 	if	(classname == "npc_soldier")
@@ -1101,7 +1100,7 @@ function IsValidPassThroughTarget( target, attacker )
 	if ( !IsValid( target ) )
 		return false
 
-	if ( target.GetTeam() == attacker.GetTeam() )
+	if ( ShouldPreventFriendlyFire( target, attacker ) )
 		return false
 
 	if ( target.GetTeam() != TEAM_IMC && target.GetTeam() != TEAM_MILITIA )

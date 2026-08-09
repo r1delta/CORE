@@ -12,6 +12,8 @@ function main()
 	Globalize( MiscHUD_AddPlayer )
 
 	RegisterServerVarChangeCallback( "gameState", GameState_Changed )
+	RegisterServerVarChangeCallback( "ffaBased", FFAState_Changed )
+	FFAState_Changed()
 	RegisterServerVarChangeCallback( "badRepPresent", UpdateScoreboardBadRepPresentMessage )
 	//RegisterServerVarChangeCallback( "switchingSides", SwitchingSides_Changed )
 	//RegisterServerVarChangeCallback( "gameStartTime", GameStartTime_Changed )
@@ -609,6 +611,11 @@ function GameStateThink_SwitchingSides( player )
 }
 
 
+function FFAState_Changed()
+{
+	R1Delta_SetFFABased( level.nv.ffaBased )
+}
+
 function GameState_Changed()
 {
 	local player = GetLocalClientPlayer()
@@ -820,7 +827,7 @@ function SwitchingSides_Changed_threaded()
 }
 
 
-function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDeterminedWait )
+function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDeterminedWait, hasWinningPlayer, isWinningPlayer )
 {
 	local player = GetLocalClientPlayer()
 
@@ -828,16 +835,8 @@ function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDetermi
 	if ( subStringIndex )
 		subString = GetStringFromID( subStringIndex )
 
-	local winningPlayer = null
-	if ( IsFFABased() )
-	{
-		local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
-		if ( players.len() )
-			winningPlayer = players[0]
-	}
-	local isFFAWinner = player == winningPlayer
 
-	if ( !level.nv.winningTeam && !winningPlayer )
+	if ( !level.nv.winningTeam && ( !IsFFABased() || !hasWinningPlayer ) )
 	{
 		local outcomeAnnouncement = CAnnouncement( "#GAMEMODE_DRAW" )
 		outcomeAnnouncement.SetSubText( subString )
@@ -849,7 +848,7 @@ function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDetermi
 
 		SmartGlass_SendEvent( "MatchDraw", "", "", "" )
 	}
-	else if ( player.GetTeam() == level.nv.winningTeam || isFFAWinner )
+	else if ( player.GetTeam() == level.nv.winningTeam || ( IsFFABased() && isWinningPlayer ) )
 	{
 		local outcomeAnnouncement = CAnnouncement( "#GAMEMODE_VICTORY" )
 		outcomeAnnouncement.SetSubText( subString )
@@ -861,7 +860,7 @@ function ServerCallback_AnnounceWinner( teamIndex, subStringIndex, winnerDetermi
 
 		SmartGlass_SendEvent( "MatchVictory", "", "", "" )
 	}
-	else if ( level.nv.winningTeam != TEAM_UNASSIGNED || !isFFAWinner )
+	else
 	{
 		local outcomeAnnouncement = CAnnouncement( "#GAMEMODE_DEFEATED" )
 		outcomeAnnouncement.SetSubText( subString )

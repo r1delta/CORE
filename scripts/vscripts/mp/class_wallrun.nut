@@ -356,7 +356,7 @@ function AdjustDamageForRodeoPlayers( player, damageInfo, attacker )
 		maxPer500ms = 56
 	}
 	else
-	if ( playerParent.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( playerParent, player ) )
 	{
 		// riding same team titan protects you a bit from random fire on that titan
 		if ( damageInfo.GetCustomDamageType() & DF_EXPLOSION )

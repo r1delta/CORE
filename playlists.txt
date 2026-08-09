@@ -2329,7 +2329,7 @@
 			"description"	"#PL_pilot_hunter_desc"
 			"max players"	"18"
 			"cmdlineMapLoad"	"0"
-			"max teams"	"1"
+			"max teams"	"2"
 			"visible"	"0"
 			"TDM_scorelimit"	"50"
 			"TDM_timelimit"	"15"

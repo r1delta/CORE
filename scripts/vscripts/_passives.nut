@@ -283,12 +283,11 @@ function GetRevealParms( player )
 
 function UpdateMinimapStatusToOtherPlayers( player )
 {
-	local team = player.GetTeam()
 	local players = GetPlayerArray()
 	foreach ( otherPlayer in players )
 	{
 		// teammates are on minimap by default
-		if ( team == otherPlayer.GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, otherPlayer ) )
 			continue
 
 		local reveal = GetRevealParms( otherPlayer )
@@ -300,12 +299,11 @@ Globalize( UpdateMinimapStatusToOtherPlayers )
 
 function UpdateTitanMinimapStatusToOtherPlayers( titan )
 {
-	local team = titan.GetTeam()
 	local players = GetPlayerArray()
 	foreach ( otherPlayer in players )
 	{
 		// teammates are on minimap by default
-		if ( team == otherPlayer.GetTeam() )
+		if ( ShouldPreventFriendlyFire( titan, otherPlayer ) )
 			continue
 
 		local reveal = GetRevealParms( otherPlayer )
@@ -319,12 +317,11 @@ Globalize( UpdateTitanMinimapStatusToOtherPlayers )
 
 function UpdateAIMinimapStatusToOtherPlayers( guy )
 {
-	local team = guy.GetTeam()
 	local players = GetPlayerArray()
 	foreach ( otherPlayer in players )
 	{
 		// teammates are on minimap by default
-		if ( team == otherPlayer.GetTeam() )
+		if ( ShouldPreventFriendlyFire( guy, otherPlayer ) )
 			continue
 
 		local reveal = GetRevealParms( otherPlayer )
@@ -336,7 +333,6 @@ Globalize( UpdateAIMinimapStatusToOtherPlayers )
 
 function UpdateMinimapStatus( player )
 {
-	local team = player.GetTeam()
 	local reveal = GetRevealParms( player )
 
 	local players = GetPlayerArray()
@@ -344,7 +340,7 @@ function UpdateMinimapStatus( player )
 	{
 		foreach ( target in players )
 		{
-			if ( team != target.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_AlwaysShow( TEAM_INVALID, player )
 		}
 	}
@@ -352,7 +348,7 @@ function UpdateMinimapStatus( player )
 	{
 		foreach ( target in players )
 		{
-			if ( team != target.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( target, player ) )
 			{
 				target.Minimap_DisplayDefault( TEAM_INVALID, player )
 			}
@@ -364,7 +360,7 @@ function UpdateMinimapStatus( player )
 	{
 		foreach ( target in titans )
 		{
-			if ( team != target.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_AlwaysShow( TEAM_INVALID, player )
 		}
 	}
@@ -372,7 +368,7 @@ function UpdateMinimapStatus( player )
 	{
 		foreach ( target in titans )
 		{
-			if ( team != target.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( target, player ) )
 			{
 				target.Minimap_DisplayDefault( TEAM_INVALID, player )
 			}
@@ -386,7 +382,7 @@ function UpdateMinimapStatus( player )
 	{
 		foreach ( target in ai )
 		{
-			if ( team != target.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_AlwaysShow( TEAM_INVALID, player )
 		}
 	}
@@ -394,7 +390,7 @@ function UpdateMinimapStatus( player )
 	{
 		foreach ( target in ai )
 		{
-			if ( team != target.GetTeam() )
+			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_DisplayDefault( TEAM_INVALID, player )
 		}
 	}
@@ -447,12 +443,10 @@ function MinimapNPCSpawned( guy )
 {
 	// show up on minimap for player that has the passive
 
-	local team = guy.GetTeam()
-	local otherTeam = GetOtherTeam( team )
-	local players = GetPlayerArrayOfTeam( otherTeam )
+	local players = GetPlayerArray()
 	foreach ( player in players )
 	{
-		if ( !PlayerRevealsNPCs( player ) )
+		if ( !PlayerRevealsNPCs( player ) || ShouldPreventFriendlyFire( guy, player ) )
 			continue
 
 		guy.Minimap_AlwaysShow( TEAM_INVALID, player )
@@ -469,12 +463,10 @@ function PlayerRevealsPlayers( player )
 
 function MinimapPlayerConnected( guy )
 {
-	local team = guy.GetTeam()
-	local otherTeam = GetOtherTeam( team )
-	local players = GetPlayerArrayOfTeam( otherTeam )
+	local players = GetPlayerArray()
 	foreach ( player in players )
 	{
-		if ( !PlayerRevealsPlayers( player ) )
+		if ( !PlayerRevealsPlayers( player ) || ShouldPreventFriendlyFire( guy, player ) )
 			continue
 
 		guy.Minimap_AlwaysShow( TEAM_INVALID, player )

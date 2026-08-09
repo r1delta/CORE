@@ -654,8 +654,7 @@ function DropReplacementTitan( player, spawnPoint )
 
 	player.Signal( "CalledInReplacementTitan" )
 
-	local otherTeam = GetOtherTeam(player.GetTeam())
-	TryAnnounceTitanfallWarningToTeam( origin, otherTeam )
+	TryAnnounceTitanfallWarningToOpponents( origin, player )
 
 	local titan
 	local animation
@@ -727,23 +726,32 @@ function DropReplacementTitan( player, spawnPoint )
 	thread TitanNPC_PostHotDrop_Think( titan )
 }
 
-function TryAnnounceTitanfallWarningToTeam( origin, team )
+function TryAnnounceTitanfallWarningToPlayer( origin, player )
 {
 	local innerDistance = TITANFALL_OUTER_RADIUS * TITANFALL_OUTER_RADIUS
 	local outerDistance = innerDistance * 4
+	local distSqr = DistanceSqr( origin, player.GetOrigin() )
 
-	local teamPlayers = GetPlayerArrayOfTeam( team )
-	foreach ( teamPlayer in teamPlayers )
+	if ( distSqr > outerDistance )
+		return
+
+	Remote.CallFunction_NonReplay( player, "ServerCallback_TitanFallWarning", distSqr < innerDistance )
+}
+
+function TryAnnounceTitanfallWarningToTeam( origin, team )
+{
+	foreach ( player in GetPlayerArrayOfTeam( team ) )
+		TryAnnounceTitanfallWarningToPlayer( origin, player )
+}
+
+function TryAnnounceTitanfallWarningToOpponents( origin, owner )
+{
+	foreach ( player in GetPlayerArray() )
 	{
-		local distSqr = DistanceSqr( origin, teamPlayer.GetOrigin() )
-
-		if ( distSqr > outerDistance )
+		if ( ShouldPreventFriendlyFire( owner, player ) )
 			continue
 
-		if ( distSqr < innerDistance )
-			Remote.CallFunction_NonReplay( teamPlayer, "ServerCallback_TitanFallWarning", true )
-		else
-			Remote.CallFunction_NonReplay( teamPlayer, "ServerCallback_TitanFallWarning", false )
+		TryAnnounceTitanfallWarningToPlayer( origin, player )
 	}
 }
 Globalize( TryAnnounceTitanfallWarningToTeam )
@@ -774,8 +782,7 @@ function ForceReplacementTitan( player, spawnPoint )
 
 	printt( "Dropping replacement titan at " + origin + " with angles " + angles )
 
-	local otherTeam = GetOtherTeam(player.GetTeam())
-	TryAnnounceTitanfallWarningToTeam( origin, otherTeam )
+	TryAnnounceTitanfallWarningToOpponents( origin, player )
 
 	local titan
 	local animation

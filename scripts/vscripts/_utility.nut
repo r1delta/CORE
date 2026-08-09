@@ -2696,6 +2696,19 @@ function FakePlayerAwareness( npc, endSig = null )
 	}
 }
 
+function GetAiRelationshipEntityName( entity )
+{
+	Assert( IsValid( entity ), "ai_relationship endpoint is invalid" )
+
+	local name = entity.GetName()
+	if ( name != "" && GetEntArrayByName_Expensive( name ).len() == 1 )
+		return name
+
+	name = UniqueString( "ai_relationship_endpoint" )
+	entity.SetName( name )
+	return name
+}
+
 function createAiRelationship( subject, target, disposition = "D_HT", rank = 0, reciprocal = 1 )
 {
 	local dispositionList = { D_HT = 1, D_FR = 2, D_LI = 3, D_NU = 4 };
@@ -2703,12 +2716,12 @@ function createAiRelationship( subject, target, disposition = "D_HT", rank = 0, 
 
 	local ai_relationship = CreateEntity( "ai_relationship" )
 	ai_relationship.SetName( UniqueString( "ai_relationship" ) )
-	ai_relationship.kv.subject = subject
-	ai_relationship.kv.target = target
-	ai_relationship.kv.disposition = dispositionList[ disposition ]
-	ai_relationship.kv.StartActive = 1
-	ai_relationship.kv.rank = rank
-	ai_relationship.kv.Reciprocal = reciprocal
+	ai_relationship.Set( "subject", GetAiRelationshipEntityName( subject ) )
+	ai_relationship.Set( "target", GetAiRelationshipEntityName( target ) )
+	ai_relationship.Set( "disposition", dispositionList[ disposition ] )
+	ai_relationship.Set( "StartActive", 1 )
+	ai_relationship.Set( "rank", rank )
+	ai_relationship.Set( "reciprocal", reciprocal )
 	DispatchSpawn( ai_relationship, false )
 
 	return ai_relationship
@@ -3965,7 +3978,7 @@ function IsFriendlyGruntOrSpectre( hitEnt, testEnt )
 	if ( !IsNPC( hitEnt ) )
 		return false
 
-	if ( hitEnt.GetTeam() != testEnt.GetTeam() )
+	if ( !ShouldPreventFriendlyFire( hitEnt, testEnt ) )
 		return false
 
 	if ( hitEnt.IsSpectre() )
@@ -4987,6 +5000,18 @@ function EmitSoundOnEntityToTeamExceptPlayer( ent, sound, team, excludePlayer )
 		EmitSoundOnEntityOnlyToPlayer( ent, player, sound )
 	}
 }
+function EmitSoundOnEntityToOpponents( ent, sound )
+{
+	foreach ( player in GetPlayerArray() )
+	{
+		if ( ShouldPreventFriendlyFire( ent, player ) )
+			continue
+
+		EmitSoundOnEntityOnlyToPlayer( ent, player, sound )
+	}
+}
+
+
 
 
 function DamageRange( value, headShotMultiplier, health = 200 )

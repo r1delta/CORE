@@ -2533,28 +2533,34 @@ Globalize( GetMapName )
 
 function AddMenuEventHandler( menu, event, func )
 {
-	menu.s.scope <- this
+	local eventFuncName
 
 	if ( event == eUIEvent.MENU_OPEN )
-	{
-		Assert( menu.s.openFunc == null )
-		menu.s.openFunc <- func
-	}
+		eventFuncName = "openFunc"
 	else if ( event == eUIEvent.MENU_CLOSE )
-	{
-		Assert( menu.s.closeFunc == null )
-		menu.s.closeFunc <- func
-	}
+		eventFuncName = "closeFunc"
 	else if ( event == eUIEvent.MENU_NAVIGATE_BACK )
-	{
-		Assert( menu.s.navBackFunc == null )
-		menu.s.navBackFunc <- func
-	}
+		eventFuncName = "navBackFunc"
 	else if ( event == eUIEvent.MENU_INPUT_MODE_CHANGED )
+		eventFuncName = "inputModeChangedFunc"
+	else
 	{
-		Assert( menu.s.inputModeChangedFunc == null )
-		menu.s.inputModeChangedFunc <- func
+		Assert( false, "Unsupported event passed to AddMenuEventHandler" )
+		return
 	}
+
+	if ( "scope" in menu.s )
+		Assert( menu.s.scope == this, "Menu event handlers must share a scope" )
+	else
+		menu.s.scope <- this
+
+	if ( eventFuncName in menu.s )
+	{
+		Assert( menu.s[ eventFuncName ] == func, "Menu already has a different handler for this event" )
+		return
+	}
+
+	menu.s[ eventFuncName ] <- func
 }
 
 thread main()

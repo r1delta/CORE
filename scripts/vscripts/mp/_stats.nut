@@ -54,7 +54,7 @@ function StatsOnRodeo_Think( player )
                 return
         }
 
-        if ( titan.GetTeam() == GetOtherTeam( player ) )
+        if ( !ShouldPreventFriendlyFire( titan, player ) )
         {
             Stats_IncrementStat( player, "misc_stats", "rodeos", 1.0 )
 
@@ -127,6 +127,8 @@ function Stats_EndRound()
         }
 
         local winStreak = player.GetPersistentVar( "winStreak" )
+        if ( winStreak == null )
+            winStreak = 0
         local highestWinStreak = player.GetPersistentVar( "highestWinStreak" )
     
         local j = 0
@@ -137,7 +139,20 @@ function Stats_EndRound()
         local winLossHistory = player.GetPersistentVar("winLossHistorySize")
         if ( winLossHistory == null )
             winLossHistory = 0
-        if( GetCurrentWinner() == player.GetTeam() )
+        local isDraw
+        local isWinner
+        if ( IsFFABased() )
+        {
+            isDraw = level.winningPlayer == null
+            isWinner = !isDraw && player == level.winningPlayer
+        }
+        else
+        {
+            isDraw = !level.nv.winningTeam || level.nv.winningTeam == TEAM_UNASSIGNED
+            isWinner = !isDraw && IsWinningTeam( player.GetTeam() )
+        }
+
+        if ( isWinner )
         {
             if ( GetCinematicMode() )
             {
@@ -151,10 +166,7 @@ function Stats_EndRound()
                     player.SetPersistentVar( "campaignMapWonMCOR[" + levelIndex + "]", 1 )
             }
 
-            Stats_IncrementStat( player, "game_stats", "mode_won_" + GameRules.GetGameMode(), 1.0 )
             player.SetPersistentVar("winLossHistory[0]", 1)
-            if ( winStreak == null )
-                winStreak = 0
 
             winStreak += 1
 
@@ -178,25 +190,17 @@ function Stats_EndRound()
             } else
                 AddCoins( player, COIN_REWARD_MATCH_VICTORY + COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_VICTORY )
         }
+        else if ( isDraw )
+        {
+            player.SetPersistentVar( "winStreakIsDraws", 1 )
+            player.SetPersistentVar( "winLossHistory[0]", 0 )
+            AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
+        }
         else
         {
-            local imcScore = GameRules.GetTeamScore( TEAM_IMC )
-            local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
-
-            if ( imcScore != militiaScore )
-            {
-                winStreak = 0
-                player.SetPersistentVar("winStreakIsDraws", 0)
-            }
-            else {
-                player.SetPersistentVar("winStreakIsDraws", 1)
-                player.SetPersistentVar("winLossHistory[0]", 0)
-            }
-            player.SetPersistentVar("winLossHistory[0]", -1)
-
-            // These 2 do different things
-            Stats_IncrementStat( player, "game_stats", "mode_played", 1.0 )
-            Stats_IncrementStat( player, "game_stats", "mode_played_" + GameRules.GetGameMode(), 1.0 )
+            winStreak = 0
+            player.SetPersistentVar( "winStreakIsDraws", 0 )
+            player.SetPersistentVar( "winLossHistory[0]", -1 )
 
             Stats_IncrementStat(player,"game_stats","game_lost",1.0)
             AddCoins( player, COIN_REWARD_MATCH_COMPLETION, eCoinRewardType.MATCH_COMPLETION )
@@ -400,7 +404,7 @@ function DistanceAndTimeStats_Think( player )
                 local soul = player.GetTitanSoulBeingRodeoed()
                 local titan = soul.GetBossPlayer()
 
-                if ( titan.GetTeam() == player.GetTeam() )
+                if ( ShouldPreventFriendlyFire( titan, player ) )
                     Stats_IncrementStat( player, "distance_stats", "onFriendlyTitan", distMiles )
                 else
                     Stats_IncrementStat( player, "distance_stats", "onEnemyTitan", distMiles )

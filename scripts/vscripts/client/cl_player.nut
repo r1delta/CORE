@@ -245,7 +245,7 @@ function FindEnemyRodeoParent( player )
 	if ( ent == player.GetPetTitan() )
 		return null
 
-	if ( ent.GetTeam() == player.GetTeam() )
+	if ( ShouldPreventFriendlyFire( ent, player ) )
 		return null
 
 	return ent
@@ -369,7 +369,7 @@ function IsValidTitanRodeoPromptEnt( player, entity )
 	if ( player.GetPetTitan() && entity.IsNPC() && entity == player.GetPetTitan() )
 		return false
 
-	if ( player.GetTeam() != entity.GetTeam() && HoldToRodeoState( player ) == 2 )
+	if ( !ShouldPreventFriendlyFire( player, entity ) && HoldToRodeoState( player ) == 2 )
 		return false
 
 	if ( Distance( player.GetOrigin(), GetTitanHijackOrigin( entity ) ) > 180 )
@@ -569,7 +569,7 @@ function ParentEntJumpJetsActive( player )
 	if ( PlayerHasPassive( player, PAS_STEALTH_MOVEMENT ) ) //Has to be here as opposed to in SetupPlayerAnimEvent because players can switch classes/get the Stealth Movement Mod mid game
 	{
 		//printt( "Stealth Jumpjets, ParentEntJumpJetsActive" )
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( STEALTH_TEAM_JUMPJET_ON )
 			lightID = null
@@ -582,7 +582,7 @@ function ParentEntJumpJetsActive( player )
 	}
 	else
 	{
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( TEAM_JUMPJET_ON )
 			lightID = GetParticleSystemIndex( TEAM_JUMPJET_RT )
@@ -1079,7 +1079,7 @@ function PlayerConnectedOrDisconnected( player, state, disconnectingPlayerName )
 	else
 		playerName = player.GetPlayerName()
 
-	local playerNameColor = player.GetTeamNumber() == GetLocalViewPlayer().GetTeamNumber() ? OBITUARY_COLOR_FRIENDLY : OBITUARY_COLOR_ENEMY
+	local playerNameColor = ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) ? OBITUARY_COLOR_FRIENDLY : OBITUARY_COLOR_ENEMY
 	local connectionString = ( state == 0 ) ? "#MP_PLAYER_DISCONNECTED" : "#MP_PLAYER_CONNECTED"
 
 	Obituary_Print( "", playerName, connectionString, playerNameColor, playerNameColor, OBITUARY_COLOR_WEAPON )
@@ -1985,7 +1985,7 @@ function TryAddGrenadeIndicator( grenade, weaponName )
 		return
 
 	// Grenades dont hurt friendlies, but they hurt the person who created them. Don't show indicators to teammates but show them to the owner
-	if ( grenade.GetTeam() == player.GetTeam() && grenade.GetOwner() != player )
+	if ( ShouldPreventFriendlyFire( grenade, player ) && grenade.GetOwner() != player )
 		return
 
 	switch ( weaponName )
@@ -2657,7 +2657,7 @@ function OnHumanJumpJet( player )
 	if ( PlayerHasPassive( player, PAS_STEALTH_MOVEMENT ) ) //Has to be here as opposed to in SetupPlayerAnimEvent because players can switch classes/get the Stealth Movement Mod mid game
 	{
 		//printt( "Stealth Jumpjets, OnHumanJumpJet" )
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( STEALTH_TEAM_JUMPJET_ON )
 			lightID = null
@@ -2670,7 +2670,7 @@ function OnHumanJumpJet( player )
 	}
 	else
 	{
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( TEAM_JUMPJET_ON )
 			lightID = GetParticleSystemIndex( TEAM_JUMPJET_RT )
@@ -2710,7 +2710,7 @@ function OnHumanJumpJetLeft( player )
 	if ( PlayerHasPassive( player, PAS_STEALTH_MOVEMENT ) ) //Has to be here as opposed to in SetupPlayerAnimEvent because players can switch classes/get the Stealth Movement Mod mid game
 	{
 		//printt( "Stealth Jumpjets, OnHumanJumpJetLeft" )
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( STEALTH_TEAM_JUMPJET_ON )
 		}
@@ -2721,7 +2721,7 @@ function OnHumanJumpJetLeft( player )
 	}
 	else
 	{
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( TEAM_JUMPJET_ON )
 		}
@@ -2748,7 +2748,7 @@ function OnHumanJumpJetRight( player )
 	if ( PlayerHasPassive( player, PAS_STEALTH_MOVEMENT ) ) //Has to be here as opposed to in SetupPlayerAnimEvent because players can switch classes/get the Stealth Movement Mod mid game
 	{
 		//printt( "Stealth Jumpjets, OnHumanJumpJetRight" )
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( STEALTH_TEAM_JUMPJET_ON )
 		}
@@ -2759,7 +2759,7 @@ function OnHumanJumpJetRight( player )
 	}
 	else
 	{
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( TEAM_JUMPJET_ON )
 		}
@@ -2786,7 +2786,7 @@ function OnHumanJumpJetDBL( player )
 	if ( PlayerHasPassive( player, PAS_STEALTH_MOVEMENT ) ) //Has to be here as opposed to in SetupPlayerAnimEvent because players can switch classes/get the Stealth Movement Mod mid game
 	{
 		//printt( "Stealth Jumpjets, OnHumanJumpJetDBL" )
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( STEALTH_TEAM_JUMPJET_DBL )
 		}
@@ -2797,7 +2797,7 @@ function OnHumanJumpJetDBL( player )
 	}
 	else
 	{
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( TEAM_JUMPJET_DBL )
 		}
@@ -2826,7 +2826,7 @@ function OnHumanJumpJetWallRun_Left( player )
 	if ( PlayerHasPassive( player, PAS_STEALTH_MOVEMENT ) ) //Has to be here as opposed to in SetupPlayerAnimEvent because players can switch classes/get the Stealth Movement Mod mid game
 	{
 		//printt( "Stealth Jumpjets, OnHumanJumpWallRun_Left" )
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( STEALTH_TEAM_JUMPJET_WR )
 		}
@@ -2837,7 +2837,7 @@ function OnHumanJumpJetWallRun_Left( player )
 	}
 	else
 	{
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( TEAM_JUMPJET_WR )
 		}
@@ -2862,7 +2862,7 @@ function OnHumanJumpJetWallRun_Right( player )
 	if ( PlayerHasPassive( player, PAS_STEALTH_MOVEMENT ) ) //Has to be here as opposed to in SetupPlayerAnimEvent because players can switch classes/get the Stealth Movement Mod mid game
 	{
 		//printt( "Stealth Jumpjets, OnHumanJumpWallRun_Right" )
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( STEALTH_TEAM_JUMPJET_WR )
 		}
@@ -2874,7 +2874,7 @@ function OnHumanJumpJetWallRun_Right( player )
 	}
 	else
 	{
-		if ( player.GetTeam() == GetLocalViewPlayer().GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, GetLocalViewPlayer() ) )
 		{
 			fxID = GetParticleSystemIndex( TEAM_JUMPJET_WR )
 		}
@@ -3136,7 +3136,7 @@ function ClientCodeCallback_OnMissileCreation( missileEnt, weaponName, firstTime
 			local handle = StartParticleEffectOnEntity( missileEnt, GetParticleSystemIndex( "wpn_laser_blink" ), FX_PATTACH_POINT_FOLLOW, attachID )
 
 			local color = ENEMY_COLOR_FX
-			if ( missileEnt.GetTeam() == GetLocalViewPlayer().GetTeam() )
+			if ( ShouldPreventFriendlyFire( missileEnt, GetLocalViewPlayer() ) )
 				color = FRIENDLY_COLOR_FX
 
 			local colorVec = Vector( color[0], color[1], color[2] )
@@ -3157,12 +3157,12 @@ function ClientCodeCallback_OnMissileCreation( missileEnt, weaponName, firstTime
 			break
 
 		case "mp_weapon_frag_grenade":
-			if ( missileEnt.GetTeam() == GetLocalViewPlayer().GetTeam() )
+			if ( ShouldPreventFriendlyFire( missileEnt, GetLocalViewPlayer() ) )
 				thread GrenadeFXThread( missileEnt, "P_wpn_grenade_frag_icon" )
 			break
 
 		case "mp_weapon_grenade_emp":
-			if ( missileEnt.GetTeam() == GetLocalViewPlayer().GetTeam() )
+			if ( ShouldPreventFriendlyFire( missileEnt, GetLocalViewPlayer() ) )
 				thread GrenadeFXThread( missileEnt, "P_wpn_grenade_frag_blue_icon" )
 			break
 	}
@@ -3337,7 +3337,7 @@ function DirectUsePromptDraw( player, ent )
 		if ( player.GetParent() != ent )
 			break
 
-		if ( player.GetTeam() == ent.GetTeam() )
+		if ( ShouldPreventFriendlyFire( player, ent ) )
 			break
 
 		wait 0
@@ -3782,7 +3782,7 @@ function GetHealthBarTargetEntity( player )
 		return null
 
 	local titanBeingRodeoed = GetTitanBeingRodeoed( player )
-	if ( IsValid( titanBeingRodeoed ) && titanBeingRodeoed.GetTeam() != player.GetTeam() )
+	if ( IsValid( titanBeingRodeoed ) && !ShouldPreventFriendlyFire( titanBeingRodeoed, player ) )
 		return titanBeingRodeoed
 
 	if ( !IsAlive( GetHealthBarEntity( player ) ) )
@@ -3797,6 +3797,9 @@ function GetHealthBarTargetEntity( player )
 
 function IsEnemyTeam( firstEntity, secondEntity )
 {
+	if ( IsFFABased() )
+		return !ShouldPreventFriendlyFire( firstEntity, secondEntity )
+
 	if ( ( firstEntity.GetTeamNumber() == TEAM_MILITIA ) && ( secondEntity.GetTeamNumber() == TEAM_IMC ) )
 		return true
 	if ( ( secondEntity.GetTeamNumber() == TEAM_MILITIA ) && ( firstEntity.GetTeamNumber() == TEAM_IMC ) )

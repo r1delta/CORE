@@ -298,7 +298,7 @@ function PlayerBeginsRodeo( player, rodeoPackage, titan )
 	player.SetNameVisibleToEnemy( false )
 
 	local soul = titan.GetTitanSoul()
-	local sameTeam = player.GetTeam() == titan.GetTeam()
+	local sameTeam = ShouldPreventFriendlyFire( player, titan )
 	local playerWasEjecting = player.pilotEjecting // have to store this off here because the "RodeoStarted" signal below ends eject, so it will be too late to check it in actual rodeo function
 
 	local e = {}
@@ -533,7 +533,7 @@ function PlayerLerpsIntoTitanRodeo( player, titan, package, doHatchRip = false, 
 	if ( !( player in soul.rodeoRiderTracker ) )
 	{
 		soul.rodeoRiderTracker[ player ] <- true
-		if ( titan.GetTeam() == player.GetTeam() )
+		if ( ShouldPreventFriendlyFire( titan, player ) )
 		{
 			AddPlayerScore( player, "HitchRide" )
 			AddPlayerScore( titan, "GiveRide" )
@@ -845,7 +845,7 @@ function SpectreBeginsRodeo( spectre, rodeoPackage, titan )
 	Assert( spectre.IsSpectre() )
 
 	local soul = titan.GetTitanSoul()
-	local sameTeam = spectre.GetTeam() == titan.GetTeam()
+	local sameTeam = ShouldPreventFriendlyFire( spectre, titan )
 
 	if ( sameTeam )
 	{
