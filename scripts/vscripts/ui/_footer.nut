@@ -653,11 +653,28 @@ function AppendPCInviteLabels( footerData )
 	return footerData
 }
 
+function WaitForActiveMenu()
+{
+	// UI boot threads can start before the framework publishes its menu state.
+	// Poll instead of indexing keys that may not exist yet, and never wait on a
+	// signal dummy that is not present (script-error guard for early UI init).
+	while ( !( "activeMenu" in uiGlobal ) || !uiGlobal.activeMenu )
+	{
+		if ( "signalDummy" in uiGlobal )
+			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		else
+			wait 0
+	}
+}
+
 function MonitorMenuChange()
 {
 	while ( 1 )
 	{
-		WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		if ( "signalDummy" in uiGlobal )
+			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		else
+			wait 0
 
 		if ( uiGlobal.activeMenu != null )
 			UpdateFooterButtons()
@@ -671,8 +688,7 @@ function UpdatePlayerlistFocused()
 	while( 1 )
 	{
 		// make sure this isn't running during gameplay and hurting framerate
-		while ( !uiGlobal.activeMenu )
-			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		WaitForActiveMenu()
 
 		local focusedItem = GetFocus()
 
@@ -697,8 +713,7 @@ function UpdateXboxCanInvite()
 
 	while ( 1 )
 	{
-		while ( !uiGlobal.activeMenu )
-			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		WaitForActiveMenu()
 
 		uiGlobal.canXBoxInvite = ( uiGlobal.installComplete && IsFooterMenu() && IsConnected() && Durango_CanInviteFriends() && Durango_IsJoinable() )
 
@@ -725,8 +740,7 @@ function UpdateXboxCanOpenPartyApp()
 
 	while ( 1 )
 	{
-		while ( !uiGlobal.activeMenu )
-			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		WaitForActiveMenu()
 
 		uiGlobal.canXBoxOpenPartyApp = ( uiGlobal.installComplete && IsFooterMenu() && IsConnected() && Durango_IsSignedIn() )
 
@@ -753,8 +767,7 @@ function UpdateOriginInvite()
 
 	while ( 1 )
 	{
-		while ( !uiGlobal.activeMenu )
-			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		WaitForActiveMenu()
 
 		uiGlobal.canOriginInvite = ( IsFooterMenu() && (uiGlobal.activeMenu != GetMenu( "MouseKeyboardBindingsMenu") ) && IsConnected() && AmIPartyLeader() && Origin_IsJoinable() )
 
@@ -784,8 +797,7 @@ function UpdatePrivateMatchSwitchTeams()
 
 	while ( 1 )
 	{
-		while ( !uiGlobal.activeMenu )
-			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		WaitForActiveMenu()
 
 		local isPrivateMatch = IsPrivateMatch()
 
@@ -817,8 +829,7 @@ function UpdateCanSetDataCenter()
 
 	while ( 1 )
 	{
-		while ( !uiGlobal.activeMenu )
-			WaitSignal( uiGlobal.signalDummy, "ActiveMenuChanged" )
+		WaitForActiveMenu()
 
 		uiGlobal.canSetDataCenter = uiGlobal.activeMenu == mainMenu && uiGlobal.mainMenuFocus != null && uiGlobal.activeDialog == null && ( !Durango_IsDurango() || (Durango_IsOnline() && Durango_IsSignedIn()) )
 
