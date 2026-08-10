@@ -592,7 +592,8 @@ function ZiplineRetracts( zipline )
 				zipline.mid.Kill()
 
 			// is the only one that's not parented and only gets deleted here
-			zipline.end.Kill()
+			if ( IsValid( zipline.end ) )
+				zipline.end.Kill()
 		}
 	)
 

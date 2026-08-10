@@ -833,12 +833,12 @@ function GetEntityOwningPlayer( entity )
 		local owner = current.GetOwner()
 		if ( !IsValid( owner ) || owner == current )
 			break
-
 		current = owner
 	}
 
 	return null
 }
+Globalize( GetEntityOwningPlayer )
 
 
 function GetOtherTeam( guy )
