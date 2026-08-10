@@ -270,13 +270,17 @@ function AlertDpadIcon_Internal( player, cockpit, dpadButton, numPings, numCycle
 function GetCockpitDpadElement( player, key, dpadButton )
 {
 	// Cockpit dpad element tables can be recreated or freed while a titan HUD
-	// update is in flight; return null instead of indexing missing/invalid state.
+	// update is in flight; return null instead of touching a dead element.
+	// HUD elements are not entities: use IsValidInternal (vanilla R1 pattern),
+	// never IsValid, which is false for every script HUD element.
 	local cockpit = player.GetCockpit()
 	if ( !IsValid( cockpit ) || !( key in cockpit.s ) || !( dpadButton in cockpit.s[ key ] ) )
 		return null
 
 	local element = cockpit.s[ key ][ dpadButton ]
-	return IsValid( element ) ? element : null
+	if ( !element || !element.IsValidInternal() )
+		return null
+	return element
 }
 
 function HideDpadIcon( player, dpadButton )
