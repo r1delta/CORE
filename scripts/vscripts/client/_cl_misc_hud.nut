@@ -267,20 +267,45 @@ function AlertDpadIcon_Internal( player, cockpit, dpadButton, numPings, numCycle
 }
 
 
+function GetCockpitDpadElement( player, key, dpadButton )
+{
+	// Cockpit dpad element tables can be recreated or freed while a titan HUD
+	// update is in flight; return null instead of touching a dead element.
+	// HUD elements are not entities: use IsValidInternal (vanilla R1 pattern),
+	// never IsValid, which is false for every script HUD element.
+	local cockpit = player.GetCockpit()
+	if ( !IsValid( cockpit ) || !( key in cockpit.s ) || !( dpadButton in cockpit.s[ key ] ) )
+		return null
+
+	local element = cockpit.s[ key ][ dpadButton ]
+	if ( !element || !element.IsValidInternal() )
+		return null
+	return element
+}
+
 function HideDpadIcon( player, dpadButton )
 {
 	player.s.dpadVis[dpadButton] = false
 
-	local cockpit = player.GetCockpit()
-	if ( !IsValid( cockpit ) || !("dpadIcons" in cockpit.s) )
-		return
+	local icon = GetCockpitDpadElement( player, "dpadIcons", dpadButton )
+	if ( icon )
+		icon.Hide()
 
-	cockpit.s.dpadIcons[dpadButton].Hide()
-	cockpit.s.dpadDescs[dpadButton].Hide()
-	cockpit.s.dpadTitles[dpadButton].Hide()
-	cockpit.s.dpadHints[dpadButton].Hide()
-	if ( cockpit.s.dpadBGs[dpadButton] )
-		cockpit.s.dpadBGs[dpadButton].Hide()
+	local desc = GetCockpitDpadElement( player, "dpadDescs", dpadButton )
+	if ( desc )
+		desc.Hide()
+
+	local title = GetCockpitDpadElement( player, "dpadTitles", dpadButton )
+	if ( title )
+		title.Hide()
+
+	local hint = GetCockpitDpadElement( player, "dpadHints", dpadButton )
+	if ( hint )
+		hint.Hide()
+
+	local bg = GetCockpitDpadElement( player, "dpadBGs", dpadButton )
+	if ( bg )
+		bg.Hide()
 }
 
 
@@ -289,17 +314,25 @@ function ShowDpadIcon( player, dpadButton )
 	Assert( player == GetLocalViewPlayer(), "Not local view player!" )
 	player.s.dpadVis[dpadButton] = true
 
-	local cockpit = player.GetCockpit()
-	if ( !IsValid( cockpit ) || !("dpadIcons" in cockpit.s) )
-		return
+	local icon = GetCockpitDpadElement( player, "dpadIcons", dpadButton )
+	if ( icon )
+		icon.Show()
 
-	cockpit.s.dpadIcons[dpadButton].Show()
-	cockpit.s.dpadDescs[dpadButton].Show()
-	cockpit.s.dpadTitles[dpadButton].Show()
-	cockpit.s.dpadHints[dpadButton].Show()
+	local desc = GetCockpitDpadElement( player, "dpadDescs", dpadButton )
+	if ( desc )
+		desc.Show()
 
-	if ( cockpit.s.dpadBGs[dpadButton] )
-		cockpit.s.dpadBGs[dpadButton].Show()
+	local title = GetCockpitDpadElement( player, "dpadTitles", dpadButton )
+	if ( title )
+		title.Show()
+
+	local hint = GetCockpitDpadElement( player, "dpadHints", dpadButton )
+	if ( hint )
+		hint.Show()
+
+	local bg = GetCockpitDpadElement( player, "dpadBGs", dpadButton )
+	if ( bg )
+		bg.Show()
 }
 
 
@@ -308,9 +341,9 @@ function SetDpadIconColor( player, dpadButton, colorArray )
 	Assert( dpadButton in player.s.dpadIcons )
 	player.s.dpadColors[dpadButton] = colorArray
 
-	local cockpit = player.GetCockpit()
-	if ( IsValid( cockpit ) && "dpadIcons" in cockpit.s )
-		cockpit.s.dpadIcons[dpadButton].SetColor( colorArray )
+	local icon = GetCockpitDpadElement( player, "dpadIcons", dpadButton )
+	if ( icon )
+		icon.SetColor( colorArray )
 }
 
 
@@ -332,9 +365,9 @@ function SetDpadIcon( player, dpadButton, image )
 
 	player.s.dpadIcons[dpadButton] = image
 
-	local cockpit = player.GetCockpit()
-	if ( IsValid( cockpit ) && "dpadIcons" in cockpit.s )
-		cockpit.s.dpadIcons[dpadButton].SetImage( image )
+	local icon = GetCockpitDpadElement( player, "dpadIcons", dpadButton )
+	if ( icon )
+		icon.SetImage( image )
 }
 
 
@@ -344,15 +377,15 @@ function SetDpadCooldown( player, dpadButton, progress, goalProgress = null, dur
 
 	player.s.dpadBGs[dpadButton] = { progress = progress, goalProgress = goalProgress, duration = duration }
 
-	local cockpit = player.GetCockpit()
-	if ( IsValid( cockpit ) && "dpadIcons" in cockpit.s )
+	local bar = GetCockpitDpadElement( player, "dpadBGs", dpadButton )
+	if ( bar )
 	{
 		if ( goalProgress == null && duration == null )
-			cockpit.s.dpadBGs[dpadButton].SetBarProgress( progress )
+			bar.SetBarProgress( progress )
 		else if ( duration == null )
-			cockpit.s.dpadBGs[dpadButton].SetBarProgressAndRate( 1 - progress, 1 - goalProgress )
+			bar.SetBarProgressAndRate( 1 - progress, 1 - goalProgress )
 		else
-			cockpit.s.dpadBGs[dpadButton].SetBarProgressOverTime( 1 - progress, 1 - goalProgress, duration )
+			bar.SetBarProgressOverTime( 1 - progress, 1 - goalProgress, duration )
 	}
 }
 
@@ -366,25 +399,25 @@ function SetDpadProgress( player, dpadButton, progress, goalProgress = null, dur
 	local flip = player.s.dpadProgressBars[dpadButton].flip
 	player.s.dpadProgressBars[dpadButton] = { progress = progress, goalProgress = goalProgress, duration = duration, progressSource = progressSource, progressEnt = progressEnt, color = color, bgColor = bgColor, flip = flip }
 
-	local cockpit = player.GetCockpit()
-	if ( IsValid( cockpit ) && "dpadIcons" in cockpit.s )
+	local bar = GetCockpitDpadElement( player, "dpadProgressBars", dpadButton )
+	if ( bar )
 	{
 		if ( progressSource != ProgressSource.PROGRESS_SOURCE_SCRIPTED )
 		{
-			cockpit.s.dpadProgressBars[dpadButton].SetBarProgressSourceEntity( progressEnt )
-			cockpit.s.dpadProgressBars[dpadButton].SetBarProgressSource( progressSource )
+			bar.SetBarProgressSourceEntity( progressEnt )
+			bar.SetBarProgressSource( progressSource )
 		}
 		else
 		{
-			cockpit.s.dpadProgressBars[dpadButton].SetBarProgressSourceEntity( null )
-			cockpit.s.dpadProgressBars[dpadButton].SetBarProgressSource( progressSource )
+			bar.SetBarProgressSourceEntity( null )
+			bar.SetBarProgressSource( progressSource )
 
 			if ( goalProgress == null && duration == null )
-				cockpit.s.dpadProgressBars[dpadButton].SetBarProgress( progress )
+				bar.SetBarProgress( progress )
 			else if ( duration == null )
-				cockpit.s.dpadProgressBars[dpadButton].SetBarProgressAndRate( progress, goalProgress )
+				bar.SetBarProgressAndRate( progress, goalProgress )
 			else
-				cockpit.s.dpadProgressBars[dpadButton].SetBarProgressOverTime( progress, goalProgress, duration )
+				bar.SetBarProgressOverTime( progress, goalProgress, duration )
 		}
 	}
 }

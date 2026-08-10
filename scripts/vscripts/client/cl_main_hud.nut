@@ -3778,11 +3778,16 @@ else
 		
 		if ( lvl != player.cv.lastLevel )
 		{
-			cockpit.s.xpBar.pastFill.Hide()
+			if ( "xpBar" in cockpit.s )
+				cockpit.s.xpBar.pastFill.Hide()
 			if ( lvl == MAX_LEVEL || IsNonDeltaPrivateMatch() ) //!PlayerProgressionAllowed( player )
-				cockpit.s.xpBarGroup.Hide()
+			{
+				if ( "xpBarGroup" in cockpit.s )
+					cockpit.s.xpBarGroup.Hide()
+			}
 
-			cockpit.s.xpBar.fill.SetBarProgressRemap( GetLevelProgressStart( player ), GetLevelProgressEnd( player ), 0, 1 )
+			if ( "xpBar" in cockpit.s && IsValid( cockpit.s.xpBar.fill ) )
+				cockpit.s.xpBar.fill.SetBarProgressRemap( GetLevelProgressStart( player ), GetLevelProgressEnd( player ), 0, 1 )
 
 			if ( GetConVarBool( "delta_hud_show_levelup" ) )
 			{
@@ -3803,7 +3808,8 @@ else
 			player.cv.lastLevel = lvl
 		}
 
-		cockpit.s.xpBar.fill.SetBarProgress( GetXP( player ) )
+		if ( "xpBar" in cockpit.s && IsValid( cockpit.s.xpBar.fill ) )
+			cockpit.s.xpBar.fill.SetBarProgress( GetXP( player ) )
 	}
 }
 

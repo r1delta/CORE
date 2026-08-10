@@ -1,9 +1,16 @@
 
+function HasBurnModLmg( weapon )
+{
+	// A weapon whose mod definitions were not populated (e.g. spawned without
+	// a loadout) throws from the native HasMod; an unknown mod is not equipped.
+	try { return weapon.HasMod( "burn_mod_lmg" ) } catch ( ex ) { return false }
+}
+
 function OnWeaponPrimaryAttack( attackParams )
 {
 	self.EmitWeaponNpcSound( LOUD_WEAPON_AI_SOUND_RADIUS_MP, 0.2 )
 	local damageType = damageTypes.Instant | damageTypes.Bullet
-	if ( self.HasMod( "burn_mod_lmg" ) )
+	if ( HasBurnModLmg( self ) )
 		damageType = damageType | damageTypes.Gibs
 	self.FireWeaponBullet( attackParams.pos, attackParams.dir, 1, damageType )
 }
@@ -31,7 +38,7 @@ function OnWeaponActivate( activateParams )
 	if ( !IsValid_ThisFrame( weaponOwner ) )
 		return
 
-	if( self.HasMod( "burn_mod_lmg" ) )
+	if ( HasBurnModLmg( self ) )
 	{
 		SetLoopingWeaponSound_1p3p( "Weapon_LMG_FirstShot", "Weapon_LMG_Loop_Fast", "Weapon_LMG_LoopEnd",
 		                            "Weapon_LMG_FirstShot_3P", "Weapon_LMG_Loop_Fast_3P", "Weapon_LMG_LoopEnd_3P" )

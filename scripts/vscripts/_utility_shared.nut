@@ -833,12 +833,12 @@ function GetEntityOwningPlayer( entity )
 		local owner = current.GetOwner()
 		if ( !IsValid( owner ) || owner == current )
 			break
-
 		current = owner
 	}
 
 	return null
 }
+Globalize( GetEntityOwningPlayer )
 
 
 function GetOtherTeam( guy )
@@ -1677,7 +1677,17 @@ function DebugDrawOriginMovement( ent, r, g, b, time = 9999.0, trailTime = 5.0 )
 
 function GetGameState()
 {
-	return GetServerVar( "gameState" )
+	try
+	{
+		return GetServerVar( "gameState" )
+	}
+	catch ( ex )
+	{
+		// Before the first SetGameState (e.g. a dedicated server that has not
+		// started a match), the server var does not exist yet. Bootstrap to the
+		// initial state so the rules think loop can advance it normally.
+		return eGameState.WaitingForCustomStart
+	}
 }
 
 function GamePlaying()

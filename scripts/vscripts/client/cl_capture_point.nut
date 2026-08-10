@@ -147,10 +147,11 @@ function InitializeHardpoint( hardpoint )
 	else
 		hardpoint.s.worldIcon.Show()
 
-	if ( !( index in level.hardpointIDsToOwner ) )
+	if ( "hardpointIDsToOwner" in level && !( index in level.hardpointIDsToOwner ) )
 		level.hardpointIDsToOwner[index] <- null
 
-	level.hardpointIDsToOwner[ index ] = hardpoint.GetTeam()
+	if ( "hardpointIDsToOwner" in level )
+		level.hardpointIDsToOwner[ index ] = hardpoint.GetTeam()
 
 	//---------------------------------------------
 	// Set up data about the hardpoint
@@ -324,10 +325,11 @@ function HardpointChanged( hardpoint )
 	if ( index < 0 )
 		return
 
-	if ( !( index in level.hardpointIDsToOwner ) )
+	if ( "hardpointIDsToOwner" in level && !( index in level.hardpointIDsToOwner ) )
 		level.hardpointIDsToOwner[index] <- null
 
-	level.hardpointIDsToOwner[ index ] = hardpoint.GetTeam()
+	if ( "hardpointIDsToOwner" in level )
+		level.hardpointIDsToOwner[ index ] = hardpoint.GetTeam()
 
 	local player = GetLocalViewPlayer()
 	if ( !IsValid( player ) )
