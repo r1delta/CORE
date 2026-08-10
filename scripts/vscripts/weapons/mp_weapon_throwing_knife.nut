@@ -16,9 +16,6 @@ function OnWeaponPrimaryAttack( attackParams )
 	self.EmitWeaponSound( "Weapon_FragGrenade_Throw" )
 	//Grenade_Throw( self, attackParams, 99 )
 	Knife_Throw( self, attackParams, 99 )
-
-	if ( IsServer() )
-		thread FakeKnifeHit( attackParams )
 }
 
 function Knife_Throw( weapon, attackParams, baseFuseTime = DEFAULT_FUSE_TIME )
@@ -52,7 +49,7 @@ function Knife_Throw( weapon, attackParams, baseFuseTime = DEFAULT_FUSE_TIME )
 		{
 			Grenade_Init( frag, weapon )
 			thread TrapExplodeOnDamage( frag, 20, 0.0, 0.0 )
-			//thread MagneticFlight( frag )
+			thread FakeKnifeHit( attackParams, frag )
 		}
 		else
 		{
@@ -65,7 +62,7 @@ function Knife_Throw( weapon, attackParams, baseFuseTime = DEFAULT_FUSE_TIME )
 }
 
 // Targets that get too close dont get hit by the actual projectile
-function FakeKnifeHit( attackParams )
+function FakeKnifeHit( attackParams, frag )
 {
 	wait 0.25
 
@@ -74,14 +71,11 @@ function FakeKnifeHit( attackParams )
 	local origin = owner.EyePosition()
 	local angles = owner.EyeAngles()
 	local forward = angles.AnglesToForward()
-	local result = TraceLine( origin, origin + forward * 2000, owner )
+	local result = TraceLine( origin, origin + forward * 2000, [owner, self, frag], TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
 
 	local ent = result.hitEnt
-	if ( ent && ent.IsHumanSized() && Distance( origin, ent.GetOrigin() ) <= 10 )
-		ent.TakeDamage( self.GetWeaponModSetting( "damage_near_value" ), owner, owner, { damageSourceId = eDamageSourceId.mp_weapon_mega5 } )
-
-	if ( ent )
-		printt( Distance( origin, ent.GetOrigin() ) )
+	if ( ent && ent.IsHumanSized() && Distance( origin, ent.GetOrigin() ) <= 180 )
+		ent.TakeDamage( self.GetWeaponModSetting( "damage_near_value" ), owner, owner, { scriptType = DF_RAGDOLL | DF_INSTANT | DF_KILLSHOT, damageSourceId = eDamageSourceId.mp_weapon_mega5 } )
 }
 
 function OnWeaponActivate( prepParams )
@@ -119,8 +113,8 @@ function OnProjectileCollision( collisionParams )
 		if ( owner && owner.IsPlayer() && ArrayContains( mods, "burn_mod_throwing_knife" ) )
 		{
 			LeechSurroundingSpectres( self.GetOrigin(), owner )
-			ActivateBurnCardSonar( owner, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true, null )
-			EmitSoundOnEntityToOpponents( owner, "radarpulse_ping" )
+			//ActivateBurnCardSonar( owner, BURNCARD_AUTO_SONAR_IMAGE_DURATION , true, null )
+			//EmitSoundOnEntityToOpponents( owner, "radarpulse_ping" )
 		}
 
 		self.s.playedScans <- true
@@ -133,8 +127,10 @@ function DissolveKnife( self )
 	wait 3.0
 	if ( IsValid_ThisFrame( self ) )
 	{
-		self.Die( level.worldspawn, level.worldspawn, { scriptType = DF_MELEE, damageSourceId = eDamageSourceId.suicide } )
-		self.Dissolve( ENTITY_DISSOLVE_CHAR, Vector( 0, 0, 0 ), 0 )
-		EmitSoundAtPosition( self.GetOrigin(), "Object_Dissolve" )
+		self.Destroy()
+
+		//self.Die( level.worldspawn, level.worldspawn, { scriptType = DF_MELEE, damageSourceId = eDamageSourceId.mp_weapon_smart_pistol } )
+		//self.Dissolve( ENTITY_DISSOLVE_CHAR, Vector( 0, 0, 0 ), 0 )
+		//EmitSoundAtPosition( self.GetOrigin(), "Object_Dissolve" )
 	}
 }

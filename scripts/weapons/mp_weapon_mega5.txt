@@ -81,7 +81,7 @@ WeaponData
 	"ammo_stockpile_max"							"3"
 
 	// Behavior
-	"fire_rate"   									"2.2"
+	"fire_rate"   									"2.6"
 	"reload_time" 									"0.5"
 	"reloadempty_time"								"0.5"
 	"holster_time"									"0.5"
