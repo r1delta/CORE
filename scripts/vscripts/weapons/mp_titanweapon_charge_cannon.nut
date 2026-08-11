@@ -408,7 +408,7 @@ function StopShoulderCannonFX( effect )
 		return
 
 	StopFX( effect )
-	effect.Fire( "Destroy" )
+	//effect.Fire( "Destroy" )
 	StopFX_DestroyImmediately( effect )
 	effect.ClearParent()
 	effect.Destroy()
