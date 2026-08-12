@@ -460,7 +460,7 @@ function GameStateEnter_WinnerDetermined()
 
 	DoEndRoundFunctions() // TEMP, replace with gamestate functions
 
-	AnnounceWinner( level.nv.winningTeam, GetWinningPlayer()  )
+	AnnounceWinner( level.nv.winningTeam )
 
 	level.nv.gameEndTime = Time()
 
@@ -619,7 +619,7 @@ function PopulateScoreboardData()
 
         // Process IMC players
         local imcPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_IMC)
-        for (local i = 0; i < min(imcPlayers.len(), 9); i++)
+        for (local i = 0; i < min(imcPlayers.len(), 8); i++)
         {
             local imcPlayer = imcPlayers[i]
             player.SetPersistentVar("savedScoreboardData.playersIMC[" + i + "].name", imcPlayer.GetPlayerName())
@@ -640,7 +640,7 @@ function PopulateScoreboardData()
 
         // Process MCOR players
         local mcorPlayers = GetSortedPlayers(GetScoreboardCompareFunc(player), TEAM_MILITIA)
-        for (local i = 0; i < min(mcorPlayers.len(), 9); i++)
+        for (local i = 0; i < min(mcorPlayers.len(), 8); i++)
         {
             local mcorPlayer = mcorPlayers[i]
             player.SetPersistentVar("savedScoreboardData.playersMCOR[" + i + "].name", mcorPlayer.GetPlayerName())
@@ -1161,6 +1161,7 @@ function SetWinLossReasons( winString, lossString )
 	level.winString = winString
 	level.lossString = lossString
 }
+
 
 function SetWinner( winningTeam )
 {
@@ -1799,19 +1800,6 @@ function ScoreLimit_Complete()
 	if ( !GameRules.AllowMatchEnd() )
 		return false
 
-	if ( IsFFABased() )
-	{
-		local winningPlayer = GetWinningPlayer()
-		if ( winningPlayer && winningPlayer.GetAssaultScore() >= scoreLimit )
-		{
-			SetWinLossReasons( "#GAMEMODE_SCORE_LIMIT_REACHED", "#GAMEMODE_SCORE_LIMIT_REACHED" )
-			SetWinner( null )
-			return true
-		}
-
-		return false
-	}
-
 	local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
 	local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
@@ -1832,6 +1820,8 @@ function ScoreLimit_Complete()
 		SetWinner( winningTeam )
 		return true
 	}
+	local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
+	local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
 	if ( IsSwitchSidesBased() && !HasSwitchedSides() )
 	{
@@ -2013,22 +2003,16 @@ function TimeLimit_Complete()
 			return true
 		}
 
-		if ( IsFFABased() )
-		{
-			SetWinLossReasons( "#GAMEMODE_TIME_LIMIT_REACHED", "#GAMEMODE_TIME_LIMIT_REACHED" )
-			SetWinner( null )
-			return true
-		}
-
 		local winningTeam = TEAM_UNASSIGNED
 
-		local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
-		local imcScore = GameRules.GetTeamScore( TEAM_IMC )
 
-		if ( imcScore > militiaScore )
-			winningTeam = TEAM_IMC
-		else if ( imcScore < militiaScore )
-			winningTeam = TEAM_MILITIA
+			local militiaScore = GameRules.GetTeamScore( TEAM_MILITIA )
+			local imcScore = GameRules.GetTeamScore( TEAM_IMC )
+
+			if ( imcScore > militiaScore )
+				winningTeam = TEAM_IMC
+			else if ( imcScore < militiaScore )
+				winningTeam = TEAM_MILITIA
 
 
 		SetWinLossReasons( "#GAMEMODE_TIME_LIMIT_REACHED", "#GAMEMODE_TIME_LIMIT_REACHED" )
@@ -2752,7 +2736,7 @@ function SetMatchProgressAnnouncements( progression, announcements )
 
 }
 
-function AnnounceWinner( winningTeam, winningPlayer )
+function AnnounceWinner( winningTeam )
 {
 	if ( winningTeam ) //No announcement if draw
 	{
@@ -2799,33 +2783,6 @@ function AnnounceWinner( winningTeam, winningPlayer )
 		PlayConversationToTeam( GetGameWonAnnouncement(), winningTeam )
 		PlayConversationToTeam( GetGameLostAnnouncement(), losingTeam )
 	}
-	else if ( winningPlayer )
-	{
-		if ( GetGameWonAnnouncement() == null ) //If a custom announcement is set already, use that
-		{
-			if ( ShouldRunEvac()  )
-				SetGameWonAnnouncement( "WonAnnouncementWithEvac" )
-			else
-				SetGameWonAnnouncement( "WonAnnouncement" )
-		}
-
-		if ( GetGameLostAnnouncement() == null ) //If a custom announcement is set already, use that
-		{
-			if ( ShouldRunEvac()  )
-				SetGameLostAnnouncement( "LostAnnouncementWithEvac" )
-			else
-				SetGameLostAnnouncement( "LostAnnouncement" )
-		}
-
-		//printt( "Winners " + winningTeam + " " + TEAM_IMC + " " + TEAM_MILITIA )
-
-		PlayConversationToPlayer( GetGameWonAnnouncement(), GetWinningPlayer() )
-		foreach( p in GetPlayerArray() )
-		{
-			if ( p != GetWinningPlayer() )
-				PlayConversationToPlayer( GetGameLostAnnouncement(), p )
-		}
-	}
 	else
 		GameRules.MarkGameStateWinnerDetermined(0)
 
@@ -2839,7 +2796,7 @@ function AnnounceWinner( winningTeam, winningPlayer )
 
 		local subString
 
-		if ( IsWinningTeam( player.GetTeam() ) || ( IsFFABased() && player == GetWinningPlayer() ) )
+		if (IsWinningTeam(player.GetTeam()))
 			subString = level.winString
 		else
 			subString = level.lossString

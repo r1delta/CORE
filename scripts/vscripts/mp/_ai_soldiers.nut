@@ -134,16 +134,6 @@ function main()
 
 		AddClientCommandCallback( "SpawnViewSuicideSpectre", ClientCommand_SpawnViewSuicideSpectre )
 		AddClientCommandCallback( "SpawnViewSniperSpectre", ClientCommand_SpawnViewSniperSpectre )
-
-		AddClientCommandCallback( "spawnviewgrunt", ClientCommand_SpawnViewGrunt )
-		AddClientCommandCallback( "spawnviewcaptaingrunt", ClientCommand_SpawnViewCaptainGrunt )
-		AddClientCommandCallback( "spawnviewshieldgrunt", ClientCommand_SpawnViewShieldGrunt )
-
-		AddClientCommandCallback( "spawnviewspectre", ClientCommand_SpawnViewSpectre )
-		AddClientCommandCallback( "spawnviewshieldspectre", ClientCommand_SpawnViewShieldSpectre )
-
-		AddClientCommandCallback( "spawnviewsuicidespectre", ClientCommand_SpawnViewSuicideSpectre )
-		AddClientCommandCallback( "spawnviewsniperspectre", ClientCommand_SpawnViewSniperSpectre )
 	}
 
 	InitCaptainNames()

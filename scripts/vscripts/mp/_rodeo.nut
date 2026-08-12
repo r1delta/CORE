@@ -10,8 +10,6 @@ function main()
 	RegisterSignal( "LandedOnTitan" )
 
 	level.coopRodeoGraceTime <- 90 //1m 30s
-	//IncludeFile("Yoshi's_TitanCreator")
-	//setUp( 1 )
 }
 
 function ForceWeaponSwitchForRodeo( player )
@@ -208,7 +206,6 @@ function HumanRodeoViewCone( human, titanType )
 
 	switch ( titanType )
 	{
-		//case "special_atlas":
 		case "atlas":
 			human.PlayerCone_SetMinYaw( -140 )
 			human.PlayerCone_SetMaxYaw( 35 )
@@ -216,20 +213,10 @@ function HumanRodeoViewCone( human, titanType )
 			human.PlayerCone_SetMaxPitch( 40 )
 			break
 
-		//case "special_ogre":
 		case "ogre":
 			human.PlayerCone_SetMinYaw( -110 )
 			human.PlayerCone_SetMaxYaw( 70 )
 			human.PlayerCone_SetMinPitch( -60 )
-			human.PlayerCone_SetMaxPitch( 40 )
-			break
-
-		case "special_stryder":
-		case "special_atlas":
-		case "special_ogre":
-			human.PlayerCone_SetMinYaw( -100 )
-			human.PlayerCone_SetMaxYaw( 100 )
-			human.PlayerCone_SetMinPitch( -40 )
 			human.PlayerCone_SetMaxPitch( 40 )
 			break
 
@@ -240,7 +227,7 @@ function HumanRodeoViewCone( human, titanType )
 			human.PlayerCone_SetMaxPitch( 35 )
 			break
 
-		case "slammer": //Who tf is slammer??? -Yoshi
+		case "slammer":
 			human.PlayerCone_SetMinYaw( -100 )
 			human.PlayerCone_SetMaxYaw( 60 )
 			human.PlayerCone_SetMinPitch( -35 )
@@ -255,12 +242,7 @@ function MoveToLegalSolidFromTitan( mover, titan )
 
 	Assert( mover.IsPlayer() )
 
-	local attachIndex = BMT_RodeoOverride( titan )//titan.LookupAttachment( "hijack" )
-	//if ( GetSoulTitanType( titan.GetTitanSoul() ) == "special_ogre" )//modded
-		//attachIndex = titan.LookupAttachment( "chestfocus" )//chestfocus
-	
-
-
+	local attachIndex = titan.LookupAttachment( "hijack" )
 	local start = titan.GetAttachmentOrigin( attachIndex )
 	local end = mover.GetOrigin()
 
@@ -405,9 +387,6 @@ function PlayerBeginsRodeo( player, rodeoPackage, titan )
 
 	local titanType = GetSoulTitanType( soul )
 
-	if ( titanType == "special_stryder" || titanType == "special_atlas" || titanType == "special_ogre" )
-		titanType = "stryder"
-
 	player.SetTitanSoulBeingRodeoed( soul )
 	player.ForceStand()
 
@@ -506,7 +485,7 @@ function PlayerLerpsIntoTitanRodeo( player, titan, package, doHatchRip = false, 
 	AddAnimEvent( player, "rodeo_screen_shake", RodeoScreenShake )
 
 	local sequence = CreateFirstPersonSequence()
-	sequence.attachment = BMT_RodeoOverride( titan )
+	sequence.attachment = "hijack"
 
 
 	switch ( package.method )
@@ -514,7 +493,7 @@ function PlayerLerpsIntoTitanRodeo( player, titan, package, doHatchRip = false, 
 		case RODEO_APPROACH_FALLING_FROM_ABOVE:
 			SetRodeoAnimsFromPackage( sequence, package )
 
-			local animStartPos = player.Anim_GetStartForRefEntity( sequence.thirdPersonAnim, titan, sequence.attachment )//modded the attachment here
+			local animStartPos = player.Anim_GetStartForRefEntity( sequence.thirdPersonAnim, titan, "hijack" )
 		//	printt( "distance " + Distance( player.GetOrigin(), animStartPos.origin ) )
 			local dist = Distance( player.GetOrigin(), animStartPos.origin )
 			local velocity = player.GetVelocity().Length()
@@ -613,12 +592,8 @@ function PlayerRipsOpenTitanHatch( player, soul, e )
 	local titanType = GetSoulTitanType( soul )
 	local anims = level.rodeoAnimations
 
-	if ( titanType == "special_stryder" || titanType == "special_atlas" || titanType == "special_ogre" )
-		titanType = "stryder"
-
 	local sequence = CreateFirstPersonSequence()
-	sequence.attachment = BMT_RodeoOverride( soul.GetTitan() )
-
+	sequence.attachment = "hijack"
 	sequence.thirdPersonAnim 		= GetAnimFromAlias( titanType, anims.thirdPersonAnimAlias_PanelOpen )
 	sequence.thirdPersonAnimIdle 	= GetAnimFromAlias( titanType, anims.thirdPersonAnimAlias_AimIdle )
 	sequence.firstPersonAnim 		= GetAnimFromAlias( titanType, anims.firstPersonAnimAlias_PanelOpen )
@@ -704,12 +679,8 @@ function RodeoPlayerSeesDisembark( human, soul )
 	local titanType = GetSoulTitanType( soul )
 	local sequence = CreateFirstPersonSequence()
 
-	if ( titanType == "special_stryder" || titanType == "special_atlas" || titanType == "special_ogre" )
-		titanType = "stryder"
-
 	sequence.blendTime = 0
-	sequence.attachment = BMT_RodeoOverride( soul.GetTitan() )
-
+	sequence.attachment = "hijack"
 	sequence.thirdPersonAnim 		= GetAnimFromAlias( titanType, anims.thirdPersonAnimAlias_lean )
 	sequence.thirdPersonAnimIdle 	= GetAnimFromAlias( titanType, anims.thirdPersonAnimAlias_AimIdle )
 	sequence.firstPersonAnim 		= GetAnimFromAlias( titanType, anims.firstPersonAnimAlias_lean_enemy )
@@ -858,7 +829,7 @@ function SpectreRodeo( spectre, titan )
 {
 	local package = GetRodeoPackageSpectre( spectre, titan )
 	Assert ( package != null )
-	printl(titan)
+
 	SpectreBeginsRodeo( spectre, package, titan )
 }
 Globalize( SpectreRodeo )
@@ -984,8 +955,7 @@ function SpectreLerpsIntoTitanRodeo( spectre, soul, package )
 	soul.EndSignal( "OnDestroy" )
 	soul.GetTitan().EndSignal( "Disconnected" )
 
-	local attachment 	= BMT_RodeoOverride( soul.GetTitan() )
-
+	local attachment 	= "hijack"
 	local blendTime 	= null
 	local jumpFirst 	= false
 
@@ -1020,9 +990,8 @@ function SpectreLerpsIntoTitanRodeo( spectre, soul, package )
 		local vec = soul.GetTitan().GetOrigin() - spectre.GetOrigin()
 		local angles = VectorToAngles( vec )
 		spectre.SetAngles( angles )
-		local parent_string = BMT_RodeoOverride( soul.GetTitan() )
 
-		spectre.SetParent( soul.GetTitan(), parent_string, false, parentBlend )
+		spectre.SetParent( soul.GetTitan(), "hijack", false, parentBlend )
 		spectre.Anim_ScriptedPlay( jumpAnim )
 		SetForceDrawWhileParented( spectre, true )
 
@@ -1045,10 +1014,6 @@ function SpectreLerpsIntoTitanRodeo( spectre, soul, package )
 function SpectreRipsOpenTitanHatch( spectre, soul, e )
 {
 	local titanType = GetSoulTitanType( soul )
-
-	if ( titanType == "special_stryder" || titanType == "special_atlas" || titanType == "special_ogre" )
-		titanType = "stryder"
-
 	local hatchRipSoundInterior = "Rodeo_" + titanType + "_Hatch_Ripoff_Interior"
 	local hatchRipSoundExterior = "Rodeo_" + titanType + "_Hatch_Ripoff_Exterior"
 
@@ -1087,8 +1052,7 @@ function SpectreRipsOpenTitanHatch( spectre, soul, e )
 	local anims = level.rodeoAnimations
 
 
-	local attachment = BMT_RodeoOverride( soul.GetTitan() )
-
+	local attachment = "hijack"
 	local thirdPersonAnim 		= GetAnimFromAlias( titanType, anims.thirdPersonAnimAlias_PanelOpen )
 
 	e.soul <- soul
@@ -1104,25 +1068,4 @@ function SpectreRipsOpenTitanHatch( spectre, soul, e )
 
 	EmitDifferentSoundsOnEntityForPlayerAndWorld( hatchRipSoundInterior, hatchRipSoundExterior, spectre, titan ) //Play sound on spectre instead of panel
 	PlayAnim( spectre, thirdPersonAnim, titan, attachment )
-}
-
-function BMT_RodeoOverride( titan )
-{
-	local soul = titan.GetTitanSoul()
-	local loop_max = MasterModdedTitans.len()
-	for( local E = 0; E < loop_max; E++ )
-	{
-		if( loop_max > 0 )
-		{
-			local t_a = MasterModdedTitans[ E ]
-			local setting = GetSoulPlayerSettings( soul )
-			if( setting == t_a.setfile )
-			{
-				if( t_a.rodeo_ref_override != "" )
-					return t_a.rodeo_ref_override
-			}
-		}
-	}
-
-	return titan.LookupAttachment( "hijack" )
 }

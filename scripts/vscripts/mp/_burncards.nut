@@ -242,39 +242,6 @@ function ApplyPilotWeaponBurnCards_Threaded( player, cardRef )
 
         player.SetActiveWeapon(weaponData.weapon)
     }
-
-    // This fucking sucks i hate this bug
-    for ( ;; )
-    {
-        if ( player.IsTitan() && ( cardData.ctFlags & CT_WEAPON ) )
-        {
-            local weapons = player.GetMainWeapons()
-            foreach( weapon in weapons )
-            {
-                local className = weapon.GetClassname()
-                if ( className == weaponData.weapon && weapon.GetMods() == weaponData.mods )
-                {
-                    player.TakeWeapon( className )
-                    printt( "Removed burncard weapon ", className, " from player ", player.GetPlayerName() )
-                }
-            }
-
-            // Dont think this one can actually happen
-            /*
-            local i = 0
-            weapons = player.GetOffhandWeapons()
-            foreach( weapon in weapons )
-            {
-                if ( weapon.GetClassname() == weaponData.weapon && weapon.GetMods() == weaponData.mods )
-                    player.TakeOffhandWeapon( i )
-                i++
-            }
-            */
-
-        }
-
-        wait 0.1
-    }
 }
 
 function DoSummonTitanBurnCard( player, cardRef )
@@ -412,14 +379,10 @@ function ApplyAmpedTactical( player, cardRef )
 // account for edge cases where it makes no sense to actually use the card
 function IsBurnCardEdgeCaseUseValid( player, cardRef )
 {
-	// Just blanket ban all of them
-	if ( GameRules.GetGameMode() == GUN_GAME )
-		return false
+    local cardData = GetBurnCardData( cardRef )
 
-	local cardData = GetBurnCardData( cardRef )
-
-	if ( cardData.ctFlags & CT_TITAN || cardData.ctFlags & CT_BUILDTIME )
-	{
+    if ( cardData.ctFlags & CT_TITAN || cardData.ctFlags & CT_BUILDTIME )
+    {
         if ( Riff_TitanAvailability() == eTitanAvailability.Never )
             return false
 
@@ -927,10 +890,6 @@ function BCOnPlayerKilled( player, damageInfo )
 
     player.s.bc_grenadesPendingForRefill = 0
     player.s.bc_grenadeRefillInProgress = false
-
-    local cardData = GetBurnCardData( cardRef )
-    if ( cardData.serverFlags )
-        TakeServerFlag( player, cardData.serverFlags )
 
     BurnCardOnDeath( player, damageInfo, BC_NEXTDEATH )
 
