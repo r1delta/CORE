@@ -1,9 +1,9 @@
 "AddonInfo"
 {
-	"addontitle"			"TitanFileUnificationProject"
+	"addontitle"			"R1Delta Titanfall1.5 Fork"
 	"addonDescription"		"The greatest tool for modding in Weapons and Titans."
 	"addonversion"			"1.0.0"
-	"addonauthor"			"Yoshi the Hut"
+	"addonauthor"			"Yoshi the Hut, Credits to R1Delta Crew"
 
 	"addonContent_Script"	"1"
 }
