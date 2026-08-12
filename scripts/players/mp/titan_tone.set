@@ -36,7 +36,7 @@
 		dodgeDuration		0.3
         dodgeAnimDuration	0.5
         dodgeInterval		0.2
-        dodgeSpeed			685
+        dodgeSpeed			625
         dodgeStopSpeed		350
         dodgeHeight			12 //25
         dodgeHeightMax		25

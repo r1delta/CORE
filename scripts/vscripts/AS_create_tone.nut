@@ -14,8 +14,8 @@ function main()
 function CreateTitan( offhand_override_data )
 {
 
-	local core_start = StartBulwarkCore
-	local core_end = EndBulwarkCore
+	local core_start = StartECHOCore
+	local core_end = EndECHOCore
 
 	printl( "Tone Created" )
 
@@ -28,8 +28,8 @@ function CreateTitan( offhand_override_data )
 		"A heavier Atlas successor with more armor but slightly slower dash regeneration.", 
 		"../ui/menu/loadouts/titan_chassis_atlas_imc", 
 		"../ui/menu/loadouts/titan_chassis_atlas_mcor", 
-		"Core Ability: Bulwark", 
-		"Enables triple Particle Wall creation.", 
+		"Core Ability: ECHO - Sonar", 
+		"Enables titan sonar, when the core expires it continues to echo around the titan in a slower manner.", 
 		"../ui/menu/items/ability_icons/bubble_shield", 
 		85, 
 		90, 
@@ -41,28 +41,25 @@ function CreateTitan( offhand_override_data )
 		53, 
 		"../ui/menu/items/ability_icons/bubble_shield", 
 		offhand_override_data,
-		"Bulwark Online",
-		"Defensive Super Capacitors Charged.",
+		"ECHO Sonar Online",
+		"Sonar Instruments calibrated.",
 		core_start,
 		core_end
 		)
 }
 
-function EndBulwarkCore( soul )
+function EndECHOCore( soul )
 {
 	local titan = soul.GetTitan()
-
-	TakePlayerWeapons( soul, "special" )
 	
-	thread ReplaceTitanWeapon( titan, special_before_replace, s_mods, "special" )
+	ActivateSonar( titan.GetActiveWeapon(), 1 )
 }
 
-function StartBulwarkCore( soul )//decided they should have their shields with it since Ion is energy based.
+function StartECHOCore( soul )
 {
 	local titan = soul.GetTitan()
-	RegisterPreviousWeapons( titan )
-	TakePlayerWeapons( soul, "special" )
-	thread ReplaceTitanWeapon( titan, "mp_titanability_bubble_shield", ["bulwark"], "special" )
+	
+	ActivateSonar( titan.GetActiveWeapon(), 9999 )
 }
 
 main()

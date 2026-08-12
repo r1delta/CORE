@@ -319,34 +319,6 @@ function StartSmartCore( soul )//do i use minigun....do i use XO16? do i use... 
 	//shit, i got a calculating bitfield error, hol on. the _passives_shared doesnt include gun passives though..., not so smort now ;-;
 }
 
-/*
-function EndBulletStormCore( soul )
-{
-	local titan = soul.GetTitan()
-	local player = self.GetWeaponOwner()
-	local weapon = player.GetActiveWeapon().GetWeaponClassName()
-
-	if ( weapon != null )
-	{
-		titan.TakeWeapon( weapon )
-	}
-	thread ReplaceTitanWeapon( titan, primary_before_replace, p_mods, "primary" )
-}
-
-function StartBulletStormCore( soul )//do i use minigun....do i use XO16? do i use... idk
-{
-	local titan = soul.GetTitan()
-	RegisterPreviousWeapons( titan )
-	local player = self.GetWeaponOwner()
-	local weapon = player.GetActiveWeapon().GetWeaponClassName()
-	if ( weapon != null )
-	{
-		titan.TakeWeapon( weapon )
-	}
-	thread ReplaceTitanWeapon( titan, "mp_titanweapon_xo16", ["bullet_storm"], "primary" )
-}
-*/
-
 function HoverTitanWizardry( player, soul, vel_z )
 {
 	local subtractor = 10
