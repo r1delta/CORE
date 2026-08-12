@@ -113,13 +113,6 @@ function InitBurnCardInGameMenu( menu )
 		file.burnCardCenterButtons.append( table )
 	}
 
-  	file.Label_BurnCardsReverse <- menu.GetChild( "Label_BurnCardsReverse" )
-  	file.Label_BurnCardsReverse.EnableKeyBindingIcons()
-
-  	file.Image_BurnCardsReverse_chicklet <- menu.GetChild( "Image_BurnCardsReverse_chicklet" )
-
-	file.Btn_BurnCardsReverse		<- menu.GetChild( "Btn_BurnCardsReverse" )
-	file.Btn_BurnCardsReverse.AddEventHandler( UIE_CLICK, Bind( OnClick_Btn_BurnCardsReverse ) )
 
 	//file.focusButton <- menu.GetChild( "focusButton" )
 
@@ -182,9 +175,6 @@ function OnCloseMenu_BurnCardsInGame()
 		DeregisterButtonReleasedCallback( KEY_LEFT, BurnCardEndLeft )
 		DeregisterButtonPressedCallback( BUTTON_SHOULDER_RIGHT, BurnCardPressedRightMany )
 		DeregisterButtonPressedCallback( BUTTON_SHOULDER_LEFT, BurnCardPressedLeftMany )
-
-		DeregisterButtonPressedCallback( BUTTON_STICK_LEFT, BurncardButton_Reverse )
-		DeregisterButtonPressedCallback( BUTTON_STICK_RIGHT, BurncardButton_Sort )
 	}
 }
 
@@ -223,7 +213,6 @@ function OnOpenMenu_BurnCardsInGame()
 
 	UpdateBurnCardDeckStatus( file.BurnCardStashStatus, 0 )
 	UpdateAutofill()
-	UpdateReverseButton()
 
 	file.BurnCardStashStatus.s.lastBurnCardStashCount = GetTotalBurnCards()
 	Signal( level, "StopBurnCardAnalogInput" )
@@ -264,9 +253,6 @@ function OnOpenMenu_BurnCardsInGame()
 		RegisterButtonReleasedCallback( KEY_LEFT, BurnCardEndLeft )
 		RegisterButtonPressedCallback( BUTTON_SHOULDER_RIGHT, BurnCardPressedRightMany )
 		RegisterButtonPressedCallback( BUTTON_SHOULDER_LEFT, BurnCardPressedLeftMany )
-
-		RegisterButtonPressedCallback( BUTTON_STICK_LEFT, BurncardButton_Reverse )
-		RegisterButtonPressedCallback( BUTTON_STICK_RIGHT, BurncardButton_Sort )
 
 		thread FakeAnalogMenuInput( GamepadStickXAxisInput )
 		thread FakeAnalogMenuInput( Bind( GetKeyboardInput ) )
@@ -677,27 +663,6 @@ function BurnCards_InGame_FooterData( footerData )
 			footerData.gamepad.append( { label = "#BURNCARD_DISCARD_GAMEPAD" } )
 			footerData.pc.append( { label = "#BURNCARD_DISCARD_MOUSE", 	func = Bind( BurncardButton_Discard )	} )
 		}
-
-		//footerData.gamepad.append( { label = "#BURNCARD_TOGGLE_REVERSE_GAMEPAD" } )
-		//footerData.pc.append( { label = "#BURNCARD_TOGGLE_REVERSE", 	func = Bind( BurncardButton_Reverse )	} )
-
-		switch( GetPersistentVar( "currentBurnCardSortType" ) )
-		{
-			case 1:
-				footerData.gamepad.append( { label = "#BURNCARD_SORT_GROUP_GAMEPAD" } )
-				footerData.pc.append( { label = "#BURNCARD_SORT_GROUP", 	func = Bind( BurncardButton_Sort )	} )
-				break
-
-			case MAX_CARD_SORT_TYPE:
-				footerData.gamepad.append( { label = "#BURNCARD_SORT_RARITY_GAMEPAD" } )
-				footerData.pc.append( { label = "#BURNCARD_SORT_RARITY", 	func = Bind( BurncardButton_Sort )	} )
-				break
-
-			default:
-				footerData.gamepad.append( { label = "#BURNCARD_SORT_NUMBER_GAMEPAD" } )
-				footerData.pc.append( { label = "#BURNCARD_SORT_NUMBER", 	func = Bind( BurncardButton_Sort )	} )
-				break
-		}
 	}
 }
 Globalize( BurnCards_InGame_FooterData )
@@ -836,7 +801,6 @@ function SCB_UpdateEmptySlots()
 	UpdateBurnCardDeckStatus( file.BurnCardStashStatus, 0 )
 	UpdateAutofill()
 	UpdateEditBurnCardButtonText()
-	UpdateReverseButton()
 }
 Globalize( SCB_UpdateEmptySlots )
 
@@ -939,8 +903,6 @@ function SCB_UpdateBC()
 
 	if ( IsBlackMarketUnlocked() )
 		UpdateCoinCount()
-	
-	UpdateReverseButton()
 }
 Globalize( SCB_UpdateBC )
 
@@ -1037,55 +999,4 @@ function ToggleAutoFill()
 	local autofill = GetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".autofill" )
 	UpdateAutofill( !autofill ) // client prediction
 	ClientCommand( "ToggleAutofill" )
-}
-
-function OnClick_Btn_BurnCardsReverse( button )
-{
-	BurncardButton_Reverse()
-}
-
-function BurncardButton_Reverse( ... )
-{
-	local reverse = GetPersistentVar( "currentBurnCardSortIsReversed" )
-	UpdateReverseButton( !reverse ) // client prediction
-
-	ClientCommand( "BCToggleReverse" )
-}
-
-function UpdateReverseButton( forced = null )
-{
-	if ( IsControllerModeActive() )
-		EmitUISound( "Menu.Accept" )
-
-	if ( forced != null )
-	{
-		file.Image_BurnCardsReverse_chicklet.SetVisible( forced )
-		return
-	}
-
-	local reverse = GetPersistentVar( "currentBurnCardSortIsReversed" )
-	file.Image_BurnCardsReverse_chicklet.SetVisible( reverse )
-}
-
-function BurncardButton_Sort( ... )
-{
-	if ( !IsFullyConnected() )
-		return
-
-	if ( IsControllerModeActive() )
-		EmitUISound( "Menu.Accept" )
-
-	local type = GetPersistentVar( "currentBurnCardSortType" ) + 1
-	if ( type > MAX_CARD_SORT_TYPE )
-		type = 0
-
-	ClientCommand( "BCSetSortType " + type )
-
-	thread UpdateFooterButtons_Delayed()
-}
-
-function UpdateFooterButtons_Delayed()
-{
-	wait 0.1
-	UpdateFooterButtons()
 }

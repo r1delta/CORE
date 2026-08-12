@@ -202,7 +202,7 @@ function OnEditTitanSlotButton_Activate( button )
 	{
 		case 0:
 			uiGlobal.itemTypeBeingEdited = itemType.TITAN_SETFILE
-			OpenSubmenu( GetMenu( "TitanSelectMenuTTP" ) )
+			OpenSubmenu( GetMenu( "TitanSelectMenu" ) )
 			break
 
 		case 1:

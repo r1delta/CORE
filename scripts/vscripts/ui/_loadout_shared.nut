@@ -25,9 +25,6 @@ function InitLoadouts()
 		uiGlobal.eventHandlersAdded <- true
 	}
 
-	//IncludeFile( "Yoshi's_TitanCreator" )
-	//setUp( 1 )
-
 	uiGlobal.loadoutBeingEdited <- null
 	uiGlobal.loadoutTypeBeingEdited <- null
 	uiGlobal.itemBeingEdited <- null
@@ -323,7 +320,7 @@ function OnOpenTitanSelectMenu()
 {
 	Assert( uiGlobal.itemTypeBeingEdited != null )
 
-	local menu = GetMenu( "TitanSelectMenuTTP" )
+	local menu = GetMenu( "TitanSelectMenu" )
 	local buttons = GetElementsByClassname( menu, "TitanSelectClass" )
 	local titans = GetAllItemsOfType( uiGlobal.itemTypeBeingEdited )
 	local currentTitan = uiGlobal.loadoutBeingEdited[ GetPropertyNameFromItemType( uiGlobal.itemTypeBeingEdited ) ]
@@ -1170,7 +1167,7 @@ function OnTitanSelectButton_Focused( button )
 {
 	Assert( uiGlobal.itemTypeBeingEdited != null )
 
-	local menu = GetMenu( "TitanSelectMenuTTP" )
+	local menu = GetMenu( "TitanSelectMenu" )
 	local buttonID = button.GetScriptID().tointeger()
 	local setFiles = GetAllItemsOfType( uiGlobal.itemTypeBeingEdited )
 	local setFile = setFiles[buttonID]
@@ -1225,7 +1222,7 @@ function OnTitanSelectButton_LostFocus( button )
 {
 	Assert( uiGlobal.itemTypeBeingEdited != null )
 
-	local menu = GetMenu( "TitanSelectMenuTTP" )
+	local menu = GetMenu( "TitanSelectMenu" )
 	local buttonID = button.GetScriptID().tointeger()
 	local setFiles = GetAllItemsOfType( uiGlobal.itemTypeBeingEdited )
 	local setFile = setFiles[buttonID]
@@ -1371,20 +1368,6 @@ function UpdateLockElements( menu, button, page, ref, childRef = null )
 				lockedLabel.SetText( "#CHASSIS_LOCKED_TEXT_STRYDER", unlockLevels[ "titan_stryder"] )
 			else if ( ref == "titan_ogre" )
 				lockedLabel.SetText( "#CHASSIS_LOCKED_TEXT_OGRE", unlockLevels[ "titan_ogre"] )
-			else if( MasterModdedTitans.len() > 0 )
-			{
-				local loop_max = MasterModdedTitans.len()
-				for( local E = 0; E < loop_max; E++ )
-				{
-					if( loop_max > 0 )
-					{
-						local t_a = MasterModdedTitans[ E ]
-						
-						if ( ref == t_a.setfile )
-							lockedLabel.SetText( "#CHASSIS_LOCKED_TEXT_OGRE", unlockLevels[ t_a.setfile ] )
-					}
-				}
-			}
 			else
 				Assert( 0, "Unhandled setfile unlock case" )
 			lockedLabel.Show()

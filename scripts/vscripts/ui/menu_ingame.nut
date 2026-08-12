@@ -102,13 +102,12 @@ function OnOpenInGameMenu()
 			file.BtnEndGame.Hide()
 		}
 
-		local gamemode = GetConVarString( "mp_gamemode" )
-		if ( gamemode == PILOT_SKIRMISH || gamemode == GUN_GAME ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
+		if ( GetConVarString( "mp_gamemode" ) == "ps" ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
 			file.BtnTitanLoadout.SetLocked( true )
 		else
 			file.BtnTitanLoadout.SetLocked( false )
 
-		if ( IsTitanOnlyMode() || gamemode == GUN_GAME )
+		if ( IsTitanOnlyMode() )
 			file.BtnPilotLoadout.SetLocked( true )
 		else
 			file.BtnPilotLoadout.SetLocked( false )

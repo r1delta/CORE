@@ -60,12 +60,11 @@ function BurnCardsNavigateBack()
 	if ( uiGlobal.loadoutSelectionFinished )
 		return true
 
-	local gamemode = GetConVarString( "mp_gamemode" )
-	if ( gamemode != PILOT_SKIRMISH && gamemode != GUN_GAME ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
+	if ( GetConVarString( "mp_gamemode" ) != "ps" ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
 		AdvanceMenu( GetMenu( "TitanLoadoutsMenu" ) )
 	else
 	{
-		if ( !IsTitanOnlyMode() && gamemode != GUN_GAME )
+		if ( !IsTitanOnlyMode() )
 		   	AdvanceMenu( GetMenu( "PilotLoadoutsMenu" ) )
 	}
 }
