@@ -1,9 +1,0 @@
-"AddonInfo"
-{
-	"addontitle"			"T2-Titan-Transfer Northstar"
-	"addonDescription"		"Adds Northstar from Titanfall2 with Flight Core."
-	"addonversion"			"1.0.0"
-	"addonauthor"			"Yoshi the Hut"
-
-	"addonContent_Script"	"1"
-}

@@ -1,9 +1,0 @@
-"AddonInfo"
-{
-	"addontitle"			"T2-Titan-Transfer Ronin"
-	"addonDescription"		"Adds Legion from Titanfall2 with Ripper Shotgun core."
-	"addonversion"			"1.0.0"
-	"addonauthor"			"Yoshi the Hut"
-
-	"addonContent_Script"	"1"
-}
