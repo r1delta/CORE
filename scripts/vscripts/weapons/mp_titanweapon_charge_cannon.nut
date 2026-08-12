@@ -198,13 +198,12 @@ function OnWeaponChargeLevelIncreased()
 	if ( level == maxLevel )
 		self.EmitWeaponSound( "Weapon_Titan_Charge_Cannon_Loop" )
 
-	local owner = self.GetWeaponOwner()
-	if ( IsServer() && owner && owner.IsPlayer() )
+	if ( IsClient() )
 	{
 		if ( level == maxLevel )
-			EmitSoundOnEntityOnlyToPlayer( self, owner, "Weapon_Charge_Cannon_LevelTick_Final" )
+			self.EmitWeaponSound( "Weapon_Charge_Cannon_LevelTick_Final" )
 		else
-			EmitSoundOnEntityOnlyToPlayer( self, owner, "Weapon_Charge_Cannon_LevelTick_" + level )
+			self.EmitWeaponSound( "Weapon_Charge_Cannon_LevelTick_" + level )
 	}
 }
 
