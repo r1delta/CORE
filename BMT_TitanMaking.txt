@@ -1,0 +1,23 @@
+Put under R1DeltaContent/r1/addons
+
+To disable fully just move the folder out of addons.
+
+Adding a new titan is easy now.
+use the BMT titans as reference
+
+NOTICE: Do not use with mods which drastically alter the game or files that this mod uses, it will be incompatible.
+
+Make sure you have your SET file in the proper place.
+
+NOTE the titan limit is 12 including base titans for now, as that is how many buttons the menu has.
+
+scripts to be altered:
+
+-Yoshi's_TitanCreator			to "create" it via my function
+
+-classes				import the SET file
+
+
+if using a new model:
+
+-Yoshi's_TitanCreator			damn right I did the impossible

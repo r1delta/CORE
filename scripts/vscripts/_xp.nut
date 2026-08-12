@@ -419,6 +419,7 @@ function DevClearAllNewStatus(player)
 	newArrays.append("newPilotPassives")
 	newArrays.append("newTitanPassives")
 	newArrays.append("newTitanOS")
+	//newArrays.append("newTitanCore")
 	newArrays.append("newUnlocks")
 	newArrays.append("newTitanDecals")
 	foreach( arrayName in newArrays )
@@ -637,7 +638,11 @@ function SetNewStatus( ref, player )
 
 			case itemType.TITAN_SETFILE:
 				// Chassis are already unlocked when you gen up, so don't mark them as new
-				if ( player.GetGen() > 0 && ( ref == "titan_stryder" || ref == "titan_ogre" ) )
+				if ( ref != "titan_stryder" || ref != "titan_ogre" )//HACKY
+				{
+					ref = "special_atlas"
+				}
+				if ( player.GetGen() > 0 && ( ref == "titan_stryder" || ref == "titan_ogre" || ref == "special_atlas" || ref == "special_ogre" || ref == "special_stryder" ) )
 					break
 				player.SetPersistentVar( "newChassis[" + ref + "]", true )
 				//printt( "newChassis[" + ref + "]" )

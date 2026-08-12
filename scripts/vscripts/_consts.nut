@@ -2,6 +2,10 @@ const PERSISTENCE_INIT_VERSION = 22
 
 const RANDOMIZE_BOT_LOADOUT	= 1
 
+const BASE_TITAN_COUNT = 4 //Adds 3 for titans and 1 to make a valid array placement
+::MasterModdedTitans <- []
+::Titans_Enum_Placement <- 3
+
 const TESTCONST = 99
 const TEAM_ANY = -1
 const TEAM_INVALID = -1
@@ -274,6 +278,9 @@ const REDEYE_MODEL = "models/vehicle/redeye/redeye2.mdl"
 const ATLAS_MODEL = "models/titans/atlas/atlas_titan.mdl"
 const OGRE_MODEL = "models/titans/ogre/ogre_titan.mdl"
 const STRYDER_MODEL = "models/titans/stryder/stryder_titan.mdl"
+//const DESTROYER_MODEL = "models/titans/stryder/stryder_titan.mdl"
+
+
 const IMC_SPECTRE_MODEL = "models/Robots/spectre/imc_spectre.mdl"
 const MILITIA_SPECTRE_MODEL = "models/Robots/spectre/mcor_spectre_assault.mdl"
 const NEUTRAL_SPECTRE_MODEL = "models/Robots/spectre/spectre_corporate.mdl"

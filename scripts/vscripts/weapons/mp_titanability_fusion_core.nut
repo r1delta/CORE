@@ -11,7 +11,7 @@ PrecacheParticleSystem( EMP_CORE_EFFECT )
 
 is_hovering	<- false
 
-//player <- self.GetWeaponOwner()
+player <- self.GetWeaponOwner()
 
 primary_before_replace <- "mp_titanweapon_xo16"
 ordnance_before_replace <- "mp_titanweapon_salvo_rockets"
@@ -289,7 +289,7 @@ function StartDashCore( player )
 	player.SetDodgePowerDelayScale( 0.05 )
 	player.SetPowerRegenRateScale( 16.0 )
 }
-/*
+
 function EndMissileCore( soul )
 {
 	local titan = soul.GetTitan()
@@ -359,7 +359,7 @@ function StartSmartCore( soul )//do i use minigun....do i use XO16? do i use... 
 
 	//titan.GiveWeapon( "mp_weapon_mega3", ["smart_core"] )//super smort
 	//shit, i got a calculating bitfield error, hol on. the _passives_shared doesnt include gun passives though..., not so smort now ;-;
-}*/
+}
 
 /*
 function EndBulletStormCore( soul )
@@ -388,7 +388,7 @@ function StartBulletStormCore( soul )//do i use minigun....do i use XO16? do i u
 	thread ReplaceTitanWeapon( titan, "mp_titanweapon_xo16", ["bullet_storm"], "primary" )
 }
 */
-/*
+
 function EndPiercerCore( soul )
 {
 	local titan = soul.GetTitan()
@@ -451,15 +451,15 @@ function StartFlightCore( soul )
 	thread ReplaceTitanWeapon( titan, player_ordnance, [ "mod_ordnance_core", "burn_mod_titan_salvo_rockets" ], "ordnance" )
 	thread ReplaceTitanWeapon( titan, player_tactical, [ "mod_ordnance_core", "burn_mod_titan_shoulder_rockets" ], "special" )
 }
-*/
-function HoverTitanWizardry( titan, soul, vel_z )
+
+function HoverTitanWizardry( player, soul, vel_z )
 {
 	local subtractor = 10
 	local seconds_flight_ease = 0.05
 	//player.kv.gravity = 0.0
-	local vel = titan.GetVelocity()
+	local vel = player.GetVelocity()
 	vel.z = vel_z
-	titan.SetVelocity( vel )
+	player.SetVelocity( vel )
 	wait( seconds_flight_ease )
 	//player.kv.gravity = 0.0
 	if ( vel_z > 3 && is_hovering == true )
@@ -472,12 +472,12 @@ function HoverTitanWizardry( titan, soul, vel_z )
 		{
 			vel_z -= subtractor
 		}
-		HoverTitanWizardry( titan, soul, vel_z )
+		HoverTitanWizardry( player, soul, vel_z )
 		return
 	}
 	else if ( is_hovering == true ) //TitanCoreInUse( player )
 	{
-		HoverTitanWizardry( titan, soul, vel_z )
+		HoverTitanWizardry( player, soul, vel_z )
 		return
 	}
 	return
@@ -511,7 +511,7 @@ function TakePlayerWeapons( soul, weapon_type )
 			local weapon = titan.GetOffhandWeapon( 0 )
 			if ( weapon != null )
 			{
-				titan.TakeOffhandWeapon( 0 )
+				titan.TakeWeapon( weapon )
 			}
 			return
 		
@@ -519,7 +519,7 @@ function TakePlayerWeapons( soul, weapon_type )
 			local weapon = titan.GetOffhandWeapon( 1 )
 			if ( weapon != null )
 			{
-				titan.TakeOffhandWeapon( 1 )
+				titan.TakeWeapon( weapon )
 			}
 			return
 	}

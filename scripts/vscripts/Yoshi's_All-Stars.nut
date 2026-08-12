@@ -4,7 +4,7 @@ function main()
 {
 	Globalize( MasterTitanCreation )
 	printl( "STAAAARRRRSSSS" )
-	//IncludeFile("AS_create_northstar")
+	//IncludeFile("AS_create_legion")
 
 	
 }

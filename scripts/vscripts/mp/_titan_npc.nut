@@ -508,6 +508,8 @@ function CreateSpawnNPCTitanTemplate( team, settings )
 	table.title		<- null
 	table.decal 	<- null
 
+	
+
 	SetModelSkinFromSettings( table, settings, team ) // Use the table-populating function
 	table.team      = team
 	table.settings  = settings
@@ -554,9 +556,12 @@ function CreateNPCTitanForPlayer( player, origin, angles, delayedCreation = fals
 		GiveTitanWeaponsForPlayer( player, npcTitan )
 
 	SetTitanOSForPlayer( player )
+	//table.core = SetTitanCoreForPlayer( player )
 
 	if ( !IsTrainingLevel())
 		SetDecalForTitan( player )
+		//SetTitanCoreForPlayer( player )
+
 	// start a new titan building when the current titan dies
 	AddSoulDeathFunc( UpdateSoulDeath )
 
@@ -578,10 +583,7 @@ function UpdateSoulDeath( soul )
 
 	player.OnDestroyTitan()
 
-	// Nexon clears the objective when doing this because they used the objective system
-	// To show people how to deploy their titan etc
-	// We dont use any of that, so getting rid of this
-	//ClearPlayerActiveObjective( player )
+	ClearPlayerActiveObjective( player )
 }
 
 

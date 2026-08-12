@@ -35,6 +35,9 @@ CBasePlayer.stimmedForever <- false
 CBasePlayer.currentTargetPlayerOrSoul_Ent <- null
 CBasePlayer.currentTargetPlayerOrSoul_LastHitTime <- 0
 
+//CBasePlayer.init_hovered <- false
+//CBasePlayer.is_hovering <- false
+
 RegisterSignal( "OnRespawnPlayer" )
 RegisterSignal( "NewViewAnimEntity" )
 RegisterSignal( "PlayerDisconnected" )
@@ -202,7 +205,7 @@ function CBasePlayer::GetPlayerClassData( myClass )
 
 function CBasePlayer::InitMPClasses()
 {
-	playerClassData = {}
+	playerClassData = {}//The fact it was here THE ENTIRE TIME.
         if (entindex() != 19) { SetName("player" +entindex() ) }
 	if(!IsLobby())
 	{

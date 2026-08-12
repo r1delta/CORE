@@ -1,210 +1,92 @@
 WeaponData
 {
 	// General
-	"printname"   									"#WPN_THROWING_KNIFE"
-	"shortprintname"								"#WPN_THROWING_KNIFE_SHORT"
-	"description" 									"#WPN_THROWING_KNIFE_DESC"
-	"longdesc" 										"#WPN_THROWING_KNIFE_LONGDESC"
-	"weaponClass" 									"human"
-	"fire_mode"   									"semi-auto"
-	"server_vscript"  								"weapons/mp_weapon_throwing_knife"
-	"client_vscript"  								"weapons/mp_weapon_throwing_knife"
-	"projectile_vscript"  							"weapons/mp_weapon_throwing_knife"
-	"minimap_reveal_distance"						"32000"
+	"printname"   									"Titan Hover"
+    "shortprintname"                              	"Titan Hover"
+	"description" 									"Allows the titan to fly while activated."
+	"longdesc"										"Allows the titan to fly while activated, take-off height will deteriorate while hovering."
+	"weaponClass" 									"titan"
+	"server_vscript"  								"weapons/mp_titanability_hover"
+	"client_vscript"  								"weapons/mp_titanability_hover"
+	"minimap_reveal_distance"						"320"
+	"fire_mode"   									"offhand_instant"//"offhand"
+
+	"damage_type" 									"none"
+
+	// Menu Stats
+	"stat_damage" 									"0"
+	"stat_range"  									"50"
+	"stat_accuracy"   								"0"
+	"stat_rof"										"50"
+
+	"damage_near_distance"							"350"
+	"damage_far_distance"							"10"
 
 	// Models
-	"viewmodel"   									"models/weapons/data_knife/ptpov_data_knife.mdl"
-	"projectilemodel" 									"models/weapons/data_knife/v_data_knife.mdl"
-	"playermodel"									"models/weapons/empty_handed/w_empty_handed_human.mdl"
-	//"projectilemodel"								"models/weapons/grenades/m20_f_grenade_projectile.mdl"
-	"activitymodifier"								"offhand"
 
 	// Effects
-	"tracer_effect"   								""
-	"tracer_effect_first_person"   					""
-	"impact_effect_table" 							""
-	"vortex_absorb_effect"							"wpn_vortex_projectile_shotgun_FP"
-	"vortex_absorb_effect_third_person"				"wpn_vortex_projectile_shotgun"
-	"vortex_absorb_sound"							"Vortex_Shield_AbsorbBulletLarge"
-	"adjust_to_gun_barrel"							"1"
 
-	// Sounds
-	"sound_dryfire"									""
-	"sound_trigger_pull"							""
-	"sound_trigger_release"							""
-	"fire_sound_1_player_1p"						""
-	"fire_sound_1_player_3p"						""
-	"fire_sound_1_npc"								""
+	// Sound
+	//"looping_sounds"								"1"
+	//"fire_sound_1"									"Weapon_XO16.Single"
 
-	"fx_shell_eject_view"							"wpn_shelleject_shotshell_FP"
-	"fx_shell_eject_world"							"wpn_shelleject_shotshell"
-	"fx_shell_eject_attach"							"shell"
-
-	"fx_muzzle_flash_view"							"mflash_shotgun_fp_FULL"
-	"fx_muzzle_flash_world"							"mflash_shotgun_FULL"
-	"fx_muzzle_flash_attach"						"muzzle_flash"
-
-	// Damage - When Used by Players
-	"damage_type" 									"burn"
-	"damage_near_distance"							"1000"
-	"damage_far_distance"							"3000"
-	"damage_near_value"   							"999"
-	"damage_far_value"								"999"
-	"damage_near_value_titanarmor"					"0"
-	"damage_far_value_titanarmor" 					"0"
-	"damage_rodeo" 									"300"
-	"explosion_damage"								"1"
-	"explosion_damage_heavy_armor"					"1"
-
-	// Damage - When Used by NPCs
-	"npc_damage_near_distance"						"100"
-	"npc_damage_far_distance" 						"1200"
-	"npc_damage_near_value"   						"40"
-	"npc_damage_far_value"							"20"
-	"npc_damage_near_value_titanarmor"				"40"
-	"npc_damage_far_value_titanarmor" 				"0"
-
-	"explosion_inner_radius"						"1"
-	"explosionradius"								"1"
-	"impulse_force"									"6000"
-	"explosion_shake_radius"						"0"
-	"explosion_shake_amplitude"						"20"
-	"explosion_shake_frequency"						"45"
-	"explosion_shake_duration"						"0.25"
-
-
-	"critical_hit"									"1"
+	// Network
+	"net_optimize"		                            "1"
 
 	// Ammo
-	"ammo_clip_size"   								"1"
-	"ammo_default_total"							"3"
-	"ammo_stockpile_max"							"3"
+	"ammo_stockpile_max"							"9999"
+	"ammo_clip_size"   								"-1"
+	"ammo_default_total"							"50"
+
+	//"offhand_blocks_sprint"							"1"
 
 	// Behavior
-	"fire_rate"   									"2.2"
-	"reload_time" 									"0.5"
-	"reloadempty_time"								"0.5"
-	"holster_time"									"0.5"
-	"deploy_time" 									"0.66"
-	"lower_time"  									"0.25"
-	"raise_time"  									"0.3"
+	"fire_rate"   									"5.0"
+	//"charge_levels"									"3"
+	"charge_time" 									"5.0"
+	"charge_cooldown_time"							"5.0"
+	"charge_cooldown_delay"   						"2.0"
+
+	"holster_time"									".3"
+	"deploy_time" 									".1"
+	"lower_time"  									".1"
+	"raise_time"  									".1"
+
+	"offhand_blocks_sprint"							"1"
 	"allow_empty_fire"								"0"
 	"reload_enabled"  								"1"
-	"allow_empty_click"   							"1"  
+	"allow_empty_click"   							"0"
 	"empty_reload_only"   							"0"
-	"trigger_snipercam"   							"0"
-	"grenade_impact_velocity_dampen_factor"			"0.85"
-	"allow_headshots" 								"0"
-	"primary_fire_does_not_block_sprint"			"1"
-	"ads_move_speed_scale"							"0.75"
-	"aimassist_disable_hipfire"						"1"
-	"aimassist_disable_ads"							"1"
-	"move_speed_modifier" 							"1.00"//Bug with move speed > 1.0, temporary work around.
-	"toss_pullout_time"								"0.35"
-	"toss_time"										"0.25"
-	"toss_overhead_time"							"0.25"
 
-	//
-	"viewmodel_shake_forward"						"0.5"
-	"viewmodel_shake_up"							"0.2"
-	"viewmodel_shake_right"							"0.0"
+	// Rumble
+	"rumble"  										"6"
 
-	// Bob
-	"bob_cycle_time"  								"0.45"
-	"bob_vert_dist"   								"0.1"
-	"bob_horz_dist"   								"0.1"
-	"bob_max_speed"   								"150"
-	"bob_pitch"   									"0.75"
-	"bob_yaw" 										"0.5"
-	"bob_roll"										"-0.75"
-
-	"bob_tilt_angle"  								"0.5"
-	"sway_turn_angle_factor"  						"-0.5"
-	"sway_turn_origin_factor" 						"0"
-	"sway_move_angle_factor"  						"0.15"
-	"sway_move_origin_factor" 						"0.15"
-	"sway_gain"   									"10.0"
-
-	// View Kick
-	"viewkick_spring"									"pistol"
-
-	// View Drift
-	"viewdrift_hipfire_stand_scale_pitch" 			"0.325"
-	"viewdrift_hipfire_crouch_scale_pitch"			"0.275"
-	"viewdrift_hipfire_air_scale_pitch"   			"0.5"
-	"viewdrift_hipfire_stand_scale_yaw"   			"0.12"
-	"viewdrift_hipfire_crouch_scale_yaw"  			"0.10"
-	"viewdrift_hipfire_air_scale_yaw" 				"0.22"
-	"viewdrift_hipfire_speed_pitch"   				"0.6"
-	"viewdrift_hipfire_speed_yaw" 					"1.22"
-
-	"deployfirst_time"								"1.25"
-	"deploycatch_time"								"1.33"
-	"sprintcycle_time"								".55"
-	"is_anti_titan"  							    "0"
-
-	// Crosshair
-	"red_crosshair_range" 							"1500"
-
-	// Bodygroups:
-	"bodygroup1_name"	"knife"
-	"bodygroup1_set"	"0"
+	"hud_icon"										"../ui/menu/items/mod_icons/afterburners"
 
 	Mods
 	{
-		dev
+		pas_defensive_core
 		{
-			"ammo_default_total"							"99"
-			"ammo_stockpile_max"							"99"
+			"charge_cooldown_time"							"*0.5"
+			"charge_cooldown_delay"							"*0.5"
+			//idk what allows it to recharge anymore so throw something at the wall
 		}
-
-		// Scan on impact, hack on impact, regen
-		// "You... DO know how expensive these things are, right?"
-		burn_mod_throwing_knife
+		burn_mod_titan_hover
 		{
-			"crosshair_index"								"1"
-			"is_burn_mod"		"1"
+			"damage_far_distance"							"5"
+			"charge_time" 									"*1.5"
 		}
 	}
-
-	CrosshairData
+	TextureData
 	{
-		BaseWeapon
+		"crosshair"
 		{
-			DefaultElementBehavior
-			{
-				"size_x"					"36"
-				"size_y"					"36"
-				"rotation"					"180"
-				"fade_while_sprinting"		"0"
-				"fade_while_reloading"		"1"
-				"fade_while_zooming"		"1"
-				"draw_while_ads"			"0"
-				"draw_while_hip"			"1"
-			}
-			Element0
-			{
-				"type"						"static"
-				"material"					"hud/crosshairs/b3wingman"
-				"size_x"					"28"
-				"size_y"					"28"
-			}
-			Element1
-			{
-				"type"						"static"
-				"material"					"hud/crosshairs/b3wingman_shadow"
-				"size_x"					"28"
-				"size_y"					"28"
-			}
 		}
-		Burn_Mod //Match BaseWeapon + default color change until override setting.
+		"crosshair_zoom"
 		{
-			"inherit_data_from"				"BaseWeapon"
-
-			DefaultElementBehavior
-			{
-				"default_color"				"246 134 40 255"
-			}
+		}
+		"autoaim"
+		{
 		}
 	}
 }

@@ -1,0 +1,9 @@
+"AddonInfo"
+{
+	"addontitle"			"TitanFileUnificationProject"
+	"addonDescription"		"The greatest tool for modding in Weapons and Titans."
+	"addonversion"			"1.0.0"
+	"addonauthor"			"Yoshi the Hut"
+
+	"addonContent_Script"	"1"
+}

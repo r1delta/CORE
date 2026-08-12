@@ -49,7 +49,7 @@ WeaponData
 
     // Sound
     //"looping_sounds"                                "1"
-    "fire_sound_1"                                  "Weapon_40mm_Fire_Burst" //titan_shotgun_mega_fire
+    "fire_sound_1"                                  "Weapon_40mm_Fire_Burst"
     "fire_sound_2"                                  "Weapon_bulletCasings.Bounce"
     "sound_dryfire"                                   "titan_dryfire"
 
@@ -100,16 +100,15 @@ WeaponData
     "allow_empty_click"                               "1"
     "empty_reload_only"                               "0"
     "trigger_snipercam"                               "1"
+    "primary_fire_does_not_block_sprint"			  "0"
     "allow_headshots"                                 "1" //"0"
     "headshot_distance"                             "2000"
     "damage_headshot_scale"                         "1.5"
 
     "reload_time"                                 "3.0"
     "reload_time_late1"                     "2.4"
-	"reload_time_late2" 							"1.6"
     "reloadempty_time"                        "3.0"
     "reloadempty_time_late1"            "2.4"
-	"reloadempty_time_late2" 					"1.6"
 
     // Spread
     "spread_stand_hip"                                  "10"
@@ -306,6 +305,30 @@ WeaponData
 			"crosshair_index"								"2"
 			"is_burn_mod"									"1"
 		}
+        full_burst
+        {
+            "burst_fire_count"								  "9"
+            "fire_rate"                                       "*1.5"
+        	"burst_fire_delay"								  "*0.1"
+            "reload_time"                                     "*1.5"
+            "reload_time_late1"                               "*1.5"
+            "reloadempty_time"                                "*1.5"
+            "reloadempty_time_late1"                          "*1.5"
+        }
+        auto_burst
+        {
+            "fire_mode"                                       "auto"
+            "ammo_clip_size"                                  "12"
+            "ammo_stockpile_max"                              "96"
+            "burst_fire_count"								  "1"
+            "fire_rate"                                       "*1.1"
+        	"burst_fire_delay"								  "*0.1"
+            "reload_time"                                     "*1.2"
+            "reload_time_late1"                               "*1.2"
+            "reloadempty_time"                                "*1.2"
+            "reloadempty_time_late1"                          "*1.2"
+            "primary_fire_does_not_block_sprint"			  "1"
+        }
     }
 
     CrosshairData

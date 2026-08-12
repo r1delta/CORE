@@ -1,0 +1,19 @@
+I use RSX to yank the Titanfall2 camo for the Holo-Pilot, 
+I put each image file into GIMP to convert it to a .tga file. 
+I then use VTF Edit to batch convert the .tga files into VTFs into another folder. 
+Then I copy the VTFs into the proper folder within the materials folder (Very Important!!!!). 
+Now when I make the VMT; I use the VTFs that were put under the materials folder tree. 
+Now I open the created VMT file using Visual Studio Code in which here I use a Titanfall1 VMT as reference (I used the Pilot VMTs as I was taking the Holo-Pilot over) to place mission text such as shininess and selfillum (glowy where used) basically to get it to look proper as the other models.
+
+NOTES:
+-Make sure any Titanfall2 Models are on .dx11 instead of the .dx90 otherwise it is invisible.
+
+-Replacing existing models uh, kinda makes the game go rogue and sometimes doesn't work.
+
+NOTICE: TTF2 _nml -> TTF1 _nml
+
+open the normal map in gimp
+colors > components > decompose > color model RGBA
+delete the empty blue layer
+import the models _cav texture as a new layer, and rename it to blue
+colors > components > compose > color model RGBA
