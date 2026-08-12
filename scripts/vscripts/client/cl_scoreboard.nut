@@ -1,7 +1,4 @@
 const MAX_SCORE_COLUMNS = 7
-const SCOREBOARD_PLAYER_HEIGHT = 20
-const SCOREBOARD_PLAYER_HEIGHT_9V9 = 18
-const SCOREBOARD_PLAYER_SEPARATOR_HEIGHT = 1
 const SCOREBOARD_MATERIAL_GEN1 = "../ui/menu/generation_icons/generation_0"
 const SCOREBOARD_MATERIAL_GEN2 = "../ui/menu/generation_icons/generation_1"
 const SCOREBOARD_MATERIAL_GEN3 = "../ui/menu/generation_icons/generation_2"
@@ -182,6 +179,11 @@ function ScoreboardButtonPressed( localPlayer )
 	if ( GAMETYPE == COOPERATIVE && Coop_IsGameOver() )
 		return
 
+	// Scoreboard looks like a pain in the ass to fix for FFA
+	// So disabling it for now
+	if ( IsFFABased() )
+		return
+
 	if ( file.showingScoreboard )
 		HideScoreboard()
 	else
@@ -232,6 +234,11 @@ function InitScoreboard()
 
 function InitScoreboard_Think()
 {
+	//FlagWait( "EntitiesDidLoad" ) // Have to do this because the nv that determines if ffaBased or not might not get set yet
+
+	//if ( IsFFABased() )
+	//	return
+
 	local localPlayer = GetLocalClientPlayer()
 	local myTeam = localPlayer.GetTeam()
 	local enemyTeam = GetEnemyTeam( myTeam )
@@ -279,8 +286,11 @@ function InitScoreboard_Think()
 	file.teamElems[enemyTeam].logo <- HudElement( "ScoreboardEnemyTeamLogo", scoreboard )
 	file.teamElems[enemyTeam].score <- HudElement( "ScoreboardEnemyTeamScore", scoreboard )
 
-	file.teamElems[TEAM_IMC].logo.SetImage( "../ui/scoreboard_imc_logo" )
-	file.teamElems[TEAM_MILITIA].logo.SetImage( "../ui/scoreboard_mcorp_logo" )
+	if ( !IsFFABased() )
+	{
+		file.teamElems[TEAM_IMC].logo.SetImage( "../ui/scoreboard_imc_logo" )
+		file.teamElems[TEAM_MILITIA].logo.SetImage( "../ui/scoreboard_mcorp_logo" )
+	}
 
 	file.columnIconBackgrounds <- {}
 	file.columnIcons <- {}
@@ -308,6 +318,11 @@ function InitScoreboard_Think()
 	local teams = [ myTeam, enemyTeam ]
 	local prefix
 
+	if ( IsFFABased() )
+	{
+		teams = [ myTeam ]
+	}
+
 	foreach ( team in teams )
 	{
 		if ( team == myTeam )
@@ -315,7 +330,7 @@ function InitScoreboard_Think()
 		else
 			prefix = "ScoreboardOpponent"
 
-		for ( local elem = 0; elem < numTeamPlayers; elem++  )
+		for ( local elem = 0; elem < level.maxTeamSize; elem++  )
 		{
 			local elemNum = elem.tostring()
 
@@ -323,7 +338,7 @@ function InitScoreboard_Think()
 			table.background <- HudElement( prefix + "Background" + elemNum, scoreboard )
 			table.selection <- HudElement( prefix + "Selection" + elemNum, scoreboard )
 			table.playerNumber <- HudElement( prefix + "PlayerNumber" + elemNum, scoreboard )
-			if( GAMETYPE != COOPERATIVE )
+			if( GAMETYPE != COOPERATIVE && !IsFFABased() )
 				table.playerNumber.SetWidth( 0 )
 			table.status <- HudElement( prefix + "Status" + elemNum, scoreboard )
 			local art = HudElement( prefix + "Art" + elemNum, scoreboard )
@@ -356,26 +371,6 @@ function InitScoreboard_Think()
 				}
 			}
 
-			if ( numTeamPlayers > 8 )
-			{
-				local compactHeight = (SCOREBOARD_PLAYER_HEIGHT_9V9 * level.screenSize[1] / 480.0).tointeger()
-				table.background.SetHeight( compactHeight )
-				table.selection.SetHeight( compactHeight )
-				table.playerNumber.SetHeight( compactHeight )
-				table.status.SetHeight( compactHeight )
-				art.SetHeight( compactHeight )
-				table.lvl.SetHeight( compactHeight )
-				table.name.SetHeight( compactHeight )
-				table.mic.SetHeight( compactHeight )
-				table.leader.SetHeight( compactHeight )
-				table.connection.SetHeight( compactHeight )
-				if ( file.developer )
-					table.ping.SetHeight( compactHeight )
-
-				foreach ( varName, columnElem in file.columnLabels )
-					table[varName].SetHeight( compactHeight )
-			}
-
 			file.playerElems[team].append( table )
 		}
 	}
@@ -383,23 +378,10 @@ function InitScoreboard_Think()
 	file.header.gametypeAndMap.Show()
 	file.header.gametypeDesc.Show()
 
-	if ( IsFFABased() )
-	{
-		// FFA uses both nine-row HUD groups as one continuous 18-player list.
-		// Team branding and scores would make the second group look like an
-		// opposing team even though every entry is an individual competitor.
-		file.teamElems[myTeam].logo.Hide()
-		file.teamElems[myTeam].score.Hide()
-		file.teamElems[enemyTeam].logo.Hide()
-		file.teamElems[enemyTeam].score.Hide()
-	}
-	else
-	{
-		file.teamElems[myTeam].logo.Show()
-		file.teamElems[myTeam].score.Show()
-		file.teamElems[enemyTeam].logo.Show()
-		file.teamElems[enemyTeam].score.Show()
-	}
+	file.teamElems[myTeam].logo.Show()
+	file.teamElems[myTeam].score.Show()
+	file.teamElems[enemyTeam].logo.Show()
+	file.teamElems[enemyTeam].score.Show()
 
 	foreach( elem in file.columnIconBackgrounds )
 		elem.Show()
@@ -456,12 +438,10 @@ function ShowScoreboard()
 	local resMultiplier = screenSize[1] / 480.0
 
 	local numTeamPlayers = GetNumTeamPlayers()
-	local playerHeightUnits = numTeamPlayers > 8 ? SCOREBOARD_PLAYER_HEIGHT_9V9 : SCOREBOARD_PLAYER_HEIGHT
-	local playerSeperatorHeight = (SCOREBOARD_PLAYER_SEPARATOR_HEIGHT * resMultiplier).tointeger()
-	local playerHeight = (playerHeightUnits * resMultiplier).tointeger()
+	local playerSeperatorHeight = (1 * resMultiplier).tointeger()
+	local playerHeight = (20 * resMultiplier).tointeger()
 	local teamSeparatorHeight = (8 * resMultiplier).tointeger()
-	local teamGroupGap = IsFFABased() ? 0 : 5
-	local losingTeamYOffset = ((((playerHeightUnits + SCOREBOARD_PLAYER_SEPARATOR_HEIGHT) * numTeamPlayers) + teamGroupGap) * resMultiplier).tointeger()
+	local losingTeamYOffset = (((21 * numTeamPlayers) + 5) * resMultiplier).tointeger()
 
 	file.background.Show()
 	file.header.background.Show()
@@ -476,7 +456,7 @@ function ShowScoreboard()
 	foreach ( line in file.columnLines )
 		line.SetHeight( teamHeight )
 
-	if( GAMETYPE == COOPERATIVE )
+	if( GAMETYPE == COOPERATIVE || IsFFABased() )
 		file.enemyColumnLines.Hide()
 
 	local index
@@ -502,15 +482,6 @@ function ShowScoreboard()
 	playerSlotEmpty[myTeam] <- SCOREBOARD_MATERIAL_FRIENDLY_SLOT
 	playerSlotEmpty[enemyTeam] <- SCOREBOARD_MATERIAL_ENEMY_SLOT
 
-	if ( IsFFABased() )
-	{
-		// The second HUD group is rows 10-18 in FFA, not an enemy team.
-		teamColors[enemyTeam] = teamColors[myTeam]
-		playerSlotFilledEven[enemyTeam] = playerSlotFilledEven[myTeam]
-		playerSlotFilledOdd[enemyTeam] = playerSlotFilledOdd[myTeam]
-		playerSlotEmpty[enemyTeam] = playerSlotEmpty[myTeam]
-	}
-
 	local teamScore = {}
 	teamScore[myTeam] <- []
 	teamScore[enemyTeam] <- []
@@ -532,29 +503,9 @@ function ShowScoreboard()
 		local data_highlight_bg_color = {}
 		data_highlight_bg_color[myTeam] <- [0, 138, 166]
 		data_highlight_bg_color[enemyTeam] <- [156, 71, 6]
-		if ( IsFFABased() )
-			data_highlight_bg_color[enemyTeam] = data_highlight_bg_color[myTeam]
 
-		if ( IsFFABased() )
-		{
-			// The scoreboard resource has two columns of nine rows. FFA puts every
-			// player on one gameplay team, so split the globally sorted player list
-			// across the two visual columns instead of overflowing the first one.
-			local players = GetSortedPlayers( compareFunc, null )
-			local rowsPerColumn = file.playerElems[myTeam].len()
-			foreach ( playerIndex, player in players )
-			{
-				if ( playerIndex < rowsPerColumn )
-					teamPlayers[myTeam].append( player )
-				else if ( playerIndex < rowsPerColumn * 2 )
-					teamPlayers[enemyTeam].append( player )
-			}
-		}
-		else
-		{
-			teamPlayers[myTeam] = GetSortedPlayers( compareFunc, myTeam )
-			teamPlayers[enemyTeam] = GetSortedPlayers( compareFunc, enemyTeam )
-		}
+		teamPlayers[myTeam] = GetSortedPlayers( compareFunc, myTeam )
+		teamPlayers[enemyTeam] = GetSortedPlayers( compareFunc, enemyTeam )
 
 		Assert( file.showingScoreboard )
 		if ( !IsValid( file.selectedPlayer ) )
@@ -694,7 +645,7 @@ function ShowScoreboard()
 				{
 					TitanBrawlAuto_FillScoreboardRow( elemTable, player, team, data_highlight_bg_color, nameMeasureElem )
 					index++
-					if ( index >= file.playerElems[team].len() )
+					if ( index >= level.maxTeamSize )
 						break
 					continue
 				}
@@ -909,7 +860,7 @@ function ShowScoreboard()
 
 				index++
 
-				if ( index >= file.playerElems[team].len() )
+				if ( index >= level.maxTeamSize )
 					break
 			}
 
@@ -921,7 +872,7 @@ function ShowScoreboard()
 				local numDone = 0
 				for ( local idx = 0; idx < (reservedCount + connectingCount + loadingCount); idx++ )
 				{
-					if ( index >= file.playerElems[team].len() )
+					if ( index >= level.maxTeamSize )
 						continue
 
 					elemTable = file.playerElems[team][index]
@@ -956,7 +907,7 @@ function ShowScoreboard()
 				}
 			}
 
-			while ( index < file.playerElems[team].len() )
+			while ( index < level.maxTeamSize )
 			{
 				elemTable = file.playerElems[team][index]
 
@@ -1547,7 +1498,7 @@ function TitanBrawlAuto_FillScoreboardRow( elemTable, entry, team, data_highligh
 
 function GetNumTeamPlayers()
 {
-	if ( GAMETYPE == COOPERATIVE )
+	if ( GAMETYPE == COOPERATIVE || IsFFABased() )
 		return max( 4, GetCurrentPlaylistVar( "max players", 4 ).tointeger() )
 	else
 		return max( 6, GetCurrentPlaylistVar( "max players", 12 ).tointeger() / 2.0 )

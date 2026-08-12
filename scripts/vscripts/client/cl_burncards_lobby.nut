@@ -2744,11 +2744,9 @@ function MoveSelectedBurnCardToFront( player, slotForCard )
 
 function AddBurnCardToTables( burncard, burnCardTables )
 {
-	local sortFunc = GetPlayerBurnCardSortFunction( GetLocalClientPlayer() )
-
 	foreach ( index, card in burnCardTables )
 	{
-		if ( sortFunc( burncard, card ) <= 0 )
+		if ( BurnCardNumericSort( burncard, card ) <= 0 )
 		{
 			//local group1 = GetBurnCardGroup( burncard.cardRef )
 			//local group2 = GetBurnCardGroup( card.cardRef )
@@ -2763,7 +2761,7 @@ function AddBurnCardToTables( burncard, burnCardTables )
 		}
 	}
 	burnCardTables.append( burncard )
-	burnCardTables.sort( sortFunc )
+	burnCardTables.sort( BurnCardNumericSort )
 }
 
 

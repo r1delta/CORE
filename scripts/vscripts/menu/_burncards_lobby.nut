@@ -299,14 +299,8 @@ function BCSetSortType( player, type )
 	if ( type == null )
 		return
 
-	if ( type > MAX_CARD_SORT_TYPE )
-		type = 0
-
 	if ( type >= 0 )
 		player.SetPersistentVar( "currentBurnCardSortType", type )
-
-	printt( "===================")
-	printt( type )
 
 	FillBurnCardDeckFromArray( player, GetPlayerBurnCardDeck( player ) )
 

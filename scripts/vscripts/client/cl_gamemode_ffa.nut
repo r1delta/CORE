@@ -2,7 +2,6 @@
 function main()
 {
 	AddCreateCallback( "titan_cockpit", FFAHudInit )
-	AddOnDeathOrDestroyCallback( "player", FFA_PlayerDied )
 }
 
 function FFAHudInit( cockpit, isRecreate )
@@ -17,7 +16,6 @@ function FFAHudInit( cockpit, isRecreate )
 	scoreBars.Friendly_Team.SetText( "#KILLREPLAY_YOU" )
 
 	scoreBars.Enemy_Team.DisableAutoText()
-	scoreBars.Enemy_Team.SetText( "" )
 
 	thread FFAHudThink( player, cockpit, vgui, scoreBars )
 }
@@ -28,59 +26,36 @@ function FFAHudThink( player, cockpit, vgui, scoreBars )
 	player.EndSignal( "OnDestroy" )
 	cockpit.EndSignal( "OnDestroy" )
 
+    local ffaTeam = player.GetTeam()
+    local compareFunc = GetScoreboardCompareFunc()
+	local playersArray = GetSortedPlayers( compareFunc, ffaTeam )
+	local localPlayerPlacement = GetIndexInArray( playersArray, player )
+
+	local winningPlayer
+
+	// The idea here is to eventually make scorebars track player kills instead of TeamScore
 	while ( true )
 	{
-		UpdateFFAScoreBars()
+		playersArray = GetSortedPlayers( compareFunc, ffaTeam )
+		localPlayerPlacement = GetIndexInArray( playersArray, player )
+
+		foreach ( otherPlayer in GetPlayerArray() )
+		{
+			if ( GetIndexInArray( playersArray, otherPlayer ) == 0 )
+				winningPlayer = otherPlayer
+		}
+
+		if ( player == winningPlayer )
+		{
+			scoreBars.Enemy_Team.SetText( "#CHALLENGE_GAMES_MVP" ) // RANKED_PLAY_ADVOCATE_LINE3 // DAILYCHALLENGE_PET_TITAN_KILLS_GUARD_MODE
+		}
+		else
+		{
+			scoreBars.Enemy_Team.SetText( "#CHALLENGE_GAMES_MVP" )
+		}
+
 		wait 1.0
 	}
-}
-
-function FFA_PlayerDied( player )
-{
-	UpdateFFAScoreBars()
-}
-
-function UpdateFFAScoreBars()
-{
-	local player = GetLocalViewPlayer()
-	if ( !player )
-		return
-
-	local winningPlayer = null
-	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
-	if ( players.len() )
-		winningPlayer = players[0]
-
-	local cockpit = player.GetCockpit()
-	if ( !cockpit )
-		return
-
-	local vgui = cockpit.GetMainVGUI()
-	if ( !vgui )
-		return
-
-	local scoreBars = vgui.s.scoreboardProgressBars
-
-	local playerScore = player.GetAssaultScore()
-	local winnerScore = 0
-	local scoreLimit = GetScoreLimit_FromPlaylist().tofloat()
-
-	if ( winningPlayer )
-		winnerScore = winningPlayer.GetAssaultScore()
-
-	// BAR DOESNT WORK
-	scoreBars.ScoresFriendly.SetBarProgressSource( ProgressSource.PROGRESS_SOURCE_SCRIPTED )
-	//scoreBars.ScoresFriendly.SetBarProgressRemap( 0, playerScore, 0.011, 0.96 )
-	scoreBars.ScoresFriendly.SetBarProgress( playerScore.tofloat() / scoreLimit )
-	scoreBars.Friendly_Number.SetText( playerScore.tostring() )
-
-	scoreBars.ScoresEnemy.SetBarProgressSource( ProgressSource.PROGRESS_SOURCE_SCRIPTED )
-	//scoreBars.ScoresEnemy.SetBarProgressRemap( 0, winnerScore, 0.011, 0.96 )
-	scoreBars.ScoresEnemy.SetBarProgress( winnerScore.tofloat() / scoreLimit )
-	scoreBars.Enemy_Number.SetText( winnerScore.tostring() )
-
-	if ( winningPlayer )
-		scoreBars.Enemy_Team.SetText( winningPlayer.GetPlayerName() )
 }
 
 main()

@@ -74,10 +74,6 @@ function main()
 
 	TimerInit( "Nag_TurretKilledTitan", 8.0 )
 	TimerInit( "Nag_TurretKillstreak", 45.0 )
-
-	//IncludeFile("Yoshi's_TitanCreator")
-
-	//setUp( 3 )
 }
 
 function EntitiesDidLoad()
@@ -868,8 +864,7 @@ function GetCharacterFrameImage( player )
 function GetCharacterFaceImage( player )
 {
 	Assert( player.GetModelName(), "player has no model" )
-	local mdl_id = player.GetModelName()
-	switch( mdl_id )
+	switch( player.GetModelName() )
 	{
 		case MILITIA_MALE_BR:
 		case IMC_MALE_BR:
@@ -901,22 +896,7 @@ function GetCharacterFaceImage( player )
 			return "HUD/coop/coop_char_spectre"
 
 		default:
-			//Assert( 0, "model " + player.GetModelName() + " not setup in GetCharacterFaceImage" )
-
-			local loop_max = MasterModdedTitans.len()
-			for( local E = 0; E < loop_max; E++ )
-			{
-				if( loop_max > 0 )
-				{
-					local bmt_model = MasterModdedTitans[ E ]
-					if( mdl_id == bmt_model.titan_model )//coop img
-					{
-						return bmt_model.coop_img
-					}
-				}
-			}
-
-			return "..ui/temp"
+			Assert( 0, "model " + player.GetModelName() + " not setup in GetCharacterFaceImage" )
 	}
 }
 
