@@ -36,40 +36,19 @@ function main()
 	RegisterSignal( "TitanEjectionStarted" )
 	RegisterSignal( "EjectLand" )
 
-	//IncludeFile("Yoshi's_TitanCreator")
-	//setUp( 3 )
-
 	level.hatchModels <- {}
 	level.hatchModels[ ATLAS_MODEL ] <- ATLAS_HATCH_PANEL
 	level.hatchModels[ STRYDER_MODEL ] <- STRYDER_HATCH_PANEL
 	level.hatchModels[ OGRE_MODEL ] <- OGRE_HATCH_PANEL
-	//level.hatchModels[ DESTROYER_MODEL ] <- DESTROYER_HATCH_PANEL
-
-	//level.hatchModels[ LEGION_MODEL ] <- STRYDER_HATCH_PANEL
+	level.hatchModels[ "models/titans/destroyer/destroyer_titan.mdl" ] <- "models/titans/destroyer/destroyer_titan_hatch_panel.mdl"
 
 	level.rodeoHitBoxNumber <- {}
 	level.rodeoHitBoxNumber[ ATLAS_MODEL ] <- 34
 	level.rodeoHitBoxNumber[ STRYDER_MODEL ] <- 50
 	level.rodeoHitBoxNumber[ OGRE_MODEL ] <- 41
-	//level.rodeoHitBoxNumber[ DESTROYER_MODEL ] <- 30
-
-	//level.rodeoHitBoxNumber[ LEGION_MODEL ] <- 53
-
-	local loop_max = MasterModdedTitans.len()
-	for( local E = 0; E < loop_max; E++ )
-	{
-		if( loop_max > 0 )
-		{
-			local bmt_model = MasterModdedTitans[ E ]
-			level.hatchModels[ bmt_model.titan_model ] <- bmt_model.hatch_model
-			level.rodeoHitBoxNumber[ bmt_model.titan_model ] <- bmt_model.rodeo_hitbox_number
-		}
-	}
+	level.rodeoHitBoxNumber[ "models/titans/destroyer/destroyer_titan.mdl" ] <- 30
 
 	Globalize( CodeCallback_PlayerInTitanCockpit )
-
-	Globalize( CreateChargeCannon )
-	Globalize( LoadoutContainsChargeCannon )
 
 	Globalize( AddPanelToTitan )
 	Globalize( UpdateTitanPanel	)
@@ -87,6 +66,9 @@ function main()
 	Globalize( TransferShoulderTurret_threaded )
 	Globalize( LoadoutContainsRocketPodWeapon )
 
+	Globalize( CreateChargeCannon )
+	Globalize( LoadoutContainsChargeCannon )
+
 	AddSoulInitFunc( Titan_ShoulderTurretInit )
 	AddSoulInitFunc( AddPanelToTitan )
 	AddSoulInitFunc( SetRodeoHitBoxNumberOnSoul )
@@ -94,10 +76,6 @@ function main()
 	AddSoulTransferFunc( SmartAmmo_TransferMissileLockons )
 	AddSoulSettingsChangeFunc( UpdateTitanPanel )
 	AddSoulSettingsChangeFunc( SetRodeoHitBoxNumberOnSoul )
-
-	AddSoulDeathFunc( Titan_RodeoPanelCleanup )
-	AddSoulDeathFunc( Titan_RocketPodsCleanup )
-	AddSoulDeathFunc( Titan_ShoulderTurretCleanup )
 
 	AddSoulDeathFunc( Titan_RodeoPanelCleanup )
 	AddSoulDeathFunc( Titan_RocketPodsCleanup )
@@ -124,6 +102,7 @@ function main()
 	table.fire <- "fire"
 	file.chargeCannonAnims <- table
 
+
 	file.titanVOEjectNotifyDist <- 2000 * 2000
 
 	if ( IsServer() )
@@ -142,7 +121,7 @@ function main()
 		PrecacheModel( ROCKET_POD_MODEL_ATLAS_LEFT )
 		PrecacheModel( ROCKET_POD_MODEL_OGRE_LEFT )
 		PrecacheModel( ROCKET_POD_MODEL_STRYDER_LEFT )
-		//PrecacheModel( ROCKET_POD_MODEL_DESTROYER_LEFT )
+		PrecacheModel( "models/titans/destroyer/destroyer_titan_hatch_panel.mdl" )
 		PrecacheModel( "models/industrial/bolt_tiny01.mdl" )
 
 		PrecacheModel( SHOULDER_CHARGE_CANNON_MODEL )
@@ -436,17 +415,13 @@ function GetRocketPodModel( playerSettings )
 {
 	switch( playerSettings )
 	{
-		case "special_stryder":
 		case "stryder":
 			return ROCKET_POD_MODEL_STRYDER_LEFT
 
-		case "special_ogre":
 		case "ogre":
 			return ROCKET_POD_MODEL_OGRE_LEFT
-		//case "destroyer":
-			//return ROCKET_POD_MODEL_DESTROYER_LEFT
-		
-		case "special_atlas":
+		case "destroyer":
+			return "models/Titans/ogre/ogre_titan_L_rocket_pod.mdl"
 		case "atlas":
 		default:
 			return ROCKET_POD_MODEL_ATLAS_LEFT
@@ -850,7 +825,6 @@ function PlayChargeCannonAnim( animationString, soul )
 	model.Anim_Play( anims[animationString] )
 }
 Globalize( PlayChargeCannonAnim )
-
 
 function NPC_GetNuclearPayload( npc )
 {

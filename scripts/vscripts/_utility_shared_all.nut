@@ -291,8 +291,8 @@ function GetEnemyTeam( team )
 {
 	Assert( team == TEAM_IMC || team == TEAM_MILITIA )
 
-	//if ( IsFFABased() )
-	//	return team
+	if ( IsFFABased() )
+		return team
 
 	if ( team == TEAM_IMC )
 		return TEAM_MILITIA

@@ -84,7 +84,6 @@ function main()
 	AddAnimAlias( "stryder", "pt_rodeo_move_back_lower_entrance",	"pt_rodeo_move_stryder_back_lower_entrance" )
 	AddAnimAlias( "stryder", "pt_rodeo_move_left_entrance",		"pt_rodeo_move_stryder_left_entrance" )
 
-	/*
     AddAnimAlias( "destroyer", "ptpov_rodeo_move_back_idle",               "ptpov_rodeo_move_destroyer_back_idle" )
     AddAnimAlias( "destroyer", "ptpov_rodeo_move_back_entrance",          "ptpov_rodeo_move_destroyer_back_entrance" )
     AddAnimAlias( "destroyer", "ptpov_rodeo_move_right_entrance",         "ptpov_rodeo_move_destroyer_right_entrance" )
@@ -118,60 +117,7 @@ function main()
     AddAnimAlias( "destroyer", "ptpov_rodeo_panel_aim_idle",              "ptpov_destroyer_rodeo_panel_aim_idle" )
     AddAnimAlias( "destroyer", "ptpov_rodeo_panel_aim_idle_move",         "ptpov_destroyer_rodeo_panel_aim_idle_move" )
     AddAnimAlias( "destroyer", "ptpov_rodeo_player_side_lean_enemy",      "ptpov_Rodeo_destroyer_player_side_lean" )
-	*/
 
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_back_idle",				"ptpov_rodeo_move_stryder_back_idle" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_back_entrance",			"ptpov_rodeo_move_ogre_back_entrance" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_right_entrance",			"ptpov_rodeo_move_ogre_right_entrance" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_front_entrance",			"ptpov_rodeo_move_ogre_front_entrance" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_front_lower_entrance",	"ptpov_rodeo_move_ogre_front_lower_entrance" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_back_mid_entrance",		"ptpov_rodeo_move_ogre_back_mid_entrance" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_back_lower_entrance",		"ptpov_rodeo_move_ogre_back_lower_entrance" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_move_left_entrance",			"ptpov_rodeo_move_ogre_left_entrance" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_back_idle",				"pt_rodeo_move_ogre_back_idle" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_right_entrance",			"pt_rodeo_move_ogre_right_entrance" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_back_entrance",			"pt_rodeo_move_ogre_back_entrance" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_front_entrance",			"pt_rodeo_move_ogre_front_entrance" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_front_lower_entrance",	"pt_rodeo_move_ogre_front_lower_entrance" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_back_mid_entrance",		"pt_rodeo_move_ogre_back_mid_entrance" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_back_lower_entrance",	"pt_rodeo_move_ogre_back_lower_entrance" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_move_left_entrance",			"pt_rodeo_move_ogre_left_entrance" )
-
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_back_idle",				"ptpov_rodeo_move_atlas_back_idle" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_back_entrance",			"ptpov_rodeo_move_atlas_back_entrance" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_front_entrance",			"ptpov_rodeo_move_atlas_front_entrance" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_front_lower_entrance",	"ptpov_rodeo_move_atlas_front_lower_entrance" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_back_mid_entrance",		"ptpov_rodeo_move_atlas_back_mid_entrance" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_back_lower_entrance",	"ptpov_rodeo_move_atlas_back_lower_entrance" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_left_entrance",			"ptpov_rodeo_move_atlas_left_entrance" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_move_right_entrance",			"ptpov_rodeo_move_atlas_right_entrance" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_back_idle",				"pt_rodeo_move_atlas_back_idle" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_back_entrance",			"pt_rodeo_move_atlas_back_entrance" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_front_entrance",		"pt_rodeo_move_atlas_front_entrance" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_front_lower_entrance",	"pt_rodeo_move_atlas_front_lower_entrance" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_back_mid_entrance",		"pt_rodeo_move_atlas_back_mid_entrance" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_back_lower_entrance",	"pt_rodeo_move_atlas_back_lower_entrance" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_left_entrance",			"pt_rodeo_move_atlas_left_entrance" )	// needs update
-	AddAnimAlias( "special_atlas", "pt_rodeo_move_right_entrance",		"pt_rodeo_move_atlas_right_entrance" )
-
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_back_idle",			"ptpov_rodeo_move_stryder_back_idle" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_back_entrance",		"ptpov_rodeo_move_stryder_back_entrance" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_right_entrance",		"ptpov_rodeo_move_stryder_right_entrance" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_front_entrance",		"ptpov_rodeo_move_stryder_front_entrance" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_front_lower_entrance",	"ptpov_rodeo_move_stryder_front_lower_entrance" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_back_mid_entrance",	"ptpov_rodeo_move_stryder_back_mid_entrance" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_back_lower_entrance",	"ptpov_rodeo_move_stryder_back_lower_entrance" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_move_left_entrance",			"ptpov_rodeo_move_stryder_left_entrance" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_back_idle",			"pt_rodeo_move_stryder_back_idle" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_back_entrance",		"pt_rodeo_move_stryder_back_entrance" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_right_entrance",		"pt_rodeo_move_stryder_right_entrance" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_front_entrance",		"pt_rodeo_move_stryder_front_entrance" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_front_lower_entrance","pt_rodeo_move_stryder_front_lower_entrance" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_back_mid_entrance",	"pt_rodeo_move_stryder_back_mid_entrance" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_back_lower_entrance",	"pt_rodeo_move_stryder_back_lower_entrance" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_move_left_entrance",		"pt_rodeo_move_stryder_left_entrance" )
-	
-	
         // Hatch rip anims:
 
 	AddAnimAlias( "atlas", "pt_rodeo_panel_fire", 						"pt_rodeo_panel_fire" )
@@ -197,6 +143,7 @@ function main()
 	AddAnimAlias( "ogre", "at_Rodeo_Panel_Damage_State_2_Idle", 		"hatch_Rodeo_Panel_Damage_State_2_Idle" )
 	AddAnimAlias( "ogre", "at_Rodeo_Panel_Damage_State_3_Idle", 		"hatch_Rodeo_Panel_Damage_State_3_Idle" )
 	AddAnimAlias( "ogre", "at_Rodeo_Panel_Damage_State_4_Idle", 		"hatch_Rodeo_Panel_Damage_State_final_Idle" )
+
 	AddAnimAlias( "ogre", "pt_rodeo_panel_fire", 						"pt_rodeo_ogre_panel_fire" )
 	AddAnimAlias( "ogre", "pt_rodeo_panel_opening", 					"pt_rodeo_ogre_panel_opening" )
 	AddAnimAlias( "ogre", "pt_rodeo_panel_aim_idle", 					"pt_rodeo_ogre_panel_aim_idle_move" )
@@ -221,59 +168,6 @@ function main()
 	AddAnimAlias( "stryder", "ptpov_rodeo_panel_aim_idle", 				"ptpov_stryder_rodeo_panel_aim_idle" )
 	AddAnimAlias( "stryder", "ptpov_rodeo_panel_aim_idle_move", 			"ptpov_stryder_rodeo_panel_aim_idle_move" )
 	AddAnimAlias( "stryder", "ptpov_rodeo_player_side_lean_enemy", 		"ptpov_Rodeo_stryder_player_side_lean" )
-
-
-	AddAnimAlias( "special_atlas", "pt_rodeo_panel_fire", 						"pt_rodeo_panel_fire" )
-	AddAnimAlias( "special_atlas", "at_rodeo_panel_opening", 					"hatch_rodeo_panel_opening" )
-	AddAnimAlias( "special_atlas", "at_rodeo_panel_close_idle", 				"hatch_rodeo_panel_close_idle" )
-	AddAnimAlias( "special_atlas", "at_Rodeo_Panel_Damage_State_0_Idle", 		"hatch_Rodeo_Panel_Damage_State_0_Idle" )
-	AddAnimAlias( "special_atlas", "at_Rodeo_Panel_Damage_State_1_Idle", 		"hatch_Rodeo_Panel_Damage_State_1_Idle" )
-	AddAnimAlias( "special_atlas", "at_Rodeo_Panel_Damage_State_2_Idle", 		"hatch_Rodeo_Panel_Damage_State_2_Idle" )
-	AddAnimAlias( "special_atlas", "at_Rodeo_Panel_Damage_State_3_Idle", 		"hatch_Rodeo_Panel_Damage_State_3_Idle" )
-	AddAnimAlias( "special_atlas", "at_Rodeo_Panel_Damage_State_4_Idle", 		"hatch_Rodeo_Panel_Damage_State_final_Idle" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_panel_opening", 					"pt_rodeo_panel_opening" )
-	AddAnimAlias( "special_atlas", "pt_rodeo_panel_aim_idle", 				"pt_rodeo_panel_aim_idle_move" ) // just always move for now
-	AddAnimAlias( "special_atlas", "pt_rodeo_player_side_lean", 				"pt_rodeo_player_side_lean" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_panel_opening", 				"ptpov_rodeo_panel_opening" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_panel_aim_idle", 				"ptpov_rodeo_panel_aim_idle" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_panel_aim_idle_move", 		"ptpov_rodeo_panel_aim_idle_move" )
-	AddAnimAlias( "special_atlas", "ptpov_rodeo_player_side_lean_enemy", 		"ptpov_rodeo_player_side_lean" )
-
-	
-	AddAnimAlias( "special_ogre", "at_rodeo_panel_opening", 					"hatch_rodeo_panel_opening" )
-	AddAnimAlias( "special_ogre", "at_rodeo_panel_close_idle", 				"hatch_rodeo_panel_close_idle" )
-	AddAnimAlias( "special_ogre", "at_Rodeo_Panel_Damage_State_0_Idle", 		"hatch_Rodeo_Panel_Damage_State_0_Idle" )
-	AddAnimAlias( "special_ogre", "at_Rodeo_Panel_Damage_State_1_Idle", 		"hatch_Rodeo_Panel_Damage_State_1_Idle" )
-	AddAnimAlias( "special_ogre", "at_Rodeo_Panel_Damage_State_2_Idle", 		"hatch_Rodeo_Panel_Damage_State_2_Idle" )
-	AddAnimAlias( "special_ogre", "at_Rodeo_Panel_Damage_State_3_Idle", 		"hatch_Rodeo_Panel_Damage_State_3_Idle" )
-	AddAnimAlias( "special_ogre", "at_Rodeo_Panel_Damage_State_4_Idle", 		"hatch_Rodeo_Panel_Damage_State_final_Idle" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_panel_fire", 						"pt_rodeo_ogre_panel_fire" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_panel_opening", 					"pt_rodeo_ogre_panel_opening" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_panel_aim_idle", 					"pt_rodeo_ogre_panel_aim_idle_move" )
-	AddAnimAlias( "special_ogre", "pt_rodeo_player_side_lean", 				"pt_rodeo_ogre_player_side_lean" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_panel_opening", 				"ptpov_rodeo_ogre_panel_opening" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_panel_aim_idle", 				"ptpov_ogre_rodeo_panel_aim_idle" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_panel_aim_idle_move", 			"ptpov_ogre_rodeo_panel_aim_idle_move" )
-	AddAnimAlias( "special_ogre", "ptpov_rodeo_player_side_lean_enemy", 		"ptpov_Rodeo_ogre_player_side_lean" )
-
-	AddAnimAlias( "special_stryder", "pt_rodeo_panel_fire", 					"pt_rodeo_stryder_panel_fire" )
-	AddAnimAlias( "special_stryder", "at_rodeo_panel_opening", 					"hatch_rodeo_panel_opening" )
-	AddAnimAlias( "special_stryder", "at_rodeo_panel_close_idle", 				"hatch_rodeo_panel_close_idle" )
-	AddAnimAlias( "special_stryder", "at_Rodeo_Panel_Damage_State_0_Idle", 		"hatch_Rodeo_Panel_Damage_State_0_Idle" )
-	AddAnimAlias( "special_stryder", "at_Rodeo_Panel_Damage_State_1_Idle", 		"hatch_Rodeo_Panel_Damage_State_1_Idle" )
-	AddAnimAlias( "special_stryder", "at_Rodeo_Panel_Damage_State_2_Idle", 		"hatch_Rodeo_Panel_Damage_State_2_Idle" )
-	AddAnimAlias( "special_stryder", "at_Rodeo_Panel_Damage_State_3_Idle", 		"hatch_Rodeo_Panel_Damage_State_3_Idle" )
-	AddAnimAlias( "special_stryder", "at_Rodeo_Panel_Damage_State_4_Idle", 		"hatch_Rodeo_Panel_Damage_State_final_Idle" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_panel_opening", 					"pt_rodeo_stryder_panel_opening" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_panel_aim_idle", 					"pt_rodeo_stryder_panel_aim_idle_move" )
-	AddAnimAlias( "special_stryder", "pt_rodeo_player_side_lean", 				"pt_rodeo_stryder_player_side_lean" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_panel_opening", 				"ptpov_rodeo_stryder_panel_opening" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_panel_aim_idle", 				"ptpov_stryder_rodeo_panel_aim_idle" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_panel_aim_idle_move", 			"ptpov_stryder_rodeo_panel_aim_idle_move" )
-	AddAnimAlias( "special_stryder", "ptpov_rodeo_player_side_lean_enemy", 		"ptpov_Rodeo_stryder_player_side_lean" )
-	
-	//IncludeFile( "Yoshi's_TitanCreator" )
-	//setUp( 1 )
 
 	if ( IsServer() )
 	{
@@ -323,6 +217,22 @@ function main()
 	}
 }
 
+function AllowTeamRodeo( titan, trueorfalse )
+{
+	titan.s.npc_AllowTeamRodeo = trueorfalse
+}
+Globalize( AllowTeamRodeo )
+
+function IsAllowedTeamRodeo( titan )
+{
+	// Only bad thing about this is that it makes the rodeo popup not show up
+	// But at least it works i guess?
+	if ( IsClient() )
+		return false
+
+	return titan.s.npc_AllowTeamRodeo
+}
+
 function CodeCallback_OnRodeoAttach( player, titan )
 {
 	local package = GetRodeoPackage( player, titan )
@@ -365,12 +275,7 @@ function CodeCallback_IsValidRodeoTarget( player, titan )
 
 			if ( IsServer() )
 			{
-				// This doesnt work properly so disabling it for now
-
-				//if ( IsValidTitanRodeoTarget( player, titan ) )
-				//	HoldToRodeoUpdate( player, titan )
-
-				if ( !ButtonPressed( player, "use" ) && !ButtonPressed( player, "useandreload" ) )
+				if ( !player.UseButtonPressed() )
 					return false
 			}
 		}
@@ -406,7 +311,7 @@ function IsValidTitanRodeoTarget( player, titan )
 			return false
 		if ( !IsValid( soul.GetBossPlayer() ) )
 		{
-			if ( player.GetTeam() == titan.GetTeam() )
+			if ( player.GetTeam() == titan.GetTeam() && !IsAllowedTeamRodeo( titan ) )
 				return false
 		}
 	}
@@ -440,6 +345,7 @@ function FindPlayerJumponSpot( player, titan )
 
 	return true
 }
+Globalize( FindPlayerJumponSpot )
 
 function CreateRodeoPackageForJumpingOn( player, titan )
 {
@@ -1252,7 +1158,7 @@ function TakeAwayFriendlyRodeoPlayerProtection( titan )
 
 function DebugRodeoTimes()
 {
-	local settings = [ "atlas", "ogre", "stryder", "special_atlas", "special_ogre", "special_stryder" ]
+	local settings = [ "atlas", "ogre", "stryder" ]
 
 	local models = [ "models/Humans/imc_pilot/male_cq/imc_pilot_male_cq.mdl", "models/humans/pilot/female_cq/pilot_female_cq.mdl" ]
 	local times = {}
@@ -1275,8 +1181,6 @@ function DebugRodeoTimes()
 
 		foreach ( setting in settings )
 		{
-			//if ( setting == "special_atlas" || setting == "special_ogre" || setting == "special_stryder" )
-				//setting = "stryder"
 			foreach ( alias in rodeoAnims )
 			{
 				local animation = GetAnimFromAlias( setting, alias )
@@ -1346,6 +1250,7 @@ function SpectreFallingOntoTitan( spectre, titan )
 
 	return true
 }
+Globalize( SpectreFallingOntoTitan )
 
 function HoldToRodeoEnabled( player )
 {
@@ -1379,15 +1284,6 @@ Globalize( HoldToRodeoState )
 
 if ( IsServer() )
 {
-	function HoldToRodeoUpdate( player, titan )
-	{
-		if ( !( "SetUsePrompts" in titan.s ) )
-		{
-			titan.SetUsePrompts( "#HINT_RODEO", "#HINT_RODEO" )
-			titan.s.SetUsePrompts <- true
-		}
-	}
-
 	function Rodeo_OnClientConnected( player )
 	{
 		if ( !( "holdToRodeoState" in player.s ) )
@@ -1399,7 +1295,11 @@ if ( IsServer() )
 		local holdToRodeoState = args.tointeger()
 		if ( holdToRodeoState < 0 || holdToRodeoState > 2)
 			return true
-	
+
+		// Shouldnt be happening
+		if ( !( "holdToRodeoState" in player.s ) )
+			player.s.holdToRodeoState <- 0
+
 		player.s.holdToRodeoState = holdToRodeoState
 	
 		return true

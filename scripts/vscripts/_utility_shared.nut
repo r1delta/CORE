@@ -818,8 +818,8 @@ function Dump( package, depth = 0 )
 function GetOtherTeam( guy )
 {
 	local team
-	//if ( IsFFABased() )
-	//	return 2
+	if ( IsFFABased() )
+		return 2
 
 	if ( typeof guy == "integer" )
 		team = guy
@@ -2421,7 +2421,7 @@ function ScoreboardCompareFuncForGamemode( gamemode )
 		case HEIST:
 		default:
 			if ( IsFFABased() )
-				return CompareAssaultScore
+				return CompareKills
 
 			return CompareScore
 	}
@@ -3639,7 +3639,7 @@ function GetActiveUplinkPoint()
 	if ( level.nv.activeUplinkID == null )
 		return null
 
-	if ( IsClient() )
+	if ( IsClient )
 	{
 		local player = GetLocalClientPlayer()
 		local hardpoint = null
@@ -3653,14 +3653,4 @@ function GetActiveUplinkPoint()
 		return hardpoint
 	}
 	return GetHardpointByID( level.nv.activeUplinkID )
-}
-
-// For FFA
-function GetWinningPlayer()
-{
-	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
-	if ( players.len() == 0 )
-		return null
-
-	return players[0]
 }

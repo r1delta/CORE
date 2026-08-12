@@ -317,7 +317,6 @@ damageSourceStrings[ eDamageSourceId.mp_weapon_mega1 ] 					<- "#WPN_VALKYRIE"
 damageSourceStrings[ eDamageSourceId.mp_weapon_mega2 ] 					<- "#WPN_TWINB_SHOTGUN"
 damageSourceStrings[ eDamageSourceId.mp_weapon_mega3 ] 					<- "#WPN_TITAN_MINIGUN"
 damageSourceStrings[ eDamageSourceId.mp_weapon_mega4 ] 					<- "#WPN_TITAN_CHARGE_CANNON"
-damageSourceStrings[ eDamageSourceId.mp_weapon_mega5 ] 					<- "#WPN_THROWING_KNIFE"
 
 //When adding new mods, they need to be added below and to persistent_player_data_version_N.pdef in r1/cfg/server.
 //Then when updating that file, save a new one and increment N.
@@ -400,7 +399,6 @@ enum eModSourceId
 	burn_mod_thunderbolt
 	burn_mod_charge_cannon
 	hydraulic_launcher
-	burn_mod_throwing_knife
 }
 
 //Attachments intentionally left off. This prevents them from displaying in kill cards.
@@ -470,4 +468,3 @@ modNameStrings[ eModSourceId.burn_mod_twinb ] 				<- "#BC_TWINB_SHOTGUN_M2"
 modNameStrings[ eModSourceId.burn_mod_thunderbolt ] 		<- "#BC_TITAN_MINIGUN_M2"
 modNameStrings[ eModSourceId.burn_mod_charge_cannon] 		<- "#BC_TITAN_CHARGE_CANNON_M2"
 modNameStrings[ eModSourceId.hydraulic_launcher ] 			<- "#MOD_HYDRAULIC_LAUNCHER_NAME"
-modNameStrings[ eModSourceId.burn_mod_throwing_knife] 		<- "#BC_THROWING_KNIFE_M2"

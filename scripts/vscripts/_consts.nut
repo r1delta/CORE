@@ -1,8 +1,4 @@
 const PERSISTENCE_INIT_VERSION = 22
-  
-const BASE_TITAN_COUNT = 4 //Adds 3 for titans and 1 to make a valid array placement
-::MasterModdedTitans <- []
-::Titans_Enum_Placement <- 3
 
 const RANDOMIZE_BOT_LOADOUT	= 1
 
@@ -70,7 +66,6 @@ const TITAN_BRAWL = "ttdm"
 const TITAN_BRAWL_AUTO = "ttdm_auto"
 const TITAN_MFD = "tmfd"
 const TITAN_MFD_PRO = "tmfdp"
-const GUN_GAME = "gg"
 
 const MAX_TRACKED_CHALLENGES = 3
 
@@ -1700,9 +1695,6 @@ enum eEventNotifications
 	MarkedForDeathMarkedAutobalanced,
 	AutoBalanceCooldown,
 	UplinkLocatingNextPanel,
-	TeammateSwitchedTeams,
-	EnemySwitchedTeams,
-	YouSwitchedTeams,
 }
 
 enum ePrivateMatchStartState
@@ -2532,7 +2524,6 @@ const WEAPON_VALKYRIE_NAME = "mp_weapon_mega1"
 const WEAPON_TWINB_NAME = "mp_weapon_mega2"
 const WEAPON_THUNDERBOLT_NAME = "mp_weapon_mega3"
 const WEAPON_CHARGE_CANNON_NAME = "mp_weapon_mega4"
-const WEAPON_THROWING_KNIFE_NAME = "mp_weapon_mega5"
 
 enum eUIEvent
 {

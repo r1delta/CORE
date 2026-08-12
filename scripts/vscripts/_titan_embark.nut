@@ -37,9 +37,7 @@ function main()
 	Globalize( IsPlayerEmbarking )
 	Globalize( IsPlayerDisembarking )
 
-	//Globalize( BlackMarket_SETTINGSCALL )
-	
-	FlagInit( "Embark3rdPersonFix" ) //Giving me trouble
+	FlagInit( "Embark3rdPersonFix" )
 
 	RegisterSignal( "OnComplete" )
 	RegisterSignal( "startembark" ) // temp
@@ -57,21 +55,15 @@ function main()
 	else
 	{
 		// add all the embark anims with this suffix
-		AddEmbarkAnims( "titan_atlas", "atlas", null )
-		AddEmbarkAnims( "titan_ogre", "ogre", null )
-		//AddEmbarkAnims( "titan_ion", "atlas" )
-		AddEmbarkAnims( "titan_stryder", "stryder", null )
-		AddEmbarkAnims( "titan_destroyer_tier0", "destroyer","titan_ogre" )
-		AddEmbarkAudio( "titan_atlas", "atlas", null )
-		AddEmbarkAudio( "titan_ogre", "ogre", null )
-		//AddEmbarkAudio( "titan_ion", "atlas" )
-		AddEmbarkAudio( "titan_stryder", "stryder", null )
-		AddEmbarkAudio("titan_destroyer_tier0", "destroyer", "titan_ogre")
-
+		AddEmbarkAnims( "titan_atlas", "atlas" )
+		AddEmbarkAnims( "titan_ogre", "ogre" )
+		AddEmbarkAnims( "titan_stryder", "stryder" )
+		AddEmbarkAnims( "titan_destroyer_tier0", "destroyer","ogre" )
+		AddEmbarkAudio( "titan_atlas", "atlas" )
+		AddEmbarkAudio( "titan_ogre", "ogre" )
+		AddEmbarkAudio( "titan_stryder", "stryder" )
+		AddEmbarkAudio("titan_destroyer_tier0", "destroyer", "ogre")
 		Globalize( PlayerDisembarksTitan )
-
-		Globalize( AddEmbarkAnims )
-		Globalize( AddEmbarkAudio )
 
 		RegisterSignal( "titanKneel" )
 		RegisterSignal( "titanStand" )
@@ -82,49 +74,13 @@ function main()
 		AddClientCommandCallback( "TitanStand", ClientCommand_TitanStand ) //
 		AddClientCommandCallback( "TitanNextMode", ClientCommand_TitanNextMode ) //
 	}
-	//::BlackMarketTitans <- {}
-	//IncludeFile( "Yoshi's_TitanCreator" )
-	//setUp( 1 )
-
-	local loop_max = MasterModdedTitans.len()
-	for( local E = 0; E < loop_max; E++ )
-	{
-		if( loop_max > 0 )
-		{
-			local t_a = MasterModdedTitans[ E ]
-			switch( t_a.titan_type )
-			{
-				case "special_atlas":
-					AddEmbarkAnims( t_a.setfile, "atlas", t_a.embark_override )
-					AddEmbarkAudio( t_a.setfile, "atlas" )
-				
-				case "special_stryder":
-					AddEmbarkAnims( t_a.setfile, "stryder", t_a.embark_override )
-					AddEmbarkAudio( t_a.setfile, "stryder" )
-				
-				case "special_ogre":
-					AddEmbarkAnims( t_a.setfile, "ogre", t_a.embark_override )
-					AddEmbarkAudio( t_a.setfile, "ogre" )
-			}
-		}
-	}
 }
-/*
-function BlackMarket_ACCESSTABLE( arrayName )
+
+
+
+function AddEmbarkAnims( titan, titanType,basetitanType = "" )
 {
-    
-	local titan_array = BlackMarketTitans[ arrayName ]
-
-	//printt( titan_array )
-	//The below will return everything needed in other scripts
-
-	return titan_array.name, titan_array.type, titan_array.emov
-
-	//printl( "Mission Failed, we'll get em next time." )
-}
-*///the above is outdated and a failure^
-function AddEmbarkAnims( titan, titanType, embark_override )
-{
+	// anims are string-constructed from these types:
 	local array =
 	[
 		"kneel_front",
@@ -144,14 +100,13 @@ function AddEmbarkAnims( titan, titanType, embark_override )
 
 
 	// force consistency in animation names
-	foreach ( item in array )//I got rid of basetype for nothing...oh well i guess
+	foreach ( item in array )
 	{
 		//printt( "Adding base " + item + " to " + titan )
 		local thirdPersonAlias = "pt_mount_" + item
 		local firstPersonAlias = "ptpov_mount_" + item
 		local thirdPersonAnim;
 		local firstPersonAnim;
-		/*
 		if( basetitanType != "" )
 		{
 			thirdPersonAnim = "pt_mount_" + basetitanType + "_" + item
@@ -161,15 +116,9 @@ function AddEmbarkAnims( titan, titanType, embark_override )
 			thirdPersonAnim = "pt_mount_" + titanType + "_" + item
 		 	firstPersonAnim = "ptpov_mount_" + titanType + "_" + item
 		}
-		*/
-		thirdPersonAnim = "pt_mount_" + titanType + "_" + item
-		firstPersonAnim = "ptpov_mount_" + titanType + "_" + item
 		AddAnimAlias( titanType, thirdPersonAlias, thirdPersonAnim )
 		AddAnimAlias( titanType, firstPersonAlias, firstPersonAnim )
 	}
-
-	//Hooked blackmarket function into here
-
 }
 
 function AddEmbarkAudio( titan, titanType, basetitanType = "" )
@@ -512,7 +461,7 @@ function RefreshTitanEmbarkActions()
 
 function DebugEmbarkTimes()
 {
-	local settings = [ "atlas", "ogre", "stryder", "special_atlas", "special_ogre", "special_stryder" ]
+	local settings = [ "atlas", "ogre", "stryder" ]
 
 	local models = [ "models/Humans/imc_pilot/male_cq/imc_pilot_male_cq.mdl", "models/humans/pilot/female_cq/pilot_female_cq.mdl" ]
 	local times = {}
@@ -966,30 +915,10 @@ function TitanEmbark_PlayerEmbarks( player, titan, e )
 	local thirdPersonAudio
 	local firstPersonAudio
 
-	
-	if(settings == "titan_destroyer")//Needs to be inserted here(blackmarket stuff)
+	if(settings == "titan_destroyer")
 	{
 		settings = "titan_ogre"
 	}
-
-	printl( settings )
-	/*
-	if( settings != "titan_atlas" && settings != "titan_stryder" && settings != "titan_ogre" )//all i need is the override anyways
-	{
-		local loop_max = TitanNames.len()
-		for( local E = 0; E < loop_max; E++ )
-		{
-			if( loop_max > 0 )
-			{
-				local TEO = BlackMarketTitans[ TitanNames[ E ] ]
-				settings = TEO.emov
-			}
-		}
-	}
-	*///THIS USED TO BE REQUIRED WHY WOULD IT BREAK NOW DAYS????
-	
-
-	//Make sure this is the titan_ stuff
 
 	if ( standing )
 	{
@@ -1041,6 +970,7 @@ function TitanEmbark_PlayerEmbarks( player, titan, e )
 
 	thread PlayAnim( player, "cqb_idle_mp" )
 	player.Anim_Stop()
+
 	player.SetOrigin( titan.GetOrigin() )
 	local angles = titan.GetAngles()
 	angles.z = 0
@@ -1413,7 +1343,7 @@ function PlayerDisembarksTitan( player )
 	TitanBecomesPilot( player, titan )
 
 	local titanType = GetSoulTitanType( titan.GetTitanSoul() )
-	if ( titanType == "ogre" || titanType == "special_ogre" )
+	if ( titanType == "ogre" )
 	{
 		ShowMainTitanWeapons( titan ) //JFS: Because we hide the Titan's weapons upon kneeling for ogre
 	}
@@ -1438,20 +1368,6 @@ function PlayerDisembarksTitan( player )
 
 	local player3pAnim, player1pAnim
 	local player3pAudio, player1pAudio
-
-	if ( titanType == "special_ogre" )
-	{
-		titanType = "ogre"
-	}
-	if ( titanType == "special_atlas" )
-	{
-		titanType = "atlas"
-	}
-	if ( titanType == "special_stryder" )
-	{
-		titanType = "stryder"
-	}
-
 	if ( standing )
 	{
 		player3pAnim = "pt_dismount_" + titanType + "_stand"
