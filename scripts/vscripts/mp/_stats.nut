@@ -506,15 +506,9 @@ function UpdateChallengeData(player,category,statName,value,weaponName)
 
                 local burncards = GetChallengeBurnCardRewards(challRef,tier,player)
                 local deck = GetPlayerBurnCardDeck( player )
-                if(deck.len() < GetPlayerMaxStoredBurnCards( player ) ) {
+                if(deck.len() < 99) {
                     foreach( card in burncards ) {
                         deck.append( { cardRef = card, new = true } )
-
-                        // Not sure if the other ones are used in vanilla
-                        if ( GetBurnCardRarity( card ) == BURNCARD_RARE )
-                            AddPlayerScore( player, "EarnedBurnCard_ChallengeRare" )
-                        else
-                            AddPlayerScore( player, "EarnedBurnCard_ChallengeCommon" )
                     }
                     FillBurnCardDeckFromArray( player, deck )
                     shouldPopup = true
@@ -556,11 +550,8 @@ function Stats_IncrementStat( player, category, statName, value, weaponName = nu
 	fixedSaveVar = var
     fixedSaveVarInt = var
 
-    if ( gameMode != -1 )
-    {
-        fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameModeName )
-        fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameMode )
-    }
+    fixedSaveVar = StatStringReplace( fixedSaveVar, "%gamemode%", gameModeName )
+    fixedSaveVarInt = StatStringReplace( fixedSaveVarInt, "%gamemode%", gameMode )
 
     local mapNameIndex = PersistenceGetEnumIndexForItemName( "maps", mapName )
     if(mapNameIndex != -1)
@@ -627,21 +618,35 @@ function HandleKillStats( victim, attacker, damageInfo ) {
 
     if ( GAMETYPE == COOPERATIVE )
     {
+        if ( attacker.IsTurret() )
+        {
+            local bossPlayer = attacker.GetBossPlayer()
+
+            if ( !IsValid( bossPlayer ) )
+                return
+
+            Stats_IncrementStat( bossPlayer, "kills_stats", "coopChallenge_Turret_Kills", 1.0 )
+        }
+
+        if ( attacker.IsNPC() && IsSniperSpectre( attacker ) )
+        {
+            local damageHistory = attacker.s.recentDamageHistory
+
+            foreach( entry in damageHistory )
+            {
+                local attackerWeakRef = entry.attackerWeakRef
+
+                if ( !IsValid( attackerWeakRef ) )
+                    continue
+
+                if ( attackerWeakRef.IsPlayer() )
+                    Stats_IncrementStat( attackerWeakRef, "kills_stats", "coopChallenge_SuicideSpectre_Kills", 1.0 )
+            }
+        }
+
+
         if ( !attacker.IsPlayer() )
             return
-
-	    local inflictor = damageInfo.GetInflictor()
-	    inflictor = InflictorOwner( inflictor ) // turns env_explosion into a player or npc
-
-        if ( IsPlayerControlledTurret( inflictor ) )
-        {
-            Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_Turret_Kills", 1.0 )
-        }
-
-        if ( damageSource == eDamageSourceId.suicideSpectreAoE )
-        {
-            Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_SuicideSpectre_Kills", 1.0 )
-        }
 
         if ( IsSniperSpectre( victim ) )
         {

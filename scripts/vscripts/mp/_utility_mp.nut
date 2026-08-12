@@ -1649,44 +1649,15 @@ function FillBurnCardDeckFromArray( player, array )
 		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + i + "]", false )
 	}
 
-	local hadCards = false
-	local hadCardsAfterSort = false
-
-	// We had at least 1 card before
-	foreach ( index, card in array )
-	{
-		if ( card != null )
-		{
-			hadCards = true
-			break
-		}
-	}
-
 	local sortedArray = GetSortedBurnCards( array, player )
 
 	foreach (index,card in sortedArray)
 	{
 		if(card == null)
 			player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", null )
-		else
-			hadCardsAfterSort = true
 		
 		player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", card.cardRef )
 		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + index + "]", card.new )
-	}
-
-	// Something went wrong and the deck got wiped
-	// Go back to the previous array
-	if ( hadCards && !hadCardsAfterSort )
-	{
-		foreach ( index, card in array )
-		{
-			if ( card == null )
-				player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", null )
-
-			player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", card.cardRef )
-			player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + index + "]", card.new )
-		}
 	}
 
 	if ( IsLobby() )
