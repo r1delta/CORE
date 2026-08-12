@@ -290,48 +290,6 @@ function StartDashCore( player )
 	player.SetPowerRegenRateScale( 16.0 )
 }
 
-function EndMissileCore( soul )
-{
-	local titan = soul.GetTitan()
-
-	TakePlayerWeapons( soul, "ordnance" )
-	TakePlayerWeapons( soul, "special" )
-
-	thread ReplaceTitanWeapon( titan, ordnance_before_replace, o_mods, "ordnance" )
-	thread ReplaceTitanWeapon( titan, special_before_replace, s_mods, "special" )
-}
-
-function StartMissileCore( soul )
-{
-	local titan = soul.GetTitan()
-	RegisterPreviousWeapons( titan )
-	local ordnance = titan.GetOffhandWeapon( 0 )
-	local special = titan.GetOffhandWeapon( 1 )
-	
-	local ordnance_name = ordnance.GetWeaponClassName()
-	local special_name = special.GetWeaponClassName()
-	if ( ordnance_name == "mp_titanweapon_shoulder_turret" )
-	{
-		if( special_name == "mp_titanweapon_salvo_rockets" )
-		{
-			ordnance_name = "mp_titanweapon_shoulder_rockets"
-		}
-		else
-		{
-			ordnance_name = "mp_titanweapon_salvo_rockets"
-		}
-	}
-	//switch( ordnance.GetWeaponClassName() )
-	//{
-		
-	//}
-	TakePlayerWeapons( soul, "ordnance" )
-	TakePlayerWeapons( soul, "special" )
-
-	thread ReplaceTitanWeapon( titan, ordnance_name, ["dev_mod_low_recharge"], "ordnance" )
-	thread ReplaceTitanWeapon( titan, special_name, ["dev_mod_low_recharge"], "special" )
-}//why tf did i make missile core again?
-
 function EndSmartCore( soul )
 {
 	local titan = soul.GetTitan()
@@ -389,69 +347,6 @@ function StartBulletStormCore( soul )//do i use minigun....do i use XO16? do i u
 }
 */
 
-function EndPiercerCore( soul )
-{
-	local titan = soul.GetTitan()
-	local player = self.GetWeaponOwner()
-
-	TakePlayerWeapons( soul, "ordnance" )
-	
-	thread ReplaceTitanWeapon( titan, ordnance_before_replace, o_mods, "ordnance" )
-}
-
-function StartPiercerCore( soul )//decided they should have their shields with it since Ion is energy based.
-{
-	local titan = soul.GetTitan()
-	RegisterPreviousWeapons( titan )
-	TakePlayerWeapons( soul, "ordnance" )
-	thread ReplaceTitanWeapon( titan, "mp_weapon_mega4", ["piercer_core"], "ordnance" )
-}
-
-function EndAutoBurstCore( soul )
-{
-	local titan = soul.GetTitan()
-	TakePlayerWeapons( soul, "primary" )
-	thread ReplaceTitanWeapon( titan, primary_before_replace, p_mods, "primary" )
-}
-
-function StartAutoBurstCore( soul )//do i use minigun....do i use XO16? do i use... idk
-{
-	local titan = soul.GetTitan()
-	RegisterPreviousWeapons( titan )
-	TakePlayerWeapons( soul, "primary" )
-	thread ReplaceTitanWeapon( titan, "mp_titanweapon_shotgun", ["auto_burst"], "primary" )
-}
-
-function EndFlightCore( soul )
-{
-	is_hovering <- false
-	local titan = soul.GetTitan()
-	
-	TakePlayerWeapons( soul, "ordnance" )
-	TakePlayerWeapons( soul, "special" )
-
-	thread ReplaceTitanWeapon( titan, ordnance_before_replace, o_mods, "ordnance" )
-	thread ReplaceTitanWeapon( titan, special_before_replace, s_mods, "special" )
-}
-
-function StartFlightCore( soul )
-{
-	local titan = soul.GetTitan()
-	RegisterPreviousWeapons( titan )
-	local player = self.GetWeaponOwner()
-	is_hovering <- true
-	thread HoverTitanWizardry( player, soul, 650 )// hmmm might be able to replace with titan
-
-	local player_ordnance = "mp_titanweapon_salvo_rockets"
-	local player_tactical = "mp_titanweapon_shoulder_rockets"
-	
-	TakePlayerWeapons( soul, "ordnance" )
-	TakePlayerWeapons( soul, "special" )
-
-	thread ReplaceTitanWeapon( titan, player_ordnance, [ "mod_ordnance_core", "burn_mod_titan_salvo_rockets" ], "ordnance" )
-	thread ReplaceTitanWeapon( titan, player_tactical, [ "mod_ordnance_core", "burn_mod_titan_shoulder_rockets" ], "special" )
-}
-
 function HoverTitanWizardry( player, soul, vel_z )
 {
 	local subtractor = 10
@@ -508,7 +403,7 @@ function TakePlayerWeapons( soul, weapon_type )
 			return
 		
 		case "ordnance":
-			local weapon = titan.GetOffhandWeapon( 0 )
+			local weapon = titan.GetOffhandWeapon( 0 ).GetWeaponClassName()
 			if ( weapon != null )
 			{
 				titan.TakeWeapon( weapon )
@@ -516,7 +411,7 @@ function TakePlayerWeapons( soul, weapon_type )
 			return
 		
 		case "special":
-			local weapon = titan.GetOffhandWeapon( 1 )
+			local weapon = titan.GetOffhandWeapon( 1 ).GetWeaponClassName()
 			if ( weapon != null )
 			{
 				titan.TakeWeapon( weapon )

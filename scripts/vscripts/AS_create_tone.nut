@@ -1,68 +1,68 @@
 
-const ION_MODEL = "models/titans/medium/titan_medium_ajax.mdl"
+const TONE_MODEL = "models/titans/medium/titan_medium_wraith.mdl"
 
 function main()
 {
 
-	local offhand_override = {}
-	offhand_override.replaces_tactical <- false
-	offhand_override.specific_weapon_id <- null
+	//local offhand_override = {}
+	//offhand_override.replaces_tactical <- false
+	//offhand_override.specific_weapon_id <- null
 
-	CreateTitan( offhand_override )
+	CreateTitan( null )
 }
 
 function CreateTitan( offhand_override_data )
 {
 
-	local core_start = StartPiercerCore
-	local core_end = EndPiercerCore
+	local core_start = StartBulwarkCore
+	local core_end = EndBulwarkCore
 
-	printl( "Ion Created" )
+	printl( "Tone Created" )
 
 	MasterTitanCreation( 
-		"titan_ion", 
+		"titan_tone", 
 		"special_atlas", 
 		"titan_atlas", 
 		50, 
-		"Ion", 
-		"An energy based titan with dual tactical systems.", 
+		"Tone", 
+		"A heavier Atlas successor with more armor but slightly slower dash regeneration.", 
 		"../ui/menu/loadouts/titan_chassis_atlas_imc", 
 		"../ui/menu/loadouts/titan_chassis_atlas_mcor", 
-		"Core Ability: Piercer Core", 
-		"Deploys a variant of the Charge Cannon built to charge to a higher capacity.", 
-		"../ui/menu/items/mod_icons/instant_shot", 
+		"Core Ability: Bulwark", 
+		"Enables triple Particle Wall creation.", 
+		"../ui/menu/items/ability_icons/bubble_shield", 
 		85, 
 		90, 
 		76, 
 		2, 
 		"", 
-		ION_MODEL, 
+		TONE_MODEL, 
 		STRYDER_HATCH_PANEL, 
 		53, 
-		"../ui/menu/items/mod_icons/instant_shot", 
+		"../ui/menu/items/ability_icons/bubble_shield", 
 		offhand_override_data,
-		"Piercer Cannon Online",
-		"Heavy Charge Cannon cooled and primed.",
+		"Bulwark Online",
+		"Defensive Super Capacitors Charged.",
 		core_start,
 		core_end
 		)
 }
 
-function EndPiercerCore( soul )
+function EndBulwarkCore( soul )
 {
 	local titan = soul.GetTitan()
 
-	TakePlayerWeapons( soul, "ordnance" )
+	TakePlayerWeapons( soul, "special" )
 	
-	thread ReplaceTitanWeapon( titan, ordnance_before_replace, o_mods, "ordnance" )
+	thread ReplaceTitanWeapon( titan, special_before_replace, s_mods, "special" )
 }
 
-function StartPiercerCore( soul )//decided they should have their shields with it since Ion is energy based.
+function StartBulwarkCore( soul )//decided they should have their shields with it since Ion is energy based.
 {
 	local titan = soul.GetTitan()
 	RegisterPreviousWeapons( titan )
-	TakePlayerWeapons( soul, "ordnance" )
-	thread ReplaceTitanWeapon( titan, "mp_weapon_mega4", ["piercer_core"], "ordnance" )
+	TakePlayerWeapons( soul, "special" )
+	thread ReplaceTitanWeapon( titan, "mp_titanability_bubble_shield", ["bulwark"], "special" )
 }
 
 main()

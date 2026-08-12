@@ -108,7 +108,8 @@ function CreateGenericBubbleShield( titan, origin, angles, duration = 9999 )
 	local bubbleShield = CreateEntity( "prop_dynamic" )
 	bubbleShield.kv.model = "models/fx/xo_shield.mdl"
 	bubbleShield.kv.solid = 6 //Solid flag: use VPhysics
-    bubbleShield.kv.rendercolor = "81 130 151"
+    //bubbleShield.kv.rendercolor = "81 130 151"
+	bubbleShield.kv.rendercolor = "151 130 81"
 	bubbleShield.SetOrigin( origin )
 	bubbleShield.SetAngles( angles )
      //CollisionGroup 21 is listed as "COLLISION_GROUP_BLOCK_WEAPONS ". Blocks bullets, projectiles but not players and not AI

@@ -40,6 +40,6 @@
 	import	"titan_ion.set"
 	import	"titan_ronin.set"
 	import	"titan_northstar.set"
-
+	import	"titan_tone.set"
 	
 }

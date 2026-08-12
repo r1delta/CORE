@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$selfillum" "1"
+	"$selfillummask" "models/titans/atlas/t_m_tone_skn_01_ilm"
+	//Start of freehand input from reVaMpT//
+
+	Proxies
+	{
+		EntityIDLightColor
+		{
+			isTitan		1
+			resultvar	$selfillumtint
+		}
+	}
+}
