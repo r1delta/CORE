@@ -1,0 +1,9 @@
+"AddonInfo"
+{
+	"addontitle"			"T2-Titan-Transfer Legion"
+	"addonDescription"		"Adds Legion from Titanfall2 with BulletStorm core."
+	"addonversion"			"1.0.0"
+	"addonauthor"			"Yoshi the Hut"
+
+	"addonContent_Script"	"1"
+}

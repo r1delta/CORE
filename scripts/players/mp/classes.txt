@@ -35,7 +35,11 @@
 //	import	"fireteam.set"
 //	import  "operator.set"
 //	import	"fireteam_droppod.set"
-	
+	import	"titan_legion.set"
+	import	"titan_scorch.set"
+	import	"titan_ion.set"
+	import	"titan_ronin.set"
+	import	"titan_northstar.set"
 
 	
 }
