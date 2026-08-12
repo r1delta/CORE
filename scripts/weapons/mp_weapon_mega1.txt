@@ -65,7 +65,7 @@ WeaponData
 	"damage_far_value_titanarmor" 					"200"
 	"damage_rodeo" 									"1000" // 500
 
-	"damage_headshot_scale"							"1.6"
+	"damage_headshot_scale"							"1.4"
 	"damage_torso_scale"							"1.4"
 	"damage_arm_scale"								"1.0"
 	"damage_leg_scale"								"1.0"
@@ -392,16 +392,6 @@ WeaponData
 			"crosshair_index"								"1"
 			"rechamber_time"  								"*0.7"
 
-			"anim_alt_idleAttack"	"0"
-			"bodygroup3_set"		"0"
-			"bodygroup2_set"		"1"
-			"ads_fov_zoomfrac_start"	"0.0"
-			"ads_fov_zoomfrac_end"		"1.0"
-			"aimassist_disable_ads"		"0"
-			"gamepad_use_yaw_speed_for_pitch_ads"	"0"
-			"zoom_angle_shift_pitch"	"0"
-			"zoom_angle_shift_yaw"		"0"
-			"zoom_fov"				"17.68" //4.5 zoom
 			"is_burn_mod"		"1"
 		}
 	}

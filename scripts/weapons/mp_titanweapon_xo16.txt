@@ -250,7 +250,7 @@ WeaponData
 	"npc_max_burst"   								"25"
 
 	// Crosshair
-	"red_crosshair_range" 							"2100"
+	"red_crosshair_range" 							"3200"
 
 	// Bodygroups:
     "clip_bodygroup"						"xotbr16_magazine"
@@ -260,33 +260,6 @@ WeaponData
     "clip_bodygroup_show_for_milestone_1"	"0"
     "clip_bodygroup_show_for_milestone_2"	"1"
     "clip_bodygroup_show_for_milestone_3"	"1"
-
-	"smart_ammo_search_angle" 						"45"
-	"smart_ammo_search_distance"  					"2100"//idk the real distance for this thing, i got no sense o scale
-	"smart_ammo_search_npcs"						"1"
-	"smart_ammo_search_players"						"1"
-	"smart_ammo_search_projectiles"					"1"
-	"smart_ammo_humans_only"						"0"
-	"smart_ammo_titans_block_los"					"0"
-	"smart_ammo_allow_ads_lock"						"0"//hmmm
-	"smart_ammo_max_targeted_burst"					"60"
-	"smart_ammo_track_cloaked_targets"				"0"
-	"smart_ammo_targeting_time_min"					"0.1"
-	"smart_ammo_targeting_time_max"					"0.2"
-	"smart_ammo_targeting_time_min_npc"				"0.1"
-	"smart_ammo_targeting_time_max_npc"				"0.2"
-	"smart_ammo_targeting_time_modifier_projectile_owner"	"0.35"
-	"smart_ammo_target_max_locks_player"			"9"
-	"smart_ammo_target_max_locks_spectre"			"6"
-	"smart_ammo_target_max_locks_soldier"			"3"
-	//"smart_ammo_target_max_locks_titan"				"15"
-	"smart_ammo_new_target_delay"					"0.1"
-	"smart_ammo_draw_acquisition_lines"				"1"
-	"smart_ammo_hud_lock_style"						"pilot_pistol"//"titan_missile"
-	//"smart_ammo_target_confirmed_sound"				"Weapon_SmartAmmo.PilotLocked"
-	//"smart_ammo_looping_sound_acquiring"			"Weapon_SmartAmmo_TargetLockingLoop"
-	"smart_ammo_locked_loop_sound"					"ShoulderRocket_Homing_TargetLocked"
-	"is_anti_titan"  							    "1"
 
 
 
@@ -404,18 +377,6 @@ WeaponData
 
 			"is_burn_mod"		"1"
 			"fire_sound_1"									"Weapon_XO16.SingleAmped"
-		}
-		smart_core
-		{
-			"ammo_clip_size"								"*3"
-			"ammo_stockpile_max"							"0"
-			"fire_rate"										"12"
-		}
-		bullet_storm
-		{
-			"fire_rate"										"20"
-			"ammo_clip_size"								"*7"
-			"ammo_stockpile_max"							"0"
 		}
 	}
 
