@@ -204,5 +204,4 @@ engine_ds.dll,text,0x6E430,E9,B0 01 C3
 
 engine_ds.dll,rdata,0x430EF4,"1200","1150"
 
-; Keep the stock dedicated snapshot/kill-replay history bound at 17.
-; Raising it to the retail 19-entry bound has not been validated for old dedicated.
+vphysics.dll,text,0x31626,0F 84 4C 02 00 00,E9 4D 02 00 00 
