@@ -6,3 +6,5 @@ This combines R1Delta with the Titan Transfer Project and adds more titans with 
 I will be working on this for a bit.
 
 It acts like an addon, so just plug-n-play it.
+
+NOTE: only playable with people on the same version of R1Delta with you.
