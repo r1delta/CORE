@@ -866,7 +866,7 @@ function CreateR1DeltaItems()
 	CreateModData( itemType.TITAN_SPECIAL_MOD,		DEV_DISABLED,	0, 	null, 	null, "mp_weapon_mega4",			"burn_mod_charge_cannon", 			"#BC_TITAN_CHARGE_CANNON_M2",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			"#BC_TITAN_CHARGE_CANNON_M2_FLYOUT_DESC",			0, 0, 0, 0, 0,	 	"../ui/temp",	"../ui/temp",	HideFromMenus )
 
 	//CreateWeaponData( itemType.TITAN_ORDNANCE,		DEV_DISABLED,	0,		null, 	null, "mp_titanweapon_salvo_rockets_core_right", 		"../ui/menu/items/titanweapon_salvo_rockets",			"../ui/menu/items/ability_icons/salvo_rockets",		"../ui/menu/items/titanweapon_salvo_rockets", HideFromMenus )
-	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_ENABLED,	0, 	null, 				1, 		"mp_titanweapon_shotgun",				"full_burst",				"Full-Burst",					"Allows firing every bullet in the magazine at a single trigger pull.",			"Allows firing every bullet in the magazine at a single trigger pull.",			-20, -5, 0, 10, 9, 		"../ui/menu/items/mod_icons/burst", 				"../ui/menu/items/mod_icons/burst" )
+	CreateModData( itemType.TITAN_PRIMARY_MOD,		DEV_ENABLED,	0, 	null, 				1, 		"mp_titanweapon_shotgun",				"full_burst",				"Full-Burst",					"Allows firing every bullet in the magazine at a single trigger pull.",			"Allows firing every bullet in the magazine at a single trigger pull.",			-20, -5, 0, 10, 9, 		"../ui/menu/items/mod_icons/burst", 				"../ui/menu/items/mod_icons/burst", HideFromMenus )
 	CreateWeaponData( itemType.TITAN_SPECIAL, 		DEV_ENABLED,	25,		null, 	null, "mp_weapon_mega5", 				"../ui/menu/items/mod_icons/afterburners",				"../ui/menu/items/mod_icons/afterburners", "../ui/menu/items/mod_icons/afterburners" )
 	CheckBlackMarketModdedTitans()
 }

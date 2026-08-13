@@ -36,7 +36,8 @@ function InitPersistence()
 
 	Globalize( add_setfile_persistance )
 
-	IncludeFile( "Yoshi's_All-Stars" )
+	//IncludeFile( "Yoshi's_All-Stars" )
+	//IncludeFile("Yoshi's_TitanCreator")
 
     ::gameModes <- {
         tdm = 0
@@ -242,6 +243,7 @@ function InitPersistence()
 
     AddPersistenceEnum("titanSetFile", titanSetFile)
 
+	IncludeFile( "Yoshi's_All-Stars" )
 	//IncludeFile("Yoshi's_TitanCreator")
 
 	//IncludeFile("Yoshi's_TitanCreator")
