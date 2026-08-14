@@ -14,8 +14,18 @@ function SpawnNukeTitan( origin, angles, team )
 	table.title 	= "#NPC_TITAN_NUKE"
 	table.origin 	= origin
 	table.angles 	= angles
-	table.model 	= OGRE_MODEL
-	table.settings  = "titan_ogre"
+	table.settings  = Random( [ "titan_ogre", "titan_legion" ] )
+
+	switch( table.settings )
+	{
+		case "titan_ogre":
+			table.model 	= OGRE_MODEL
+			break
+		
+		case "titan_legion":
+			table.model 	= LEGION_MODEL
+			break
+	}
 
 	local randomMod = RandomInt( 0, 100 ) <= 40 //40 % chance
 	SetRandomWeaponOnTitanTemplate( table, randomMod )
@@ -27,8 +37,17 @@ function SpawnNukeTitan( origin, angles, team )
 
 	//titan.PreferSprint( true )
 	//titan.NoForceWalk( true )
-	titan.kv.faceEnemyWhileMovingDistSq = 500 * 500
-	titan.SetMoveSpeedScale( 0.8 )
+	titan.kv.faceEnemyWhileMovingDistSq = 512 * 512
+	switch( table.settings )
+	{
+		case "titan_ogre":
+			titan.SetMoveSpeedScale( 0.8 )
+			break
+		
+		case "titan_legion":
+			titan.SetMoveSpeedScale( 0.6 )
+			break
+	}
 
 	NPC_SetNuclearPayload( titan, true )
 	titan.SetSubclass( eSubClass.nukeTitan )

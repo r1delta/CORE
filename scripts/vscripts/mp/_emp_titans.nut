@@ -23,13 +23,29 @@ function SpawnEMPTitan( origin, angles, team )
 	table.title 	= "#NPC_TITAN_EMP"
 	table.origin 	= origin
 	table.angles 	= angles
-	table.model 	= STRYDER_MODEL
-	table.settings  = "titan_stryder"
+	table.settings  = Random( [ "titan_stryder", "titan_ronin", "titan_northstar" ] )
 
-	table.weapon	= "mp_titanweapon_arc_cannon"
+	switch( table.settings )
+	{
+		case "titan_stryder":
+			table.model 	= STRYDER_MODEL
+			table.weapon	= "mp_titanweapon_arc_cannon"
+			table.weaponMod = [ "burn_mod_titan_arc_cannon" ]
+			break
+		
+		case "titan_ronin":
+			table.model 	= RONIN_MODEL
+			table.weapon	= "mp_titanweapon_shotgun"
+			table.weaponMod = [ "auto_burst" ]
+			break
+		
+		case "titan_northstar":
+			table.model 	= NORTHSTAR_MODEL
+			table.weapon	= "mp_titanweapon_sniper"
+			table.weaponMod = [ "burn_mod_titan_sniper" ]
+			break
+	}
 	//disable burn_mode by iskyfish.2016.10.17
-	table.weaponMod = [ "burn_mod_titan_arc_cannon" ]
-
 	local titan = SpawnNPCTitan( table )
 	titan.Minimap_SetEnemyMaterial( "vgui/hud/coop/minimap_coop_emp_titan" )
 	titan.Minimap_SetAlignUpright( true )
@@ -37,8 +53,22 @@ function SpawnEMPTitan( origin, angles, team )
 
 	//titan.PreferSprint( true )
 	//titan.NoForceWalk( true )
-	titan.kv.faceEnemyWhileMovingDistSq = 1024 * 1024
-	titan.SetMoveSpeedScale( 0.9 )
+	switch( table.settings )
+	{
+		case "titan_stryder":
+			titan.kv.faceEnemyWhileMovingDistSq = 1024 * 1024
+			titan.SetMoveSpeedScale( 0.9 )
+			break
+		
+		case "titan_ronin":
+			titan.kv.faceEnemyWhileMovingDistSq = 512 * 512
+			break
+		
+		case "titan_northstar":
+			titan.kv.faceEnemyWhileMovingDistSq = 2048 * 2048
+			titan.SetMoveSpeedScale( 0.5 )
+			break
+	}
 
 	titan.s.electrocutedPlayers <- []
 	//Assuming players are always 0-COOP_MAX_PLAYER_COUNT in player array.

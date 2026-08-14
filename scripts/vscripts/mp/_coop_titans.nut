@@ -24,9 +24,8 @@ function SpawnCoopTitan( origin, angles, team, settings = null, weapon = null, w
 		settings = Native_GetTitanName( rInt )
 	}*/
 
-	if ( settings == null )
-		settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder" ] )
-
+	settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder", "titan_ion", "titan_scorch", "titan_legion", "titan_ronin", "titan_northstar"] )
+	//settings = "titan_ion"//use for testing
 
 	UseSettingsOnTitanTemplate( table, settings )
 
@@ -67,9 +66,8 @@ function SpawnAmpedCoopTitan( origin, angles, team, settings = null, weapon = nu
 		settings = Native_GetTitanName( rInt )
 	}*/
 	
-	if ( settings == null )
-		settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder"] )
-
+	settings = Random( [ "titan_atlas", "titan_ogre", "titan_stryder"] )
+	//settings = Random( ["titan_scorch", "titan_legion"] )
 	UseSettingsOnTitanTemplate( table, settings )
 
 	if ( weapon )
@@ -100,14 +98,7 @@ function UseSettingsOnTitanTemplate( table, settings )
 {
 	local model, title = null
 
-/*
 	local titanName = settings
-	if ( Native_GetTitanTypeByName( titanName ) != null )
-	{
-		table.model = GetPlayerSettingsFieldForClassName(titanName, "titanmodel")
-		table.title = GetPlayerSettingsFieldForClassName(titanName, "nametext")
-	}
-*/
 
 	switch( settings )
 	{
@@ -124,6 +115,31 @@ function UseSettingsOnTitanTemplate( table, settings )
 		case "titan_stryder":
 			table.model = STRYDER_MODEL
 			table.title = "#CHASSIS_STRYDER_NAME"
+			break
+		
+		case "titan_ion":
+			table.model = ION_MODEL
+			table.title = "Ion"
+			break
+
+		case "titan_scorch":
+			table.model = SCORCH_MODEL
+			table.title = "Scorch"
+			break
+
+		case "titan_legion":
+			table.model = LEGION_MODEL
+			table.title = "Legion"
+			break
+		
+		case "titan_ronin":
+			table.model = RONIN_MODEL
+			table.title = "Ronin"
+			break
+
+		case "titan_northstar":
+			table.model = NORTHSTAR_MODEL
+			table.title = "Northstar"
 			break
 	}
 
@@ -170,6 +186,37 @@ function SetRandomWeaponOnTitanTemplate( table, randomMod = false, useAmpedWeapo
 
 	if ( randomMod )
 		weaponMod = [ Random( mods[ weapIndex ] ) ]
+	
+	switch ( table.settings )
+	{
+		case "titan_ion":
+			local med_weap_guns = [ "mp_titanweapon_xo16", "mp_titanweapon_40mm" ]
+			local med_weap_mods = [ ["burn_mod_titan_xo16"], ["burn_mod_titan_40mm"] ]//man the 40mm in code is boring af.
+			local medium_weapon_num = RandomInt( 0, med_weap_guns.len() )
+			weapon = med_weap_guns[ medium_weapon_num ]
+			weaponMod = med_weap_mods[ medium_weapon_num ]
+			break
+
+		case "titan_scorch":
+			weapon = "mp_titanweapon_rocket_launcher"
+			weaponMod = ["rapid_fire_missiles"]
+			break
+
+		case "titan_legion":
+			weapon = "mp_titanweapon_xo16"
+			weaponMod = ["bullet_storm"]
+			break
+		
+		case "titan_ronin":
+			weapon = "mp_titanweapon_shotgun"
+			weaponMod = ["full_burst"]
+			break
+
+		case "titan_northstar":
+			weapon = "mp_titanweapon_sniper"
+			weaponMod = ["instant_shot"]
+			break
+	}
 
 	table.weapon	= weapon
 	table.weaponMod = weaponMod

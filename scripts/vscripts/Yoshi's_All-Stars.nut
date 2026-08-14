@@ -14,7 +14,7 @@ function main()
 	
 }
 
-function MasterTitanCreation( file, type, emb_ove, unl_lv, p_name, p_desc, t_img_imc, t_img_mcor, c_name, c_desc, c_img, s_s, s_a, s_h, s_b, ref_rodeo, titan_mdl, hatch_mdl, rodeo_num, coop_img, off_weap_overrides, hud_c_name, hud_c_hint, custom_core_start, custom_core_end )
+function MasterTitanCreation( file, type, emb_ove, unl_lv, p_name, p_desc, t_img_imc, t_img_mcor, c_name, c_desc, c_img, s_s, s_a, s_h, s_b, ref_rodeo, titan_mdl, hatch_mdl, rodeo_num, coop_img, weap_overrides, hud_c_name, hud_c_hint, custom_core_start, custom_core_end )
 {
 	//local modded_titan_table = {}
 
@@ -61,7 +61,7 @@ function MasterTitanCreation( file, type, emb_ove, unl_lv, p_name, p_desc, t_img
 	titan_array_name.rodeo_hitbox_number <- rodeo_num // s
 	titan_array_name.coop_img <- coop_img // t
 
-	titan_array_name.offhand_override <- off_weap_overrides // u
+	titan_array_name.weapon_overrides <- weap_overrides // u
 
 	titan_array_name.hud_core_name <- hud_c_name // v
 	titan_array_name.hud_core_hint <- hud_c_hint // w

@@ -6,7 +6,11 @@ function main()
 
 	local offhand_override = {}
 	offhand_override.replaces_tactical <- true
-	offhand_override.specific_weapon_id <- null
+	offhand_override.tactical_weapon_id <- ""
+	offhand_override.replaces_ordnance <- false
+	offhand_override.ordnance_weapon_id <- ""
+	offhand_override.replaces_primary <- false
+	offhand_override.primary_weapon_id <- ""
 
 	CreateTitan( offhand_override )
 }

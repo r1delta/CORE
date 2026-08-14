@@ -3,7 +3,15 @@ const LEGION_MODEL = "models/titans/heavy/titan_heavy_deadbolt.mdl"
 
 function main()
 {
-	CreateTitan( null )
+	local offhand_override = {}
+	offhand_override.replaces_tactical <- false
+	offhand_override.tactical_weapon_id <- ""
+	offhand_override.replaces_ordnance <- false
+	offhand_override.ordnance_weapon_id <- ""
+	offhand_override.replaces_primary <- true
+	offhand_override.primary_weapon_id <- "mp_weapon_mega6"
+
+	CreateTitan( offhand_override )
 }
 
 function CreateTitan( offhand_override_data )
@@ -19,11 +27,11 @@ function CreateTitan( offhand_override_data )
 		"titan_ogre", 
 		50, 
 		"Legion", 
-		"Ultra-Heavy Titan with slow speed and strong armor.", 
+		"Ultra-Heavy Titan equipped with the Predator Cannon Gatling Gun.", 
 		"../ui/menu/loadouts/titan_chassis_ogre_imc", 
 		"../ui/menu/loadouts/titan_chassis_ogre_mcor", 
 		"Core Ability: Bullet Storm", 
-		"Equips a high-capacity, high fire-rate XO-16 machine gun.", 
+		"Dramatically boosts Predator Cannon fire-rate and ammo capacity for a short time.", 
 		"../ui/menu/items/mod_icons/scatterfire", 
 		10, 
 		20, 
@@ -36,7 +44,7 @@ function CreateTitan( offhand_override_data )
 		"../ui/menu/items/mod_icons/scatterfire", 
 		offhand_override_data,
 		"Bullet Storm Online",
-		"High Capacity XO-16 armed and ready",
+		"Predator Cannon Overrides unlocked",
 		core_start,
 		core_end
 		)
@@ -56,7 +64,7 @@ function StartBulletStormCore( soul )//do i use minigun....do i use XO16? do i u
 	RegisterPreviousWeapons( titan )
 	TakePlayerWeapons( soul, "primary" )
 
-	thread ReplaceTitanWeapon( titan, "mp_titanweapon_xo16", ["bullet_storm"], "primary" )
+	thread ReplaceTitanWeapon( titan, "mp_weapon_mega6", ["bullet_storm"], "primary" )
 }
 
 main()

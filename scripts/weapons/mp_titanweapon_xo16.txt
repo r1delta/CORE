@@ -288,8 +288,6 @@ WeaponData
 	"smart_ammo_locked_loop_sound"					"ShoulderRocket_Homing_TargetLocked"
 	"is_anti_titan"  							    "1"
 
-
-
 	Mods
 	{
 		accelerator
@@ -414,12 +412,12 @@ WeaponData
 		bullet_storm
 		{
 			"fire_rate"										"20"
-			"ammo_clip_size"								"*5"
+			"ammo_clip_size"								"*7"
 			"ammo_stockpile_max"							"0"
 		}
 	}
 
-CrosshairData
+	CrosshairData
 	{
 		BaseWeapon
 		{

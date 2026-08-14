@@ -186,13 +186,18 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 
 				if( t_a.setfile == GetSoulPlayerSettings( soul ) )
 				{
-					if( t_a.offhand_override != null )
+					if( t_a.weapon_overrides != null )
 					{
-						if( t_a.offhand_override.replaces_tactical == true )
-							offhand_weaponry[1].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.offhand_override )
-						else
-							offhand_weaponry[0].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.offhand_override )
-				
+						if( t_a.weapon_overrides.replaces_tactical == true )
+							offhand_weaponry[1].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.weapon_overrides, 1 )
+						if( t_a.weapon_overrides.replaces_ordnance == true )
+							offhand_weaponry[0].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.weapon_overrides, 0 )
+						if( t_a.weapon_overrides.replaces_primary == true )
+						{
+							local p_weap = titan.GetActiveWeapon().GetWeaponClassName()
+							titan.TakeWeapon( p_weap )
+							titan.GiveWeapon( TryReplacementOverride( null, null, t_a.weapon_overrides, 2 ) )
+						}
 					}
 				}
 			}
@@ -297,13 +302,18 @@ function GiveHotDropTitanWeaponsForPlayer( player, titan )
 
 			if( t_a.setfile == GetSoulPlayerSettings( soul ) )
 			{
-				if( t_a.offhand_override != null )
+				if( t_a.weapon_overrides != null )
 				{
-					if( t_a.offhand_override.replaces_tactical == true )
-						offhand_weaponry[1].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.offhand_override )
-					else
-						offhand_weaponry[0].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.offhand_override )
-			
+					if( t_a.weapon_overrides.replaces_tactical == true )
+						offhand_weaponry[1].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.weapon_overrides, 1 )
+					if( t_a.weapon_overrides.replaces_ordnance == true )
+						offhand_weaponry[0].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.weapon_overrides, 0 )
+					if( t_a.weapon_overrides.replaces_primary == true )
+					{
+						local p_weap = titan.GetActiveWeapon().GetWeaponClassName()
+						titan.TakeWeapon( p_weap )
+						titan.GiveWeapon( TryReplacementOverride( null, null, t_a.weapon_overrides, 2 ) )
+					}
 				}
 			}
 		}
@@ -366,13 +376,18 @@ function GiveTitanWeaponsForLoadoutData( titan, table )
 
 			if( t_a.setfile == GetSoulPlayerSettings( soul ) )
 			{
-				if( t_a.offhand_override != null )
+				if( t_a.weapon_overrides != null )
 				{
-					if( t_a.offhand_override.replaces_tactical == true )
-						offhand_weaponry[1].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.offhand_override )
-					else
-						offhand_weaponry[0].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.offhand_override )
-			
+					if( t_a.weapon_overrides.replaces_tactical == true )
+						offhand_weaponry[1].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.weapon_overrides, 1 )
+					if( t_a.weapon_overrides.replaces_ordnance == true )
+						offhand_weaponry[0].weapon = TryReplacementOverride( offhand_weaponry[1].weapon, offhand_weaponry[0].weapon, t_a.weapon_overrides, 0 )
+					if( t_a.weapon_overrides.replaces_primary == true )
+					{
+						local p_weap = titan.GetActiveWeapon().GetWeaponClassName()
+						titan.TakeWeapon( p_weap )
+						titan.GiveWeapon( TryReplacementOverride( null, null, t_a.weapon_overrides, 2 ) )
+					}
 				}
 			}
 		}
@@ -475,12 +490,25 @@ function SetDecalForTitan( player )
     }
 }
 
-function TryReplacementOverride( loadout_special, loadout_ordnance, weap_table )
+function TryReplacementOverride( loadout_special, loadout_ordnance, weap_table, type )
 {
-	if( weap_table.specific_weapon_id != null )
-		return weap_table.specific_weapon_id
-	
-	return TryDualOffhandWeaponry( loadout_special, loadout_ordnance, weap_table.replaces_tactical )
+
+	switch( type )
+	{
+		case 0: //ORDNANCE
+			if( weap_table.ordnance_weapon_id != null && weap_table.ordnance_weapon_id != "" )
+				return weap_table.ordnance_weapon_id
+			return TryDualOffhandWeaponry( loadout_special, loadout_ordnance, false )
+		case 1: //SPECIAL
+			if( weap_table.tactical_weapon_id != null && weap_table.tactical_weapon_id != "" )
+				return weap_table.tactical_weapon_id
+			return TryDualOffhandWeaponry( loadout_special, loadout_ordnance, true )
+		case 2: //PRIMARY
+			if( weap_table.primary_weapon_id != null && weap_table.primary_weapon_id != "" )
+				return weap_table.primary_weapon_id
+			return "mp_titanweapon_xo16"
+			
+	}
 }
 
 function TryDualOffhandWeaponry( loadout_special, loadout_ordnance, replaces_tactical_instead )

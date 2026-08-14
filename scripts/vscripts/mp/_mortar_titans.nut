@@ -9,10 +9,22 @@ function SpawnMortarTitan( origin, angles, team )
 	table.title 	= "#NPC_TITAN_MORTAR"
 	table.origin 	= origin
 	table.angles 	= angles
-	table.model 	= ATLAS_MODEL
-	table.settings  = "titan_atlas"
-	table.weapon	= "mp_titanweapon_rocket_launcher"
-	table.weaponMod = [ "rapid_fire_missiles" ]
+	table.settings  = Random( [ "titan_atlas", "titan_scorch" ] )
+
+	switch( table.settings )
+	{
+		case "titan_atlas":
+			table.model 	= ATLAS_MODEL
+			table.weapon	= "mp_titanweapon_rocket_launcher"
+			table.weaponMod = [ "rapid_fire_missiles" ]
+			break
+		
+		case "titan_scorch":
+			table.model 	= SCORCH_MODEL
+			table.weapon	= "mp_titanweapon_rocket_launcher"
+			table.weaponMod = [ "burn_mod_titan_rocket_launcher" ]
+			break
+	}
 
 	local titan = SpawnNPCTitan( table )
 	titan.Minimap_SetEnemyMaterial( "vgui/hud/coop/minimap_coop_mortar_titan" )

@@ -25,7 +25,7 @@ function CreateTitan( offhand_override_data )
 		"titan_atlas", 
 		50, 
 		"Tone", 
-		"A heavier Atlas successor with more armor but slightly slower dash regeneration.", 
+		"A heavier Atlas successor with more armor but slower dash regeneration.", 
 		"../ui/menu/loadouts/titan_chassis_atlas_imc", 
 		"../ui/menu/loadouts/titan_chassis_atlas_mcor", 
 		"Core Ability: ECHO - Sonar", 
@@ -59,7 +59,7 @@ function StartECHOCore( soul )
 {
 	local titan = soul.GetTitan()
 	
-	ActivateSonar( titan.GetActiveWeapon(), 9999 )
+	ActivateSonar( titan.GetActiveWeapon(), 5000 )
 }
 
 main()
