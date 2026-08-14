@@ -14,8 +14,8 @@ function main()
 function CreateTitan( offhand_override_data )
 {
 
-	local core_start = StartECHOCore
-	local core_end = EndECHOCore
+	local core_start = StartSMARTRocketsCore
+	local core_end = EndSMARTRocketsCore
 
 	printl( "Tone Created" )
 
@@ -28,8 +28,8 @@ function CreateTitan( offhand_override_data )
 		"A heavier Atlas successor with more armor but slower dash regeneration.", 
 		"../ui/menu/loadouts/titan_chassis_atlas_imc", 
 		"../ui/menu/loadouts/titan_chassis_atlas_mcor", 
-		"Core Ability: ECHO - Sonar", 
-		"Enables titan sonar, when the core expires it continues to echo around the titan in a slower manner.", 
+		"Core Ability: SMART Rockets", 
+		"Enables long-range SMART rockets.", 
 		"../ui/menu/items/ability_icons/sonar", 
 		85, 
 		90, 
@@ -41,25 +41,31 @@ function CreateTitan( offhand_override_data )
 		53, 
 		"../ui/menu/items/ability_icons/sonar", 
 		offhand_override_data,
-		"ECHO Sonar Online",
-		"Sonar Instruments calibrated.",
+		"SMART Rockets Online",
+		"Enhanced SMART Rockets ready for mortar fire.",
 		core_start,
 		core_end
 		)
 }
 
-function EndECHOCore( soul )
+function EndSMARTRocketsCore( soul )
 {
 	local titan = soul.GetTitan()
+
+	TakePlayerWeapons( soul, "ordnance" )
 	
-	ActivateSonar( titan.GetActiveWeapon(), 1 )
+	thread ReplaceTitanWeapon( titan, ordnance_before_replace, o_mods, "ordnance" )
 }
 
-function StartECHOCore( soul )
+function StartSMARTRocketsCore( soul )
 {
 	local titan = soul.GetTitan()
+
+	RegisterPreviousWeapons( titan )
+
+	TakePlayerWeapons( soul, "ordnance" )
 	
-	ActivateSonar( titan.GetActiveWeapon(), 5000 )
+	thread ReplaceTitanWeapon( titan, "mp_titanweapon_shoulder_rockets", [ "smart_rockets" ], "ordnance" )
 }
 
 main()
