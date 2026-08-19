@@ -4,12 +4,12 @@ function main()
 {
 	Globalize( MasterTitanCreation )
 	printl( "STAAAARRRRSSSS" )
-	IncludeFile("AS_create_legion")
-	IncludeFile("AS_create_scorch")
-	IncludeFile("AS_create_tone")
-	IncludeFile("AS_create_ion")
-	IncludeFile("AS_create_ronin")
-	IncludeFile("AS_create_northstar")
+	//IncludeFile("AS_create_legion")
+	//IncludeFile("AS_create_scorch")
+	//IncludeFile("AS_create_tone")
+	//IncludeFile("AS_create_ion")
+	//IncludeFile("AS_create_ronin")
+	//IncludeFile("AS_create_northstar")
 
 	
 }
