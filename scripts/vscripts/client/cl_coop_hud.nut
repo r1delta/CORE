@@ -851,8 +851,54 @@ function GetPlayerIconIndex( player )
 {
 	local index = player.GetEntIndex() - 1
 	Assert( index >= 0 )
-	Assert( index < 4 )
+
+	if ( index > 3 )
+		return divindex_icon_anticrash( index + 1 )
+
 	return index
+}
+
+function divindex_icon_anticrash( index )// a dumb way to do it but eh.
+{
+	local divindex = 0
+
+	switch ( index )
+	{
+		case 5:
+		case 9:
+		case 13:
+		case 17:
+			divindex = 0
+			break
+		
+		case 6:
+		case 10:
+		case 14:
+		case 18:
+			divindex = 1
+			break
+		
+		case 7:
+		case 11:
+		case 15:
+		case 19:
+			divindex = 2
+			break
+		
+		case 8:
+		case 12:
+		case 16:
+		case 20:
+			divindex = 3
+			break
+		
+		default:
+			divindex = 0
+			printl( "Is over 20 players really needed for FD?" )
+			break
+	}
+
+	return divindex
 }
 
 function GetCharacterFrameImage( player )
