@@ -25,9 +25,6 @@ function InitLoadouts()
 		uiGlobal.eventHandlersAdded <- true
 	}
 
-	//IncludeFile( "Yoshi's_TitanCreator" )
-	//setUp( 1 )
-
 	uiGlobal.loadoutBeingEdited <- null
 	uiGlobal.loadoutTypeBeingEdited <- null
 	uiGlobal.itemBeingEdited <- null
