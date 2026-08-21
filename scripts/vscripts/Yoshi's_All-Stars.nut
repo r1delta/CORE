@@ -105,4 +105,6 @@ main()
 	rodeo hitbox number, # the weakpoint for when rodeoing. ttf2 titans dont have it by default ;-;
 	co_op img, # frontier defense player img
 	offhand override # for replacing either tactical ( true ) or ordnance ( false )
+
+	You can delare a model constant in the creation script itself ( I recommend it ).
 */
