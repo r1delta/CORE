@@ -83,7 +83,26 @@ function MasterTitanCreation( file, type, emb_ove, unl_lv, p_name, p_desc, t_img
 main()
 
 /*
+	setfile, # self explanatory
+	type, # basically either special_ogre, special_atlas, or special_stryder
+	emb_ove, # embark override. REQUIRED
+	unl_lv, # unlock level
+	p_name, # ui only
+	p_desc, # ui only
+	t_img_imc, # ui only
+	t_img_mcor, # ui only
+	c_name, # ui only
+	c_desc, # ui only
+	c_img, # ui only
+	stat_speed, # ui only
+	stat_acceleration, # ui only
+	stat_health amount, # ui only
+	stat_boost count, # ui only
+	rodeo reference override, # can leave as just "hijack" for default
 
-
-
+	titan model, # titan model
+	hatch model, # rodeo hatch
+	rodeo hitbox number, # the weakpoint for when rodeoing. ttf2 titans dont have it by default ;-;
+	co_op img, # frontier defense player img
+	offhand override # for replacing either tactical ( true ) or ordnance ( false )
 */
