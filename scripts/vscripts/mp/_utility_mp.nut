@@ -1685,7 +1685,7 @@ function FillBurnCardDeckFromArray( player, array )
 		printt( "=========================================================" )
 		printt( "=========================================================" )
 		printt( "IF YOU SEE THIS, YOUR BURNCARDS ALMOST GOT WIPED" )
-		PRINTT( "TELL SOMEONE ON THE DISCORD ABOUT IT WITH WHAT YOU WERE DOING RIGHT BEFORE" )
+		PRINTT( "TELL SOMEONE ON THE DISCORD ABOUT IT AND WHAT YOU WERE DOING RIGHT BEFORE THIS" )
 
 		foreach ( index, card in array )
 		{
