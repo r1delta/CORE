@@ -1669,7 +1669,10 @@ function FillBurnCardDeckFromArray( player, array )
 		if(card == null)
 			player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", null )
 		else
-			hadCardsAfterSort = true
+		{
+			if ( !hadCardsAfterSort )
+				hadCardsAfterSort = true
+		}
 		
 		player.SetPersistentVar( _GetBurnCardDeckPersDataPrefix() + "[" + index + "]", card.cardRef )
 		player.SetPersistentVar( _GetBurnCardPersPlayerDataPrefix() + ".burnCardIsNew[" + index + "]", card.new )
@@ -1679,6 +1682,11 @@ function FillBurnCardDeckFromArray( player, array )
 	// Go back to the previous array
 	if ( hadCards && !hadCardsAfterSort )
 	{
+		printt( "=========================================================" )
+		printt( "=========================================================" )
+		printt( "IF YOU SEE THIS, YOUR BURNCARDS ALMOST GOT WIPED" )
+		PRINTT( "TELL SOMEONE ON THE DISCORD ABOUT IT WITH WHAT YOU WERE DOING RIGHT BEFORE" )
+
 		foreach ( index, card in array )
 		{
 			if ( card == null )
