@@ -851,8 +851,6 @@ function GetArcCannonTargets( origin, player )
 		targets.extend( GetProjectileArrayEx( "rpg_missile", IsFFABased() ? -1 : enemyTeam, origin, ARC_CANNON_TITAN_RANGE_CHAIN ) )
 	}
 
-	printt( targets.len() )
-
 	return targets
 }
 Globalize( GetArcCannonTargets )
