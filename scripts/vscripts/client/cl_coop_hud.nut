@@ -907,45 +907,6 @@ function GetCharacterFrameImage( player )
 	return "HUD/coop/coop_char_frame_p" + ( index + 1 )
 }
 
-function GetCharacterFaceImage( player )
-{
-	Assert( player.GetModelName(), "player has no model" )
-	switch( player.GetModelName() )
-	{
-		case MILITIA_MALE_BR:
-		case IMC_MALE_BR:
-			return "HUD/coop/coop_char_brp_m"
-		case MILITIA_MALE_CQ:
-		case IMC_MALE_CQ:
-			return "HUD/coop/coop_char_cqp_m"
-		case MILITIA_MALE_DM:
-		case IMC_MALE_DM:
-			return "HUD/coop/coop_char_dmp_m"
-		case MILITIA_FEMALE_BR:
-		case IMC_FEMALE_BR:
-			return "HUD/coop/coop_char_brp_f"
-		case MILITIA_FEMALE_CQ:
-		case IMC_FEMALE_CQ:
-			return "HUD/coop/coop_char_cqp_f"
-		case MILITIA_FEMALE_DM:
-		case IMC_FEMALE_DM:
-			return "HUD/coop/coop_char_dmp_f"
-		case ATLAS_MODEL:
-			return "HUD/coop/coop_char_atlas"
-		case OGRE_MODEL:
-			return "HUD/coop/coop_char_ogre"
-		case STRYDER_MODEL:
-			return "HUD/coop/coop_char_stryder"
-		case IMC_SPECTRE_MODEL:
-		case MILITIA_SPECTRE_MODEL:
-		case PILOT_SPECTRE_CORPORATE:
-			return "HUD/coop/coop_char_spectre"
-
-		default:
-			Assert( 0, "model " + player.GetModelName() + " not setup in GetCharacterFaceImage" )
-	}
-}
-
 function OnPlayerLoadoutChanged( player )
 {
 	Assert( IsValid( player ) )

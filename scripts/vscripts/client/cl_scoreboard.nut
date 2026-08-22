@@ -105,6 +105,8 @@ function main()
 		}
 	}
 
+	PrecacheHUDMaterial( "HUD/coop/coop_char_dead" )
+
 	Globalize( InitScoreboard )
 	Globalize( ShowScoreboard )
 	Globalize( HideScoreboard )
@@ -383,23 +385,10 @@ function InitScoreboard_Think()
 	file.header.gametypeAndMap.Show()
 	file.header.gametypeDesc.Show()
 
-	if ( IsFFABased() )
-	{
-		// FFA uses both nine-row HUD groups as one continuous 18-player list.
-		// Team branding and scores would make the second group look like an
-		// opposing team even though every entry is an individual competitor.
-		file.teamElems[myTeam].logo.Hide()
-		file.teamElems[myTeam].score.Hide()
-		file.teamElems[enemyTeam].logo.Hide()
-		file.teamElems[enemyTeam].score.Hide()
-	}
-	else
-	{
-		file.teamElems[myTeam].logo.Show()
-		file.teamElems[myTeam].score.Show()
-		file.teamElems[enemyTeam].logo.Show()
-		file.teamElems[enemyTeam].score.Show()
-	}
+	file.teamElems[myTeam].logo.Show()
+	file.teamElems[myTeam].score.Show()
+	file.teamElems[enemyTeam].logo.Show()
+	file.teamElems[enemyTeam].score.Show()
 
 	foreach( elem in file.columnIconBackgrounds )
 		elem.Show()
@@ -535,6 +524,7 @@ function ShowScoreboard()
 		if ( IsFFABased() )
 			data_highlight_bg_color[enemyTeam] = data_highlight_bg_color[myTeam]
 
+		local sortedPlayers = GetSortedPlayers( compareFunc, null )
 		if ( IsFFABased() )
 		{
 			teamPlayers[myTeam] = []
@@ -543,9 +533,8 @@ function ShowScoreboard()
 			// The scoreboard resource has two columns of nine rows. FFA puts every
 			// player on one gameplay team, so split the globally sorted player list
 			// across the two visual columns instead of overflowing the first one.
-			local players = GetSortedPlayers( compareFunc, null )
 			local rowsPerColumn = file.playerElems[myTeam].len()
-			foreach ( playerIndex, player in players )
+			foreach ( playerIndex, player in sortedPlayers )
 			{
 				if ( playerIndex < rowsPerColumn )
 					teamPlayers[myTeam].append( player )
@@ -647,8 +636,39 @@ function ShowScoreboard()
 			losingTeam = myTeam
 		}
 
-		file.teamElems[winningTeam].score.SetText( teamScore[winningTeam].tostring() )
-		file.teamElems[losingTeam].score.SetText( teamScore[losingTeam].tostring() )
+		if ( IsFFABased() )
+		{
+			file.teamElems[myTeam].logo.SetImage( GetCharacterFaceImage( localPlayer ) )
+			file.teamElems[myTeam].score.SetText( localPlayer.GetAssaultScore().tostring() )
+
+			local leadingOpponent = null
+			foreach ( candidate in sortedPlayers )
+			{
+				if ( candidate == localPlayer )
+					continue
+
+				leadingOpponent = candidate
+				break
+			}
+
+			local winnerImage = "HUD/coop/coop_char_dead"
+			local winnerScore = "0"
+
+			if ( leadingOpponent )
+			{
+				winnerImage = GetCharacterFaceImage( leadingOpponent )
+				winnerScore = leadingOpponent.GetAssaultScore().tostring()
+			}
+
+			file.teamElems[enemyTeam].logo.SetImage( winnerImage )
+			file.teamElems[enemyTeam].logo.SetColor( 255, 110, 0, 255 )
+			file.teamElems[enemyTeam].score.SetText( winnerScore )
+		}
+		else
+		{
+			file.teamElems[winningTeam].score.SetText( teamScore[winningTeam].tostring() )
+			file.teamElems[losingTeam].score.SetText( teamScore[losingTeam].tostring() )
+		}
 
 		file.teamElems[winningTeam].score.SetPos( 0, -headerHeight )
 		file.teamElems[losingTeam].score.SetPos( 0, -headerHeight - losingTeamYOffset )
@@ -1181,7 +1201,7 @@ function AddColumnsForGameMode( scoreboard )
 			AddColumnLabel( scoreboard, "titanKills", SCOREBOARD_MATERIAL_TITAN_KILLS, "#SCOREBOARD_TITAN_KILLS", 0, true, UpdateTitanKills )
 			break
 
-		case  SCAVENGER:
+		case SCAVENGER:
 			// added RIGHT to LEFT
 			AddColumnLabel( scoreboard, "deaths", SCOREBOARD_MATERIAL_DEATHS, "#SCOREBOARD_DEATHS", 0, false, UpdateDeaths )
 			AddColumnLabel( scoreboard, "titanKills", SCOREBOARD_MATERIAL_TITAN_KILLS, "#SCOREBOARD_TITAN_KILLS", 0, false, UpdateTitanKills )
@@ -1209,6 +1229,14 @@ function AddColumnsForGameMode( scoreboard )
 			AddColumnLabel( scoreboard, "titanKills", SCOREBOARD_MATERIAL_TITAN_KILLS, "#SCOREBOARD_TITAN_KILLS", 0, false, UpdateTitanKills )
 			AddColumnLabel( scoreboard, "defense", SCOREBOARD_MATERIAL_DEFENSE, "#SCOREBOARD_MFD_MARKS_OUTLASTED", 0, false, UpdateDefense )
 			AddColumnLabel( scoreboard, "assault", SCOREBOARD_MATERIAL_MARKED_FOR_DEATH_TARGET_KILLS, "#SCOREBOARD_MFD_SCORE", 0, true, UpdateAssault )
+			break
+
+		case GUN_GAME:
+			// added RIGHT to LEFT
+			AddColumnLabel( scoreboard, "assists", SCOREBOARD_MATERIAL_ASSISTS, "#SCOREBOARD_ASSISTS", 0, false, UpdateAssists )
+			AddColumnLabel( scoreboard, "deaths", SCOREBOARD_MATERIAL_DEATHS, "#SCOREBOARD_DEATHS", 0, false, UpdateDeaths )
+			AddColumnLabel( scoreboard, "pilotKills", SCOREBOARD_MATERIAL_PILOT_KILLS, "#SCOREBOARD_PILOT_KILLS", 0, true, UpdateKills )
+			AddColumnLabel( scoreboard, "assault", SCOREBOARD_MATERIAL_MARKED_FOR_DEATH_TARGET_KILLS, "#SCOREBOARD_SCORE", 0, true, UpdateAssault )
 			break
 
 		default:
