@@ -4,8 +4,9 @@ engine_r1o.dll,text,0x1c6ba0,E8 AB 18 F1 FF 84 C0 74 1D 48,90 90 90 90 90 90 90 
 engine_r1o.dll,text,0x1c6c00,48 8B 01 48 8D 15 EE 77 4F 00 FF 50 40,90 90 90 90 90 90 90 90 90 90 90 90 90
 ; make it so "IMC" bodymodel is "bodymodel_imc" in .set file in CStaticClassSystem instead of just "bodymodel" (debatably correct)
 engine_r1o.dll,rdata,0x558629,"\x00\x00\x00\x00","_imc"
-; allow CGameClient::ProcessSignonState to dispatch mismatches while the current state is FULL (8)
+; allow CGameClient::ProcessSignonState to dispatch mismatches regardless of signon state
 engine_r1o.dll,text,0x13F31A,75 D6,90 90
+engine_r1o.dll,text,0x13F31F,75 D1,90 90
 ; nop out some seemingly-unused callback causing calls to garbage callback func ptr
 ; filesystem_stdio.dll,text,0x1b448,74 65 4C 8D 05 1F 53 0B,90 90 4C 8D 05 1F 53 0B
 ; fix typo causing shared client VPK to not work properly
