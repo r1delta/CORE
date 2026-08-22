@@ -841,6 +841,8 @@ function GetArcCannonTargets( origin, player )
 	{
 		targets = GetScriptManagedEntArrayWithinCenter( level._arcCannonTargetsArrayID, TEAM_IMC, origin, ARC_CANNON_TITAN_RANGE_CHAIN )
 		targets.extend( GetScriptManagedEntArrayWithinCenter( level._arcCannonTargetsArrayID, TEAM_MILITIA, origin, ARC_CANNON_TITAN_RANGE_CHAIN ) )
+
+		ArrayRemove( targets, player )
 	}
 	else
 		targets = GetScriptManagedEntArrayWithinCenter( level._arcCannonTargetsArrayID, playerTeam, origin, ARC_CANNON_TITAN_RANGE_CHAIN )
