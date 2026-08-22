@@ -351,8 +351,6 @@ function GetFirstArcCannonTarget( weapon, attackParams )
 	}
 
 	local results
-	local ownerTeam = owner.GetTeam()
-
 	// Get a missile target and a non-missile target in the cone that the player can zap
 	// We do this in a separate check so we can use a wider cone to be more forgiving for targeting missiles
 	local firstTargetInfo = {}
@@ -380,10 +378,9 @@ function GetFirstArcCannonTarget( weapon, attackParams )
 
 			if ( "GetTeam" in visibleEnt )
 			{
-				local visibleEntTeam = visibleEnt.GetTeam()
-				if ( visibleEntTeam == ownerTeam )
+				if ( ShouldPreventFriendlyFire( owner, visibleEnt) )
 					continue
-				if ( IsEntANeutralMegaTurret( visibleEnt, ownerTeam ) )
+				if ( IsEntANeutralMegaTurret( visibleEnt, owner ) )
 					continue
 			}
 
@@ -706,8 +703,7 @@ function GetArcCannonChainTargets( fromOrigin, fromTarget, zapInfo )
 	if ( !IsValid( zapInfo.player ) )
 		return results
 
-	local playerTeam = zapInfo.player.GetTeam()
-	local allTargets = GetArcCannonTargetsInRange( fromOrigin, playerTeam, zapInfo.weapon )
+	local allTargets = GetArcCannonTargetsInRange( fromOrigin, zapInfo.player, zapInfo.weapon )
 	allTargets = ArrayClosest( allTargets, fromOrigin )
 
 	local viewVector
@@ -746,7 +742,7 @@ function GetArcCannonChainTargets( fromOrigin, fromTarget, zapInfo )
 		if ( ent.GetClassname() == "script_mover" )
 			continue
 
-		if ( IsEntANeutralMegaTurret( ent, playerTeam ) )
+		if ( IsEntANeutralMegaTurret( ent, zapInfo.player ) )
 			continue
 
 		if ( !IsAlive( ent ) )
@@ -795,19 +791,18 @@ function GetArcCannonChainTargets( fromOrigin, fromTarget, zapInfo )
 Globalize( GetArcCannonChainTargets )
 
 
-function IsEntANeutralMegaTurret( ent, playerTeam )
+function IsEntANeutralMegaTurret( ent, player )
 {
 	if ( ent.GetClassname() != "npc_turret_mega" )
 		return false
-	local entTeam = ent.GetTeam()
-	if ( entTeam == playerTeam )
+
+	if ( ShouldPreventFriendlyFire( ent, player ) )
 		return false
-	if ( entTeam != GetOtherTeam( playerTeam ) )
+	if ( ent.GetTeam() != GetOtherTeam( player.GetTeam() ) )
 		return true
 
 	return false
 }
-Globalize( IsEntANeutralMegaTurret )
 
 function ArcCannon_HideIdleEffect( weapon, delay )
 {
@@ -837,23 +832,34 @@ function AddToArcCannonTargets( ent )
 	AddToScriptManagedEntArray( level._arcCannonTargetsArrayID, ent );
 }
 
-function GetArcCannonTargets( origin, team )
+function GetArcCannonTargets( origin, player )
 {
-	local targets = GetScriptManagedEntArrayWithinCenter( level._arcCannonTargetsArrayID, team, origin, ARC_CANNON_TITAN_RANGE_CHAIN )
+	local playerTeam = player.GetTeam()
+
+	local targets
+	if ( IsFFABased() )
+	{
+		targets = GetScriptManagedEntArrayWithinCenter( level._arcCannonTargetsArrayID, TEAM_IMC, origin, ARC_CANNON_TITAN_RANGE_CHAIN )
+		targets.extend( GetScriptManagedEntArrayWithinCenter( level._arcCannonTargetsArrayID, TEAM_MILITIA, origin, ARC_CANNON_TITAN_RANGE_CHAIN ) )
+	}
+	else
+		targets = GetScriptManagedEntArrayWithinCenter( level._arcCannonTargetsArrayID, playerTeam, origin, ARC_CANNON_TITAN_RANGE_CHAIN )
 
 	if ( ARC_CANNON_TARGETS_MISSILES )
 	{
-		local enemyTeam = GetEnemyTeam( team )
-		targets.extend( GetProjectileArrayEx( "rpg_missile", enemyTeam, origin, ARC_CANNON_TITAN_RANGE_CHAIN ) )
+		local enemyTeam = GetEnemyTeam( playerTeam )
+		targets.extend( GetProjectileArrayEx( "rpg_missile", IsFFABased() ? -1 : enemyTeam, origin, ARC_CANNON_TITAN_RANGE_CHAIN ) )
 	}
+
+	printt( targets.len() )
 
 	return targets
 }
 Globalize( GetArcCannonTargets )
 
-function GetArcCannonTargetsInRange( origin, team, weapon )
+function GetArcCannonTargetsInRange( origin, player, weapon )
 {
-	local allTargets = GetArcCannonTargets( origin, team )
+	local allTargets = GetArcCannonTargets( origin, player )
 	local targetsInRange = []
 
 	local titanDistSq
