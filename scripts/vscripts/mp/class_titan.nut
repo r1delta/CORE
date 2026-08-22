@@ -538,7 +538,7 @@ function TryDualOffhandWeaponry( loadout_special, loadout_ordnance, replaces_tac
 				}
 				return "mp_titanweapon_dumbfire_rockets"
 			
-			case "mp_titanweapon_bubble_shield":
+			case "mp_titanability_bubble_shield":
 				if ( loadout_ordnance == "mp_titanweapon_shoulder_rockets" )
 				{
 					return "mp_titanweapon_dumbfire_rockets"
@@ -564,7 +564,7 @@ function TryDualOffhandWeaponry( loadout_special, loadout_ordnance, replaces_tac
 			case "mp_titanweapon_salvo_rockets":
 				if ( loadout_special == "mp_weapon_mega4" )
 				{
-					return "mp_titanweapon_bubble_shield"
+					return "mp_titanability_bubble_shield"
 				}
 				return "mp_weapon_mega4"
 			
@@ -583,11 +583,11 @@ function TryDualOffhandWeaponry( loadout_special, loadout_ordnance, replaces_tac
 				return "mp_titanability_smoke"
 			
 			case "mp_titanweapon_shoulder_rockets":
-				if ( loadout_special == "mp_titanweapon_bubble_shield" )
+				if ( loadout_special == "mp_titanability_bubble_shield" )
 				{
 					return "mp_titanability_smoke"
 				}
-				return "mp_titanweapon_bubble_shield"
+				return "mp_titanability_bubble_shield"
 			
 			default:
 				if ( loadout_ordnance == "mp_titanweapon_salvo_rockets" )
@@ -597,7 +597,7 @@ function TryDualOffhandWeaponry( loadout_special, loadout_ordnance, replaces_tac
 				if ( loadout_ordnance == "mp_titanweapon_dumbfire_rockets" )
 					return "mp_titanability_smoke"
 				if ( loadout_ordnance == "mp_titanweapon_shoulder_rockets" )
-					return "mp_titanweapon_bubble_shield"
+					return "mp_titanability_bubble_shield"
 				return "mp_titanweapon_vortex_shield"
 		}
 	}
