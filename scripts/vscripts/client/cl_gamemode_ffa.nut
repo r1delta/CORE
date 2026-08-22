@@ -70,18 +70,21 @@ function UpdateFFAScoreBars()
 	local winnerScore = 0
 	local scoreLimit = GetScoreLimit_FromPlaylist().tofloat()
 
-	if ( leadingOpponent )
-		winnerScore = leadingOpponent.GetAssaultScore()
+	local playerProgress = GraphCapped( playerScore.tofloat(), 0.0, scoreLimit, 0.0, scoreLimit )
+	local winnerProgress = 0
 
-	// BAR DOESNT WORK
+	if ( leadingOpponent )
+	{
+		winnerScore = leadingOpponent.GetAssaultScore()
+		winnerProgress = GraphCapped( winnerScore.tofloat(), 0.0, scoreLimit, 0.0, scoreLimit )
+	}
+
 	scoreBars.ScoresFriendly.SetBarProgressSource( ProgressSource.PROGRESS_SOURCE_SCRIPTED )
-	//scoreBars.ScoresFriendly.SetBarProgressRemap( 0, playerScore, 0.011, 0.96 )
-	scoreBars.ScoresFriendly.SetBarProgress( playerScore.tofloat() / scoreLimit )
+	scoreBars.ScoresFriendly.SetBarProgress( playerProgress )
 	scoreBars.Friendly_Number.SetText( playerScore.tostring() )
 
 	scoreBars.ScoresEnemy.SetBarProgressSource( ProgressSource.PROGRESS_SOURCE_SCRIPTED )
-	//scoreBars.ScoresEnemy.SetBarProgressRemap( 0, winnerScore, 0.011, 0.96 )
-	scoreBars.ScoresEnemy.SetBarProgress( winnerScore.tofloat() / scoreLimit )
+	scoreBars.ScoresEnemy.SetBarProgress( winnerProgress )
 	scoreBars.Enemy_Number.SetText( winnerScore.tostring() )
 
 	if ( leadingOpponent )
