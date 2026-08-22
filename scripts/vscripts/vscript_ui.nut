@@ -1097,7 +1097,7 @@ function InitMenus()
 	AddSubmenu( "AbilitySelectMenu", "resource/ui/menus/abilityselect.menu" )
 	AddSubmenu( "PassiveSelectMenu", "resource/ui/menus/passiveselect.menu" )
 	AddSubmenu( "TitanOSSelectMenu", "resource/ui/menus/titanosselect.menu" )
-	AddSubmenu( "TitanSelectMenu", "resource/ui/menus/titanselect.menu" )
+	AddSubmenu( "TitanSelectMenuTTP", "resource/ui/menus/titanselectTTP.menu" )//other menu if disabled had issues
 	AddSubmenu( "DecalSelectMenu", "resource/ui/menus/decalselect.menu" )
 	if( developer() == 1 )
 	{
@@ -1195,7 +1195,7 @@ function InitMenus()
 	AddEventHandlerToButtonClass( menu, "PassiveSelectClass", UIE_LOSE_FOCUS, OnPassiveSelectButton_LostFocus )
 
 	// Select Titan
-	local menu = GetMenu( "TitanSelectMenu" )
+	local menu = GetMenu( "TitanSelectMenuTTP" )
 	AddEventHandlerToButtonClass( menu, "TitanSelectClass", UIE_GET_FOCUS, OnTitanSelectButton_Focused )
 	AddEventHandlerToButtonClass( menu, "TitanSelectClass", UIE_CLICK, OnTitanSelectButton_Activate )
 	AddEventHandlerToButtonClass( menu, "TitanSelectClass", UIE_LOSE_FOCUS, OnTitanSelectButton_LostFocus )
@@ -1714,7 +1714,7 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenTitanOSSelectMenu()
 			break
 
-		case "TitanSelectMenu":
+		case "TitanSelectMenuTTP":
 			OnOpenTitanSelectMenu()
 			break
 
@@ -1943,7 +1943,7 @@ function CloseMenuWrapper( menu )
 			OnCloseMenu_BurnCardPickCard()
 			break
 
-		case "TitanSelectMenu":
+		case "TitanSelectMenuTTP":
 			OnCloseTitanSelectMenu()
 			break
 

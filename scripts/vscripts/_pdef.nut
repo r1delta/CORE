@@ -34,6 +34,8 @@ function InitPersistence()
     AddPersistenceKey("spawnAsTitan", "bool")
     AddPersistenceKey("haveSeenCustomCoop", "bool")
 
+	Globalize( add_setfile_persistance )
+
 
 
     ::gameModes <- {
@@ -239,6 +241,8 @@ function InitPersistence()
     }
 
     AddPersistenceEnum("titanSetFile", titanSetFile)
+
+	IncludeFile( "Yoshi's_All-Stars" )//the big star script
 
     ::titanMod <- {
         NULL = 0
@@ -1997,7 +2001,7 @@ function InitPersistence()
     AddPersistenceKey("playlistAnnouncementSeen", "bool")
 	AddPersistenceKey("delta.everythingUnlocked", "bool")
 }
-InitPersistence()
+
 function IsDelta() {
     return !GetConVarBool("net_secure")
 }
@@ -2187,3 +2191,11 @@ function testpdef() {
     for (local k = 0; k < PersistenceGetEnumCount("unlockRefs"); k++)
 		printt(k, PersistenceGetEnumItemNameForIndex("unlockRefs", k))
 }
+
+function add_setfile_persistance( file, placement )
+{
+	::titanSetFile[ file ] <- placement
+	printt(::titanSetFile)
+}
+
+InitPersistence()
