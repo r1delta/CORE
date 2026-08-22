@@ -109,6 +109,41 @@ function EntitiesDidLoad()
 		thread IntroMain()
 		thread SetupProgression()
 	}
+
+	if ( IsFFABased() )
+	{
+		local BONEYARD_FFA_SPAWNS = [
+			{ origin = Vector( -828.646, 2264.69, 578.031 ), angles = Vector( 8.4755, 142.024, 0 ) },
+			{ origin = Vector( -1399.28, 3293.54, 316.721 ), angles = Vector( 7.97434, -156.511, 0 ) },
+			{ origin = Vector( -118.528, 2543.25, 154.031 ), angles = Vector( 3.47864, -126.3, 0 ) },
+			{ origin = Vector( 698.813, 2420.06, 17.0313 ), angles = Vector( 5.159, -128.87, 0 ) },
+			{ origin = Vector( -817.143, 1824.1, -85.9688 ), angles = Vector( 2.49106, -38.4252, 0 ) },
+			{ origin = Vector( -264.364, 357.697, -210.499 ), angles = Vector( 4.1272, -138.628, 0 ) },
+			{ origin = Vector( 1641.3, 339.306, 199.895 ), angles = Vector( 1.84249, -75.6731, 0 ) },
+			{ origin = Vector( 1945.46, 1104.24, 659.022 ), angles = Vector( 5.66016, 69.0551, 0 ) },
+			{ origin = Vector( -283.725, -1227.81, -185.969 ), angles = Vector( 7.98507, -160.492, 0 ) },
+			{ origin = Vector( -1296.2, -2240.74, -221.969 ), angles = Vector( 8.16195, 103.177, 0 ) },
+			{ origin = Vector( -2957.6, -4075.75, 82.5937 ), angles = Vector( 7.30703, 73.7492, 0 ) },
+			{ origin = Vector( -1599.85, -3269.03, -221.265 ), angles = Vector( 2.38388, -148.815, 0 ) },
+			{ origin = Vector( -2393.49, -1545.72, -273.188 ), angles = Vector( 7.62428, 0.174741, 0 ) },
+			{ origin = Vector( -3709.86, -1772.56, -59.9688 ), angles = Vector( 6.66618, 38.4345, 0 ) },
+			{ origin = Vector( -3260.84, -854.244, 204.584 ), angles = Vector( 4.98582, 55.1297, 0 ) },
+			{ origin = Vector( -2480.15, -451.327, -27.6587 ), angles = Vector( 9.55522, 120.096, 0 ) },
+			{ origin = Vector( -1916.32, -902.934, -383.969 ), angles = Vector( 4.32253, 97.3965, 0 ) },
+			{ origin = Vector( -3632.11, 925.273, 79.07 ), angles = Vector( 14.9058, -20.853, 0 ) },
+			{ origin = Vector( -1816.79, 827.989, -119.389 ), angles = Vector( -1.01335, 148.986, 0 ) },
+			{ origin = Vector( -1153.05, 1651.3, 154.031 ), angles = Vector( 6.97572, 101.103, 0 ) },
+			{ origin = Vector( -3477.59, 2107.18, 498.568 ), angles = Vector( 8.00752, -10.7406, 0 ) },
+			{ origin = Vector( -4210.41, -2424.43, 368.031 ), angles = Vector( 7.28526, -26.9972, 0 ) },
+			{ origin = Vector( -99.8447, -1413.5, 432.344 ), angles = Vector( 17.3527, 171.536, 0 ) },
+			{ origin = Vector( 275.906, 257.617, 336.031 ), angles = Vector( 8.64134, 175.709, 0 ) },
+			{ origin = Vector( -68.0383, 1088.37, 542.031 ), angles = Vector( 7.2263, -69.8345, 0 ) },
+			{ origin = Vector( -186.816, 1982.72, 1123.29 ), angles = Vector( 5.32485, -130.409, 0 ) }
+		]
+
+		CreatePilotStartSpawnPointFromArray( BONEYARD_FFA_SPAWNS, TEAM_UNASSIGNED )
+		CreatePilotSpawnPointFromArray( BONEYARD_FFA_SPAWNS, TEAM_UNASSIGNED )
+	}
 }
 
 /*--------------------------------------------------------------------------------------------------------*\

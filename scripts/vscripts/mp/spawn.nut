@@ -182,6 +182,12 @@ function GameModeRemove( spawnpoint )
 			gameMode = CAPTURE_POINT
 			break
 
+		// Enable this when all maps have ffa spawns
+		//case FFA:
+		//case GUN_GAME:
+		//	gameMode = FFA
+		//	break
+
 		case CAPTURE_THE_TITAN:
 		case BIG_BROTHER:
 		case CAPTURE_THE_FLAG:

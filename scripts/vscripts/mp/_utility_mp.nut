@@ -1780,9 +1780,9 @@ function BurnCardOnDeath( target, attacker, idx )
 //
 // to find positions:
 // 1. open a local server
-// 2. turn on sv_cheats
-// 3. go to a spot that you think is nice
-// 4. run: script ( printt( "POSITION: " + GetPlayerArray()[0].GetOrigin(), "ANGLES: " + GetPlayerArray()[0].GetAngles() ) )
+// 2. go to a spot that you think is nice
+// 3. run "getscritpos" in the console
+// 4. copy the first line (ex: { origin = Vector( -304, -1472, 352.031 ), angles = Vector( 0, 90, 0 ) }, )
 // -----------------------------------------------------------
 
 // Start spawnpoint for Pilots
