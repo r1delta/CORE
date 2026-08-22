@@ -1,7 +1,7 @@
 function main()
 {
 	AddCallback_PlayerOrNPCKilled( GunGame_OnPlayerOrNPCKilled )
-	AddCallback_OnOverrideLoadout( GunGame_OnOverrideLoadout )
+	AddCallback_OnChangeLoadout( GunGame_OnChangeLoadout )
 
 	AddDeathCallback( "npc_soldier", GunGame_NPCCleanupWeapon )
 	AddDeathCallback( "npc_spectre", GunGame_NPCCleanupWeapon )
@@ -30,6 +30,8 @@ function EntitiesDidLoad()
 
 	level.gunGameWeapons <- []
 
+	Weapon_SetDespawnTime( 0 )
+
 	local className
 	local numWeapons = PersistenceGetEnumCount( "loadoutItems" )
 	for ( local i = 0 ; i < numWeapons ; i++ )
@@ -57,6 +59,8 @@ function GunGame_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 	if ( GetGameState() >= eGameState.WinnerDetermined )
 		return
 
+	TakeAllWeapons( victim )
+
 	if ( !victim.IsPlayer() )
 		return
 
@@ -67,7 +71,10 @@ function GunGame_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		return
 
 	if ( attacker.GetActiveWeapon().GetClassname() != GetCurrentGunGameWeaponForPlayer( attacker ) )
+	{
+		thread GiveNextGunGameWeapon( attacker )
 		return
+	}
 
 	local scoreLimit = GetScoreLimit_FromPlaylist()
 
@@ -91,8 +98,9 @@ function GunGame_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		thread GiveNextGunGameWeapon( attacker )
 }
 
-function GunGame_OnOverrideLoadout( player, loadoutTable, isTitan )
+function GunGame_OnChangeLoadout( player, loadoutTable, isTitan )
 {
+	TakeAllPassives( player )
 	thread GiveNextGunGameWeapon( player )
 }
 
@@ -154,14 +162,18 @@ function GunGame_CleanupWeapon( weapon )
 
 function GunGame_NPCCleanupWeapon( npc, damageInfo )
 {
-	thread GunGame_CleanupWeaponThink( npc.GetActiveWeapon() )
+	local weapon = npc.GetActiveWeapon()
+	if ( !IsValid( weapon ) )
+		return
+
+	thread GunGame_CleanupWeaponThink( weapon )
 }
 
 function GunGame_CleanupWeaponThink( weapon )
 {
 	wait 0.1
 
-	if ( !weapon )
+	if ( !IsValid( weapon ) )
 		return
 
 	if ( !weapon.GetOwner() || !IsAlive( weapon.GetOwner() ) )
