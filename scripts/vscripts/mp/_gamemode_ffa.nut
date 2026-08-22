@@ -13,6 +13,11 @@ function main()
 
 function FFA_OnClientConnected( player )
 {
+	SetCrosshairTeamColoringDisabled( player, true )
+
+	player.SetNameVisibleToEnemy( false )
+	player.SetNameVisibleToFriendly( false )
+
 	UpdateFFAAutoTitanRelationships()
 }
 
