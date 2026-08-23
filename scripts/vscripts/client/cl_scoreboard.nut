@@ -641,18 +641,10 @@ function ShowScoreboard()
 			file.teamElems[myTeam].logo.SetImage( GetCharacterFaceImage( localPlayer ) )
 			file.teamElems[myTeam].score.SetText( localPlayer.GetAssaultScore().tostring() )
 
-			local leadingOpponent = null
-			foreach ( candidate in sortedPlayers )
-			{
-				if ( candidate == localPlayer )
-					continue
-
-				leadingOpponent = candidate
-				break
-			}
+			local leadingOpponent = GetLeadingOpponent( localPlayer )
 
 			local winnerImage = "HUD/coop/coop_char_dead"
-			local winnerScore = "0"
+			local winnerScore = "#STATS_NOT_APPLICABLE"
 
 			if ( leadingOpponent )
 			{

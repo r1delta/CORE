@@ -46,16 +46,8 @@ function UpdateFFAScoreBars()
 	if ( !player )
 		return
 
-	local leadingOpponent = null
-	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
-	foreach ( candidate in players )
-	{
-		if ( candidate == player )
-			continue
+	local leadingOpponent = GetLeadingOpponent( player )
 
-		leadingOpponent = candidate
-		break
-	}
 	local cockpit = player.GetCockpit()
 	if ( !cockpit )
 		return
@@ -67,7 +59,7 @@ function UpdateFFAScoreBars()
 	local scoreBars = vgui.s.scoreboardProgressBars
 
 	local playerScore = player.GetAssaultScore()
-	local winnerScore = 0
+	local winnerScore = ""
 	local scoreLimit = GetScoreLimit_FromPlaylist().tofloat()
 
 	local playerProgress = GraphCapped( playerScore.tofloat(), 0.0, scoreLimit, 0.0, scoreLimit )
@@ -90,7 +82,7 @@ function UpdateFFAScoreBars()
 	if ( leadingOpponent )
 		scoreBars.Enemy_Team.SetText( leadingOpponent.GetPlayerName() )
 	else
-		scoreBars.Enemy_Team.SetText( "" )
+		scoreBars.Enemy_Team.SetText( "#STATS_NOT_APPLICABLE" )
 }
 
 main()

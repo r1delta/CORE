@@ -3711,3 +3711,22 @@ function GetWinningPlayer()
 
 	return players[0]
 }
+
+function GetLeadingOpponent( player )
+{
+	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
+	if ( players.len() == 0 )
+		return null
+
+	local leadingOpponent = null
+	foreach ( candidate in players )
+	{
+		if ( candidate == player )
+			continue
+
+		leadingOpponent = candidate
+		break
+	}
+
+	return leadingOpponent
+}
