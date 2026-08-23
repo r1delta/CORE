@@ -36,7 +36,7 @@ function InitPersistence()
 
 	Globalize( add_setfile_persistance )
 
-
+	IncludeFile( "Yoshi's_All-Stars" )
 
     ::gameModes <- {
         tdm = 0
@@ -242,7 +242,7 @@ function InitPersistence()
 
     AddPersistenceEnum("titanSetFile", titanSetFile)
 
-	IncludeFile( "Yoshi's_All-Stars" )//the big star script
+	//IncludeFile( "Yoshi's_All-Stars" )//the big star script
 
     ::titanMod <- {
         NULL = 0
@@ -2192,10 +2192,21 @@ function testpdef() {
 		printt(k, PersistenceGetEnumItemNameForIndex("unlockRefs", k))
 }
 
-function add_setfile_persistance( file, placement )
+function add_setfile_persistance() // game keeps rejecting new additions into setfile pdef table, wont crash but this is bad.
 {
-	::titanSetFile[ file ] <- placement
-	printt(::titanSetFile)
+	local loop_max = MasterModdedTitans.len()
+	for( local E = 0; E < loop_max; E++ )
+	{
+		if( loop_max > 0 )
+		{
+			local t_a = MasterModdedTitans[ E ]
+
+			::titanSetFile[ t_a.setfile ] <- E + BASE_TITAN_COUNT
+
+			printl( ::titanSetFile )
+			
+		}
+	}
 }
 
 InitPersistence()
