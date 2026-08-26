@@ -66,7 +66,12 @@ function FakeKnifeHit( attackParams, frag )
 {
 	wait 0.25
 
+	if ( !IsValid( self ) )
+		return
+
 	local owner = self.GetWeaponOwner()
+	if ( !IsValid( owner ) )
+		return
 
 	local origin = owner.EyePosition()
 	local angles = owner.EyeAngles()
