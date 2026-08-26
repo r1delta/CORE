@@ -3,9 +3,6 @@ function main()
 	AddCallback_PlayerOrNPCKilled( GunGame_OnPlayerOrNPCKilled )
 	AddCallback_OnChangeLoadout( GunGame_OnChangeLoadout )
 
-	AddDeathCallback( "npc_soldier", GunGame_NPCCleanupWeapon )
-	AddDeathCallback( "npc_spectre", GunGame_NPCCleanupWeapon )
-
 	level.spawnRatingFunc_Pilot = RateSpawnpoint_Generic
 	level.spawnRatingFunc_Generic = RateSpawnpoint_Generic
 
@@ -27,6 +24,7 @@ function EntitiesDidLoad()
 	//monitor population and respawns
 	thread SetupTeamDeathmatchNPCs()
 	Riff_ForceTitanAvailability( eTitanAvailability.Never )
+	level.nv.allowNPCs = eAllowNPCs.None
 
 	level.gunGameWeapons <- []
 
@@ -70,7 +68,11 @@ function GunGame_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 	if ( ShouldPreventFriendlyFire( victim, attacker ) )
 		return
 
-	if ( attacker.GetActiveWeapon().GetClassname() != GetCurrentGunGameWeaponForPlayer( attacker ) )
+	local weapon = attacker.GetActiveWeapon()
+	if ( !weapon )
+		return
+
+	if ( weapon.GetClassname() != GetCurrentGunGameWeaponForPlayer( attacker ) )
 	{
 		thread GiveNextGunGameWeapon( attacker )
 		return
@@ -101,6 +103,17 @@ function GunGame_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 function GunGame_OnChangeLoadout( player, loadoutTable, isTitan )
 {
 	TakeAllPassives( player )
+
+/*
+	if ( !( "GunGame_PlayedBurnCardAnim" in player.s ) )
+	{
+		Remote.CallFunction_Replay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), 30, true )
+		player.s.GunGame_PlayedBurnCardAnim <- true
+	}
+
+	thread ScanMinimapUntilDeath( player )
+*/
+
 	thread GiveNextGunGameWeapon( player )
 }
 
@@ -113,6 +126,7 @@ function GiveNextGunGameWeapon( player )
 		return
 
 	TakeAllWeapons( player )
+	player.GiveOffhandWeapon( "mp_ability_heal", 1 )
 
 	local weapon = GetCurrentGunGameWeaponForPlayer( player )
 	local attachment = "iron_sights"
@@ -157,15 +171,6 @@ Globalize( GetCurrentGunGameWeaponForPlayer )
 
 function GunGame_CleanupWeapon( weapon )
 {
-	thread GunGame_CleanupWeaponThink( weapon )
-}
-
-function GunGame_NPCCleanupWeapon( npc, damageInfo )
-{
-	local weapon = npc.GetActiveWeapon()
-	if ( !IsValid( weapon ) )
-		return
-
 	thread GunGame_CleanupWeaponThink( weapon )
 }
 
