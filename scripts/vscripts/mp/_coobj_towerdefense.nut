@@ -566,10 +566,25 @@ function TowerDefenseDifficultyRamp() {
 			break
 
 		case 4: //medium
-		default: // TODO: eventually look into increasing the difficulty when theres more than 4 players
+		case 5:
+		case 6:
 			newLethality = eAILethality.TD_Medium
 			NPCSetAimConeFocusParams(2.5, 0.5)
 			NPCSetAimPatternFocusParams(1.25, 1.75, 0.5)
+			break
+
+		case 7:
+		case 8:
+		case 9:
+			newLethality = eAILethality.TD_High
+			NPCSetAimConeFocusParams( 2, 0.4 )
+			NPCSetAimPatternFocusParams( 1.0, 1.25, 0.65 )
+			break
+
+		default:
+			newLethality = eAILethality.VeryHigh
+			NPCSetAimConeFocusParams( 1.5, 0.2 )
+			NPCSetAimPatternFocusParams( 0.5, 0.5, 1.0 )
 			break
 
 		//default:
