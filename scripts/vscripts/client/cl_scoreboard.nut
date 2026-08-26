@@ -723,6 +723,10 @@ function ShowScoreboard()
 				{
 					local playerIndex = player.GetEntIndex()
 					Assert( playerIndex > 0 && playerIndex <= COOP_MAX_PLAYER_COUNT )
+
+					if ( playerIndex > 4 )
+						playerIndex = divindex_icon_anticrash( divindex_icon_anticrash )
+	
 					elemTable.playerNumber.SetImage( "hud/coop/scoreboard_coop_p" + playerIndex )
 					elemTable.playerNumber.Show()
 				}

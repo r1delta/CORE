@@ -148,6 +148,11 @@ function main() {
 
 	SetServerVar("aiLethality", eAILethality.Default)
 	level.oldConnectedPlayersNum <- 0
+
+	for ( local i = 0; i <= R1D_SCRIPT_MAX_COOP_PLAYERS; i++ )
+	{
+		Minimap_PrecacheMaterial( "vgui/HUD/coop/minimap_coop_p" + i )
+	}
 }
 
 function EntitiesDidLoad() {
@@ -561,17 +566,18 @@ function TowerDefenseDifficultyRamp() {
 			break
 
 		case 4: //medium
+		default: // TODO: eventually look into increasing the difficulty when theres more than 4 players
 			newLethality = eAILethality.TD_Medium
 			NPCSetAimConeFocusParams(2.5, 0.5)
 			NPCSetAimPatternFocusParams(1.25, 1.75, 0.5)
 			break
 
-		default:
-			Assert(0, "coop does not support more than 4 players")
+		//default:
+		//	Assert(0, "coop does not support more than 4 players")
 			//these are default game values
 			//NPCSetAimConeFocusParams( 3, 0.6 )  //x3 spread on first enemy spotted, then .6s to narrow back to 1
 			//NPCSetAimPatternFocusParams( 2.5, 3.5, 0.2 )  //2.5s to focus the spread pattern, 3.5s if he was not in your fov, .2x spread pattern if not in fov ( makes it worse )
-			break
+		//	break
 	}
 
 	local event = null
@@ -4005,7 +4011,7 @@ function InitGeneratorAttackHistory() {
 function InitEOGKillHistory() {
 	level.killHistory <- {}
 	//Index 0 = Militia Team Stats
-	for (local i = 0; i <= COOP_MAX_PLAYER_COUNT; i++) {
+	for (local i = 0; i <= R1D_SCRIPT_MAX_COOP_PLAYERS; i++) { //COOP_MAX_PLAYER_COUNT
 		level.killHistory[i] <- {}
 		local playerKillCount = 0
 		local turretKillCount = 0

@@ -2537,3 +2537,6 @@ enum eUIEvent
 	MENU_NAVIGATE_BACK,
 	MENU_INPUT_MODE_CHANGED
 }
+
+// Just for script stuff
+const R1D_SCRIPT_MAX_COOP_PLAYERS = 20

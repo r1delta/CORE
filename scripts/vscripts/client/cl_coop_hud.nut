@@ -900,6 +900,7 @@ function divindex_icon_anticrash( index )// a dumb way to do it but eh.
 
 	return divindex
 }
+Globalize( divindex_icon_anticrash )
 
 function GetCharacterFrameImage( player )
 {

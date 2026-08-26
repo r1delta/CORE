@@ -42,7 +42,7 @@ function SpawnEMPTitan( origin, angles, team )
 
 	titan.s.electrocutedPlayers <- []
 	//Assuming players are always 0-COOP_MAX_PLAYER_COUNT in player array.
-	for ( local i = 0; i < COOP_MAX_PLAYER_COUNT; i++ )
+	for ( local i = 0; i < R1D_SCRIPT_MAX_COOP_PLAYERS; i++ ) //COOP_MAX_PLAYER_COUNT
 		titan.s.electrocutedPlayers.append( false )
 
 	titan.SetSubclass( eSubClass.empTitan )
