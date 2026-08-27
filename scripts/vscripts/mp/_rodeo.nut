@@ -338,9 +338,16 @@ function PlayerBeginsRodeo( player, rodeoPackage, titan )
 
 				player.rodeoDisabledTime = Time() + 1.25
 
-				// show name of the pilot again
-				player.SetNameVisibleToFriendly( true )
-				player.SetNameVisibleToEnemy( true )
+				if ( IsFFABased() )
+				{
+					player.SetNameVisibleToFriendly( false )
+					player.SetNameVisibleToEnemy( false )
+				}
+				else
+				{
+					player.SetNameVisibleToFriendly( true )
+					player.SetNameVisibleToEnemy( true )
+				}
 
 				player.ClearAnimViewEntity()
 

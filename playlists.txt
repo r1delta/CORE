@@ -2345,7 +2345,7 @@
 			"min_players"	"2"
 			"lobby_countdown"	"60"
 			"script_leak"	"0"
-			"titan_rebuild_time"	"1"
+			"titan_rebuild_time"	"135"
 			"target_health_bar"	"1"
 			"cinematic_mode"	"0"
 			"AT_scorelimit"	"300"

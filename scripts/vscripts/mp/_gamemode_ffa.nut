@@ -9,6 +9,43 @@ function main()
 
 	SetFFABased( true )
 	thread FFAOwnedNPCRelationshipMonitor()
+	thread FFAPlayerRelationshipMonitor()
+}
+
+function FFAPlayerRelationshipMonitor()
+{
+	if ( "ffaPlayerRelationshipMonitorRunning" in level )
+	{
+		if ( level.ffaPlayerRelationshipMonitorRunning )
+			return
+
+		level.ffaPlayerRelationshipMonitorRunning = true
+	}
+	else
+	{
+		level.ffaPlayerRelationshipMonitorRunning <- true
+	}
+	OnThreadEnd(
+		function()
+		{
+			level.ffaPlayerRelationshipMonitorRunning = false
+		}
+	)
+
+	while ( IsFFABased() )
+	{
+		foreach ( player in GetPlayerArray() )
+		{
+			if ( IsValid( player ) )
+			{
+				player.SetNameVisibleToFriendly( false )
+				player.SetNameVisibleToEnemy( false )
+				SetCrosshairTeamColoringDisabled( player, true )
+			}
+		}
+
+		wait 0.5
+	}
 }
 
 function FFA_OnClientConnected( player )

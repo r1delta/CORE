@@ -351,6 +351,7 @@ function GetFirstArcCannonTarget( weapon, attackParams )
 	}
 
 	local results
+
 	// Get a missile target and a non-missile target in the cone that the player can zap
 	// We do this in a separate check so we can use a wider cone to be more forgiving for targeting missiles
 	local firstTargetInfo = {}
@@ -725,6 +726,7 @@ function GetArcCannonChainTargets( fromOrigin, fromTarget, zapInfo )
 		if ( results.len() >= forkCount )
 			break
 
+
 		if ( ent.IsPlayer() )
 		{
 			if ( ent.GetPlayerClass() == "operator" )
@@ -804,6 +806,7 @@ function IsEntANeutralMegaTurret( ent, player )
 	return false
 }
 
+
 function ArcCannon_HideIdleEffect( weapon, delay )
 {
 	//printt( "HideIdleEffect" )
@@ -877,6 +880,8 @@ function GetArcCannonTargetsInRange( origin, player, weapon )
 
 	foreach( target in allTargets )
 	{
+		if ( !IsValid( target ) )
+			continue
 		local d = DistanceSqr( target.GetOrigin(), origin )
 		local validDist = target.IsTitan() ? titanDistSq : distSq
 		if ( d <= validDist )
