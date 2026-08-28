@@ -2,7 +2,6 @@
 function main()
 {
 	AddCreateCallback( "titan_cockpit", FFAHudInit )
-	AddOnDeathOrDestroyCallback( "player", FFA_PlayerDied )
 }
 
 function FFAHudInit( cockpit, isRecreate )
@@ -10,6 +9,7 @@ function FFAHudInit( cockpit, isRecreate )
 	local player = GetLocalViewPlayer()
 
 	local vgui = cockpit.s.mainVGUI
+	local panel = vgui.GetPanel()
 	local scoreBars = vgui.s.scoreboardProgressBars
 
 	// Cant use GetPlayerName for the text since it looks weird
@@ -19,10 +19,21 @@ function FFAHudInit( cockpit, isRecreate )
 	scoreBars.Enemy_Team.DisableAutoText()
 	scoreBars.Enemy_Team.SetText( "" )
 
-	thread FFAHudThink( player, cockpit, vgui, scoreBars )
+	scoreBars.GameInfo_Icon.Hide()
+
+	local group = HudElementGroup( "FFACharGroup" )
+	local frame = group.CreateElement( "CoopCharFrame", panel )
+	local icon 	= group.CreateElement( "CoopCharIcon", panel )
+
+	icon.SetImage( GetCharacterFaceImage( player ) )
+	group.Show()
+
+	vgui.s.ffaGroup <- group
+
+	thread FFAHudThink( player, cockpit )
 }
 
-function FFAHudThink( player, cockpit, vgui, scoreBars )
+function FFAHudThink( player, cockpit )
 {
 	player.EndSignal( "OnDeath" )
 	player.EndSignal( "OnDestroy" )
@@ -31,13 +42,8 @@ function FFAHudThink( player, cockpit, vgui, scoreBars )
 	while ( true )
 	{
 		UpdateFFAScoreBars()
-		wait 1.0
+		wait 0.1
 	}
-}
-
-function FFA_PlayerDied( player )
-{
-	UpdateFFAScoreBars()
 }
 
 function UpdateFFAScoreBars()
@@ -83,6 +89,28 @@ function UpdateFFAScoreBars()
 		scoreBars.Enemy_Team.SetText( leadingOpponent.GetPlayerName() )
 	else
 		scoreBars.Enemy_Team.SetText( "#STATS_NOT_APPLICABLE" )
+
+	local players = GetSortedPlayers( GetScoreboardCompareFunc(), null )
+	if ( players.len() == 0 )
+		return
+
+	local frameImage = "HUD/empty"
+	local playerSpot
+	for ( local i = 0; i < players.len(); i++ )
+	{
+		if ( player == players[i] )
+		{
+			playerSpot = i + 1
+			break
+		}
+	}
+
+	if ( playerSpot < 5 )
+		frameImage = "HUD/coop/coop_char_frame_p" + playerSpot
+
+	local group = vgui.s.ffaGroup
+	group.GetElement( "CoopCharFrame" ).SetImage( frameImage )
+	group.GetElement( "CoopCharIcon" ).SetImage( GetCharacterFaceImage( player ) )
 }
 
 main()

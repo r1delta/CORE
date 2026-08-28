@@ -2460,7 +2460,7 @@ function ScoreboardCompareFuncForGamemode( gamemode )
 		case HEIST:
 		default:
 			if ( IsFFABased() )
-				return CompareAssaultScore
+				return CompareFFA
 
 			return CompareScore
 	}
@@ -3729,4 +3729,26 @@ function GetLeadingOpponent( player )
 	}
 
 	return leadingOpponent
+}
+
+// Sorts by kills and resolves ties in this order: fewest deaths
+function CompareFFA( a, b )
+{
+	local aKills = a.GetAssaultScore()
+	local bKills = b.GetAssaultScore()
+
+	if ( aKills < bKills )
+		return 1
+	else if ( aKills > bKills )
+		return -1
+
+	local aDeaths = a.GetDeathCount()
+	local bDeaths = b.GetDeathCount()
+
+	if ( aDeaths > bDeaths )
+		return 1
+	else if ( aDeaths < bDeaths )
+		return -1
+
+	return 0
 }
