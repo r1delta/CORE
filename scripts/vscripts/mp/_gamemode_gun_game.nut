@@ -139,7 +139,6 @@ function GiveNextGunGameWeapon( player )
 		case "mp_weapon_smart_pistol":
 		case "mp_weapon_wingman":
 		case "mp_weapon_smr":
-		case "mp_weapon_mgl":
 		case "mp_weapon_defender":
 		case WEAPON_THROWING_KNIFE_NAME:
 			attachment = ""
@@ -153,6 +152,10 @@ function GiveNextGunGameWeapon( player )
 		
 		case "mp_weapon_rocket_launcher":
 			attachment = "guided_missile"
+			break
+
+		case "mp_weapon_mgl":
+			attachment = "gun_game"
 			break
 	}
 

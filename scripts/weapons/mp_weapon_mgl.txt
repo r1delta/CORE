@@ -288,6 +288,14 @@ WeaponData
 			"is_burn_mod"		"1"
 		}
 
+		gun_game
+		{
+			"fire_mode"   									"auto"
+			"fire_rate"   									"4.0"
+			"ammo_stockpile_max"							"80"
+			"ammo_clip_size"   								"8"
+			"ammo_default_total"							"80"
+		}
 	}
 
 

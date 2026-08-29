@@ -77,6 +77,8 @@ function FireGrenade( attackParams, isNPCFiring = false )
 	local fuseTime = FUSE_TIME
 	if ( self.HasMod( "long_fuse" ) )
 		fuseTime *= 2.0
+	if ( self.HasMod( "gun_game" ) )
+		fuseTime *= 0.3
 	local nade = self.FireWeaponGrenade( attackParams.pos, attackVec, angularVelocity, fuseTime, damageTypes.Explosive, damageTypes.Explosive, !isNPCFiring, true, false )
 
 	if ( nade )
