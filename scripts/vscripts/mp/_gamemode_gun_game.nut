@@ -1,30 +1,18 @@
 function main()
 {
+	IncludeScript( "mp/_free_for_all" )
+
 	AddCallback_PlayerOrNPCKilled( GunGame_OnPlayerOrNPCKilled )
 	AddCallback_OnChangeLoadout( GunGame_OnChangeLoadout )
 
-	level.spawnRatingFunc_Pilot = RateSpawnpoint_Generic
-	level.spawnRatingFunc_Generic = RateSpawnpoint_Generic
-
-	SetFFABased( true )
-	thread FFAOwnedNPCRelationshipMonitor()
+	thread dumbbullshit()
 }
 
-function EntitiesDidLoad()
+function dumbbullshit() // EntitiesDidLoad
 {
-	SetupAssaultPointKeyValues()
+	FlagWait( "EntitiesDidLoad" )
 
-	//no turrets in TDM for now
-	local turrets = GetNPCArrayByClass( "npc_turret_sentry" )
-	foreach( turret in turrets )
-	{
-		turret.DisableTurret()
-	}
-
-	//monitor population and respawns
-	thread SetupTeamDeathmatchNPCs()
 	Riff_ForceTitanAvailability( eTitanAvailability.Never )
-	level.nv.allowNPCs = eAllowNPCs.None
 
 	level.gunGameWeapons <- []
 
@@ -103,16 +91,6 @@ function GunGame_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 function GunGame_OnChangeLoadout( player, loadoutTable, isTitan )
 {
 	TakeAllPassives( player )
-
-/*
-	if ( !( "GunGame_PlayedBurnCardAnim" in player.s ) )
-	{
-		Remote.CallFunction_Replay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), 30, true )
-		player.s.GunGame_PlayedBurnCardAnim <- true
-	}
-
-	thread ScanMinimapUntilDeath( player )
-*/
 
 	thread GiveNextGunGameWeapon( player )
 }

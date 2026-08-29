@@ -477,6 +477,10 @@ function IsBurnCardEdgeCaseUseValid( player, cardRef )
             return false
     }
 
+	// This burncard is always enabled on ffa
+	if ( IsFFABased() && cardRef == "bc_minimap_scan" )
+		return false
+
     return true
 }
 

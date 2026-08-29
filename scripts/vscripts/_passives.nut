@@ -33,6 +33,7 @@ function main()
 			break
 	}
 
+	RegisterSignal( "GlobalMinimapScan" )
 }
 
 function InitPassives( player )
@@ -342,6 +343,13 @@ function UpdateMinimapStatus( player )
 		{
 			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_AlwaysShow( TEAM_INVALID, player )
+
+			// Not sure why the code above doesnt work on ffa, even if i remove the ShouldPreventFriendlyFire check
+			if ( IsFFABased() )
+			{
+				target.Minimap_AlwaysShow( TEAM_IMC, player )
+				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+			}
 		}
 	}
 	else
@@ -351,6 +359,13 @@ function UpdateMinimapStatus( player )
 			if ( !ShouldPreventFriendlyFire( target, player ) )
 			{
 				target.Minimap_DisplayDefault( TEAM_INVALID, player )
+			}
+
+			// Not sure why the code above doesnt work on ffa, even if i remove the ShouldPreventFriendlyFire check
+			if ( IsFFABased() )
+			{
+				target.Minimap_DisplayDefault( TEAM_IMC, player )
+				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
 			}
 		}
 	}
@@ -362,6 +377,13 @@ function UpdateMinimapStatus( player )
 		{
 			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_AlwaysShow( TEAM_INVALID, player )
+
+			// Not sure why the code above doesnt work on ffa, even if i remove the ShouldPreventFriendlyFire check
+			if ( IsFFABased() )
+			{
+				target.Minimap_AlwaysShow( TEAM_IMC, player )
+				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+			}
 		}
 	}
 	else
@@ -371,6 +393,13 @@ function UpdateMinimapStatus( player )
 			if ( !ShouldPreventFriendlyFire( target, player ) )
 			{
 				target.Minimap_DisplayDefault( TEAM_INVALID, player )
+			}
+
+			// Not sure why the code above doesnt work on ffa, even if i remove the ShouldPreventFriendlyFire check
+			if ( IsFFABased() )
+			{
+				target.Minimap_DisplayDefault( TEAM_IMC, player )
+				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
 			}
 		}
 	}
@@ -384,6 +413,13 @@ function UpdateMinimapStatus( player )
 		{
 			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_AlwaysShow( TEAM_INVALID, player )
+
+			// Not sure why the code above doesnt work on ffa, even if i remove the ShouldPreventFriendlyFire check
+			if ( IsFFABased() )
+			{
+				target.Minimap_AlwaysShow( TEAM_IMC, player )
+				target.Minimap_AlwaysShow( TEAM_MILITIA, player )
+			}
 		}
 	}
 	else
@@ -392,6 +428,13 @@ function UpdateMinimapStatus( player )
 		{
 			if ( !ShouldPreventFriendlyFire( target, player ) )
 				target.Minimap_DisplayDefault( TEAM_INVALID, player )
+
+			// Not sure why the code above doesnt work on ffa, even if i remove the ShouldPreventFriendlyFire check
+			if ( IsFFABased() )
+			{
+				target.Minimap_DisplayDefault( TEAM_IMC, player )
+				target.Minimap_DisplayDefault( TEAM_MILITIA, player )
+			}
 		}
 	}
 
@@ -421,6 +464,7 @@ function ScanMinimap( player )
 
 	player.EndSignal( "Disconnected" )
 	player.EndSignal( "OnDeath" )
+	player.EndSignal( "GlobalMinimapScan" )
 
 	EmitSoundOnEntity( player, "AngelCity_Scr_SearchLaserSweep"	)
 	local handle = player.GetEncodedEHandle()
