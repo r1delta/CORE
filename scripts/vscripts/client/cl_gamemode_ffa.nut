@@ -7,9 +7,13 @@ function main()
 function FFAHudInit( cockpit, isRecreate )
 {
 	local player = GetLocalViewPlayer()
-
 	local vgui = cockpit.s.mainVGUI
-	local panel = vgui.GetPanel()
+
+	// Why the fuck is this running twice??????
+	if ( "ffa_what" in vgui.s )
+		return
+
+	local panel = vgui.s.panel
 	local scoreBars = vgui.s.scoreboardProgressBars
 
 	// Cant use GetPlayerName for the text since it looks weird
@@ -31,6 +35,8 @@ function FFAHudInit( cockpit, isRecreate )
 	vgui.s.ffaGroup <- group
 
 	thread FFAHudThink( player, cockpit )
+
+	vgui.s.ffa_what <- true
 }
 
 function FFAHudThink( player, cockpit )
