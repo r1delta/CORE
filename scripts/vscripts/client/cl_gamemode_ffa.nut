@@ -6,6 +6,9 @@ function main()
 
 function FFAHudInit( cockpit, isRecreate )
 {
+	if ( IsWatchingKillReplay() )
+		return
+
 	local player = GetLocalViewPlayer()
 	local vgui = cockpit.s.mainVGUI
 
