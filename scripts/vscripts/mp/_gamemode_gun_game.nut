@@ -15,6 +15,7 @@ function dumbbullshit() // EntitiesDidLoad
 	Riff_ForceTitanAvailability( eTitanAvailability.Never )
 
 	level.gunGameWeapons <- []
+	level.ampedGunGame <- true //RandomInt( 0, 1000 ) == 0
 
 	Weapon_SetDespawnTime( 0 )
 
@@ -103,10 +104,41 @@ function GiveNextGunGameWeapon( player )
 	if ( score > GetScoreLimit_FromPlaylist() || score > level.gunGameWeapons.len() - 1 )
 		return
 
+	local amped = level.ampedGunGame
+
 	TakeAllWeapons( player )
-	player.GiveOffhandWeapon( "mp_ability_heal", 1 )
+
+	if ( amped )
+	{
+		player.Signal( "SonarDeactivate" )
+		player.GiveOffhandWeapon( "mp_ability_heal", 1, [ "bc_super_stim" ] )
+	}
+	else
+		player.GiveOffhandWeapon( "mp_ability_heal", 1 )
 
 	local weapon = GetCurrentGunGameWeaponForPlayer( player )
+	local attachment = amped ? GetAmpedGunGameAttachment( weapon ) : GetGunGameAttachment( weapon )
+
+	if ( attachment != "" )
+	{
+		if ( type( attachment ) == "string" )
+			player.GiveWeapon( weapon, [ attachment ] )
+		else
+			player.GiveWeapon( weapon, attachment )
+	}
+	else
+		player.GiveWeapon( weapon )
+}
+
+function GetCurrentGunGameWeaponForPlayer( player )
+{
+	local score = clamp( player.GetAssaultScore(), 0, level.gunGameWeapons.len() - 1 )
+	return level.gunGameWeapons[ score ]
+}
+Globalize( GetCurrentGunGameWeaponForPlayer )
+
+function GetGunGameAttachment( weapon )
+{
 	local attachment = "iron_sights"
 	switch ( weapon )
 	{
@@ -133,22 +165,101 @@ function GiveNextGunGameWeapon( player )
 			break
 
 		case "mp_weapon_mgl":
-			attachment = "gun_game"
+			attachment = [ "burn_mod_mgl", "gun_game" ]
 			break
 	}
 
-	if ( attachment != "" )
-		player.GiveWeapon( weapon, [ attachment ] )
-	else
-		player.GiveWeapon( weapon )
+	return attachment
 }
 
-function GetCurrentGunGameWeaponForPlayer( player )
+function GetAmpedGunGameAttachment( weapon )
 {
-	local score = clamp( player.GetAssaultScore(), 0, level.gunGameWeapons.len() - 1 )
-	return level.gunGameWeapons[ score ]
+	local attachment = ""
+	switch ( weapon )
+	{
+		case "mp_weapon_rspn101":
+			attachment = "burn_mod_rspn101"
+			break
+
+		case "mp_weapon_r97":
+			attachment = "burn_mod_r97"
+			break
+
+		case "mp_weapon_hemlok":
+			attachment = "burn_mod_hemlok"
+			break
+
+		case "mp_weapon_g2":
+			attachment = "burn_mod_g2"
+			break
+
+		case "mp_weapon_lmg":
+			attachment = "burn_mod_lmg"
+			break
+
+		case "mp_weapon_car":
+			attachment = "burn_mod_car"
+			break
+
+		case "mp_weapon_shotgun":
+			attachment = "burn_mod_shotgun"
+			break
+
+		case WEAPON_TWINB_NAME:
+			attachment = "burn_mod_twinb"
+			break
+
+		case "mp_weapon_autopistol":
+			attachment = "burn_mod_autopistol"
+			break
+
+		case "mp_weapon_semipistol":
+			attachment = "burn_mod_semipistol"
+			break
+
+		case "mp_weapon_smart_pistol":
+			attachment = "burn_mod_smart_pistol"
+			break
+
+		case "mp_weapon_wingman":
+			attachment = "burn_mod_wingman"
+			break
+
+		case "mp_weapon_smr":
+			attachment = "burn_mod_smr"
+			break
+
+		case "mp_weapon_defender":
+			attachment = "burn_mod_defender"
+			break
+
+		case WEAPON_THROWING_KNIFE_NAME:
+			attachment = "burn_mod_throwing_knife"
+			break
+
+		case "mp_weapon_dmr":
+			attachment = "burn_mod_dmr"
+			break
+
+		case "mp_weapon_sniper":
+			attachment = "burn_mod_sniper"
+			break
+
+		case WEAPON_VALKYRIE_NAME:
+			attachment = "burn_mod_valkyrie"
+			break
+		
+		case "mp_weapon_rocket_launcher":
+			attachment = [ "burn_mod_rocket_launcher", "guided_missile" ]
+			break
+
+		case "mp_weapon_mgl":
+			attachment = [ "burn_mod_mgl", "gun_game" ]
+			break
+	}
+
+	return attachment
 }
-Globalize( GetCurrentGunGameWeaponForPlayer )
 
 function GunGame_CleanupWeapon( weapon )
 {
