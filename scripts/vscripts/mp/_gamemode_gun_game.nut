@@ -15,7 +15,7 @@ function dumbbullshit() // EntitiesDidLoad
 	Riff_ForceTitanAvailability( eTitanAvailability.Never )
 
 	level.gunGameWeapons <- []
-	level.ampedGunGame <- true //RandomInt( 0, 1000 ) == 0
+	level.ampedGunGame <- RandomInt( 0, 1000 ) == 0
 
 	Weapon_SetDespawnTime( 0 )
 
