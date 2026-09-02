@@ -437,6 +437,34 @@ function ControlMatchmakingServerLobbyLogic()
 	}
 }
 
+function SelectNextVarietyPackMap( previousMap )
+{
+	local availableMaps = DLCFilterMaps( GetPlaylistUniqueMaps( VARIETY_PACK ) )
+	if ( availableMaps.len() == 0 )
+		return previousMap
+
+	local votedMap = GetConVarString( "delta_vote_next_map" )
+	if ( votedMap != "" )
+	{
+		ServerCommand( "delta_vote_next_map \"\"" )
+		if ( ArrayContains( availableMaps, votedMap ) )
+			return votedMap
+	}
+
+	local nextMaps = []
+	foreach ( mapName in availableMaps )
+	{
+		if ( mapName != previousMap )
+			nextMaps.append( mapName )
+	}
+
+	if ( nextMaps.len() == 0 )
+		return availableMaps[0]
+
+	return nextMaps[ RandomInt( 0, nextMaps.len() - 1 ) ]
+}
+
+
 function PrivateMatchLobbyLogic()
 {
 	OnThreadEnd(
@@ -477,6 +505,9 @@ function PrivateMatchLobbyLogic()
 		modeName = "at"
 
 	local mapName = GetLastServerMap()
+	if ( modeName == VARIETY_PACK )
+		mapName = SelectNextVarietyPackMap( GetConVarString( "host_mostRecentMap" ) )
+
 
 	if ( mapName in getconsttable().ePrivateMatchMaps )
 		level.ui.privatematch_map = getconsttable().ePrivateMatchMaps[mapName]

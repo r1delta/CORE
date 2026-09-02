@@ -1,7 +1,7 @@
 "playlists"
 {
 	"version"	"stable"
-	"versionNum"	"1956" // Never forget to bump this for every playlist update.
+	"versionNum"	"1957" // Never forget to bump this for every playlist update.
 	"at"
 	{
 		"vars"
@@ -1097,6 +1097,10 @@
 			"gamemode260"	"gg"
 			"map261"	"mp_sandtrap"
 			"gamemode261"	"gg"
+			"map262"	"mp_zone_18"
+			"gamemode262"	"ffa"
+			"map263"	"mp_zone_18"
+			"gamemode263"	"gg"
 		}
 	}
 	"all_mini"
@@ -2903,6 +2907,8 @@
 			"gamemode21"	"ffa"
 			"map22"	"mp_sandtrap"
 			"gamemode22"	"ffa"
+			"map23"	"mp_zone_18"
+			"gamemode23"	"ffa"
 		}
 	}
 	"scv"
