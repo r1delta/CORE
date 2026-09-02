@@ -47,7 +47,7 @@ function OnOpenMapsMenu()
 	{
 		local buttonID = button.GetScriptID().tointeger()
 
-		if ( buttonID >= 0 && buttonID < GetPrivateMatchMaps().len() )
+		if ( buttonID >= 0 && buttonID < mapsArray.len() )
 		{
 			if (GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel") {
 				button.SetText( GetCampaignMapDisplayName( mapsArray[buttonID] ) )
@@ -64,7 +64,7 @@ function OnOpenMapsMenu()
 			button.SetEnabled( false )
 		}
 
-		if ( buttonID == level.ui.privatematch_map && buttonID < GetPrivateMatchMaps().len() )
+		if ( buttonID < mapsArray.len() && mapsArray[buttonID] == GetPrivateMatchMapNameForEnum( level.ui.privatematch_map ) )
 		{
 			printt( buttonID, mapsArray[buttonID] )
 			button.SetFocused()
@@ -231,17 +231,46 @@ function MonitorDLCAvailability()
 
 function GetPrivateMatchMaps()
 {
-	if (GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel") {
-		local campaignMaps = ["mp_fracture","mp_colony","mp_relic","mp_angel_city","mp_outpost_207","mp_boneyard","mp_airbase","mp_o2","mp_corporate"]
-		return campaignMaps
+	local modeName = GetModeNameForEnum( level.ui.privatematch_mode )
+	if ( modeName == "campaign_carousel" )
+	{
+		return [
+			"mp_fracture",
+			"mp_colony",
+			"mp_relic",
+			"mp_angel_city",
+			"mp_outpost_207",
+			"mp_boneyard",
+			"mp_airbase",
+			"mp_o2",
+			"mp_corporate",
+		]
 	}
+
 	local mapsArray = []
 	mapsArray.resize( getconsttable().ePrivateMatchMaps.len() )
 
-	foreach ( k, v in getconsttable().ePrivateMatchMaps )
-		mapsArray[v] = k
+	foreach ( mapName, mapID in getconsttable().ePrivateMatchMaps )
+		mapsArray[mapID] = mapName
 
-	return mapsArray
+	if ( modeName != VARIETY_PACK && modeName != "all_mini" )
+		return mapsArray
+
+	local supportedMaps = {}
+	foreach ( combo in GetPlaylistCombos( modeName ) )
+	{
+		if ( !( combo.mapName in supportedMaps ) )
+			supportedMaps[combo.mapName] <- true
+	}
+
+	local filteredMaps = []
+	foreach ( mapName in mapsArray )
+	{
+		if ( mapName in supportedMaps )
+			filteredMaps.append( mapName )
+	}
+
+	return filteredMaps
 }
 
 function OnMapListScrollUp_Activate(...)

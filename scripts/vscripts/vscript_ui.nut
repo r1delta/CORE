@@ -98,6 +98,7 @@ IncludeFile( "ui/menu_advocate_letter" )
 IncludeFile( "ui/menu_credits" )
 IncludeFile( "ui/menu_map_select" )
 IncludeFile( "ui/menu_mode_select" )
+IncludeFile( "ui/menu_mode_variants" )
 IncludeFile( "ui/menu_ranked_mode_info" )
 IncludeScript( "_pdef_client" )
 
@@ -695,8 +696,14 @@ function UICodeCallback_LevelInit( levelname )
 		    SetLoadoutSelectionFinished()
 	    }
 
-		Assert( gameModeString in gameModesStringToIdMap, "'" + gameModeString + "' must exist in gameModesStringToIdMap table" )
-	    local gameModeId = gameModesStringToIdMap[gameModeString]
+		local gameModeId
+		if ( isLobby && ( gameModeString == VARIETY_PACK || gameModeString == "all_mini" ) )
+			gameModeId = gameModesStringToIdMap[CAMPAIGN]
+		else
+		{
+			Assert( gameModeString in gameModesStringToIdMap, "'" + gameModeString + "' must exist in gameModesStringToIdMap table" )
+			gameModeId = gameModesStringToIdMap[gameModeString]
+		}
 
 	    local mapId = eMaps.invalid
 	    if ( levelname in getconsttable().eMaps )
@@ -1070,6 +1077,11 @@ function InitMenus()
 	AddMenu( "TitanLoadoutsMenu", "resource/ui/menus/titanloadouts.menu" )
 	AddMenu( "RankedPlayMenu", "resource/ui/menus/rankedplay.menu", "#RANKED_MENU_TITLE" )
 	AddSubmenu( "RankedInviteMenu", "resource/ui/menus/ranked_invite.menu" )
+	AddSubmenu( "ModeVariantCTFMenu", "resource/ui/menus/mode_variant_ctf.menu" )
+	AddSubmenu( "ModeVariantMFDMenu", "resource/ui/menus/mode_variant_mfd.menu" )
+	AddSubmenu( "ModeVariantLTSMenu", "resource/ui/menus/mode_variant_lts.menu" )
+	AddSubmenu( "ModeVariantPilotMenu", "resource/ui/menus/mode_variant_pilot.menu" )
+	AddSubmenu( "ModeVariantFFAMenu", "resource/ui/menus/mode_variant_ffa.menu" )
 	AddMenu( "RankedModesMenu", "resource/ui/menus/ranked_modes.menu" )
 	AddMenu( "RankedTiersMenu", "resource/ui/menus/rankedtiers.menu", "#RANKED_PLAY_RANKS_BUTTON" )
 	AddMenu( "RankedSeasonsMenu", "resource/ui/menus/rankedseasons.menu", "#RANKED_PLAY_SEASONS_BUTTON" )
@@ -1155,6 +1167,7 @@ function InitMenus()
 	// Private Match
 	InitMapsMenu()
 	InitModesMenu( GetMenu( "ModesMenu" ) )
+	InitModeVariantMenus()
 	InitMatchSettingsMenu( GetMenu( "MatchSettingsMenu" ) )
 
 	InitAdvocateLetterMenu()
@@ -1730,6 +1743,26 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenRankedInviteMenu()
 			break
 
+		case "ModeVariantCTFMenu":
+			OnOpenModeVariantMenu( "ModeVariantCTFMenu" )
+			break
+
+		case "ModeVariantMFDMenu":
+			OnOpenModeVariantMenu( "ModeVariantMFDMenu" )
+			break
+
+		case "ModeVariantLTSMenu":
+			OnOpenModeVariantMenu( "ModeVariantLTSMenu" )
+			break
+
+		case "ModeVariantPilotMenu":
+			OnOpenModeVariantMenu( "ModeVariantPilotMenu" )
+			break
+
+		case "ModeVariantFFAMenu":
+			OnOpenModeVariantMenu( "ModeVariantFFAMenu" )
+			break
+
 		case "RankedPlayMenu":
 			OnOpenRankedPlayMenu()
 			break
@@ -1971,6 +2004,14 @@ function CloseMenuWrapper( menu )
 
 		case "RankedInviteMenu":
 			OnCloseRankedInviteMenu()
+			break
+
+		case "ModeVariantCTFMenu":
+		case "ModeVariantMFDMenu":
+		case "ModeVariantLTSMenu":
+		case "ModeVariantPilotMenu":
+		case "ModeVariantFFAMenu":
+			OnCloseModeVariantMenus()
 			break
 
 		case "RankedPlayMenu":

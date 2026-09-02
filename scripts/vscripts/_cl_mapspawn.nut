@@ -656,6 +656,9 @@ function PerfInitLabels()
 
 function IncludeGameModeClientScripts()
 {
+	if ( IsLobby() && IsMultiGamemodePlaylist( GAMETYPE ) )
+		return
+
 	switch ( GameRules.GetGameMode() )
 	{
 		case "uplink":

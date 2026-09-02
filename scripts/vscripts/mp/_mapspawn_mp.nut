@@ -75,6 +75,9 @@ function main()
 
 function IncludeGameModeServerScripts()
 {
+	if ( IsLobby() && IsMultiGamemodePlaylist( GAMETYPE ) )
+		return
+
 	switch ( GAMETYPE )
 	{
 		case TEAM_DEATHMATCH:

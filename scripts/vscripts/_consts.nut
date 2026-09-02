@@ -1634,7 +1634,12 @@ enum ePrivateMatchModes
 	scv,
 	ttdm,
 	tmfd,
-	tmfdp
+	tmfdp,
+	all,
+	all_mini,
+	ctt,
+	ffa,
+	gg
 }
 
 
@@ -2313,6 +2318,38 @@ pmSettingsMap["pm_score_limit"]["tmfdp"] <- [
 	50,
 ]
 pmSettingsMap["pm_score_limit"]["campaign_carousel"] <- [0]
+pmSettingsMap["pm_score_limit"]["all"] <- [0]
+pmSettingsMap["pm_score_limit"]["all_mini"] <- [0]
+pmSettingsMap["pm_score_limit"]["ctt"] <- [
+	10,
+	15,
+	20,
+	25,
+	30,
+	40,
+	50,
+	75,
+]
+pmSettingsMap["pm_score_limit"]["ffa"] <- [
+	10,
+	20,
+	30,
+	40,
+	45,
+	50,
+	75,
+	100,
+]
+pmSettingsMap["pm_score_limit"]["gg"] <- [
+	10,
+	15,
+	20,
+	25,
+	30,
+	40,
+	50,
+	75,
+]
 
 pmSettingsMap["pm_pilot_health"] <- [
 	0,

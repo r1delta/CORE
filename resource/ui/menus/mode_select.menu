@@ -1,0 +1,404 @@
+resource/ui/menus/mode_select.menu
+{
+	ModesMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		NextModeImageFrame
+		{
+			ControlName				ImagePanel
+			xpos 					r532
+			ypos					74
+			wide					493
+			tall					186
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_image_frame"
+			zpos					5
+		}
+		NextModeImageBackground
+		{
+			ControlName				ImagePanel
+			pin_to_sibling			NextModeImageFrame
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			wide					493
+			tall					186
+			visible					1
+			scaleImage				1
+			image					"white"
+			drawColor				"32 32 32 255"
+			zpos					4
+		}
+		NextModeImage
+		{
+			ControlName				ImagePanel
+			pin_to_sibling			NextModeImageFrame
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+			wide					160
+			tall					160
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_image_frame"
+			zpos					6
+		}
+
+		NextModeName
+		{
+			ControlName				Label
+			pin_to_sibling			NextModeImageFrame
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-11
+			ypos					-9
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				"Foo"
+			font					NextMapFont
+			allcaps					1
+			fgcolor_override		"204 234 255 255"
+			zpos					6
+		}
+
+		NextModeDesc
+		{
+			ControlName				Label
+			pin_to_sibling			NextModeName
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					0
+			ypos					0
+			wide					310
+			wrap					1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				"Bar"
+			textalignment			north-west
+			font					PlaylistDescriptionFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+			zpos					6
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			classname 				LobbyTitleClass
+			labelText				"#SELECT_GAME_MODE"
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		ImgPlaylistsSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			wide					255
+			xpos					55
+			ypos					85
+			zpos					0
+		}
+
+		LblPlaylistsSubheader
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgPlaylistsSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"PLAYLISTS"
+		}
+
+		BtnMode1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				0
+			xpos					30
+			ypos					107
+			navUp					BtnMode12
+			navDown					BtnMode2
+			labelText				"#MENU_EDIT_PILOT_LOADOUTS"
+		}
+		BtnMode2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				1
+			pin_to_sibling			BtnMode1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode1
+			navDown					BtnMode3
+			labelText				"#MENU_EDIT_TITAN_LOADOUTS"
+		}
+		BtnMode3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				2
+			xpos					30
+			ypos					198
+			navUp					BtnMode2
+			navDown					BtnMode4
+			labelText				"#BC_EDIT_BURN_CARDS"
+		}
+		ImgGamemodesSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			wide					255
+			xpos					55
+			ypos					176
+			zpos					0
+		}
+
+		LblGamemodesSubheader
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgGamemodesSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"GAMEMODES"
+		}
+
+		BtnMode4
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				3
+			pin_to_sibling			BtnMode3
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode3
+			navDown					BtnMode5
+			labelText				"#GAME_SUMMARY"
+		}
+		BtnMode5
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				4
+			pin_to_sibling			BtnMode4
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode4
+			navDown					BtnMode6
+			labelText				"#STATS_BUTTON_TEXT"
+		}
+		BtnMode6
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				5
+			pin_to_sibling			BtnMode5
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode5
+			navDown					BtnMode7
+			labelText				"#MENU_CHALLENGES"
+		}
+		BtnMode7
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				6
+			pin_to_sibling			BtnMode6
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode6
+			navDown					BtnMode8
+			labelText				"#OPTIONS"
+		}
+		BtnMode8
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				7
+			pin_to_sibling			BtnMode7
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode7
+			navDown					BtnMode9
+			labelText				"#OPTIONS"
+		}
+		BtnMode9
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				8
+			pin_to_sibling			BtnMode8
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode8
+			navDown					BtnMode10
+			labelText				"#OPTIONS"
+		}
+		BtnMode10
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				9
+			pin_to_sibling			BtnMode9
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode9
+			navDown					BtnMode11
+			labelText				"#OPTIONS"
+		}
+		BtnMode11
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				10
+			pin_to_sibling			BtnMode10
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode10
+			navDown					BtnMode12
+			labelText				"#OPTIONS"
+		}
+		BtnMode12
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				11
+			pin_to_sibling			BtnMode11
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode11
+			navDown					BtnMode1
+			labelText				"#OPTIONS"
+		}
+		BtnMode13
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				12
+			pin_to_sibling			BtnMode12
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode12
+			navDown					BtnMode14
+			labelText				"#OPTIONS"
+		}
+		BtnMode14
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				13
+			pin_to_sibling			BtnMode13
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode13
+			navDown					BtnMode15
+			labelText				"#OPTIONS"
+		}
+		BtnMode15
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeButton
+			scriptID				14
+			pin_to_sibling			BtnMode14
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode14
+			navDown					BtnMode1
+			labelText				"#OPTIONS"
+		}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ButtonTooltip
+		{
+			ControlName				CNestedPanel
+			InheritProperties		ButtonTooltip
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}
