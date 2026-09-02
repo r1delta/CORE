@@ -2344,11 +2344,6 @@ pmSettingsMap["pm_score_limit"]["gg"] <- [
 	10,
 	15,
 	20,
-	25,
-	30,
-	40,
-	50,
-	75,
 ]
 
 pmSettingsMap["pm_pilot_health"] <- [

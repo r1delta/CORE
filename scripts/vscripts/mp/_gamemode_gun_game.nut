@@ -23,6 +23,9 @@ function dumbbullshit() // EntitiesDidLoad
 	local numWeapons = PersistenceGetEnumCount( "loadoutItems" )
 	for ( local i = 0 ; i < numWeapons ; i++ )
 	{
+		if ( level.gunGameWeapons.len() >= GetScoreLimit_FromPlaylist() - 1 )
+			break
+
 		className = PersistenceGetEnumItemNameForIndex( "loadoutItems", i )
 		if ( className == "NULL" )
 			continue
