@@ -1,15 +1,28 @@
-
 function main()
 {
 	Globalize( OnOpenModesMenu )
 	Globalize( OnCloseModesMenu )
 	Globalize( InitModesMenu )
+	Globalize( ModeButton_GetFocus )
+	Globalize( ModeButton_Click )
 
 	Globalize( InitMatchSettingsMenu )
 	Globalize( OnOpenMatchSettingsMenu )
 	Globalize( OnCloseMatchSettingsMenu )
 
 	Globalize( NavigateBackApplyMatchSettingsDialog )
+
+	Globalize( GetDisplayModes )
+	Globalize( IsModeGroup )
+	Globalize( GetVariantMenuForEntry )
+	Globalize( GetFirstModeInGroup )
+	Globalize( ModeEntryContainsMode )
+	Globalize( GetGroupLabel )
+	Globalize( IsPlaylistEntry )
+	Globalize( GetEntryName )
+	Globalize( GetEntryImage )
+	Globalize( GetEntryDesc )
+	Globalize( GetPreviewModeForEntry )
 
 	file.modeSettingsButton <- null
 	file.scoreLimitButton <- null
@@ -51,39 +64,164 @@ function InitModesMenu( menu )
 	AddEventHandlerToButtonClass( menu, "ModeButton", UIE_CLICK, ModeButton_Click )
 }
 
+// Top-level "Set Game Mode" entries. "GROUP:..." entries are parent buttons that
+// open a variant submenu (ModeVariant*Menu); every other entry is a mode or
+// playlist and selects directly.
+function GetDisplayModes()
+{
+	// Playlists section (buttons 0-1)
+	// Gamemodes section (buttons 2+), group entries open variant submenus
+	return [
+		"campaign_carousel",
+		"all",
+		"at",
+		"cp",
+		"ctf+ctt",
+		"coop",
+		"scv",
+		"ttdm",
+		"mfd+mfdp+tmfd+tmfdp",
+		"lts+wlts",
+		"tdm+ps",
+		"ffa+gg",
+	]
+}
+
+function GetVariantMenuForEntry( entry )
+{
+	switch ( entry )
+	{
+		case "ctf+ctt":
+			return "ModeVariantCTFMenu"
+
+		case "mfd+mfdp+tmfd+tmfdp":
+			return "ModeVariantMFDMenu"
+
+		case "lts+wlts":
+			return "ModeVariantLTSMenu"
+
+		case "tdm+ps":
+			return "ModeVariantPilotMenu"
+
+		case "ffa+gg":
+			return "ModeVariantFFAMenu"
+	}
+
+	return null
+}
+
+function IsModeGroup( entry )
+{
+	return GetVariantMenuForEntry( entry ) != null
+}
+
+function GetFirstModeInGroup( entry )
+{
+	return split( entry, "+" )[0]
+}
+
+function ModeEntryContainsMode( entry, modeName )
+{
+	if ( entry == modeName )
+		return true
+
+	if ( IsModeGroup( entry ) )
+	{
+		foreach ( mode in split( entry, "+" ) )
+		{
+			if ( mode == modeName )
+				return true
+		}
+	}
+
+	return false
+}
+
+function GetGroupLabel( entry )
+{
+	return Localize( GAMETYPE_TEXT[ GetFirstModeInGroup( entry ) ] ) + " >>"
+}
+
+function IsPlaylistEntry( entry )
+{
+	return entry == "campaign_carousel" || entry == "all" || entry == "all_mini"
+}
+
+function GetEntryName( entry )
+{
+	if ( IsModeGroup( entry ) )
+		return GetGroupLabel( entry )
+
+	if ( IsPlaylistEntry( entry ) )
+		return GetPlaylistVar( entry, "name" )
+
+	return GetGameModeDisplayName( entry )
+}
+
+function GetEntryImage( entry )
+{
+	if ( IsPlaylistEntry( entry ) )
+		return "../ui/menu/playlist/" + GetPlaylistVar( entry, "image" )
+
+	return GetGameModeDisplayImage( entry )
+}
+
+function GetEntryDesc( entry )
+{
+	if ( IsPlaylistEntry( entry ) )
+		return GetPlaylistVar( entry, "description" )
+
+	return GetGameModeDisplayDesc( entry )
+}
+
+
+
+function GetPreviewModeForEntry( entry )
+{
+	if ( IsModeGroup( entry ) )
+		return GetFirstModeInGroup( entry )
+
+	return entry
+}
+
 function OnOpenModesMenu()
 {
 	ClientCommand( "loadPlaylists" )
 
-	local modesArray = []
-	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
-	foreach ( k, v in getconsttable().ePrivateMatchModes )
-	{
-		modesArray[v] = k
-	}
-
+	local displayModes = GetDisplayModes()
 	local menu = GetMenu( "ModesMenu" )
 	local buttons = GetElementsByClassname( GetMenu( "ModesMenu" ), "ModeButton" )
+
+	local currentModeName = GetModeNameForEnum( level.ui.privatematch_mode )
+	local focusID = 0
+
 	foreach ( button in buttons )
 	{
 		local buttonID = button.GetScriptID().tointeger()
 
-		if ( buttonID >= 0 && buttonID < modesArray.len() )
+		if ( buttonID < displayModes.len() )
 		{
-			button.SetText( GetGameModeDisplayName( modesArray[buttonID] ) )
+			local entry = displayModes[buttonID]
+			button.s.modeEntry <- entry
+
+			button.SetText( GetEntryName( entry ) )
+
 			button.SetEnabled( true )
+			button.Show()
+
+			if ( currentModeName != null && ModeEntryContainsMode( entry, currentModeName ) )
+				focusID = buttonID
 		}
 		else
 		{
+			button.s.modeEntry <- null
 			button.SetText( "" )
 			button.SetEnabled( false )
-		}
-
-		if ( buttonID == level.ui.privatematch_mode )
-		{
-			button.SetFocused()
+			button.Hide()
 		}
 	}
+
+	buttons[focusID].SetFocused()
 }
 
 function OnCloseModesMenu()
@@ -92,48 +230,46 @@ function OnCloseModesMenu()
 
 function ModeButton_GetFocus( button )
 {
-	local mapID = button.GetScriptID().tointeger()
+	if ( !( "modeEntry" in button.s ) )
+		return
 
 	local menu = GetMenu( "ModesMenu" )
 	local nextModeImage = menu.GetChild( "NextModeImage" )
 	local nextModeName = menu.GetChild( "NextModeName" )
 	local nextModeDesc = menu.GetChild( "NextModeDesc" )
 
-	local modesArray = []
-	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
-	foreach ( k, v in getconsttable().ePrivateMatchModes )
-	{
-		modesArray[v] = k
-	}
-
-	if ( mapID > modesArray.len() )
+	local entry = button.s.modeEntry
+	if ( entry == null )
 		return
 
-	local modeName = modesArray[mapID]
+	local previewMode = GetPreviewModeForEntry( entry )
 
-	nextModeImage.SetImage( GetGameModeDisplayImage( modeName ) )
-	nextModeName.SetText( GetGameModeDisplayName( modeName ) )
-	nextModeDesc.SetText( GetGameModeDisplayDesc( modeName ) )
+	nextModeImage.SetImage( GetEntryImage( previewMode ) )
+	nextModeName.SetText( GetEntryName( previewMode ) )
+	nextModeDesc.SetText( GetEntryDesc( previewMode ) )
 }
 
 function ModeButton_Click( button )
 {
-	local mapID = button.GetScriptID().tointeger()
+	if ( !( "modeEntry" in button.s ) )
+		return
 
-	local menu = GetMenu( "MapsMenu" )
+	local entry = button.s.modeEntry
+	if ( entry == null )
+		return
 
-	local modesArray = []
-	modesArray.resize( getconsttable().ePrivateMatchModes.len() )
-	foreach ( k, v in getconsttable().ePrivateMatchModes )
+	if ( IsModeGroup( entry ) )
 	{
-		modesArray[v] = k
+		local submenuName = GetVariantMenuForEntry( entry )
+		OpenSubmenu( GetMenu( submenuName ), false )
+		UpdateFooterButtons( submenuName )
+		return
 	}
-	local modeName = modesArray[mapID]
 
 	// set it
-	ClientCommand( "PrivateMatchSetMode " + modeName )
+	ClientCommand( "PrivateMatchSetMode " + entry )
 
-	if (modeName == "campaign_carousel")
+	if ( entry == "campaign_carousel" )
 		ClientCommand( "SetCustomMap mp_fracture" )
 
 	CloseTopMenu()

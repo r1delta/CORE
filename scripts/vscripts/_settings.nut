@@ -17,6 +17,8 @@ GAMETYPE_TEXT[ UPLINK ] 				<- "#GAMEMODE_UPLINK"
 GAMETYPE_TEXT[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG"
 GAMETYPE_TEXT[ COOPERATIVE ] 			<- "#GAMEMODE_COOP"
 GAMETYPE_TEXT[ TITAN_BRAWL_AUTO ] 		<- "#GAMEMODE_TITAN_BRAWL_AUTO"
+GAMETYPE_TEXT[ VARIETY_PACK ] 			<- "#PL_variety_pack"
+GAMETYPE_TEXT[ "all_mini" ] 			<- "#PL_variety_pack_mini"
 
 GAMETYPE_DESC <- {}
 GAMETYPE_DESC[ TEAM_DEATHMATCH ] 		<- "#GAMEMODE_PILOT_HUNTER_HINT"
@@ -27,6 +29,8 @@ GAMETYPE_DESC[ HEIST ]		 			<- "#GAMEMODE_HEIST_HINT"
 GAMETYPE_DESC[ UPLINK ] 				<- "#GAMEMODE_UPLINK_HINT"
 GAMETYPE_DESC[ TITAN_TAG ] 				<- "#GAMEMODE_TITAN_TAG_HINT"
 GAMETYPE_DESC[ TITAN_BRAWL_AUTO ] 		<- "#GAMEMODE_TITAN_BRAWL_AUTO_HINT"
+GAMETYPE_DESC[ VARIETY_PACK ] 			<- "#PL_variety_pack_desc"
+GAMETYPE_DESC[ "all_mini" ] 			<- "#PL_variety_pack_mini_desc"
 
 GAMETYPE_ICON <- {}
 GAMETYPE_ICON[ TEAM_DEATHMATCH ] 		<- "../ui/menu/playlist/tdm"
@@ -42,6 +46,8 @@ GAMETYPE_ICON[ TITAN_BRAWL_AUTO ] 		<- "../ui/menu/playlist/lts"
 GAMETYPE_ICON[ COOPERATIVE ] 			<- "../ui/menu/playlist/coop"
 GAMETYPE_ICON[ RANKED_PLAY ] 			<- "../ui/scoreboard_secret_logo"
 
+GAMETYPE_ICON[ VARIETY_PACK ] 			<- "../ui/menu/playlist/all"
+GAMETYPE_ICON[ "all_mini" ] 			<- "../ui/menu/playlist/all"
 GAMETYPE_STAR_SCORE_REQUIREMENT <- {}
 GAMETYPE_STAR_SCORE_REQUIREMENT[ TEAM_DEATHMATCH ] 		<- [ 5, 10, 20 ]
 GAMETYPE_STAR_SCORE_REQUIREMENT[ CAPTURE_POINT ] 		<- [ 500, 1500, 2500 ]
@@ -103,6 +109,7 @@ if ( IsClient() )
 	GameMode_SetName( CAMPAIGN, "#PL_campaign" )
 	GameMode_SetDesc( CAMPAIGN, "#PL_campaign_desc" )
 	GameMode_SetIcon( CAMPAIGN, "../ui/menu/playlist/campaign" )
+
 
 	GameMode_Create( CAPTURE_THE_TITAN )
 	GameMode_SetName( CAPTURE_THE_TITAN, "#GAMEMODE_CAPTURE_THE_TITAN" )
@@ -200,7 +207,8 @@ if ( IsClient() )
 	GameMode_SetName( SCAVENGER, "#GAMEMODE_SCAVENGER_N" )
 	GameMode_SetGameModeAnnouncement( SCAVENGER, "GameModeAnnounce_TDM" )
 	GameMode_SetDesc( SCAVENGER, "#GAMEMODE_SCAVENGER_HINT" )
-	GameMode_SetIcon( SCAVENGER, "../ui/menu/playlist/tdm" ) //Need own icon
+	GameMode_SetMatchStartDesc( SCAVENGER, "#GAMEMODE_SCAVENGER_MATCH_START_HINT" )
+	GameMode_SetIcon( SCAVENGER, "../ui/menu/playlist/ps" )
 	GameMode_AddServerScript( SCAVENGER, "mp/_gamemode_scavenger" )
 	GameMode_AddClientScript( SCAVENGER, "client/cl_gamemode_scavenger" )
 	GameMode_SetDefaultScoreLimits( SCAVENGER, 125, 0 )
@@ -209,6 +217,7 @@ if ( IsClient() )
 	GameMode_SetName( PILOT_SKIRMISH, "#GAMEMODE_PILOT_SKIRMISH" )
 	GameMode_SetGameModeAnnouncement( PILOT_SKIRMISH, "GameModeAnnounce_PS" )
 	GameMode_SetDesc( PILOT_SKIRMISH, "#GAMEMODE_PILOT_SKIRMISH_HINT" )
+	GameMode_SetMatchStartDesc( PILOT_SKIRMISH, "#GAMEMODE_PILOT_SKIRMISH_MATCH_START_HINT" )
 	GameMode_SetIcon( PILOT_SKIRMISH, "../ui/menu/playlist/tdm" )
 	GameMode_AddServerScript( PILOT_SKIRMISH, "mp/_gamemode_ps" )
 	GameMode_SetDefaultScoreLimits( PILOT_SKIRMISH, 100, 0 )
@@ -246,7 +255,7 @@ if ( IsClient() )
 	GameMode_SetName( FFA, "#GAMEMODE_FFA" )
 	GameMode_SetGameModeAnnouncement( FFA, "GameModeAnnounce_TDM" )
 	GameMode_SetDesc( FFA, "#GAMEMODE_FFA_HINT" )
-	GameMode_SetIcon( FFA, "../ui/menu/playlist/tdm" )
+	GameMode_SetIcon( FFA, "../ui/menu/playlist/classic" )
 	GameMode_AddServerScript( FFA, "mp/_gamemode_ffa" )
 	GameMode_AddClientScript( FFA, "client/cl_gamemode_ffa" )
 	GameMode_SetDefaultScoreLimits( FFA, 45, 0 )
@@ -290,7 +299,8 @@ if ( IsClient() )
 	GameMode_SetName( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL" )
 	GameMode_SetGameModeAnnouncement( TITAN_BRAWL, "GameModeAnnounce_TTDM" )
 	GameMode_SetDesc( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL_HINT" )
-	GameMode_SetIcon( TITAN_BRAWL, "../ui/menu/playlist/lts" )
+	GameMode_SetMatchStartDesc( TITAN_BRAWL, "#GAMEMODE_TITAN_BRAWL_MATCH_START_HINT" )
+	GameMode_SetIcon( TITAN_BRAWL, "../ui/menu/playlist/wingman_lts" )
 	GameMode_AddServerScript( TITAN_BRAWL, "mp/_gamemode_titan_brawl" )
 	GameMode_SetDefaultScoreLimits( TITAN_BRAWL, 30, 0 )
 	GameMode_SetDefaultTimeLimits( TITAN_BRAWL, 10, 0 )
@@ -332,7 +342,7 @@ if ( IsClient() )
 	GameMode_SetName( GUN_GAME, "#GAMEMODE_GUN_GAME" )
 	GameMode_SetGameModeAnnouncement( GUN_GAME, "GameModeAnnounce_TDM" )
 	GameMode_SetDesc( GUN_GAME, "#GAMEMODE_GUN_GAME_HINT" )
-	GameMode_SetIcon( GUN_GAME, "../ui/menu/playlist/tdm" )
+	GameMode_SetIcon( GUN_GAME, "../ui/menu/playlist/classic" )
 	GameMode_AddServerScript( GUN_GAME, "mp/_gamemode_gun_game" )
 	GameMode_AddClientScript( GUN_GAME, "client/cl_gamemode_gun_game" )
 	GameMode_SetDefaultScoreLimits( GUN_GAME, 20, 0 )

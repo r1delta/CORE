@@ -3872,6 +3872,8 @@ function ServerCallback_GameModeAnnouncement()
 
 		if ( GameMode_IsDefined( gameMode ) )
 		{
+			announcement.SetSubText( GameMode_GetMatchStartDesc( gameMode ) )
+
 			if ( GameMode_GetAttackDesc( gameMode ) != "" && team == level.nv.attackingTeam )
 				announcement.SetSubText( GameMode_GetAttackDesc( gameMode ) )
 

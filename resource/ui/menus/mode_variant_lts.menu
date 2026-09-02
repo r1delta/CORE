@@ -1,0 +1,73 @@
+resource/ui/menus/mode_variant_lts.menu
+{
+	ModeVariantLTSMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+		clip					0
+
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			classname 				LobbyTitleClass
+			labelText				"#SELECT_GAME_MODE"
+		}
+
+		BtnMode1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeVariantButton
+			scriptID				0
+			xpos					30
+			ypos					86
+			navUp					BtnMode2
+			navDown					BtnMode2
+			labelText				""
+		}
+		BtnMode2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeVariantButton
+			scriptID				1
+			pin_to_sibling			BtnMode1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode1
+			navDown					BtnMode1
+			labelText				""
+		}
+
+		ButtonTooltip
+		{
+			ControlName				CNestedPanel
+			InheritProperties		ButtonTooltip
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

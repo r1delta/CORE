@@ -58,8 +58,9 @@ function main()
 			break
 
 		default:
-			GameMode_RunSharedDialogueScripts( GAMETYPE )
-
+			if ( !IsLobby() || !IsMultiGamemodePlaylist( GAMETYPE ) )
+				GameMode_RunSharedDialogueScripts( GAMETYPE )
+			break
 	}
 
 	RegisterR1DeltaConversations()

@@ -292,6 +292,16 @@ function UpdateFooterButtons( menuName = null )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 			break
 
+		case "ModeVariantCTFMenu":
+		case "ModeVariantMFDMenu":
+		case "ModeVariantLTSMenu":
+		case "ModeVariantPilotMenu":
+		case "ModeVariantFFAMenu":
+			footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
+			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
+			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
+			break
+
 		case "RankedTiersMenu":
 		case "RankedSeasonsMenu":
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )

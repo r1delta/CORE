@@ -7,44 +7,83 @@ function GameRules_ChangeMap( mapName, mode )
 		return
 
     if( IsPrivateMatch() )
-        ServerCommand( "playlist " + mode )
+    {
+        local playlistName = mode
+        if ( mode == CAPTURE_THE_TITAN || mode == GUN_GAME )
+            playlistName = "private_match"
+
+        ServerCommand( "playlist " + playlistName )
+    }
 
     ServerCommand( "mp_gamemode " + mode )
     ServerCommand( "changelevel " + mapName )
 }
 
-function GameRules_ChangeCampaignMap( mapName, modeName )
+function GameRules_ChangeCampaignMap( mapName, playlistName )
 {
-	// we need to get gamemode, mv does not want to hardcode maps and gamemodes here so we're grabbing off playlist
-	local gamemodeForMap = null
-	for (local i = 0; i < GetMapCountForPlaylist(modeName); i++) {
-		if (GetPlaylistMapByIndex(modeName, i) == mapName)
-			gamemodeForMap = GetPlaylistGamemodeByIndex(modeName, i)
+	local playlistCombos = GetPlaylistCombos( playlistName )
+	local matchingCombos = []
+	foreach ( combo in playlistCombos )
+	{
+		if ( combo.mapName == mapName )
+			matchingCombos.append( combo )
 	}
-	ServerCommand( "playlist " + modeName )
-	ServerCommand( "mp_gamemode " + gamemodeForMap )
-	ServerCommand( "changelevel " + mapName )
+
+	if ( matchingCombos.len() == 0 )
+	{
+		if ( playlistCombos.len() == 0 )
+		{
+			printt( "No playlist modes found for", playlistName )
+			return
+		}
+
+		printt( "No", playlistName, "playlist modes found for", mapName, "- selecting a random playlist map instead" )
+		matchingCombos = playlistCombos
+	}
+
+	local combo = matchingCombos[ RandomInt( 0, matchingCombos.len() - 1 ) ]
+	ServerCommand( "playlist " + playlistName )
+	ServerCommand( "mp_gamemode " + combo.modeName )
+	ServerCommand( "changelevel " + combo.mapName )
 }
 
 function GameRules_PickRandomMap()
 {
-    local combos = GetPlaylistCombos( GetCurrentPlaylistName())
-    local rand = combos[ RandomInt( 0, combos.len() - 1 )]
-    GameRules_ChangeMap( rand.mapName, rand.modeName )
+	local playlistName = GetCurrentPlaylistName()
+	local combos = GetPlaylistCombos( playlistName )
+	if ( combos.len() == 0 )
+		return
+
+	local combo = combos[ RandomInt( 0, combos.len() - 1 ) ]
+	if ( IsMultiGamemodePlaylist( playlistName ) )
+	{
+		ServerCommand( "playlist " + playlistName )
+		ServerCommand( "mp_gamemode " + combo.modeName )
+		ServerCommand( "changelevel " + combo.mapName )
+		return
+	}
+
+	GameRules_ChangeMap( combo.mapName, combo.modeName )
 }
 
 
 function GameRules_EndMatch()
 {
-    if( IsPrivateMatch() )
-	    ServerCommand("playlist private_match")
+	local playlistName = GetCurrentPlaylistName()
+	if ( !GetConVarBool( "delta_return_to_lobby" ) )
+	{
+		GameRules_PickRandomMap()
+		return
+	}
 
-    if(!GetConVarBool("delta_return_to_lobby")) {
-        GameRules_PickRandomMap()
-        return
-    }
+	if ( IsPrivateMatch() )
+	{
+		ServerCommand( "playlist private_match" )
+		if ( IsMultiGamemodePlaylist( playlistName ) )
+			ServerCommand( "mp_gamemode " + playlistName )
+	}
 
-    ServerCommand( "changelevel mp_lobby" )
+	ServerCommand( "changelevel mp_lobby" )
 }
 
 function main()

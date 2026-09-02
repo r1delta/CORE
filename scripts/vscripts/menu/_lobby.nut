@@ -470,17 +470,18 @@ function PrivateMatchLobbyLogic()
 	local tickTime
 	local lastTickTime
 
-	local mapName = GetLastServerMap()
-	if ( (mapName in getconsttable().ePrivateMatchMaps) )
-		level.ui.privatematch_map = getconsttable().ePrivateMatchMaps[mapName]
-
 	local modeName = GetLastServerGameMode()
 
 	// I don't like ctf
-    if (modeName == null)
+	if ( modeName == null )
 		modeName = "at"
 
-	if ( (modeName in getconsttable().ePrivateMatchModes) )
+	local mapName = GetLastServerMap()
+
+	if ( mapName in getconsttable().ePrivateMatchMaps )
+		level.ui.privatematch_map = getconsttable().ePrivateMatchMaps[mapName]
+
+	if ( modeName in getconsttable().ePrivateMatchModes )
 		level.ui.privatematch_mode = getconsttable().ePrivateMatchModes[modeName]
 
 	mapName = GetMapNameForEnum( level.ui.privatematch_map )
@@ -536,11 +537,10 @@ function PrivateMatchLobbyLogic()
 	}
 
 	printt( "Launch it!" )
-	if (modeName == "campaign_carousel") {
+	if ( IsMultiGamemodePlaylist( modeName ) )
 		GameRules_ChangeCampaignMap( mapName, modeName )
-	} else {
+	else
 		GameRules_ChangeMap( mapName, modeName )
-	}
 }
 
 

@@ -15,6 +15,7 @@ function GameMode_Create( gameModeName )
 		name = gameModeName,
 		name_localized = "Undefined Game Mode",
 		desc_localized = "Undefined Game Mode Description",
+		match_start_desc_localized = null,
 		desc_attack = ""
 		desc_defend = ""
 		gameModeAnnoucement = null,
@@ -65,6 +66,12 @@ function GameMode_SetDesc( gameModeName, descText )
 {
 	Assert( gameModeName in level.gameModeDefs, "No MP Gametype specified in _settings.nut" )
 	level.gameModeDefs[gameModeName].desc_localized = descText
+}
+
+function GameMode_SetMatchStartDesc( gameModeName, descText )
+{
+	Assert( gameModeName in level.gameModeDefs, "No MP Gametype specified in _settings.nut" )
+	level.gameModeDefs[gameModeName].match_start_desc_localized = descText
 }
 
 function GameMode_SetAttackDesc( gameModeName, descText )
@@ -183,6 +190,17 @@ function GameMode_GetGameModeDefendAnnouncement( gameModeName )
 function GameMode_GetDesc( gameModeName )
 {
 	Assert( gameModeName in level.gameModeDefs, "No MP Gametype specified in _settings.nut" )
+	return level.gameModeDefs[gameModeName].desc_localized
+}
+
+function GameMode_GetMatchStartDesc( gameModeName )
+{
+	Assert( gameModeName in level.gameModeDefs, "No MP Gametype specified in _settings.nut" )
+
+	local matchStartDesc = level.gameModeDefs[gameModeName].match_start_desc_localized
+	if ( matchStartDesc != null )
+		return matchStartDesc
+
 	return level.gameModeDefs[gameModeName].desc_localized
 }
 
