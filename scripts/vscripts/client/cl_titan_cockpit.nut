@@ -497,6 +497,10 @@ function DisplayEjectInterface( player )
 	if ( Riff_TitanEjectIsDisabled() )
 		return false
 
+	local cttSoul = level.nv.cttTitanSoul
+	if ( cttSoul && GetEntityFromEncodedEHandle( cttSoul ).GetBossPlayer() == player )
+		return false
+
 	return true
 }
 
@@ -851,7 +855,9 @@ function PlayerPressed_EjectEnable( player )
 	if ( !player.IsTitan() )
 		return
 
-	if ( Riff_TitanEjectIsDisabled() )
+	local cttSoul = level.nv.cttTitanSoul
+
+	if ( Riff_TitanEjectIsDisabled() || cttSoul && GetEntityFromEncodedEHandle( cttSoul ).GetBossPlayer() == player )
 	{
 		EmitSoundOnEntity( player, "titan_dryfire" )
 		SetTimedEventNotification( 1.5, "#NOTIFY_EJECT_DISABLED" )
