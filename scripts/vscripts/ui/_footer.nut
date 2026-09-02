@@ -294,7 +294,6 @@ function UpdateFooterButtons( menuName = null )
 
 		case "ModeVariantCTFMenu":
 		case "ModeVariantMFDMenu":
-		case "ModeVariantLTSMenu":
 		case "ModeVariantPilotMenu":
 		case "ModeVariantFFAMenu":
 			footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )

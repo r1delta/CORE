@@ -1079,7 +1079,6 @@ function InitMenus()
 	AddSubmenu( "RankedInviteMenu", "resource/ui/menus/ranked_invite.menu" )
 	AddSubmenu( "ModeVariantCTFMenu", "resource/ui/menus/mode_variant_ctf.menu" )
 	AddSubmenu( "ModeVariantMFDMenu", "resource/ui/menus/mode_variant_mfd.menu" )
-	AddSubmenu( "ModeVariantLTSMenu", "resource/ui/menus/mode_variant_lts.menu" )
 	AddSubmenu( "ModeVariantPilotMenu", "resource/ui/menus/mode_variant_pilot.menu" )
 	AddSubmenu( "ModeVariantFFAMenu", "resource/ui/menus/mode_variant_ffa.menu" )
 	AddMenu( "RankedModesMenu", "resource/ui/menus/ranked_modes.menu" )
@@ -1751,10 +1750,6 @@ function OpenMenuWrapper( menu, focusDefault )
 			OnOpenModeVariantMenu( "ModeVariantMFDMenu" )
 			break
 
-		case "ModeVariantLTSMenu":
-			OnOpenModeVariantMenu( "ModeVariantLTSMenu" )
-			break
-
 		case "ModeVariantPilotMenu":
 			OnOpenModeVariantMenu( "ModeVariantPilotMenu" )
 			break
@@ -2008,7 +2003,6 @@ function CloseMenuWrapper( menu )
 
 		case "ModeVariantCTFMenu":
 		case "ModeVariantMFDMenu":
-		case "ModeVariantLTSMenu":
 		case "ModeVariantPilotMenu":
 		case "ModeVariantFFAMenu":
 			OnCloseModeVariantMenus()

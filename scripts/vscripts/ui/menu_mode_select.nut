@@ -76,12 +76,12 @@ function GetDisplayModes()
 		"all",
 		"at",
 		"cp",
-		"ctf+ctt",
 		"coop",
 		"scv",
 		"ttdm",
+		"lts",
+		"ctf+ctt",
 		"mfd+mfdp+tmfd+tmfdp",
-		"lts+wlts",
 		"tdm+ps",
 		"ffa+gg",
 	]
@@ -96,9 +96,6 @@ function GetVariantMenuForEntry( entry )
 
 		case "mfd+mfdp+tmfd+tmfdp":
 			return "ModeVariantMFDMenu"
-
-		case "lts+wlts":
-			return "ModeVariantLTSMenu"
 
 		case "tdm+ps":
 			return "ModeVariantPilotMenu"
