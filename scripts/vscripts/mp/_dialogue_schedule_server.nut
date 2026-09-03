@@ -24,6 +24,8 @@ function main()
 	Globalize( GetNearbyFriendlyAI )
 	Globalize( CodeCallback_OnNPCLookAtHint )
 
+	Globalize( ForcePlayConversationToTeamExceptPlayer )
+
 	level.hotspotHints <- {}
 	level.hotspotHints[ "window" ] <- "aichat_hotspot_window"
 	level.hotspotHints[ "window2" ] <- "aichat_hotspot_second_floor_window"
@@ -256,6 +258,18 @@ function ForcePlayConversationToTeam( conversationType, team )
 	local playerArr = GetPlayerArrayOfTeam( team )
 	foreach( player in playerArr )
 	{
+		ForcePlayConversationToPlayer( conversationType, player )
+	}
+}
+
+function ForcePlayConversationToTeamExceptPlayer( conversationType, team, excludePlayer )
+{
+	local playerArr = GetPlayerArrayOfTeam( team )
+	foreach( player in playerArr )
+	{
+		if ( player == excludePlayer )
+			continue
+
 		ForcePlayConversationToPlayer( conversationType, player )
 	}
 }

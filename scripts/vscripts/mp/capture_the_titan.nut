@@ -1,6 +1,5 @@
 function main()
 {
-	Globalize( ScriptCallback_OnClientConnecting )
 	Globalize( ClearFlagCarrierStatus )
 
 	// level.spawnRatingFunc_Pilot = Bind( RateSpawnpoint_CaptureTheTitan )
@@ -25,6 +24,7 @@ function main()
 	RegisterSignal( "TrackPlayerInTrigger" )
 
 	level.nv.attackingTeam = TEAM_MILITIA
+	//level.timeOutWinnerTeam = GetOtherTeam( level.nv.attackingTeam )
 
 	AddCallback_PlayerOrNPCKilled( CTT_OnPlayerOrNPCKilled )
 
@@ -33,6 +33,8 @@ function main()
 	AddCallback_GameStateEnter( eGameState.Playing, CTTRoundStart )
 	AddCallback_GameStateEnter( eGameState.WinnerDetermined, CTTRoundEnd ) // should be a "leave" callback
 	AddCallback_GameStateEnter( eGameState.SwitchingSides, CTTRoundEnd )
+
+	PrecacheModel( "models/communication/terminal_com_station.mdl" )
 }
 
 
@@ -40,9 +42,9 @@ function GiveCaptureTitanLoadout( titan )
 {
 	local titanDataTable = GetPresetTitanLoadout( 0 )
 	titanDataTable.primary = "mp_titanweapon_xo16"
-	titanDataTable.secondary = "mp_weapon_mega3"
+	titanDataTable.secondary = WEAPON_THUNDERBOLT_NAME
 	titanDataTable.ordnance = "mp_titanweapon_homing_rockets"
-	titanDataTable.special = null
+	titanDataTable.special = WEAPON_CHARGE_CANNON_NAME //null
 
 	TakeAllWeapons( titan )
 	GiveTitanWeaponsForLoadoutData( titan, titanDataTable )
@@ -243,7 +245,7 @@ function CreateFlagReturnBase( team )
 	returnPointMinimap.Minimap_SetZOrder( 99 )
 	returnPointMinimap.Minimap_AlwaysShow( team, null )
 
-	local baseModel = CreatePropDynamic( CTF_FLAG_BASE_MODEL, spawnOrigin, spawnAngles, 6 )
+	local baseModel = CreatePropDynamic( "models/communication/terminal_com_station.mdl", spawnOrigin, spawnAngles, 6 )
 	baseModel.SetTeam( team )
 
 	level.flagReturnPoint = baseModel
@@ -475,6 +477,9 @@ function TrackTitanHealth( soul ) //Could do this on a OnTookDamage callback too
 		if ( soul.IsDoomed() )
 			return
 
+		if ( "captured" in soul.s )
+			return
+
 		local titan = soul.GetTitan()
 
 		if ( !IsValid( titan ) )
@@ -613,13 +618,6 @@ function AwardCaptureToPlayer( player )
 	}
 }
 
-
-function ScriptCallback_OnClientConnecting( player )
-{
-}
-
-
-
 function CreateTitanForTeam( team, origin, angles )
 {
 	local titan = CreateNPCTitanFromSettings( "titan_ctt", team, origin, angles )
@@ -647,18 +645,10 @@ function CTT_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 	if ( victim.GetTitanSoul() != GetTitanFlag() )
 		return
 
-	local attacker = damageInfo.GetAttacker()
-
 	ClearFlagCarrierStatus( victim, null )
-
-	if ( !attacker.IsPlayer() )
-		return
 
 	if ( "captured" in victim.GetTitanSoul().s )
 		return
-
-	MessageToTeam( TEAM_IMC, eEventNotifications.PlayerDestroyedTheTitan, null, attacker )
-	MessageToTeam( TEAM_MILITIA, eEventNotifications.PlayerDestroyedTheTitan, null, attacker )
 
 	EmitSoundOnEntityToTeam( victim, "UI_CTF_1P_Score", GetOtherTeam(level.nv.attackingTeam))
 	EmitSoundOnEntityToTeam( victim, "UI_CTF_Team_FlagUpdate", level.nv.attackingTeam )
@@ -673,19 +663,30 @@ function CTT_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		GameScore.AddTeamScore(GetOtherTeam(level.nv.attackingTeam), 1 )
 	}
 
+	local attacker = damageInfo.GetAttacker()
 	local attackerTeam = attacker.GetTeam()
 	local victimTeam = victim.GetTeam()
 
-	PlayConversationToTeam( "CTT_TitanDestroyed_AttackTeamAnnouncement", victimTeam ) //Currently supressed by "You lost the round!" conversation
+	// "Our titan has been destroyed"
+	ForcePlayConversationToTeam( "CTT_TitanDestroyed_AttackTeamAnnouncement", victimTeam ) //Currently supressed by "You lost the round!" conversation
+
+	// "The titan is destroyed!"
+	ForcePlayConversationToTeamExceptPlayer( "CTT_TitanDestroyed_DefendTeamAnnouncement", attackerTeam, attacker ) //Currently supressed by "You won the round!" conversation
+
+	if ( !attacker.IsPlayer() )
+		return
+
+	MessageToTeam( TEAM_IMC, eEventNotifications.PlayerDestroyedTheTitan, null, attacker )
+	MessageToTeam( TEAM_MILITIA, eEventNotifications.PlayerDestroyedTheTitan, null, attacker )
+
 	if ( victimTeam == attackerTeam )
 		return
 
-	PlayConversationToPlayer( "CTT_TitanDestroyedByPlayer", attacker ) //Currently supressed by "You won the round!" conversation
-	PlayConversationToTeamExceptPlayer( "CTT_TitanDestroyed_DefendTeamAnnouncement", attackerTeam, attacker ) //Currently supressed by "You won the round!" conversation
+	// "You took down the titan!"
+	ForcePlayConversationToPlayer( "CTT_TitanDestroyedByPlayer", attacker ) //Currently supressed by "You won the round!" conversation
 
 	AddPlayerScore( attacker, "FlagCarrierKill" )
 }
-
 
 function CTT_PlayerTookDamage( player, damageInfo )
 {
