@@ -573,7 +573,7 @@ function GiveLoadouts( player )
 				SetDecalForTitan( player )
 			
 				if ( LoadoutContainsChargeCannon( player ) )
-					CreateChargeCannon( soul, titan )
+					CreateChargeCannon( soul, soul.GetTitan() )
 			}
 			else
 			{
