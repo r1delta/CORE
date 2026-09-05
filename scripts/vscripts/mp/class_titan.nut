@@ -285,7 +285,7 @@ function PlayerCanEject( player )
 	if ( Riff_TitanEjectIsDisabled() )
 		return false
 
-	if ( GameRules.GetGameMode() == CAPTURE_THE_TITAN && level.teamFlag && level.teamFlag.GetBossPlayer() == player )
+	if ( GameRules.GetGameMode() == CAPTURE_THE_TITAN && IsValid( level.teamFlag ) && level.teamFlag.GetBossPlayer() == player )
 	 	return false
 
 	return true

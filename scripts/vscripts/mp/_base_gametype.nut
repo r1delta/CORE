@@ -2911,7 +2911,7 @@ function ShouldAutoBalancePlayer( player, manualSwitch, forceSwitch = false )
 
 	// Prevent the player controlling the titan in ctt from changing teams
 	// level.teamFlag = the titans soul
-	if ( GameRules.GetGameMode() == CAPTURE_THE_TITAN && level.teamFlag && level.teamFlag.GetBossPlayer() == player )
+	if ( GameRules.GetGameMode() == CAPTURE_THE_TITAN && IsValid( level.teamFlag ) && level.teamFlag.GetBossPlayer() == player )
 		return false
 
 	// Cant be evacing
