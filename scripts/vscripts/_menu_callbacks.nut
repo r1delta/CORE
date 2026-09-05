@@ -97,7 +97,8 @@ function ClientCommand_ActivateBurnCard(player, ...) {
 	}
 
 	local cardRef = GetBurnCardFromSlot(player, index)
-	local cardIndex = GetBurnCardIndexByRef(cardRef)
+	if ( cardRef == null )
+		return false
 
 	if ( GetBurnCardFlags( cardRef ) & CT_TITAN_WPN || cardRef == "bc_extra_dash" )
 	{

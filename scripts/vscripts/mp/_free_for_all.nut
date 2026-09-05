@@ -97,6 +97,8 @@ function FFA_MinimapScanAndRemoveDropships()
 
 	KillAllEntitiesOfType( "info_spawnpoint_dropship" )
 	KillAllEntitiesOfType( "info_spawnpoint_dropship_start" )
+	// FFA removes these entities, so the classic intro must not retain their handles.
+	level.dropship_start_spawns.clear()
 
 	for ( ;; )
 	{
