@@ -256,9 +256,9 @@ function Nest2_CreateSpawnpoints()
 	]
 
 	switch(GameRules.GetGameMode()) {
-		case "ctf":
-		case "ctfp":
-		case "scavenger":
+		case CAPTURE_THE_FLAG:
+		case CAPTURE_THE_FLAG_PRO:
+		case SCAVENGER:
 			// P7: [CTF] Fix flag spawns
 			//	   Flags on this map were on the air so... we need to create new ones
 			// Flags
