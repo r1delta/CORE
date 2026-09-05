@@ -621,7 +621,7 @@ function ZapTarget( zapInfo, target, beamStartPos, beamEndPos, chainNum = 1 )
 
 				if ( target.IsTitan() && zapInfo.chargeFrac >= ARC_CANNON_SCREEN_THRESHOLD )
 				{
-					Remote.CallFunction_Replay( target, "ServerCallback_TitanEMP", empViewStrength, empDuration, ARC_CANNON_EMP_FADEOUT_DURATION )
+					// Remote.CallFunction_Replay( target, "ServerCallback_TitanEMP", empViewStrength, empDuration, ARC_CANNON_EMP_FADEOUT_DURATION )
 					EmitSoundOnEntityOnlyToPlayer( target, target, ARC_CANNON_TITAN_SCREEN_SFX )
 
 					local scale = GraphCapped( zapInfo.chargeFrac, 0, chargeRatio, ARC_CANNON_SLOW_SCALE_MIN, ARC_CANNON_SLOW_SCALE_MAX )

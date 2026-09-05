@@ -177,7 +177,7 @@ function EmpField_DamagedEntity( target, damageInfo )
 
 		if ( target.IsTitan() )
 		{
-			Remote.CallFunction_Replay( target, "ServerCallback_TitanEMP", screenEffectAmplitude, ARC_TITAN_EMP_DURATION, ARC_TITAN_EMP_FADEOUT_DURATION, false, false )
+			// Remote.CallFunction_Replay( target, "ServerCallback_TitanEMP", screenEffectAmplitude, ARC_TITAN_EMP_DURATION, ARC_TITAN_EMP_FADEOUT_DURATION, false, false )
 			EmitSoundOnEntityOnlyToPlayer( target, target, ARC_TITAN_TITAN_SCREEN_SFX )
 			//thread EMP_SlowPlayer( target, ARC_TITAN_SLOW_SCALE, ARC_TITAN_EMP_DURATION )
 		}

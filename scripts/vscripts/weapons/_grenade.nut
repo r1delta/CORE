@@ -498,7 +498,7 @@ function EMPGrenade_EffectsPlayer( player, damageInfo )
 
 		EMPGrenade_AffectsShield( player, damageInfo )
 
-		Remote.CallFunction_Replay( player, "ServerCallback_TitanEMP", strength, duration, fadeoutDuration )
+		// Remote.CallFunction_Replay( player, "ServerCallback_TitanEMP", strength, duration, fadeoutDuration )
 
 		local duration = GraphCapped( frac, 0.0, 1.0, EMP_GRENADE_SLOW_DURATION_MIN, EMP_GRENADE_SLOW_DURATION_MAX )
 		local scale = GraphCapped( frac, 0.0, 1.0, EMP_GRENADE_SLOW_SCALE_MIN, EMP_GRENADE_SLOW_SCALE_MAX )

@@ -462,7 +462,9 @@ function TowerPulseFailEvent( tower )
 	foreach( player in players )
 	{
 		if ( player.IsTitan() )
-			Remote.CallFunction_Replay( player, "ServerCallback_TitanEMP", 0.10, 0.5, 2.0 )
+		{
+			// Remote.CallFunction_Replay( player, "ServerCallback_TitanEMP", 0.10, 0.5, 2.0 )
+		}
 		else
 			Remote.CallFunction_Replay( player, "ServerCallback_PilotEMP", 0.10, 0.5, 2.0 )
 	}
@@ -493,7 +495,9 @@ function TowerPulseSuccessEvent( tower )
 	foreach( player in players )
 	{
 		if ( player.IsTitan() )
-			Remote.CallFunction_Replay( player, "ServerCallback_TitanEMP", 0.15, 2.0, 4.0 )
+		{
+			// Remote.CallFunction_Replay( player, "ServerCallback_TitanEMP", 0.15, 2.0, 4.0 )
+		}
 		else
 			Remote.CallFunction_Replay( player, "ServerCallback_PilotEMP", 0.15, 2.0, 4.0 )
 	}
