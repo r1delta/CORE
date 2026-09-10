@@ -6070,7 +6070,7 @@ function CreateBrush( origin, angles, size, type = "func_brush", name = "" )
 
 function CreateTrigger( origin, angles, size, type = "trigger_multiple", name = "" )
 {
-	local trigger = CreateBrush( origin, angles, size, type )
+	local trigger = CreateBrush( origin, angles, size, type, name )
 
 	// Make the trigger non-solid
 	trigger.SetValueForKey( "CollisionGroup", 21 )
