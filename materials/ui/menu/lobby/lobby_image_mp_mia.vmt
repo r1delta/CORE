@@ -1,0 +1,8 @@
+Basic
+{
+	$basetexture		"ui/menu/lobby/lobby_image_mp_mia"
+	$translucent		1
+	$vertexcolor		1
+	$vertexalpha		1
+	$ignorez		1
+}

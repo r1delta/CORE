@@ -42,11 +42,11 @@ function main()
 	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_backwater" )
 	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_sandtrap" )
 	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_zone_18" )
+	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_box" )
+	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_mia" )
+	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_nest2" )
+	PrecacheHUDMaterial( "../ui/menu/lobby/lobby_image_mp_npe" )
 
-	PrecacheHUDMaterial( "../loadscreens/mp_box_widescreen" )
-	PrecacheHUDMaterial( "../loadscreens/mp_mia_widescreen" )
-	PrecacheHUDMaterial( "../loadscreens/mp_nest2_widescreen" )
-	PrecacheHUDMaterial( "../loadscreens/mp_npe_widescreen" )
 	PrecacheHUDMaterial( "../ui/menu/common/menu_background_neutral_legacy" )
 	PrecacheHUDMaterial( "../ui/menu/common/menu_background_neutral_legacy_blur" )
 
@@ -897,11 +897,7 @@ function SetMapInfo( mapName )
 
 	SmartGlass_SetGameStateProperty( SMARTGLASS_PROP_NEXTLEVEL, mapName )
 
-	local mapImage
-	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe" )
-		mapImage = "../loadscreens/" + mapName + "_widescreen"
-	else
-		mapImage = "../ui/menu/lobby/lobby_image_" + mapName
+	local mapImage = "../ui/menu/lobby/lobby_image_" + mapName
 
 	nextMapImage.SetImage( mapImage )
 	nextMapImage.Show()
