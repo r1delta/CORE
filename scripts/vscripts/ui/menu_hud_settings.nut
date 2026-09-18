@@ -31,10 +31,6 @@ function InitHudSettingsMenu( menu )
 	SetupButton( menu.GetChild( "SwchHudWarp" ), "#OPTIONS_MENU_HUD_WARPING_DESC" )
 	SetupButton( menu.GetChild( "SwchSafeArea" ), "#OPTIONS_MENU_SAFE_AREA_DESC" )
 
-	// Convar currently doesnt do anything
-	menu.GetChild( "SwchHudWarp" ).SetLocked( true )
-	menu.GetChild( "SwchHudWarp" ).SetEnabled( false )
-
 	AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenHudSettingsMenu )
 	AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseHudSettingsMenu )
 
