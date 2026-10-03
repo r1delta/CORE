@@ -694,7 +694,7 @@ function GetDirectConnectCommand( str )
     if ( str.len() > 40 && str.slice( 0, 2 ) == "tc" && str.find( ":" ) == null && str.find( "." ) == null )
         return "delta_connect_tailcat "
 
-    if ( str.len() == 64 && regexp( "^[0-9a-f]+$" ).match( str ) )
+    if ( str.len() == 64 && regexp( "^[0-9a-fA-F]+$" ).match( str ) )
         return "delta_connect_iroh "
 
     return "delta_connect "
