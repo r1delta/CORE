@@ -362,7 +362,7 @@ function OnServerButtonClicked(button)
         // delta_connect probes every route the server advertises (direct,
         // hole punched, LAN, Tailscale, EOS, iroh, tailcat, TURN) and
         // connects through the fastest one.
-        ClientCommand( "delta_connect " + server.ip + ":" + server.port )
+        ClientCommand( "delta_connect \"" + server.ip + ":" + server.port + "\"" )
     }
 }
 
@@ -683,7 +683,7 @@ function OnDirectConnectDialogButtonConnect_Activate( button )
 
     AdvanceMenu( GetMenu( "LobbyMenu" ) )
 
-    ClientCommand( GetDirectConnectCommand( str ) + str )
+    ClientCommand( GetDirectConnectCommand( str ) + "\"" + str + "\"" )
 	CloseDialog( true )
 }
 
@@ -730,7 +730,7 @@ function OnEnterPasswordDialogButtonConnect_Activate( button )
         AdvanceMenu( GetMenu( "LobbyMenu" ) )
 
     ClientCommand( "password " + str )
-    ClientCommand( "delta_connect " + server.ip + ":" + server.port )
+    ClientCommand( "delta_connect \"" + server.ip + ":" + server.port + "\"" )
     CloseDialog( true )
 }
 

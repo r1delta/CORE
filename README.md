@@ -5,4 +5,7 @@ These are the server scripts and other related files needed for r1delta
 
 Place these files in `Titanfall/r1delta`, make sure you use `-game r1delta` in your launch args
 
+Server-browser and direct-connect commands quote endpoint arguments so the
+engine console preserves `ip:port` for NAT transport selection.
+
 <img src="https://github.com/user-attachments/assets/121a9ec2-cba9-4fac-96e0-06472febeb52" align="left">
