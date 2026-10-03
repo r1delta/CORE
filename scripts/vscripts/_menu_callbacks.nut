@@ -388,7 +388,8 @@ function ClientCommand_InGameMenuOpened( player, ... )
 
 function ClientCommand_InGameMenuClosed( player, ... )
 {
-	if ( ( "pilotLoadout" in player.s ) || ( "titanLoadout" in player.s ) )
+	// OnPlayerCloseClassMenu (respawn handling) only exists in match gametypes, and there is nothing to give in the lobby
+	if ( !IsLobby() && ( ( "pilotLoadout" in player.s ) || ( "titanLoadout" in player.s ) ) )
 	{
 		OnPlayerCloseClassMenu( player )
 
