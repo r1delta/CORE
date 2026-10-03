@@ -317,7 +317,9 @@ function OnEditTitanLoadoutButton_Activate( button )
 		AdvanceMenu( editMenu )
 	}
 
-	if ( IsTitanOnlyMode() )
+	// In a Titan-only match, picking a Titan finishes loadout selection. In the lobby mp_gamemode is just the selected
+	// Private Match mode, so that shortcut would close the editor and open the in-match burn card picker.
+	if ( IsTitanOnlyMode() && !IsLobby() )
 	{
 		SetLoadoutSelectionFinished()
 
