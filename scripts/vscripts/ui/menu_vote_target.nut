@@ -194,10 +194,7 @@ function MapButton_Focused( button )
 				optionDesc = GetMapDisplayDesc( option )
 			}
 
-			if ( option == "mp_mia" || option == "mp_nest2" || option == "mp_box" || option == "mp_npe" )
-				optionImage = "../loadscreens/" + option + "_widescreen"
-			else
-				optionImage = "../ui/menu/lobby/lobby_image_" + option
+			optionImage = "../ui/menu/lobby/lobby_image_" + option
 			break
 		
 		case eVoteType.nextMode:

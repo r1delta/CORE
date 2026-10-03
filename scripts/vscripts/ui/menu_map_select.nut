@@ -138,11 +138,7 @@ function MapButton_Focused( button )
 	local mapsArray = GetPrivateMatchMaps()
 	local mapName = mapsArray[buttonID]
 
-	local mapImage
-	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe" )
-		mapImage = "../loadscreens/" + mapName + "_widescreen"
-	else
-		mapImage = "../ui/menu/lobby/lobby_image_" + mapName
+	local mapImage = "../ui/menu/lobby/lobby_image_" + mapName
 
 	nextMapImage.SetImage( mapImage )
 	if (GetModeNameForEnum(level.ui.privatematch_mode) == "campaign_carousel") {

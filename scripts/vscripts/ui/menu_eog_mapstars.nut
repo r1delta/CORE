@@ -93,12 +93,7 @@ function InitMenu()
 	eogStarsMode = GetStarsMode()
 
 	// Map Image
-	local mapImage
-	if ( eogStarsMap == "mp_mia" || eogStarsMap == "mp_nest2" || eogStarsMap == "mp_box" || eogStarsMap == "mp_npe" )
-		mapImage = "../loadscreens/" + eogStarsMap + "_widescreen"
-	else
-		mapImage = "../ui/menu/lobby/lobby_image_" + eogStarsMap
-
+	local mapImage = "../ui/menu/lobby/lobby_image_" + eogStarsMap
 	mapImageElem.SetImage( mapImage )
 
 	// Map Name

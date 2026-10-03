@@ -408,10 +408,6 @@ function OnServerButtonFocused(button)
         menu.GetChild("StarsLabel").SetText( "#LOBBY" )
 		menu.GetChild("NextMapImage").SetImage(GetDefaultLobbyBackground())
     }
-    else if (server.map_name == "mp_mia" || server.map_name == "mp_nest2" || server.map_name == "mp_box" || server.map_name == "mp_npe") {
-        menu.GetChild("StarsLabel").SetText( "#" + server.map_name )
-        menu.GetChild("NextMapImage").SetImage("../loadscreens/" + server.map_name + "_widescreen")
-    }
      else {
         menu.GetChild("StarsLabel").SetText( "#" + server.map_name  )
         menu.GetChild("NextMapImage").SetImage("../ui/menu/lobby/lobby_image_" + server.map_name)
