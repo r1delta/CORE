@@ -135,8 +135,9 @@ function GiveTitanWeaponsForPlayer( player, titan, existingTitan = false )
 
 	if ( player.IsBot() )
 	{
+		// Managed bots roll their loadout once on connect (BotRandomizeLoadouts) and keep it.
 		local bot_randomize_loadout = GetConVarInt( "bot_randomize_loadout" )
-		if ( bot_randomize_loadout )
+		if ( bot_randomize_loadout && !IsManagedBot( player ) )
 			RandomizeBotLoadout( table, true )
 		OverrideBotLoadout( table, true )
 	}

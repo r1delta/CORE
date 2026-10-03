@@ -71,6 +71,10 @@ function main()
 		PrecacheWeapon( "weapon_cubemap" )
 
 	IncludeGameModeServerScripts()
+
+	// After _base_gametype and the game mode scripts so the "PilotBot" flag and callbacks exist.
+	IncludeFile( "mp/_bot_manager" )
+	IncludeFile( "mp/_bot_ai" )
 }
 
 function IncludeGameModeServerScripts()
