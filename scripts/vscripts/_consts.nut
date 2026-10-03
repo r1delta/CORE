@@ -66,6 +66,9 @@ const TITAN_BRAWL_AUTO = "ttdm_auto"
 const TITAN_MFD = "tmfd"
 const TITAN_MFD_PRO = "tmfdp"
 const GUN_GAME = "gg"
+const TITAN_FFA = "tffa"
+const TURBO_TITAN_BRAWL = "ttdm_turbo"
+const TURBO_TITAN_FFA = "tffa_turbo"
 
 const MAX_TRACKED_CHALLENGES = 3
 
@@ -1106,6 +1109,12 @@ const TITAN_CORE_BUILD_TIME = 200
 const TITAN_CORE_CHARGE_TIME = 2.45
 const TITAN_CORE_TIC_RATE = 3.8
 
+// Turbo Titan modes (TURBO_TITAN_BRAWL, TURBO_TITAN_FFA): Core builds in half the time, shields regenerate twice as fast, and dashes
+// recharge 50% faster. Every player also gets the Turbo Engine burn card effect (see _gamemode_turbo_titan.nut).
+const TURBO_CORE_BUILD_TIME_SCALE = 0.5
+const TURBO_SHIELD_REGEN_TIME_SCALE = 0.5
+const TURBO_DASH_REGEN_RATE_SCALE = 1.5
+
 const SHIELD_BOOST_R = 255
 const SHIELD_BOOST_G = 225
 const SHIELD_BOOST_B = 100
@@ -1638,7 +1647,10 @@ enum ePrivateMatchModes
 	all_mini,
 	ctt,
 	ffa,
-	gg
+	gg,
+	tffa,
+	ttdm_turbo,
+	tffa_turbo
 }
 
 
@@ -2296,6 +2308,16 @@ pmSettingsMap["pm_score_limit"]["ttdm"] <- [
 	75,
 	100,
 ]
+pmSettingsMap["pm_score_limit"]["ttdm_turbo"] <- [
+	10,
+	20,
+	30,
+	40,
+	50,
+	60,
+	75,
+	100,
+]
 pmSettingsMap["pm_score_limit"]["tmfd"] <- [
 	1,
 	3,
@@ -2338,6 +2360,24 @@ pmSettingsMap["pm_score_limit"]["ffa"] <- [
 	50,
 	75,
 	100,
+]
+pmSettingsMap["pm_score_limit"]["tffa"] <- [
+	10,
+	15,
+	20,
+	25,
+	30,
+	40,
+	50,
+]
+pmSettingsMap["pm_score_limit"]["tffa_turbo"] <- [
+	10,
+	15,
+	20,
+	25,
+	30,
+	40,
+	50,
 ]
 pmSettingsMap["pm_score_limit"]["gg"] <- [
 	10,

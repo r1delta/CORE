@@ -18,6 +18,7 @@ function main()
 	file.modeVariantConfig[ "ModeVariantLTSMenu" ] <- [ "lts", "wlts" ]
 	file.modeVariantConfig[ "ModeVariantPilotMenu" ] <- [ "tdm", "ps" ]
 	file.modeVariantConfig[ "ModeVariantFFAMenu" ] <- [ "ffa", "gg" ]
+	file.modeVariantConfig[ "ModeVariantTitanBrawlMenu" ] <- [ "ttdm", "tffa", "ttdm_turbo", "tffa_turbo" ]
 
 	file.modeVariantButtons <- {}
 	file.activeVariantMenu <- null

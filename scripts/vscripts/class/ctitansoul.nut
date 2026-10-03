@@ -77,7 +77,7 @@ function CTitanSoul::InitSoul( titan )
 	if ( BURN_CARD_MAP_LOOT_DROP )
 		AddBurnCardToEntity( this, "titan", titan.GetTeam() )
 
-	local coreBuildTime = GetCurrentPlaylistVarInt( "titan_core_build_time", TITAN_CORE_BUILD_TIME )
+	local coreBuildTime = GetTitanCoreBuildTime()
 
 	this.SetNextCoreChargeAvailable( Time() + coreBuildTime )
 }

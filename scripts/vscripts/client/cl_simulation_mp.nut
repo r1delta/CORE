@@ -125,6 +125,9 @@ function DelayPlayActionMusic()
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
 		case TITAN_BRAWL:
+		case TURBO_TITAN_BRAWL:
+		case TURBO_TITAN_FFA:
+		case TITAN_FFA:
 		case TITAN_MFD:
 		case TITAN_MFD_PRO:
 			printt( "Simulation post intro: playing LTS drop intro music" )

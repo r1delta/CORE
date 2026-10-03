@@ -349,6 +349,9 @@ if ( !IsTrainingLevel() )
 				case LAST_TITAN_STANDING:
 				case WINGMAN_LAST_TITAN_STANDING:
 				case TITAN_BRAWL:
+				case TURBO_TITAN_BRAWL:
+				case TURBO_TITAN_FFA:
+				case TITAN_FFA:
 				case TITAN_MFD:
 				case TITAN_MFD_PRO:
 				case TITAN_BRAWL_AUTO:
@@ -385,6 +388,9 @@ if ( !IsTrainingLevel() )
 	    modeAliases[ MARKED_FOR_DEATH ] 			<- "diag_dlc1_WG236_01_01_neut_tutai"
 	    modeAliases[ MARKED_FOR_DEATH_PRO ] 		<- "diag_dlc1_WG237_01_01_neut_tutai"
 	    modeAliases[ TITAN_BRAWL ] 					<- "diag_dlc1_WG137_01_01_neut_tutai"
+	    modeAliases[ TURBO_TITAN_BRAWL ] 			<- "diag_dlc1_WG137_01_01_neut_tutai"
+	    modeAliases[ TURBO_TITAN_FFA ] 			<- "diag_dlc1_WG137_01_01_neut_tutai"
+	    modeAliases[ TITAN_FFA ] 					<- "diag_dlc1_WG137_01_01_neut_tutai"
 	    modeAliases[ TITAN_MFD ] 					<- "diag_dlc1_WG236_01_01_neut_tutai"
 	    modeAliases[ TITAN_MFD_PRO ] 				<- "diag_dlc1_WG237_01_01_neut_tutai"
 

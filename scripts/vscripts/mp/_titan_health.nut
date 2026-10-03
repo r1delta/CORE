@@ -803,6 +803,9 @@ function GetShieldRegenTime( soul )
 	else
 		time = shieldRegenTime
 
+	if ( IsTurboTitanMode() )
+		time *= TURBO_SHIELD_REGEN_TIME_SCALE
+
 	return time
 }
 

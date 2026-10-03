@@ -9,7 +9,7 @@ function GameRules_ChangeMap( mapName, mode )
     if( IsPrivateMatch() )
     {
         local playlistName = mode
-        if ( mode == CAPTURE_THE_TITAN || mode == GUN_GAME )
+        if ( mode == CAPTURE_THE_TITAN || mode == GUN_GAME || mode == TURBO_TITAN_FFA )
             playlistName = "private_match"
 
         ServerCommand( "playlist " + playlistName )

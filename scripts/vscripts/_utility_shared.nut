@@ -1527,7 +1527,7 @@ function ResetTitanBuildTime( player )
 {
 	if ( player.IsTitan() )
 	{
-		player.SetTitanBuildTime( GetCurrentPlaylistVarInt( "titan_core_build_time", TITAN_CORE_BUILD_TIME )  )
+		player.SetTitanBuildTime( GetTitanCoreBuildTime() )
 		return
 	}
 
@@ -2450,6 +2450,7 @@ function ScoreboardCompareFuncForGamemode( gamemode )
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
 		case TITAN_BRAWL:
+		case TURBO_TITAN_BRAWL:
 			return CompareLTS
 		case SCAVENGER:
 			return CompareScavenger

@@ -168,6 +168,9 @@ function GameModeRemove( spawnpoint )
 		case LAST_TITAN_STANDING:
 		case WINGMAN_LAST_TITAN_STANDING:
 		case TITAN_BRAWL:
+		case TURBO_TITAN_BRAWL:
+		case TURBO_TITAN_FFA:
+		case TITAN_FFA:
 		case TITAN_MFD:
 		case TITAN_MFD_PRO:
 		//case MARKED_FOR_DEATH_PRO: //Uncomment to use LTS spawns for Titan variant
@@ -663,7 +666,9 @@ function FindStartSpawnPoint( player, isTitan = false, spawnDataIndex = null )
 
 	local team = player.GetTeam()
 
-	local spawnpoints = isTitan ? SpawnPoints_GetTitanStart( team ) : SpawnPoints_GetPilotStart( team )
+	// The Titan FFA modes have no sides, so every start point is available to every player
+	local startTeam = ( GameRules.GetGameMode() == TITAN_FFA || GameRules.GetGameMode() == TURBO_TITAN_FFA ) ? TEAM_ANY : team
+	local spawnpoints = isTitan ? SpawnPoints_GetTitanStart( startTeam ) : SpawnPoints_GetPilotStart( startTeam )
 	printt( "spawnpoints.len()" + spawnpoints.len() )
 
 	printt( "team # " + team )
