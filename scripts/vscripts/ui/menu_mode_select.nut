@@ -46,6 +46,7 @@ function main()
 	file.aiTypeButton <- null
 	file.aiLethalityButton <- null
 	file.floorIsLavaButton <- null
+	file.spectreCamoButton <- null
 
 	file.gameModeLabel <- null
 
@@ -299,6 +300,7 @@ function InitMatchSettingsMenu( menu )
 	file.aiTypeButton = menu.GetChild( "BtnAIType" )
 	file.aiLethalityButton = menu.GetChild( "BtnAILethality" )
 	file.floorIsLavaButton = menu.GetChild( "BtnLava" )
+	file.spectreCamoButton = menu.GetChild( "BtnSpectreCamo" )
 
 	file.gameModeLabel = menu.GetChild( "LblSubheader1Text" )
 
@@ -316,6 +318,7 @@ function InitMatchSettingsMenu( menu )
 	AddDescFocusHandler( file.aiTypeButton, "#PM_DESC_AI_TYPE" )
 	AddDescFocusHandler( file.aiLethalityButton, "#PM_DESC_AI_LETHALITY" )
 	AddDescFocusHandler( file.floorIsLavaButton, "#PM_DESC_LAVA" )
+	AddDescFocusHandler( file.spectreCamoButton, "#PM_DESC_SPECTRE_CAMO" )
 	AddDescFocusHandler( file.burnCardSetButton, "#PM_DESC_BURN_CARDS" )
 
 	uiGlobal.matchSettingsChanged <- false
@@ -347,6 +350,7 @@ function OnOpenMatchSettingsMenu()
 	UpdateMappedConVarFromPlaylist( "pm_ai_type" )
 	UpdateMappedConVarFromPlaylist( "pm_ai_lethality" )
 	UpdateMappedConVarFromPlaylist( "pm_burn_cards" )
+	UpdateSpectreCamoConVarFromPlaylist()
 
 	thread UpdateMatchSettingsSliderValues( menu )
 
@@ -486,6 +490,22 @@ function UpdateMappedConVarFromPlaylist( conVarName, useBase = false  )
 
 	ClientCommand( conVarName + " " + pmSetting )
 	file.pmVarValues[conVarName] <- pmSetting.tofloat()
+}
+
+
+// Spectre Camo (forced on every pilot spawn) is a playlist var with no convar of its own, so Match Settings keeps the
+// spare pm_dev0 convar in step with it. useBase reads the playlist's original value instead of the current override.
+function UpdateSpectreCamoConVarFromPlaylist( useBase = false )
+{
+	local value = GetCurrentPlaylistVarInt( "force_spectre_camo", 0 )
+
+	if ( useBase )
+		value = GetCurrentPlaylistVarOrUseValueOriginal( "force_spectre_camo", "" + 0 ).tointeger()
+
+	value = value != 0 ? 1 : 0
+
+	ClientCommand( "pm_dev0 " + value )
+	file.pmVarValues["pm_dev0"] <- value.tofloat()
 }
 
 
@@ -641,6 +661,8 @@ function NavigateBackApplyMatchSettingsDialog()
 		uiGlobal.matchSettingsChanged = true
 	else if ( ConVarValueChanged( "pm_burn_cards" ) )
 		uiGlobal.matchSettingsChanged = true
+	else if ( ConVarValueChanged( "pm_dev0" ) )
+		uiGlobal.matchSettingsChanged = true
 
 	if ( !uiGlobal.matchSettingsChanged )
 		return false
@@ -715,6 +737,7 @@ function ApplyMatchSettings( button )
 	UpdatePlaylistFromConVar( "pm_ai_lethality" )
 	UpdatePlaylistFromConVar( "pm_burn_cards" )
 	UpdatePlaylistFromConVar( "riff_floorislava")
+	UpdatePlaylistFromConVar( "pm_dev0" ) // Spectre Camo
 
 	uiGlobal.matchSettingsChanged = false
 }
@@ -736,6 +759,7 @@ function ResetMatchSettingsToDefaultDialog( button )
 	UpdateMappedConVarFromPlaylist( "pm_ai_type", true )
 	UpdateMappedConVarFromPlaylist( "pm_ai_lethality", true )
 	UpdateMappedConVarFromPlaylist( "pm_burn_cards", true )
+	UpdateSpectreCamoConVarFromPlaylist( true )
 
 	ClientCommand( "ResetMatchSettingsToDefault" )
 }

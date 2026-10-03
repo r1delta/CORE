@@ -2136,6 +2136,10 @@ function ClientCommand_UpdatePrivateMatchSetting( player, ... )
 			local value = pmVarVal.tointeger()
 			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value )
 			break
+		case "pm_dev0": // repurposed spare pm_ convar: "Spectre Camo" in Match Settings (see menu_mode_select.nut)
+			local value = pmVarVal.tointeger() != 0 ? 1 : 0
+			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value )
+			break
 	}
 
 	SetPlaylistVarOverride( "private_match", "1" )

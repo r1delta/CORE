@@ -2799,7 +2799,7 @@ function AutoBalancePlayer( player, manualSwitch = false, forceSwitch = false )
 		local classDataTable = GetPlayerClassDataTable( player, neededClass )
 		local classSettings = classDataTable.playerSetFile
 
-		if ( !isTitan && GetPlayerActiveBurnCard( player ) == "bc_play_spectre" )
+		if ( !isTitan && ( GetPlayerActiveBurnCard( player ) == "bc_play_spectre" || ForceSpectreCamoEnabled() ) )
 			classSettings = GetMapName() == "mp_corporate" ? "pilot_spectre_corporate" : "pilot_spectre"
 
 		if ( classSettings && IsAlive( player ) )

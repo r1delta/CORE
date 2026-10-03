@@ -4,6 +4,8 @@ function main()
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
     AddCallback_OnPlayerRespawned( BCPlayerRespawned )
+    AddCallback_OnPlayerRespawned( ForcedSpectreCamoRespawned )
+    Globalize( ForceSpectreCamoEnabled )
     AddCallback_OnPlayerKilled( BCOnPlayerKilled )
     Globalize( ChangeOnDeckBurnCardToActive )
     Globalize( ApplyTitanBurnCards_Threaded )
@@ -12,6 +14,37 @@ function main()
     AddCallback_OnClientConnected( BCOnClientConnected )
 
 	AddSpawnCallback( "npc_grenade_frag", BCGrenadeCreatedCallback )
+}
+
+// Playlist var "force_spectre_camo" (toggled from the Private Match lobby, or set in a playlist) makes every pilot
+// spawn with Spectre Camo, exactly as if they had the bc_play_spectre burn card active.
+function ForceSpectreCamoEnabled()
+{
+    return !IsLobby() && GetCurrentPlaylistVarInt( "force_spectre_camo", 0 ) != 0
+}
+
+function ForcedSpectreCamoRespawned( player )
+{
+    if ( ForceSpectreCamoEnabled() )
+        thread ApplyForcedSpectreCamo( player )
+}
+
+function ApplyForcedSpectreCamo( player )
+{
+    player.EndSignal( "Disconnected" )
+    player.EndSignal( "OnDeath" )
+
+    while ( !IsValid( player ) || IsValid( player.isSpawning ) )
+        wait 0.1
+
+    if ( player.IsTitan() )
+        player.WaitSignal( "OnLeftTitan" )
+
+    wait 0.5 // same settle time the burn card uses
+
+    local settings = GetMapName() == "mp_corporate" ? "pilot_spectre_corporate" : "pilot_spectre"
+    player.SetPlayerSettings( settings )
+    player.SetPlayerPilotSettings( settings )
 }
 
 function BCOnClientConnected( player )
