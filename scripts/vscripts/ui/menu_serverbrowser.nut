@@ -359,7 +359,10 @@ function OnServerButtonClicked(button)
         if ( server.map_name == "mp_lobby" )
             AdvanceMenu( GetMenu( "LobbyMenu" ) )
 
-        ClientCommand( "connect " + server.ip + ":" + server.port )
+        // delta_connect probes every route the server advertises (direct,
+        // hole punched, LAN, Tailscale, EOS, iroh, tailcat, TURN) and
+        // connects through the fastest one.
+        ClientCommand( "delta_connect " + server.ip + ":" + server.port )
     }
 }
 
@@ -680,8 +683,21 @@ function OnDirectConnectDialogButtonConnect_Activate( button )
 
     AdvanceMenu( GetMenu( "LobbyMenu" ) )
 
-    ClientCommand( "connect " + str )
+    ClientCommand( GetDirectConnectCommand( str ) + str )
 	CloseDialog( true )
+}
+
+// Addresses typed into the direct connect box: a tailcat address ("tc..."),
+// a bare iroh endpoint id (64 hex chars) or a normal ip:port.
+function GetDirectConnectCommand( str )
+{
+    if ( str.len() > 40 && str.slice( 0, 2 ) == "tc" && str.find( ":" ) == null && str.find( "." ) == null )
+        return "delta_connect_tailcat "
+
+    if ( str.len() == 64 && regexp( "^[0-9a-f]+$" ).match( str ) )
+        return "delta_connect_iroh "
+
+    return "delta_connect "
 }
 
 function OnDirectConnectDialogButtonCancel_Activate( button )
@@ -714,7 +730,7 @@ function OnEnterPasswordDialogButtonConnect_Activate( button )
         AdvanceMenu( GetMenu( "LobbyMenu" ) )
 
     ClientCommand( "password " + str )
-    ClientCommand( "connect " + server.ip + ":" + server.port )
+    ClientCommand( "delta_connect " + server.ip + ":" + server.port )
     CloseDialog( true )
 }
 
