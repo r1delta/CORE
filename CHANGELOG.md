@@ -47,5 +47,4 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 - Script falls back to `NavFindPath` when `NavFindPathPilot` is not available.
 
 ### Known issues
-- Intermittent disconnect/crash (engine entity-state decode) when a dead human spectating a bot respawns. Root cause not confirmed.
-- Spectating bots does not show first-person weapons, shots or titan cockpits (except Ogre), likely a fake-client viewmodel limitation.
+- Intermittent disconnect/crash (engine entity-state decode) when a dead human spectating a bot respawns. Root cause not confirmed, i'm investigating da cause :D
