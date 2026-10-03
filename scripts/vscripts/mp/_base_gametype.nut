@@ -3404,10 +3404,14 @@ function CodeCallback_OnClientConnectionCompleted( player )
 			// below here is NOT BOT ONLY, but only randomly. Should fix to be consistent for bots.
 			MinimapPlayerConnected( player )
 
+			// Before Prematch, wait like humans do; GameStartSpawnPlayers spawns everyone together.
+			if ( GetGameState() < eGameState.Prematch )
+				return
+
 			DecideRespawnPlayer( player )
 
 			// Debug bots get moved next to the first player; managed bots keep their team spawn.
-			if ( !IsManagedBot( player ) )
+			if ( !IsManagedBot( player ) && IsAlive( player ) )
 			{
 				local botCaller = GetPlayerArray()[0]
 				local spot = GetTitanReplacementPoint(botCaller)

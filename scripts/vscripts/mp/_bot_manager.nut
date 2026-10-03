@@ -1,7 +1,8 @@
 //=========================================================
 // Bot slot manager
 // Fills the match with script-driven pilot bots up to delta_bot_fill_target
-// (humans + bots). A bot leaves whenever a human joins and comes back when one leaves.
+// (humans + bots). Bots join as soon as the first human connects, so the match starts
+// with them; a bot leaves whenever a human joins and comes back when one leaves.
 //=========================================================
 
 const BOT_RECONCILE_DELAY = 1.0
@@ -32,6 +33,7 @@ function main()
 
 	AddCallback_OnClientConnected( BotManager_OnClientConnected )
 	AddCallback_OnClientDisconnected( BotManager_OnClientDisconnected )
+	AddCallback_GameStateEnter( eGameState.WaitingForPlayers, BotManager_OnMatchStateEnter )
 	AddCallback_GameStateEnter( eGameState.Prematch, BotManager_OnMatchStateEnter )
 	AddCallback_GameStateEnter( eGameState.Playing, BotManager_OnMatchStateEnter )
 }
@@ -128,7 +130,9 @@ function BotReconcileThread()
 	file.reconcileQueued = false
 
 	local state = GetGameState()
-	if ( state < eGameState.Prematch || state >= eGameState.WinnerDetermined )
+	// Filling during WaitingForPlayers lets both teams be populated right away, so the
+	// match leaves the lobby wait as soon as the first human is in.
+	if ( state < eGameState.WaitingForPlayers || state >= eGameState.WinnerDetermined )
 		return
 
 	local humans = []
@@ -146,7 +150,15 @@ function BotReconcileThread()
 		}
 	}
 
-	local desiredBots = max( 0, GetBotFillTarget() - humans.len() )
+	// No humans, no bots: an empty server stays empty (and can hibernate).
+	local desiredBots = humans.len() == 0 ? 0 : max( 0, GetBotFillTarget() - humans.len() )
+
+	// Bots are removed right away, alive or dead: a joining human must never wait for a slot.
+	for ( local i = bots.len() - 1; i >= 0; i-- )
+	{
+		if ( !IsValid( bots[ i ] ) )
+			bots.remove( i )
+	}
 
 	while ( bots.len() > desiredBots )
 	{
@@ -157,6 +169,16 @@ function BotReconcileThread()
 
 	for ( local count = bots.len(); count < desiredBots; count++ )
 		AddManagedBot( GetTeamNeedingPlayer() )
+}
+
+function AnyHumanDead()
+{
+	foreach ( player in GetPlayerArray() )
+	{
+		if ( !player.IsBot() && !IsAlive( player ) )
+			return true
+	}
+	return false
 }
 
 function GetTeamNeedingPlayer()
