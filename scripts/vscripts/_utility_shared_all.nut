@@ -996,7 +996,6 @@ function IsMultiGamemodePlaylist( playlist = null )
 	{
 		case CAMPAIGN:
 		case VARIETY_PACK:
-		case DEADLY_GROUND:
 		case "all_mini":
 			return true
 	}
