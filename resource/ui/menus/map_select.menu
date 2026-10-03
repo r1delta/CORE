@@ -1,0 +1,534 @@
+resource/ui/menus/map_select.menu
+{
+	MapsMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			classname 				LobbyTitleClass
+			labelText				"#SELECT_MAP"
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Map tile grid. 3 columns x 3 rows of tiles; the script fills them from a scrolling window over the full map list.
+// Layout is anchored to screen centre ("c") so it holds at any aspect ratio. Virtual screen is 854x480.
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		MapButtonsBackground
+		{
+			ControlName				ImagePanel
+			xpos					c-373
+			ypos					92
+			wide					492
+			tall					288
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/campaign_menu/map_image_back"
+		}
+
+		MapButton0
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				0
+			xpos					c-368
+			ypos					98
+			tabPosition				1
+			navDown					MapButton3
+			navRight					MapButton1
+			labelText				""
+		}
+
+		MapButton1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				1
+			xpos					c-206
+			ypos					98
+			tabPosition				0
+			navDown					MapButton4
+			navLeft					MapButton0
+			navRight					MapButton2
+			labelText				""
+		}
+
+		MapButton2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				2
+			xpos					c-44
+			ypos					98
+			tabPosition				0
+			navDown					MapButton5
+			navLeft					MapButton1
+			labelText				""
+		}
+
+		MapButton3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				3
+			xpos					c-368
+			ypos					191
+			tabPosition				0
+			navUp					MapButton0
+			navDown					MapButton6
+			navRight					MapButton4
+			labelText				""
+		}
+
+		MapButton4
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				4
+			xpos					c-206
+			ypos					191
+			tabPosition				0
+			navUp					MapButton1
+			navDown					MapButton7
+			navLeft					MapButton3
+			navRight					MapButton5
+			labelText				""
+		}
+
+		MapButton5
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				5
+			xpos					c-44
+			ypos					191
+			tabPosition				0
+			navUp					MapButton2
+			navDown					MapButton8
+			navLeft					MapButton4
+			labelText				""
+		}
+
+		MapButton6
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				6
+			xpos					c-368
+			ypos					284
+			tabPosition				0
+			navUp					MapButton3
+			navRight					MapButton7
+			labelText				""
+		}
+
+		MapButton7
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				7
+			xpos					c-206
+			ypos					284
+			tabPosition				0
+			navUp					MapButton4
+			navLeft					MapButton6
+			navRight					MapButton8
+			labelText				""
+		}
+
+		MapButton8
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				8
+			xpos					c-44
+			ypos					284
+			tabPosition				0
+			navUp					MapButton5
+			navLeft					MapButton7
+			labelText				""
+		}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Paging (three rows; the mouse wheel scrolls one row). Hidden by the script when every map fits on a single page.
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		PrevPageButton
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CompactButton
+			classname				MapPageUpClass
+			xpos					c-373
+			ypos					388
+			wide					150
+			labelText				"PREVIOUS PAGE"
+			navUp					MapButton6
+			navRight				NextPageButton
+		}
+
+		NextPageButton
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CompactButton
+			classname				MapPageDownClass
+			xpos					c-31
+			ypos					388
+			wide					150
+			labelText				"NEXT PAGE"
+			navUp					MapButton8
+			navLeft					PrevPageButton
+			navRight				RandomMapButton
+		}
+
+		RandomMapButton
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CompactButton
+			classname				MapRandomClass
+			xpos					104
+			ypos					r55
+			wide					130
+			labelText				"RANDOM MAP"
+			navUp					MapButton8
+			navLeft					NextPageButton
+		}
+
+		RandomMapGamepadHint
+		{
+			ControlName				Label
+			xpos					190
+			ypos					r53
+			auto_wide_tocontents	1
+			tall					16
+			visible					0
+			labelText				"#MAP_RANDOM_GLYPH"
+			font					FooterFont
+			allcaps					1
+			activeInputExclusivePaint	gamepad
+		}
+
+		PageLabel
+		{
+			ControlName				Label
+			xpos					c-223
+			ypos					389
+			wide					192
+			tall					18
+			visible					1
+			labelText				""
+			textAlignment			center
+			font					PlaylistDescriptionFont
+			allcaps					1
+			fgcolor_override		"204 234 255 255"
+		}
+
+		PageUpGlyph
+		{
+			ControlName				ImagePanel
+			classname				MapPagingGlyphClass
+			xpos					c-226
+			ypos					385
+			wide					26
+			tall					26
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/map_select/mwheel_up"
+		}
+
+		PageDownGlyph
+		{
+			ControlName				ImagePanel
+			classname				MapPagingGlyphClass
+			xpos					c-58
+			ypos					385
+			wide					26
+			tall					26
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/map_select/mwheel_down"
+		}
+
+		PageUpGamepadGlyph
+		{
+			ControlName				Label
+			classname				MapPagingGamepadGlyphClass
+			xpos					c-233
+			ypos					389
+			wide					40
+			tall					18
+			visible					0
+			labelText				"#MAP_PAGE_PREV_GLYPH"
+			textAlignment			center
+			font					FooterFont
+			activeInputExclusivePaint	gamepad
+		}
+
+		PageDownGamepadGlyph
+		{
+			ControlName				Label
+			classname				MapPagingGamepadGlyphClass
+			xpos					c-65
+			ypos					389
+			wide					40
+			tall					18
+			visible					0
+			labelText				"#MAP_PAGE_NEXT_GLYPH"
+			textAlignment			center
+			font					FooterFont
+			activeInputExclusivePaint	gamepad
+		}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Preview of the focused map
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		NextMapImage
+		{
+			ControlName				ImagePanel
+			xpos					c+122
+			ypos					92
+			wide					251
+			tall					138
+			visible					1
+			scaleImage				1
+			image					""
+		}
+
+		NextMapImageFrame
+		{
+			ControlName				ImagePanel
+			xpos					c+122
+			ypos					92
+			wide					251
+			tall					138
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_image_frame"
+		}
+
+		MapInfoBackground
+		{
+			ControlName				ImagePanel
+			xpos					c+122
+			ypos					234
+			wide					251
+			tall					108
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/lobby_back_02"
+		}
+
+		NextMapName
+		{
+			ControlName				Label
+			xpos					c+129
+			ypos					239
+			auto_wide_tocontents	1
+			tall					28
+			visible					1
+			labelText				""
+			textAlignment			west
+			font					NextMapFont
+			allcaps					1
+			fgcolor_override		"204 234 255 255"
+		}
+
+		NextMapNameMed
+		{
+			ControlName				Label
+			xpos					c+129
+			ypos					239
+			auto_wide_tocontents	1
+			tall					28
+			visible					1
+			labelText				""
+			textAlignment			west
+			font					PlaylistDescriptionFont
+			allcaps					1
+			fgcolor_override		"204 234 255 255"
+		}
+
+		NextMapNameSmall
+		{
+			ControlName				Label
+			xpos					c+129
+			ypos					239
+			auto_wide_tocontents	1
+			tall					28
+			visible					1
+			labelText				""
+			textAlignment			west
+			font					MenuFontTiny
+			allcaps					1
+			fgcolor_override		"204 234 255 255"
+		}
+
+		NextMapPack
+		{
+			ControlName				Label
+			xpos					c+129
+			ypos					265
+			wide					237
+			tall					12
+			visible					1
+			labelText				""
+			textAlignment			west
+			font					MenuFontTiny
+			allcaps					1
+			fgcolor_override		"138 170 200 255"
+		}
+
+		NextMapDesc
+		{
+			ControlName				Label
+			xpos					c+129
+			ypos					269
+			wide					237
+			auto_tall_tocontents	1
+			wrap					1
+			visible					1
+			labelText				""
+			textAlignment			north-west
+			font					PlaylistDescriptionFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+		}
+
+		StarsLabel
+		{
+			ControlName				Label
+			classname 				StarsLabelKeyboard
+			xpos					c+122
+			ypos					377
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					0
+			labelText				"#MAP_STARS_HEADER_KEYBOARD"
+			font					WinStreakHeaderFont
+			allcaps					0
+			fgcolor_override		"204 234 255 255"
+		}
+
+		MapStar0
+		{
+			ControlName				ImagePanel
+			classname 				MapStar0
+			xpos					c+122
+			ypos					395
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+		}
+
+		MapStar1
+		{
+			ControlName				ImagePanel
+			classname 				MapStar1
+			xpos					c+140
+			ypos					395
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+		}
+
+		MapStar2
+		{
+			ControlName				ImagePanel
+			classname 				MapStar2
+			xpos					c+158
+			ypos					395
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+		}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ButtonTooltip
+		{
+			ControlName				CNestedPanel
+			InheritProperties		ButtonTooltip
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

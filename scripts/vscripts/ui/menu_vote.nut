@@ -64,7 +64,11 @@ function VoteTypeButtonClass_Clicked( button )
 	if ( VoteTypeNeedsTarget( buttonID ) )
 	{
 		uiGlobal.selectedVote = buttonID
-		AdvanceMenu( GetMenu( "VoteTargetMenu" ) )
+
+		if ( buttonID == eVoteType.mapChange || buttonID == eVoteType.nextMap )
+			OpenMapVoteMenu( buttonID )
+		else
+			AdvanceMenu( GetMenu( "VoteTargetMenu" ) )
 	}
 	else
 	{
