@@ -75,6 +75,7 @@ function main()
 	AddClientCommandCallback( "PrivateMatchSetMode", ClientCommand_PrivateMatchSetMode )
 	AddClientCommandCallback( "PrivateMatchLaunch", ClientCommand_PrivateMatchLaunch )
 	AddClientCommandCallback( "PrivateMatchSwitchTeams", ClientCommand_PrivateMatchSwitchTeams )
+	AddClientCommandCallback( "PrivateMatchScrambleTeams", ClientCommand_PrivateMatchScrambleTeams )
 	AddClientCommandCallback( "CancelMatchSearch", ClientCommand_CancelMatchSearch ) //
 	AddClientCommandCallback( "GenUp", ClientCommand_GenUp ) //
 	AddClientCommandCallback( "RegenMenuViewed", ClientCommand_RegenMenuViewed ) //
@@ -1921,6 +1922,64 @@ function ClientCommand_PrivateMatchSwitchTeams( player, ... )
     player.TrueTeamSwitch()
     UpdatePrivateMatchReadyStatus( true )
     return true
+}
+
+// Host only: shuffles everyone in the Private Match lobby across IMC and Militia, as evenly as possible
+// (with an odd count the extra player lands on a random side).
+function ClientCommand_PrivateMatchScrambleTeams( player, ... )
+{
+	if ( !IsPrivateMatch() )
+		return false
+	if ( GetLobbyType() != "game" )
+		return false
+	if ( GetMapName() != "mp_lobby" )
+		return false
+	if ( GetPartyLeader( player ) != player )
+	{
+		printt( "Player", player.GetPlayerName(), "tried to 'PrivateMatchScrambleTeams', but is a party follower." )
+		return false
+	}
+	if ( level.ui.privatematch_starting == ePrivateMatchStartState.STARTING )
+		return false
+
+	local players = []
+	foreach ( p in GetPlayerArray() )
+	{
+		if ( p.GetTeam() == TEAM_IMC || p.GetTeam() == TEAM_MILITIA )
+			players.append( p )
+	}
+
+	if ( players.len() < 2 )
+		return false
+
+	local imcCount = players.len() / 2
+	if ( players.len() % 2 == 1 && RandomInt( 2 ) == 0 )
+		imcCount++
+
+	// A scramble that leaves everybody where they were isn't one; reshuffle until at least one player moves
+	for ( local attempt = 0; attempt < 10; attempt++ )
+	{
+		ArrayRandomize( players )
+
+		local moves = 0
+		foreach ( i, p in players )
+		{
+			if ( p.GetTeam() != ( i < imcCount ? TEAM_IMC : TEAM_MILITIA ) )
+				moves++
+		}
+
+		if ( moves > 0 )
+			break
+	}
+
+	foreach ( i, p in players )
+	{
+		if ( p.GetTeam() != ( i < imcCount ? TEAM_IMC : TEAM_MILITIA ) )
+			p.TrueTeamSwitch()
+	}
+
+	UpdatePrivateMatchReadyStatus( true )
+	return true
 }
 
 function ClientCommand_CancelMatchSearch( player, ... )

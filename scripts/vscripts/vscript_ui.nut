@@ -1495,6 +1495,11 @@ function PCSwitchTeamsButton_Activate( button )
 	ClientCommand( "PrivateMatchSwitchTeams" )
 }
 
+function PCScrambleTeamsButton_Activate( button )
+{
+	ClientCommand( "PrivateMatchScrambleTeams" )
+}
+
 function InitFocusFade( menu )
 {
 	local elements = GetElementsByClassname( menu, "FocusFadeClass" )

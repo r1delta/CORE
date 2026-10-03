@@ -232,6 +232,9 @@ function UpdateFooterButtons( menuName = null )
 				footerData.gamepad.append( { label = "#XBOX_SWITCH_TEAMS" } )
 				footerData.pc.append( { label = "#SWITCH_TEAMS", func = PCSwitchTeamsButton_Activate } )
 
+				if ( AmIPartyLeader() )
+					footerData.pc.append( { label = "#SCRAMBLE_TEAMS", func = PCScrambleTeamsButton_Activate } )
+
 				if ( GetConVarBool( "hide_server" ) && AmIPartyLeader() )
 					footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
 				else if ( AmIPartyLeader() )
@@ -542,8 +545,8 @@ function UpdateFooters( footerData )
 				Assert( "label" in footerData.pc[index] )
 
 				local s1 = ""
-				if ( "s1" in footerData.gamepad[index] )
-					s1 = footerData.gamepad[index].s1
+				if ( "s1" in footerData.pc[index] )
+					s1 = footerData.pc[index].s1
 
 				button.SetText( footerData.pc[index].label, s1 )
 				if ( "enabled" in footerData.pc[index] )
