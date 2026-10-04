@@ -348,6 +348,17 @@ if ( IsClient() )
 	GameMode_SetDefaultScoreLimits( GUN_GAME, 20, 0 )
 	GameMode_SetDefaultTimeLimits( GUN_GAME, 15, 0 )
 
+	GameMode_Create( BURN_CARD_ESCALATION )
+	GameMode_SetName( BURN_CARD_ESCALATION, "#GAMEMODE_BURN_CARD_ESCALATION" )
+	GameMode_SetGameModeAnnouncement( BURN_CARD_ESCALATION, "GameModeAnnounce_TDM" )
+	GameMode_SetDesc( BURN_CARD_ESCALATION, "#GAMEMODE_BURN_CARD_ESCALATION_HINT" )
+	GameMode_SetIcon( BURN_CARD_ESCALATION, "../ui/menu/playlist/default" )
+	GameMode_AddServerScript( BURN_CARD_ESCALATION, "mp/_free_for_all" ) // the FFA rules; runs before the mode script
+	GameMode_AddServerScript( BURN_CARD_ESCALATION, "mp/_gamemode_burn_card_escalation" )
+	GameMode_AddClientScript( BURN_CARD_ESCALATION, "client/cl_gamemode_ffa" )
+	GameMode_SetDefaultScoreLimits( BURN_CARD_ESCALATION, 30, 0 )
+	GameMode_SetDefaultTimeLimits( BURN_CARD_ESCALATION, 15, 0 )
+
 // Don't remove items from this list once the game is in production
 // Durango online analytics needs the numbers for each mode to stay the same
 // DO NOT CHANGE THESE VALUES AFTER THEY HAVE GONE LIVE
@@ -381,7 +392,8 @@ enum eGameModes
 	TITAN_MFD_ID =						24,
 	TITAN_MFD_PRO_ID =					25,
 	TITAN_BRAWL_AUTO_ID =				26,
-	GUN_GAME_ID =						27
+	GUN_GAME_ID =						27,
+	BURN_CARD_ESCALATION_ID =			31
 }
 
 gameModesStringToIdMap <- {}
@@ -413,6 +425,7 @@ gameModesStringToIdMap[ TITAN_BRAWL_AUTO ] 					<- eGameModes.TITAN_BRAWL_AUTO_I
 gameModesStringToIdMap[ TITAN_MFD ]							<- eGameModes.TITAN_MFD_ID
 gameModesStringToIdMap[ TITAN_MFD_PRO ]						<- eGameModes.TITAN_MFD_PRO_ID
 gameModesStringToIdMap[ GUN_GAME ]							<- eGameModes.GUN_GAME_ID
+gameModesStringToIdMap[ BURN_CARD_ESCALATION ]					<- eGameModes.BURN_CARD_ESCALATION_ID
 
 GameMode_VerifyModes()
 

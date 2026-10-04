@@ -67,6 +67,7 @@ const TITAN_BRAWL_AUTO = "ttdm_auto"
 const TITAN_MFD = "tmfd"
 const TITAN_MFD_PRO = "tmfdp"
 const GUN_GAME = "gg"
+const BURN_CARD_ESCALATION = "bce"
 
 const MAX_TRACKED_CHALLENGES = 3
 
@@ -1639,7 +1640,8 @@ enum ePrivateMatchModes
 	all_mini,
 	ctt,
 	ffa,
-	gg
+	gg,
+	bce
 }
 
 
@@ -2344,6 +2346,14 @@ pmSettingsMap["pm_score_limit"]["gg"] <- [
 	10,
 	15,
 	20,
+]
+pmSettingsMap["pm_score_limit"]["bce"] <- [
+	10,
+	20,
+	30,
+	40,
+	50,
+	75,
 ]
 
 pmSettingsMap["pm_pilot_health"] <- [
