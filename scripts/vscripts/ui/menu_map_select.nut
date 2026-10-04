@@ -344,10 +344,9 @@ function MapButton_Focused( button )
 	nextMapImage.SetImage( GetMapListImage( mapName ) )
 	local displayName = GetMapListDisplayName( mapName )
 	foreach ( label in file.nameLabels )
-	{
 		label.SetText( displayName )
-		label.SetAlpha( 0 )
-	}
+	// Pick the font now, in this frame, so the title is never blank; FitMapName() corrects it if the width changes once laid out
+	ApplyMapNameFit()
 	thread FitMapName()
 	UpdateMapPackLine( mapName )
 	if ( IsCampaignMapList() )
@@ -662,23 +661,9 @@ function UpdateMapPackLine( mapName )
 }
 
 // Long names (some Campaign missions) would be cut off at the default size, so show the largest font whose text fits.
-// The labels size themselves to their text, so their width is the true text width once the text has been laid out.
-function FitMapName()
+// The labels size themselves to their text, so their width is the true text width.
+function ApplyMapNameFit()
 {
-	EndSignal( uiGlobal.signalDummy, "OnCloseMapsMenu" )
-
-	// A label only reports its new width a few frames after SetText; until then it still has the previous name's width.
-	// Give it at least three frames, then wait until the reading stops changing.
-	local lastWidth = -1
-	for ( local i = 0; i < 10; i++ )
-	{
-		WaitFrame()
-		local width = file.nameLabels[0].GetWidth()
-		if ( i >= 2 && width == lastWidth )
-			break
-		lastWidth = width
-	}
-
 	local scale = GetContentScaleFactor( file.menu )[0]
 	local available = file.infoBackdrop.GetWidth() - ( MAP_INFO_TEXT_INSET + MAP_INFO_TEXT_MARGIN ) * scale
 	local chosen = file.nameLabels.len() - 1 // nothing fits: use the smallest
@@ -693,6 +678,25 @@ function FitMapName()
 
 	foreach ( index, label in file.nameLabels )
 		label.SetAlpha( index == chosen ? 255 : 0 )
+}
+
+// ApplyMapNameFit() already ran in the frame the name was set. A label can report its new width a few frames after SetText,
+// so wait at least three frames, then until the reading stops changing, and fit again. The title stays visible throughout.
+function FitMapName()
+{
+	EndSignal( uiGlobal.signalDummy, "OnCloseMapsMenu" )
+
+	local lastWidth = -1
+	for ( local i = 0; i < 10; i++ )
+	{
+		WaitFrame()
+		local width = file.nameLabels[0].GetWidth()
+		if ( i >= 2 && width == lastWidth )
+			break
+		lastWidth = width
+	}
+
+	ApplyMapNameFit()
 }
 
 // The description label sizes itself to its text; stretch the backdrop to match (never below its base height)
