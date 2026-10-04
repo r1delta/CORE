@@ -156,10 +156,17 @@ function BCE_GetCandidates( player )
 }
 
 // Amps a weapon with the card's mod. A main weapon loses every mod except its scope (an amped R-97 with a Scatterfire
-// barrel would be too strong); offhands keep what they had.
+// barrel would be too strong); offhands keep what they had. Perk mods (pas_*) are put back by the game whenever a
+// weapon's mods change, so they are neither kept nor counted here.
 function BCE_AddWeaponMod( weapon, modName, keepOnlyScope )
 {
-	local current = weapon.GetMods()
+	local current = []
+	foreach ( mod in weapon.GetMods() )
+	{
+		if ( mod.find( "pas_" ) != 0 )
+			current.append( mod )
+	}
+
 	local mods = []
 	foreach ( mod in current )
 	{
@@ -171,7 +178,6 @@ function BCE_AddWeaponMod( weapon, modName, keepOnlyScope )
 	}
 	mods.append( modName )
 
-	// Setting the same mods again right after a change is rejected by the engine
 	local same = mods.len() == current.len()
 	foreach ( mod in mods )
 	{
@@ -181,7 +187,28 @@ function BCE_AddWeaponMod( weapon, modName, keepOnlyScope )
 	if ( same )
 		return
 
-	weapon.SetMods( mods )
+	// The engine rejects a mod change that comes right after another one on the same weapon, so try again shortly
+	local applied = false
+	for ( local attempt = 0; attempt < 10 && !applied; attempt++ )
+	{
+		try
+		{
+			weapon.SetMods( mods )
+			applied = true
+		}
+		catch ( e )
+		{
+			wait 0.3
+		}
+	}
+
+	if ( !applied || !keepOnlyScope )
+		return
+
+	// Losing extended ammo and the like shrinks the magazine; don't leave the extra rounds in it
+	local baseClip = GetWeaponInfoFileKeyField_Global( weapon.GetClassname(), "ammo_clip_size" )
+	if ( baseClip != null && weapon.GetWeaponPrimaryClipCount() > baseClip.tointeger() )
+		weapon.SetWeaponPrimaryClipCount( baseClip.tointeger() )
 }
 
 function BCE_ApplyCard( player, key )
