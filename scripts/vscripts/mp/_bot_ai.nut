@@ -6,6 +6,9 @@
 
 const BOT_THINK_INTERVAL		= 0.1
 const BOT_DEBUG_HUD				= false	// shows one bot's movement diagnostics on screen
+const BOT_DEBUG_SPAWN_DEATHS	= false	// log any player death within BOT_SPAWN_DEATH_WINDOW of spawning
+const BOT_SPAWN_DEATH_WINDOW	= 3.0
+const BOT_SPAWN_TRACE_TIME		= 1.2	// per-tick bot log kept this long after spawning (dumped on a spawn death)
 const BOT_SIGHT_RANGE			= 4000.0
 const BOT_SIGHT_RADIUS			= 4000	// int copy for GetNPCArrayEx
 const BOT_NPC_TARGET_BIAS		= 1.8	// pilots are the real fight: a grunt/spectre must be much closer to be picked first
@@ -37,19 +40,34 @@ const BOT_PILOT_NODE_REACHED	= 72.0
 const BOT_TITAN_NODE_REACHED	= 180.0
 const BOT_TITAN_ENGAGE_DIST		= 1500.0
 const BOT_PILOT_AT_ENGAGE_DIST	= 1600.0	// on foot vs a titan: hold this range and shoot the anti-titan weapon
-const BOT_TITAN_TOO_CLOSE_DIST	= 600.0		// on foot, a titan closer than this is a stomp waiting to happen: run
+const BOT_TITAN_TOO_CLOSE_DIST	= 450.0		// on foot, a titan closer than this is a stomp waiting to happen: run
 const BOT_AT_BURST				= 1.6		// longer trigger holds for anti-titan weapons (charge rifle needs the charge)
 const BOT_AT_PAUSE				= 0.4
+const BOT_PILOT_AT_TITAN_BIAS	= 0.5		// on foot with a loaded anti-titan weapon, titans are picked over anything at up to 2x the distance...
+const BOT_PILOT_NO_AT_TITAN_BIAS	= 1.5	// ...without one, only when nothing else is around
+const BOT_AT_KEEP_TIME			= 6.0		// keep the anti-titan weapon out this long after a titan was the target / in sight
+const BOT_AT_PILOT_SWAP_DIST	= 600.0		// an enemy pilot in sight this close: primary out, whatever titans are around
+const BOT_AT_CHARGE_MAX_HOLD	= 3.0		// charge rifle: let go after this long even if never lined up
+const BOT_AT_CHARGE_START_ANGLE	= 20.0		// ...and only start charging within this many degrees of the target
+const BOT_TITAN_FLEE_MIN		= 1.2		// with an anti-titan weapon, a titan too close is only run from this long...
+const BOT_TITAN_FLEE_MAX		= 2.2		// ...before turning to shoot it again
 const BOT_WEAPON_HOLD_TIME		= 4.0	// keep a weapon at least this long after switching to it
 const BOT_WEAPON_DEPLOY_TIME	= 1.0	// no trigger while the switch animation plays
 const BOT_WEAPON_SWITCH_CHECK	= 2.5	// by now the switch should show in GetActiveWeapon; logged if not
 
 // Rodeo defence
 const BOT_RODEO_TARGET_BIAS		= 0.4	// riders get picked as targets over anything at up to 2.5x the distance
-const BOT_RODEO_REACTION_MIN	= 0.8
-const BOT_RODEO_REACTION_MAX	= 2.0
-const BOT_RODEO_DISEMBARK_CHANCE	= 60	// percent of bots that hop out to shoot the rider (others dash it out)
+const BOT_RODEO_REACTION_MIN	= 0.5	// time before hopping out to shoot the rider...
+const BOT_RODEO_REACTION_MAX	= 1.2
+const BOT_RODEO_SMOKE_GRACE		= 0.7	// ...plus this when a charged electric smoke gets the first try
 const BOT_RODEO_SMOKE_RETRY		= 3.0
+const BOT_RODEO_AIM_DEPTH		= 0.35	// rider aims this far from the hatch towards the titan's center (the hatch hitbox)
+const BOT_TITAN_RIDER_BIAS		= 0.7	// in a titan: a pilot riding a friendly titan is picked over others at up to 1.4x the distance
+const BOT_RIDER_HELP_DIST		= 1800.0	// on foot: an enemy riding a friendly titan this close is gone after...
+const BOT_RIDER_SCAN_INTERVAL	= 0.3		// ...looked for this often
+const BOT_RIDER_ANGLE_DIST		= 450.0		// no line on the rider: go round to this far from the titan, on the rider's side
+const BOT_RIDER_ANGLE_REFRESH	= 1.0		// (that spot follows the titan this often)
+const BOT_RIDER_KEEP_PILOT_DIST	= 900.0		// an enemy pilot in sight this close stays the target instead
 
 // Rodeo attacks (kept occasional on purpose)
 const BOT_RODEO_DECISION_MIN	= 8.0	// how often a bot near an enemy titan considers jumping on it
@@ -57,9 +75,32 @@ const BOT_RODEO_DECISION_MAX	= 15.0
 const BOT_RODEO_MAX_START_DIST	= 900.0
 const BOT_RODEO_JUMP_DIST		= 300.0	// leap for the hatch from this far out
 const BOT_RODEO_APPROACH_TIMEOUT	= 8.0
+const BOT_RODEO_NO_AT_BONUS		= 45	// percent added to the rodeo chance with no usable anti-titan weapon...
+const BOT_RODEO_CLOSE_BONUS		= 25	// ...and with the titan already too close to fight from range
+const BOT_RODEO_DECISION_NO_AT_MIN	= 2.0	// without an anti-titan weapon a rodeo is the only answer: considered this often
+const BOT_RODEO_DECISION_NO_AT_MAX	= 4.0
 const BOT_RODEO_MIN_HEALTH		= 0.6	// only start one when healthy...
 const BOT_RODEO_ABORT_HEALTH	= 0.4	// ...give up the approach below this...
 const BOT_RODEO_BAIL_HEALTH		= 0.35	// ...and jump off the titan below this (electric smoke etc.)
+const BOT_RODEO_CLIMB_TIME		= 3.0	// the climb on (and hatch rip) keeps the weapon holstered about this long: no switch tries counted then
+const BOT_RODEO_SWITCH_RETRY	= 0.5	// on the titan with the anti-titan weapon still out: ask for the primary this often...
+const BOT_RODEO_SWITCH_ALT_TRIES	= 3		// ...from this many tries on, alternate primary / sidearm...
+const BOT_RODEO_SWITCH_FORCE_TRIES	= 5	// ...once at this many, holster and redeploy to push the switch through...
+const BOT_RODEO_SWITCH_GIVE_UP	= 7.0	// ...and still stuck on the launcher this long into the ride (climb included): jump off
+
+// Riding friendly titans. Code starts a rodeo on any titan a pilot touches mid-air, so bots, always
+// jumping and wallrunning around their own titans, kept climbing on by accident. With the server's
+// "hold to rodeo" set to friendly-only (player.s.holdToRodeoState, HOLD_RODEO_FRIENDLY in
+// _rodeo_shared.nut) a friendly titan needs +use, which bots never press; enemy titans stay automatic.
+// A bot only switches that off for a ride it chose: a way out of a fight it's running from.
+const BOT_HOLD_RODEO_AUTO		= 0		// HOLD_RODEO_DISABLED: any titan, no +use
+const BOT_HOLD_RODEO_FRIENDLY	= 2		// HOLD_RODEO_FRIENDLY: friendly titans only with +use
+const BOT_RIDE_DIST				= 450.0	// running away with a friendly titan this close: hitch a ride...
+const BOT_RIDE_CHANCE			= 40	// ...this often per check...
+const BOT_RIDE_DECISION			= 3.0	// ...checked this often
+const BOT_RIDE_APPROACH_TIMEOUT	= 4.0
+const BOT_RIDE_MIN_TIME			= 4.0	// stay on this long...
+const BOT_RIDE_MAX_TIME			= 10.0	// ...up to this, then jump off and carry on
 const BOT_EMBARK_DIST			= 250.0
 const BOT_TITAN_CALL_RETRY		= 5.0
 const BOT_TITAN_CALL_DELAY_MIN	= 5.0	// extra wait once the titan meter is full
@@ -78,11 +119,53 @@ const BOT_EXPLORE_MATE_DIST		= 1200.0	// roaming goals near a teammate's roaming
 const BOT_PREY_MIN_TIME			= 10.0	// how long a bot sticks with one prey
 const BOT_PREY_MAX_TIME			= 25.0
 const BOT_OBSTACLE_CHECK_DIST	= 64.0
-const BOT_WALLRUN_MIN_DIST		= 300.0	// only start a wallrun when the next waypoint is this far along
-const BOT_WALL_SEEK_DIST		= 220.0	// while travelling, drift towards walls this close to wallrun along them
+const BOT_WALLRUN_MIN_DIST		= 300.0	// a wallrun just for speed only when the goal is at least this far
 const BOT_WALL_COMBAT_DIST		= 260.0	// in a fight, take to a wall this close instead of strafing on the ground
-const BOT_WALL_AIR_DIST			= 160.0	// in the air, steer onto walls this close to chain wallruns
-const BOT_WALL_SEEK_STRENGTH	= 0.7	// sideways input used to drift towards a wall
+const BOT_WALL_AIR_DIST			= 160.0	// in a fight, in the air, double jump onto walls this close
+
+// Planned wallruns (see PlanWallrun / UpdateWallrun): along a wall that takes us towards where the
+// route goes, up to a ledge, or across a gap; with a planned way off it.
+const BOT_DEBUG_WALLRUN			= false	// log each planned wallrun and how it ended (+ IsOnGround on a wall, once)
+const BOT_INPUT_FOLLOWS_AIM		= true	// turn the move input with the aim at the end of the tick (see BotThinkTick)
+const BOT_WR_PLAN_INTERVAL		= 0.4	// look for a wall to run this often on foot...
+const BOT_WR_PLAN_INTERVAL_UP	= 0.2	// ...and this often when the way on is up
+const BOT_WR_MIN_SPEED			= 160.0	// only plan / jump onto the wall running at least this fast
+const BOT_WR_LEAD				= 96.0	// probe for the wall this far ahead of us
+const BOT_WR_SIDE_DIST			= 240.0	// ...and up to this far to the side
+const BOT_WR_MAX_ANGLE_COS		= 0.42	// |wall normal . route| under this = wall within ~25 deg of the route
+const BOT_WR_RUN_LENGTH			= 320.0	// room along the wall needed for a run
+const BOT_WR_WALL_OFFSET		= 28.0	// where we run: this far off the face
+const BOT_WR_MIN_WALL_HEIGHT	= 110.0	// the face must reach at least this high above our feet
+const BOT_WR_MIN_PROGRESS		= 0.4	// the run must bring us this fraction of its length closer to the target
+const BOT_WR_LAND_AHEAD			= 120.0	// past the end of the run there must be no void this far on
+const BOT_WR_UP_MIN				= 48.0	// a target this much above us = run for the height
+const BOT_WR_UP_MAX_DIST		= 900.0	// ...when it's within this (2D)
+const BOT_WR_GAP_AHEAD			= 160.0	// a gap this far ahead = run along the wall across it
+const BOT_WR_LOOKAHEAD_DIST		= 300.0	// steer for the waypoint after the next one when the next is this close
+const BOT_WR_APPROACH_ANGLE		= 25.0	// come in at the wall at this angle (deg)...
+const BOT_WR_APPROACH_ANGLE_FAR	= 40.0	// ...or steeper when still far off it...
+const BOT_WR_FAR_LATERAL		= 140.0	// ...farther than this
+const BOT_WR_JUMP_LEAD			= 0.42	// jump this many seconds (of speed into the wall) before reaching it...
+const BOT_WR_JUMP_MIN			= 40.0	// ...but from no closer than this...
+const BOT_WR_JUMP_MAX			= 120.0	// ...and no farther than this
+const BOT_WR_APPROACH_TIME		= 1.8	// not at the wall by then: the plan is off
+const BOT_WR_LATCH_TIME			= 0.8	// jumped and not on the wall by then: missed it
+const BOT_WR_LEAN				= 0.3	// on the wall, lean into it this much so the run sticks
+const BOT_WR_AIR_LEAN			= 0.7	// in the air, steer into the wall this much
+const BOT_WR_MIN_RUN			= 0.35	// ride the wall at least this long (unless it ends)...
+const BOT_WR_MAX_RUN			= 1.5	// ...and at most this long before kicking off
+const BOT_WR_KICK_AHEAD			= 96.0	// kick off when the target is less than this far further along the wall
+const BOT_WR_KICK_REACH			= 280.0	// a kick off must not land in the void this far out
+const BOT_WR_KICK_AWAY			= 0.35	// a kick off always pushes at least this much away from the wall
+const BOT_WR_HOP_DIST			= 300.0	// a facing wall this close = hop across to it
+const BOT_WR_HOP_CHECK			= 0.2	// look for one this often
+const BOT_WR_MAX_CHAIN			= 4		// wallruns chained in one go, at most
+const BOT_WR_END_CHECK			= 72.0	// the wall ending this far ahead = kick off now
+const BOT_WR_FAIL_COOLDOWN		= 3.0	// no new plan this long after one failed
+const BOT_WR_BAD_WALL_TIME		= 20.0	// a wall we missed isn't tried again for this long...
+const BOT_WR_BAD_WALL_RADIUS	= 150.0	// ...within this of where we aimed
+const BOT_WR_STALE				= 0.35	// UpdateWallrun not run for this long (rodeo, fight): the plan is dropped
+const BOT_WR_REACH_BONUS		= 300.0	// goal score for spots a wallrun gets us up to (scaled by wallLove, style)
 
 // Gunfight movement (pilots keep moving while they shoot)
 const BOT_COMBAT_STRAFE_MIN		= 1.0	// how long before switching the circling direction
@@ -127,8 +210,23 @@ const BOT_TITAN_MIN_LEAD_SKILL	= 0.9
 const BOT_TITAN_REACTION_SCALE	= 0.6
 const BOT_TITAN_TRIGGER_ANGLE	= 8.0		// open fire within this many degrees at most
 const BOT_TITAN_PAUSE_SCALE		= 0.6
-const BOT_TITAN_ORDNANCE_COOLDOWN_MIN	= 4.0	// rockets/ordnance retried this often (the weapon has its own cooldown)
-const BOT_TITAN_ORDNANCE_COOLDOWN_MAX	= 8.0
+// Titan ordnance (see UpdateTitanOrdnance). The button is held through BotSetInput, not pulsed:
+// Multi-Target Missiles only build locks while it's held and fire on release, Slaved Warheads
+// dry-fire (and waste their cooldown) without a full lock, the rest fire on a short tap.
+const BOT_TITAN_ORDNANCE_CHECK	= 0.3		// how often a titan looks for an ordnance shot
+const BOT_TITAN_ORDNANCE_TAP_HOLD	= 0.3	// a "tap" is held this long (a single think could miss the press)
+const BOT_TITAN_ORDNANCE_AFTER	= 1.0		// after a release, wait this long before trying again
+const BOT_TITAN_ORDNANCE_VERIFY	= 0.5		// ...and check this long after it that something went out
+const BOT_TITAN_ORDNANCE_ANGLE	= 6.0		// dumb-fire ordnance only within this many degrees of the target
+const BOT_TITAN_ORDNANCE_MIN_DIST	= 250.0
+const BOT_TITAN_ORDNANCE_MAX_DIST	= 3000.0
+const BOT_TITAN_ORDNANCE_LOCK_MIN	= 0.8	// Multi-Target Missiles: held at least this long...
+const BOT_TITAN_ORDNANCE_LOCK_MAX	= 3.0	// ...at most this long...
+const BOT_TITAN_ORDNANCE_LOCKS	= 3.0		// ...and let go early once this many locks are on
+const BOT_TITAN_ORDNANCE_GROUP	= 2			// grunts/spectres only get ordnance when this many are bunched up...
+const BOT_TITAN_ORDNANCE_PILOT_CHANCE	= 40	// ...pilots this percent of the time; titans always
+const BOT_TITAN_ORDNANCE_PILOT_SKIP	= 3.0		// a lost pilot roll holds the ordnance back from pilots this long
+const BOT_TITAN_ORDNANCE_LOCK_REPORT	= 6.0	// Slaved Warheads wanted this long without ever locking: logged once
 // Projectile speeds (units/s) for leading shots; weapons not listed are treated as hitscan.
 // From the weapon scripts (PROJECTILE_SPEED, missileSpeed, ...).
 const BOT_LEAD_MAX_TIME			= 1.2		// never lead further ahead than this
@@ -168,6 +266,28 @@ const BOT_INDOOR_ROUTE_BONUS	= 700.0		// score for a covered node (indoor style)
 const BOT_TEAMMATE_POINT_DIST	= 600.0		// a teammate's waypoint this close is someone else's route
 // Overwatch: high-style bots that reach an elevated point hold it and watch the prey's area.
 const BOT_VANTAGE_MIN_ELEVATION	= 120.0
+
+// Going up through the building: a wall that can't be climbed from outside (or a climb that just
+// failed) sends the bot inside to an upper floor / roof node near it, which the node graph reaches by
+// the stairs; up there it watches the streets below for a while (see TryGoUpstairs).
+const BOT_STAIRS_SEARCH_RADIUS	= 700.0	// upper-floor nodes this close (2D) to the wall
+const BOT_STAIRS_MIN_RISE		= 100.0	// ...at least this far above us
+const BOT_STAIRS_CHANCE			= 35	// percent, no climbable roof ahead but a wall: go in and up instead
+const BOT_STAIRS_TIMEOUT		= 25.0	// not up there by then: forget it
+const BOT_STAIRS_REACHED		= 96.0
+const BOT_STAIRS_HOLD_MIN		= 4.0	// watching from up there this long
+const BOT_STAIRS_HOLD_MAX		= 9.0
+const BOT_STAIRS_COOLDOWN		= 40.0	// before the next trip upstairs
+
+// Leaving an upper floor through a window / off a balcony instead of walking back down: pilots
+// take no fall damage, so an opening towards a goal that's below us is the quick way out.
+const BOT_WINDOW_CHECK_INTERVAL	= 1.0
+const BOT_WINDOW_MIN_GOAL_DIST	= 700.0	// only for a goal this far away...
+const BOT_WINDOW_MIN_GOAL_DROP	= 120.0	// ...and this far below us
+const BOT_WINDOW_AHEAD			= 140.0	// opening checked this far ahead, at chest and head height
+const BOT_WINDOW_MIN_DROP		= 120.0	// floor beyond it at least this far down...
+const BOT_WINDOW_MAX_DROP		= 1500.0	// ...and at most this
+const BOT_WINDOW_EXIT_TIME		= 1.5	// run and jump out that way for at most this long
 const BOT_VANTAGE_HOLD_MIN		= 4.0
 const BOT_VANTAGE_HOLD_MAX		= 10.0
 const BOT_VANTAGE_BREAK_DIST	= 600.0		// prey this close ends the hold
@@ -195,15 +315,42 @@ const BOT_CLIMB_MIN_HEIGHT		= 90.0		// ...topped by a walkable roof this high...
 const BOT_CLIMB_MAX_HEIGHT		= 170.0		// ...up to what a jump + double jump + mantle surely reaches,
 const BOT_CLIMB_WALLRUN_MAX_HEIGHT	= 320.0	// ...or up to this with a wallrun up the face first
 const BOT_CLIMB_WALLRUN_LENGTH	= 220.0		// room along the wall needed for the wallrun
-const BOT_CLIMB_WALLRUN_JUMP_DIST	= 220.0	// jump onto the wall from this far out
-const BOT_CLIMB_WALLRUN_TIME	= 0.35		// ride the wall this long before kicking off towards the roof
+const BOT_CLIMB_WALLRUN_TIME	= 0.5		// ride the wall at most this long before kicking off towards the roof...
+const BOT_CLIMB_WALLRUN_MIN_TIME	= 0.15	// ...and at least this long (then kick once we stop rising)
 const BOT_CLIMB_TIMEOUT			= 3.5
 const BOT_CLIMB_RETRY			= 8.0
-const BOT_CLIMB_PROGRESS_TIME	= 1.6		// this long into a climb without gaining height = give up
+const BOT_CLIMB_PROGRESS_TIME	= 1.6		// this long after the first jump without gaining height = give up
+const BOT_CLIMB_APPROACH_TIME	= 2.2		// not jumped by this long into a climb = give up
+const BOT_CLIMB_RUNUP_MIN		= 60.0		// wallrun climb: closer to the wall than this, back off for a run-up first
 const BOT_BAD_CLIMB_RADIUS		= 300.0		// failed climbs are remembered (team-wide) around the wall spot
-const BOT_CLIMB_CHANCE_OTHERS	= 10		// percent of climb chances non-high bots take too
+// Ledges: jump, double jump and mantle onto anything in reach that's in the way up, the way a
+// player does it without thinking: when stuck against it, when the route or the target we're
+// chasing is up there, and off a wall we're running along (see TryStartLedgeMantle).
+const BOT_LEDGE_MIN_HEIGHT		= 30.0		// below this it's a step: walked or hopped
+const BOT_LEDGE_WALL_DIST		= 110.0		// the ledge's face this close ahead
+const BOT_LEDGE_UP_DIST			= 40.0		// route / target at least this far above us: worth going up
+const BOT_LEDGE_GOAL_DIST		= 1200.0	// a goal up high this close (2D) counts too (reposition / flank points)
+const BOT_LEDGE_CHECK_INTERVAL	= 0.3
+const BOT_LEDGE_TIMEOUT			= 1.6
+const BOT_LEDGE_WALLRUN_REACH	= 200.0		// running along a wall: a top up to this far above us
+const BOT_LEDGE_WALLRUN_CHECK	= 0.2
+const BOT_CLIMB_CHANCE_OTHERS	= 10		// percent of climb chances non-high bots take too...
+const BOT_CLIMB_CHANCE_ROOF_LOVE	= 40	// ...plus this times the bot's roofLove (see WantsClimb)
+const BOT_ROOF_GOAL_BONUS		= 600.0		// roaming: an elevated goal scores this much more (times roofLove)
+const BOT_ROOF_ROUTE_SCALE		= 0.4		// non-high bots weigh route point height at this fraction (times roofLove)
+const BOT_ROOF_EXTRA_CANDIDATES	= 4			// roof lovers look at this many more roaming goals
+const BOT_ROOF_HOLD_CHANCE		= 35		// percent (times roofLove) to stop a while on a high roaming goal...
+const BOT_ROOF_HOLD_MIN			= 2.0		// ...for this long
+const BOT_ROOF_HOLD_MAX			= 5.0
 const BOT_OFFGRAPH_HEIGHT		= 150.0		// path's next node this far below us = we're up on something
 const BOT_OFFGRAPH_BLOCK_TIME	= 6.0
+
+// The void: maps with open edges (War Games' simulation, ledges over the sky) kill whoever falls
+// past them with a trigger. Before a pilot on the ground moves somewhere, the floor just ahead is
+// probed: nothing below, or a floor deeper than the lowest node of the graph, is a pit (see IsVoidAt).
+const BOT_VOID_AHEAD			= 120.0		// floor probed this far ahead of the move
+const BOT_VOID_PROBE			= 2500.0	// ...down this far
+const BOT_VOID_MARGIN			= 128.0		// floor this far below the lowest graph node: a pit
 const BOT_GAP_CHECK_AHEAD		= 72.0
 const BOT_GAP_DROP				= 100.0		// no floor this far down just ahead = an edge: jump it
 const BOT_FLANK_REACHED			= 350.0
@@ -261,6 +408,13 @@ const BOT_TITAN_COVER_MIN_DIST	= 600.0		// cover spots at least this far from ev
 const BOT_TITAN_COVER_MAX_DIST	= 900.0		// ...and up to this far from the pilot
 const BOT_TITAN_COVER_MAX_TIME	= 12.0
 const BOT_TITAN_COVER_PILOT_DIST	= 500.0	// an enemy pilot this close is fought, not hidden from
+const BOT_TITAN_COVER_EYE_HEIGHT	= 150.0	// titans see over what hides a pilot from another pilot
+const BOT_TITAN_PEEK_MIN		= 2.5		// out on the peek spot this long (time to lock on / charge)...
+const BOT_TITAN_PEEK_MAX		= 4.0
+const BOT_TITAN_PEEK_HARD_MAX	= 6.5		// ...never longer than this per peek, even mid-lock
+const BOT_TITAN_HIDE_MIN		= 1.5		// back behind cover this long between peeks
+const BOT_TITAN_HIDE_MAX		= 3.0
+const BOT_TITAN_PEEK_MIN_HEALTH	= 0.35		// below this, just hide
 
 // Getting into our own titan once it has been called and is on the map: the first thing a pilot
 // does (the titan is the better place to fight from), from anywhere within this distance.
@@ -278,16 +432,72 @@ const BOT_FLEE_CANDIDATES		= 16
 const BOT_FLEE_INDOOR_BONUS		= 900.0	// flee spots under a roof...
 const BOT_FLEE_HIDDEN_BONUS		= 700.0	// ...and out of the threat's line of sight score higher
 const BOT_ROOF_CHECK_HEIGHT		= 600.0
-const BOT_NPC_GRENADE_GROUP		= 3		// grunts/spectres only get a grenade when this many are bunched up
+const BOT_NPC_GRENADE_GROUP		= 2		// grunts/spectres always get a grenade when this many are bunched up...
+const BOT_ORDNANCE_NPC_CHANCE	= 45	// ...a lone one this percent of the checks...
+const BOT_ORDNANCE_SPECTRE_EMP_BONUS	= 35	// ...more with an arc grenade against a spectre
 const BOT_NPC_GROUP_RADIUS		= 350
 
 // Abilities and ordnance
 const BOT_TACTICAL_RETRY_MIN	= 4.0	// pressing an uncharged ability does nothing; just retry later
 const BOT_TACTICAL_RETRY_MAX	= 8.0
-const BOT_ORDNANCE_COOLDOWN_MIN	= 10.0
-const BOT_ORDNANCE_COOLDOWN_MAX	= 18.0
+const BOT_ORDNANCE_COOLDOWN_MIN	= 3.0	// between throws (the grenade's own recharge still applies)
+const BOT_ORDNANCE_COOLDOWN_MAX	= 6.0
+const BOT_ORDNANCE_NOT_READY	= 1.0	// no charge left: check again this soon
+const BOT_ORDNANCE_RETRY_MIN	= 0.6	// nothing worth a grenade this check: look again this soon
+const BOT_ORDNANCE_RETRY_MAX	= 1.2
+const BOT_ORDNANCE_BUSY_RETRY	= 0.5	// mid weapon switch / mid lock-on: look again this soon
+const BOT_ORDNANCE_DROP_DIST	= 900.0	// running from someone this close: drop a satchel / mine behind us...
+const BOT_ORDNANCE_DROP_PITCH	= 80.0	// ...tossed down at our feet (pitch, down) without turning around
 const BOT_ORDNANCE_MIN_DIST		= 250.0	// don't frag yourself
 const BOT_ORDNANCE_MAX_DIST		= 1400.0
+const BOT_ORDNANCE_PILOT_CHANCE	= 55	// percent per check against a pilot in sight (always when losing)
+const BOT_ORDNANCE_COVER_CHANCE	= 70	// percent per check against a pilot that just ducked behind cover...
+const BOT_ORDNANCE_COVER_MIN	= 0.4	// ...gone out of sight this long ago...
+const BOT_ORDNANCE_COVER_MAX	= 3.0	// ...but not longer
+const BOT_ORDNANCE_LOB_TIME		= 0.7	// aim is held on the arc this long (the toss leaves the hand on a later anim event)
+const BOT_SATCHEL_TRIGGER_DIST	= 220.0	// an enemy this close to one of our satchels sets them off...
+const BOT_SATCHEL_TITAN_DIST	= 320.0	// ...a titan (bigger hull) from a bit farther...
+const BOT_SATCHEL_SAFE_DIST		= 320.0	// ...unless we're this close to that satchel ourselves
+const BOT_SATCHEL_SCAN_RADIUS	= 400	// int, for GetNPCArrayEx
+const BOT_SATCHEL_REACTION_MIN	= 0.15
+const BOT_SATCHEL_REACTION_MAX	= 0.45
+
+// Epilogue evac
+const BOT_EVAC_SHIP_NEAR_NODE	= 1000.0	// the dropship counts as landed once its ramp is this close to the evac point
+const BOT_EVAC_BOARD_DIST		= 500.0		// from here, run and jump straight at the ramp
+const BOT_EVAC_TITAN_EXIT_DIST	= 1500.0	// titans hop out this close to the evac point (they can't board)
+// Boarding needs the head (HeadFocus, ~60 above the feet) within 120 of the ramp trigger. A ramp
+// higher than a jump + double jump reaches from the ground is boarded from a launch point instead:
+// a roof or ledge next to the ship, climbed onto first, jumped from (see UpdateEvacLaunch).
+const BOT_EVAC_HEAD_HEIGHT		= 60.0		// head above the feet
+const BOT_EVAC_HEAD_MARGIN		= 60.0		// keep jumping while the head is no more than this above the ramp
+const BOT_EVAC_GROUND_REACH		= 260.0		// a ramp up to this high above the ground under it is boarded from the ground...
+const BOT_EVAC_GROUND_PROBE		= 2000.0	// (how far down the ground is looked for)
+const BOT_EVAC_GROUND_TRIES		= 3			// ...and after this many missed jumps from the ground, a launch point anyway
+const BOT_EVAC_GROUND_JUMP_DIST	= 250.0		// from the ground, jump this close to the ramp...
+const BOT_EVAC_RUNUP_MIN_DIST	= 140.0		// ...but standing still closer than this, back off for a run-up first
+const BOT_EVAC_RUNUP_SPEED		= 150.0
+const BOT_EVAC_RUNUP_TIME		= 0.8
+const BOT_EVAC_RAMP_MOVED		= 150.0		// the ramp moved this far (ship still settling): judge it again
+const BOT_EVAC_LAUNCH_MIN_GAP	= 60.0		// launch points: this far from the ramp (flat)...
+const BOT_EVAC_LAUNCH_MAX_GAP	= 380.0		// ...up to this far...
+const BOT_EVAC_LAUNCH_MAX_RISE	= 150.0		// ...with the ramp at most this far above the head...
+const BOT_EVAC_LAUNCH_MAX_DROP	= 250.0		// ...or at most this far below it
+const BOT_EVAC_LAUNCH_SIDE_BONUS	= 200.0	// spots on the ship's open (ramp) side score higher
+const BOT_EVAC_LAUNCH_CHECKS	= 6			// best spots checked for a clear jump line, per search
+const BOT_EVAC_ROOF_DIRS		= 12		// roof probes around the ramp
+const BOT_EVAC_LAUNCH_JUMP_DIST	= 300.0		// from a launch point, jump this close to the ramp (or at its edge)
+const BOT_EVAC_LAUNCH_REACHED	= 64.0
+const BOT_EVAC_LAUNCH_REACH_TIME	= 20.0	// a launch point not reached within this (once closer than the next) is dropped
+const BOT_EVAC_LAUNCH_TIMER_DIST	= 1000.0
+const BOT_EVAC_LAUNCH_TRIES		= 3			// ...as is one jumped from this many times without boarding
+const BOT_EVAC_LAUNCH_LOST_DROP	= 96.0		// back on the ground this far below the launch point: climb up again
+const BOT_EVAC_LAUNCH_SEARCH_RETRY	= 2.0
+const BOT_EVAC_BAD_LAUNCH_RADIUS	= 120.0	// dropped launch points are avoided (team-wide) this close
+const BOT_EVAC_AIM_CONE			= 55.0		// running for the ship: only turn to shoot what's within this many degrees of the run (keeps the sprint)...
+const BOT_EVAC_SHOOT_DIST		= 1500.0	// ...and this close
+const BOT_EVAC_GRENADE_DODGE_MIN	= 0.5	// a grenade on the evac run: hop aside this long, not the usual 1-1.5 s
+const BOT_EVAC_GRENADE_DODGE_MAX	= 0.8
 const BOT_TACTICAL_LOW_HEALTH	= 0.6
 
 // AI node graph hulls. The titan hull index still has to be confirmed against the .ain link data;
@@ -324,6 +534,8 @@ const BOT_MELEE_SWING_TIME		= 0.6	// window in which a swing can still connect
 const BOT_MELEE_MAX_MISSES		= 2		// swings in a row that didn't connect before giving up on melee...
 const BOT_MELEE_BLOCK_MIN		= 5.0	// ...for this long, fighting with the gun instead
 const BOT_MELEE_BLOCK_MAX		= 8.0
+const BOT_MELEE_TITAN_CLEARANCE	= 220.0	// on foot: no kick with an enemy titan this close (the kick cone would land on it)
+const BOT_RUSH_TITAN_CLEARANCE	= 400.0	// ...and no rushing in at a pilot when we or it are this close to one
 const BOT_TITAN_DASH_COOLDOWN_MIN	= 3.0
 const BOT_TITAN_DASH_COOLDOWN_MAX	= 6.0
 
@@ -342,8 +554,21 @@ const BOT_SWAT_DODGE_DIST		= 350.0
 
 // Titan fights: titans close in and brawl instead of trading shots from max range.
 // Titan health doesn't regenerate, so they never retreat just for being hurt (they eject instead).
-const BOT_TITAN_RANGE_MIN		= 350.0	// each bot's preferred titan-fight range is rolled in here
+const BOT_TITAN_RANGE_MIN		= 350.0	// each bot's preferred titan-fight range is rolled in here (weapons without a band)
 const BOT_TITAN_RANGE_MAX		= 750.0
+const BOT_TITAN_ENGAGE_MARGIN	= 500.0	// a titan starts fighting this far beyond its preferred range
+
+// Vortex shield (see UpdateTitanVortex): put up against an enemy titan shooting at us, held to
+// catch a volley, let go to throw it back.
+const BOT_VORTEX_MAX_DIST		= 2500.0
+const BOT_VORTEX_PROJECTILE_RADIUS	= 900	// int, for GetProjectileArrayEx: enemy rockets / grenades this close
+const BOT_VORTEX_MAX_START_CHARGE	= 0.4	// only put it up with at least this much of its time left (charge used)
+const BOT_VORTEX_RELEASE_CHARGE	= 0.9	// let go before the game forces it at 1.0
+const BOT_VORTEX_HOLD_MIN		= 1.0
+const BOT_VORTEX_HOLD_MAX		= 2.2
+const BOT_VORTEX_MIN_HOLD		= 0.5	// target gone: still hold this long before letting go
+const BOT_VORTEX_COOLDOWN_MIN	= 1.5	// after a throw, before putting it up again
+const BOT_VORTEX_COOLDOWN_MAX	= 3.0
 const BOT_TITAN_PRESS_HEALTH	= 0.6	// target this hurt (or weaker than us): go in for the punch
 const BOT_TITAN_TARGET_BIAS		= 0.5	// in a titan, enemy titans are picked over anything at up to 2x the distance
 const BOT_TITAN_SMALL_TARGET_BIAS	= 1.6	// ...and grunts/spectres only when nothing better is in sight
@@ -358,6 +583,35 @@ const BOT_TITAN_BUNCHED_DIST	= 700.0	// a friendly titan this close in a fight =
 const BOT_TITAN_REPOSITION_CHANCE	= 60	// ...and this often one of them breaks off to a new angle
 const BOT_TITAN_ELEVATED_TARGET_DIST	= 900.0	// back off this far from a pilot up on a roof to get an angle
 const BOT_MELEE_MAX_HEIGHT_DIFF	= 120.0	// never charge in for melee at something this far above or below
+// Titans stuck on stairs, steps and narrow passages (see TitanStuckResponse).
+const BOT_TITAN_STUCK_RESET_TIME	= 6.0	// stuck again within this escalates (step out, skip / reposition, detour)
+const BOT_TITAN_UNSTICK_TIME	= 1.0		// step out (with a dash) this long
+const BOT_TITAN_STUCK_IGNORE_DIST	= 300.0	// in a fight, blocked this close to the target = body to body with it, not stuck
+const BOT_TITAN_STEP_HEIGHT		= 20.0		// hull probes start this high, so they pass over steps
+const BOT_TITAN_PROBE_DIST		= 160.0		// how far each probe looks for room to step out
+const BOT_TITAN_PROBE_CLEAR		= 0.85		// fraction of a probe that must be free
+const BOT_TITAN_PROBE_HULL_SCALE	= 0.85	// probes use a slightly narrower hull than the titan's
+const BOT_TITAN_BACKOFF_TIME	= 4.0		// stuck in a fight: hold range (no charging in) this long
+const BOT_TITAN_BAD_SPOT_TIME	= 60.0		// places titans got stuck for good are avoided this long...
+const BOT_TITAN_BAD_SPOT_RADIUS	= 250.0		// ...within this radius
+const BOT_TITAN_BAD_SPOT_MAX	= 24
+const BOT_TITAN_DETOUR_TIME		= 10.0		// after giving up on a route: head for a detour point this long
+const BOT_TITAN_NODE_REACH_Z	= 96.0		// a waypoint only counts as reached within this height (switchback stairs)
+const BOT_TITAN_MAX_NODE_ELEVATION	= 200.0	// tactical points this far above the local ground are out of a titan's reach
+const BOT_TITAN_MAX_RISE		= 24.0		// NPC traverse links a titan path may use (see NavFindPathPilot): barely any climb...
+const BOT_TITAN_MAX_GAP			= 200.0		// ...and short gaps only
+const BOT_TITAN_HULL_PROBE		= 4			// .ain hull tried first for titan paths (-1 = off); falls back to BOT_HULL_TITAN
+
+// Titan awareness: nuclear ejections, our particle wall and our electric smoke.
+// The smoke and wall numbers are estimates (their sizes live in the weapon files, not the scripts).
+const BOT_NUKE_DANGER_RADIUS	= 1100.0	// a nuclear ejection hits titans out to ~750; room to run on top of that
+const BOT_NUKE_THREAT_TIME		= 6.0		// eject (~2s) + fuse (1.3s) + blast (up to 1.7s), with a margin
+const BOT_SHIELD_WALL_SCAN_INTERVAL	= 0.5
+const BOT_SHIELD_WALL_COVER_DIST	= 160.0	// stand this far behind our particle wall, seen from the target...
+const BOT_SHIELD_WALL_STRAFE	= 110.0		// ...side-stepping at most this far along it
+const BOT_SHIELD_WALL_MAX_DIST	= 900.0		// a wall farther away than this isn't worth walking back to
+const BOT_SMOKE_DURATION		= 6.0		// how long the electric smoke keeps cooking a rider
+const BOT_SMOKE_STAY_RADIUS		= 120.0		// with a rider on, stay this close to where the smoke went off
 
 function main()
 {
@@ -374,6 +628,7 @@ function main()
 	file.brains <- {}			// bot -> brain, for team coordination
 	file.nav <- null			// node cache for tactical points, built on first use (see GetNavCache)
 	file.badClimbSpots <- []	// walls bots failed to climb this map
+	file.wrGroundLogged <- false	// BOT_DEBUG_WALLRUN: IsOnGround on a wall reported once
 	file.hasPilotNav <- "NavFindPathPilot" in getroottable()
 	if ( !file.hasPilotNav )
 		printt( "BotAI: NavFindPathPilot not available (older DLL), pilot paths may include NPC-only climbs" )
@@ -397,12 +652,80 @@ function main()
 	file.adsProbeIndex <- 0
 	file.adsProbeFails <- 0
 	file.adsBit <- null
+	file.nukes <- []			// nuclear ejections going off soon: { pos, team, until }, see BotAI_OnTitanEject
+	file.titanBadSpots <- []	// places titans got stuck for good: { pos, until }, see MarkTitanBadSpot
+	// Titan-sized .ain hull for titan paths, dropped for the map if it hardly ever finds one (see BuildTitanPath).
+	file.titanHull <- BOT_TITAN_HULL_PROBE >= 0 ? BOT_TITAN_HULL_PROBE : null
+	file.titanHullTries <- 0
+	file.titanHullHits <- 0
+	file.evacBadLaunches <- []	// evac launch points that didn't work out (team-wide), see UpdateEvacLaunch
+	// Pilot ordnance, per class: throw range, how much the arc is lifted per unit of distance (and at
+	// most), and whether it's worth dropping behind us while running away. Satchels and mines are
+	// tossed slowly, so they only reach short distances and need a much higher arc.
+	file.ordnanceProfiles <- {
+		mp_weapon_frag_grenade = { minDist = 250.0, maxDist = 1400.0, lift = 0.008, liftMax = 12.0, drop = false }
+		mp_weapon_grenade_emp = { minDist = 200.0, maxDist = 1500.0, lift = 0.008, liftMax = 12.0, drop = false }
+		mp_weapon_satchel = { minDist = 150.0, maxDist = 500.0, lift = 0.04, liftMax = 30.0, drop = true }
+		mp_weapon_proximity_mine = { minDist = 100.0, maxDist = 450.0, lift = 0.04, liftMax = 30.0, drop = true }
+	}
+	file.ordnanceMissReported <- {}	// titan ordnance class -> true once a held press was seen not firing
+	// Titan main weapons: the range band each one does its damage in. A titan fights from inside its
+	// own weapon's band (rolled per bot within it, see UpdateTitanPreferredDist): the shotgun and the
+	// arc cannon only hurt up close, the railgun / charge cannon want distance. Weapons not listed
+	// use their weapon file's damage falloff distances.
+	file.titanWeaponRanges <- {
+		mp_titanweapon_shotgun = { min = 200.0, max = 400.0 }
+		mp_titanweapon_arc_cannon = { min = 300.0, max = 550.0 }
+		mp_titanweapon_triple_threat = { min = 400.0, max = 700.0 }
+		mp_titanweapon_rocket_launcher = { min = 500.0, max = 850.0 }
+		mp_titanweapon_xo16 = { min = 550.0, max = 1000.0 }
+		mp_titanweapon_minigun = { min = 550.0, max = 1000.0 }
+		mp_titanweapon_40mm = { min = 650.0, max = 1100.0 }
+		mp_titanweapon_sniper = { min = 1200.0, max = 2000.0 }
+		mp_titanweapon_charge_cannon = { min = 1100.0, max = 1800.0 }
+	}
 
 	if ( !BotManagerEnabledForMode() )
 		return
 
 	AddCallback_OnPlayerRespawned( BotAI_OnPlayerRespawned )
 	AddDamageCallback( "player", BotAI_OnPlayerDamaged )
+	AddCallback_OnTitanEject( BotAI_OnTitanEject )
+	AddCallback_OnRodeoStarted( BotAI_OnRodeoStarted )
+	if ( BOT_DEBUG_SPAWN_DEATHS )
+		AddCallback_OnPlayerKilled( BotAI_DebugSpawnDeath )
+}
+
+// A bot just got on an enemy titan. The game holsters the weapon and deploys it again once the
+// climb is done (PlayerBeginsRodeo); asking for the primary now means that's what comes out,
+// instead of the anti-titan weapon that's useless up there.
+function BotAI_OnRodeoStarted( player )
+{
+	if ( !IsValid( player ) || !( player in file.brains ) )
+		return
+	local brain = file.brains[ player ]
+	brain.rideSince = Time()
+	brain.rideSwitchTries = 0
+	brain.rideSwitchForced = false
+	brain.rideGaveUp = false
+	local active = player.GetActiveWeapon()
+	if ( IsValid( active ) && IsAntiTitanWeapon( active ) )
+		BotRequestRideWeapon( player, brain, GetBotRodeoWeapon( player ) )
+}
+
+// A titan is ejecting: if it's a nuclear ejection, remember where for a few seconds so titan
+// bots can get clear of the blast (see FindNukeThreat).
+function BotAI_OnTitanEject( player, soul )
+{
+	if ( !IsValid( soul ) )
+		return
+	local titan = soul.GetTitan()
+	if ( !IsValid( titan ) )
+		return
+	local payload = IsValid( player ) ? GetNuclearPayload( player ) : NPC_GetNuclearPayload( titan )
+	if ( payload <= 0 )
+		return
+	file.nukes.append( { pos = titan.GetOrigin(), team = titan.GetTeam(), until = Time() + BOT_NUKE_THREAT_TIME } )
 }
 
 // A bot got hit: its team learns where the shooter is, and the bot turns and heads that way
@@ -425,8 +748,107 @@ function BotAI_OnPlayerDamaged( player, damageInfo )
 
 function BotAI_OnPlayerRespawned( player )
 {
+	// Spawn-death diagnostic: where this life started, and a fresh per-tick log for it.
+	if ( BOT_DEBUG_SPAWN_DEATHS )
+	{
+		player.s.dbgSpawnOrigin <- player.GetOrigin()
+		player.s.dbgSpawnTrace <- []
+	}
+
 	if ( IsManagedBot( player ) )
 		thread BotThink( player )
+}
+
+// Spawn-death diagnostic helpers: short, safe descriptions for the log lines below.
+function BotAI_DbgF( value )
+{
+	if ( value == null )
+		return "null"
+	return format( "%.2f", value.tofloat() )
+}
+
+function BotAI_DbgVec( vec )
+{
+	if ( vec == null )
+		return "null"
+	return format( "(%.0f %.0f %.0f)", vec.x, vec.y, vec.z )
+}
+
+function BotAI_DbgEnt( ent )
+{
+	if ( ent == null )
+		return "null"
+	if ( !IsValid( ent ) )
+		return "invalid"
+	local text = ent.GetClassname() + " '" + ent.GetName() + "' #" + ent.GetEntIndex()
+	if ( ent.IsPlayer() )
+		text += " (" + ent.GetPlayerName() + ")"
+	return text
+}
+
+// One line per think for the first BOT_SPAWN_TRACE_TIME seconds of a life (see BotAI_DebugSpawnDeath).
+function BotAI_DebugSpawnTrace( bot, brain )
+{
+	if ( !( "dbgSpawnTrace" in bot.s ) || !( "respawnTime" in bot.s ) )
+		return
+	local alive = Time() - bot.s.respawnTime
+	if ( alive > BOT_SPAWN_TRACE_TIME )
+		return
+
+	local line = "t=" + BotAI_DbgF( alive )
+	line += " org=" + BotAI_DbgVec( bot.GetOrigin() )
+	line += " vel=" + BotAI_DbgVec( bot.GetVelocity() )
+	line += " ground=" + ( bot.IsOnGround() ? "1" : "0" )
+	line += " hp=" + bot.GetHealth()
+	line += " parent=" + BotAI_DbgEnt( bot.GetParent() )
+	line += " anim=" + ( bot.Anim_IsActive() ? "1" : "0" )
+	local input = brain.dbgInput
+	if ( input != null )
+		line += " in: fwd=" + BotAI_DbgF( input.forward ) + " side=" + BotAI_DbgF( input.side ) + " pitch=" + BotAI_DbgF( input.pitch ) + " yaw=" + BotAI_DbgF( input.yaw ) + " buttons=" + input.buttons + " pressed=" + input.pressed
+	else
+		line += " in: none"
+	bot.s.dbgSpawnTrace.append( line )
+}
+
+// Logs any player who dies within BOT_SPAWN_DEATH_WINDOW of spawning: what killed them, where, and
+// (for our bots) what they did each think since spawning. Quiet otherwise.
+function BotAI_DebugSpawnDeath( player, damageInfo )
+{
+	try
+	{
+		if ( !IsValid( player ) )
+			return
+		local now = Time()
+		local sincePrevDeath = ( "dbgLastDeathTime" in player.s ) ? now - player.s.dbgLastDeathTime : null
+		player.s.dbgLastDeathTime <- now
+
+		if ( !( "respawnTime" in player.s ) )
+			return
+		local alive = now - player.s.respawnTime
+		if ( alive > BOT_SPAWN_DEATH_WINDOW )
+			return
+
+		local spawnOrigin = ( "dbgSpawnOrigin" in player.s ) ? player.s.dbgSpawnOrigin : null
+		printt( "BotAI-DBG: SPAWN DEATH", player.GetPlayerName(), "bot =", player.IsBot(), "alive =", BotAI_DbgF( alive ),
+			"sincePrevDeath =", BotAI_DbgF( sincePrevDeath ), "origin =", BotAI_DbgVec( player.GetOrigin() ),
+			"spawnOrigin =", BotAI_DbgVec( spawnOrigin ), "vel =", BotAI_DbgVec( player.GetVelocity() ),
+			"onGround =", player.IsOnGround(), "titan =", player.IsTitan() )
+		printt( "BotAI-DBG:   dmg =", damageInfo.GetDamage(), "dmgType =", damageInfo.GetDamageType(),
+			"custom =", damageInfo.GetCustomDamageType(), "sourceId =", damageInfo.GetDamageSourceIdentifier(),
+			"forceKill =", damageInfo.GetForceKill(), "pos =", BotAI_DbgVec( damageInfo.GetDamagePosition() ) )
+		printt( "BotAI-DBG:   attacker =", BotAI_DbgEnt( damageInfo.GetAttacker() ), "| inflictor =", BotAI_DbgEnt( damageInfo.GetInflictor() ),
+			"| weapon =", BotAI_DbgEnt( damageInfo.GetWeapon() ), "| parent =", BotAI_DbgEnt( player.GetParent() ) )
+
+		if ( "dbgSpawnTrace" in player.s )
+		{
+			foreach ( line in player.s.dbgSpawnTrace )
+				printt( "BotAI-DBG:     " + line )
+		}
+	}
+	catch ( e )
+	{
+		printt( "BotAI-DBG: BotAI_DebugSpawnDeath failed:", e )
+	}
 }
 
 function GetBotSkill()
@@ -540,6 +962,12 @@ function BotThink( bot )
 		climbWallrunStart = 0.0
 		climbStart = 0.0
 		climbStartZ = 0.0
+		climbIsLedge = false	// the climb is a quick ledge mantle (see TryStartLedgeMantle), not a building
+		climbJumpTime = 0.0		// first jump of the climb (0 = still running up to the wall)
+		climbAltAlong = null	// wallrun climb: the other side to run along, if the first one fails...
+		climbTries = 0			// ...and how many times we switched
+		nextLedgeCheck = 0.0
+		nextWallLedgeCheck = 0.0
 		nextClimbCheck = 0.0
 		offGraph = false
 		offGraphBlockedUntil = 0.0
@@ -552,6 +980,27 @@ function BotThink( bot )
 		wallrunStartTime = -999.0
 		wallrunHopAfter = RandomFloat( 0.6, 1.4 )
 		wasWallRunning = false
+		// Planned wallrun (see UpdateWallrun): the phase, why, and how we mean to get off the wall...
+		wrPhase = "none"		// "none" / "approach" / "air" / "run" / "kick"
+		wrReason = null			// "up" / "gap" / "long" / "adopted" (on a wall we didn't plan)
+		wrExit = null			// "goal" (kick towards the route) / "ledge" (up onto it) / "hop" (to the facing wall)
+		wrInto = null			// ...flat unit vector into the wall...
+		wrAlong = null			// ...and along it, the way we run
+		wrWallPoint = null		// point on the face we're coming in at
+		wrTarget = null			// where the run is taking us (route point / goal)
+		wrMoveDir = null		// this tick's move direction (world) while the plan is on...
+		wrLookDir = null		// ...and where to look
+		wrKickDir = null		// direction of the kick off the wall
+		wrPhaseStart = 0.0
+		wrRunStart = 0.0
+		wrChain = 0				// wallruns in this go
+		wrPlanDouble = false	// double jump after the kick off
+		wrJumped = false		// we jumped for the wall (not just bumped off the ground on the way)
+		wrNextPlan = 0.0
+		wrNextHopCheck = 0.0
+		wrLastTick = 0.0		// last time UpdateWallrun ran (a gap = the plan is stale)
+		wrBadWall = null		// wall we last missed, not tried again...
+		wrBadUntil = 0.0		// ...until then
 		rangeFactor = RandomFloat( BOT_RANGE_FACTOR_MIN, BOT_RANGE_FACTOR_MAX )
 		fleeHealth = 0.2
 		combatHold = false
@@ -575,6 +1024,17 @@ function BotThink( bot )
 		aimErrYaw = 0.0
 		aimErrPitch = 0.0
 		titanPreferredDist = RandomFloat( BOT_TITAN_RANGE_MIN, BOT_TITAN_RANGE_MAX )
+		titanRangeClass = null	// main weapon titanPreferredDist was rolled for (see UpdateTitanPreferredDist)
+		upstairsGoal = null		// upper-floor node we're going up to through the building (see TryGoUpstairs)...
+		upstairsUntil = 0.0		// ...until then
+		nextUpstairsTime = 0.0
+		nextWindowCheck = 0.0
+		windowExitDir = null	// jumping out a window / off a balcony this way...
+		windowExitStart = 0.0
+		windowExitUntil = 0.0	// ...until then
+		vortexHoldStart = 0.0	// vortex shield held up since...
+		vortexHoldUntil = 0.0	// ...until then (0 = not held)
+		nextVortexTime = 0.0
 		combatWallSeen = false
 		nextCombatHop = Time() + RandomFloat( 0.5, 1.5 )
 		planDoubleJump = false
@@ -591,6 +1051,10 @@ function BotThink( bot )
 		fleeStartTime = -999.0
 		nextTacticalTime = Time() + RandomFloat( 1.0, 3.0 )
 		nextOrdnanceTime = Time() + RandomFloat( 3.0, 8.0 )
+		lobPos = null			// where a grenade on its way out of the hand is aimed...
+		lobUntil = 0.0			// ...and until when the arc is held
+		satchelDetonateAt = null	// an enemy walked onto our satchels: set them off at this time
+		evac = null				// epilogue, our team escaping: { pos, board } (see GetEvacGoal)
 		nextMeleeTime = 0.0
 		meleeMisses = 0
 		swatting = false
@@ -608,10 +1072,61 @@ function BotThink( bot )
 		rideFireToggle = false
 		rodeoStartTime = null
 		rodeoReaction = 0.0
-		rodeoDisembark = false
+		rideSince = 0.0			// riding an enemy titan since (0 = not riding)
+		nextRideSwitchTime = 0.0	// on the titan: next time to ask for the primary again...
+		rideSwitchTries = 0		// ...how many times it was asked for this ride...
+		rideSwitchForced = false	// ...and whether the holster/deploy push was used
+		rideGaveUp = false		// stuck on the launcher up there: jumping off (logged once per ride)
+		rodeoFriendly = false	// rodeoTarget is a friendly titan we're hitching a ride on (to get away)
+		nextFriendlyRideTime = 0.0
+		rideLength = 0.0		// a friendly ride lasts this long
+		evacRamp = null			// evac: the ramp position the launch decision was made for...
+		evacGroundReach = true	// ...whether it can be boarded from the ground...
+		evacFails = 0			// ...jumps that landed back on the ground...
+		evacJumped = false		// ...a boarding jump is in the air
+		evacLaunch = null		// launch point for a high ramp: { pos, roof, fails, reached, until }
+		nextEvacLaunchSearch = 0.0
+		evacRunupUntil = 0.0	// backing off for a run-up until then...
+		evacRunupDir = null		// ...this way
+		roofLove = 0.3			// 0..1, how much this bot likes rooftops (set by ApplyTemperament)
+		patrolElevation = 0.0	// height above the local ground of the current roaming goal
+		holdRoam = false		// holding a high spot reached while roaming (no lead needed)
+		ordnanceMode = null		// titan ordnance being held: "lock" / "charge" / "tap"...
+		ordnanceHoldStart = 0.0
+		ordnanceHoldUntil = 0.0	// ...until then (0 = not held)
+		ordnanceClip = -1		// ordnance clip when the press started (a drop = it fired)
+		ordnanceVerifyAt = 0.0	// check that the last press fired something at this time
+		ordnancePilotSkipUntil = 0.0	// titan ordnance held back from pilots until then (lost roll)
+		ordnanceLockWaitSince = 0.0	// Slaved Warheads ready with a target but no lock since (0 = not waiting)
+		lobProfile = null		// ordnance profile of the grenade in lobPos (see GetOrdnanceProfile)
+		lobDrop = false			// the grenade in lobPos is dropped at our feet while running (look down, keep facing)
 		nextRodeoSmokeTime = 0.0
+		fleeingNuke = false
+		tacticalClip = -1		// titan tactical charges seen last tick (a drop = it was just used)
+		smokePos = null			// where our electric smoke went off...
+		smokeUntil = 0.0		// ...and until when it lasts
+		shieldWall = null		// our particle wall, while it's up
+		nextShieldWallScan = 0.0
 		strafeDir = 1.0
 		nextStrafeFlip = 0.0
+		unstickDash = false		// titan stuck: dash out on the next tick (see TitanStuckResponse)
+		titanBackOffUntil = 0.0	// titan stuck mid-fight: hold range instead of charging in until then
+		titanDetour = null		// titan gave up on a route: go through here first...
+		titanDetourUntil = 0.0	// ...until then
+		atWantUntil = 0.0		// keep the anti-titan weapon out until then (see WantsAntiTitanWeapon)
+		atAimingTime = -999.0	// last time the anti-titan weapon was locking / charging on a target
+		chargeStart = 0.0		// charge rifle: when the current charge started...
+		chargeClip = -1			// ...and the clip then (a drop = the shot went off)
+		threatIsTitan = false	// the threat being run from is a titan (see FindThreatPosition)
+		titanEnemies = []		// enemy titans around a titan fight (see ScanTitanFight)
+		targetAimOffset = null	// the part of the target in sight, relative to its origin (riders: head or body over the titan)
+		rescueRider = null		// enemy riding a friendly titan near us, being shot off it (see UpdateRiderRescue)...
+		rescueTitan = null		// ...the titan it's on...
+		rescuePoint = null		// ...the spot to go to for a line on it
+		nextRiderScan = 0.0
+		nextRescuePointTime = 0.0
+		evacStarted = false		// the evac run already began (see BotStartEvac)
+		dbgInput = null			// last input sent by BotThinkTick (spawn-death diagnostic)
 	}
 
 	// Shared so teammates can see who's hunting whom and which way they're going.
@@ -625,6 +1140,13 @@ function BotThink( bot )
 	{
 		try { BotThinkTick( bot, brain ) }
 		catch ( e ) { BotReportError( bot, "BotThinkTick", e ) }
+
+		// Spawn-death diagnostic: log the first moments of each life, dumped if the bot dies early.
+		if ( BOT_DEBUG_SPAWN_DEATHS )
+		{
+			try { BotAI_DebugSpawnTrace( bot, brain ) }
+			catch ( e ) { BotReportError( bot, "BotAI_DebugSpawnTrace", e ) }
+		}
 
 		if ( BOT_DEBUG_HUD && Time() > nextDebugTime )
 		{
@@ -644,16 +1166,48 @@ function BotThinkTick( bot, brain )
 	local origin = bot.GetOrigin()
 	local isTitan = bot.IsTitan()
 
-	// Riding an enemy titan: the rodeo has its own small loop.
+	// Epilogue: aboard the evac dropship there's nothing left to do.
+	if ( IsBotOnEvacDropship( bot ) )
+		return
+	brain.evac = null
+	try { brain.evac = GetEvacGoal( bot ) }
+	catch ( e ) { BotReportError( bot, "GetEvacGoal", e ) }
+	// A ramp too high to reach from the ground: go up somewhere next to it first.
+	try { UpdateEvacLaunch( bot, brain, isTitan ) }
+	catch ( e ) { BotReportError( bot, "UpdateEvacLaunch", e ); brain.evacLaunch = null }
+	// The moment the evac starts for us, drop everything else (see BotStartEvac).
+	local evacNow = brain.evac != null
+	if ( evacNow && !brain.evacStarted )
+	{
+		try { BotStartEvac( bot, brain ) }
+		catch ( e ) { BotReportError( bot, "BotStartEvac", e ) }
+	}
+	brain.evacStarted = evacNow
+
+	// Friendly titans only by choice (see BOT_HOLD_RODEO_FRIENDLY).
+	local holdToRodeo = ( brain.rodeoFriendly && brain.rodeoTarget != null ) ? BOT_HOLD_RODEO_AUTO : BOT_HOLD_RODEO_FRIENDLY
+	if ( !( "holdToRodeoState" in bot.s ) )
+		bot.s.holdToRodeoState <- holdToRodeo
+	else
+		bot.s.holdToRodeoState = holdToRodeo
+
+	// Riding a titan: the rodeo has its own small loop.
 	if ( !isTitan )
 	{
 		local ridingSoul = bot.GetTitanSoulBeingRodeoed()
 		if ( IsValid( ridingSoul ) )
 		{
+			// Normally set by BotAI_OnRodeoStarted; this covers a ride that started without it.
+			if ( brain.rideSince == 0.0 )
+				brain.rideSince = Time()
 			try { BotRodeoRideTick( bot, brain, ridingSoul ) }
 			catch ( e ) { BotReportError( bot, "RodeoRide", e ) }
 			return
 		}
+		brain.rideSince = 0.0
+		brain.rideSwitchTries = 0
+		brain.rideSwitchForced = false
+		brain.rideGaveUp = false
 	}
 
 	// Every stage is guarded: a failing stage is skipped for this tick and reported once,
@@ -677,6 +1231,31 @@ function BotThinkTick( bot, brain )
 	try { UpdateTitanDecisions( bot, brain, isTitan, hasVisibleTarget ) }
 	catch ( e ) { BotReportError( bot, "UpdateTitanDecisions", e ) }
 
+	if ( isTitan )
+	{
+		try { UpdateTitanTactical( bot, brain ) }
+		catch ( e ) { BotReportError( bot, "UpdateTitanTactical", e ); brain.shieldWall = null }
+	}
+
+	// Epilogue: titans can't board, so hop out near the evac point; pilots close to the ship's
+	// ramp run and jump straight for it (the node graph doesn't go up there).
+	if ( brain.evac != null )
+	{
+		if ( isTitan )
+		{
+			try { UpdateEvacDisembark( bot, brain ) }
+			catch ( e ) { BotReportError( bot, "UpdateEvacDisembark", e ) }
+		}
+		// With a launch point, evac.board only stays set once we're standing on it (UpdateEvacLaunch
+		// points evac at the launch point, board = false, while we're still on the way there).
+		else if ( brain.evac.board && ( brain.evacLaunch != null || Length2D( brain.evac.pos - origin ) < BOT_EVAC_BOARD_DIST ) )
+		{
+			try { BotEvacBoardTick( bot, brain, brain.evac.pos ) }
+			catch ( e ) { BotReportError( bot, "EvacBoard", e ) }
+			return
+		}
+	}
+
 	// Every now and then, go for a rodeo on a nearby enemy titan instead of shooting it.
 	local rodeoTitan = null
 	try { rodeoTitan = UpdateRodeoAttempt( bot, brain, isTitan, hasVisibleTarget ) }
@@ -688,16 +1267,19 @@ function BotThinkTick( bot, brain )
 		return
 	}
 
-	// Tactics: break off from crowded fights, hold high points.
+	// Tactics: break off from crowded fights, hold high points. None of it on the evac run.
 	local holding = false
 	if ( !isTitan )
 	{
-		try { UpdateReposition( bot, brain, hasVisibleTarget ) }
-		catch ( e ) { BotReportError( bot, "UpdateReposition", e ); brain.repositionUntil = 0.0 }
-		try { holding = !brain.fleeing && IsHoldingVantage( bot, brain, hasVisibleTarget ) }
-		catch ( e ) { BotReportError( bot, "IsHoldingVantage", e ); brain.holdUntil = 0.0 }
+		if ( brain.evac == null )
+		{
+			try { UpdateReposition( bot, brain, hasVisibleTarget ) }
+			catch ( e ) { BotReportError( bot, "UpdateReposition", e ); brain.repositionUntil = 0.0 }
+			try { holding = !brain.fleeing && IsHoldingVantage( bot, brain, hasVisibleTarget ) }
+			catch ( e ) { BotReportError( bot, "IsHoldingVantage", e ); brain.holdUntil = 0.0; brain.holdRoam = false }
+		}
 	}
-	else if ( !brain.swatting )
+	else if ( !brain.swatting && brain.evac == null )
 	{
 		try { UpdateTitanReposition( bot, brain, hasVisibleTarget ) }
 		catch ( e ) { BotReportError( bot, "UpdateTitanReposition", e ); brain.repositionUntil = 0.0 }
@@ -713,7 +1295,7 @@ function BotThinkTick( bot, brain )
 		try { plan = PilotPlan( bot, brain, hasVisibleTarget ) }
 		catch ( e ) { BotReportError( bot, "PilotPlan", e ); plan = null }
 	}
-	local disengaged = repositioning || ( plan != null && plan.disengage )
+	local disengaged = repositioning || ( plan != null && plan.disengage ) || brain.evac != null
 	local embarking = plan != null && plan.action == "embark"
 	local holdFire = plan != null && plan.holdFire
 	local canShoot = hasVisibleTarget && !holdFire
@@ -736,6 +1318,25 @@ function BotThinkTick( bot, brain )
 			moveDir = brain.target.GetOrigin() - origin
 	}
 
+	// Epilogue, on foot, running for the ship: only what's roughly ahead and close is shot at.
+	// Turning round to shoot something behind (a titan by the ship, a pilot chasing us) turned the
+	// run into a backpedal: no sprint, and the ship left without us.
+	local evacRun = !isTitan && brain.evac != null && moveDir != null && Length2D( moveDir ) >= 1.0
+	local evacNoShoot = false
+	if ( evacRun && hasVisibleTarget )
+	{
+		try
+		{
+			local toTarget = brain.target.GetOrigin() - origin
+			local offRun = fabs( NormalizeYaw( VectorToAngles( toTarget ).y - VectorToAngles( moveDir ).y ) )
+			evacNoShoot = offRun > BOT_EVAC_AIM_CONE || Distance( origin, brain.target.GetOrigin() ) > BOT_EVAC_SHOOT_DIST
+				|| IsTitanEntity( brain.target )
+		}
+		catch ( e ) { BotReportError( bot, "EvacAim", e ); evacNoShoot = true }
+	}
+	if ( evacNoShoot )
+		canShoot = false
+
 	if ( !isTitan )
 	{
 		try { UpdateCarefulMode( bot, brain ) }
@@ -746,10 +1347,12 @@ function BotThinkTick( bot, brain )
 	local buttons = 0
 	local forward = 0.0
 	local side = 0.0
+	// Every forward / side below is worked out relative to this view yaw; the aim turns the view
+	// afterwards, and the input is turned with it at the end (see BOT_INPUT_FOLLOWS_AIM).
+	local inputYaw = brain.yaw
 
 	// Combat: hold position and strafe inside engage range, otherwise keep moving along the path.
 	// While fleeing the bot keeps running and only shoots at what ends up in front of it.
-	local combatWall = false
 	local targetIsTitan = hasVisibleTarget && IsTitanEntity( brain.target )
 
 	// On foot: anti-titan weapon out against titans, primary against everything else.
@@ -761,7 +1364,13 @@ function BotThinkTick( bot, brain )
 
 	// Pilots fight anything in their weapon's effective range instead of running up to it first.
 	local engageDist = BOT_TITAN_ENGAGE_DIST
-	if ( !isTitan )
+	if ( isTitan )
+	{
+		// Long-range titan weapons open up from farther out.
+		try { engageDist = max( engageDist, UpdateTitanPreferredDist( bot, brain ) + BOT_TITAN_ENGAGE_MARGIN ) }
+		catch ( e ) { BotReportError( bot, "UpdateTitanPreferredDist", e ) }
+	}
+	else
 		engageDist = targetIsTitan ? BOT_PILOT_AT_ENGAGE_DIST : GetPilotEngageDist( bot )
 	// While repositioning the bot keeps moving along its route, shooting on the way.
 	local inEngageRange = hasVisibleTarget && !brain.fleeing && !disengaged && Distance( origin, brain.target.GetOrigin() ) < engageDist
@@ -773,8 +1382,15 @@ function BotThinkTick( bot, brain )
 		// Hand to hand only makes sense pilot vs pilot/grunt or titan vs anything.
 		// And never at something well above or below us (a pilot up on a roof): that just
 		// pins the bot against the building underneath it.
+		// A titan that just got stuck charging in (stairs, a pilot up on a ledge) holds range for a while.
 		local canRush = ( isTitan || !targetIsTitan ) && Time() > brain.meleeBlockedUntil
 			&& ( brain.swatting || fabs( brain.target.GetOrigin().z - origin.z ) < BOT_MELEE_MAX_HEIGHT_DIFF )
+			&& !( isTitan && !brain.swatting && Time() < brain.titanBackOffUntil )
+		// Never at a rider (it's up on the titan: shot, not chased), and on foot never at a pilot
+		// standing next to an enemy titan, or with one next to us: the kick would land on the titan.
+		canRush = canRush && !IsRodeoing( brain.target )
+			&& ( isTitan || ( !IsNearEnemyTitan( brain, origin, BOT_RUSH_TITAN_CLEARANCE )
+				&& !IsNearEnemyTitan( brain, brain.target.GetOrigin(), BOT_RUSH_TITAN_CLEARANCE ) ) )
 		if ( canRush && targetDist < ( isTitan ? BOT_TITAN_MELEE_RUSH_DIST : BOT_PILOT_MELEE_RUSH_DIST ) )
 		{
 			// Close enough to finish it hand to hand: run straight at the target.
@@ -787,7 +1403,6 @@ function BotThinkTick( bot, brain )
 			// Up close pilots circle the target and run along walls; at range they hold a spot and
 			// side-step slowly so the shots land. The aim stays on the target either way.
 			local combatMove = GetPilotCombatMove( bot, brain, targetIsTitan )
-			combatWall = brain.combatWallSeen
 			// Spread around the target instead of fighting shoulder to shoulder.
 			local spacing = GetAllySpacingPush( bot, BOT_COMBAT_SPACING_DIST, BOT_COMBAT_SPACING_STRENGTH )
 			if ( spacing != null )
@@ -811,21 +1426,10 @@ function BotThinkTick( bot, brain )
 		forward = relative.forward
 		side = relative.side
 
-		// Travelling: drift onto walls along the route to wallrun them, and steer onto walls
-		// in the air to chain one wallrun into the next. Not near doors or indoors.
-		if ( !isTitan && forward > 0.7 && !brain.careful )
-		{
-			local seekDist = bot.IsOnGround() ? BOT_WALL_SEEK_DIST * brain.wallLove : BOT_WALL_AIR_DIST
-			if ( !bot.IsOnGround() || Length2D( moveDir ) > BOT_WALLRUN_MIN_DIST )
-			{
-				local wallSide = FindWallSide( bot, seekDist )
-				if ( wallSide != 0 )
-					side = BotClamp( side + wallSide * BOT_WALL_SEEK_STRENGTH, -1.0, 1.0 )
-			}
-		}
+		// (Wallruns while travelling are planned, see UpdateWallrun below.)
 
 		// Near doors and indoors: stay centered between door frames and corners.
-		if ( !isTitan && brain.careful && bot.IsOnGround() )
+		if ( !isTitan && brain.careful && BotOnFoot( bot ) )
 		{
 			local nudge = GetWhiskerNudge( bot, moveDir )
 			if ( nudge != null )
@@ -875,8 +1479,44 @@ function BotThinkTick( bot, brain )
 		}
 	}
 
+	// Planned wallruns (see UpdateWallrun): along a wall that takes us where the route goes, up to a
+	// ledge or across a gap. Overrides the route until we're off the wall and down again.
+	local wallrunning = false
+	local directFlee = brain.fleeing && ( brain.fleeDirect || brain.fleeGoal == null )
+	if ( !isTitan && !inEngageRange && !unsticking && !climbing && !embarking && !directFlee && moveDir != null )
+	{
+		try { pressed = pressed | UpdateWallrun( bot, brain, moveDir ) }
+		catch ( e ) { BotReportError( bot, "UpdateWallrun", e ); ResetWallrunPlan( bot, brain, "error" ) }
+		wallrunning = brain.wrPhase != "none" && brain.wrMoveDir != null
+		if ( wallrunning )
+		{
+			local relative = MoveDirRelativeToView( brain.wrMoveDir, brain.yaw )
+			forward = relative.forward
+			side = relative.side
+		}
+	}
+	else if ( brain.wrPhase != "none" )
+		ResetWallrunPlan( bot, brain, "aborted" )
+
+	// Upstairs and going somewhere far below: out through a window / off the balcony.
+	local windowExit = false
+	if ( !isTitan && !climbing && !wallrunning && !inEngageRange && !unsticking && !brain.fleeing && !embarking && moveDir != null )
+	{
+		try { pressed = pressed | UpdateWindowExit( bot, brain ) }
+		catch ( e ) { BotReportError( bot, "UpdateWindowExit", e ); brain.windowExitUntil = 0.0 }
+		windowExit = brain.windowExitUntil > Time()
+		if ( windowExit )
+		{
+			local relative = MoveDirRelativeToView( brain.windowExitDir, brain.yaw )
+			forward = relative.forward
+			side = relative.side
+		}
+	}
+	else
+		brain.windowExitUntil = 0.0
+
 	// Rodeo attempt from behind: move away from the pilot (the titan dash goes this way too).
-	if ( isTitan && IsRodeoThreatBehind( bot, brain ) )
+	if ( isTitan && brain.evac == null && IsRodeoThreatBehind( bot, brain ) )
 	{
 		local relative = MoveDirRelativeToView( origin - brain.target.GetOrigin(), brain.yaw )
 		forward = relative.forward
@@ -898,36 +1538,107 @@ function BotThinkTick( bot, brain )
 			}
 		}
 		catch ( e ) { BotReportError( bot, "TitanSpacing", e ) }
+
+		// Holding ground (in our smoke with a rider on, behind our particle wall) wins over the
+		// fight movement and the spacing above; running from a nuke wins over this, and on the evac
+		// run nothing holds the titan back from the evac point.
+		if ( !brain.fleeingNuke && brain.evac == null )
+		{
+			local holdMove = null
+			try { holdMove = GetTitanHoldMove( bot, brain ) }
+			catch ( e ) { BotReportError( bot, "TitanHoldMove", e ); brain.shieldWall = null }
+			if ( holdMove != null )
+			{
+				if ( Length2D( holdMove ) < 1.0 )
+				{
+					forward = 0.0
+					side = 0.0
+				}
+				else
+				{
+					local relative = MoveDirRelativeToView( holdMove, brain.yaw )
+					local scale = min( Length2D( holdMove ) / 100.0, 1.0 )	// ease in on the spot
+					forward = relative.forward * scale
+					side = relative.side * scale
+				}
+			}
+		}
+
+		// Stuck (see TitanStuckResponse): step out the way the hull fits, over the fight and the route.
+		if ( !brain.fleeingNuke && Time() < brain.unstickUntil && brain.unstickDir != null )
+		{
+			local relative = MoveDirRelativeToView( brain.unstickDir, brain.yaw )
+			forward = relative.forward
+			side = relative.side
+		}
 	}
 
-	// Target just ducked out of sight: some bots keep firing at where it was for a moment.
+	// Target just ducked out of sight: some bots keep firing at where it was for a moment
+	// (never with the anti-titan weapon: its few rounds are for the titan itself).
 	local suppressing = !hasVisibleTarget && !brain.fleeing && brain.target != null && IsValid( brain.target )
 		&& brain.targetLastSeenPos != null && Time() - brain.targetLastSeenTime < brain.suppressTime
+		&& !brain.usingAntiTitan
+		&& !evacRun							// (the evac run looks where it's going)
+		&& !IsRodeoing( brain.target )		// (a rider out of sight is behind a titan: that would hit the titan)
 
-	// Aim at the target when we have one, otherwise look where we are going (always, when fleeing).
+	// Aim at the target when we have one, otherwise look where we are going (always, when fleeing,
+	// and on the evac run when the target is off the way to the ship).
 	try
 	{
-		if ( hasVisibleTarget && !brain.fleeing )
+		if ( hasVisibleTarget && !brain.fleeing && !evacNoShoot )
 			AimAtTarget( bot, brain, brain.target )
 		else if ( suppressing )
 			AimAt( brain, bot.EyePosition(), brain.targetLastSeenPos + Vector( 0, 0, 40 ), false )
-		else if ( !isTitan && !brain.fleeing && Time() < brain.alertUntil && brain.alertPos != null )
+		else if ( plan != null && plan.lookAt != null )
+			AimAt( brain, bot.EyePosition(), plan.lookAt, false )	// behind cover: keep facing the titan, ready to peek
+		else if ( !isTitan && !brain.fleeing && brain.evac == null && Time() < brain.alertUntil && brain.alertPos != null )	// (not on the evac run: a hit from a titan by the ship turned the run into a backpedal)
 			AimAt( brain, bot.EyePosition(), brain.alertPos + Vector( 0, 0, 40 ), false )
 		else if ( holding && brain.holdWatch != null )
 			AimAt( brain, bot.EyePosition(), brain.holdWatch, false )
+		else if ( wallrunning && brain.wrLookDir != null )
+			AimAt( brain, origin, origin + brain.wrLookDir * 200.0, false )
 		else if ( climbing )
 			AimAt( brain, origin, origin + brain.climbMoveDir * 200.0, false )
+		else if ( windowExit )
+			AimAt( brain, origin, origin + brain.windowExitDir * 200.0, false )
 		else if ( moveDir != null )
 			AimAt( brain, origin, origin + moveDir, false )
 	}
 	catch ( e ) { BotReportError( bot, "AimAt", e ) }
+
+	// A grenade being thrown: keep the arc until it has left the hand.
+	// A satchel / mine dropped while running: look down at our feet but keep the heading, so the
+	// run (moveDir above was made relative to this yaw) isn't turned around.
+	if ( !isTitan && brain.lobPos != null && Time() < brain.lobUntil )
+	{
+		if ( brain.lobDrop )
+			AimTowards( brain, brain.yaw, BOT_ORDNANCE_DROP_PITCH )
+		else
+			AimLob( bot, brain, brain.lobPos, brain.lobProfile )
+	}
+
+	// The move input was worked out for the view at the start of the tick; the aim has turned since.
+	// Turn the input with it so we move where we meant to (a wallrun stays on its wall while the view
+	// swings to a target; a turn towards the next waypoint doesn't carry us past it).
+	if ( BOT_INPUT_FOLLOWS_AIM && !isTitan )
+	{
+		local turned = NormalizeYaw( brain.yaw - inputYaw )
+		if ( fabs( turned ) > 0.5 )
+		{
+			local relative = RotateInputForYaw( forward, side, turned )
+			forward = relative.forward
+			side = relative.side
+		}
+		inputYaw = brain.yaw
+	}
 
 	local fireButtons = 0
 	try { fireButtons = UpdateFiring( bot, brain, ( canShoot || suppressing ) && !holdFire ) }
 	catch ( e ) { BotReportError( bot, "UpdateFiring", e ) }
 	buttons = buttons | fireButtons
 
-	try { buttons = buttons | UpdateAds( bot, brain, isTitan, canShoot ) }
+	// (No sights on the evac run: aiming down them would stop the sprint.)
+	try { buttons = buttons | UpdateAds( bot, brain, isTitan, canShoot && !evacRun ) }
 	catch ( e ) { BotReportError( bot, "UpdateAds", e ); brain.wantAds = false; file.adsBit = 0 }
 
 	// Hiding behind cover: duck.
@@ -945,8 +1656,12 @@ function BotThinkTick( bot, brain )
 	{
 		if ( !isTitan && inEngageRange )
 			pressed = pressed | UpdateCombatJumps( bot, brain )
+		else if ( !isTitan && wallrunning )
+		{
+			// A planned wallrun does its own jumping (UpdateWallrun).
+		}
 		else if ( !isTitan && !unsticking && !climbing )
-			pressed = pressed | UpdateParkour( bot, brain, moveDir, forward, side, combatWall )
+			pressed = pressed | UpdateParkour( bot, brain, moveDir, forward )
 		else
 			pressed = pressed | UpdateTitanDash( bot, brain, hasVisibleTarget, inEngageRange, forward, side )
 	}
@@ -956,11 +1671,67 @@ function BotThinkTick( bot, brain )
 	catch ( e ) { BotReportError( bot, "UpdateMelee", e ) }
 
 	// After aiming, so a grenade throw can lift the pitch for its arc.
-	try { pressed = pressed | UpdateAbilities( bot, brain, isTitan, canShoot ) }
+	// Pilots may throw while reloading (a grenade doesn't need the gun loaded); the other reasons
+	// to hold fire (flanking unseen, ...) hold the grenade too.
+	local canThrow = hasVisibleTarget && ( !holdFire || ( plan != null && plan.action == "reload" ) )
+	try { pressed = pressed | UpdateAbilities( bot, brain, isTitan, isTitan ? canShoot : canThrow ) }
 	catch ( e ) { BotReportError( bot, "UpdateAbilities", e ) }
 
-	try { UpdateStuck( bot, brain, moveDir, forward, side, !inEngageRange && !unsticking && !climbing && !brain.offGraph ) }
+	// Titan ordnance is held (multi-target missiles lock on while the button is down), so it goes
+	// into the held buttons for BotSetInput below, not into the one-tick presses.
+	if ( isTitan )
+	{
+		try { buttons = buttons | UpdateTitanOrdnance( bot, brain, canShoot ) }
+		catch ( e ) { BotReportError( bot, "UpdateTitanOrdnance", e ); brain.ordnanceHoldUntil = 0.0 }
+		// Vortex shield: held to catch, let go to throw it all back (also a held button).
+		try { buttons = buttons | UpdateTitanVortex( bot, brain, hasVisibleTarget ) }
+		catch ( e ) { BotReportError( bot, "UpdateTitanVortex", e ); brain.vortexHoldUntil = 0.0 }
+		// The trigger would set off the shield early (its "fire" is the throw): hands off it meanwhile.
+		if ( brain.vortexHoldUntil > 0.0 )
+			buttons = buttons & ~BOT_IN_ATTACK
+	}
+	else
+	{
+		brain.ordnanceHoldUntil = 0.0
+		brain.vortexHoldUntil = 0.0
+	}
+
+	if ( !isTitan )
+	{
+		try { UpdateSatchelDetonation( bot, brain ) }
+		catch ( e ) { BotReportError( bot, "UpdateSatchelDetonation", e ); brain.satchelDetonateAt = null }
+	}
+
+	// A grenade throw (UpdateAbilities) may have turned the view again since: same as above.
+	if ( BOT_INPUT_FOLLOWS_AIM && !isTitan )
+	{
+		local turned = NormalizeYaw( brain.yaw - inputYaw )
+		if ( fabs( turned ) > 0.5 )
+		{
+			local relative = RotateInputForYaw( forward, side, turned )
+			forward = relative.forward
+			side = relative.side
+		}
+	}
+
+	// Pilots never walk or jump off into the void (open map edges, pits with a kill trigger).
+	if ( !isTitan )
+	{
+		try
+		{
+			local safe = AvoidVoid( bot, brain, forward, side, pressed )
+			forward = safe.forward
+			side = safe.side
+			pressed = safe.pressed
+		}
+		catch ( e ) { BotReportError( bot, "AvoidVoid", e ) }
+	}
+
+	try { UpdateStuck( bot, brain, moveDir, forward, side, !inEngageRange && !unsticking && !climbing && !wallrunning && !brain.offGraph ) }
 	catch ( e ) { BotReportError( bot, "UpdateStuck", e ) }
+
+	if ( BOT_DEBUG_SPAWN_DEATHS )
+		brain.dbgInput = { forward = forward, side = side, pitch = brain.pitch, yaw = brain.yaw, buttons = buttons, pressed = pressed }
 
 	try
 	{
@@ -1022,6 +1793,12 @@ function UpdateTarget( bot, brain )
 	local inTitan = bot.IsTitan()
 	local best = null
 	local bestScore = BOT_SIGHT_RANGE * 2.0	// above any biased score inside sight range
+	local bestPoint = null					// riders: the point of it that's in sight
+	local prevTarget = brain.target			// (see the rider override at the end)
+	local prevAcquiredTime = brain.targetAcquiredTime
+	local prevReactionTime = brain.reactionTime
+	// On foot: whether titans are worth picking depends on having something that hurts them.
+	local atWeapon = inTitan ? null : GetBotUsableAntiTitanWeapon( bot )
 
 	// Enemy pilots/titans, plus the enemy team's grunts, spectres and auto-titans.
 	local candidates = GetEnemyNPCs( enemyTeam, eye, BOT_SIGHT_RADIUS )
@@ -1035,6 +1812,16 @@ function UpdateTarget( bot, brain )
 		local dist = Distance( eye, enemy.GetOrigin() )
 		if ( dist >= BOT_SIGHT_RANGE )
 			continue
+		// A titan still inside its titanfall dome can't be hurt: a titan bot doesn't waste time on it.
+		if ( inTitan && IsInBubbleShield( enemy ) )
+			continue
+		// Running for the evac ship on foot: titans are run past, not fought (or turned to look at).
+		if ( !inTitan && brain.evac != null && IsTitanEntity( enemy ) )
+			continue
+		// The rider on our own back can't be aimed at from the cockpit: chasing it just spins the
+		// titan in circles. UpdateRodeoDefense deals with it (smoke, or hop out and shoot it).
+		if ( inTitan && enemy.IsPlayer() && enemy.GetTitanSoulBeingRodeoed() == bot.GetTitanSoul() )
+			continue
 		local score = dist
 		if ( inTitan )
 		{
@@ -1044,16 +1831,42 @@ function UpdateTarget( bot, brain )
 			else if ( !enemy.IsPlayer() )
 				score *= BOT_TITAN_SMALL_TARGET_BIAS
 		}
+		else if ( IsTitanEntity( enemy ) )
+		{
+			// On foot, player titans and auto-titans alike: the anti-titan weapon's job, or something
+			// to keep away from without one. One still inside its titanfall dome can't be hurt yet.
+			score *= atWeapon != null ? BOT_PILOT_AT_TITAN_BIAS : BOT_PILOT_NO_AT_TITAN_BIAS
+			if ( IsInBubbleShield( enemy ) )
+				score *= 3.0
+		}
+		// An enemy pilot right on us is fought first, titans or not (the same bias as above, so a
+		// titan doesn't win just for being big; see BOT_AT_PILOT_SWAP_DIST).
+		else if ( enemy.IsPlayer() && atWeapon != null && dist < BOT_AT_PILOT_SWAP_DIST )
+			score *= BOT_PILOT_AT_TITAN_BIAS
 		else if ( !enemy.IsPlayer() )
 			score *= BOT_NPC_TARGET_BIAS
-		// A pilot riding a titan is the first thing to shoot (to save a teammate's titan).
-		if ( IsRodeoing( enemy ) )
-			score *= BOT_RODEO_TARGET_BIAS
-		if ( score >= bestScore || !CanSee( bot, eye, enemy ) )
+		// A pilot riding a titan is the first thing to shoot (to save a teammate's titan). From a
+		// titan a bit less so: the enemy titans are still the fight.
+		local riding = IsRodeoing( enemy )
+		if ( riding )
+			score *= inTitan ? BOT_TITAN_RIDER_BIAS : BOT_RODEO_TARGET_BIAS
+		if ( score >= bestScore )
+			continue
+		// A rider's body sits behind the titan's hull: the center trace hits the titan and the rider
+		// never counted as seen. Its head or body is looked for instead, the titan not counting.
+		local seenPoint = null
+		if ( riding )
+		{
+			seenPoint = GetRiderVisiblePoint( bot, eye, enemy )
+			if ( seenPoint == null )
+				continue
+		}
+		else if ( !CanSee( bot, eye, enemy ) )
 			continue
 
 		best = enemy
 		bestScore = score
+		bestPoint = seenPoint
 	}
 
 	if ( best != null )
@@ -1063,6 +1876,7 @@ function UpdateTarget( bot, brain )
 			brain.targetAcquiredTime = Time()
 			brain.reactionTime = RollReactionTime( bot, brain, best )
 		}
+		brain.targetAimOffset = bestPoint != null ? bestPoint - best.GetOrigin() : null
 		brain.target = best
 		brain.targetLastSeenPos = best.GetOrigin()
 		brain.targetLastSeenVel = best.GetVelocity()
@@ -1070,13 +1884,205 @@ function UpdateTarget( bot, brain )
 		// Seen by one, known to the team.
 		ReportIntel( bot.GetTeam(), best, best.GetOrigin() )
 	}
-	else if ( brain.target != null && ( !IsAlive( brain.target ) || Time() - brain.targetLastSeenTime > brain.targetMemory ) )
+	else if ( brain.target != null && ( !IsAlive( brain.target ) || Time() - brain.targetLastSeenTime > brain.targetMemory
+		|| ( inTitan && IsInBubbleShield( brain.target ) )
+		|| ( !inTitan && brain.evac != null && IsTitanEntity( brain.target ) )
+		|| ( inTitan && brain.target.IsPlayer() && brain.target.GetTitanSoulBeingRodeoed() == bot.GetTitanSoul() ) ) )
 	{
 		brain.target = null
 		brain.targetLastSeenPos = null
 		brain.targetLastSeenVel = null
+		brain.targetAimOffset = null
 		brain.flankFor = null	// a new engagement can be flanked again
 	}
+
+	if ( !inTitan )
+	{
+		UpdateRiderRescue( bot, brain )
+		// Switched away above and handed back to the same rider by the override: still the same
+		// target, so its reaction time keeps running (restarted every tick, the bot never fired).
+		if ( brain.target == prevTarget )
+		{
+			brain.targetAcquiredTime = prevAcquiredTime
+			brain.reactionTime = prevReactionTime
+		}
+	}
+}
+
+// Hopped out because of a rider (see UpdateRodeoDefense): that rider is the target, ahead of
+// anything else. Once in sight it's shot; until then it's kept as a remembered target so the
+// bot walks around the titan to get a line on it instead of wandering off.
+// True when there is such a rider (it's the target now), false otherwise.
+function UpdatePetRiderTarget( bot, brain )
+{
+	local petTitan = bot.GetPetTitan()
+	if ( !IsValid( petTitan ) || !IsAlive( petTitan ) )
+		return false
+	local petSoul = petTitan.GetTitanSoul()
+	local rider = IsValid( petSoul ) ? petSoul.GetRiderEnt() : null
+	if ( !IsValid( rider ) || !IsAlive( rider ) || rider.GetTeam() == bot.GetTeam() || !rider.IsPlayer() )
+		return false
+
+	local now = Time()
+	if ( brain.target != rider )
+	{
+		brain.target = rider
+		brain.targetAcquiredTime = now
+		brain.reactionTime = brain.skill.reaction * RandomFloat( 0.5, 0.9 )
+	}
+	brain.targetLastSeenPos = rider.GetOrigin()
+	brain.targetLastSeenVel = petTitan.GetVelocity()	// the rider moves with the titan
+
+	local seenPoint = GetRiderVisiblePoint( bot, bot.EyePosition(), rider )
+	if ( seenPoint != null )
+	{
+		brain.targetLastSeenTime = now
+		brain.targetAimOffset = seenPoint - rider.GetOrigin()
+	}
+	else
+		brain.targetLastSeenTime = now - BOT_THINK_INTERVAL * 3	// known, but not in sight
+	return true
+}
+
+// The point of a titan rider that is in sight from eye, or null. The head pokes out above the
+// hatch even when the body is hidden behind the hull; a trace that ends on the titan itself
+// doesn't count (shots there are absorbed by the titan, which may be our own team's).
+function GetRiderVisiblePoint( bot, eye, rider )
+{
+	local soul = rider.GetTitanSoulBeingRodeoed()
+	local titan = IsValid( soul ) ? soul.GetTitan() : null
+	foreach ( point in [ rider.EyePosition(), rider.GetWorldSpaceCenter() ] )
+	{
+		local result = TraceLine( eye, point, bot, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+		if ( result.hitEnt == rider || ( result.fraction >= 0.99 && ( !IsValid( titan ) || result.hitEnt != titan ) ) )
+			return point
+	}
+	return null
+}
+
+// Nearest enemy pilot riding a titan of our team within BOT_RIDER_HELP_DIST:
+// { rider, titan }, or null.
+function FindFriendlyTitanRider( bot )
+{
+	local origin = bot.GetOrigin()
+	local team = bot.GetTeam()
+	local best = null
+	local bestDist = BOT_RIDER_HELP_DIST
+	foreach ( enemy in GetPlayerArrayOfTeam( GetOtherTeam( team ) ) )
+	{
+		if ( !IsAlive( enemy ) || !IsRodeoing( enemy ) )
+			continue
+		local soul = enemy.GetTitanSoulBeingRodeoed()
+		local titan = soul.GetTitan()
+		if ( !IsValid( titan ) || !IsAlive( titan ) || titan.GetTeam() != team )
+			continue
+		local dist = Distance( origin, enemy.GetOrigin() )
+		if ( dist < bestDist )
+		{
+			best = { rider = enemy, titan = titan }
+			bestDist = dist
+		}
+	}
+	return best
+}
+
+// Where to stand for a line on a rider the titan's hull hides: out from the titan on the rider's
+// side (behind the titan when the rider is right over its center), BOT_RIDER_ANGLE_DIST away.
+function GetRiderAnglePoint( titan, rider )
+{
+	local titanPos = titan.GetOrigin()
+	local out = Normalize2D( rider.GetOrigin() - titanPos )
+	if ( Length2D( out ) < 0.5 )
+		out = Normalize2D( titan.GetForwardVector() * -1.0 )
+	return titanPos + out * BOT_RIDER_ANGLE_DIST
+}
+
+// On foot: an enemy riding one of our team's titans is shot off it, whoever's titan it is (the
+// titan's own pilot has UpdatePetRiderTarget for its auto-titan, run first). With no line on the
+// rider (the hull hides it), it's kept as a remembered target and ChooseAction's "rescue" walks
+// the bot round to an angle (rescuePoint). An enemy pilot in sight close by is fought first.
+function UpdateRiderRescue( bot, brain )
+{
+	if ( brain.evac != null || UpdatePetRiderTarget( bot, brain ) )
+	{
+		brain.rescueRider = null
+		brain.rescueTitan = null
+		brain.rescuePoint = null
+		return
+	}
+
+	local now = Time()
+	// The rider we're after got off, died, or the titan did.
+	if ( brain.rescueRider != null )
+	{
+		local still = IsValid( brain.rescueRider ) && IsAlive( brain.rescueRider )
+			&& IsValid( brain.rescueTitan ) && IsAlive( brain.rescueTitan )
+		if ( still )
+		{
+			local soul = brain.rescueRider.GetTitanSoulBeingRodeoed()
+			still = IsValid( soul ) && soul.GetTitan() == brain.rescueTitan
+		}
+		if ( !still )
+		{
+			brain.rescueRider = null
+			brain.rescueTitan = null
+			brain.rescuePoint = null
+		}
+	}
+
+	if ( now >= brain.nextRiderScan )
+	{
+		brain.nextRiderScan = now + BOT_RIDER_SCAN_INTERVAL
+		local found = FindFriendlyTitanRider( bot )
+		if ( found == null )
+		{
+			brain.rescueRider = null
+			brain.rescueTitan = null
+			brain.rescuePoint = null
+		}
+		else if ( found.rider != brain.rescueRider )
+		{
+			brain.rescueRider = found.rider
+			brain.rescueTitan = found.titan
+			brain.rescuePoint = null
+		}
+	}
+	if ( brain.rescueRider == null )
+		return
+
+	local rider = brain.rescueRider
+	local titan = brain.rescueTitan
+	if ( brain.rescuePoint == null || now >= brain.nextRescuePointTime )
+	{
+		brain.rescuePoint = GetRiderAnglePoint( titan, rider )
+		brain.nextRescuePointTime = now + BOT_RIDER_ANGLE_REFRESH
+	}
+
+	// UpdateTarget already has it in sight this tick.
+	local target = brain.target
+	if ( target == rider && brain.targetLastSeenTime >= now )
+		return
+	// An enemy pilot in sight close by would shoot us in the back: that fight comes first.
+	if ( target != null && target != rider && IsValid( target ) && target.IsPlayer() && !target.IsTitan()
+		&& brain.targetLastSeenTime >= now && Distance( bot.GetOrigin(), target.GetOrigin() ) < BOT_RIDER_KEEP_PILOT_DIST )
+		return
+
+	if ( target != rider )
+	{
+		brain.target = rider
+		brain.targetAcquiredTime = now
+		brain.reactionTime = RollReactionTime( bot, brain, rider )
+	}
+	brain.targetLastSeenPos = rider.GetOrigin()
+	brain.targetLastSeenVel = titan.GetVelocity()	// the rider moves with the titan
+	local seenPoint = GetRiderVisiblePoint( bot, bot.EyePosition(), rider )
+	if ( seenPoint != null )
+	{
+		brain.targetLastSeenTime = now
+		brain.targetAimOffset = seenPoint - rider.GetOrigin()
+	}
+	else
+		brain.targetLastSeenTime = now - BOT_THINK_INTERVAL * 3	// known, but not in sight
 }
 
 // Enemy grunts and spectres within radius (an int; -1 = whole map).
@@ -1113,6 +2119,10 @@ function UpdateTitanDecisions( bot, brain, isTitan, hasVisibleTarget )
 
 	brain.ejected = false
 	brain.rodeoStartTime = null
+
+	// Escaping on the evac ship: no climbing back into a titan, no calling one in.
+	if ( brain.evac != null )
+		return
 
 	local petTitan = bot.GetPetTitan()
 	if ( IsAlive( petTitan ) )
@@ -1161,8 +2171,107 @@ function UpdateTitanDecisions( bot, brain, isTitan, hasVisibleTarget )
 		ClientCommand_ReplacementTitan( bot )
 }
 
-// An enemy pilot is riding our titan: electric smoke if we have it, otherwise (or if it isn't
-// charged) most bots hop out after a moment to shoot the rider; the rest keep dashing to shake them.
+// Our titan tactical: a charge spent since last tick (the clip dropped) means it just went off,
+// so the electric smoke's spot is remembered. Our particle wall is looked up while it's up.
+function UpdateTitanTactical( bot, brain )
+{
+	local tactical = bot.GetOffhandWeapon( 1 )
+	if ( !IsValid( tactical ) )
+	{
+		brain.shieldWall = null
+		return
+	}
+
+	local now = Time()
+	local name = tactical.GetWeaponClassName()
+	local clip = tactical.GetWeaponPrimaryClipCount()
+	if ( clip < brain.tacticalClip && name == "mp_titanability_smoke" )
+	{
+		brain.smokePos = bot.GetOrigin()
+		brain.smokeUntil = now + BOT_SMOKE_DURATION
+	}
+	brain.tacticalClip = clip
+
+	if ( name != "mp_titanability_bubble_shield" )
+	{
+		brain.shieldWall = null
+		return
+	}
+	if ( IsValid( brain.shieldWall ) || now < brain.nextShieldWallScan )
+		return
+	brain.nextShieldWallScan = now + BOT_SHIELD_WALL_SCAN_INTERVAL
+	brain.shieldWall = FindOwnShieldWall( bot )
+}
+
+// The particle wall is a vortex_sphere owned by the titan that put it up (a titan with the wall
+// has no vortex shield, so nothing else of ours can match).
+function FindOwnShieldWall( bot )
+{
+	foreach ( ent in GetEntArrayByClass_Expensive( "vortex_sphere" ) )
+	{
+		if ( IsValid( ent ) && ent.GetOwner() == bot )
+			return ent
+	}
+	return null
+}
+
+// Our electric smoke is still going and an enemy pilot is riding us: stay in the smoke, it's what
+// kills the rider (dashing or walking out of it just lets them keep shooting).
+function IsHoldingInSmoke( bot, brain )
+{
+	if ( brain.smokePos == null || Time() > brain.smokeUntil )
+		return false
+	local soul = bot.GetTitanSoul()
+	local rider = IsValid( soul ) ? soul.GetRiderEnt() : null
+	return IsValid( rider ) && rider.GetTeam() != bot.GetTeam()
+}
+
+// Where a titan should be moving to hold its ground, or null to move as usual: back into our
+// electric smoke while a rider is on, or behind our particle wall while fighting.
+// A zero vector means stand still.
+function GetTitanHoldMove( bot, brain )
+{
+	local origin = bot.GetOrigin()
+
+	if ( IsHoldingInSmoke( bot, brain ) )
+	{
+		local toSmoke = brain.smokePos - origin
+		toSmoke = Vector( toSmoke.x, toSmoke.y, 0 )
+		return Length2D( toSmoke ) > BOT_SMOKE_STAY_RADIUS ? toSmoke : Vector( 0, 0, 0 )
+	}
+
+	// A pilot about to jump on us has to be punched, and a lost fight run from, wall or not.
+	local wall = brain.shieldWall
+	if ( brain.swatting || brain.fleeing || !IsValid( wall ) || brain.target == null || !IsValid( brain.target ) )
+		return null
+	local wallPos = wall.GetOrigin()
+	if ( Distance( origin, wallPos ) > BOT_SHIELD_WALL_MAX_DIST )
+		return null
+
+	// Behind the wall as seen from the target, whichever way the wall faces: the wall stays between
+	// us and them. Side-step along it so we're not a still target.
+	local fromTarget = wallPos - brain.target.GetOrigin()
+	fromTarget = Vector( fromTarget.x, fromTarget.y, 0 )
+	local len = Length2D( fromTarget )
+	if ( len < 1.0 )
+		return null
+	fromTarget = fromTarget * ( 1.0 / len )
+	local along = Vector( -fromTarget.y, fromTarget.x, 0 )
+
+	if ( Time() > brain.nextStrafeFlip )
+	{
+		brain.strafeDir = -brain.strafeDir
+		brain.nextStrafeFlip = Time() + RandomFloat( 0.8, 1.6 )
+	}
+	local lateral = BotClamp( ( origin - wallPos ).Dot( along ) + brain.strafeDir * 60.0, -BOT_SHIELD_WALL_STRAFE, BOT_SHIELD_WALL_STRAFE )
+	local spot = wallPos + fromTarget * BOT_SHIELD_WALL_COVER_DIST + along * lateral
+	local toSpot = spot - origin
+	return Vector( toSpot.x, toSpot.y, 0 )
+}
+
+// An enemy pilot is riding our titan: electric smoke if we have it charged, otherwise (or once the
+// smoke is over and the rider is still on) hop out and shoot the rider off (see UpdatePetRiderTarget).
+// Dashing is only the fallback while disembarking isn't possible: it never shakes a rider off.
 function UpdateRodeoDefense( bot, brain )
 {
 	local soul = bot.GetTitanSoul()
@@ -1174,37 +2283,37 @@ function UpdateRodeoDefense( bot, brain )
 	}
 
 	local now = Time()
+	local tactical = bot.GetOffhandWeapon( 1 )
+	local hasSmoke = IsValid( tactical ) && tactical.GetWeaponClassName() == "mp_titanability_smoke"
+		&& tactical.GetWeaponPrimaryClipCount() > 0
 	if ( brain.rodeoStartTime == null )
 	{
 		brain.rodeoStartTime = now
-		brain.rodeoReaction = RandomFloat( BOT_RODEO_REACTION_MIN, BOT_RODEO_REACTION_MAX )
-		brain.rodeoDisembark = RandomInt( 100 ) < BOT_RODEO_DISEMBARK_CHANCE
-		brain.nextRodeoSmokeTime = now + RandomFloat( 0.3, 0.8 )
+		brain.rodeoReaction = RandomFloat( BOT_RODEO_REACTION_MIN, BOT_RODEO_REACTION_MAX ) + ( hasSmoke ? BOT_RODEO_SMOKE_GRACE : 0.0 )
+		brain.nextRodeoSmokeTime = now + RandomFloat( 0.2, 0.5 )
 		printt( "BotAI:", bot.GetPlayerName(), "is being rodeoed by", rider.GetPlayerName() )
 	}
 
-	local tactical = bot.GetOffhandWeapon( 1 )
-	local hasSmoke = IsValid( tactical ) && tactical.GetWeaponClassName() == "mp_titanability_smoke"
 	if ( hasSmoke && now > brain.nextRodeoSmokeTime )
 	{
 		BotPressButtons( bot, BOT_IN_OFFHAND_TACTICAL )
 		brain.nextRodeoSmokeTime = now + BOT_RODEO_SMOKE_RETRY
 	}
 
-	// Smoke gets the first try; without it (or if the rider survives it) fall back to plan B.
-	local waitFor = brain.rodeoReaction + ( hasSmoke ? BOT_RODEO_SMOKE_RETRY : 0.0 )
-	if ( now - brain.rodeoStartTime < waitFor )
+	// The smoke is up: stay in it and let it work (see GetTitanHoldMove), no hopping out or dashing.
+	if ( IsHoldingInSmoke( bot, brain ) )
 		return
 
-	if ( brain.rodeoDisembark )
+	if ( now - brain.rodeoStartTime < brain.rodeoReaction )
+		return
+
+	// Same as the TitanDisembark client command (which isn't globalized), minus the HUD callback.
+	if ( PlayerCanDisembarkTitan( bot ) )
 	{
-		// Same as the TitanDisembark client command (which isn't globalized), minus the HUD callback.
-		if ( PlayerCanDisembarkTitan( bot ) )
-		{
-			brain.rodeoStartTime = null
-			bot.CockpitStartDisembark()
-			thread PlayerDisembarksTitan( bot )
-		}
+		brain.rodeoStartTime = null
+		printt( "BotAI:", bot.GetPlayerName(), "hopping out to shoot the rider" )
+		bot.CockpitStartDisembark()
+		thread PlayerDisembarksTitan( bot )
 	}
 	else if ( now > brain.nextDashTime )
 	{
@@ -1229,39 +2338,98 @@ function UpdateRodeoAttempt( bot, brain, isTitan, hasVisibleTarget )
 	if ( brain.rodeoTarget != null )
 	{
 		local titan = brain.rodeoTarget
-		if ( !IsValid( titan ) || !IsAlive( titan ) || now > brain.rodeoGiveUpTime
+		if ( !IsValid( titan ) || !IsAlive( titan ) || now > brain.rodeoGiveUpTime || brain.evac != null
 			|| bot.GetHealth() < bot.GetMaxHealth() * BOT_RODEO_ABORT_HEALTH
 			|| !IsValidTitanRodeoTarget( bot, titan ) )
 		{
 			brain.rodeoTarget = null
+			brain.rodeoFriendly = false
 			brain.nextRodeoDecisionTime = now + RandomFloat( BOT_RODEO_DECISION_MIN, BOT_RODEO_DECISION_MAX )
 			return null
 		}
 		return titan
 	}
+	brain.rodeoFriendly = false
 
-	if ( now < brain.nextRodeoDecisionTime || !hasVisibleTarget || brain.fleeing || !IsTitanEntity( brain.target ) )
+	local ride = TryFriendlyRide( bot, brain )
+	if ( ride != null )
+		return ride
+
+	// Running from the titan itself is no reason not to jump on it instead (a grenade at our feet is).
+	local fleeingTitan = brain.fleeing && brain.threatIsTitan && !brain.fleeDirect
+	if ( now < brain.nextRodeoDecisionTime || !hasVisibleTarget || ( brain.fleeing && !fleeingTitan ) || brain.evac != null || !IsTitanEntity( brain.target ) )
 		return null
-	if ( Distance( bot.GetOrigin(), brain.target.GetOrigin() ) > BOT_RODEO_MAX_START_DIST )
+	local dist = Distance( bot.GetOrigin(), brain.target.GetOrigin() )
+	if ( dist > BOT_RODEO_MAX_START_DIST )
 		return null
 
-	// One roll per window, so most titan encounters stay gunfights.
-	brain.nextRodeoDecisionTime = now + RandomFloat( BOT_RODEO_DECISION_MIN, BOT_RODEO_DECISION_MAX )
-	if ( RandomInt( 100 ) >= brain.rodeoChance || bot.GetHealth() < bot.GetMaxHealth() * BOT_RODEO_MIN_HEALTH )
+	// One roll per window, so most titan encounters stay gunfights. With nothing that hurts the
+	// titan (or with it already on top of us) a rodeo is the answer far more often.
+	local hasAntiTitan = GetBotUsableAntiTitanWeapon( bot ) != null
+	local chance = brain.rodeoChance
+	if ( !hasAntiTitan )
+		chance += BOT_RODEO_NO_AT_BONUS
+	if ( dist < BOT_TITAN_TOO_CLOSE_DIST )
+		chance += BOT_RODEO_CLOSE_BONUS
+	brain.nextRodeoDecisionTime = now + ( hasAntiTitan ? RandomFloat( BOT_RODEO_DECISION_MIN, BOT_RODEO_DECISION_MAX )
+		: RandomFloat( BOT_RODEO_DECISION_NO_AT_MIN, BOT_RODEO_DECISION_NO_AT_MAX ) )
+	if ( RandomInt( 100 ) >= chance || bot.GetHealth() < bot.GetMaxHealth() * BOT_RODEO_MIN_HEALTH )
 		return null
 	if ( !IsValidTitanRodeoTarget( bot, brain.target ) )
 		return null
 
+	if ( brain.fleeing )
+		StopFleeing( brain )
 	brain.rodeoTarget = brain.target
 	brain.rodeoGiveUpTime = now + BOT_RODEO_APPROACH_TIMEOUT
 	printt( "BotAI:", bot.GetPlayerName(), "going for a rodeo" )
 	return brain.rodeoTarget
 }
 
+// Running away (not from a grenade) with a friendly titan right there: now and then, climb on it
+// and let it carry us out. The only time a bot rides a friendly titan.
+function TryFriendlyRide( bot, brain )
+{
+	local now = Time()
+	if ( !brain.fleeing || brain.fleeDirect || brain.evac != null || now < brain.nextFriendlyRideTime )
+		return null
+	brain.nextFriendlyRideTime = now + BOT_RIDE_DECISION
+	if ( RandomInt( 100 ) >= BOT_RIDE_CHANCE )
+		return null
+
+	local origin = bot.GetOrigin()
+	local eye = bot.EyePosition()
+	foreach ( titan in GetTitansOfTeam( bot.GetTeam(), origin, BOT_RIDE_DIST ) )
+	{
+		if ( !IsAlive( titan ) || !IsValidTitanRodeoTarget( bot, titan ) || !CanSee( bot, eye, titan ) )
+			continue
+		local doomed = false
+		try { doomed = titan.GetDoomedState() }
+		catch ( e ) {}
+		if ( doomed )
+			continue
+
+		StopFleeing( brain )
+		brain.rodeoTarget = titan
+		brain.rodeoFriendly = true
+		brain.rodeoGiveUpTime = now + BOT_RIDE_APPROACH_TIMEOUT
+		brain.rideLength = RandomFloat( BOT_RIDE_MIN_TIME, BOT_RIDE_MAX_TIME )
+		printt( "BotAI:", bot.GetPlayerName(), "hitching a ride on a friendly titan to get away" )
+		return titan
+	}
+	return null
+}
+
 // Sprint at the titan's hatch, jump for it and double jump if still below it. The engine
 // attaches us once we're in the air close to the hatch and facing it.
 function BotRodeoApproachTick( bot, brain, titan )
 {
+	// The anti-titan weapon is useless on the titan's back: get the primary out on the way there,
+	// so it's already in hand when the ride starts.
+	local active = bot.GetActiveWeapon()
+	if ( !brain.rodeoFriendly && IsValid( active ) && IsAntiTitanWeapon( active ) && Time() > brain.nextRideSwitchTime )
+		BotRequestRideWeapon( bot, brain, GetBotRodeoWeapon( bot ) )
+
 	local origin = bot.GetOrigin()
 	local hatch = GetTitanHijackOrigin( titan )
 	local toHatch = hatch - origin
@@ -1286,24 +2454,543 @@ function BotRodeoApproachTick( bot, brain, titan )
 		BotPressButtons( bot, pressed )
 }
 
-// On the titan: keep shooting into the hatch (trigger pulsed so semi-autos keep firing too),
-// reload when dry, and jump off if it's getting us killed.
+// On the titan: get the anti-titan weapon away (it doesn't work from up here: the Archer needs
+// ADS, the Charge Rifle a charge-and-release, and once empty it just keeps reloading), then keep
+// shooting the primary into the hatch (trigger pulsed so semi-autos keep firing too), reload when
+// dry, and jump off if it's getting us killed or the switch never goes through.
 function BotRodeoRideTick( bot, brain, soul )
 {
 	brain.rodeoTarget = null
+	local now = Time()
+
+	// Epilogue evac: no ride is worth missing the ship. Off the titan (enemy or friendly), now.
+	if ( brain.evac != null )
+	{
+		BotSetInput( bot, 0.0, 0.0, brain.pitch.tofloat(), brain.yaw.tofloat(), 0 )
+		BotPressButtons( bot, BOT_IN_JUMP )
+		return
+	}
 
 	local titan = soul.GetTitan()
+	if ( IsValid( titan ) && titan.GetTeam() == bot.GetTeam() )
+	{
+		BotFriendlyRideTick( bot, brain, titan )
+		return
+	}
 	if ( IsValid( titan ) )
-		AimAt( brain, bot.EyePosition(), GetTitanHijackOrigin( titan ), false )
+		AimAt( brain, bot.EyePosition(), GetRodeoAimPoint( titan ), false )
 
-	brain.rideFireToggle = !brain.rideFireToggle
-	local buttons = brain.rideFireToggle ? BOT_IN_ATTACK : 0
+	// Not throttled by nextWeaponSwitchTime (UpdateWeaponChoice may have just set it seconds
+	// ahead for the launcher): asked again every BOT_RODEO_SWITCH_RETRY until it's out.
+	local active = bot.GetActiveWeapon()
+	local onAntiTitan = IsValid( active ) && IsAntiTitanWeapon( active )
+	// Still climbing on (weapon holstered by PlayerBeginsRodeo, the request from BotAI_OnRodeoStarted
+	// comes out on its DeployWeapon): only ask once, no counting, and no holster/deploy of our own
+	// that would pull the gun out in the middle of the climb.
+	local climbing = brain.rideSince > 0.0 && now - brain.rideSince < BOT_RODEO_CLIMB_TIME
+	if ( onAntiTitan && climbing && brain.rideSwitchTries == 0 )
+	{
+		BotRequestRideWeapon( bot, brain, GetBotRodeoWeapon( bot ) )
+	}
+	else if ( onAntiTitan && !climbing && now > brain.nextRideSwitchTime )
+	{
+		local weapon = GetBotRodeoWeapon( bot )
+		// A few asks didn't do it: try the other gun every other time.
+		if ( brain.rideSwitchTries >= BOT_RODEO_SWITCH_ALT_TRIES && brain.rideSwitchTries % 2 == 1 )
+		{
+			local primary = GetPilotAntiPersonnelWeapon( bot )
+			local other = weapon == primary ? GetPilotSideArmWeapon( bot ) : primary
+			if ( other != null )
+				weapon = other
+		}
+		// Still nothing: once, holster and redeploy around the request (the engine picks the
+		// requested weapon on deploy, like the melee weapon catch does).
+		if ( weapon != null && brain.rideSwitchTries >= BOT_RODEO_SWITCH_FORCE_TRIES && !brain.rideSwitchForced )
+		{
+			brain.rideSwitchForced = true
+			printt( "BotAI:", bot.GetPlayerName(), "still has the anti-titan weapon on the titan, holstering to force", weapon.GetWeaponClassName() )
+			bot.HolsterWeapon()
+			BotRequestRideWeapon( bot, brain, weapon )
+			bot.DeployWeapon()
+		}
+		else
+		{
+			BotRequestRideWeapon( bot, brain, weapon )
+		}
+	}
 
-	local pressed = UpdateReload( bot, brain, true )
+	// Only shoot (and reload) a gun that's out and done deploying: pulling the trigger or reloading
+	// the launcher is what kept it in hand before.
+	local ready = IsValid( active ) && !onAntiTitan && now - brain.weaponSwitchTime > BOT_WEAPON_DEPLOY_TIME
+	local buttons = 0
+	local pressed = 0
+	if ( ready )
+	{
+		brain.rideFireToggle = !brain.rideFireToggle
+		buttons = brain.rideFireToggle ? BOT_IN_ATTACK : 0
+		pressed = UpdateReload( bot, brain, true )
+	}
+
 	if ( bot.GetHealth() < bot.GetMaxHealth() * BOT_RODEO_BAIL_HEALTH )
 		pressed = pressed | BOT_IN_JUMP
 
+	// Stuck with the launcher up here: we're just a target. Jump off and fight from the ground.
+	local stuckOnLauncher = onAntiTitan && brain.rideSince > 0.0 && now - brain.rideSince > BOT_RODEO_SWITCH_GIVE_UP
+	if ( stuckOnLauncher )
+	{
+		if ( !brain.rideGaveUp )
+		{
+			brain.rideGaveUp = true
+			printt( "BotAI:", bot.GetPlayerName(), "couldn't get the anti-titan weapon away on the titan, jumping off" )
+		}
+		pressed = pressed | BOT_IN_JUMP
+	}
+
 	BotSetInput( bot, 0.0, 0.0, brain.pitch.tofloat(), brain.yaw.tofloat(), buttons )
+	if ( pressed != 0 )
+		BotPressButtons( bot, pressed )
+}
+
+// Riding a friendly titan out of a fight: the view is free up here, so shoot whatever comes into
+// sight, and hop off after a while (or once the titan is doomed) to get back to it on foot.
+function BotFriendlyRideTick( bot, brain, titan )
+{
+	local now = Time()
+	try { UpdateTarget( bot, brain ) }
+	catch ( e ) { BotReportError( bot, "UpdateTarget", e ) }
+	try { UpdateWeaponChoice( bot, brain, false ) }
+	catch ( e ) { BotReportError( bot, "UpdateWeaponChoice", e ) }
+
+	local hasVisibleTarget = brain.target != null && IsValid( brain.target ) && now - brain.targetLastSeenTime < BOT_THINK_INTERVAL * 2
+	if ( hasVisibleTarget )
+		AimAtTarget( bot, brain, brain.target )
+	local buttons = 0
+	try { buttons = UpdateFiring( bot, brain, hasVisibleTarget ) }
+	catch ( e ) { BotReportError( bot, "UpdateFiring", e ) }
+	local pressed = UpdateReload( bot, brain, hasVisibleTarget )
+
+	local doomed = false
+	try { doomed = titan.GetDoomedState() }
+	catch ( e ) {}
+	local rideTime = brain.rideLength > 0.0 ? brain.rideLength : BOT_RIDE_MIN_TIME
+	if ( doomed || ( brain.rideSince > 0.0 && now - brain.rideSince > rideTime ) )
+		pressed = pressed | BOT_IN_JUMP
+
+	BotSetInput( bot, 0.0, 0.0, brain.pitch.tofloat(), brain.yaw.tofloat(), buttons )
+	if ( pressed != 0 )
+		BotPressButtons( bot, pressed )
+}
+
+// The gun to ride a titan with: one with the slammer mod if we have it, else the primary while it
+// has ammo, else the sidearm (same order as the game's unused ForceWeaponSwitchForRodeo).
+function GetBotRodeoWeapon( bot )
+{
+	local primary = GetPilotAntiPersonnelWeapon( bot )
+	local sidearm = GetPilotSideArmWeapon( bot )
+	foreach ( weapon in [ primary, sidearm ] )
+	{
+		if ( weapon == null )
+			continue
+		local slammer = false
+		try { slammer = weapon.HasModDefined( "slammer" ) && weapon.HasMod( "slammer" ) }
+		catch ( e ) {}
+		if ( slammer )
+			return weapon
+	}
+	if ( primary != null && BotWeaponHasAmmo( bot, primary ) )
+		return primary
+	if ( sidearm != null )
+		return sidearm
+	return primary
+}
+
+// Ask for the riding gun. Bypasses UpdateWeaponChoice's hold time, and is retried on its own
+// clock (nextRideSwitchTime) until the anti-titan weapon is gone.
+function BotRequestRideWeapon( bot, brain, weapon )
+{
+	local now = Time()
+	brain.nextRideSwitchTime = now + BOT_RODEO_SWITCH_RETRY
+	brain.rideSwitchTries++
+	if ( weapon == null )
+		return
+	bot.SetActiveWeapon( weapon.GetWeaponClassName() )
+	brain.weaponWanted = weapon
+	brain.weaponSwitchTime = now
+	brain.weaponCheckDone = false
+	brain.nextWeaponSwitchTime = now + BOT_WEAPON_DEPLOY_TIME
+}
+
+// Down into the open hatch: GetTitanHijackOrigin is raised to about the rider's own eye height,
+// so aiming at it points nowhere. The hatch hitbox sits under the attachment, inside the titan.
+function GetRodeoAimPoint( titan )
+{
+	local hatch = titan.GetAttachmentOrigin( titan.LookupAttachment( "hijack" ) )
+	return hatch + ( titan.GetWorldSpaceCenter() - hatch ) * BOT_RODEO_AIM_DEPTH
+}
+
+function BotWeaponHasAmmo( bot, weapon )
+{
+	return bot.GetWeaponAmmoLoaded( weapon ) != 0 || bot.GetWeaponAmmoStockpile( weapon ) != 0
+}
+
+//---------------------------------------------------------
+// Epilogue evac
+//---------------------------------------------------------
+function IsBotOnEvacDropship( bot )
+{
+	return "playersOnDropship" in level && bot in level.playersOnDropship
+}
+
+// Our team is the one escaping (see _evac.nut): where to go, or null. Until the dropship has come
+// down at the evac point that's the point itself; then it's the ship's ramp, where boarding is
+// checked (EvacShipTriggerCheck: the head within the ramp trigger's radius).
+function GetEvacGoal( bot )
+{
+	if ( GetGameState() != eGameState.Epilogue )
+		return null
+	if ( !( "evacTeam" in level ) || level.evacTeam == null || bot.GetTeam() != level.evacTeam )
+		return null
+	if ( !( "evacNode" in level ) || !IsValid( level.evacNode ) )
+		return null
+	try { if ( Flag( "EvacFinished" ) ) return null }
+	catch ( e ) {}
+
+	// The ship was there and got shot down: nothing left to run to.
+	local ship = "dropship" in level ? level.dropship : null
+	if ( ship != null && !IsAlive( ship ) )
+		return null
+
+	local nodePos = level.evacNode.GetOrigin()
+	if ( IsAlive( ship ) && "trigger" in ship.s && IsValid( ship.s.trigger ) )
+	{
+		local ramp = ship.s.trigger.GetOrigin()
+		if ( Distance( ramp, nodePos ) < BOT_EVAC_SHIP_NEAR_NODE )
+			return { pos = ramp, board = true }
+	}
+	// The ship has taken off (its ramp is away from the point): too late to get on.
+	try { if ( Flag( "EvacShipLeave" ) ) return null }
+	catch ( e ) {}
+	return { pos = nodePos, board = false }
+}
+
+// The evac just started for us: drop whatever the bot was in the middle of (a retreat, cover,
+// a reposition or flank, a high point being held or climbed to, a rodeo, a rider hunt) so the
+// whole run goes to the ship, and have the tactical ready for the way there.
+function BotStartEvac( bot, brain )
+{
+	printt( "BotAI:", bot.GetPlayerName(), "running for the evac ship" )
+	if ( brain.fleeing && !brain.fleeDirect )
+		StopFleeing( brain )
+	if ( brain.cover != null )
+		EndCover( brain, 0.0 )
+	brain.repositionUntil = 0.0
+	brain.repositionPoint = null
+	brain.holdUntil = 0.0
+	brain.holdRoam = false
+	brain.upstairsGoal = null
+	brain.flankPoint = null
+	brain.flankUntil = 0.0
+	brain.chasePoint = null
+	brain.alertUntil = 0.0
+	brain.climbUntil = 0.0
+	brain.climbIsLedge = false
+	brain.windowExitUntil = 0.0
+	ResetWallrunPlan( bot, brain, "aborted" )
+	brain.rodeoTarget = null
+	brain.rodeoFriendly = false
+	brain.rescueRider = null
+	brain.rescueTitan = null
+	brain.rescuePoint = null
+	brain.path = []
+	brain.pathIndex = 0
+	brain.nextRepathTime = 0.0
+	brain.nextTacticalTime = min( brain.nextTacticalTime, Time() )
+}
+
+// In a titan near the evac point: get out and go the rest of the way on foot.
+function UpdateEvacDisembark( bot, brain )
+{
+	if ( brain.evac == null )
+		return
+	if ( Distance( bot.GetOrigin(), brain.evac.pos ) > BOT_EVAC_TITAN_EXIT_DIST )
+		return
+	if ( !PlayerCanDisembarkTitan( bot ) )
+		return
+	printt( "BotAI:", bot.GetPlayerName(), "leaving the titan to make the evac" )
+	bot.CockpitStartDisembark()
+	thread PlayerDisembarksTitan( bot )
+}
+
+// Boarding a ramp that's too high to reach from the ground (or after missing it from the ground a
+// few times): pick a launch point next to the ship (a node or a roof at the right height with a
+// clear jump line), and point brain.evac at it, with climbing on, until we're standing on it.
+// From there brain.evac is the ramp again and BotEvacBoardTick does the jump. Launch points that
+// don't work out are dropped for the whole team.
+function UpdateEvacLaunch( bot, brain, isTitan )
+{
+	if ( brain.evac == null || !brain.evac.board || isTitan )
+	{
+		brain.evacRamp = null
+		brain.evacLaunch = null
+		brain.evacFails = 0
+		brain.evacJumped = false
+		brain.evacGroundReach = true
+		brain.evacRunupUntil = 0.0
+		return
+	}
+
+	local now = Time()
+	local ramp = brain.evac.pos
+	// New ramp (or the ship still settling): judge it again.
+	if ( brain.evacRamp == null || Distance( ramp, brain.evacRamp ) > BOT_EVAC_RAMP_MOVED )
+	{
+		brain.evacRamp = ramp
+		brain.evacLaunch = null
+		brain.evacFails = 0
+		brain.nextEvacLaunchSearch = 0.0
+		brain.evacGroundReach = IsEvacRampReachableFromGround( bot, ramp )
+		if ( !brain.evacGroundReach )
+			printt( "BotAI:", bot.GetPlayerName(), "evac ramp is too high to reach from the ground, looking for a launch point" )
+	}
+	if ( brain.evacGroundReach && brain.evacFails < BOT_EVAC_GROUND_TRIES )
+		return
+
+	local launch = brain.evacLaunch
+	if ( launch != null && ( launch.fails >= BOT_EVAC_LAUNCH_TRIES || ( !launch.reached && now > launch.until ) ) )
+	{
+		printt( "BotAI:", bot.GetPlayerName(), "dropping an evac launch point", launch.fails >= BOT_EVAC_LAUNCH_TRIES ? "(missed the ramp from it)" : "(couldn't get up there)" )
+		file.evacBadLaunches.append( launch.pos )
+		if ( file.evacBadLaunches.len() > 64 )
+			file.evacBadLaunches.remove( 0 )
+		brain.evacLaunch = null
+		launch = null
+	}
+	if ( launch == null )
+	{
+		if ( now < brain.nextEvacLaunchSearch )
+			return
+		brain.nextEvacLaunchSearch = now + BOT_EVAC_LAUNCH_SEARCH_RETRY
+		launch = FindEvacLaunchPoint( bot, ramp )
+		brain.evacLaunch = launch
+		// Nothing found: keep trying run-ups from the ground until the next search.
+		if ( launch == null )
+			return
+		printt( "BotAI:", bot.GetPlayerName(), "heading for an evac launch point", launch.roof ? "(roof)" : "(node)",
+			( ramp.z - launch.pos.z ).tointeger(), "below the ramp" )
+	}
+
+	local origin = bot.GetOrigin()
+	local launchFlat = Length2D( launch.pos - origin )
+	// Still far off (the search runs as soon as the ship is down, wherever we are): the time to get
+	// up there only starts counting close by, or a far bot would drop a good spot for the whole team.
+	if ( !launch.reached && launchFlat > BOT_EVAC_LAUNCH_TIMER_DIST )
+		launch.until = now + BOT_EVAC_LAUNCH_REACH_TIME
+	if ( bot.IsOnGround() )
+	{
+		if ( !launch.reached && launchFlat < BOT_EVAC_LAUNCH_REACHED && fabs( launch.pos.z - origin.z ) < 48.0 )
+		{
+			launch.reached = true
+		}
+		else if ( launch.reached && ( origin.z < launch.pos.z - BOT_EVAC_LAUNCH_LOST_DROP || launchFlat > BOT_EVAC_LAUNCH_MAX_GAP * 1.5 ) )
+		{
+			// Fell (or jumped) off and landed well below it, or wandered off away from it: go back up.
+			// A boarding jump that ends down here is a miss from this launch point (counted here:
+			// BotEvacBoardTick doesn't run again until we're back up).
+			if ( brain.evacJumped )
+			{
+				brain.evacFails++
+				launch.fails++
+				printt( "BotAI:", bot.GetPlayerName(), "missed the evac ramp from a launch point (" + launch.fails + ")" )
+			}
+			launch.reached = false
+			launch.until = now + BOT_EVAC_LAUNCH_REACH_TIME
+		}
+	}
+	if ( !launch.reached )
+	{
+		// (A jump marked before we were up here isn't a miss from this launch point.)
+		brain.evacJumped = false
+		brain.evac = { pos = launch.pos, board = false, climb = true }
+	}
+}
+
+// Is the ground under the ramp close enough below it to board from there with a jump + double jump?
+function IsEvacRampReachableFromGround( bot, ramp )
+{
+	local down = TraceLine( ramp, ramp - Vector( 0, 0, BOT_EVAC_GROUND_PROBE ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+	if ( down.startSolid || down.fraction >= 1.0 )
+		return false
+	return ramp.z - down.endPos.z <= BOT_EVAC_GROUND_REACH
+}
+
+function IsBadEvacLaunch( pos )
+{
+	foreach ( spot in file.evacBadLaunches )
+	{
+		if ( Distance( spot, pos ) < BOT_EVAC_BAD_LAUNCH_RADIUS )
+			return true
+	}
+	return false
+}
+
+// Score of a spot to jump for the ramp from (higher is better), or null if it can't work: too
+// close or too far, the ramp too high above the head (or too far below it), or a dropped spot.
+// out = flat direction the ramp sticks out of the ship; spots on that side are easier.
+function ScoreEvacLaunchSpot( ramp, out, pos )
+{
+	local flat = Length2D( ramp - pos )
+	if ( flat < BOT_EVAC_LAUNCH_MIN_GAP || flat > BOT_EVAC_LAUNCH_MAX_GAP )
+		return null
+	local rise = ramp.z - ( pos.z + BOT_EVAC_HEAD_HEIGHT )
+	if ( rise > BOT_EVAC_LAUNCH_MAX_RISE || -rise > BOT_EVAC_LAUNCH_MAX_DROP )
+		return null
+	if ( IsBadEvacLaunch( pos ) )
+		return null
+	return -flat * 0.5 - max( rise, 0.0 ) * 2.0 + Normalize2D( pos - ramp ).Dot( out ) * BOT_EVAC_LAUNCH_SIDE_BONUS
+}
+
+// Launch point for a high ramp: graph nodes in the cells around it, plus roofs found by probing
+// down in a ring around it. The best few are checked for a clear line from head height to the
+// ramp. Returns { pos, roof, fails, reached, until } or null.
+function FindEvacLaunchPoint( bot, ramp )
+{
+	local ship = "dropship" in level ? level.dropship : null
+	local out = IsValid( ship ) ? Normalize2D( ramp - ship.GetOrigin() ) : Vector( 0, 0, 0 )
+
+	local candidates = []
+	local nav = GetNavCache()
+	for ( local dx = -1; dx <= 1; dx++ )
+	{
+		for ( local dy = -1; dy <= 1; dy++ )
+		{
+			local key = NavCellKey( ramp.x + dx * BOT_NAV_CELL, ramp.y + dy * BOT_NAV_CELL )
+			if ( !( key in nav.cells ) )
+				continue
+			foreach ( index in nav.cells[ key ] )
+			{
+				local pos = nav.positions[ index ]
+				local score = ScoreEvacLaunchSpot( ramp, out, pos )
+				if ( score != null )
+					candidates.append( { pos = pos, roof = false, score = score } )
+			}
+		}
+	}
+
+	// Roofs and ledges the graph doesn't cover: probe down from above the ramp's height, keeping
+	// only walkable tops with standing room.
+	local probeDepth = BOT_EVAC_LAUNCH_MAX_DROP + BOT_EVAC_LAUNCH_MAX_RISE + BOT_EVAC_HEAD_HEIGHT
+	for ( local i = 0; i < BOT_EVAC_ROOF_DIRS; i++ )
+	{
+		local yaw = 2.0 * PI * i / BOT_EVAC_ROOF_DIRS
+		local dir = Vector( cos( yaw ), sin( yaw ), 0 )
+		foreach ( radius in [ 200.0, 340.0 ] )
+		{
+			local top = ramp + dir * radius + Vector( 0, 0, BOT_EVAC_LAUNCH_MAX_DROP )
+			local down = TraceLine( top, top - Vector( 0, 0, probeDepth ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+			if ( down.fraction >= 1.0 || down.startSolid || down.surfaceNormal.z < 0.7 )
+				continue
+			if ( !HasClearLine( bot, down.endPos + Vector( 0, 0, 8 ), down.endPos + Vector( 0, 0, 80 ) ) )
+				continue
+			local score = ScoreEvacLaunchSpot( ramp, out, down.endPos )
+			if ( score != null )
+				candidates.append( { pos = down.endPos, roof = true, score = score } )
+		}
+	}
+
+	// Best first, only a few traced.
+	for ( local check = 0; check < BOT_EVAC_LAUNCH_CHECKS && candidates.len() > 0; check++ )
+	{
+		local bestIndex = 0
+		for ( local i = 1; i < candidates.len(); i++ )
+		{
+			if ( candidates[ i ].score > candidates[ bestIndex ].score )
+				bestIndex = i
+		}
+		local spot = candidates[ bestIndex ]
+		candidates.remove( bestIndex )
+		if ( HasClearLine( bot, spot.pos + Vector( 0, 0, BOT_EVAC_HEAD_HEIGHT ), ramp ) )
+			return { pos = spot.pos, roof = spot.roof, fails = 0, reached = false, until = Time() + BOT_EVAC_LAUNCH_REACH_TIME }
+	}
+	return null
+}
+
+// Which way to back off for a run-up: straight away from the ramp, or (right under it) out the
+// ship's open side.
+function GetEvacRunupDir( origin, ramp )
+{
+	local away = origin - ramp
+	if ( Length2D( away ) >= 16.0 )
+		return Normalize2D( away )
+	local ship = "dropship" in level ? level.dropship : null
+	if ( IsValid( ship ) )
+		return Normalize2D( ramp - ship.GetOrigin() )
+	return Vector( 1, 0, 0 )
+}
+
+// Last stretch to the ramp (from the ground or from a launch point): sprint at it, jump when close
+// (or at the launch point's edge) and double jump on the way up. Standing right under it, back off
+// first for a run-up: a standing jump goes nowhere. Landing again without boarding counts as a miss
+// (see UpdateEvacLaunch). `below` = how far the ramp is above the head.
+function BotEvacBoardTick( bot, brain, ramp )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local toRamp = ramp - origin
+	local flat = Length2D( toRamp )
+	local launch = brain.evacLaunch
+	local below = ramp.z - ( origin.z + BOT_EVAC_HEAD_HEIGHT )
+	AimAt( brain, bot.EyePosition(), ramp, false )
+
+	local moveDir = toRamp
+	local pressed = 0
+	if ( bot.IsOnGround() )
+	{
+		if ( brain.evacJumped )
+		{
+			brain.evacJumped = false
+			brain.evacFails++
+			if ( launch != null )
+				launch.fails++
+			printt( "BotAI:", bot.GetPlayerName(), "missed the evac ramp", launch != null ? "from a launch point" : "from the ground", "(" + brain.evacFails + ")" )
+		}
+		brain.usedDoubleJump = false
+
+		if ( now < brain.evacRunupUntil && brain.evacRunupDir != null )
+		{
+			// Backing off for the run-up, but never off an edge.
+			if ( IsGapAhead( bot, brain.evacRunupDir ) )
+				brain.evacRunupUntil = 0.0
+			else
+				moveDir = brain.evacRunupDir
+		}
+		else if ( below > 0.0 && flat < BOT_EVAC_RUNUP_MIN_DIST && Length2D( bot.GetVelocity() ) < BOT_EVAC_RUNUP_SPEED )
+		{
+			brain.evacRunupDir = GetEvacRunupDir( origin, ramp )
+			brain.evacRunupUntil = now + BOT_EVAC_RUNUP_TIME
+			moveDir = brain.evacRunupDir
+		}
+		else
+		{
+			local jumpDist = launch != null ? BOT_EVAC_LAUNCH_JUMP_DIST : BOT_EVAC_GROUND_JUMP_DIST
+			if ( below > -BOT_EVAC_HEAD_MARGIN && ( flat < jumpDist || ( launch != null && IsGapAhead( bot, toRamp ) ) ) )
+				pressed = BOT_IN_JUMP
+		}
+	}
+	else
+	{
+		// In the air during boarding = a jump for the ramp (counted as a miss if we land again).
+		brain.evacJumped = true
+		if ( !brain.usedDoubleJump && below > -BOT_EVAC_HEAD_MARGIN && bot.GetVelocity().z < 50.0 )
+		{
+			brain.usedDoubleJump = true
+			pressed = BOT_IN_JUMP
+		}
+	}
+
+	local relative = MoveDirRelativeToView( moveDir, brain.yaw )
+	// Right over the ramp in the air: stop pushing, or we sail past it.
+	local scale = ( !bot.IsOnGround() && flat < 48.0 ) ? 0.0 : 1.0
+	BotSetInput( bot, ( relative.forward * scale ).tofloat(), ( relative.side * scale ).tofloat(), brain.pitch.tofloat(), brain.yaw.tofloat(), BOT_IN_SPEED )
 	if ( pressed != 0 )
 		BotPressButtons( bot, pressed )
 }
@@ -1316,6 +3003,22 @@ function UpdateThreat( bot, brain, isTitan, hasVisibleTarget )
 	local origin = bot.GetOrigin()
 	local enemyTeam = GetOtherTeam( bot.GetTeam() )
 
+	// In a titan, an enemy nuclear ejection nearby beats everything: run straight out of the blast
+	// (the titan dash kicks in as the run starts, see UpdateTitanDash).
+	brain.fleeingNuke = false
+	if ( isTitan )
+	{
+		local nuke = FindNukeThreat( bot )
+		if ( nuke != null )
+		{
+			if ( !brain.fleeing )
+				printt( "BotAI:", bot.GetPlayerName(), "running from a nuclear ejection" )
+			StartFleeing( bot, brain, nuke.pos, nuke.until - Time() + 0.5, true )
+			brain.fleeingNuke = true
+			return
+		}
+	}
+
 	// Live grenade nearby: short dash straight away from it, no pathing.
 	if ( !isTitan )
 	{
@@ -1323,9 +3026,21 @@ function UpdateThreat( bot, brain, isTitan, hasVisibleTarget )
 		local grenades = GetProjectileArrayEx( "npc_grenade_frag", enemyTeam, origin, BOT_GRENADE_DANGER_RADIUS )
 		if ( grenades.len() > 0 )
 		{
-			StartFleeing( bot, brain, grenades[0].GetOrigin(), RandomFloat( 1.0, 1.5 ), true )
+			// On the evac run only a quick hop aside, then straight back on the way to the ship.
+			local dodge = brain.evac != null ? RandomFloat( BOT_EVAC_GRENADE_DODGE_MIN, BOT_EVAC_GRENADE_DODGE_MAX ) : RandomFloat( 1.0, 1.5 )
+			StartFleeing( bot, brain, grenades[0].GetOrigin(), dodge, true )
 			return
 		}
+	}
+
+	// Escaping on the evac ship: getting there is the way out, not running somewhere else. A
+	// retreat begun before the evac (from a titan, hurt) is dropped right away instead of being
+	// run to the end; only a grenade dodge runs its course.
+	if ( brain.evac != null )
+	{
+		if ( brain.fleeing && ( !brain.fleeDirect || Time() >= brain.fleeUntil ) )
+			StopFleeing( brain )
+		return
 	}
 
 	if ( brain.fleeing )
@@ -1346,25 +3061,35 @@ function UpdateThreat( bot, brain, isTitan, hasVisibleTarget )
 
 	// Badly hurt: run for longer, to cover inside a building, until health comes back.
 	local hurt = !isTitan && bot.GetHealth() < bot.GetMaxHealth() * BOT_PILOT_FLEE_HEALTH
-	StartFleeing( bot, brain, threatPos, hurt ? RandomFloat( 5.0, 9.0 ) : RandomFloat( 2.5, 5.0 ), false )
+	local duration = hurt ? RandomFloat( 5.0, 9.0 ) : RandomFloat( 2.5, 5.0 )
+	// A titan too close while we can hurt it: only get some room, then turn and shoot again
+	// (nothing gets shot while running away).
+	if ( !isTitan && brain.threatIsTitan && GetBotUsableAntiTitanWeapon( bot ) != null )
+		duration = RandomFloat( BOT_TITAN_FLEE_MIN, BOT_TITAN_FLEE_MAX )
+	StartFleeing( bot, brain, threatPos, duration, false )
 }
 
+// Where the danger to run from is, or null. Leaves brain.threatIsTitan set when it's a titan.
 function FindThreatPosition( bot, brain, isTitan, hasVisibleTarget, enemyTeam )
 {
 	local origin = bot.GetOrigin()
 	local eye = bot.EyePosition()
+	brain.threatIsTitan = false
 
 	// On foot vs an enemy titan (player or auto-titan): fight it with the anti-titan weapon from range,
-	// but back off if it gets close enough to stomp us, or if we have nothing that hurts it.
+	// but back off if it gets close enough to stomp us, or if we have nothing (loaded) that hurts it.
 	if ( !isTitan && brain.rodeoTarget == null )
 	{
-		local hasAntiTitan = GetBotAntiTitanWeapon( bot ) != null
+		local hasAntiTitan = GetBotUsableAntiTitanWeapon( bot ) != null
 		foreach ( titan in GetEnemyTitansNear( enemyTeam, origin, BOT_FLEE_TITAN_DIST ) )
 		{
 			if ( !CanSee( bot, eye, titan ) )
 				continue
 			if ( !hasAntiTitan || Distance( origin, titan.GetOrigin() ) < BOT_TITAN_TOO_CLOSE_DIST )
+			{
+				brain.threatIsTitan = true
 				return titan.GetOrigin()
+			}
 		}
 	}
 
@@ -1435,6 +3160,27 @@ function FindTitanThreatPosition( bot, enemyTeam )
 	return null
 }
 
+// An enemy nuclear ejection close enough to hurt, or null. Expired ones are dropped here.
+function FindNukeThreat( bot )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local team = bot.GetTeam()
+	for ( local i = file.nukes.len() - 1; i >= 0; i-- )
+	{
+		local nuke = file.nukes[ i ]
+		if ( now > nuke.until )
+		{
+			file.nukes.remove( i )
+			continue
+		}
+		// The blast only hurts the other team.
+		if ( nuke.team != team && Distance( origin, nuke.pos ) < BOT_NUKE_DANGER_RADIUS )
+			return nuke
+	}
+	return null
+}
+
 function GetEnemyTitansNear( enemyTeam, origin, radius )
 {
 	local titans = GetNPCArrayEx( "npc_titan", enemyTeam, origin, BOT_FLEE_TITAN_RADIUS )
@@ -1463,6 +3209,7 @@ function StopFleeing( brain )
 	brain.fleeing = false
 	brain.fleeFrom = null
 	brain.fleeGoal = null
+	brain.threatIsTitan = false
 	brain.path = []
 	brain.pathIndex = 0
 	brain.nextRepathTime = 0.0
@@ -1487,6 +3234,9 @@ function ChooseFleeGoal( bot, threatPos )
 		local pos = GetNodeVector( RandomInt( nodeCount ) )
 		local travel = Distance( origin, pos )
 		if ( travel < BOT_FLEE_MIN_TRAVEL || travel > BOT_FLEE_MAX_TRAVEL )
+			continue
+		// Titans don't run back to where one of them got stuck.
+		if ( isTitan && IsTitanBadSpot( pos ) )
 			continue
 
 		local threatDist = Distance( pos, threatPos )
@@ -1540,9 +3290,21 @@ function ChooseGoal( bot, brain, isTitan )
 	if ( brain.fleeing )
 		return brain.fleeGoal
 
+	// Epilogue: everything else waits, head for the evac ship.
+	if ( brain.evac != null )
+		return brain.evac.pos
+
 	// Breaking off from a brawl to come back from a new angle.
 	if ( Time() < brain.repositionUntil && brain.repositionPoint != null )
 		return brain.repositionPoint
+
+	// A titan that gave up on a route (see TitanStuckResponse): around through the detour point first.
+	if ( isTitan && brain.titanDetour != null )
+	{
+		if ( Time() < brain.titanDetourUntil && Distance2D( bot.GetOrigin(), brain.titanDetour ) > BOT_FLANK_REACHED )
+			return brain.titanDetour
+		brain.titanDetour = null
+	}
 
 	if ( brain.targetLastSeenPos != null )
 	{
@@ -1572,6 +3334,27 @@ function ChooseGoal( bot, brain, isTitan )
 	// Holding a high point: stay put.
 	if ( !isTitan && Time() < brain.holdUntil )
 		return null
+
+	// Going up through a building (see TryGoUpstairs): once up there, watch the streets below.
+	if ( !isTitan && brain.upstairsGoal != null )
+	{
+		local toGoal = brain.upstairsGoal - bot.GetOrigin()
+		if ( Time() > brain.upstairsUntil )
+		{
+			brain.upstairsGoal = null
+		}
+		else if ( Length2D( toGoal ) < BOT_STAIRS_REACHED && fabs( toGoal.z ) < 64.0 )
+		{
+			brain.upstairsGoal = null
+			brain.holdRoam = true
+			brain.holdUntil = Time() + RandomFloat( BOT_STAIRS_HOLD_MIN, BOT_STAIRS_HOLD_MAX )
+			brain.nextHoldLook = 0.0
+			printt( "BotAI:", bot.GetPlayerName(), "made it upstairs, watching from above" )
+			return null
+		}
+		else
+			return brain.upstairsGoal
+	}
 
 	if ( !isTitan )
 	{
@@ -1608,10 +3391,28 @@ function ChooseGoal( bot, brain, isTitan )
 
 	// No leads: roam the map, and fight whoever turns up.
 	local hasNav = NavGetNodeCount() > 0
-	if ( brain.patrolGoal == null || Time() > brain.patrolUntil || Distance( bot.GetOrigin(), brain.patrolGoal ) < BOT_PILOT_NODE_REACHED * 2 )
+	local patrolReached = brain.patrolGoal != null && Distance( bot.GetOrigin(), brain.patrolGoal ) < BOT_PILOT_NODE_REACHED * 2
+	// Running across the roofs towards the goal (off the graph): roof lovers aren't pulled back
+	// down to a new goal just because the time ran out.
+	local patrolExpired = Time() > brain.patrolUntil && !( !isTitan && brain.offGraph && brain.roofLove >= 0.5 )
+	if ( brain.patrolGoal == null || patrolExpired || patrolReached )
 	{
 		if ( brain.patrolGoal != null )
+		{
 			RememberVisited( brain, brain.patrolGoal )
+			// Made it up to a high roaming goal: roof lovers stop there a moment and look around
+			// (see IsHoldingVantage, no lead needed for this one).
+			if ( !isTitan && patrolReached && brain.patrolElevation >= BOT_VANTAGE_MIN_ELEVATION
+				&& RandomInt( 100 ) < BOT_ROOF_HOLD_CHANCE * brain.roofLove )
+			{
+				brain.holdRoam = true
+				brain.holdUntil = Time() + RandomFloat( BOT_ROOF_HOLD_MIN, BOT_ROOF_HOLD_MAX )
+				brain.nextHoldLook = 0.0
+				brain.patrolGoal = null
+				brain.patrolElevation = 0.0
+				return null
+			}
+		}
 
 		if ( hasNav )
 		{
@@ -1622,6 +3423,7 @@ function ChooseGoal( bot, brain, isTitan )
 		{
 			// No node graph on this map: run straight at the enemy (stuck detection hops and re-picks).
 			brain.patrolGoal = ChooseHuntGoal( bot )
+			brain.patrolElevation = 0.0
 			if ( brain.patrolGoal == null )
 				brain.patrolGoal = GetRandomRoamPoint( bot )
 			brain.patrolUntil = Time() + RandomFloat( 5.0, 10.0 )
@@ -1945,6 +3747,7 @@ function Perceive( bot, brain, hasVisibleTarget )
 		// danger
 		titanFight = brain.titanFight
 		titanThreats = brain.titanThreats
+		titanEnemies = brain.titanEnemies
 		health = bot.GetHealth().tofloat() / max( bot.GetMaxHealth(), 1 )
 		underFire = now < brain.underFireUntil
 		clipFrac = clipLeft
@@ -1968,6 +3771,8 @@ function IsLookingAt( ent, target )
 // ejecting or doomed, nobody from the other team riding it, not absurdly far away. Else null.
 function FindEmbarkTitan( bot )
 {
+	if ( bot in file.brains && file.brains[ bot ].evac != null )
+		return null
 	local pet = bot.GetPetTitan()
 	if ( !IsAlive( pet ) )
 		return null
@@ -2017,8 +3822,8 @@ function UpdateBoundsWatchdog( bot, brain )
 }
 
 // Is there a titan fight around the pilot (a friendly and an enemy titan close to each other,
-// both near us)? Throttled; leaves brain.titanFight and brain.titanThreats (the positions of
-// every titan involved).
+// both near us)? Throttled; leaves brain.titanFight, brain.titanThreats (the positions of
+// every titan involved) and brain.titanEnemies (the living enemy titans around us).
 function ScanTitanFight( bot, brain )
 {
 	local now = Time()
@@ -2049,6 +3854,12 @@ function ScanTitanFight( bot, brain )
 
 	brain.titanFight = fight
 	brain.titanThreats = []
+	brain.titanEnemies = []
+	foreach ( enemy in enemies )
+	{
+		if ( IsAlive( enemy ) )
+			brain.titanEnemies.append( enemy )
+	}
 	if ( !fight )
 		return
 	foreach ( titan in enemies )
@@ -2078,8 +3889,10 @@ function Decide( bot, brain, p )
 	local current = brain.action
 
 	// Keep the current action for a moment so the bot doesn't flip between two every tick;
-	// a retreat always goes through.
-	if ( desired.action != current && desired.action != "retreat" && now - brain.actionSince < BOT_ACTION_MIN_TIME
+	// a retreat always goes through, and so does going for a rider on a titan (a flank held
+	// the trigger meanwhile).
+	local forRider = desired.action == "rescue" || ( p.hasEnemy && IsRodeoing( brain.target ) )
+	if ( desired.action != current && desired.action != "retreat" && desired.action != "evac" && !forRider && now - brain.actionSince < BOT_ACTION_MIN_TIME
 		&& IsActionValid( brain, p, current ) )
 		return { mode = brain.mode, action = current }
 
@@ -2109,6 +3922,10 @@ function IsActionValid( brain, p, action )
 			return Time() < brain.repositionUntil
 		case "retreat":
 			return brain.fleeing
+		case "evac":
+			return brain.evac != null
+		case "rescue":
+			return brain.rescueRider != null
 	}
 	return true
 }
@@ -2131,6 +3948,14 @@ function ChooseAction( bot, brain, p )
 		return { mode = "survive", action = "retreat" }
 	}
 
+	// Epilogue, our team escaping: to the evac ship, shooting on the way but never stopping to fight.
+	if ( brain.evac != null )
+	{
+		if ( brain.cover != null )
+			EndCover( brain, 0.0 )
+		return { mode = "navigate", action = "evac" }
+	}
+
 	// Our titan is out and we can get into it: that comes before fighting, hiding or running (a pilot
 	// fights from inside a titan for as long as it can). A retreat from a titan that was only
 	// triggered by UpdateThreat is dropped; UpdateThreat won't start another while this holds.
@@ -2150,6 +3975,22 @@ function ChooseAction( bot, brain, p )
 		if ( brain.cover != null )
 			EndCover( brain, BOT_COVER_COOLDOWN )
 		return { mode = "survive", action = "retreat" }
+	}
+
+	// An enemy riding a titan (a teammate's, see UpdateRiderRescue): in sight, shoot it off now,
+	// from wherever we are (no cover, no flanking with the trigger held); out of sight behind the
+	// hull, go round the titan for a line on it.
+	if ( p.hasEnemy && IsRodeoing( brain.target ) )
+	{
+		if ( brain.cover != null )
+			EndCover( brain, 0.0 )
+		return { mode = "combat", action = "attack" }
+	}
+	if ( brain.rescueRider != null && !p.hasEnemy )
+	{
+		if ( brain.cover != null )
+			EndCover( brain, 0.0 )
+		return { mode = "combat", action = "rescue" }
 	}
 
 	// In cover: the cover routine owns the bot until the episode ends.
@@ -2233,6 +4074,7 @@ function ExecuteAction( bot, brain, p, d )
 		holdStill = false	// stand still
 		holdFire = false	// don't shoot, throw or aim down sights
 		crouch = false
+		lookAt = null		// face this point when there's nothing to shoot (behind titan cover)
 	}
 	switch ( d.action )
 	{
@@ -2266,6 +4108,19 @@ function ExecuteAction( bot, brain, p, d )
 		case "capture":
 			plan.goal = p.objective
 			break
+
+		case "evac":
+			// Kept for a moment by Decide even after the evac went away (see IsActionValid).
+			if ( brain.evac != null )
+				plan.goal = brain.evac.pos
+			plan.disengage = true
+			break
+
+		case "rescue":
+			// Round the titan to where the rider shows over the hull (see UpdateRiderRescue).
+			// Kept for a moment by Decide after the rider is gone: then the usual goal.
+			plan.goal = brain.rescuePoint
+			break
 	}
 	return plan
 }
@@ -2274,7 +4129,7 @@ function ExecuteAction( bot, brain, p, d )
 // A cover episode: go to the spot, hide (ducked, reloading), peek to shoot, go back, hide again,
 // until it times out, the enemy finds the spot, or the bot has to retreat.
 // opts (optional) turns this into a titan-crossfire cover: { extra = other threat positions,
-// needPeek, minThreatDist, maxRadius }. Without a peek spot the bot just hides.
+// needPeek, minThreatDist, maxRadius, eyeHeight }. Without a peek spot the bot just hides.
 function TryStartCover( bot, brain, threatPos, opts = null )
 {
 	local now = Time()
@@ -2294,43 +4149,68 @@ function TryStartCover( bot, brain, threatPos, opts = null )
 		phaseStart = now
 		until = 0.0
 		expire = now + ( titanCover ? BOT_TITAN_COVER_MAX_TIME : BOT_COVER_MAX_TIME )
+		threatEnt = null	// titan cover: the enemy titan we hide from and peek at
+		peekArrived = 0.0	// titan cover: when we got onto the peek spot (0 = not yet this peek)
+		peekClip = -1		// titan cover: anti-titan clip when the peek started (a drop = we got a shot off)
+		peekShot = false	// titan cover: shot fired this peek, duck back
 	}
 	return true
 }
 
-// Cover out of the line of fire of the titans fighting around us (p.titanThreats). Pilots with an
-// anti-titan weapon, and not the cautious kind, look for a spot they can peek out of; if there
-// is none (or they can't) they just hide.
+// Cover out of the line of fire of the titans fighting around us (p.titanThreats). Pilots with a
+// loaded anti-titan weapon and enough health look for a spot they can peek out of to shoot the
+// nearest enemy titan; if there is none (or they can't) they just hide.
 function TryStartTitanCover( bot, brain, p )
 {
 	local origin = bot.GetOrigin()
+	// The nearest enemy titan is the one to hide from and peek at.
+	local threatEnt = null
 	local primary = null
 	local primaryDist = 0.0
-	foreach ( pos in p.titanThreats )
+	foreach ( titan in p.titanEnemies )
 	{
-		local dist = Distance( origin, pos )
+		if ( !IsValid( titan ) || !IsAlive( titan ) )
+			continue
+		local dist = Distance( origin, titan.GetOrigin() )
 		if ( primary == null || dist < primaryDist )
 		{
-			primary = pos
+			threatEnt = titan
+			primary = titan.GetOrigin()
 			primaryDist = dist
+		}
+	}
+	if ( primary == null )
+	{
+		foreach ( pos in p.titanThreats )
+		{
+			local dist = Distance( origin, pos )
+			if ( primary == null || dist < primaryDist )
+			{
+				primary = pos
+				primaryDist = dist
+			}
 		}
 	}
 	if ( primary == null )
 		return false
 
-	local canPeek = brain.temperament != "cautious" && p.health > 0.5 && GetBotAntiTitanWeapon( bot ) != null
+	local canPeek = p.health > BOT_TITAN_PEEK_MIN_HEALTH && GetBotUsableAntiTitanWeapon( bot ) != null
 	local opts = {
 		extra = p.titanThreats
 		needPeek = canPeek
 		minThreatDist = BOT_TITAN_COVER_MIN_DIST
 		maxRadius = BOT_TITAN_COVER_MAX_DIST
+		eyeHeight = BOT_TITAN_COVER_EYE_HEIGHT
 	}
-	if ( TryStartCover( bot, brain, primary, opts ) )
-		return true
-	if ( !canPeek )
-		return false
-	opts.needPeek = false
-	return TryStartCover( bot, brain, primary, opts )
+	local started = TryStartCover( bot, brain, primary, opts )
+	if ( !started && canPeek )
+	{
+		opts.needPeek = false
+		started = TryStartCover( bot, brain, primary, opts )
+	}
+	if ( started )
+		brain.cover.threatEnt = threatEnt
+	return started
 }
 
 function EndCover( brain, cooldown )
@@ -2358,6 +4238,10 @@ function CoverTick( bot, brain, p, plan )
 	}
 
 	plan.disengage = true
+	// Titan cover: keep facing the titan from behind cover, so a peek starts already lined up.
+	if ( c.titanCover && c.phase != "go" && c.threatEnt != null && IsValid( c.threatEnt ) && IsAlive( c.threatEnt ) )
+		plan.lookAt = c.threatEnt.GetWorldSpaceCenter()
+
 	switch ( c.phase )
 	{
 		case "go":
@@ -2366,7 +4250,13 @@ function CoverTick( bot, brain, p, plan )
 			{
 				c.phase = "hide"
 				c.phaseStart = now
-				c.until = now + RandomFloat( BOT_COVER_HIDE_MIN, BOT_COVER_HIDE_MAX )
+				if ( c.titanCover )
+				{
+					local hideScale = brain.temperament == "cautious" ? 1.5 : 1.0
+					c.until = now + RandomFloat( BOT_TITAN_HIDE_MIN, BOT_TITAN_HIDE_MAX ) * hideScale
+				}
+				else
+					c.until = now + RandomFloat( BOT_COVER_HIDE_MIN, BOT_COVER_HIDE_MAX )
 			}
 			break
 
@@ -2404,14 +4294,33 @@ function CoverTick( bot, brain, p, plan )
 				}
 				c.phase = "peek"
 				c.phaseStart = now
-				c.until = now + RandomFloat( BOT_COVER_PEEK_MIN, BOT_COVER_PEEK_MAX )
+				if ( c.titanCover )
+				{
+					// The real length is set on arrival (see below); this only caps the whole peek.
+					c.until = now + BOT_TITAN_PEEK_HARD_MAX
+					c.peekArrived = 0.0
+					c.peekShot = false
+					local weapon = bot.GetActiveWeapon()
+					c.peekClip = ( IsValid( weapon ) && IsAntiTitanWeapon( weapon ) ) ? weapon.GetWeaponPrimaryClipCount() : -1
+				}
+				else
+					c.until = now + RandomFloat( BOT_COVER_PEEK_MIN, BOT_COVER_PEEK_MAX )
 			}
 			break
 
 		case "peek":
 			plan.goal = c.peek
 			if ( Distance2D( origin, c.peek ) < BOT_COVER_REACHED )
+			{
 				plan.holdStill = true
+				if ( c.titanCover && c.peekArrived == 0.0 )
+				{
+					c.peekArrived = now
+					c.until = min( c.until, now + RandomFloat( BOT_TITAN_PEEK_MIN, BOT_TITAN_PEEK_MAX ) )
+				}
+			}
+			if ( c.titanCover )
+				UpdateTitanPeek( bot, brain, c, now )
 			if ( now > c.until )
 			{
 				c.phase = "go"
@@ -2419,6 +4328,30 @@ function CoverTick( bot, brain, p, plan )
 			}
 			break
 	}
+}
+
+// Peeking out at a titan: stay out while the anti-titan weapon is locking or charging (up to the
+// hard cap), and duck back right after a shot went off (the clip dropped).
+function UpdateTitanPeek( bot, brain, c, now )
+{
+	if ( c.peekShot )
+		return
+	local weapon = bot.GetActiveWeapon()
+	if ( IsValid( weapon ) && IsAntiTitanWeapon( weapon ) )
+	{
+		local clip = weapon.GetWeaponPrimaryClipCount()
+		if ( c.peekClip >= 0 && clip < c.peekClip )
+		{
+			c.peekShot = true
+			c.until = min( c.until, now + 0.4 )
+			return
+		}
+		c.peekClip = clip
+	}
+	else
+		c.peekClip = -1	// not the anti-titan weapon (yet): nothing to compare against
+	if ( now - brain.atAimingTime < 0.3 )
+		c.until = min( max( c.until, now + 0.5 ), c.phaseStart + BOT_TITAN_PEEK_HARD_MAX )
 }
 
 // A graph node near the bot that the threat can't see (standing or ducked), not closer to the
@@ -2434,6 +4367,8 @@ function FindCoverSpot( bot, threatPos, opts = null )
 	local needPeek = opts == null || opts.needPeek
 	local minThreatDist = opts != null ? opts.minThreatDist : 0.0
 	local maxRadius = opts != null ? opts.maxRadius : BOT_COVER_MAX_DIST
+	// Where the threat looks from: a pilot's eyes, or a titan's cockpit high above them.
+	local eyeHeight = ( opts != null && "eyeHeight" in opts ) ? opts.eyeHeight : 56.0
 	local threats = [ threatPos ]
 	if ( opts != null )
 	{
@@ -2442,7 +4377,7 @@ function FindCoverSpot( bot, threatPos, opts = null )
 	}
 
 	local origin = bot.GetOrigin()
-	local threatEye = threatPos + Vector( 0, 0, 56 )
+	local threatEye = threatPos + Vector( 0, 0, eyeHeight )
 	local toThreat = threatPos - origin
 	local toThreatLength = max( Length2D( toThreat ), 1.0 )
 	local side = Vector( -toThreat.y / toThreatLength, toThreat.x / toThreatLength, 0 )
@@ -2474,7 +4409,7 @@ function FindCoverSpot( bot, threatPos, opts = null )
 				exposed = true
 				break
 			}
-			local eye = threat + Vector( 0, 0, 56 )
+			local eye = threat + Vector( 0, 0, eyeHeight )
 			if ( HasClearLine( bot, eye, pos + Vector( 0, 0, 60 ) ) || HasClearLine( bot, eye, pos + Vector( 0, 0, 24 ) ) )
 			{
 				exposed = true
@@ -2547,12 +4482,16 @@ function ChooseTemperament( bot )
 //   outnumberMargin - retreat when visible enemy pilots outnumber nearby allies by this many
 //   repositionChance- percent chance to leave a crowded fight for a new angle
 //   targetMemory    - seconds to keep after an enemy that went out of sight
+//   roofLove        - 0..1, how much the bot takes to rooftops: climbing chances (WantsClimb),
+//                     high roaming goals and holds there, height of route points. "high" route
+//                     bots love roofs, indoor ones hardly; flankers and direct ones in between.
 function ApplyTemperament( brain )
 {
 	switch ( brain.temperament )
 	{
 		case "cautious":
 			brain.routeStyle = RandomInt( 2 ) == 0 ? "indoor" : "high"
+			brain.roofLove = brain.routeStyle == "high" ? RandomFloat( 0.8, 1.0 ) : RandomFloat( 0.1, 0.3 )
 			brain.fleeHealth = RandomFloat( 0.40, 0.50 )
 			brain.fleeMargin = -1.0
 			brain.outnumberMargin = 1
@@ -2562,6 +4501,7 @@ function ApplyTemperament( brain )
 
 		case "flanker":
 			brain.routeStyle = "flank"
+			brain.roofLove = RandomFloat( 0.4, 0.7 )
 			brain.fleeHealth = RandomFloat( 0.20, 0.30 )
 			brain.fleeMargin = 0.1
 			brain.outnumberMargin = 2
@@ -2571,6 +4511,7 @@ function ApplyTemperament( brain )
 
 		default:	// aggressive
 			brain.routeStyle = RandomInt( 2 ) == 0 ? "direct" : "high"
+			brain.roofLove = brain.routeStyle == "high" ? RandomFloat( 0.8, 1.0 ) : RandomFloat( 0.3, 0.6 )
 			brain.fleeHealth = RandomFloat( 0.10, 0.20 )
 			brain.fleeMargin = 0.25
 			brain.outnumberMargin = 3
@@ -2675,13 +4616,17 @@ function ScoreTacticalNodes( bot, brain, nav, candidates, from, to, side )
 	local perp = Vector( -toTarget.y / length, toTarget.x / length, 0 )
 	local mates = GetTeammateBrains( bot )
 	// Titans can't use roofs or interiors: they just look for a good angle.
-	local style = bot.IsTitan() ? "flank" : brain.routeStyle
+	local isTitan = bot.IsTitan()
+	local style = isTitan ? "flank" : brain.routeStyle
 
 	local best = null
 	local bestScore = 0.0
 	foreach ( index in candidates )
 	{
 		local pos = nav.positions[ index ]
+		// Nothing up high (walkways, stairs up to them) or where a titan just got stuck.
+		if ( isTitan && ( nav.elevation[ index ] > BOT_TITAN_MAX_NODE_ELEVATION || IsTitanBadSpot( pos ) ) )
+			continue
 		local detour = Distance( from, pos ) + Distance( pos, to ) - direct
 		if ( detour > direct * BOT_TACTIC_MAX_DETOUR + 600.0 )
 			continue
@@ -2693,6 +4638,11 @@ function ScoreTacticalNodes( bot, brain, nav, candidates, from, to, side )
 
 		if ( style == "high" )
 			score += min( nav.elevation[ index ], BOT_HIGH_ELEVATION_MAX ) * BOT_HIGH_ELEVATION_BONUS
+		else if ( !isTitan )	// other pilots like height too, as much as their roofLove says
+			score += min( nav.elevation[ index ], BOT_HIGH_ELEVATION_MAX ) * BOT_HIGH_ELEVATION_BONUS * brain.roofLove * BOT_ROOF_ROUTE_SCALE
+		// Pilots: spots a wallrun gets us up to, by taste.
+		if ( !isTitan && nav.elevation[ index ] >= BOT_CLIMB_MIN_HEIGHT && nav.elevation[ index ] <= BOT_CLIMB_WALLRUN_MAX_HEIGHT )
+			score += BOT_WR_REACH_BONUS * brain.wallLove * WallrunStyleFactor( brain )
 
 		foreach ( mate in mates )
 		{
@@ -2843,8 +4793,9 @@ function UpdateReposition( bot, brain, hasVisibleTarget )
 			brain.repositionUntil = 0.0
 		return
 	}
+	// (A rider on a titan is shot off where it is, not walked away from.)
 	if ( brain.repositionChance <= 0 || !hasVisibleTarget || !brain.target.IsPlayer() || IsTitanEntity( brain.target )
-		|| now < brain.nextBrawlCheck || now < brain.nextRepositionTime )
+		|| IsRodeoing( brain.target ) || now < brain.nextBrawlCheck || now < brain.nextRepositionTime )
 		return
 	brain.nextBrawlCheck = now + BOT_BRAWL_CHECK_INTERVAL
 
@@ -2903,21 +4854,36 @@ function StartReposition( bot, brain, enemyPos )
 // Overwatch: hold an elevated point for a while, watching the area where the prey was last
 // reported. Ends early when we get shot, when the lead goes stale or is close by, or when a
 // fight starts (the combat code takes over).
+// A roof reached while roaming (brain.holdRoam, see ChooseGoal) is held without a lead: the bot
+// looks around the streets below instead.
 function IsHoldingVantage( bot, brain, hasVisibleTarget )
 {
 	if ( Time() > brain.holdUntil )
+	{
+		brain.holdRoam = false
 		return false
+	}
 	local lead = ( brain.prey != null && IsValid( brain.prey ) ) ? GetIntel( bot.GetTeam(), brain.prey ) : null
-	if ( Time() < brain.underFireUntil || lead == null || Distance( bot.GetOrigin(), lead.pos ) < BOT_VANTAGE_BREAK_DIST )
+	local leadClose = lead != null && Distance( bot.GetOrigin(), lead.pos ) < BOT_VANTAGE_BREAK_DIST
+	if ( Time() < brain.underFireUntil || leadClose || ( lead == null && !brain.holdRoam ) )
 	{
 		brain.holdUntil = 0.0
+		brain.holdRoam = false
 		return false
 	}
 	// Look around that area, not at a fixed point.
 	if ( Time() > brain.nextHoldLook )
 	{
 		brain.nextHoldLook = Time() + RandomFloat( 1.0, 2.5 )
-		brain.holdWatch = lead.pos + Vector( RandomFloat( -400, 400 ), RandomFloat( -400, 400 ), 40 )
+		if ( lead != null )
+		{
+			brain.holdWatch = lead.pos + Vector( RandomFloat( -400, 400 ), RandomFloat( -400, 400 ), 40 )
+		}
+		else
+		{
+			local yaw = RandomFloat( -PI, PI )
+			brain.holdWatch = bot.EyePosition() + Vector( cos( yaw ) * 1200.0, sin( yaw ) * 1200.0, -150.0 )
+		}
 	}
 	return !hasVisibleTarget
 }
@@ -2961,25 +4927,32 @@ function FindClimbableRoof( bot, dir )
 
 	// Low enough to jump straight up to the edge.
 	if ( height <= BOT_CLIMB_MAX_HEIGHT )
-		return { z = nearTop.z, wall = wallPoint, along = null }
+		return { z = nearTop.z, wall = wallPoint, along = null, alt = null, face = dir }
 
 	// Higher: needs a wallrun up the face first, so there must be room to run along the wall
-	// on one side, with clear air above that stretch too.
+	// on one side, with clear air above that stretch too. Along the face itself (its normal), not
+	// along the probe direction, which can be well off it.
+	local face = fabs( wall.surfaceNormal.z ) < 0.3 ? Normalize2D( wall.surfaceNormal ) * -1.0 : dir
+	local faceRight = Vector( face.y, -face.x, 0 )
 	local runStart = chest + dir * max( wallDist - 40.0, 0.0 )
-	foreach ( side in [ right, right * -1.0 ] )
+	local sides = []
+	foreach ( side in [ faceRight, faceRight * -1.0 ] )
 	{
 		if ( !HasClearLine( bot, runStart, runStart + side * BOT_CLIMB_WALLRUN_LENGTH ) )
 			continue
 		local runColumn = column + side * ( BOT_CLIMB_WALLRUN_LENGTH * 0.6 )
-		if ( !IsColumnClear( bot, runColumn, right, probeHeight ) )
+		if ( !IsColumnClear( bot, runColumn, faceRight, probeHeight ) )
 			continue
 		// The wall must actually continue along that stretch to run on.
 		local alongWall = runStart + side * ( BOT_CLIMB_WALLRUN_LENGTH * 0.6 )
-		if ( HasClearLine( bot, alongWall, alongWall + dir * 80.0 ) )
+		if ( HasClearLine( bot, alongWall, alongWall + face * 80.0 ) )
 			continue
-		return { z = nearTop.z, wall = wallPoint, along = side }
+		sides.append( side )
 	}
-	return null
+	if ( sides.len() == 0 )
+		return null
+	// Both sides work: the other one is the second try if the first fails (see UpdateClimb).
+	return { z = nearTop.z, wall = wallPoint, along = sides[0], alt = sides.len() > 1 ? sides[1] : null, face = face }
 }
 
 // Clear air from waist height up to `height` above base, across the pilot's width.
@@ -3031,7 +5004,8 @@ function MarkBadClimbSpot( pos )
 // when close, double jump near the top and keep pushing forward so the mantle takes us over
 // the edge. Wallrun (higher roof): come in at an angle so we land on the wall running along it,
 // ride it up for a moment, kick off towards the roof, then double jump onto the edge.
-// Looks for chances while travelling; high-style bots take them, others now and then.
+// Looks for chances while travelling; high-style bots take them, others as often as their
+// roofLove says (see WantsClimb), and every bot on its way to an evac launch point.
 // Returns buttons to press; brain.climbUntil > now while a climb is on, and
 // brain.climbMoveDir is the direction to move in.
 function UpdateClimb( bot, brain, moveDir, forward )
@@ -3041,35 +5015,115 @@ function UpdateClimb( bot, brain, moveDir, forward )
 
 	if ( brain.climbUntil > 0.0 )
 	{
-		local onTop = bot.IsOnGround() && origin.z >= brain.climbTopZ - 24.0
-		// No height gained after a while: this wall can't be climbed, give up early.
-		local noProgress = now - brain.climbStart > BOT_CLIMB_PROGRESS_TIME && origin.z - brain.climbStartZ < 40.0
+		// (IsOnGround can be true on a wall: on foot = on the ground and not wallrunning.)
+		local wallRunning = bot.IsWallRunning()
+		local onFoot = bot.IsOnGround() && !wallRunning
+		local onTop = onFoot && origin.z >= brain.climbTopZ - 24.0
+		// No height gained a while after the first jump, or never got to jump at all: this wall
+		// can't be climbed, give up early. (Counted from the jump: the run-up takes its time.)
+		local noProgress = ( brain.climbJumpTime > 0.0 && now - brain.climbJumpTime > BOT_CLIMB_PROGRESS_TIME && origin.z - brain.climbStartZ < 40.0 )
+			|| ( brain.climbJumpTime == 0.0 && now - brain.climbStart > BOT_CLIMB_APPROACH_TIME )
 		if ( onTop || noProgress || now > brain.climbUntil )
 		{
+			local wasLedge = brain.climbIsLedge
+			brain.climbIsLedge = false
+			brain.climbUntil = 0.0
+			brain.nextRepathTime = 0.0
+			if ( wasLedge )
+			{
+				// A ledge on the way: no fuss either way, just don't try that one again.
+				if ( !onTop )
+					MarkBadClimbSpot( brain.climbWall )
+				brain.nextLedgeCheck = now + ( onTop ? BOT_LEDGE_CHECK_INTERVAL : 1.0 )
+				return 0
+			}
 			if ( onTop )
 			{
 				printt( "BotAI:", bot.GetPlayerName(), "climbed onto a roof", brain.climbAlong != null ? "(wallrun)" : "(jump)" )
+			}
+			else if ( brain.climbAlong != null && brain.climbAltAlong != null && brain.climbTries < 1 )
+			{
+				// A wallrun climb that didn't work one way: run up the face the other way first.
+				brain.climbAlong = brain.climbAltAlong
+				brain.climbAltAlong = null
+				brain.climbTries++
+				brain.climbStart = now
+				brain.climbStartZ = origin.z
+				brain.climbJumpTime = 0.0
+				brain.climbKicked = false
+				brain.climbWallrunStart = 0.0
+				brain.climbUntil = now + BOT_CLIMB_TIMEOUT
+				printt( "BotAI:", bot.GetPlayerName(), "retrying the climb from the other side" )
+				return 0
 			}
 			else
 			{
 				MarkBadClimbSpot( brain.climbWall )
 				printt( "BotAI:", bot.GetPlayerName(), "couldn't climb, marking the spot" )
+				// Can't get up the outside: go in and take the stairs.
+				TryGoUpstairs( bot, brain, brain.climbWall )
 			}
-			brain.climbUntil = 0.0
 			brain.nextClimbCheck = now + BOT_CLIMB_RETRY
-			brain.nextRepathTime = 0.0
 			return 0
 		}
 
 		local chest = origin + Vector( 0, 0, 40 )
-		if ( bot.IsOnGround() )
+
+		// Wallrun climb, on the wall (checked first: IsOnGround can be true up there too).
+		if ( brain.climbAlong != null && wallRunning )
+		{
+			brain.usedDoubleJump = false	// touching the wall gives the double jump back
+			if ( brain.climbWallrunStart == 0.0 )
+				brain.climbWallrunStart = now
+			// Keep running along the face, leaning into it.
+			brain.climbMoveDir = brain.climbAlong + brain.climbDir * 0.5
+			// Peak of the run (stopped rising after a moment on the wall, or ridden long enough):
+			// kick off up and towards the roof.
+			local ride = now - brain.climbWallrunStart
+			if ( ( ride > BOT_CLIMB_WALLRUN_MIN_TIME && bot.GetVelocity().z < 40.0 ) || ride > BOT_CLIMB_WALLRUN_TIME )
+			{
+				brain.climbKicked = true
+				brain.climbMoveDir = Normalize2D( brain.climbAlong * 0.4 + brain.climbDir )
+				return BOT_IN_JUMP
+			}
+			return 0
+		}
+
+		if ( onFoot )
 		{
 			brain.usedDoubleJump = false
 			brain.climbKicked = false
 			brain.climbWallrunStart = 0.0
-			local reach = brain.climbAlong != null ? BOT_CLIMB_WALLRUN_JUMP_DIST : 170.0
-			local wallClose = !HasClearLine( bot, chest, chest + brain.climbDir * reach )
-			return wallClose ? BOT_IN_JUMP : 0
+			local jump = false
+			if ( brain.climbAlong != null )
+			{
+				// Wallrun climb: come in at the face at an angle and jump from the right distance
+				// to land on it running. Too close to it for that: back off along it for a run-up.
+				// (Once backing off, back off twice as far, so the run in has room to build up speed;
+				// once running in, carry on to the jump: it comes before we're at the face.)
+				local lateral = Dot2D( brain.climbWall - chest, brain.climbDir )
+				local backingOff = Dot2D( brain.climbMoveDir, brain.climbDir ) < 0.0
+				local runningIn = !backingOff && Dot2D( bot.GetVelocity(), brain.climbDir ) > 60.0
+				local jumpDist = WallrunJumpDist( bot, brain.climbDir )
+				if ( brain.climbJumpTime == 0.0 && !runningIn && lateral < ( backingOff ? BOT_CLIMB_RUNUP_MIN * 2.0 : BOT_CLIMB_RUNUP_MIN ) )
+					brain.climbMoveDir = Normalize2D( brain.climbAlong - brain.climbDir * 0.7 )
+				else
+				{
+					local angle = ( lateral > BOT_WR_FAR_LATERAL ? 40.0 : 30.0 ) * ( PI / 180.0 )
+					brain.climbMoveDir = brain.climbAlong * cos( angle ) + brain.climbDir * sin( angle )
+					jump = lateral <= jumpDist
+				}
+			}
+			else
+				jump = !HasClearLine( bot, chest, chest + brain.climbDir * 170.0 )
+			if ( !jump )
+				return 0
+			if ( brain.climbJumpTime == 0.0 )
+			{
+				brain.climbJumpTime = now
+				brain.climbUntil = max( brain.climbUntil, now + BOT_CLIMB_TIMEOUT - 1.0 )
+			}
+			return BOT_IN_JUMP
 		}
 
 		// Direct climb: double jump near the top of the first jump.
@@ -3083,22 +5137,7 @@ function UpdateClimb( bot, brain, moveDir, forward )
 			return 0
 		}
 
-		// Wallrun climb.
-		if ( bot.IsWallRunning() )
-		{
-			if ( brain.climbWallrunStart == 0.0 )
-				brain.climbWallrunStart = now
-			// Keep running along the face, leaning into it.
-			brain.climbMoveDir = brain.climbAlong + brain.climbDir * 0.5
-			// Peak of the run: kick off up and towards the roof.
-			if ( now - brain.climbWallrunStart > BOT_CLIMB_WALLRUN_TIME || bot.GetVelocity().z < 40.0 )
-			{
-				brain.climbKicked = true
-				brain.climbMoveDir = brain.climbDir
-				return BOT_IN_JUMP
-			}
-			return 0
-		}
+		// Wallrun climb, in the air.
 		if ( brain.climbKicked )
 		{
 			// Off the wall: double jump onto the edge.
@@ -3112,10 +5151,33 @@ function UpdateClimb( bot, brain, moveDir, forward )
 		return 0
 	}
 
-	if ( now < brain.nextClimbCheck || moveDir == null || forward < 0.7 || brain.careful || !bot.IsOnGround() || brain.offGraph )
+	// Running along a wall with a ledge up beside it that the route / target is on (or that a planned
+	// wallrun went up the wall for): kick off onto it.
+	if ( bot.IsWallRunning() && now >= brain.nextWallLedgeCheck )
+	{
+		brain.nextWallLedgeCheck = now + BOT_LEDGE_WALLRUN_CHECK
+		if ( ( WantsHigherGround( bot, brain ) || brain.wrReason == "up" ) && TryStartWallrunLedge( bot, brain ) )
+			return 0
+	}
+
+	// A ledge right ahead and the way on (route, chased target) is up there: mantle onto it.
+	if ( now >= brain.nextLedgeCheck && moveDir != null && forward > 0.5 && !brain.careful && BotOnFoot( bot ) )
+	{
+		brain.nextLedgeCheck = now + BOT_LEDGE_CHECK_INTERVAL
+		if ( WantsHigherGround( bot, brain ) && TryStartLedgeMantle( bot, brain, Normalize2D( moveDir ) ) )
+			return 0
+	}
+
+	// On the way to an evac launch point (see UpdateEvacLaunch), or repositioning to a point up
+	// high, every climb is taken, checked twice as often.
+	local evacClimb = ( brain.evac != null && "climb" in brain.evac && brain.evac.climb ) || IsRepositioningUp( bot, brain )
+	if ( now < brain.nextClimbCheck || moveDir == null || forward < 0.7 || brain.careful || !BotOnFoot( bot ) || brain.offGraph )
 		return 0
-	brain.nextClimbCheck = now + BOT_CLIMB_CHECK_INTERVAL
-	if ( brain.routeStyle != "high" && RandomInt( 100 ) >= BOT_CLIMB_CHANCE_OTHERS )
+	brain.nextClimbCheck = now + ( evacClimb ? BOT_CLIMB_CHECK_INTERVAL * 0.5 : BOT_CLIMB_CHECK_INTERVAL )
+	// On the evac run roofs are only climbed for a launch point (evac.climb), never for the view.
+	if ( !evacClimb && brain.evac != null )
+		return 0
+	if ( !evacClimb && !WantsClimb( brain ) )
 		return 0
 
 	local length = max( Length2D( moveDir ), 1.0 )
@@ -3129,10 +5191,14 @@ function UpdateClimb( bot, brain, moveDir, forward )
 		local top = FindClimbableRoof( bot, dir )
 		if ( top == null )
 			continue
-		brain.climbDir = dir
+		// Wallrun climbs work off the wall face itself (straight into it), not the probe direction.
+		brain.climbDir = ( top.face != null && top.along != null ) ? top.face : dir
 		brain.climbAlong = top.along
+		brain.climbAltAlong = top.alt
+		brain.climbTries = 0
+		brain.climbJumpTime = 0.0
 		// Wallrun climbs come in at an angle so we land on the wall running along it.
-		brain.climbMoveDir = top.along != null ? dir * 0.6 + top.along * 0.8 : dir
+		brain.climbMoveDir = top.along != null ? brain.climbDir * 0.5 + top.along * 0.87 : dir
 		brain.climbKicked = false
 		brain.climbWallrunStart = 0.0
 		brain.climbTopZ = top.z
@@ -3140,9 +5206,237 @@ function UpdateClimb( bot, brain, moveDir, forward )
 		brain.climbStart = now
 		brain.climbStartZ = origin.z
 		brain.climbUntil = now + BOT_CLIMB_TIMEOUT
+		brain.climbIsLedge = false
 		return 0
 	}
+
+	// A wall ahead with no climbable roof on it: sometimes go in and up the stairs instead.
+	if ( !evacClimb && RandomInt( 100 ) < BOT_STAIRS_CHANCE )
+	{
+		local chest = origin + Vector( 0, 0, 40 )
+		local wall = TraceLine( chest, chest + ahead * BOT_CLIMB_WALL_DIST, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( wall.fraction < 1.0 )
+			TryGoUpstairs( bot, brain, wall.endPos )
+	}
 	return 0
+}
+
+// Is the way on above us? The next waypoint of the route, a nearby goal up high (a reposition or
+// flank point on a ledge, a roof), or the target we're chasing.
+function WantsHigherGround( bot, brain )
+{
+	local origin = bot.GetOrigin()
+	local z = origin.z
+	if ( brain.pathIndex < brain.path.len() && brain.path[ brain.pathIndex ].z - z > BOT_LEDGE_UP_DIST )
+		return true
+	if ( brain.pathGoal != null && brain.pathGoal.z - z > BOT_LEDGE_UP_DIST && Length2D( brain.pathGoal - origin ) < BOT_LEDGE_GOAL_DIST )
+		return true
+	if ( IsRepositioningUp( bot, brain ) )
+		return true
+	return brain.target != null && IsValid( brain.target ) && brain.targetLastSeenPos != null
+		&& brain.targetLastSeenPos.z - z > BOT_LEDGE_UP_DIST
+}
+
+// Repositioning (a new angle on a fight) to a point above us: every way up on the route is taken.
+function IsRepositioningUp( bot, brain )
+{
+	// Running for the evac ship: any reposition left over from before doesn't count.
+	if ( brain.evac != null )
+		return false
+	return Time() < brain.repositionUntil && brain.repositionPoint != null
+		&& brain.repositionPoint.z - bot.GetOrigin().z > BOT_LEDGE_UP_DIST
+}
+
+// A ledge in direction dir we can get onto with a jump, a double jump and the mantle: a face close
+// ahead, a walkable top with standing room within BOT_CLIMB_MAX_HEIGHT, and clear air above us on
+// the way up. Starts it as a short direct climb (UpdateClimb runs it). True if started.
+function TryStartLedgeMantle( bot, brain, dir )
+{
+	if ( dir == null || Length2D( dir ) < 0.5 || brain.climbUntil > 0.0 )
+		return false
+	local origin = bot.GetOrigin()
+	local knee = origin + Vector( 0, 0, 20 )
+	local face = TraceLine( knee, knee + dir * BOT_LEDGE_WALL_DIST, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+	if ( face.fraction >= 1.0 || face.startSolid )
+		return false
+	local faceDist = BOT_LEDGE_WALL_DIST * face.fraction
+	local facePoint = knee + dir * faceDist
+	if ( IsBadClimbSpot( facePoint ) )
+		return false
+
+	local probeHeight = BOT_CLIMB_MAX_HEIGHT + 72.0
+	local right = Vector( dir.y, -dir.x, 0 )
+	if ( !IsColumnClear( bot, origin + dir * max( faceDist - 24.0, 0.0 ), right, probeHeight ) )
+		return false
+	local top = FindRoofSurface( bot, origin + Vector( 0, 0, probeHeight ), dir, faceDist + 40.0, probeHeight )
+	if ( top == null )
+		return false
+	local height = top.z - origin.z
+	if ( height < BOT_LEDGE_MIN_HEIGHT || height > BOT_CLIMB_MAX_HEIGHT )
+		return false
+	if ( IsVoidAt( bot, top ) )
+		return false
+
+	StartLedgeClimb( bot, brain, dir, null, top.z, facePoint )
+	return true
+}
+
+// Wallrunning: a top up beside the wall (the side the wall is on) within reach. Kick off the wall
+// towards it next tick, then double jump and mantle (UpdateClimb's wallrun climb). True if started.
+function TryStartWallrunLedge( bot, brain )
+{
+	if ( brain.climbUntil > 0.0 )
+		return false
+	local origin = bot.GetOrigin()
+	local along = Normalize2D( bot.GetVelocity() )
+	if ( Length2D( along ) < 0.5 )
+		return false
+	local right = Vector( along.y, -along.x, 0 )
+	local chest = origin + Vector( 0, 0, 40 )
+	foreach ( side in [ right, right * -1.0 ] )
+	{
+		local wall = TraceLine( chest, chest + side * 64.0, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( wall.fraction >= 1.0 )
+			continue
+		local probeHeight = BOT_LEDGE_WALLRUN_REACH + 72.0
+		local top = FindRoofSurface( bot, origin + Vector( 0, 0, probeHeight ), side, 64.0 * wall.fraction + 48.0, probeHeight )
+		if ( top == null || top.z - origin.z < BOT_LEDGE_MIN_HEIGHT || top.z - origin.z > BOT_LEDGE_WALLRUN_REACH || IsVoidAt( bot, top ) )
+			continue
+		StartLedgeClimb( bot, brain, side, along, top.z, chest + side * ( 64.0 * wall.fraction ) )
+		// Already on the wall: kick off on the next tick.
+		brain.climbWallrunStart = Time() - BOT_CLIMB_WALLRUN_TIME
+		return true
+	}
+	return false
+}
+
+function StartLedgeClimb( bot, brain, dir, along, topZ, wallPoint )
+{
+	local now = Time()
+	brain.climbDir = dir
+	brain.climbAlong = along
+	brain.climbMoveDir = along != null ? along + dir * 0.5 : dir
+	brain.climbKicked = false
+	brain.climbWallrunStart = 0.0
+	brain.climbTopZ = topZ
+	brain.climbWall = wallPoint
+	brain.climbStart = now
+	brain.climbStartZ = bot.GetOrigin().z
+	brain.climbUntil = now + BOT_LEDGE_TIMEOUT
+	brain.climbIsLedge = true
+	brain.climbJumpTime = now	// (a ledge is right there: no run-up, the progress check runs from now)
+	brain.climbAltAlong = null
+}
+
+// Up through the building next to `near`: the best upper-floor / roof node around it (high above
+// us, close to the wall) becomes the goal, and the node graph takes us there by the stairs inside.
+// True if one was found.
+function TryGoUpstairs( bot, brain, near )
+{
+	local now = Time()
+	// (Never on the evac run: the ship is the only place to go.)
+	if ( near == null || brain.upstairsGoal != null || now < brain.nextUpstairsTime || brain.evac != null )
+		return false
+	local nav = GetNavCache()
+	if ( nav.positions.len() == 0 )
+		return false
+
+	local origin = bot.GetOrigin()
+	local best = null
+	local bestScore = 0.0
+	for ( local dx = -1; dx <= 1; dx++ )
+	{
+		for ( local dy = -1; dy <= 1; dy++ )
+		{
+			local key = NavCellKey( near.x + dx * BOT_NAV_CELL, near.y + dy * BOT_NAV_CELL )
+			if ( !( key in nav.cells ) )
+				continue
+			foreach ( index in nav.cells[ key ] )
+			{
+				local pos = nav.positions[ index ]
+				if ( pos.z - origin.z < BOT_STAIRS_MIN_RISE || nav.elevation[ index ] < BOT_VANTAGE_MIN_ELEVATION )
+					continue
+				local flat = Length2D( pos - near )
+				if ( flat > BOT_STAIRS_SEARCH_RADIUS )
+					continue
+				local score = nav.elevation[ index ] * 0.5 - flat
+				if ( best == null || score > bestScore )
+				{
+					best = pos
+					bestScore = score
+				}
+			}
+		}
+	}
+	brain.nextUpstairsTime = now + BOT_STAIRS_COOLDOWN
+	if ( best == null )
+		return false
+
+	brain.upstairsGoal = best
+	brain.upstairsUntil = now + BOT_STAIRS_TIMEOUT
+	brain.nextRepathTime = 0.0
+	printt( "BotAI:", bot.GetPlayerName(), "going inside to take the stairs up" )
+	return true
+}
+
+// Upstairs, heading somewhere well below and far away: if there's an opening that way (a window,
+// a balcony, a roof edge) with floor some way down beyond it, run and jump out of it rather than
+// walk back down the stairs. Returns buttons to press; brain.windowExitUntil > now while it's on.
+function UpdateWindowExit( bot, brain )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	if ( brain.windowExitUntil > 0.0 )
+	{
+		// Landed (or ran out of time): back to the route from down here.
+		if ( now > brain.windowExitUntil || ( BotOnFoot( bot ) && now - brain.windowExitStart > 0.4 ) )
+		{
+			brain.windowExitUntil = 0.0
+			brain.nextRepathTime = 0.0
+		}
+		return 0
+	}
+
+	if ( now < brain.nextWindowCheck || !BotOnFoot( bot ) || brain.pathGoal == null )
+		return 0
+	brain.nextWindowCheck = now + BOT_WINDOW_CHECK_INTERVAL
+	local toGoal = brain.pathGoal - origin
+	local flat = Length2D( toGoal )
+	if ( flat < BOT_WINDOW_MIN_GOAL_DIST || toGoal.z > -BOT_WINDOW_MIN_GOAL_DROP )
+		return 0
+
+	local dir = Vector( toGoal.x / flat, toGoal.y / flat, 0 )
+	local right = Vector( dir.y, -dir.x, 0 )
+	foreach ( probeDir in [ dir, ( dir * 0.85 + right * 0.53 ), ( dir * 0.85 - right * 0.53 ) ] )
+	{
+		local d = Normalize2D( probeDir )
+		local chest = origin + Vector( 0, 0, 40 )
+		local head = origin + Vector( 0, 0, 64 )
+		if ( !HasClearLine( bot, chest, chest + d * BOT_WINDOW_AHEAD ) || !HasClearLine( bot, head, head + d * BOT_WINDOW_AHEAD ) )
+			continue
+		local beyond = origin + d * BOT_WINDOW_AHEAD + Vector( 0, 0, 16 )
+		local land = TraceLine( beyond, beyond - Vector( 0, 0, BOT_WINDOW_MAX_DROP ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( land.fraction >= 1.0 || land.startSolid || land.surfaceNormal.z < 0.7 )
+			continue
+		if ( origin.z - land.endPos.z < BOT_WINDOW_MIN_DROP )
+			continue
+
+		brain.windowExitDir = d
+		brain.windowExitStart = now
+		brain.windowExitUntil = now + BOT_WINDOW_EXIT_TIME
+		printt( "BotAI:", bot.GetPlayerName(), "jumping out", origin.z - land.endPos.z, "units down" )
+		return BOT_IN_JUMP
+	}
+	return 0
+}
+
+// Take this climb chance? Always for high-style bots, otherwise more often the more the bot
+// likes rooftops.
+function WantsClimb( brain )
+{
+	if ( brain.routeStyle == "high" )
+		return true
+	return RandomInt( 100 ) < BOT_CLIMB_CHANCE_OTHERS + brain.roofLove * BOT_CLIMB_CHANCE_ROOF_LOVE
 }
 
 function HasClearLine( bot, from, to )
@@ -3170,19 +5464,20 @@ function GetWhiskerNudge( bot, moveDir )
 }
 
 // Gap ahead (roof edge, ledge over a drop) while running: true if there's no floor within
-// BOT_GAP_DROP just ahead in the direction of travel.
-function IsGapAhead( bot, dir )
+// BOT_GAP_DROP `ahead` units on in the direction of travel.
+function IsGapAhead( bot, dir, ahead = BOT_GAP_CHECK_AHEAD )
 {
 	local length = Length2D( dir )
 	if ( length < 1.0 )
 		return false
-	local start = bot.GetOrigin() + Vector( dir.x / length, dir.y / length, 0 ) * BOT_GAP_CHECK_AHEAD + Vector( 0, 0, 16 )
+	local start = bot.GetOrigin() + Vector( dir.x / length, dir.y / length, 0 ) * ahead + Vector( 0, 0, 16 )
 	return TraceLine( start, start - Vector( 0, 0, BOT_GAP_DROP + 16.0 ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE ).fraction >= 1.0
 }
 
 function StartVantageHold( brain )
 {
 	brain.holdUntil = Time() + RandomFloat( BOT_VANTAGE_HOLD_MIN, BOT_VANTAGE_HOLD_MAX )
+	brain.holdRoam = false		// a lead-based hold: ends when the lead does
 	brain.nextHoldLook = 0.0
 	printt( "BotAI: holding a high point" )
 }
@@ -3196,7 +5491,9 @@ function GetRandomRoamPoint( bot )
 
 // Roam the whole map with no lead on anyone: prefer far nodes we haven't been to lately and
 // that no teammate is already heading for, so the team sweeps the map and runs into enemies.
-// High-style bots like elevated spots, indoor-style bots covered ones.
+// Elevated spots score higher for every bot, by its roofLove (fully for high-style bots), with a
+// flat bonus for real vantage heights; indoor-style bots like covered ones. Records the chosen
+// goal's height in brain.patrolElevation (see the roof hold in ChooseGoal).
 function ChooseExploreGoal( bot, brain )
 {
 	local nav = GetNavCache()
@@ -3205,7 +5502,10 @@ function ChooseExploreGoal( bot, brain )
 	local mates = GetTeammateBrains( bot )
 	local best = null
 	local bestScore = -1.0
-	for ( local i = 0; i < BOT_EXPLORE_CANDIDATES; i++ )
+	local bestElevation = 0.0
+	local heightWeight = brain.routeStyle == "high" ? 1.0 : brain.roofLove
+	local candidates = BOT_EXPLORE_CANDIDATES + ( brain.roofLove >= 0.5 ? BOT_ROOF_EXTRA_CANDIDATES : 0 )
+	for ( local i = 0; i < candidates; i++ )
 	{
 		local index = RandomInt( nodeCount )
 		local pos = nav.positions[ index ]
@@ -3217,9 +5517,14 @@ function ChooseExploreGoal( bot, brain )
 			if ( mate.brain.patrolGoal != null && Distance( mate.brain.patrolGoal, pos ) < BOT_EXPLORE_MATE_DIST )
 				score *= 0.4
 		}
-		if ( brain.routeStyle == "high" )
-			score += min( nav.elevation[ index ], BOT_HIGH_ELEVATION_MAX ) * BOT_HIGH_ELEVATION_BONUS
-		else if ( brain.routeStyle == "indoor" && i < 3 && IsNodeIndoor( nav, index ) )
+		local elevation = nav.elevation[ index ]
+		score += min( elevation, BOT_HIGH_ELEVATION_MAX ) * BOT_HIGH_ELEVATION_BONUS * heightWeight
+		if ( elevation >= BOT_VANTAGE_MIN_ELEVATION )
+			score += BOT_ROOF_GOAL_BONUS * brain.roofLove
+		// Pilots: up where a wallrun (or a wallrun climb) gets us, worth going for, by taste.
+		if ( !bot.IsTitan() && elevation >= BOT_CLIMB_MIN_HEIGHT && elevation <= BOT_CLIMB_WALLRUN_MAX_HEIGHT )
+			score += BOT_WR_REACH_BONUS * brain.wallLove * WallrunStyleFactor( brain )
+		if ( brain.routeStyle == "indoor" && i < 3 && IsNodeIndoor( nav, index ) )
 			score += BOT_INDOOR_ROUTE_BONUS
 		score += RandomFloat( 0.0, 800.0 )
 
@@ -3227,8 +5532,10 @@ function ChooseExploreGoal( bot, brain )
 		{
 			best = pos
 			bestScore = score
+			bestElevation = elevation
 		}
 	}
+	brain.patrolElevation = bestElevation
 	return best
 }
 
@@ -3280,6 +5587,11 @@ function GetPathDirection( bot, brain, goal, isTitan )
 		|| Distance( goal, brain.pathGoal ) > BOT_GOAL_REPATH_DIST
 		|| Time() > brain.nextRepathTime
 		|| brain.pathIndex >= brain.path.len()
+	// Mid-wallrun the timed repath would restart the path (and turn the view) halfway along the
+	// wall: it waits until we're down again (ResetWallrunPlan repaths then), unless the goal moved.
+	if ( needsRepath && ( brain.wrPhase == "run" || brain.wrPhase == "air" || brain.wrPhase == "kick" )
+		&& Time() - brain.wrLastTick <= BOT_WR_STALE && brain.pathGoal != null && Distance( goal, brain.pathGoal ) <= BOT_GOAL_REPATH_DIST && brain.pathIndex < brain.path.len() )
+		needsRepath = false
 
 	if ( needsRepath )
 		BuildPath( bot, brain, goal, isTitan )
@@ -3288,7 +5600,10 @@ function GetPathDirection( bot, brain, goal, isTitan )
 	// Backtracking to a waypoint: walk all the way onto it before moving on.
 	if ( Time() < brain.backtrackUntil )
 		reached = BOT_BACKTRACK_NODE_REACHED
-	while ( brain.pathIndex < brain.path.len() && Distance2D( origin, brain.path[ brain.pathIndex ] ) < reached )
+	// Titans: the wide radius must not count a waypoint on the floor above or below (switchback
+	// stairs) as reached, or the titan cuts the corner into the wall.
+	while ( brain.pathIndex < brain.path.len() && Distance2D( origin, brain.path[ brain.pathIndex ] ) < reached
+		&& ( !isTitan || fabs( brain.path[ brain.pathIndex ].z - origin.z ) < BOT_TITAN_NODE_REACH_Z ) )
 	{
 		brain.pathIndex++
 		brain.backtrackUntil = 0.0
@@ -3296,7 +5611,7 @@ function GetPathDirection( bot, brain, goal, isTitan )
 
 	// Lost the line to the next waypoint (pushed past a door frame or a corner): go back to the
 	// previous one, which we can still see, instead of grinding along the wall.
-	if ( !isTitan && brain.pathIndex > 0 && brain.pathIndex < brain.path.len() && Time() > brain.nextLosCheck && bot.IsOnGround() )
+	if ( !isTitan && brain.pathIndex > 0 && brain.pathIndex < brain.path.len() && Time() > brain.nextLosCheck && BotOnFoot( bot ) && brain.wrPhase == "none" )
 	{
 		brain.nextLosCheck = Time() + BOT_LOS_CHECK_INTERVAL
 		local waist = Vector( 0, 0, 36 )
@@ -3314,15 +5629,20 @@ function GetPathDirection( bot, brain, goal, isTitan )
 	// far below. Run straight at the goal across the roofs instead; edges are leapt by the
 	// parkour code, and getting stuck up there hands control back to the path for a while.
 	brain.offGraph = false
-	if ( !isTitan && brain.path.len() > 0 && Time() > brain.offGraphBlockedUntil && bot.IsOnGround() )
+	if ( !isTitan && brain.path.len() > 0 && Time() > brain.offGraphBlockedUntil && BotOnFoot( bot ) )
 	{
 		local next = brain.path[ brain.pathIndex < brain.path.len() ? brain.pathIndex : brain.path.len() - 1 ]
 		if ( origin.z - next.z > BOT_OFFGRAPH_HEIGHT && Length2D( next - origin ) < 900.0 )
 		{
-			brain.offGraph = true
 			local toGoal = goal - origin
-			if ( Length2D( toGoal ) >= 1.0 )
+			// Straight at the goal only over solid ground: the space between "up here" and the goal
+			// can be the void off the edge of the map (spawn platforms above the graph, War Games).
+			if ( Length2D( toGoal ) >= 1.0 && !IsVoidAt( bot, origin + Normalize2D( toGoal ) * BOT_VOID_AHEAD ) )
+			{
+				brain.offGraph = true
 				return toGoal
+			}
+			brain.offGraphBlockedUntil = Time() + BOT_OFFGRAPH_BLOCK_TIME
 		}
 	}
 
@@ -3336,12 +5656,15 @@ function GetPathDirection( bot, brain, goal, isTitan )
 function BuildPath( bot, brain, goal, isTitan )
 {
 	local origin = bot.GetOrigin()
-	local hull = isTitan ? BOT_HULL_TITAN : BOT_HULL_PILOT
+	local flat = null
+	if ( isTitan )
+		flat = BuildTitanPath( origin, goal )
 	// Pilots: skip NPC traverse links a pilot can't follow (wall climbs, very long jumps), which
 	// otherwise send bots jumping at buildings forever. Needs a DLL with NavFindPathPilot.
-	local flat = ( file.hasPilotNav && !isTitan )
-		? NavFindPathPilot( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, hull, BOT_PILOT_MAX_RISE, BOT_PILOT_MAX_GAP )
-		: NavFindPath( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, hull )
+	else if ( file.hasPilotNav )
+		flat = NavFindPathPilot( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, BOT_HULL_PILOT, BOT_PILOT_MAX_RISE, BOT_PILOT_MAX_GAP )
+	else
+		flat = NavFindPath( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, BOT_HULL_PILOT )
 
 	brain.path = []
 	for ( local i = 0; i + 2 < flat.len(); i += 3 )
@@ -3350,6 +5673,42 @@ function BuildPath( bot, brain, goal, isTitan )
 	brain.pathIndex = 0
 	brain.pathGoal = goal
 	brain.nextRepathTime = Time() + BOT_REPATH_INTERVAL
+}
+
+// Titan route, flat [x, y, z, ...]: on the titan-sized hull first (where the map's graph has
+// links for it), then on the human hull without the NPC climbs and long jumps a titan can't take,
+// then on the plain human graph. A titan hull that hardly ever finds a path on this map (the
+// graph has no links for it) is dropped for the rest of the map.
+function BuildTitanPath( origin, goal )
+{
+	if ( file.titanHull != null )
+	{
+		local flat = TitanFindPath( origin, goal, file.titanHull )
+		file.titanHullTries++
+		if ( flat.len() >= 3 )
+		{
+			file.titanHullHits++
+			return flat
+		}
+		if ( file.titanHullTries >= 12 && file.titanHullHits < 3 )
+		{
+			printt( "BotAI: titan hull", file.titanHull, "found", file.titanHullHits, "paths in", file.titanHullTries, "tries, titans use the human graph on this map" )
+			file.titanHull = null
+		}
+	}
+
+	local flat = TitanFindPath( origin, goal, BOT_HULL_TITAN )
+	if ( flat.len() >= 3 || !file.hasPilotNav )
+		return flat
+	return NavFindPath( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, BOT_HULL_TITAN )
+}
+
+// One titan path query on a hull, limited to traverse links a titan can follow when the DLL can.
+function TitanFindPath( origin, goal, hull )
+{
+	if ( file.hasPilotNav )
+		return NavFindPathPilot( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, hull, BOT_TITAN_MAX_RISE, BOT_TITAN_MAX_GAP )
+	return NavFindPath( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, hull )
 }
 
 // Careful mode (see BOT_DOOR_APPROACH_DIST): indoors, approaching a roofed waypoint, or shortly
@@ -3390,8 +5749,33 @@ function UpdateCarefulMode( bot, brain )
 function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
 {
 	local now = Time()
-	local wantsToMove = moveDir != null && ( fabs( forward ) > 0.1 || fabs( side ) > 0.1 )
 	local origin = bot.GetOrigin()
+	local isTitan = bot.IsTitan()
+
+	// In a synced animation (execution, embark, hatch): standing still there isn't being stuck.
+	if ( bot.ContextAction_IsActive() )
+	{
+		brain.lastProgressPos = origin
+		brain.lastProgressTime = now
+		brain.wpProgressIndex = -1
+		return
+	}
+
+	// On a wall we're moving (a wallrun detours from the route on purpose): the checks start over
+	// once we're off it.
+	if ( bot.IsWallRunning() )
+	{
+		brain.lastProgressPos = origin
+		brain.lastProgressTime = now
+		brain.wpProgressIndex = -1
+		return
+	}
+
+	// Titans also check in a fight (the fight movement has no route behind it, so moveDir may be null);
+	// but pushing into the target itself (a brawl, punching a pilot) or turning on a rider isn't stuck.
+	local titanBrawl = isTitan && !travelling && ( brain.swatting || ( brain.target != null && IsValid( brain.target )
+		&& Time() - brain.targetLastSeenTime < 0.5 && Distance2D( origin, brain.target.GetOrigin() ) < BOT_TITAN_STUCK_IGNORE_DIST ) )
+	local wantsToMove = ( moveDir != null || isTitan ) && !titanBrawl && ( fabs( forward ) > 0.1 || fabs( side ) > 0.1 )
 	local stuck = false
 
 	if ( !wantsToMove || Distance( origin, brain.lastProgressPos ) > BOT_STUCK_DIST )
@@ -3428,6 +5812,13 @@ function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
 	if ( !stuck )
 		return
 
+	// Titans have their own way out (they can't hop over things or back off at an angle into a doorway).
+	if ( isTitan )
+	{
+		TitanStuckResponse( bot, brain, InputToWorldDir( brain.yaw, forward, side ), travelling )
+		return
+	}
+
 	// Pinned in a corner mid-fight (the combat movement keeps pushing into it): circle the
 	// other way for a while and hop, instead of re-pathing a route we aren't following.
 	if ( !travelling && brain.target != null && Time() - brain.targetLastSeenTime < 0.5 )
@@ -3438,6 +5829,16 @@ function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
 		BotPressButtons( bot, BOT_IN_JUMP )
 		brain.lastProgressPos = origin
 		brain.lastProgressTime = now
+		return
+	}
+
+	// Up against a ledge, a crate, a wall top in reach: get up it (jump, double jump, mantle) the
+	// way we were going, instead of a single hop that only reaches knee-high things.
+	if ( TryStartLedgeMantle( bot, brain, InputToWorldDir( brain.yaw, forward, side ) ) )
+	{
+		brain.lastProgressPos = origin
+		brain.lastProgressTime = now
+		brain.wpProgressIndex = -1
 		return
 	}
 
@@ -3503,6 +5904,168 @@ function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
 	}
 }
 
+// A titan stuck on stairs, steps or in a narrow passage. blockedDir is the way it was trying to
+// go (world space, may be null). Every time: step out with a dash the way the hull fits. Again
+// within a few seconds: in a fight, take a new angle on the target; travelling, skip the waypoint
+// if the next one is in reach. A third time: avoid this spot (for every titan, for a while) and
+// go around through a detour point.
+function TitanStuckResponse( bot, brain, blockedDir, travelling )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local fighting = !travelling && brain.target != null && IsValid( brain.target ) && now - brain.targetLastSeenTime < 0.5
+
+	if ( now - brain.lastStuckTime > BOT_TITAN_STUCK_RESET_TIME )
+		brain.stuckCount = 0
+	brain.stuckCount++
+	brain.lastStuckTime = now
+	brain.lastProgressPos = origin
+	brain.lastProgressTime = now
+	brain.wpProgressIndex = -1
+
+	if ( blockedDir == null )
+	{
+		local facing = bot.GetForwardVector()
+		blockedDir = Vector( facing.x, facing.y, 0 )
+	}
+	brain.unstickDir = FindTitanFreeDir( bot, brain, blockedDir )
+	brain.unstickUntil = now + BOT_TITAN_UNSTICK_TIME
+	brain.unstickDash = true
+	// Re-path once out, from wherever that leaves us.
+	brain.nextRepathTime = now + BOT_TITAN_UNSTICK_TIME
+	if ( fighting )
+		brain.titanBackOffUntil = now + BOT_TITAN_BACKOFF_TIME
+
+	if ( brain.stuckCount == 2 )
+	{
+		if ( fighting )
+		{
+			local point = ChooseRepositionPoint( bot, brain, brain.target.GetOrigin() )
+			if ( point != null )
+			{
+				brain.repositionPoint = point.pos
+				brain.repositionUntil = now + BOT_REPOSITION_TIME
+				brain.nextRepositionTime = now + BOT_REPOSITION_COOLDOWN
+			}
+		}
+		else if ( TitanSkipWaypoint( bot, brain ) )
+		{
+			// Keep the shortened route instead of re-deriving the same one right away.
+			brain.nextRepathTime = now + BOT_REPATH_INTERVAL
+		}
+		return
+	}
+
+	if ( brain.stuckCount < 3 )
+		return
+
+	// Still stuck: this way through doesn't work for a titan. Remember the spot, and go around.
+	brain.stuckCount = 0
+	local length = max( Length2D( blockedDir ), 0.01 )
+	// The waypoint we couldn't reach, or (fighting, off the route) the spot just ahead of us.
+	local blocked = ( travelling && brain.pathIndex < brain.path.len() ) ? brain.path[ brain.pathIndex ]
+		: origin + Vector( blockedDir.x / length, blockedDir.y / length, 0 ) * BOT_TITAN_PROBE_DIST
+	MarkTitanBadSpot( blocked )
+	if ( brain.pathGoal != null )
+	{
+		local point = ChooseRepositionPoint( bot, brain, brain.pathGoal )
+		if ( point != null )
+		{
+			brain.titanDetour = point.pos
+			brain.titanDetourUntil = now + BOT_TITAN_DETOUR_TIME
+		}
+	}
+	brain.patrolGoal = null
+	brain.prey = null
+	if ( !fighting )
+		brain.targetLastSeenPos = null
+	brain.nextRepathTime = 0.0
+	printt( "BotAI:", bot.GetPlayerName(), "titan stuck at", origin, "- avoiding the spot", brain.titanDetour != null ? "and taking a detour" : "" )
+}
+
+// Unit direction (world space) a titan can step out to: hull probes, raised over steps and a bit
+// narrower than the titan, at growing angles from the blocked direction (the current orbit side
+// first). Straight back if nothing is clear.
+function FindTitanFreeDir( bot, brain, blockedDir )
+{
+	local length = max( Length2D( blockedDir ), 0.01 )
+	local baseYaw = atan2( blockedDir.y / length, blockedDir.x / length )
+	local origin = bot.GetOrigin()
+	local start = origin + Vector( 0, 0, BOT_TITAN_STEP_HEIGHT )
+	local playerMins = bot.GetPlayerMins()
+	local playerMaxs = bot.GetPlayerMaxs()
+	local scale = BOT_TITAN_PROBE_HULL_SCALE
+	local mins = Vector( playerMins.x * scale, playerMins.y * scale, 0 )
+	local maxs = Vector( playerMaxs.x * scale, playerMaxs.y * scale, playerMaxs.z * scale )
+
+	local sign = brain.strafeDir >= 0.0 ? 1.0 : -1.0
+	foreach ( offset in [ 45.0, -45.0, 90.0, -90.0, 135.0, -135.0, 180.0 ] )
+	{
+		local yaw = baseYaw + offset * sign * ( PI / 180.0 )
+		local dir = Vector( cos( yaw ), sin( yaw ), 0 )
+		local result = TraceHull( start, start + dir * BOT_TITAN_PROBE_DIST, mins, maxs, bot, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
+		if ( !result.startSolid && result.fraction >= BOT_TITAN_PROBE_CLEAR )
+			return dir
+	}
+	return Vector( -blockedDir.x / length, -blockedDir.y / length, 0 )
+}
+
+// Stuck on the way to a waypoint: if the hull fits straight to the one after it, go for that one.
+// True if the waypoint was skipped.
+function TitanSkipWaypoint( bot, brain )
+{
+	if ( brain.pathIndex + 1 >= brain.path.len() )
+		return false
+	local step = Vector( 0, 0, BOT_TITAN_STEP_HEIGHT )
+	local playerMins = bot.GetPlayerMins()
+	local playerMaxs = bot.GetPlayerMaxs()
+	local scale = BOT_TITAN_PROBE_HULL_SCALE
+	local mins = Vector( playerMins.x * scale, playerMins.y * scale, 0 )
+	local maxs = Vector( playerMaxs.x * scale, playerMaxs.y * scale, playerMaxs.z * scale )
+	local result = TraceHull( bot.GetOrigin() + step, brain.path[ brain.pathIndex + 1 ] + step, mins, maxs, bot, TRACE_MASK_PLAYERSOLID_BRUSHONLY, TRACE_COLLISION_GROUP_PLAYER )
+	if ( result.startSolid || result.fraction < 0.95 )
+		return false
+	brain.pathIndex++
+	brain.wpProgressIndex = -1
+	return true
+}
+
+// Places titans got stuck for good (shared by all titans for BOT_TITAN_BAD_SPOT_TIME): tactical
+// points and flee spots there are skipped. Expired ones are dropped here.
+function IsTitanBadSpot( pos )
+{
+	local now = Time()
+	for ( local i = file.titanBadSpots.len() - 1; i >= 0; i-- )
+	{
+		local spot = file.titanBadSpots[ i ]
+		if ( now > spot.until )
+		{
+			file.titanBadSpots.remove( i )
+			continue
+		}
+		if ( Distance( spot.pos, pos ) < BOT_TITAN_BAD_SPOT_RADIUS )
+			return true
+	}
+	return false
+}
+
+function MarkTitanBadSpot( pos )
+{
+	local until = Time() + BOT_TITAN_BAD_SPOT_TIME
+	foreach ( spot in file.titanBadSpots )
+	{
+		// Same spot again: just remember it longer.
+		if ( Distance( spot.pos, pos ) < BOT_TITAN_BAD_SPOT_RADIUS )
+		{
+			spot.until = until
+			return
+		}
+	}
+	file.titanBadSpots.append( { pos = pos, until = until } )
+	if ( file.titanBadSpots.len() > BOT_TITAN_BAD_SPOT_MAX )
+		file.titanBadSpots.remove( 0 )
+}
+
 //---------------------------------------------------------
 // Movement helpers
 //---------------------------------------------------------
@@ -3514,7 +6077,661 @@ function MoveDirRelativeToView( moveDir, viewYaw )
 	return { forward = cos( delta ), side = -sin( delta ) }
 }
 
-function UpdateParkour( bot, brain, moveDir, forward, side, combatWall )
+// A pit or the edge of the map at pos: no floor below it within BOT_VOID_PROBE, or a floor deeper
+// than the lowest node of the graph (nothing the map means to be walked on is down there).
+function IsVoidAt( bot, pos )
+{
+	local nav = GetNavCache()
+	if ( nav.positions.len() == 0 )
+		return false
+	local start = pos + Vector( 0, 0, 32 )
+	local down = TraceLine( start, start - Vector( 0, 0, BOT_VOID_PROBE ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+	if ( down.startSolid )
+		return false	// probe started inside a wall: that's a wall ahead, not a pit
+	if ( down.fraction >= 1.0 )
+		return true
+	return down.endPos.z < nav.minZ - BOT_VOID_MARGIN
+}
+
+// Last check before a pilot on the ground moves: never step or jump into the void. The path's
+// next waypoint is taken instead if that way is safe (the graph never leads into a pit), else the
+// bot stops where it is. Returns the adjusted { forward, side, pressed }.
+function AvoidVoid( bot, brain, forward, side, pressed )
+{
+	local result = { forward = forward, side = side, pressed = pressed }
+	// (IsOnGround can be true on a wall: a wall over a pit is no reason to stop.)
+	if ( !bot.IsOnGround() || bot.IsWallRunning() )
+		return result
+	// The input was turned with the aim (see BotThinkTick), so it's relative to the final yaw.
+	local dir = InputToWorldDir( brain.yaw, forward, side )
+	if ( dir == null )
+		return result
+	local origin = bot.GetOrigin()
+	// Running in for a planned wallrun over a pit (or jumping for it this tick): the wall is the floor
+	// (the plan checked the far end), as long as we're fast and about to jump onto it. The edge of the
+	// pit coming before the planned jump point: jump for the wall from there.
+	if ( ( brain.wrPhase == "approach" || brain.wrPhase == "air" ) && brain.wrAlong != null && Dot2D( dir, brain.wrAlong ) > 0.7
+		&& Dot2D( brain.wrWallPoint - origin, brain.wrInto ) < BOT_WR_JUMP_MAX + 40.0
+		&& Length2D( bot.GetVelocity() ) > BOT_WR_MIN_SPEED )
+	{
+		if ( brain.wrPhase == "approach" && IsVoidAt( bot, origin + dir * BOT_WR_JUMP_MIN ) )
+		{
+			brain.wrPhase = "air"
+			brain.wrPhaseStart = Time()
+			brain.wrJumped = true
+			brain.usedDoubleJump = false
+			result.pressed = pressed | BOT_IN_JUMP
+		}
+		return result
+	}
+	if ( !IsVoidAt( bot, origin + dir * BOT_VOID_AHEAD ) )
+		return result
+
+	// Whatever sent us this way (running across "roofs", a window, a leap, a wallrun) is off for a while.
+	brain.offGraphBlockedUntil = Time() + BOT_OFFGRAPH_BLOCK_TIME
+	brain.windowExitUntil = 0.0
+	brain.climbUntil = 0.0
+	brain.climbIsLedge = false
+	ResetWallrunPlan( bot, brain, "void" )
+	result.pressed = pressed & ~BOT_IN_JUMP
+	result.forward = 0.0
+	result.side = 0.0
+	if ( brain.pathIndex < brain.path.len() )
+	{
+		local toNode = brain.path[ brain.pathIndex ] - origin
+		if ( Length2D( toNode ) > 1.0 && !IsVoidAt( bot, origin + Normalize2D( toNode ) * BOT_VOID_AHEAD ) )
+		{
+			local relative = MoveDirRelativeToView( toNode, brain.yaw )
+			result.forward = relative.forward
+			result.side = relative.side
+		}
+	}
+	return result
+}
+
+// The inverse: the world-space unit direction a forward/side input moves in, or null for no input.
+function InputToWorldDir( viewYaw, forward, side )
+{
+	if ( fabs( forward ) < 0.01 && fabs( side ) < 0.01 )
+		return null
+	local yaw = viewYaw * ( PI / 180.0 ) + atan2( -side, forward )
+	return Vector( cos( yaw ), sin( yaw ), 0 )
+}
+
+// Standing / running on the floor. IsOnGround can be true while wallrunning too, so anything
+// that means "on foot" checks this instead.
+function BotOnFoot( bot )
+{
+	return bot.IsOnGround() && !bot.IsWallRunning()
+}
+
+// Dot product of the horizontal parts of a and b.
+function Dot2D( a, b )
+{
+	return a.x * b.x + a.y * b.y
+}
+
+// forward / side input worked out for view yaw Y, turned so it moves the same way in the world
+// when sent with view yaw Y + turned (degrees).
+// MoveDirRelativeToView: forward = cos( d ), side = -sin( d ) with d = moveYaw - viewYaw, and
+// InputToWorldDir adds atan2( -side, forward ) = d back onto the view yaw. With the view turned by
+// t, the same world direction needs d - t: cos( d - t ) = forward * cos( t ) - side * sin( t ),
+// -sin( d - t ) = side * cos( t ) + forward * sin( t ). (Linear, so a scaled input stays scaled.)
+function RotateInputForYaw( forward, side, turned )
+{
+	local t = turned * ( PI / 180.0 )
+	local c = cos( t )
+	local s = sin( t )
+	local newForward = forward * c - side * s
+	local newSide = side * c + forward * s
+	// A full diagonal (1, 1) turned onto an axis would be 1.41 there: scale back into -1..1,
+	// keeping the direction.
+	local over = max( max( fabs( newForward ), fabs( newSide ) ), 1.0 )
+	return { forward = newForward / over, side = newSide / over }
+}
+
+// How far out from a wall to jump at it: the time to cover the gap at our speed into the wall, so
+// a shallow run-in jumps close and a steep one earlier.
+function WallrunJumpDist( bot, into )
+{
+	local perp = max( Dot2D( bot.GetVelocity(), into ), 60.0 )
+	return BotClamp( perp * BOT_WR_JUMP_LEAD, BOT_WR_JUMP_MIN, BOT_WR_JUMP_MAX )
+}
+
+// How keen the route style is on wallrunning just for the speed of it.
+function WallrunStyleFactor( brain )
+{
+	switch ( brain.routeStyle )
+	{
+		case "high":	return 1.0
+		case "flank":	return 0.9
+		case "indoor":	return 0.35
+	}
+	return 0.7
+}
+
+//---------------------------------------------------------
+// Planned wallruns
+//---------------------------------------------------------
+// On foot and moving, every BOT_WR_PLAN_INTERVAL: is there a wall along the way that takes us up
+// (the route / goal is above), across a gap, or just a good way further at speed? If so: run in at
+// an angle, jump onto it from the right distance, ride it leaning in, and kick off it towards
+// where the route goes (double jumping on if the way on isn't below), or hop across to a facing
+// wall. Wallruns we didn't plan (fell onto a wall) are adopted and finished the same way.
+// Returns buttons to press; while brain.wrPhase != "none", brain.wrMoveDir / wrLookDir say where
+// to move and look.
+
+// Where the route takes us from here: the next waypoint (or the one after, when that's close), the
+// goal itself off the graph, else straight on.
+function GetWallrunSteerTarget( bot, brain, moveDir )
+{
+	local origin = bot.GetOrigin()
+	if ( brain.offGraph && brain.pathGoal != null )
+		return brain.pathGoal
+	local count = brain.path.len()
+	if ( brain.pathIndex < count )
+	{
+		local i = brain.pathIndex
+		if ( i + 1 < count && Distance2D( origin, brain.path[ i ] ) < BOT_WR_LOOKAHEAD_DIST )
+			i++
+		return brain.path[ i ]
+	}
+	return origin + moveDir
+}
+
+// A wall on `side` (flat unit vector) of a run in direction d, a little ahead: near-vertical, facing
+// us, running roughly along d, and high enough to run on. { point, normal, along, lateral } or null.
+function ProbeWallrunWall( bot, origin, d, side )
+{
+	local start = origin + Vector( 0, 0, 48 ) + d * BOT_WR_LEAD
+	local hit = TraceLine( start, start + side * BOT_WR_SIDE_DIST, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+	if ( hit.fraction >= 1.0 || hit.startSolid )
+		return null
+	if ( fabs( hit.surfaceNormal.z ) > 0.3 )
+		return null		// a slope or a ledge top, not a wall
+	local normal = Normalize2D( hit.surfaceNormal )
+	if ( Dot2D( normal, side ) > -0.7 )
+		return null		// facing away from us at a slant
+	if ( fabs( Dot2D( normal, d ) ) > BOT_WR_MAX_ANGLE_COS )
+		return null		// runs across the way we're going, not along it
+	local along = Normalize2D( d - normal * Dot2D( d, normal ) )
+	local lateral = BOT_WR_SIDE_DIST * hit.fraction
+	// Tall enough: a fence or a low wall doesn't take a wallrun.
+	local high = origin + Vector( 0, 0, BOT_WR_MIN_WALL_HEIGHT ) + d * BOT_WR_LEAD
+	if ( HasClearLine( bot, high, high + side * ( lateral + 24.0 ) ) )
+		return null
+	return { point = hit.endPos, normal = normal, along = along, lateral = lateral }
+}
+
+// Room to run the whole length along the wall (nothing in the way), and the wall really goes on
+// that far (same face halfway and at the end).
+function CheckWallrunRoom( bot, wall )
+{
+	local runStart = wall.point + wall.normal * BOT_WR_WALL_OFFSET
+	local runEnd = runStart + wall.along * BOT_WR_RUN_LENGTH
+	if ( !HasClearLine( bot, runStart, runEnd ) )
+		return false
+	foreach ( frac in [ 0.5, 1.0 ] )
+	{
+		local p = runStart + wall.along * ( BOT_WR_RUN_LENGTH * frac )
+		local face = TraceLine( p, p - wall.normal * ( BOT_WR_WALL_OFFSET + 24.0 ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( face.fraction >= 1.0 || face.startSolid || Dot2D( Normalize2D( face.surfaceNormal ), wall.normal ) < 0.85 )
+			return false
+	}
+	return true
+}
+
+// Look for a wall worth running along (see above). True if a plan was made (wrPhase = "approach").
+function PlanWallrun( bot, brain, moveDir )
+{
+	// Near doors / indoors the walls are door frames and corridors.
+	if ( brain.careful || brain.indoors )
+		return false
+	if ( Length2D( bot.GetVelocity() ) < BOT_WR_MIN_SPEED )
+		return false
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local target = GetWallrunSteerTarget( bot, brain, moveDir )
+	local toTarget = target - origin
+	local flat = Length2D( toTarget )
+	if ( flat < 150.0 )
+		return false
+	local d = Normalize2D( toTarget )
+
+	// Why run the wall: for height, across a gap, or (by taste) just for the speed on a long way.
+	local reason = null
+	if ( ( toTarget.z > BOT_WR_UP_MIN && flat < BOT_WR_UP_MAX_DIST ) || IsRepositioningUp( bot, brain ) )
+		reason = "up"
+	else if ( IsGapAhead( bot, d, BOT_WR_GAP_AHEAD ) )
+		reason = "gap"
+	else if ( flat > BOT_WALLRUN_MIN_DIST && RandomFloat( 0.0, 1.0 ) < ( brain.patrolElevation >= BOT_VANTAGE_MIN_ELEVATION ? 1.0 : brain.wallLove * WallrunStyleFactor( brain ) ) )
+		reason = "long"
+	else
+		return false
+
+	local best = null
+	local bestScore = 0.0
+	foreach ( side in [ Vector( d.y, -d.x, 0 ), Vector( -d.y, d.x, 0 ) ] )
+	{
+		local wall = ProbeWallrunWall( bot, origin, d, side )
+		if ( wall == null )
+			continue
+		if ( brain.wrBadWall != null && now < brain.wrBadUntil && Distance( wall.point, brain.wrBadWall ) < BOT_WR_BAD_WALL_RADIUS )
+			continue
+		local runStart = wall.point + wall.normal * BOT_WR_WALL_OFFSET
+		local runEnd = runStart + wall.along * BOT_WR_RUN_LENGTH
+		// The run must take us closer to where we're going (for height, just not away from it).
+		local progress = flat - Length2D( target - runEnd )
+		if ( reason == "up" ? progress < 0.0 : progress < BOT_WR_RUN_LENGTH * BOT_WR_MIN_PROGRESS )
+			continue
+		if ( IsUnderRoof( runStart ) )
+			continue
+		if ( !CheckWallrunRoom( bot, wall ) )
+			continue
+		// Somewhere to come down past the end of it.
+		if ( IsVoidAt( bot, runEnd + wall.along * BOT_WR_LAND_AHEAD ) )
+			continue
+		local score = progress - wall.lateral * 0.5
+		if ( best == null || score > bestScore )
+		{
+			best = wall
+			bestScore = score
+		}
+	}
+	if ( best == null )
+		return false
+
+	brain.wrPhase = "approach"
+	brain.wrReason = reason
+	brain.wrExit = reason == "up" ? "ledge" : "goal"
+	brain.wrInto = best.normal * -1.0
+	brain.wrAlong = best.along
+	brain.wrWallPoint = best.point
+	brain.wrTarget = target
+	brain.wrMoveDir = null
+	brain.wrLookDir = null
+	brain.wrKickDir = null
+	brain.wrPhaseStart = now
+	brain.wrChain = 0
+	brain.wrPlanDouble = false
+	brain.wrJumped = false
+	if ( BOT_DEBUG_WALLRUN )
+		printt( "BotAI:", bot.GetPlayerName(), "wallrun planned:", reason, "- wall", best.lateral, "away, progress", bestScore )
+	return true
+}
+
+// Flat normal of a wall within 64 units of the chest in one of dirs (first hit wins), or null.
+function FindRunWallNormal( bot, dirs )
+{
+	local chest = bot.GetOrigin() + Vector( 0, 0, 40 )
+	foreach ( dir in dirs )
+	{
+		local hit = TraceLine( chest, chest + dir * 64.0, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( hit.fraction >= 1.0 || hit.startSolid )
+			continue
+		local normal = Normalize2D( hit.surfaceNormal )
+		if ( Length2D( normal ) > 0.5 )
+			return normal
+	}
+	return null
+}
+
+// The wall we're on has this flat normal: into it, and along it the way we're moving.
+function SetWallrunWall( brain, normal, vel )
+{
+	brain.wrInto = normal * -1.0
+	local along = Normalize2D( vel - normal * Dot2D( vel, normal ) )
+	if ( Length2D( along ) > 0.5 )
+		brain.wrAlong = along
+	else if ( brain.wrAlong == null )
+		brain.wrAlong = Vector( -normal.y, normal.x, 0 )
+}
+
+// On a wall we didn't plan for (fell / jumped onto it): take it over as a run. True if the wall was found.
+function WallrunAdopt( bot, brain, moveDir )
+{
+	local vel = bot.GetVelocity()
+	local v = Normalize2D( vel )
+	if ( Length2D( v ) < 0.5 )
+		return false
+	local right = Vector( v.y, -v.x, 0 )
+	local normal = FindRunWallNormal( bot, [ right, right * -1.0 ] )
+	if ( normal == null )
+		return false
+	SetWallrunWall( brain, normal, vel )
+	brain.wrPhase = "run"
+	brain.wrRunStart = brain.wallrunStartTime
+	brain.wrReason = "adopted"
+	brain.wrExit = "goal"
+	brain.wrChain = 1
+	brain.wrPlanDouble = false
+	brain.wrWallPoint = bot.GetOrigin() + Vector( 0, 0, 48 )
+	brain.wrTarget = GetWallrunSteerTarget( bot, brain, moveDir )
+	return true
+}
+
+// A wall facing ours across the gap (an alley), close enough to hop over to.
+function FindHopWall( bot, brain )
+{
+	local away = brain.wrInto * -1.0
+	local p = bot.GetOrigin() + Vector( 0, 0, 40 ) + brain.wrAlong * 64.0
+	local hit = TraceLine( p, p + away * BOT_WR_HOP_DIST, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+	return hit.fraction < 1.0 && !hit.startSolid && Dot2D( Normalize2D( hit.surfaceNormal ), away ) < -0.85
+}
+
+// Kick-off direction towards toTarget, always pushing off the wall at least a bit; null if the
+// target is behind the wall (kicking off would only take us away from it).
+function GetWallrunKickDir( brain, toTarget )
+{
+	local away = brain.wrInto * -1.0
+	local dir = Normalize2D( toTarget )
+	if ( Length2D( dir ) < 0.5 )
+		dir = brain.wrAlong
+	local a = Dot2D( dir, away )
+	if ( a < -0.5 )
+		return null
+	return Normalize2D( ( dir - away * a ) + away * max( a, BOT_WR_KICK_AWAY ) )
+}
+
+// The plan is over: result is "done" / "missed" / "timeout" / "void" / "aborted" / "error". A wall
+// we failed to get onto isn't planned again for a while; the stuck checks start over from here.
+function ResetWallrunPlan( bot, brain, result )
+{
+	if ( brain.wrPhase == "none" )
+		return
+	local now = Time()
+	if ( BOT_DEBUG_WALLRUN )
+		printt( "BotAI:", bot.GetPlayerName(), "wallrun", brain.wrReason, "ended in phase", brain.wrPhase, "-", result, "after", brain.wrChain, "walls" )
+	local failed = result == "missed" || result == "timeout" || result == "void"
+	if ( failed && brain.wrWallPoint != null )
+	{
+		brain.wrBadWall = brain.wrWallPoint
+		brain.wrBadUntil = now + BOT_WR_BAD_WALL_TIME
+	}
+	brain.wrPhase = "none"
+	brain.wrReason = null
+	brain.wrExit = null
+	brain.wrInto = null
+	brain.wrAlong = null
+	brain.wrWallPoint = null
+	brain.wrTarget = null
+	brain.wrMoveDir = null
+	brain.wrLookDir = null
+	brain.wrKickDir = null
+	brain.wrChain = 0
+	brain.wrPlanDouble = false
+	brain.wrJumped = false
+	brain.wrNextPlan = now + ( failed ? BOT_WR_FAIL_COOLDOWN : BOT_WR_PLAN_INTERVAL )
+	brain.wpProgressIndex = -1
+	brain.lastProgressPos = bot.GetOrigin()
+	brain.lastProgressTime = now
+	// Landed somewhere else than the route expected: find the way on from here.
+	if ( result == "done" )
+		brain.nextRepathTime = 0.0
+}
+
+// Kick off the wall in dir: jump now, steer that way in the air.
+function StartWallrunKick( brain, dir, now )
+{
+	brain.wrKickDir = dir
+	brain.wrPhase = "kick"
+	brain.wrPhaseStart = now
+	brain.wrMoveDir = dir
+	brain.wrLookDir = dir
+}
+
+function UpdateWallrun( bot, brain, moveDir )
+{
+	local now = Time()
+	// Not run for a while (a rodeo, a fight, a climb): whatever the plan was, it's out of date.
+	if ( brain.wrPhase != "none" && now - brain.wrLastTick > BOT_WR_STALE )
+		ResetWallrunPlan( bot, brain, "aborted" )
+	brain.wrLastTick = now
+
+	local origin = bot.GetOrigin()
+	local vel = bot.GetVelocity()
+	local wallRunning = bot.IsWallRunning()
+	local onFoot = bot.IsOnGround() && !wallRunning
+	// (UpdateParkour / UpdateCombatJumps keep these too; whichever runs first this tick sets them.)
+	if ( wallRunning && !brain.wasWallRunning )
+	{
+		brain.wallrunStartTime = now
+		brain.wallrunHopAfter = RandomFloat( 0.6, 1.4 )
+	}
+	brain.wasWallRunning = wallRunning
+	if ( wallRunning )
+	{
+		brain.usedDoubleJump = false	// touching a wall gives the double jump back
+		if ( BOT_DEBUG_WALLRUN && !file.wrGroundLogged && bot.IsOnGround() )
+		{
+			file.wrGroundLogged = true
+			printt( "BotAI:", bot.GetPlayerName(), "IsOnGround() is true while wallrunning" )
+		}
+	}
+
+	if ( brain.wrPhase == "none" )
+	{
+		if ( wallRunning )
+		{
+			// Near doors / indoors UpdateParkour gets us off the wall instead.
+			if ( brain.careful || !WallrunAdopt( bot, brain, moveDir ) )
+				return 0
+		}
+		else if ( onFoot && now >= brain.wrNextPlan )
+		{
+			brain.wrNextPlan = now + ( WantsHigherGround( bot, brain ) ? BOT_WR_PLAN_INTERVAL_UP : BOT_WR_PLAN_INTERVAL )
+			if ( !PlanWallrun( bot, brain, moveDir ) )
+				return 0
+		}
+		else
+			return 0
+	}
+
+	// Running in at the wall at an angle, and jumping onto it from the right distance.
+	if ( brain.wrPhase == "approach" )
+	{
+		if ( wallRunning )
+		{
+			brain.wrPhase = "run"
+			brain.wrRunStart = now
+			brain.wrChain = 1
+		}
+		else if ( !onFoot )
+		{
+			brain.wrPhase = "air"
+			brain.wrPhaseStart = now
+		}
+		else
+		{
+			local lateral = Dot2D( brain.wrWallPoint - origin, brain.wrInto )
+			local passed = Dot2D( origin - brain.wrWallPoint, brain.wrAlong ) > BOT_WR_RUN_LENGTH * 0.5
+			if ( lateral < -16.0 || passed || now - brain.wrPhaseStart > BOT_WR_APPROACH_TIME )
+			{
+				ResetWallrunPlan( bot, brain, "timeout" )
+				return 0
+			}
+			local angle = ( lateral > BOT_WR_FAR_LATERAL ? BOT_WR_APPROACH_ANGLE_FAR : BOT_WR_APPROACH_ANGLE ) * ( PI / 180.0 )
+			brain.wrMoveDir = brain.wrAlong * cos( angle ) + brain.wrInto * sin( angle )
+			brain.wrLookDir = brain.wrMoveDir
+			if ( lateral <= WallrunJumpDist( bot, brain.wrInto ) && Length2D( vel ) > BOT_WR_MIN_SPEED )
+			{
+				brain.wrPhase = "air"
+				brain.wrPhaseStart = now
+				brain.wrJumped = true
+				brain.usedDoubleJump = false
+				return BOT_IN_JUMP
+			}
+			return 0
+		}
+	}
+
+	// Jumped: steer onto the wall, double jumping if we're dropping short of it.
+	if ( brain.wrPhase == "air" )
+	{
+		if ( wallRunning )
+		{
+			brain.wrPhase = "run"
+			brain.wrRunStart = now
+			brain.wrChain++
+		}
+		else
+		{
+			local inAir = now - brain.wrPhaseStart
+			if ( ( onFoot && inAir > 0.15 ) || inAir > BOT_WR_LATCH_TIME )
+			{
+				// (Off the ground without our jump, a step or a bump: not the wall's fault.)
+				ResetWallrunPlan( bot, brain, brain.wrJumped ? "missed" : "aborted" )
+				return 0
+			}
+			brain.wrMoveDir = Normalize2D( brain.wrAlong + brain.wrInto * BOT_WR_AIR_LEAN )
+			brain.wrLookDir = brain.wrAlong
+			local lateral = Dot2D( brain.wrWallPoint - origin, brain.wrInto )
+			// Without our jump only over a real drop (off an edge), not stepping down a stair.
+			if ( lateral > 24.0 && !brain.usedDoubleJump && vel.z < 0.0 && ( brain.wrJumped
+				|| TraceLine( origin, origin - Vector( 0, 0, 96 ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE ).fraction >= 1.0 ) )
+			{
+				brain.usedDoubleJump = true
+				return BOT_IN_JUMP
+			}
+			return 0
+		}
+	}
+
+	// On the wall: run along it leaning in, then kick off towards the route (or hop to a facing wall).
+	if ( brain.wrPhase == "run" )
+	{
+		if ( !wallRunning )
+		{
+			if ( onFoot )
+			{
+				ResetWallrunPlan( bot, brain, "done" )
+				return 0
+			}
+			// Fell off (the wall ended): carry on the way we're flying.
+			local flying = Normalize2D( vel )
+			StartWallrunKick( brain, Length2D( flying ) > 0.5 ? flying : brain.wrAlong, now )
+			return 0
+		}
+
+		// Follow the wall as it bends; nothing beside us or just ahead = it ends here.
+		local normal = FindRunWallNormal( bot, [ brain.wrInto ] )
+		local wallEnds = normal == null
+		if ( normal != null )
+		{
+			if ( Length2D( vel ) > 50.0 )
+				SetWallrunWall( brain, normal, vel )
+			else
+				brain.wrInto = normal * -1.0
+			local ahead = origin + Vector( 0, 0, 40 ) + brain.wrAlong * BOT_WR_END_CHECK
+			wallEnds = HasClearLine( bot, ahead, ahead + brain.wrInto * 64.0 )
+		}
+
+		brain.wrTarget = GetWallrunSteerTarget( bot, brain, moveDir )
+		local toTarget = brain.wrTarget - origin
+		local targetAhead = Dot2D( toTarget, brain.wrAlong )
+		local ride = now - brain.wrRunStart
+		brain.wrMoveDir = Normalize2D( brain.wrAlong + brain.wrInto * BOT_WR_LEAN )
+		brain.wrLookDir = brain.wrAlong
+
+		// A door / indoors coming up: off the wall now, to walk in on the ground.
+		if ( brain.careful )
+		{
+			local dir = GetWallrunKickDir( brain, toTarget )
+			if ( dir != null && !IsVoidAt( bot, origin + dir * BOT_WR_KICK_REACH ) )
+			{
+				brain.wrPlanDouble = false
+				StartWallrunKick( brain, dir, now )
+				return BOT_IN_JUMP
+			}
+			ResetWallrunPlan( bot, brain, "aborted" )
+			return 0
+		}
+
+		if ( ride < BOT_WR_MIN_RUN && !wallEnds )
+			return 0
+
+		// An alley: hop across to the facing wall and keep going on that one.
+		if ( now >= brain.wrNextHopCheck && brain.wrChain < BOT_WR_MAX_CHAIN && ride > 0.4 && targetAhead > BOT_WR_KICK_AHEAD * 2.0 )
+		{
+			brain.wrNextHopCheck = now + BOT_WR_HOP_CHECK
+			if ( FindHopWall( bot, brain ) )
+			{
+				brain.wrExit = "hop"
+				brain.wrPlanDouble = false
+				StartWallrunKick( brain, Normalize2D( brain.wrAlong * 0.8 - brain.wrInto * 0.6 ), now )
+				return BOT_IN_JUMP
+			}
+		}
+
+		// The wall ends, we've been on it long enough, or the route leaves it: kick off towards
+		// the route, double jumping on unless the way on is down. Never into the void: then we
+		// ride it out instead.
+		if ( wallEnds || ride > BOT_WR_MAX_RUN || targetAhead < BOT_WR_KICK_AHEAD )
+		{
+			local dir = GetWallrunKickDir( brain, toTarget )
+			if ( dir != null && !IsVoidAt( bot, origin + dir * BOT_WR_KICK_REACH ) )
+			{
+				brain.wrPlanDouble = toTarget.z > -64.0
+				StartWallrunKick( brain, dir, now )
+				return BOT_IN_JUMP
+			}
+		}
+		return 0
+	}
+
+	// Off the wall: fly the kick direction until we land or catch the next wall.
+	if ( brain.wrPhase == "kick" )
+	{
+		local sinceKick = now - brain.wrPhaseStart
+		if ( wallRunning && sinceKick > 0.2 )
+		{
+			// The next wall (hopped across, or caught on the way): on the side we pushed off towards
+			// first, else whichever side it is.
+			local normal = FindRunWallNormal( bot, [ brain.wrInto * -1.0 ] )
+			if ( normal == null )
+			{
+				local v = Normalize2D( vel )
+				local right = Vector( v.y, -v.x, 0 )
+				normal = FindRunWallNormal( bot, [ right, right * -1.0 ] )
+			}
+			if ( normal != null )
+				SetWallrunWall( brain, normal, vel )
+			brain.wrPhase = "run"
+			brain.wrRunStart = now
+			brain.wrChain++
+			brain.wrExit = "goal"
+			brain.wrMoveDir = Normalize2D( brain.wrAlong + brain.wrInto * BOT_WR_LEAN )
+			brain.wrLookDir = brain.wrAlong
+			return 0
+		}
+		if ( onFoot || sinceKick > 1.5 )
+		{
+			ResetWallrunPlan( bot, brain, "done" )
+			return 0
+		}
+		brain.wrMoveDir = brain.wrKickDir
+		brain.wrLookDir = brain.wrKickDir
+		// (Not while still on the wall: that press would be another wall jump.)
+		if ( wallRunning )
+			return 0
+		if ( brain.wrPlanDouble && !brain.usedDoubleJump && vel.z < 60.0 )
+		{
+			brain.usedDoubleJump = true
+			brain.wrPlanDouble = false
+			return BOT_IN_JUMP
+		}
+		// Hopping across: the double jump carries us the rest of the way to the facing wall.
+		if ( brain.wrExit == "hop" && !brain.usedDoubleJump && vel.z < -60.0 )
+		{
+			brain.usedDoubleJump = true
+			return BOT_IN_JUMP
+		}
+		return 0
+	}
+	return 0
+}
+
+function UpdateParkour( bot, brain, moveDir, forward )
 {
 	local now = Time()
 	local wallRunning = bot.IsWallRunning()
@@ -3526,6 +6743,18 @@ function UpdateParkour( bot, brain, moveDir, forward, side, combatWall )
 	brain.wasWallRunning = wallRunning
 
 	local travelling = moveDir != null && forward > 0.3
+
+	// First: IsOnGround can be true on a wall too, so the wall is checked before the ground.
+	// On a wall we didn't plan (planned ones are run by UpdateWallrun, and parkour is off then):
+	// kick off once the route leaves the wall (waypoint close or above us), or right away near a
+	// door, to walk in on the ground. Touching a wall gives the double jump back.
+	if ( wallRunning )
+	{
+		brain.usedDoubleJump = false
+		if ( travelling && ( brain.careful || moveDir.z > 48.0 || Length2D( moveDir ) < 150.0 ) )
+			return BOT_IN_JUMP
+		return 0
+	}
 
 	if ( bot.IsOnGround() )
 	{
@@ -3551,36 +6780,12 @@ function UpdateParkour( bot, brain, moveDir, forward, side, combatWall )
 				return BOT_IN_JUMP
 		}
 
-		// Wall alongside on a long run, or in a fight: jump onto it. Heading for a wall that is
-		// still a bit away, jump early and let the air steering carry us onto it.
-		// Not near doors or indoors: there the walls beside us are door frames and corridors.
-		local longRun = travelling && Length2D( moveDir ) > BOT_WALLRUN_MIN_DIST
-		if ( ( longRun || combatWall ) && !brain.careful )
-		{
-			if ( IsWallBeside( bot ) )
-				return BOT_IN_JUMP
-			if ( fabs( side ) > 0.5 && FindWallSide( bot, BOT_WALL_AIR_DIST ) != 0 )
-				return BOT_IN_JUMP
-		}
+		// (Jumping onto walls while travelling is planned, see PlanWallrun.)
 		return 0
 	}
 
-	if ( wallRunning )
-	{
-		// In a fight, don't sit on one wall: hop off after a moment (onto the next wall if there is one).
-		if ( combatWall && now - brain.wallrunStartTime > brain.wallrunHopAfter )
-			return BOT_IN_JUMP
-
-		// Travelling: kick off once the route leaves the wall (waypoint close or above us),
-		// or right away near a door, to walk in on the ground.
-		if ( travelling && ( brain.careful || moveDir.z > 48.0 || Length2D( moveDir ) < 150.0 ) )
-			return BOT_IN_JUMP
-		return 0
-	}
-
-	// Airborne: double jump if we still need height, or to reach a wall we're steering onto
-	// before falling short of it. Near doors only for a real ledge right ahead (a doorway node
-	// sitting a little higher used to trigger double jumps into the door frame).
+	// Airborne: double jump if we still need height. Near doors only for a real ledge right ahead
+	// (a doorway node sitting a little higher used to trigger double jumps into the door frame).
 	// Gap leap: second jump near the top of the arc if there's still nothing below ahead.
 	if ( brain.planGapDouble && !brain.usedDoubleJump && bot.GetVelocity().z < 40.0 && IsGapAhead( bot, bot.GetVelocity() ) )
 	{
@@ -3592,8 +6797,7 @@ function UpdateParkour( bot, brain, moveDir, forward, side, combatWall )
 	if ( !brain.usedDoubleJump )
 	{
 		local needHeight = travelling && ( brain.careful ? ( moveDir.z > 64.0 && Length2D( moveDir ) < 200.0 ) : moveDir.z > 24.0 )
-		local reachWall = !brain.careful && bot.GetVelocity().z < -60.0 && FindWallSide( bot, BOT_WALL_AIR_DIST ) != 0
-		if ( needHeight || reachWall )
+		if ( needHeight )
 		{
 			brain.usedDoubleJump = true
 			return BOT_IN_JUMP
@@ -3628,8 +6832,11 @@ function GetPilotCombatMove( bot, brain, targetIsTitan )
 			brain.strafeDir = -brain.strafeDir
 			brain.nextStrafeFlip = Time() + RandomFloat( BOT_COMBAT_STRAFE_MIN, BOT_COMBAT_STRAFE_MAX )
 		}
-		// Too far: walk in. Closer than we'd like: stand our ground (no backpedalling away).
+		// Too far: walk in. Closer than we'd like: stand our ground (no backpedalling away),
+		// except from a titan: give ground to keep it at anti-titan range.
 		local holdRadial = dist > preferred + BOT_COMBAT_RANGE_SLACK * 2 ? 1.0 : 0.0
+		if ( targetIsTitan && dist < preferred - BOT_COMBAT_RANGE_SLACK )
+			holdRadial = -BOT_COMBAT_RADIAL_SPEED
 		return Vector( -dir.y, dir.x, 0 ) * brain.strafeDir + dir * holdRadial
 	}
 
@@ -3656,6 +6863,9 @@ function GetPilotCombatMove( bot, brain, targetIsTitan )
 	brain.combatWallSeen = wallSide != null
 	if ( wallSide != null )
 	{
+		// A titan right on us: along the wall but backing off, never running in under its feet.
+		if ( targetIsTitan && dist < BOT_TITAN_TOO_CLOSE_DIST )
+			return perp - dir * BOT_COMBAT_RADIAL_SPEED + wallSide * BOT_COMBAT_WALL_LEAN
 		local along = closeIn ? dir : perp
 		return along + wallSide * BOT_COMBAT_WALL_LEAN
 	}
@@ -3665,9 +6875,38 @@ function GetPilotCombatMove( bot, brain, targetIsTitan )
 	local radial = 0.0
 	if ( dist > preferred + BOT_COMBAT_RANGE_SLACK )
 		radial = BOT_COMBAT_RADIAL_SPEED
+	else if ( targetIsTitan && dist < preferred - BOT_COMBAT_RANGE_SLACK )
+		radial = -BOT_COMBAT_RADIAL_SPEED	// a titan closing in: keep the distance, it stomps and punches
 	else if ( dist < preferred * BOT_BACKOFF_FRACTION && preferred > BOT_BACKOFF_MIN_PREFERRED )
 		radial = -BOT_COMBAT_RADIAL_SPEED * 0.5
 	return perp + dir * radial
+}
+
+// The range this titan fights from, inside its main weapon's damage band (file.titanWeaponRanges,
+// else the weapon file's falloff distances). Rolled again only when the weapon changes, so each bot
+// keeps its own spot in the band.
+function UpdateTitanPreferredDist( bot, brain )
+{
+	local weapon = bot.GetActiveWeapon()
+	if ( !IsValid( weapon ) )
+		return brain.titanPreferredDist
+	local weaponClass = weapon.GetWeaponClassName()
+	if ( weaponClass == brain.titanRangeClass )
+		return brain.titanPreferredDist
+	brain.titanRangeClass = weaponClass
+
+	local band = null
+	if ( weaponClass in file.titanWeaponRanges )
+		band = file.titanWeaponRanges[ weaponClass ]
+	else
+	{
+		local ranges = GetWeaponRanges( weapon )
+		band = { min = BotClamp( ranges.near * 0.6, 250.0, 1500.0 ), max = BotClamp( ranges.near, 400.0, 2000.0 ) }
+		if ( band.max < band.min )
+			band.max = band.min
+	}
+	brain.titanPreferredDist = RandomFloat( band.min, band.max )
+	return brain.titanPreferredDist
 }
 
 // Where a titan moves in a fight (world space; the aim stays on the target): circle the target
@@ -3704,6 +6943,9 @@ function GetTitanCombatMove( bot, brain )
 		if ( wantsPunch && Time() > brain.meleeBlockedUntil )
 			preferred = BOT_TITAN_MELEE_RUSH_DIST * 0.8
 	}
+	// Just got stuck charging in (see TitanStuckResponse): hold range for a while instead.
+	if ( Time() < brain.titanBackOffUntil && !brain.swatting )
+		preferred = max( preferred, IsTitanEntity( target ) ? BOT_TITAN_RANGE_MAX : BOT_TITAN_ELEVATED_TARGET_DIST )
 
 	local radial = 0.0
 	if ( dist > preferred + BOT_COMBAT_RANGE_SLACK )
@@ -3832,7 +7074,10 @@ function UpdateCombatJumps( bot, brain )
 	brain.wasWallRunning = wallRunning
 
 	if ( wallRunning )
+	{
+		brain.usedDoubleJump = false	// touching a wall gives the double jump back
 		return now - brain.wallrunStartTime > brain.wallrunHopAfter ? BOT_IN_JUMP : 0
+	}
 
 	// Holding a spot for a ranged shot, or fighting near a door / indoors: stay on the ground.
 	if ( brain.combatHold || brain.careful )
@@ -3951,15 +7196,55 @@ function UpdateFiring( bot, brain, canShoot )
 	local targetDist = Distance( bot.GetOrigin(), brain.target.GetOrigin() )
 	local triggerAngle = inTitan ? min( brain.triggerAngle, BOT_TITAN_TRIGGER_ANGLE ) : brain.triggerAngle
 	local maxAngle = BotClamp( triggerAngle * 800.0 / max( targetDist, 1.0 ), 2.0, triggerAngle )
-	local toTarget = VectorToAngles( brain.target.GetWorldSpaceCenter() - bot.EyePosition() )
-	if ( fabs( NormalizeYaw( toTarget.y - brain.yaw ) ) > maxAngle )
+	// (A rider: the part of it AimAtTarget aims at, seen over the hull; its center is in the titan.)
+	local aimPoint = brain.target.GetWorldSpaceCenter()
+	if ( brain.targetAimOffset != null && IsRodeoing( brain.target ) )
+		aimPoint = brain.target.GetOrigin() + brain.targetAimOffset
+	local toTarget = VectorToAngles( aimPoint - bot.EyePosition() )
+	local angleOff = fabs( NormalizeYaw( toTarget.y - brain.yaw ) )
+	local onTarget = angleOff <= maxAngle
+
+	local now = Time()
+	local weapon = bot.GetActiveWeapon()
+	local fireMode = IsValid( weapon ) ? GetWeaponFireMode( weapon ) : null
+	if ( fireMode == "charge" )
+	{
+		// Charge Rifle: start charging once roughly lined up and keep holding while the aim
+		// settles (letting go early wastes the charge). Let go when the shot went off (the clip
+		// dropped), when fully charged and on target, or after holding too long either way.
+		if ( !brain.firing )
+		{
+			if ( now < brain.nextFireToggle || angleOff > BOT_AT_CHARGE_START_ANGLE )
+				return 0
+			brain.firing = true
+			brain.chargeStart = now
+			brain.chargeClip = weapon.GetWeaponPrimaryClipCount()
+			brain.atAimingTime = now
+			return BOT_IN_ATTACK
+		}
+		brain.atAimingTime = now
+		local fired = weapon.GetWeaponPrimaryClipCount() < brain.chargeClip
+		local charged = weapon.GetWeaponChargeFraction() >= 1.0
+		if ( fired || now - brain.chargeStart > BOT_AT_CHARGE_MAX_HOLD || ( charged && onTarget ) )
+		{
+			brain.firing = false
+			brain.nextFireToggle = now + BOT_AT_PAUSE
+			return 0
+		}
+		return BOT_IN_ATTACK
+	}
+
+	// Archer: the sights are up (see UpdateAds) and it's locking on: that counts as aiming at
+	// the titan, even before the crosshair is on it (keeps a peek out from cover going).
+	if ( fireMode == "lock" && IsSmartAmmoLocking( weapon ) )
+		brain.atAimingTime = now
+
+	if ( !onTarget )
 	{
 		brain.firing = false
 		return 0
 	}
 
-	local weapon = bot.GetActiveWeapon()
-	local fireMode = IsValid( weapon ) ? GetWeaponFireMode( weapon ) : null
 	if ( fireMode == "lock" )
 	{
 		// Archer: UpdateAds keeps the sights up; pull the trigger only once locked on
@@ -3967,19 +7252,18 @@ function UpdateFiring( bot, brain, canShoot )
 		brain.firing = !brain.firing && IsSmartAmmoLocked( weapon )
 		return brain.firing ? BOT_IN_ATTACK : 0
 	}
-	if ( fireMode == "charge" )
+	if ( fireMode == "guided" )
 	{
-		// Charge Rifle: hold until fully charged, then let go (it fires at full charge either way).
-		if ( Time() < brain.nextFireToggle )
-			return 0
-		if ( brain.firing && weapon.GetWeaponChargeFraction() >= 1.0 )
+		// Archer with guided missiles: no lock-on, the rocket follows the sights. Tap the trigger
+		// only while aiming down sights (UpdateAds holds them), and keep the aim on the target.
+		if ( !brain.wantAds )
 		{
 			brain.firing = false
-			brain.nextFireToggle = Time() + BOT_AT_PAUSE
 			return 0
 		}
-		brain.firing = true
-		return BOT_IN_ATTACK
+		brain.atAimingTime = now
+		brain.firing = !brain.firing
+		return brain.firing ? BOT_IN_ATTACK : 0
 	}
 
 	if ( Time() > brain.nextFireToggle )
@@ -4073,8 +7357,19 @@ function AimAtTarget( bot, brain, target )
 	brain.aimErrPitch = brain.aimErrPitch * BOT_AIM_SETTLE + RandomFloat( -noise, noise ) * 0.5
 
 	local point = target.GetWorldSpaceCenter()
+	local targetVel = target.GetVelocity()
+	if ( IsRodeoing( target ) )
+	{
+		// A rider: at the part of it seen over the hull (see GetRiderVisiblePoint), else the head;
+		// the center is usually inside the titan, which soaks the shots. It moves with the titan.
+		point = brain.targetAimOffset != null ? target.GetOrigin() + brain.targetAimOffset : target.EyePosition()
+		local soul = target.GetTitanSoulBeingRodeoed()
+		local titan = soul.GetTitan()
+		if ( IsValid( titan ) )
+			targetVel = titan.GetVelocity()
+	}
 	// Pilots: a bit above the center, towards the chest.
-	if ( target.IsPlayer() && !target.IsTitan() )
+	else if ( target.IsPlayer() && !target.IsTitan() )
 		point = point + ( target.EyePosition() - point ) * 0.3
 	// Lead moving targets: by the think delay, plus the projectile's flight time for slow
 	// projectiles. Some bots lead well, others trail behind; in a titan everyone leads properly.
@@ -4084,7 +7379,7 @@ function AimAtTarget( bot, brain, target )
 	if ( speed > 0.0 )
 		leadTime += Distance( eye, point ) / speed
 	leadTime = min( leadTime * leadSkill, BOT_LEAD_MAX_TIME )
-	point = point + ( target.GetVelocity() - bot.GetVelocity() ) * leadTime
+	point = point + ( targetVel - bot.GetVelocity() ) * leadTime
 
 	local angles = VectorToAngles( point - eye )
 	AimTowards( brain, angles.y + brain.aimErrYaw, NormalizeYaw( angles.x ) + brain.aimErrPitch )
@@ -4094,6 +7389,10 @@ function AimAtTarget( bot, brain, target )
 function BotGetProjectileSpeed( weapon )
 {
 	if ( !IsValid( weapon ) )
+		return 0.0
+	// Homing / guided rockets steer themselves: leading them only throws the aim off.
+	local fireMode = GetWeaponFireMode( weapon )
+	if ( fireMode == "lock" || fireMode == "guided" )
 		return 0.0
 	local weaponClass = weapon.GetWeaponClassName()
 	return weaponClass in file.projectileSpeeds ? file.projectileSpeeds[ weaponClass ] : 0.0
@@ -4138,8 +7437,9 @@ function UpdateAds( bot, brain, isTitan, hasVisibleTarget )
 		return 0
 	}
 
-	// The Archer locks on only through the sights, at any range.
-	local needsAds = !isTitan && GetWeaponFireMode( weapon ) == "lock"
+	// The Archer locks on (or guides its missile) only through the sights, at any range.
+	local fireMode = GetWeaponFireMode( weapon )
+	local needsAds = !isTitan && ( fireMode == "lock" || fireMode == "guided" )
 	local dist = Distance( bot.GetOrigin(), brain.target.GetOrigin() )
 	local tooClose = dist < ( isTitan ? BOT_TITAN_MELEE_RUSH_DIST * 1.5 : BOT_ADS_MIN_DIST )
 	if ( ( tooClose && !needsAds ) || Time() - brain.targetAcquiredTime < brain.skill.reaction * 0.5
@@ -4198,7 +7498,8 @@ function WeaponBlocksAds( weapon )
 	{
 		local searchAngle = weapon.GetWeaponInfoFileKeyField( "smart_ammo_search_angle" )
 		local adsLock = weapon.GetWeaponInfoFileKeyField( "smart_ammo_allow_ads_lock" )
-		blocks = searchAngle != null && ( adsLock == null || adsLock.tointeger() == 0 ) && GetWeaponFireMode( weapon ) != "lock"
+		local fireMode = GetWeaponFireMode( weapon )
+		blocks = searchAngle != null && ( adsLock == null || adsLock.tointeger() == 0 ) && fireMode != "lock" && fireMode != "guided"
 	}
 	catch ( e ) {}
 	file.noAds[ weaponClass ] <- blocks
@@ -4316,10 +7617,31 @@ function IsTitanEntity( ent )
 	return ent.IsPlayer() ? ent.IsTitan() : ent.GetClassname() == "npc_titan"
 }
 
+// A titan fresh from titanfall, still inside its dome shield (nothing gets through it).
+function IsInBubbleShield( ent )
+{
+	if ( !IsTitanEntity( ent ) )
+		return false
+	local soul = ent.GetTitanSoul()
+	return IsValid( soul ) && IsValid( soul.bubbleShield )
+}
+
 // Enemy pilot currently riding a titan (ours or anyone's).
 function IsRodeoing( ent )
 {
 	return ent.IsPlayer() && !ent.IsTitan() && IsValid( ent.GetTitanSoulBeingRodeoed() )
+}
+
+// An enemy titan within dist of pos, from the pilot's titan scan (brain.titanEnemies: every
+// enemy titan within BOT_TITAN_FIGHT_RADIUS, refreshed by ScanTitanFight each half second).
+function IsNearEnemyTitan( brain, pos, dist )
+{
+	foreach ( titan in brain.titanEnemies )
+	{
+		if ( IsValid( titan ) && IsAlive( titan ) && Distance( titan.GetOrigin(), pos ) < dist )
+			return true
+	}
+	return false
 }
 
 // On foot: anti-titan weapon out while an enemy titan is the target or close by in sight, the
@@ -4338,7 +7660,7 @@ function UpdateWeaponChoice( bot, brain, isTitan )
 	if ( Time() < brain.nextWeaponSwitchTime )
 		return
 
-	local weapon = WantsAntiTitanWeapon( bot, brain ) ? GetBotAntiTitanWeapon( bot ) : null
+	local weapon = WantsAntiTitanWeapon( bot, brain ) ? GetBotUsableAntiTitanWeapon( bot ) : null
 	if ( weapon == null )
 		weapon = GetPilotAntiPersonnelWeapon( bot )
 	if ( weapon == null )
@@ -4358,16 +7680,42 @@ function IsAntiTitanWeapon( weapon )
 	return weapon.GetWeaponInfoFileKeyField( "is_anti_titan" ) == 1
 }
 
+// Anti-titan weapon out? Kept out for a while once a titan was around (each switch costs a slow
+// deploy), and while peeking at titans from cover; but an enemy pilot in sight up close is a
+// gunfight, and that needs the primary.
 function WantsAntiTitanWeapon( bot, brain )
 {
-	if ( brain.target != null && IsValid( brain.target ) && Time() - brain.targetLastSeenTime < 3.0 && IsTitanEntity( brain.target ) )
+	// On the evac run titans aren't fought: the primary stays out (a launcher's ADS / charge
+	// would stop the sprint).
+	if ( brain.evac != null )
+		return false
+	local now = Time()
+	local target = brain.target
+	local targetKnown = target != null && IsValid( target ) && now - brain.targetLastSeenTime < 3.0
+	local pilotInSight = targetKnown && now - brain.targetLastSeenTime < BOT_THINK_INTERVAL * 2 && target.IsPlayer() && !target.IsTitan()
+	if ( pilotInSight && Distance( bot.GetOrigin(), target.GetOrigin() ) < BOT_AT_PILOT_SWAP_DIST )
+		return false
+
+	if ( targetKnown && IsTitanEntity( target ) )
+	{
+		brain.atWantUntil = now + BOT_AT_KEEP_TIME
+		return true
+	}
+	if ( brain.cover != null && brain.cover.titanCover && brain.cover.canPeek )
+		return true
+	// The keep-out time doesn't hold the launcher against a pilot we're now fighting (the Archer
+	// can't even lock onto one); a titan still in sight below does.
+	if ( now < brain.atWantUntil && !pilotInSight )
 		return true
 
 	local eye = bot.EyePosition()
 	foreach ( titan in GetTitansOfTeam( GetOtherTeam( bot.GetTeam() ), bot.GetOrigin(), BOT_PILOT_AT_ENGAGE_DIST ) )
 	{
 		if ( IsAlive( titan ) && CanSee( bot, eye, titan ) )
+		{
+			brain.atWantUntil = now + BOT_AT_KEEP_TIME
 			return true
+		}
 	}
 	return false
 }
@@ -4382,13 +7730,29 @@ function GetBotAntiTitanWeapon( bot )
 	return weapon
 }
 
+// The anti-titan weapon, if it can be used right now (see GetBotAntiTitanWeapon) and still has
+// ammo (loaded or in reserve); else null. An empty launcher is no reason to stand and fight a titan.
+function GetBotUsableAntiTitanWeapon( bot )
+{
+	local weapon = GetBotAntiTitanWeapon( bot )
+	if ( weapon == null || !BotWeaponHasAmmo( bot, weapon ) )
+		return null
+	return weapon
+}
+
 // Weapons that need more than holding the trigger: "lock" (Archer: ADS until locked on),
-// "charge" (Charge Rifle: hold until fully charged, then let go), or null.
+// "guided" (Archer with guided missiles: no lock-on, fired through the sights and steered by
+// the aim), "charge" (Charge Rifle: hold until fully charged, then let go), or null.
 function GetWeaponFireMode( weapon )
 {
 	local weaponClass = weapon.GetWeaponClassName()
 	if ( weaponClass == "mp_weapon_rocket_launcher" )
-		return "lock"
+	{
+		local guided = false
+		try { guided = weapon.HasMod( "guided_missile" ) }
+		catch ( e ) {}
+		return guided ? "guided" : "lock"
+	}
 	if ( weaponClass == "mp_weapon_defender" )
 		return "charge"
 	return null
@@ -4426,6 +7790,19 @@ function IsSmartAmmoLocked( weapon )
 	return false
 }
 
+// Archer lock-on under way on any target? (SmartAmmo_IsEnabled alone only means the sights are up.)
+function IsSmartAmmoLocking( weapon )
+{
+	if ( !weapon.SmartAmmo_IsEnabled() )
+		return false
+	foreach ( target in weapon.SmartAmmo_GetTargets() )
+	{
+		if ( target.fraction > 0.01 )	// _smart_ammo.nut parks known targets at 0.0001
+			return true
+	}
+	return false
+}
+
 // Tactical ability and ordnance, used when they help the bot survive a fight.
 // Pressing one that isn't charged does nothing, so a failed press is just retried later.
 function UpdateAbilities( bot, brain, isTitan, hasVisibleTarget )
@@ -4433,23 +7810,27 @@ function UpdateAbilities( bot, brain, isTitan, hasVisibleTarget )
 	local pressed = 0
 	local now = Time()
 	local healthFrac = bot.GetHealth().tofloat() / max( bot.GetMaxHealth(), 1 )
-	local targetDist = hasVisibleTarget ? Distance( bot.GetOrigin(), brain.target.GetOrigin() ) : 0.0
 
 	if ( now > brain.nextTacticalTime )
 	{
 		local useTactical = false
 		if ( isTitan )
 		{
-			// Vortex / smoke / particle wall while taking a beating.
-			useTactical = hasVisibleTarget && healthFrac < 0.75
+			// Smoke / particle wall while taking a beating. The vortex shield is held, not tapped
+			// (see UpdateTitanVortex).
+			local tactical = bot.GetOffhandWeapon( 1 )
+			local isVortex = IsValid( tactical ) && tactical.GetWeaponClassName() == "mp_titanweapon_vortex_shield"
+			useTactical = !isVortex && hasVisibleTarget && healthFrac < 0.75
 		}
 		else
 		{
 			// Cloak/stim to break away as soon as a retreat starts, or when a fight is going badly.
 			// Out of combat, the odd use while hunting (active radar pings who's around).
+			// On the evac run: stim / cloak the moment anything threatens the way to the ship.
 			useTactical = ( brain.fleeing && now - brain.fleeStartTime < 1.0 )
 				|| ( hasVisibleTarget && healthFrac < BOT_TACTICAL_LOW_HEALTH )
 				|| ( !hasVisibleTarget && brain.prey != null && RandomInt( 150 ) == 0 )
+				|| ( brain.evac != null && ( hasVisibleTarget || now < brain.underFireUntil || brain.titanEnemies.len() > 0 ) )
 		}
 
 		if ( useTactical )
@@ -4459,43 +7840,418 @@ function UpdateAbilities( bot, brain, isTitan, hasVisibleTarget )
 		}
 	}
 
-	// Ordnance needs the bot looking at the target, so not while running away.
-	if ( now > brain.nextOrdnanceTime && hasVisibleTarget && !brain.fleeing )
-	{
-		local useOrdnance = false
-		if ( isTitan )
-		{
-			useOrdnance = targetDist < 3000.0
-		}
-		else if ( targetDist > BOT_ORDNANCE_MIN_DIST && targetDist < BOT_ORDNANCE_MAX_DIST )
-		{
-			// Against pilots: when the odds are bad, or now and then. Against titans: always.
-			// Grunts/spectres aren't worth one unless a bunch of them are packed together.
-			if ( IsTitanEntity( brain.target ) )
-				useOrdnance = true
-			else if ( brain.target.IsPlayer() )
-				useOrdnance = healthFrac < 0.7 || RandomInt( 4 ) == 0
-			else
-				useOrdnance = GetEnemyNPCs( brain.target.GetTeam(), brain.target.GetOrigin(), BOT_NPC_GROUP_RADIUS ).len() >= BOT_NPC_GRENADE_GROUP
-		}
+	// Pilots on the evac run: no grenades (the throw turns the view and holds it on the arc,
+	// skewing the run).
+	if ( !isTitan && brain.evac != null )
+		return pressed
 
-		if ( useOrdnance )
-		{
-			// Lob it: aim higher the farther away the target is.
-			if ( !isTitan )
-				brain.pitch = BotClamp( brain.pitch - min( targetDist * 0.008, 12.0 ), -89.0, 89.0 )
-			pressed = pressed | BOT_IN_OFFHAND_ORDNANCE
-			brain.nextOrdnanceTime = isTitan
-				? now + RandomFloat( BOT_TITAN_ORDNANCE_COOLDOWN_MIN, BOT_TITAN_ORDNANCE_COOLDOWN_MAX )
-				: now + RandomFloat( BOT_ORDNANCE_COOLDOWN_MIN, BOT_ORDNANCE_COOLDOWN_MAX )
-		}
+	// Titan ordnance is held, not pressed: see UpdateTitanOrdnance.
+	if ( isTitan || now <= brain.nextOrdnanceTime )
+		return pressed
+
+	// Pressing it with no charge left does nothing: don't burn the whole cooldown on that.
+	local ordnance = bot.GetOffhandWeapon( 0 )
+	if ( !IsValid( ordnance ) || ordnance.GetWeaponPrimaryClipCount() <= 0 )
+	{
+		brain.nextOrdnanceTime = now + BOT_ORDNANCE_NOT_READY
+		return pressed
+	}
+	local profile = GetOrdnanceProfile( ordnance )
+
+	// A throw now would cut short the weapon coming out, or a launcher that's shooting / locked on.
+	if ( now - brain.weaponSwitchTime < BOT_WEAPON_DEPLOY_TIME
+		|| ( brain.usingAntiTitan && ( brain.firing || IsAntiTitanLockedNow( bot ) ) ) )
+	{
+		brain.nextOrdnanceTime = now + BOT_ORDNANCE_BUSY_RETRY
+		return pressed
+	}
+
+	// Pilots: where to throw, if anywhere this check. Running away, only satchels and mines are
+	// worth it: dropped behind us, in the way of whoever is chasing.
+	// (Dropped at our feet, looking down along the run: turning to face the pursuer would stall the
+	// run, and the aim hold would keep turning back to the spot as we pass it.)
+	local throwAt = null
+	local origin = bot.GetOrigin()
+	local drop = false
+	if ( brain.fleeing )
+	{
+		drop = !brain.fleeDirect && profile.drop && brain.fleeFrom != null && Distance( origin, brain.fleeFrom ) < BOT_ORDNANCE_DROP_DIST
+		if ( drop )
+			throwAt = origin
+	}
+	else
+	{
+		throwAt = GetPilotGrenadeSpot( bot, brain, hasVisibleTarget, healthFrac, profile, ordnance )
+	}
+	if ( throwAt == null )
+	{
+		brain.nextOrdnanceTime = now + RandomFloat( BOT_ORDNANCE_RETRY_MIN, BOT_ORDNANCE_RETRY_MAX )
+		return pressed
+	}
+
+	brain.lobPos = throwAt
+	brain.lobProfile = profile
+	brain.lobDrop = drop
+	brain.lobUntil = now + BOT_ORDNANCE_LOB_TIME
+	if ( drop )
+		AimTowards( brain, brain.yaw, BOT_ORDNANCE_DROP_PITCH )
+	else
+		AimLob( bot, brain, throwAt, profile )
+	pressed = pressed | BOT_IN_OFFHAND_ORDNANCE
+	brain.nextOrdnanceTime = now + RandomFloat( BOT_ORDNANCE_COOLDOWN_MIN, BOT_ORDNANCE_COOLDOWN_MAX )
+	return pressed
+}
+
+// Throw range and arc for this ordnance (see file.ordnanceProfiles); frag-like defaults otherwise.
+function GetOrdnanceProfile( weapon )
+{
+	local weaponClass = weapon.GetWeaponClassName()
+	if ( weaponClass in file.ordnanceProfiles )
+		return file.ordnanceProfiles[ weaponClass ]
+	return { minDist = BOT_ORDNANCE_MIN_DIST, maxDist = BOT_ORDNANCE_MAX_DIST, lift = 0.008, liftMax = 12.0, drop = false }
+}
+
+// The Archer out and locked on: a grenade now would throw the lock away.
+function IsAntiTitanLockedNow( bot )
+{
+	local active = bot.GetActiveWeapon()
+	return IsValid( active ) && GetWeaponFireMode( active ) == "lock" && IsSmartAmmoLocked( active )
+}
+
+// Where a pilot bot should throw its grenade right now, or null.
+// - Target in sight (within this ordnance's range): titans always, pilots often (always when
+//   we're losing), grunts and spectres always when bunched up and often on their own (arc grenades
+//   even more often against spectres). A proximity mine goes in a soldier's path, short of it.
+// - Pilot target that just ducked behind cover: at where it was last seen, it's still there.
+function GetPilotGrenadeSpot( bot, brain, hasVisibleTarget, healthFrac, profile, ordnance )
+{
+	local target = brain.target
+	if ( target == null || !IsValid( target ) || !IsAlive( target ) )
+		return null
+
+	local origin = bot.GetOrigin()
+	local ordnanceClass = ordnance.GetWeaponClassName()
+	if ( hasVisibleTarget )
+	{
+		local targetPos = target.GetOrigin()
+		local dist = Distance( origin, targetPos )
+		if ( dist < profile.minDist || dist > profile.maxDist )
+			return null
+		local isTitan = IsTitanEntity( target )
+		local use = false
+		if ( isTitan )
+			use = true
+		else if ( target.IsPlayer() )
+			use = healthFrac < 0.7 || RandomInt( 100 ) < BOT_ORDNANCE_PILOT_CHANCE
 		else
 		{
-			brain.nextOrdnanceTime = now + RandomFloat( 1.0, 3.0 )
+			local chance = BOT_ORDNANCE_NPC_CHANCE
+			if ( target.GetClassname() == "npc_spectre" && ordnanceClass == "mp_weapon_grenade_emp" )
+				chance += BOT_ORDNANCE_SPECTRE_EMP_BONUS
+			use = RandomInt( 100 ) < chance
+				|| GetEnemyNPCs( target.GetTeam(), targetPos, BOT_NPC_GROUP_RADIUS ).len() >= BOT_NPC_GRENADE_GROUP
+		}
+		if ( !use )
+			return null
+		if ( !isTitan && ordnanceClass == "mp_weapon_proximity_mine" )
+			return origin + ( targetPos - origin ) * 0.7
+		return targetPos
+	}
+
+	// Flush it out of cover.
+	if ( !target.IsPlayer() || IsTitanEntity( target ) || brain.targetLastSeenPos == null )
+		return null
+	local lost = Time() - brain.targetLastSeenTime
+	if ( lost < BOT_ORDNANCE_COVER_MIN || lost > BOT_ORDNANCE_COVER_MAX )
+		return null
+	local dist = Distance( origin, brain.targetLastSeenPos )
+	if ( dist < profile.minDist || dist > profile.maxDist )
+		return null
+	return RandomInt( 100 ) < BOT_ORDNANCE_COVER_CHANCE ? brain.targetLastSeenPos : null
+}
+
+//---------------------------------------------------------
+// Titan ordnance
+//---------------------------------------------------------
+// How the titan's ordnance is fired: "lock" (Slaved Warheads: needs a full lock when pressed, or it
+// dry-fires), "charge" (Multi-Target Missiles: locks build while held, fire on release), "tap".
+function GetTitanOrdnanceMode( weapon )
+{
+	local weaponClass = weapon.GetWeaponClassName()
+	if ( weaponClass == "mp_titanweapon_homing_rockets" )
+		return "lock"
+	if ( weaponClass == "mp_titanweapon_shoulder_rockets" )
+		return "charge"
+	return "tap"
+}
+
+// Off cooldown and loaded (same test the rocket pods use, see _titan_shared.nut).
+function IsTitanOrdnanceReady( weapon )
+{
+	try
+	{
+		if ( !weapon.IsReadyToFire() || weapon.IsReloading() )
+			return false
+	}
+	catch ( e ) {}
+	local clipSize = GetWeaponClipSize( weapon )
+	return clipSize <= 0 || weapon.GetWeaponPrimaryClipCount() > 0
+}
+
+// Rockets locked so far: a target's fraction counts its full locks (2.0 = two rockets on it).
+function GetSmartAmmoLockCount( weapon )
+{
+	if ( !weapon.SmartAmmo_IsEnabled() )
+		return 0.0
+	local locks = 0.0
+	foreach ( target in weapon.SmartAmmo_GetTargets() )
+	{
+		if ( target.fraction >= 1.0 )
+			locks += floor( target.fraction )
+	}
+	return locks
+}
+
+// Titans always get the ordnance; grunts/spectres when bunched up; pilots often. The pilot roll is
+// made once per BOT_TITAN_ORDNANCE_PILOT_SKIP, not every check (that came out as always).
+function IsWorthTitanOrdnance( brain, target )
+{
+	if ( IsTitanEntity( target ) )
+		return true
+	if ( target.IsPlayer() )
+	{
+		local now = Time()
+		if ( now < brain.ordnancePilotSkipUntil )
+			return false
+		if ( RandomInt( 100 ) < BOT_TITAN_ORDNANCE_PILOT_CHANCE )
+			return true
+		brain.ordnancePilotSkipUntil = now + BOT_TITAN_ORDNANCE_PILOT_SKIP
+		return false
+	}
+	return GetEnemyNPCs( target.GetTeam(), target.GetOrigin(), BOT_NPC_GROUP_RADIUS ).len() >= BOT_TITAN_ORDNANCE_GROUP
+}
+
+// Vortex shield: hold the tactical to put it up and catch what's coming at us, let go to throw it
+// all back where we're aiming (at the target: the aim stays on it). Put up when an enemy titan in
+// sight is shooting at us (we're taking damage, or its rockets are flying our way); held a moment
+// so it catches a volley, then released before the charge runs out (the game forces it at full).
+// Returns the buttons to hold this tick.
+function UpdateTitanVortex( bot, brain, hasVisibleTarget )
+{
+	local now = Time()
+	local vortex = bot.GetOffhandWeapon( 1 )
+	if ( !IsValid( vortex ) || vortex.GetWeaponClassName() != "mp_titanweapon_vortex_shield" )
+	{
+		brain.vortexHoldUntil = 0.0
+		return 0
+	}
+	local charge = vortex.GetWeaponChargeFraction()	// how much of the shield's time is used up
+
+	if ( brain.vortexHoldUntil > 0.0 )
+	{
+		// Let go: time's up, almost drained, or the target is gone (nothing to throw it at).
+		local held = now - brain.vortexHoldStart
+		if ( now >= brain.vortexHoldUntil || charge >= BOT_VORTEX_RELEASE_CHARGE
+			|| ( !hasVisibleTarget && held > BOT_VORTEX_MIN_HOLD ) )
+		{
+			brain.vortexHoldUntil = 0.0
+			brain.nextVortexTime = now + RandomFloat( BOT_VORTEX_COOLDOWN_MIN, BOT_VORTEX_COOLDOWN_MAX )
+			return 0
+		}
+		return BOT_IN_OFFHAND_TACTICAL
+	}
+
+	if ( now < brain.nextVortexTime || !hasVisibleTarget || brain.fleeingNuke || brain.swatting || brain.ordnanceHoldUntil > 0.0
+		|| charge > BOT_VORTEX_MAX_START_CHARGE || !IsTitanEntity( brain.target ) )
+		return 0
+	if ( Distance( bot.GetOrigin(), brain.target.GetOrigin() ) > BOT_VORTEX_MAX_DIST )
+		return 0
+
+	// Something to catch: hits coming in, or enemy rockets / grenades flying around us.
+	local underFire = now < brain.underFireUntil
+	local incoming = false
+	if ( !underFire )
+	{
+		local enemyTeam = GetOtherTeam( bot.GetTeam() )
+		incoming = GetProjectileArrayEx( "rpg_missile", enemyTeam, bot.GetOrigin(), BOT_VORTEX_PROJECTILE_RADIUS ).len() > 0
+			|| GetProjectileArrayEx( "npc_grenade_frag", enemyTeam, bot.GetOrigin(), BOT_VORTEX_PROJECTILE_RADIUS ).len() > 0
+	}
+	if ( !underFire && !incoming )
+		return 0
+
+	brain.vortexHoldStart = now
+	brain.vortexHoldUntil = now + RandomFloat( BOT_VORTEX_HOLD_MIN, BOT_VORTEX_HOLD_MAX )
+	return BOT_IN_OFFHAND_TACTICAL
+}
+
+// In a titan: fire the ordnance whenever it's ready and there's something worth it in sight.
+// Returns the buttons to hold this tick (for BotSetInput): a press is held for a moment (or, for
+// Multi-Target Missiles, until enough locks are on), then released. A release is checked a bit
+// later to have fired something; a press that never does is logged once per weapon class.
+function UpdateTitanOrdnance( bot, brain, hasVisibleTarget )
+{
+	local now = Time()
+	local weapon = bot.GetOffhandWeapon( 0 )
+
+	if ( brain.ordnanceHoldUntil > 0.0 )
+	{
+		local release = now >= brain.ordnanceHoldUntil || !IsValid( weapon )
+		if ( !release && brain.ordnanceMode == "charge" && now - brain.ordnanceHoldStart >= BOT_TITAN_ORDNANCE_LOCK_MIN )
+			release = !hasVisibleTarget || GetSmartAmmoLockCount( weapon ) >= BOT_TITAN_ORDNANCE_LOCKS
+		if ( !release )
+			return BOT_IN_OFFHAND_ORDNANCE
+		brain.ordnanceHoldUntil = 0.0
+		brain.ordnanceVerifyAt = now + BOT_TITAN_ORDNANCE_VERIFY
+		brain.nextOrdnanceTime = now + BOT_TITAN_ORDNANCE_AFTER
+		return 0
+	}
+
+	if ( brain.ordnanceVerifyAt > 0.0 && now >= brain.ordnanceVerifyAt )
+	{
+		brain.ordnanceVerifyAt = 0.0
+		if ( IsValid( weapon ) )
+		{
+			local fired = weapon.GetWeaponPrimaryClipCount() < brain.ordnanceClip || !IsTitanOrdnanceReady( weapon )
+			local weaponClass = weapon.GetWeaponClassName()
+			if ( !fired && !( weaponClass in file.ordnanceMissReported ) )
+			{
+				file.ordnanceMissReported[ weaponClass ] <- true
+				printt( "BotAI:", bot.GetPlayerName(), "held", weaponClass, "(" + brain.ordnanceMode + ") but nothing fired" )
+			}
 		}
 	}
 
-	return pressed
+	if ( !hasVisibleTarget )
+		brain.ordnanceLockWaitSince = 0.0
+	if ( now < brain.nextOrdnanceTime || !hasVisibleTarget || brain.fleeingNuke || !IsValid( weapon ) || brain.vortexHoldUntil > 0.0 )
+		return 0
+	brain.nextOrdnanceTime = now + BOT_TITAN_ORDNANCE_CHECK
+
+	local target = brain.target
+	if ( IsInBubbleShield( target ) || !IsTitanOrdnanceReady( weapon ) )
+		return 0
+	local dist = Distance( bot.GetOrigin(), target.GetOrigin() )
+	if ( dist < BOT_TITAN_ORDNANCE_MIN_DIST || dist > BOT_TITAN_ORDNANCE_MAX_DIST || !IsWorthTitanOrdnance( brain, target ) )
+		return 0
+
+	local mode = GetTitanOrdnanceMode( weapon )
+	if ( mode == "lock" )
+	{
+		// Pressed without a full lock it only dry-fires and starts the cooldown.
+		local locked = false
+		try { locked = IsSmartAmmoLocked( weapon ) }
+		catch ( e ) {}
+		if ( !locked )
+		{
+			// Never locking at all (the offhand's smart ammo not running for bots?) would just look
+			// like a titan that doesn't use its ordnance: say so once.
+			if ( brain.ordnanceLockWaitSince == 0.0 )
+				brain.ordnanceLockWaitSince = now
+			else if ( now - brain.ordnanceLockWaitSince > BOT_TITAN_ORDNANCE_LOCK_REPORT && !( "nolock" in file.ordnanceMissReported ) )
+			{
+				file.ordnanceMissReported[ "nolock" ] <- true
+				printt( "BotAI:", bot.GetPlayerName(), "has had", weapon.GetWeaponClassName(), "ready on a target for",
+					BOT_TITAN_ORDNANCE_LOCK_REPORT, "s without a lock" )
+			}
+			return 0
+		}
+		brain.ordnanceLockWaitSince = 0.0
+	}
+	else if ( mode == "charge" )
+	{
+		// Locking takes a while: not with the target already on top of us (we're punching it).
+		if ( dist < BOT_TITAN_MELEE_RUSH_DIST )
+			return 0
+	}
+	else
+	{
+		// Dumb-fire: only when actually pointed at the target.
+		local toTarget = VectorToAngles( target.GetWorldSpaceCenter() - bot.EyePosition() )
+		if ( fabs( NormalizeYaw( toTarget.y - brain.yaw ) ) > BOT_TITAN_ORDNANCE_ANGLE )
+			return 0
+	}
+
+	brain.ordnanceMode = mode
+	brain.ordnanceHoldStart = now
+	brain.ordnanceHoldUntil = now + ( mode == "charge" ? BOT_TITAN_ORDNANCE_LOCK_MAX : BOT_TITAN_ORDNANCE_TAP_HOLD )
+	brain.ordnanceClip = weapon.GetWeaponPrimaryClipCount()
+	return BOT_IN_OFFHAND_ORDNANCE
+}
+
+// Satchels only go off on the clacker: once an enemy is on top of one of ours (and we're clear of
+// it), set them all off after a short reaction, like the clacker's fire does (Player_DetonateSatchels).
+// The enemy has to be in sight, or be the target we just lost behind cover (thrown on purpose).
+function UpdateSatchelDetonation( bot, brain )
+{
+	if ( !( "activeSatchels" in bot.s ) )
+		return
+	ArrayRemoveInvalid( bot.s.activeSatchels )
+	if ( bot.s.activeSatchels.len() == 0 )
+	{
+		brain.satchelDetonateAt = null
+		return
+	}
+
+	if ( !SatchelHasVictim( bot, brain ) )
+	{
+		brain.satchelDetonateAt = null
+		return
+	}
+
+	local now = Time()
+	if ( brain.satchelDetonateAt == null )
+	{
+		brain.satchelDetonateAt = now + RandomFloat( BOT_SATCHEL_REACTION_MIN, BOT_SATCHEL_REACTION_MAX )
+		return
+	}
+	if ( now < brain.satchelDetonateAt )
+		return
+
+	brain.satchelDetonateAt = null
+	printt( "BotAI:", bot.GetPlayerName(), "detonating satchels" )
+	Player_DetonateSatchels( bot )
+}
+
+function SatchelHasVictim( bot, brain )
+{
+	local origin = bot.GetOrigin()
+	local eye = bot.EyePosition()
+	local enemyTeam = GetOtherTeam( bot.GetTeam() )
+	local justLost = brain.target != null && IsValid( brain.target ) && Time() - brain.targetLastSeenTime < BOT_ORDNANCE_COVER_MAX
+
+	foreach ( satchel in bot.s.activeSatchels )
+	{
+		local pos = satchel.GetOrigin()
+		if ( Distance( origin, pos ) < BOT_SATCHEL_SAFE_DIST )
+			continue
+
+		local enemies = GetEnemyNPCs( enemyTeam, pos, BOT_SATCHEL_SCAN_RADIUS )
+		enemies.extend( GetNPCArrayEx( "npc_titan", enemyTeam, pos, BOT_SATCHEL_SCAN_RADIUS ) )
+		enemies.extend( GetPlayerArrayOfTeam( enemyTeam ) )
+		foreach ( enemy in enemies )
+		{
+			if ( !IsAlive( enemy ) )
+				continue
+			local reach = IsTitanEntity( enemy ) ? BOT_SATCHEL_TITAN_DIST : BOT_SATCHEL_TRIGGER_DIST
+			if ( Distance( pos, enemy.GetOrigin() ) > reach )
+				continue
+			if ( ( justLost && enemy == brain.target ) || CanSee( bot, eye, enemy ) )
+				return true
+		}
+	}
+	return false
+}
+
+// Aim a grenade at a spot: higher the farther away it is, so it arcs onto it. Slow tosses
+// (satchels, mines) need a much higher arc, see file.ordnanceProfiles.
+function AimLob( bot, brain, spot, profile = null )
+{
+	local eye = bot.EyePosition()
+	local angles = VectorToAngles( spot - eye )
+	local liftPerUnit = profile != null ? profile.lift : 0.008
+	local liftMax = profile != null ? profile.liftMax : 12.0
+	local lift = min( Distance( eye, spot ) * liftPerUnit, liftMax )
+	AimTowards( brain, angles.y, BotClamp( NormalizeYaw( angles.x ) - lift, -89.0, 89.0 ) )
 }
 
 // Titan dash: a tap of sprint while moving. It goes the way the titan is already moving, so
@@ -4503,6 +8259,22 @@ function UpdateAbilities( bot, brain, isTitan, hasVisibleTarget )
 function UpdateTitanDash( bot, brain, hasVisibleTarget, inEngageRange, forward, side )
 {
 	local now = Time()
+	// A dash would carry us out of our own electric smoke with a rider still on.
+	if ( IsHoldingInSmoke( bot, brain ) )
+		return 0
+
+	// Just got stuck (see TitanStuckResponse): dash out the way we're stepping, cooldown or not
+	// (the dash meter is the real limit).
+	if ( brain.unstickDash )
+	{
+		brain.unstickDash = false
+		if ( now < brain.unstickUntil )
+		{
+			brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX )
+			return BOT_IN_DODGE
+		}
+	}
+
 	if ( now < brain.nextDashTime )
 		return 0
 
@@ -4595,15 +8367,33 @@ function UpdateMelee( bot, brain, isTitan, hasVisibleTarget )
 	if ( !hasVisibleTarget || Time() < brain.nextMeleeTime || ( !swat && Time() < brain.meleeBlockedUntil ) )
 		return
 
+	// A pilot on a titan's back is shot off, never swung at (the swing lands on the titan).
+	local target = brain.target
+	if ( IsRodeoing( target ) )
+		return
+	// On foot a kick only ever goes at pilots and grunts: never at a titan (the user in one got
+	// kicked at), not while running away or for the evac ship, and not with an enemy titan right
+	// there, since the game's melee cone picks whatever is in front and that would be the titan.
+	if ( !isTitan )
+	{
+		if ( IsTitanEntity( target ) || brain.fleeing || brain.evac != null )
+			return
+	}
+
 	local range = swat ? BOT_SWAT_MELEE_RANGE : ( isTitan ? BOT_TITAN_MELEE_RANGE : BOT_PILOT_MELEE_RANGE )
-	if ( Distance( bot.GetOrigin(), brain.target.GetOrigin() ) > range )
+	if ( Distance( bot.GetOrigin(), target.GetOrigin() ) > range )
 		return
 
-	local toTarget = VectorToAngles( brain.target.GetWorldSpaceCenter() - bot.EyePosition() )
+	local toTarget = VectorToAngles( target.GetWorldSpaceCenter() - bot.EyePosition() )
 	if ( fabs( NormalizeYaw( toTarget.y - brain.yaw ) ) > ( swat ? BOT_SWAT_MELEE_ANGLE : 30.0 ) )
 		return
 
 	if ( !bot.PlayerMelee_CanMelee() || bot.PlayerMelee_GetState() != PLAYER_MELEE_STATE_NONE )
+		return
+
+	// Checked live (not from the half-second titan scan) since a swing is about to go out: a titan
+	// that just walked up must not catch the kick.
+	if ( !isTitan && GetTitansOfTeam( GetOtherTeam( bot.GetTeam() ), bot.GetOrigin(), BOT_MELEE_TITAN_CLEARANCE ).len() > 0 )
 		return
 
 	brain.nextMeleeTime = Time() + ( swat ? BOT_SWAT_COOLDOWN : BOT_MELEE_COOLDOWN )
@@ -4678,4 +8468,13 @@ function BotClamp( value, low, high )
 function Length2D( v )
 {
 	return sqrt( v.x * v.x + v.y * v.y )
+}
+
+// Flat unit vector along v, or a zero vector if v has no horizontal length.
+function Normalize2D( v )
+{
+	local length = Length2D( v )
+	if ( length < 0.001 )
+		return Vector( 0, 0, 0 )
+	return Vector( v.x / length, v.y / length, 0 )
 }

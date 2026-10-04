@@ -1294,6 +1294,12 @@ function PlayerWatchesKillReplay( player, attacker, attackerViewIndex, timeSince
 	if ( player.s.timeBeforeKill > timeSinceAttackerSpawned )
 		player.s.timeBeforeKill = timeSinceAttackerSpawned
 
+	// Seen through a bot's eyes the replay has no muzzle flash or tracers (first-person weapon effects
+	// are predicted by the shooter's client, and a bot has none), so a bot's kill replays through the
+	// victim's eyes, where the bot's gunfire shows like any other player's.
+	if ( IsValid( attacker ) && attacker.IsPlayer() && attacker.IsBot() )
+		attackerViewIndex = player.GetIndexForEntity()
+
 	player.SetViewIndex( attackerViewIndex )
 	local replayDelay = player.s.timeBeforeKill + ( Time() - timeOfDeath )
 	if ( replayDelay < 0 )

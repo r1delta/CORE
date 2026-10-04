@@ -92,6 +92,11 @@ function HitRodeoBrain( soul, damageInfo )
 	if ( rider && rider == attacker && attacker.IsNPC() )
 		return true
 
+	// Bot pilots riding the titan: same as spectres. They can't aim at the exact hatch hitbox the
+	// way a person looks down into it, and every other hit is soaked by the shield / armor.
+	if ( rider && rider == attacker && attacker.IsPlayer() && attacker.IsBot() )
+		return true
+
 	// Original player rodeo hitbox check
 	return damageInfo.GetHitBox() == soul.rodeoHitBoxNumber
 }
