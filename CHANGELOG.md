@@ -26,7 +26,9 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   points and how often it climbs; bots sometimes stop on a roof to watch the streets below.
 - Up through buildings: a wall that can't be climbed from outside (or a failed climb) sends the bot inside to an
   upper-floor / roof node, reached by the stairs, to watch from above. Upstairs, a far goal below is left through
-  a window / off a balcony instead of walking back down (pilots take no fall damage).
+  a window / off a balcony instead of walking back down (pilots take no fall damage). The opening is checked
+  with the player hull against everything a player collides with (glass, bars, frames); an exit that leaves the
+  bot on the same floor is marked bad for the team and the bot leaves windows alone for a while.
 - Ledges: jump, double jump and mantle onto any ledge in reach when stuck against it, when the route, a chased target
   or a reposition point is up there, and off a wall being run along.
 - Planned wallruns (`PlanWallrun` / `UpdateWallrun`): a wall roughly along the route, long and high enough and
@@ -102,6 +104,15 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 - Vortex shield held to catch incoming fire and released at the target to throw it back.
 - Stuck titans (stairs, steps): dash the way a hull probe finds free, then a new angle or skipped waypoint, then a
   detour around a spot remembered as bad; titan paths avoid climb links and try the titan hull first.
+- Balance: titan bots keep their sharp aim, quick reactions and perfect leading for titan duels only; against
+  pilots, grunts and spectres they aim and react like a pilot. Bot titan calls follow the titans out on each team:
+  a team with fewer titans calls them in right away, a team two or more ahead holds its calls (up to 60 s), so
+  the side that got its titans out first no longer stomps the other one.
+- Titan bots don't walk or dash into the void either.
+
+### Maps
+- War Games: titans that fall into the simulation's death pits die like pilots (the pit triggers' damage per hit
+  only scratched a titan, so titans kept fighting down there).
 
 ### Bot manager
 - Managed bots spawn together with humans at game start (they wait before Prematch instead of spawning on connect).

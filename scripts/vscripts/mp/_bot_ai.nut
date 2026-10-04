@@ -107,6 +107,9 @@ const BOT_TITAN_CALL_DELAY_MIN	= 5.0	// extra wait once the titan meter is full
 const BOT_TITAN_CALL_DELAY_MAX	= 45.0
 const BOT_TITAN_HOLD_FOR_ENEMY	= 30.0	// some bots keep the titan until they see someone, up to this long
 const BOT_TITAN_CALL_SAFE_DIST	= 800.0	// don't stand still calling a titan with an enemy this close
+const BOT_TITAN_BALANCE_CHECK	= 3.0	// titans out on each team counted this often while a titan is ready
+const BOT_TITAN_LEAD_HOLD		= 2		// our team has this many more titans out than theirs: hold the call...
+const BOT_TITAN_LEAD_HOLD_MAX	= 60.0	// ...for at most this long after the meter filled
 const BOT_EJECT_HEALTH_FRAC		= 0.15
 const BOT_WALL_CHECK_DIST		= 72.0
 
@@ -208,6 +211,11 @@ const BOT_FIRE_HESITATE_CHANCE	= 15		// percent of burst gaps that run long (re-
 const BOT_TITAN_AIM_ERROR_SCALE	= 0.5
 const BOT_TITAN_MIN_LEAD_SKILL	= 0.9
 const BOT_TITAN_REACTION_SCALE	= 0.6
+// ...but those three are for titan duels. Against pilots, grunts and spectres a titan bot aims and
+// reacts no better than a pilot (titans were mowing pilots down, so whichever team got its titans
+// out first kept the other one from ever coming back).
+const BOT_TITAN_VS_SMALL_AIM_ERROR_SCALE	= 1.3
+const BOT_TITAN_VS_SMALL_REACTION_SCALE	= 1.15
 const BOT_TITAN_TRIGGER_ANGLE	= 8.0		// open fire within this many degrees at most
 const BOT_TITAN_PAUSE_SCALE		= 0.6
 // Titan ordnance (see UpdateTitanOrdnance). The button is held through BotSetInput, not pulsed:
@@ -288,6 +296,8 @@ const BOT_WINDOW_AHEAD			= 140.0	// opening checked this far ahead, at chest and
 const BOT_WINDOW_MIN_DROP		= 120.0	// floor beyond it at least this far down...
 const BOT_WINDOW_MAX_DROP		= 1500.0	// ...and at most this
 const BOT_WINDOW_EXIT_TIME		= 1.5	// run and jump out that way for at most this long
+const BOT_WINDOW_JUMP_LIFT		= 40.0	// the body fit is checked this high up (the jump over the sill)
+const BOT_WINDOW_FAIL_COOLDOWN	= 12.0	// a jump out that didn't take us down: no window tries for this long
 const BOT_VANTAGE_HOLD_MIN		= 4.0
 const BOT_VANTAGE_HOLD_MAX		= 10.0
 const BOT_VANTAGE_BREAK_DIST	= 600.0		// prey this close ends the hold
@@ -349,6 +359,7 @@ const BOT_OFFGRAPH_BLOCK_TIME	= 6.0
 // past them with a trigger. Before a pilot on the ground moves somewhere, the floor just ahead is
 // probed: nothing below, or a floor deeper than the lowest node of the graph, is a pit (see IsVoidAt).
 const BOT_VOID_AHEAD			= 120.0		// floor probed this far ahead of the move
+const BOT_VOID_AHEAD_TITAN		= 220.0		// ...for a titan (wider, and a dash goes far)
 const BOT_VOID_PROBE			= 2500.0	// ...down this far
 const BOT_VOID_MARGIN			= 128.0		// floor this far below the lowest graph node: a pit
 const BOT_GAP_CHECK_AHEAD		= 72.0
@@ -1031,6 +1042,8 @@ function BotThink( bot )
 		nextWindowCheck = 0.0
 		windowExitDir = null	// jumping out a window / off a balcony this way...
 		windowExitStart = 0.0
+		windowStartZ = 0.0		// height we jumped out from (still up here afterwards = it didn't work)
+		windowSpot = null		// the opening we went for
 		windowExitUntil = 0.0	// ...until then
 		vortexHoldStart = 0.0	// vortex shield held up since...
 		vortexHoldUntil = 0.0	// ...until then (0 = not held)
@@ -1040,6 +1053,9 @@ function BotThink( bot )
 		planDoubleJump = false
 		titanCallAt = null
 		titanHoldForEnemy = false
+		titanReadySince = 0.0	// titan meter full since (see the team balance in UpdateTitanDecisions)...
+		titanLead = 0			// ...titans out on our team minus theirs, last counted...
+		nextTitanBalanceCheck = 0.0	// ...and when to count again
 		visitedGoals = []
 		fleeing = false
 		fleeUntil = 0.0
@@ -1714,8 +1730,8 @@ function BotThinkTick( bot, brain )
 		}
 	}
 
-	// Pilots never walk or jump off into the void (open map edges, pits with a kill trigger).
-	if ( !isTitan )
+	// Nobody walks, jumps or dashes off into the void (open map edges, pits with a kill trigger):
+	// pilots die there, and so do titans now (see mp_wargames.nut).
 	{
 		try
 		{
@@ -2144,17 +2160,38 @@ function UpdateTitanDecisions( bot, brain, isTitan, hasVisibleTarget )
 	}
 
 	// Meter just filled: pick when this bot will actually drop it.
+	local now = Time()
 	if ( brain.titanCallAt == null )
 	{
-		brain.titanCallAt = Time() + RandomFloat( BOT_TITAN_CALL_DELAY_MIN, BOT_TITAN_CALL_DELAY_MAX )
+		brain.titanCallAt = now + RandomFloat( BOT_TITAN_CALL_DELAY_MIN, BOT_TITAN_CALL_DELAY_MAX )
 		brain.titanHoldForEnemy = RandomInt( 4 ) == 0
+		brain.titanReadySince = now
+		brain.nextTitanBalanceCheck = 0.0
 	}
 
-	if ( Time() < brain.titanCallAt )
+	// Team balance: a team with fewer titans out than the other calls its own in straight away (no
+	// waiting, no saving it for later); a team already well ahead in titans holds its bots' calls for a
+	// while. Otherwise the side that got its titans out first keeps stomping the other one.
+	if ( now >= brain.nextTitanBalanceCheck )
+	{
+		brain.nextTitanBalanceCheck = now + BOT_TITAN_BALANCE_CHECK
+		brain.titanLead = GetTeamTitanLead( bot )
+	}
+	if ( brain.titanLead < 0 )
+	{
+		// Behind: drop the long random wait (a short retry / back-off still applies).
+		brain.titanHoldForEnemy = false
+		if ( brain.titanCallAt > now + BOT_TITAN_CALL_RETRY )
+			brain.titanCallAt = now
+	}
+	else if ( brain.titanLead >= BOT_TITAN_LEAD_HOLD && now - brain.titanReadySince < BOT_TITAN_LEAD_HOLD_MAX )
+		return
+
+	if ( now < brain.titanCallAt )
 		return
 
 	// Some bots save the titan for when they spot an enemy, but never forever.
-	if ( brain.titanHoldForEnemy && !hasVisibleTarget && Time() < brain.titanCallAt + BOT_TITAN_HOLD_FOR_ENEMY )
+	if ( brain.titanHoldForEnemy && !hasVisibleTarget && now < brain.titanCallAt + BOT_TITAN_HOLD_FOR_ENEMY )
 		return
 
 	local enemyTooClose = hasVisibleTarget && Distance( bot.GetOrigin(), brain.target.GetOrigin() ) < BOT_TITAN_CALL_SAFE_DIST
@@ -5393,6 +5430,14 @@ function UpdateWindowExit( bot, brain )
 		{
 			brain.windowExitUntil = 0.0
 			brain.nextRepathTime = 0.0
+			// Still on the same floor: the way out didn't take us (a frame, glass, bars). Nobody tries
+			// that opening again, and this bot leaves windows alone for a while and takes the stairs.
+			if ( origin.z > brain.windowStartZ - BOT_WINDOW_MIN_DROP * 0.5 )
+			{
+				MarkBadClimbSpot( brain.windowSpot )
+				brain.nextWindowCheck = now + BOT_WINDOW_FAIL_COOLDOWN
+				printt( "BotAI:", bot.GetPlayerName(), "couldn't get out that way, marking it" )
+			}
 		}
 		return 0
 	}
@@ -5410,9 +5455,14 @@ function UpdateWindowExit( bot, brain )
 	foreach ( probeDir in [ dir, ( dir * 0.85 + right * 0.53 ), ( dir * 0.85 - right * 0.53 ) ] )
 	{
 		local d = Normalize2D( probeDir )
-		local chest = origin + Vector( 0, 0, 40 )
-		local head = origin + Vector( 0, 0, 64 )
-		if ( !HasClearLine( bot, chest, chest + d * BOT_WINDOW_AHEAD ) || !HasClearLine( bot, head, head + d * BOT_WINDOW_AHEAD ) )
+		local spot = origin + d * ( BOT_WINDOW_AHEAD * 0.5 )
+		if ( IsBadClimbSpot( spot ) )
+			continue
+		// The whole body has to fit through, at the height of the jump over the sill, against
+		// everything a player bumps into (glass, bars, window frames and props, not just brushes).
+		local lift = origin + Vector( 0, 0, BOT_WINDOW_JUMP_LIFT )
+		local body = TraceHull( lift, lift + d * BOT_WINDOW_AHEAD, bot.GetPlayerMins(), bot.GetPlayerMaxs(), bot, TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+		if ( body.startSolid || body.fraction < 1.0 )
 			continue
 		local beyond = origin + d * BOT_WINDOW_AHEAD + Vector( 0, 0, 16 )
 		local land = TraceLine( beyond, beyond - Vector( 0, 0, BOT_WINDOW_MAX_DROP ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
@@ -5422,6 +5472,8 @@ function UpdateWindowExit( bot, brain )
 			continue
 
 		brain.windowExitDir = d
+		brain.windowStartZ = origin.z
+		brain.windowSpot = spot
 		brain.windowExitStart = now
 		brain.windowExitUntil = now + BOT_WINDOW_EXIT_TIME
 		printt( "BotAI:", bot.GetPlayerName(), "jumping out", origin.z - land.endPos.z, "units down" )
@@ -6124,22 +6176,25 @@ function AvoidVoid( bot, brain, forward, side, pressed )
 		}
 		return result
 	}
-	if ( !IsVoidAt( bot, origin + dir * BOT_VOID_AHEAD ) )
+	// A titan is wider and a dash carries it much further: look further ahead.
+	local isTitan = bot.IsTitan()
+	local ahead = isTitan ? BOT_VOID_AHEAD_TITAN : BOT_VOID_AHEAD
+	if ( !IsVoidAt( bot, origin + dir * ahead ) )
 		return result
 
-	// Whatever sent us this way (running across "roofs", a window, a leap, a wallrun) is off for a while.
+	// Whatever sent us this way (running across "roofs", a window, a leap, a wallrun, a dash) is off for a while.
 	brain.offGraphBlockedUntil = Time() + BOT_OFFGRAPH_BLOCK_TIME
 	brain.windowExitUntil = 0.0
 	brain.climbUntil = 0.0
 	brain.climbIsLedge = false
 	ResetWallrunPlan( bot, brain, "void" )
-	result.pressed = pressed & ~BOT_IN_JUMP
+	result.pressed = pressed & ~( isTitan ? BOT_IN_DODGE : BOT_IN_JUMP )
 	result.forward = 0.0
 	result.side = 0.0
 	if ( brain.pathIndex < brain.path.len() )
 	{
 		local toNode = brain.path[ brain.pathIndex ] - origin
-		if ( Length2D( toNode ) > 1.0 && !IsVoidAt( bot, origin + Normalize2D( toNode ) * BOT_VOID_AHEAD ) )
+		if ( Length2D( toNode ) > 1.0 && !IsVoidAt( bot, origin + Normalize2D( toNode ) * ahead ) )
 		{
 			local relative = MoveDirRelativeToView( toNode, brain.yaw )
 			result.forward = relative.forward
@@ -7037,6 +7092,14 @@ function UpdateTitanReposition( bot, brain, hasVisibleTarget )
 }
 
 // Titans of a team (player titans and auto-titans) within radius of origin (-1 = whole map).
+// Titans out on our team minus titans out on the other (players in titans and auto-titans, map-wide).
+function GetTeamTitanLead( bot )
+{
+	local team = bot.GetTeam()
+	local origin = bot.GetOrigin()
+	return GetTitansOfTeam( team, origin, -1 ).len() - GetTitansOfTeam( GetOtherTeam( team ), origin, -1 ).len()
+}
+
 function GetTitansOfTeam( team, origin, radius )
 {
 	local titans = GetNPCArrayEx( "npc_titan", team, origin, radius.tointeger() )
@@ -7315,7 +7378,7 @@ function RollReactionTime( bot, brain, target )
 	if ( Time() < brain.underFireUntil )
 		reaction += RandomFloat( 0.0, 0.2 )
 	if ( bot.IsTitan() )
-		reaction *= BOT_TITAN_REACTION_SCALE
+		reaction *= IsTitanEntity( target ) ? BOT_TITAN_REACTION_SCALE : BOT_TITAN_VS_SMALL_REACTION_SCALE
 	return reaction
 }
 
@@ -7325,7 +7388,10 @@ function RollReactionTime( bot, brain, target )
 function AimAtTarget( bot, brain, target )
 {
 	local inTitan = bot.IsTitan()
-	local aimError = brain.skill.aimError * ( inTitan ? BOT_TITAN_AIM_ERROR_SCALE : 1.0 )
+	// In a titan the aim is steady against other titans; against a pilot (small, fast, wallrunning)
+	// a titan's guns are no laser, or titans just mow pilots down and the match snowballs.
+	local smallTarget = inTitan && !IsTitanEntity( target )
+	local aimError = brain.skill.aimError * ( inTitan ? ( smallTarget ? BOT_TITAN_VS_SMALL_AIM_ERROR_SCALE : BOT_TITAN_AIM_ERROR_SCALE ) : 1.0 )
 	local eye = bot.EyePosition()
 	if ( brain.aimErrTarget != target )
 	{
@@ -7373,7 +7439,7 @@ function AimAtTarget( bot, brain, target )
 		point = point + ( target.EyePosition() - point ) * 0.3
 	// Lead moving targets: by the think delay, plus the projectile's flight time for slow
 	// projectiles. Some bots lead well, others trail behind; in a titan everyone leads properly.
-	local leadSkill = inTitan ? max( brain.leadSkill, BOT_TITAN_MIN_LEAD_SKILL ) : brain.leadSkill
+	local leadSkill = ( inTitan && !smallTarget ) ? max( brain.leadSkill, BOT_TITAN_MIN_LEAD_SKILL ) : brain.leadSkill
 	local leadTime = BOT_AIM_LEAD_TIME
 	local speed = BotGetProjectileSpeed( bot.GetActiveWeapon() )
 	if ( speed > 0.0 )
