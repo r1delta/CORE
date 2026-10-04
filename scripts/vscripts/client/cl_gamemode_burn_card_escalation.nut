@@ -1,10 +1,11 @@
-// Burn Card Escalation, client side: keeps the lists of burn cards the pilot holds and shows them on the HUD. Pilot cards are on
-// the left, in their own label (bcePilotCardsList in base_hud.res). Titan cards wait for the next Titan drop and are on the right, in
-// the burn card label of the cockpit HUD where the active burn card is normally shown, under a header saying so. The server sends
+// Burn Card Escalation, client side: keeps the lists of burn cards the pilot holds and shows them on the HUD, one label per line
+// (bcePilotCardLine0.. and bceTitanCardLine0.. in base_hud.res, line 0 at the bottom). Pilot cards are on the left, left aligned.
+// Titan cards wait for the next Titan drop and are on the right, right aligned, under a header saying so. The server sends
 // the index of every burn card it gives (ServerCallback_BCE_CardAdded, ServerCallback_BCE_TitanCardAdded) and tells the client
 // when all of them are gone (ServerCallback_BCE_CardsCleared), after which it sends the cards that are still held.
 
-const BCE_LIST_LINE_HEIGHT = 14 // in 480p units, scaled to the screen below
+const BCE_PILOT_LINES = 11 // pilot card slots: one label each in base_hud.res
+const BCE_TITAN_LINES = 8 // header and the seven Titan card slots
 const BCE_TITAN_LIST_HEADER = "TITAN CARDS (CONSUMED ON NEXT DROP)"
 
 function main()
@@ -65,65 +66,92 @@ function BCE_Client_UpdateLists()
 		return
 
 	local cockpit = player.GetCockpit()
-	if ( !IsValid( cockpit ) || !( "mainVGUI" in cockpit.s ) || !( "burnCardTitle" in cockpit.s ) )
+	if ( !IsValid( cockpit ) || !( "mainVGUI" in cockpit.s ) )
 		return
 
 	// A new cockpit means fresh labels, so nothing has been written to them yet
-	if ( !( "bcePilotList" in cockpit.s ) )
+	if ( !( "bcePilotLines" in cockpit.s ) )
 	{
-		cockpit.s.bcePilotList <- HudElement( "bcePilotCardsList", cockpit.s.mainVGUI.GetPanel() )
+		local panel = cockpit.s.mainVGUI.GetPanel()
+
+		cockpit.s.bcePilotLines <- []
+		for ( local i = 0; i < BCE_PILOT_LINES; i++ )
+			cockpit.s.bcePilotLines.append( HudElement( "bcePilotCardLine" + i, panel ) )
+
+		cockpit.s.bceTitanLines <- []
+		for ( local i = 0; i < BCE_TITAN_LINES; i++ )
+			cockpit.s.bceTitanLines.append( HudElement( "bceTitanCardLine" + i, panel ) )
+
 		cockpit.s.bcePilotText <- null
 		cockpit.s.bceTitanText <- null
 	}
 
-	// The pilot cards are in their own label; the stock one is a centered label, so it grows around its anchor
-	level.bcePilotShown = BCE_Client_ShowList( cockpit.s.bcePilotList, cockpit.s, "bcePilotText", level.bceCardRefs, null, false )
-	level.bceTitanShown = BCE_Client_ShowList( cockpit.s.burnCardTitle, cockpit.s, "bceTitanText", level.bceTitanRefs, BCE_TITAN_LIST_HEADER, true )
+	local pilotTitles = BCE_Client_GetTitles( level.bceCardRefs, null )
+	local titanTitles = BCE_Client_GetTitles( level.bceTitanRefs, BCE_TITAN_LIST_HEADER )
+
+	level.bcePilotShown = BCE_Client_ShowLines( cockpit.s.bcePilotLines, cockpit.s, "bcePilotText", pilotTitles )
+	level.bceTitanShown = BCE_Client_ShowLines( cockpit.s.bceTitanLines, cockpit.s, "bceTitanText", titanTitles )
 }
 
-// Writes the titles of the cards into the label, one per line under an optional header line, and hides it when there are none.
-// Returns whether the label is showing cards.
-function BCE_Client_ShowList( label, state, textKey, refs, header, centered )
+// The titles of the cards, top to bottom, under an optional header line. Empty when there are no cards.
+function BCE_Client_GetTitles( refs, header )
 {
+	local titles = []
 	if ( refs.len() == 0 )
+		return titles
+
+	if ( header != null )
+		titles.append( header )
+
+	foreach ( ref in refs )
+		titles.append( Localize( GetBurnCardTitle( ref ) ) )
+
+	return titles
+}
+
+// Puts the titles on the line labels, the last title on line 0 at the bottom, and hides the lines that are not needed.
+// Returns whether there is a list showing.
+function BCE_Client_ShowLines( lines, state, textKey, titles )
+{
+	if ( titles.len() == 0 )
 	{
 		if ( state[ textKey ] != null )
 		{
 			state[ textKey ] = null
-			label.SetText( "" )
-			label.Hide()
+			foreach ( line in lines )
+			{
+				line.SetText( "" )
+				line.Hide()
+			}
 		}
 
 		return false
 	}
 
-	local text = header != null ? header + "\n" : ""
-	foreach ( ref in refs )
-		text += Localize( GetBurnCardTitle( ref ) ) + "\n"
+	local joined = ""
+	foreach ( title in titles )
+		joined += title + "\n"
 
-	// Only touch the label when something changed, or when the spawn gave us a fresh one
-	if ( text == state[ textKey ] )
+	// Only touch the labels when something changed, or when the spawn gave us fresh ones
+	if ( joined == state[ textKey ] )
 		return true
 
-	state[ textKey ] = text
+	state[ textKey ] = joined
 
-	local lines = refs.len() + ( header != null ? 1 : 0 )
-	local scale = Hud.GetScreenSize()[1] / 480.0
-	local height = ( BCE_LIST_LINE_HEIGHT * lines * scale ).tointeger()
-
-	if ( centered )
+	for ( local i = 0; i < lines.len(); i++ )
 	{
-		// Taller by the extra height, moved up by half of it, so the list grows upward only
-		height = max( height, label.GetBaseHeight() )
-		label.SetHeight( height )
-		label.SetPos( 0, -( height - label.GetBaseHeight() ) / 2 )
-	}
-	else
-	{
-		label.SetHeight( height )
+		local index = titles.len() - 1 - i
+		if ( index >= 0 )
+		{
+			lines[i].SetText( titles[ index ] )
+			lines[i].Show()
+		}
+		else
+		{
+			lines[i].SetText( "" )
+			lines[i].Hide()
+		}
 	}
 
-	label.SetText( text )
-	label.Show()
 	return true
 }
