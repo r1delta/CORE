@@ -110,6 +110,18 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   the side that got its titans out first no longer stomps the other one.
 - Titan bots don't walk or dash into the void either.
 
+### Game modes
+- Bots play Capture Point too (besides Attrition / TDM).
+- Capture Point (Hardpoint Domination): every bot picks a point to take or hold, judged again every 6-10 s: one
+  of ours being taken first, then neutral and enemy points; quiet points we hold aren't guarded (with all three
+  ours, bots hunt as usual). Nearer is better, and each teammate (bot or human on the point) already there makes
+  it worth less, so the team spreads out.
+  On the point bots move between spots inside it (learned from where bots stood in the trigger) and watch the
+  way in; they fight from it (no cover runs, flanking, repositioning or chasing), get pulled back onto it when
+  fighting next to it, and skip roof / vantage holds. Titans hold points too.
+- Trapped bots break out towards the nearest reachable node (mantle or jump) after the second time; in the
+  epilogue a trapped bot is never killed.
+
 ### Maps
 - War Games: titans that fall into the simulation's death pits die like pilots (the pit triggers' damage per hit
   only scratched a titan, so titans kept fighting down there).

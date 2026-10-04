@@ -72,10 +72,12 @@ function BotManagerEnabledForMode()
 	if ( !( "BotCreate" in getroottable() ) )
 		return false
 
+	// Capture Point is played as an objective mode (see GetObjectivePoint in _bot_ai).
 	switch ( GameRules.GetGameMode() )
 	{
 		case ATTRITION:
 		case TEAM_DEATHMATCH:
+		case CAPTURE_POINT:
 			return true
 	}
 	return false

@@ -30,6 +30,8 @@ const BOT_WAYPOINT_PROGRESS		= 48.0
 const BOT_WAYPOINT_STUCK_TIME	= 2.5
 const BOT_STUCK_RESET_TIME		= 5.0	// stuck again within this escalates (hop, back off, new route)
 const BOT_UNSTICK_TIME			= 0.6
+const BOT_TRAP_ESCAPE_TIME		= 2.0	// trapped: run (and jump) for the nearest open node this long
+const BOT_TRAP_ESCAPE_MIN_DIST	= 96.0	// ...not the node we're standing on
 const BOT_LOS_CHECK_INTERVAL	= 0.3	// how often a pilot checks it can still see its next waypoint
 const BOT_BACKTRACK_TIME		= 1.0	// stepping back to the previous waypoint, at most this long
 const BOT_BACKTRACK_NODE_REACHED	= 24.0
@@ -511,6 +513,26 @@ const BOT_EVAC_GRENADE_DODGE_MIN	= 0.5	// a grenade on the evac run: hop aside t
 const BOT_EVAC_GRENADE_DODGE_MAX	= 0.8
 const BOT_TACTICAL_LOW_HEALTH	= 0.6
 
+// Capture Point (Hardpoint Domination), see UpdateCapturePoint: each bot picks one of the points to
+// take or hold, by what it's worth to the team, how far it is and how many teammates already go there.
+const BOT_CP_PICK_MIN			= 6.0		// the pick is judged again this often...
+const BOT_CP_PICK_MAX			= 10.0
+const BOT_CP_SCORE_NEUTRAL		= 100.0		// nobody's point: grab it
+const BOT_CP_SCORE_ENEMY		= 85.0		// theirs: take it
+const BOT_CP_SCORE_THREATENED	= 130.0		// ours with enemies on it, or being taken: save it
+const BOT_CP_DIST_PENALTY		= 0.012		// per unit away (3000u = -36)
+const BOT_CP_CROWD_PENALTY		= 20.0		// per teammate already going there (or standing on it)
+const BOT_CP_STICK_BONUS		= 25.0		// the point we're already going to
+const BOT_CP_BIAS_MAX			= 20.0		// per-life taste for each point, so the team doesn't move as one
+const BOT_CP_LEASH_DIST			= 900.0		// this close to its point a bot stays on it: no chasing, roaming or vantage holds
+const BOT_CP_LEASH_PULL			= 0.8		// fighting off the point this close to it: pulled back onto it
+const BOT_CP_HOLD_RADIUS		= 200.0		// on the point: move between spots this far around it...
+const BOT_CP_SPOT_TIME_MIN		= 2.0		// ...a new one this often (a still target is an easy one)
+const BOT_CP_SPOT_TIME_MAX		= 4.5
+const BOT_CP_SPOT_REACHED		= 40.0
+const BOT_CP_INSIDE_MAX			= 24		// positions seen inside each point's trigger, remembered for spots
+const BOT_CP_INSIDE_SPACING		= 64.0
+
 // AI node graph hulls. The titan hull index still has to be confirmed against the .ain link data;
 // until then titans path on the human graph and rely on stuck detection.
 const BOT_HULL_PILOT			= 0
@@ -639,6 +661,7 @@ function main()
 	file.brains <- {}			// bot -> brain, for team coordination
 	file.nav <- null			// node cache for tactical points, built on first use (see GetNavCache)
 	file.badClimbSpots <- []	// walls bots failed to climb this map
+	file.cpInside <- {}			// capture point -> positions bots stood on while touching it (see UpdateCapturePoint)
 	file.wrGroundLogged <- false	// BOT_DEBUG_WALLRUN: IsOnGround on a wall reported once
 	file.hasPilotNav <- "NavFindPathPilot" in getroottable()
 	if ( !file.hasPilotNav )
@@ -1142,6 +1165,16 @@ function BotThink( bot )
 		nextRiderScan = 0.0
 		nextRescuePointTime = 0.0
 		evacStarted = false		// the evac run already began (see BotStartEvac)
+		cpPoint = null			// capture point we're taking / holding (see UpdateCapturePoint)...
+		cpNextPick = 0.0
+		cpBias = null			// ...per-life taste for each point
+		cpNear = false			// within BOT_CP_LEASH_DIST of it
+		cpOnPoint = false		// touching its trigger
+		cpHolding = false		// on it and standing at our spot
+		cpSpot = null
+		cpSpotUntil = 0.0
+		cpWatch = null			// where to look while holding
+		cpNextInsideLog = 0.0
 		dbgInput = null			// last input sent by BotThinkTick (spawn-death diagnostic)
 	}
 
@@ -1423,6 +1456,10 @@ function BotThinkTick( bot, brain )
 			local spacing = GetAllySpacingPush( bot, BOT_COMBAT_SPACING_DIST, BOT_COMBAT_SPACING_STRENGTH )
 			if ( spacing != null )
 				combatMove = combatMove + spacing
+			// Fighting next to our capture point but off it: drift back onto it while shooting.
+			local pull = GetCapturePointPull( bot, brain )
+			if ( pull != null )
+				combatMove = Normalize2D( combatMove ) + pull * BOT_CP_LEASH_PULL
 			local relative = MoveDirRelativeToView( combatMove, brain.yaw )
 			local scale = brain.combatHold ? BOT_HOLD_MOVE_SCALE : 1.0
 			forward = relative.forward * scale
@@ -1430,8 +1467,13 @@ function BotThinkTick( bot, brain )
 		}
 		else
 		{
-			// Titans circle the target while closing to brawling range, and push in for the kill.
-			local relative = MoveDirRelativeToView( GetTitanCombatMove( bot, brain ), brain.yaw )
+			// Titans circle the target while closing to brawling range, and push in for the kill
+			// (drifting back onto our capture point when fighting next to it).
+			local titanMove = GetTitanCombatMove( bot, brain )
+			local pull = GetCapturePointPull( bot, brain )
+			if ( pull != null )
+				titanMove = Normalize2D( titanMove ) + pull * BOT_CP_LEASH_PULL
+			local relative = MoveDirRelativeToView( titanMove, brain.yaw )
 			forward = relative.forward
 			side = relative.side
 		}
@@ -3343,6 +3385,14 @@ function ChooseGoal( bot, brain, isTitan )
 		brain.titanDetour = null
 	}
 
+	// Capture point: close to ours, stay on it (no chasing or roaming off it); farther out we
+	// head there once nothing more pressing is going on (below).
+	local objective = null
+	try { objective = GetObjectivePoint( bot, brain ) }
+	catch ( e ) { BotReportError( bot, "GetObjectivePoint", e ) }
+	if ( objective != null && brain.cpNear )
+		return brain.cpHolding ? null : objective
+
 	if ( brain.targetLastSeenPos != null )
 	{
 		if ( !isTitan && brain.temperament == "aggressive" )
@@ -3368,8 +3418,8 @@ function ChooseGoal( bot, brain, isTitan )
 	if ( !isTitan && Time() < brain.alertUntil && brain.alertPos != null )
 		return brain.alertPos
 
-	// Holding a high point: stay put.
-	if ( !isTitan && Time() < brain.holdUntil )
+	// Holding a high point: stay put (not with a capture point to get to).
+	if ( !isTitan && Time() < brain.holdUntil && objective == null )
 		return null
 
 	// Going up through a building (see TryGoUpstairs): once up there, watch the streets below.
@@ -3399,6 +3449,9 @@ function ChooseGoal( bot, brain, isTitan )
 		if ( IsAlive( petTitan ) )
 			return petTitan.GetOrigin()
 	}
+
+	if ( objective != null )
+		return objective
 
 	// Hunt: head for where an enemy was last reported (not where it really is), usually through
 	// a route point that fits the bot's style. Some bots roam for a bit after spawning instead.
@@ -3776,8 +3829,11 @@ function Perceive( bot, brain, hasVisibleTarget )
 		// went out of sight a moment ago (and is still remembered)
 		enemyLost = !hasVisibleTarget && brain.target != null && IsValid( brain.target ) && brain.targetLastSeenPos != null
 		engageDist = GetPilotEngageDist( bot )
-		// objective: a place worth going to apart from hunting (none until modes with objectives are enabled)
+		// objective: a place worth going to apart from hunting (capture points), and whether we're
+		// close to it / on it (see GetCapturePointGoal)
 		objective = GetObjectivePoint( bot, brain )
+		objectiveNear = brain.cpNear
+		onObjective = brain.cpOnPoint
 		alerted = now < brain.alertUntil
 		// our own titan, called and on the map, that we can get into
 		embarkTitan = brain.embarkTitan
@@ -3911,11 +3967,238 @@ function ScanTitanFight( bot, brain )
 	}
 }
 
-// Capture / defend points. Bots only play modes without objectives for now (see
-// BotManagerEnabledForMode), so there is nothing to return yet.
+// Capture / defend points: where the objective wants us to be, or null (no objective in this mode).
+// Only Capture Point for now. Leaves brain.cpNear / cpOnPoint / cpHolding for the callers.
 function GetObjectivePoint( bot, brain )
 {
-	return null
+	local hardpoint = UpdateCapturePoint( bot, brain )
+	if ( hardpoint == null )
+		return null
+	return GetCapturePointGoal( bot, brain, hardpoint )
+}
+
+function IsCapturePointMode()
+{
+	return GameRules.GetGameMode() == CAPTURE_POINT && "hardpoints" in level && level.hardpoints.len() > 0
+}
+
+// The point this bot goes for, picked again every few seconds: one being taken from us first,
+// then neutral and enemy ones; quiet ones we hold aren't guarded (null when all are ours: the bot
+// hunts as usual). Nearer is better, and every teammate already going there (or a human standing
+// on it) makes it worth less.
+function UpdateCapturePoint( bot, brain )
+{
+	if ( !IsCapturePointMode() || GetGameState() != eGameState.Playing )
+	{
+		brain.cpPoint = null
+		brain.cpNear = false
+		brain.cpOnPoint = false
+		brain.cpHolding = false
+		return null
+	}
+	local now = Time()
+	if ( brain.cpPoint != null && !IsValid( brain.cpPoint ) )
+	{
+		brain.cpPoint = null
+		brain.cpNextPick = 0.0
+	}
+	if ( now < brain.cpNextPick )
+		return brain.cpPoint
+	brain.cpNextPick = now + RandomFloat( BOT_CP_PICK_MIN, BOT_CP_PICK_MAX )
+
+	local hardpoints = level.hardpoints
+	if ( brain.cpBias == null || brain.cpBias.len() != hardpoints.len() )
+	{
+		brain.cpBias = []
+		foreach ( hardpoint in hardpoints )
+			brain.cpBias.append( RandomFloat( 0.0, BOT_CP_BIAS_MAX ) )
+	}
+
+	local team = bot.GetTeam()
+	local enemyTeam = GetOtherTeam( team )
+	local origin = bot.GetOrigin()
+
+	local crowd = {}
+	foreach ( hardpoint in hardpoints )
+	{
+		crowd[ hardpoint ] <- 0
+		foreach ( player, time in hardpoint.s.teamPlayersTouching[ team ] )
+		{
+			if ( IsAlive( player ) && !player.IsBot() )
+				crowd[ hardpoint ]++
+		}
+	}
+	foreach ( mate in GetTeammateBrains( bot ) )
+	{
+		local point = mate.brain.cpPoint
+		if ( point != null && point in crowd )
+			crowd[ point ]++
+	}
+
+	local best = null
+	local bestScore = -99999.0
+	local bestRole = ""
+	foreach ( index, hardpoint in hardpoints )
+	{
+		if ( !IsValid( hardpoint ) )
+			continue
+		local owner = hardpoint.GetTeam()
+		local score = 0.0
+		local role = ""
+		if ( owner == team )
+		{
+			local enemiesOn = 0
+			foreach ( player, time in hardpoint.s.teamPlayersTouching[ enemyTeam ] )
+			{
+				if ( IsAlive( player ) )
+					enemiesOn++
+			}
+			// Ours and quiet: not a goal (nobody stays behind to guard it).
+			local losing = enemiesOn > 0
+				|| ( hardpoint.GetHardpointState() == CAPTURE_POINT_STATE_CAPPING && hardpoint.s.lastCappingTeam == enemyTeam )
+			if ( !losing )
+				continue
+			score = BOT_CP_SCORE_THREATENED
+			role = "save"
+		}
+		else
+		{
+			score = owner == enemyTeam ? BOT_CP_SCORE_ENEMY : BOT_CP_SCORE_NEUTRAL
+			role = owner == enemyTeam ? "take" : "grab"
+		}
+		score -= Distance( origin, hardpoint.GetOrigin() ) * BOT_CP_DIST_PENALTY
+		score -= crowd[ hardpoint ] * BOT_CP_CROWD_PENALTY
+		score += brain.cpBias[ index ]
+		if ( hardpoint == brain.cpPoint )
+			score += BOT_CP_STICK_BONUS
+		if ( score > bestScore )
+		{
+			bestScore = score
+			best = hardpoint
+			bestRole = role
+		}
+	}
+
+	if ( best != brain.cpPoint )
+	{
+		if ( best != null )
+			printt( "BotAI:", bot.GetPlayerName(), "->", bestRole, "point", best.GetHardpointID() )
+		else
+			printt( "BotAI:", bot.GetPlayerName(), "-> every point is ours, hunting" )
+		brain.cpSpot = null
+		brain.nextRepathTime = 0.0
+	}
+	brain.cpPoint = best
+	if ( best == null )
+	{
+		brain.cpNear = false
+		brain.cpOnPoint = false
+		brain.cpHolding = false
+	}
+	return best
+}
+
+// Where to go for the point: its middle until we're on it, then spots around inside it, standing
+// at each for a moment (brain.cpHolding) looking out for whoever comes to take it.
+function GetCapturePointGoal( bot, brain, hardpoint )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local center = hardpoint.GetOrigin()
+	brain.cpNear = Distance( origin, center ) < BOT_CP_LEASH_DIST
+	brain.cpOnPoint = bot in hardpoint.s.teamPlayersTouching[ bot.GetTeam() ]
+	brain.cpHolding = false
+
+	if ( !brain.cpOnPoint )
+	{
+		brain.cpSpot = null
+		return center
+	}
+
+	// Learn the zone from where bots actually stood on it: those are spots inside the trigger.
+	if ( now > brain.cpNextInsideLog && bot.IsOnGround() )
+	{
+		brain.cpNextInsideLog = now + 1.0
+		RememberCapturePointInside( hardpoint, origin )
+	}
+
+	if ( brain.cpSpot == null || now > brain.cpSpotUntil )
+	{
+		brain.cpSpot = PickCapturePointSpot( bot, hardpoint )
+		brain.cpSpotUntil = now + RandomFloat( BOT_CP_SPOT_TIME_MIN, BOT_CP_SPOT_TIME_MAX )
+		local fromCenter = brain.cpSpot - center
+		local away = null
+		if ( Length2D( fromCenter ) >= 16.0 )
+			away = Normalize2D( fromCenter )
+		else
+		{
+			local yaw = RandomFloat( -PI, PI )
+			away = Vector( cos( yaw ), sin( yaw ), 0 )
+		}
+		brain.cpWatch = brain.cpSpot + away * 1000.0 + Vector( 0, 0, 50 )
+	}
+	brain.cpHolding = Distance2D( origin, brain.cpSpot ) < BOT_CP_SPOT_REACHED
+	return brain.cpSpot
+}
+
+function RememberCapturePointInside( hardpoint, pos )
+{
+	if ( !( hardpoint in file.cpInside ) )
+		file.cpInside[ hardpoint ] <- []
+	local inside = file.cpInside[ hardpoint ]
+	foreach ( known in inside )
+	{
+		if ( Distance( known, pos ) < BOT_CP_INSIDE_SPACING )
+			return
+	}
+	inside.append( pos )
+	if ( inside.len() > BOT_CP_INSIDE_MAX )
+		inside.remove( 0 )
+}
+
+// A spot on the point: one where a bot already stood inside the trigger, or failing that one on
+// the floor around the middle that we can walk to in a straight line.
+function PickCapturePointSpot( bot, hardpoint )
+{
+	local origin = bot.GetOrigin()
+	local waist = Vector( 0, 0, 36 )
+	if ( hardpoint in file.cpInside && file.cpInside[ hardpoint ].len() >= 4 )
+	{
+		local inside = file.cpInside[ hardpoint ]
+		for ( local i = 0; i < 4; i++ )
+		{
+			local spot = inside[ RandomInt( inside.len() ) ]
+			if ( Distance2D( spot, origin ) > BOT_CP_SPOT_REACHED && HasClearLine( bot, origin + waist, spot + waist ) )
+				return spot
+		}
+	}
+
+	local center = hardpoint.GetOrigin()
+	for ( local i = 0; i < 6; i++ )
+	{
+		local yaw = RandomFloat( -PI, PI )
+		local dist = RandomFloat( 0.3, 1.0 ) * BOT_CP_HOLD_RADIUS
+		local spot = center + Vector( cos( yaw ) * dist, sin( yaw ) * dist, 0 )
+		local down = TraceLine( spot + Vector( 0, 0, 64 ), spot - Vector( 0, 0, 128 ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( down.startSolid || down.fraction >= 1.0 )
+			continue
+		local floor = down.endPos
+		if ( HasClearLine( bot, origin + waist, floor + waist ) )
+			return floor
+	}
+	return origin
+}
+
+// Fighting near our point but off it: the way back onto it (unit length), else null.
+function GetCapturePointPull( bot, brain )
+{
+	if ( brain.cpPoint == null || !IsValid( brain.cpPoint ) || !brain.cpNear || brain.cpOnPoint
+		|| GetGameState() != eGameState.Playing )
+		return null
+	local toPoint = brain.cpPoint.GetOrigin() - bot.GetOrigin()
+	if ( Length2D( toPoint ) < 1.0 )
+		return null
+	return Normalize2D( toPoint )
 }
 
 // --- Decision ----------------------------------------------------------------------------
@@ -4055,7 +4338,13 @@ function ChooseAction( bot, brain, p )
 
 		local enemyPos = brain.target.GetOrigin()
 
-		if ( temperament == "cautious" )
+		// Standing on a capture point: fight from it (cover, a new angle or a way round would all
+		// leave the point to them).
+		if ( p.onObjective )
+		{
+			// (falls through to the fight below)
+		}
+		else if ( temperament == "cautious" )
 		{
 			// Enemy close: look for cover, or failing that change the angle, before fighting.
 			if ( now >= brain.nextCoverTime && p.enemyDist < p.engageDist )
@@ -4083,6 +4372,10 @@ function ChooseAction( bot, brain, p )
 			return { mode = "combat", action = "reload" }
 		return { mode = "combat", action = "attack" }
 	}
+
+	// Near our capture point: back onto it instead of going after an enemy that got away.
+	if ( p.enemyLost && p.objective != null && p.objectiveNear )
+		return { mode = "navigate", action = "capture" }
 
 	if ( p.enemyLost )
 	{
@@ -4143,7 +4436,15 @@ function ExecuteAction( bot, brain, p, d )
 			break
 
 		case "capture":
+			// On the point at our spot: stand there watching the way in (unless shot at from somewhere,
+			// then the alert look turns us that way).
 			plan.goal = p.objective
+			if ( brain.cpHolding )
+			{
+				plan.holdStill = true
+				if ( Time() >= brain.alertUntil )
+					plan.lookAt = brain.cpWatch
+			}
 			break
 
 		case "evac":
@@ -4830,8 +5131,8 @@ function UpdateReposition( bot, brain, hasVisibleTarget )
 			brain.repositionUntil = 0.0
 		return
 	}
-	// (A rider on a titan is shot off where it is, not walked away from.)
-	if ( brain.repositionChance <= 0 || !hasVisibleTarget || !brain.target.IsPlayer() || IsTitanEntity( brain.target )
+	// (A rider on a titan is shot off where it is, not walked away from; nor is a capture point we're on.)
+	if ( brain.repositionChance <= 0 || brain.cpOnPoint || !hasVisibleTarget || !brain.target.IsPlayer() || IsTitanEntity( brain.target )
 		|| IsRodeoing( brain.target ) || now < brain.nextBrawlCheck || now < brain.nextRepositionTime )
 		return
 	brain.nextBrawlCheck = now + BOT_BRAWL_CHECK_INTERVAL
@@ -4895,8 +5196,10 @@ function StartReposition( bot, brain, enemyPos )
 // looks around the streets below instead.
 function IsHoldingVantage( bot, brain, hasVisibleTarget )
 {
-	if ( Time() > brain.holdUntil )
+	// A capture point to take or hold comes before watching from a roof.
+	if ( Time() > brain.holdUntil || brain.cpPoint != null )
 	{
+		brain.holdUntil = 0.0
 		brain.holdRoam = false
 		return false
 	}
@@ -5947,13 +6250,67 @@ function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
 			brain.trapCount = 1
 		brain.trapPos = origin
 		brain.trapTime = now
-		if ( brain.trapCount >= 3 && IsAlive( bot ) && !bot.IsTitan() )
+		// Never in the epilogue: there's no respawn then, the bot would just be dead (and out of the evac).
+		local epilogue = GetGameState() == eGameState.Epilogue
+		if ( brain.trapCount >= 3 && IsAlive( bot ) && !bot.IsTitan() && !epilogue )
 		{
 			printt( "BotAI:", bot.GetPlayerName(), "trapped at", origin, "- killing it so it respawns" )
 			brain.trapCount = 0
 			bot.TakeDamage( bot.GetMaxHealth() + 1000, null, null, { forceKill = true, damageSourceId = eDamageSourceId.suicide } )
+			return
+		}
+		// Before that (and always in the epilogue): break out towards the nearest walkable node.
+		if ( brain.trapCount >= 2 && !bot.IsTitan() )
+			StartTrapEscape( bot, brain )
+	}
+}
+
+// Trapped in a pocket the route can't get out of: head for the nearest node of the graph we have a
+// clear line to (not the one we're on), mantling over whatever is in the way (jump, double jump,
+// mantle) or else running and jumping at it.
+function StartTrapEscape( bot, brain )
+{
+	local nav = GetNavCache()
+	if ( nav.positions.len() == 0 )
+		return
+	local origin = bot.GetOrigin()
+	local chest = origin + Vector( 0, 0, 40 )
+	local best = null
+	local bestDist = 0.0
+	for ( local dx = -1; dx <= 1; dx++ )
+	{
+		for ( local dy = -1; dy <= 1; dy++ )
+		{
+			local key = NavCellKey( origin.x + dx * BOT_NAV_CELL, origin.y + dy * BOT_NAV_CELL )
+			if ( !( key in nav.cells ) )
+				continue
+			foreach ( index in nav.cells[ key ] )
+			{
+				local pos = nav.positions[ index ]
+				local dist = Distance( origin, pos )
+				if ( dist < BOT_TRAP_ESCAPE_MIN_DIST || ( best != null && dist >= bestDist ) )
+					continue
+				if ( !HasClearLine( bot, chest, pos + Vector( 0, 0, 40 ) ) )
+					continue
+				best = pos
+				bestDist = dist
+			}
 		}
 	}
+	if ( best == null )
+		return
+
+	local dir = Normalize2D( best - origin )
+	printt( "BotAI:", bot.GetPlayerName(), "trapped, breaking out towards", best )
+	brain.nextRepathTime = 0.0
+	if ( TryStartLedgeMantle( bot, brain, dir ) )
+	{
+		brain.unstickUntil = 0.0	// the back-off set just before would hold the mantle up
+		return
+	}
+	brain.unstickDir = dir
+	brain.unstickUntil = Time() + BOT_TRAP_ESCAPE_TIME
+	BotPressButtons( bot, BOT_IN_JUMP )
 }
 
 // A titan stuck on stairs, steps or in a narrow passage. blockedDir is the way it was trying to
