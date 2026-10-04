@@ -128,6 +128,10 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 
 ### Bot manager
 - Managed bots spawn together with humans at game start (they wait before Prematch instead of spawning on connect).
+- Private match settings have a "Pilot Bots" section: how many bots (0-10, default 10, spread over the teams,
+  while there are free slots) and their lethality (low / normal / high / very high, the bot skill levels). Set there, they
+  win over `delta_bot_fill_target` / `delta_bot_difficulty`. Needs the new `pm_bot_count` / `pm_bot_lethality`
+  convars from tier0.dll.
 - Bots are removed immediately when a human joins, alive or dead. Only managed bots are ever kicked; humans are never removed.
 - Fixed bots dying ~1 s after every respawn on War Games: the simulation dissolve on death (and the dissolve from arc cannon, titan embark/crush and similar dissolve deaths on any map) is no longer applied to bots, since it outlived their quick respawn and killed the new life.
 

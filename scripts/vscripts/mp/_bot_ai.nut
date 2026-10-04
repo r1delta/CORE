@@ -887,7 +887,10 @@ function BotAI_DebugSpawnDeath( player, damageInfo )
 
 function GetBotSkill()
 {
-	local skillLevel = GetConVarInt( "delta_bot_difficulty" )
+	// The private match settings (bot_lethality) win over the console's delta_bot_difficulty.
+	local skillLevel = GetCurrentPlaylistVarInt( "bot_lethality", -1 )
+	if ( skillLevel < 0 )
+		skillLevel = GetConVarInt( "delta_bot_difficulty" )
 	skillLevel = max( 0, min( file.skill.len() - 1, skillLevel ) )
 	return file.skill[ skillLevel ]
 }

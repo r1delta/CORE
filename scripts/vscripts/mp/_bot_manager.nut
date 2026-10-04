@@ -101,6 +101,28 @@ function GetBotFillTarget()
 	return min( target, maxPlayers - 1 )
 }
 
+// How many bots the match should have with this many humans. The private match settings
+// (bot_count, 0-10, see the match settings menu; 10 in a private match until set) ask for that many
+// bots, as long as there's room; outside private matches delta_bot_fill_target fills up to a total of
+// humans + bots. Either way bots are
+// spread over the teams by GetTeamNeedingPlayer, and one slot is always kept open for a human.
+function GetDesiredBotCount( humanCount )
+{
+	// No humans, no bots: an empty server stays empty (and can hibernate).
+	if ( humanCount == 0 )
+		return 0
+
+	// A private match where the setting was never applied gets the menu's default.
+	local count = GetCurrentPlaylistVarInt( "bot_count", -1 )
+	if ( count < 0 && IsPrivateMatch() )
+		count = PM_BOT_COUNT_DEFAULT
+	if ( count < 0 )
+		return max( 0, GetBotFillTarget() - humanCount )
+
+	local room = GetCurrentPlaylistVarInt( "max players", 12 ) - 1 - humanCount
+	return max( 0, min( min( count, PM_BOT_COUNT_MAX ), room ) )
+}
+
 function BotManager_OnClientConnected( player )
 {
 	if ( !player.IsBot() )
@@ -152,8 +174,7 @@ function BotReconcileThread()
 		}
 	}
 
-	// No humans, no bots: an empty server stays empty (and can hibernate).
-	local desiredBots = humans.len() == 0 ? 0 : max( 0, GetBotFillTarget() - humans.len() )
+	local desiredBots = GetDesiredBotCount( humans.len() )
 
 	// Bots are removed right away, alive or dead: a joining human must never wait for a slot.
 	for ( local i = bots.len() - 1; i >= 0; i-- )
