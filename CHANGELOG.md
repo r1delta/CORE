@@ -20,7 +20,9 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   Rooftop climbing, gap leaps and roof-to-roof routes.
 - Pathing around doors and impossible climbs: careful mode near doors, bad-climb memory, stuck escalation
   (hop, back off at an angle, drop the goal).
-- Trapped-bot rescue: after giving up three times within 250u in 40s (trees, pockets the nav graph does not know), the bot is killed so it respawns.
+- Trapped-bot rescue: after giving up twice within 250u in 40s (trees, pockets the nav graph does not know) the
+  bot breaks out towards the nearest reachable node; after the third time it is killed so it respawns (never in
+  the epilogue).
 - Out-of-world watchdog: a bot far outside the map bounds is killed and respawns (it is no longer teleported).
 - Rooftops: every bot has a per-life taste for high ground (`roofLove`) that weights elevated roaming goals, route
   points and how often it climbs; bots sometimes stop on a roof to watch the streets below.
@@ -112,15 +114,16 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 
 ### Game modes
 - Bots play Capture Point too (besides Attrition / TDM).
-- Capture Point (Hardpoint Domination): every bot picks a point to take or hold, judged again every 6-10 s: one
+- Capture Point (Hardpoint Domination): every bot picks a point to take or save, judged again every 6-10 s: one
   of ours being taken first, then neutral and enemy points; quiet points we hold aren't guarded (with all three
   ours, bots hunt as usual). Nearer is better, and each teammate (bot or human on the point) already there makes
   it worth less, so the team spreads out.
   On the point bots move between spots inside it (learned from where bots stood in the trigger) and watch the
   way in; they fight from it (no cover runs, flanking, repositioning or chasing), get pulled back onto it when
-  fighting next to it, and skip roof / vantage holds. Titans hold points too.
+  fighting next to it, and skip roof / vantage holds. Titans capture points too.
 - Trapped bots break out towards the nearest reachable node (mantle or jump) after the second time; in the
   epilogue a trapped bot is never killed.
+- Other modes (CTF, LTS, ...) stay without bots for now.
 
 ### Maps
 - War Games: titans that fall into the simulation's death pits die like pilots (the pit triggers' damage per hit
@@ -131,14 +134,18 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 - Private match settings have a "Pilot Bots" section: how many bots (0-10, default 10, spread over the teams,
   while there are free slots) and their lethality (low / normal / high / very high, the bot skill levels). Set there, they
   win over `delta_bot_fill_target` / `delta_bot_difficulty`. Needs the new `pm_bot_count` / `pm_bot_lethality`
-  convars from tier0.dll.
-- Bots are removed immediately when a human joins, alive or dead. Only managed bots are ever kicked; humans are never removed.
+  convars from tier0.dll. One slot is always kept free for a human.
+- Bots are removed immediately when a human joins and there's no room (always with `delta_bot_fill_target`),
+  alive or dead. Only managed bots are ever kicked; humans are never removed.
 - Fixed bots dying ~1 s after every respawn on War Games: the simulation dissolve on death (and the dissolve from arc cannon, titan embark/crush and similar dissolve deaths on any map) is no longer applied to bots, since it outlived their quick respawn and killed the new life.
 
 ### Native (`r1delta-src`)
 - New script function `NavFindPathPilot`: pathfinding over the .ain graph restricted to links a pilot can walk (hull and traverse bits).
   `NavFindPath` keeps its previous behaviour.
 - Script falls back to `NavFindPath` when `NavFindPathPilot` is not available.
+- New convars `pm_bot_count` / `pm_bot_lethality` for the private match settings menu (pilot bots).
+- `CL_CopyExistingEntity` refuses an entity with no stored packed state (Host_Error instead of a crash, see
+  Known issues); may be removed once the root cause is fixed.
 
 ### Known issues
 - Intermittent disconnect/crash (engine entity-state decode) when a dead human spectating a bot respawns. Root cause not confirmed, i'm investigating da cause :D
