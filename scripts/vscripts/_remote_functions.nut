@@ -386,6 +386,8 @@ if ( IsMultiplayer() )
 	Remote.RegisterFunction( "ServerCallback_DropShipCloudCoverEffect" )
 	Remote.RegisterFunction( "ServerCallback_EvacObit" )
 	Remote.RegisterFunction( "ServerCallback_UpdateBurnCardTitle" )
+	Remote.RegisterFunction( "ServerCallback_BCE_CardAdded" )		// Burn Card Escalation: a card was given (burn card index)
+	Remote.RegisterFunction( "ServerCallback_BCE_CardsCleared" )	// Burn Card Escalation: all cards were removed
 	Remote.RegisterFunction( "ServerCallback_UpdateTitanModeHUD" )
 	Remote.RegisterFunction( "ServerCallback_GiveMatchLossProtection" )
 

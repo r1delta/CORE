@@ -1,13 +1,13 @@
-// Burn Card Escalation: free for all where burn cards stack on one pilot. Every pilot spawns with a number of random
-// cards equal to the whole minutes the match has been running, and each kill on another pilot pulls one more.
-// A pilot holding all three permanent tactical cards plus at least BCE_HVT_OTHER_CARDS other cards becomes a
-// High-Value Target: killing them is worth 2 points, 2 cards and one of their permanent tactical cards.
+// Burn Card Escalation: free for all where burn cards stack on one pilot. Every pilot spawns with one random card for
+// every BCE_SECONDS_PER_CARD seconds the match has been running, and each kill on another pilot pulls one more.
+// A pilot holding the three permanent tactical cards, Map Hack and Prosthetic Legs, plus at least BCE_HVT_OTHER_CARDS
+// other cards, becomes a High-Value Target: killing them is worth 2 points, 2 cards and one of their permanent tactical cards.
 //
 // A "card" here is a slot-style key (see level.bceCardKeys in main). Weapon cards are not fixed weapons: they add the burn mod of
 // whatever weapon is equipped in that slot, so a pilot keeps their own loadout.
 
 const BCE_HVT_OTHER_CARDS = 3
-const BCE_SECONDS_PER_CARD = 60.0
+const BCE_SECONDS_PER_CARD = 90.0
 
 function main()
 {
@@ -19,6 +19,13 @@ function main()
 	]
 
 	level.bcePermaKeys <- [ "stim_forever", "cloak_forever", "sonar_forever" ]
+
+	// Everything a High-Value Target must hold, on top of BCE_HVT_OTHER_CARDS other cards: the permanent tacticals,
+	// Map Hack ("minimap") and Prosthetic Legs ("fast_movespeed")
+	level.bceHvtKeys <- [ "stim_forever", "cloak_forever", "sonar_forever", "minimap", "fast_movespeed" ]
+
+	// The only weapon mods an amped weapon keeps: the scope the pilot had equipped
+	level.bceScopes <- { iron_sights = true, hcog = true, holosight = true, aog = true, scope_4x = true, scope_6x = true }
 
 	AddCallback_PlayerOrNPCKilled( BCE_OnPlayerOrNPCKilled )
 	AddCallback_OnPlayerRespawned( BCE_PlayerRespawned )
@@ -148,16 +155,32 @@ function BCE_GetCandidates( player )
 	return candidates
 }
 
-function BCE_AddWeaponMod( weapon, modName )
+// Amps a weapon with the card's mod. A main weapon loses every mod except its scope (an amped R-97 with a Scatterfire
+// barrel would be too strong); offhands keep what they had.
+function BCE_AddWeaponMod( weapon, modName, keepOnlyScope )
 {
+	local current = weapon.GetMods()
 	local mods = []
-	foreach ( mod in weapon.GetMods() )
-		mods.append( mod )
+	foreach ( mod in current )
+	{
+		if ( mod == modName )
+			continue
 
-	if ( ArrayContains( mods, modName ) )
+		if ( !keepOnlyScope || mod in level.bceScopes )
+			mods.append( mod )
+	}
+	mods.append( modName )
+
+	// Setting the same mods again right after a change is rejected by the engine
+	local same = mods.len() == current.len()
+	foreach ( mod in mods )
+	{
+		if ( !ArrayContains( current, mod ) )
+			same = false
+	}
+	if ( same )
 		return
 
-	mods.append( modName )
 	weapon.SetMods( mods )
 }
 
@@ -185,7 +208,7 @@ function BCE_ApplyCard( player, key )
 			local weapon = BCE_GetSlotWeapon( player, key )
 			local modName = BCE_GetBurnMod( weapon, key )
 			if ( modName != null )
-				BCE_AddWeaponMod( weapon, modName )
+				BCE_AddWeaponMod( weapon, modName, key != "grenade" && key != "tactical" )
 			break
 
 		case "stim_forever":
@@ -247,7 +270,8 @@ function BCE_GetCardRef( key, weapon )
 	return null
 }
 
-// The same burn card animation FFA plays for the minimap scan, shown to the pilot who got the card
+// The same burn card animation FFA plays for the minimap scan, shown to the pilot who got the card.
+// Returns the index of the burn card that was shown, or null when the game has no burn card for this one.
 function BCE_PlayCardAnimation( player, key )
 {
 	local ref = BCE_GetCardRef( key, BCE_GetSlotWeapon( player, key ) )
@@ -256,17 +280,23 @@ function BCE_PlayCardAnimation( player, key )
 	if ( index == null || index == -1 )
 	{
 		BCE_Notify( player, "+ " + BCE_CardName( key ) ) // no burn card exists for this weapon
-		return
+		return null
 	}
 
 	Remote.CallFunction_NonReplay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), index, true )
+	return index
 }
 
 function BCE_GiveCard( player, key )
 {
 	BCE_GetCards( player )[ key ] <- true
 	thread BCE_ApplyCard( player, key )
-	BCE_PlayCardAnimation( player, key )
+
+	// The client keeps the list of cards shown on the HUD (see client/cl_gamemode_burn_card_escalation.nut)
+	local index = BCE_PlayCardAnimation( player, key )
+	if ( index != null )
+		Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardAdded", index )
+
 	BCE_CheckHighValueTarget( player )
 }
 
@@ -293,13 +323,13 @@ function BCE_CheckHighValueTarget( player )
 		return
 
 	local held = BCE_GetCards( player )
-	foreach ( key in level.bcePermaKeys )
+	foreach ( key in level.bceHvtKeys )
 	{
 		if ( !( key in held ) )
 			return
 	}
 
-	if ( held.len() - level.bcePermaKeys.len() < BCE_HVT_OTHER_CARDS )
+	if ( held.len() - level.bceHvtKeys.len() < BCE_HVT_OTHER_CARDS )
 		return
 
 	player.s.bceHVT <- true
@@ -319,6 +349,7 @@ function BCE_ClearCards( player )
 		TakePassive( player, PAS_MINIMAP_ALL )
 
 	player.s.bceCards = {}
+	Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardsCleared" )
 	player.s.bceHVT <- false
 }
 

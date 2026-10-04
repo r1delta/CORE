@@ -356,6 +356,7 @@ if ( IsClient() )
 	GameMode_AddServerScript( BURN_CARD_ESCALATION, "mp/_free_for_all" ) // the FFA rules; runs before the mode script
 	GameMode_AddServerScript( BURN_CARD_ESCALATION, "mp/_gamemode_burn_card_escalation" )
 	GameMode_AddClientScript( BURN_CARD_ESCALATION, "client/cl_gamemode_ffa" )
+	GameMode_AddClientScript( BURN_CARD_ESCALATION, "client/cl_gamemode_burn_card_escalation" )
 	GameMode_SetDefaultScoreLimits( BURN_CARD_ESCALATION, 30, 0 )
 	GameMode_SetDefaultTimeLimits( BURN_CARD_ESCALATION, 15, 0 )
 
