@@ -274,12 +274,25 @@ resource/ui/menus/match_settings.menu
 			tabPosition				1
 			visible					1
 			labelText				"#PM_SPECTRE_CAMO"
-			ConVar					"pm_dev0"
-			list
-			{
-				"#SETTING_OFF"		0
-				"#SETTING_ON"		1
-			}
+		}
+
+		// The value (Off / On) is set by menu_mode_select.nut: this row cannot use a ConVar binding, because the
+		// autocvar_force_spectre_camo ConVar only exists once the lobby's server scripts have created it.
+		LblSpectreCamoValue
+		{
+			ControlName				Label
+			pin_to_sibling			BtnSpectreCamo
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+			xpos					-34
+			wide					120
+			tall					20
+			visible					1
+			labelText				"#SETTING_OFF"
+			textAlignment			east
+			font					Default_28
+			allcaps					0
+			fgcolor_override		"255 255 255 255"
 		}
 
 

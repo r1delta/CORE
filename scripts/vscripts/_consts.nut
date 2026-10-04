@@ -2451,7 +2451,7 @@ playlistVarMap["pm_ai_type"] 		<- "riff_allow_npcs"
 playlistVarMap["pm_ai_lethality"] 	<- "riff_ai_lethality"
 playlistVarMap["pm_burn_cards"] 	<- "burn_cards_set"
 playlistVarMap["riff_floorislava"] 	<- "riff_floorislava"
-playlistVarMap["pm_dev0"] 			<- "force_spectre_camo" // pm_dev0 is an unused spare convar; Match Settings uses it for the Spectre Camo toggle
+playlistVarMap["autocvar_force_spectre_camo"] 	<- "force_spectre_camo" // see AutoCVar in mp/_burncards.nut
 /*
 playlistVarMap["pilot_health"] 			<- "pm_pilot_health"
 playlistVarMap["riff_ammo_limit"] 		<- "pm_pilot_ammo"

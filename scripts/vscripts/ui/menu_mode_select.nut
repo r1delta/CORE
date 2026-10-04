@@ -47,6 +47,8 @@ function main()
 	file.aiLethalityButton <- null
 	file.floorIsLavaButton <- null
 	file.spectreCamoButton <- null
+	file.spectreCamoValueLabel <- null
+	file.spectreCamoValue <- 0
 
 	file.gameModeLabel <- null
 
@@ -304,6 +306,7 @@ function InitMatchSettingsMenu( menu )
 	file.aiLethalityButton = menu.GetChild( "BtnAILethality" )
 	file.floorIsLavaButton = menu.GetChild( "BtnLava" )
 	file.spectreCamoButton = menu.GetChild( "BtnSpectreCamo" )
+	file.spectreCamoValueLabel = menu.GetChild( "LblSpectreCamoValue" )
 
 	file.gameModeLabel = menu.GetChild( "LblSubheader1Text" )
 
@@ -322,6 +325,7 @@ function InitMatchSettingsMenu( menu )
 	AddDescFocusHandler( file.aiLethalityButton, "#PM_DESC_AI_LETHALITY" )
 	AddDescFocusHandler( file.floorIsLavaButton, "#PM_DESC_LAVA" )
 	AddDescFocusHandler( file.spectreCamoButton, "#PM_DESC_SPECTRE_CAMO" )
+	file.spectreCamoButton.AddEventHandler( UIE_CLICK, Bind( SpectreCamoButton_Activate ) )
 	AddDescFocusHandler( file.burnCardSetButton, "#PM_DESC_BURN_CARDS" )
 
 	uiGlobal.matchSettingsChanged <- false
@@ -496,8 +500,8 @@ function UpdateMappedConVarFromPlaylist( conVarName, useBase = false  )
 }
 
 
-// Spectre Camo (forced on every pilot spawn) is a playlist var with no convar of its own, so Match Settings keeps the
-// spare pm_dev0 convar in step with it. useBase reads the playlist's original value instead of the current override.
+// Spectre Camo (forced on every pilot spawn) is a playlist var, so Match Settings keeps the autocvar_force_spectre_camo
+// convar (created by AutoCVar in mp/_burncards.nut) in step with it. useBase reads the playlist's original value instead of the current override.
 function UpdateSpectreCamoConVarFromPlaylist( useBase = false )
 {
 	local value = GetCurrentPlaylistVarInt( "force_spectre_camo", 0 )
@@ -507,8 +511,21 @@ function UpdateSpectreCamoConVarFromPlaylist( useBase = false )
 
 	value = value != 0 ? 1 : 0
 
-	ClientCommand( "pm_dev0 " + value )
-	file.pmVarValues["pm_dev0"] <- value.tofloat()
+	SetSpectreCamoValue( value )
+	file.pmVarValues["autocvar_force_spectre_camo"] <- value.tofloat()
+}
+
+// The row is not bound to the ConVar (see match_settings.menu), so the value shown and the ConVar are kept in step here
+function SetSpectreCamoValue( value )
+{
+	file.spectreCamoValue = value
+	ClientCommand( "autocvar_force_spectre_camo " + value )
+	file.spectreCamoValueLabel.SetText( value != 0 ? "#SETTING_ON" : "#SETTING_OFF" )
+}
+
+function SpectreCamoButton_Activate( button )
+{
+	SetSpectreCamoValue( file.spectreCamoValue != 0 ? 0 : 1 )
 }
 
 
@@ -664,7 +681,7 @@ function NavigateBackApplyMatchSettingsDialog()
 		uiGlobal.matchSettingsChanged = true
 	else if ( ConVarValueChanged( "pm_burn_cards" ) )
 		uiGlobal.matchSettingsChanged = true
-	else if ( ConVarValueChanged( "pm_dev0" ) )
+	else if ( ConVarValueChanged( "autocvar_force_spectre_camo" ) )
 		uiGlobal.matchSettingsChanged = true
 
 	if ( !uiGlobal.matchSettingsChanged )
@@ -740,7 +757,7 @@ function ApplyMatchSettings( button )
 	UpdatePlaylistFromConVar( "pm_ai_lethality" )
 	UpdatePlaylistFromConVar( "pm_burn_cards" )
 	UpdatePlaylistFromConVar( "riff_floorislava")
-	UpdatePlaylistFromConVar( "pm_dev0" ) // Spectre Camo
+	UpdatePlaylistFromConVar( "autocvar_force_spectre_camo" ) // Spectre Camo
 
 	uiGlobal.matchSettingsChanged = false
 }

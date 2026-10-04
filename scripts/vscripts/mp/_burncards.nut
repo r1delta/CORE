@@ -3,6 +3,7 @@ function main()
     RegisterSignal("StartBurnCardEffect")
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
+    AutoCVar( "force_spectre_camo", "0", "Spectre Camo on every pilot spawn. Mirrors the force_spectre_camo playlist var for Match Settings." )
     AddCallback_OnPlayerRespawned( BCPlayerRespawned )
     AddCallback_OnPlayerRespawned( ForcedSpectreCamoRespawned )
     AddCallback_OnPlayerRespawned( ForcedTurboEngineRespawned )
