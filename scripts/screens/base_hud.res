@@ -1786,6 +1786,49 @@ base_hud.res
 		pin_to_sibling_corner		7
 	}
 
+	// Burn Card Escalation: the Titan cards the pilot holds, on the left side of the screen (see cl_gamemode_burn_card_escalation.nut).
+	// Anchored to the bottom left of the safe area, with the header's top about halfway up the screen. The x axis of this panel is
+	// mirrored (a bigger xpos moves an element left), so the margin from the left edge is a negative xpos.
+	bceTitanCardsHeader
+	{
+		ControlName			Label
+		xpos				-14
+		ypos				-216
+		zpos				1000
+		wide				300
+		tall				14
+		labelText			"TITAN CARDS (CONSUMED ON NEXT DROP)"
+		textAlignment		west
+		textinsetx			0
+		font				HudFontSmall
+		visible				0
+		fgcolor_override	"246 134 40 255"
+
+		pin_to_sibling				SafeArea
+		pin_corner_to_sibling		2
+		pin_to_sibling_corner		2
+	}
+
+	bceTitanCardsList
+	{
+		ControlName			Label
+		xpos				0
+		ypos				0
+		zpos				1000
+		wide				300
+		tall				14
+		labelText			""
+		textAlignment		west
+		textinsetx			0
+		font				HudFontSmall
+		visible				0
+		fgcolor_override	"255 255 255 255"
+
+		pin_to_sibling				bceTitanCardsHeader
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
 	inGameBurnCard2Icon
 	{
 		ControlName			ImagePanel

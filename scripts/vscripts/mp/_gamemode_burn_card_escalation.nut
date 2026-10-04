@@ -6,7 +6,9 @@
 //
 // Cards come in two kinds. Pilot cards are slot-style keys (see level.bceCardKeys in main): weapon cards add the burn mod of
 // whatever weapon is equipped in that slot, so a pilot keeps their own loadout. Titan cards each fill one of seven Titan slots
-// (level.bceTitanSlots); they wait on the pilot and are used up by the pilot's next Titan drop.
+// (level.bceTitanSlots) and only come for what the pilot's Titan loadout has equipped: the amped weapon cards follow the Titan's
+// primary, ordnance and tactical, and Massive Payload needs the Nuclear Eject kit. They wait on the pilot and are used up by the
+// pilot's next Titan drop.
 // The first cards of a life are handed out in a fixed order (level.bceOpeningSteps), after that at random.
 
 const BCE_HVT_OTHER_CARDS = 3
@@ -391,11 +393,15 @@ function BCE_GiveCard( player, key )
 	if ( key in BCE_GetCards( player ) )
 		return
 
-	// The stock burn card this card stands for: one of the slot's cards for a Titan card, the card made for the equipped
-	// weapon for a weapon card
+	// The stock burn card this card stands for: the card made for the weapon equipped in the slot (the pilot's own weapon for
+	// a pilot card, the weapon in the Titan loadout for a Titan card)
 	local ref = null
 	if ( BCE_IsTitanKey( key ) )
-		ref = Random( level.bceTitanSlots[ key ] )
+	{
+		ref = BCE_GetTitanSlotRef( player, key )
+		if ( ref == null )
+			return // nothing in the Titan loadout this card could amp
+	}
 	else
 		ref = BCE_GetCardRef( key, BCE_GetSlotWeapon( player, key ) )
 
@@ -406,10 +412,10 @@ function BCE_GiveCard( player, key )
 	if ( !BCE_IsTitanKey( key ) )
 		thread BCE_ApplyCard( player, key )
 
-	// The client keeps the list of cards shown on the HUD (see client/cl_gamemode_burn_card_escalation.nut)
+	// The client keeps the lists of cards shown on the HUD (see client/cl_gamemode_burn_card_escalation.nut)
 	local index = BCE_PlayCardAnimation( player, key, ref )
 	if ( index != null )
-		Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardAdded", index )
+		Remote.CallFunction_NonReplay( player, BCE_IsTitanKey( key ) ? "ServerCallback_BCE_TitanCardAdded" : "ServerCallback_BCE_CardAdded", index )
 
 	BCE_CheckHighValueTarget( player )
 }
@@ -439,14 +445,88 @@ function BCE_FilterRare( keys, rare )
 	return out
 }
 
-// Titan slots this pilot has no card for yet
+// The burn card that amps a weapon of this class in a Titan slot, or null when the game has none for it
+function BCE_FindTitanWeaponRef( key, className )
+{
+	if ( className == null )
+		return null
+
+	foreach ( ref in level.bceTitanSlots[ key ] )
+	{
+		local data = GetBurnCardData( ref )
+		if ( "Weapon" in data && data.Weapon == className )
+			return ref
+	}
+
+	return null
+}
+
+// The card this pilot's Titan loadout can be given for a slot, or null when nothing equipped fits. The weapon slots follow
+// the weapons in the loadout, the nuclear card needs the Nuclear Eject kit, and the core, dash and punch cards fit every Titan.
+function BCE_GetTitanSlotRef( player, key )
+{
+	local loadout = player.playerClassData[ "titan" ]
+
+	switch ( key )
+	{
+		case "titan_primary":
+			return BCE_FindTitanWeaponRef( key, loadout.primaryWeapon )
+
+		case "titan_ordnance":
+		case "titan_tactical":
+			local slot = key == "titan_ordnance" ? 0 : 1
+			local offhands = loadout.offhandWeapons
+			if ( !offhands || !( slot in offhands ) || !( "weapon" in offhands[ slot ] ) )
+				return null
+
+			return BCE_FindTitanWeaponRef( key, offhands[ slot ].weapon )
+
+		case "titan_nuclear":
+			local kits = 0
+			if ( loadout.passive1 )
+				kits = kits | loadout.passive1
+			if ( loadout.passive2 )
+				kits = kits | loadout.passive2
+
+			if ( ( kits & PAS_BUILD_UP_NUCLEAR_CORE ) == 0 )
+				return null
+			break
+	}
+
+	return level.bceTitanSlots[ key ][0]
+}
+
+// The card for the weapon a dropped Titan really carries in a slot. The loadout can change between earning a card and the
+// drop, and the card has to amp what the Titan has.
+function BCE_GetTitanEquippedRef( titan, key )
+{
+	local className = null
+
+	if ( key == "titan_primary" )
+	{
+		local mains = titan.GetMainWeapons()
+		if ( mains.len() > 0 )
+			className = mains[0].GetClassname()
+	}
+	else
+	{
+		local slot = key == "titan_ordnance" ? 0 : 1
+		local offhands = titan.GetOffhandWeapons()
+		if ( offhands.len() > slot && IsValid( offhands[ slot ] ) )
+			className = offhands[ slot ].GetClassname()
+	}
+
+	return BCE_FindTitanWeaponRef( key, className )
+}
+
+// Titan slots this pilot has no card for yet and has something equipped to fill
 function BCE_GetTitanCandidates( player )
 {
 	local held = BCE_GetCards( player )
 	local candidates = []
 	foreach ( key in level.bceTitanKeys )
 	{
-		if ( !( key in held ) )
+		if ( !( key in held ) && BCE_GetTitanSlotRef( player, key ) != null )
 			candidates.append( key )
 	}
 
@@ -587,7 +667,7 @@ function BCE_SyncCardList( player )
 		local ref = held[ key ]
 		local index = typeof( ref ) == "string" ? GetBurnCardIndexByRef( ref ) : null
 		if ( index != null && index != -1 )
-			Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardAdded", index )
+			Remote.CallFunction_NonReplay( player, BCE_IsTitanKey( key ) ? "ServerCallback_BCE_TitanCardAdded" : "ServerCallback_BCE_CardAdded", index )
 	}
 }
 
@@ -760,7 +840,9 @@ function BCE_ApplyTitanCards( player )
 			case "titan_primary":
 			case "titan_tactical":
 			case "titan_ordnance":
-				ApplyTitanWeaponBurnCard( titan, ref )
+				local weaponRef = BCE_GetTitanEquippedRef( titan, key )
+				if ( weaponRef != null )
+					ApplyTitanWeaponBurnCard( titan, weaponRef )
 				break
 
 			case "titan_core":
