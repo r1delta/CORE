@@ -2,12 +2,14 @@
 // every BCE_SECONDS_PER_CARD seconds the match has been running, and each kill on another pilot pulls one more.
 // A pilot holding the three permanent tactical cards, Map Hack and Prosthetic Legs, plus at least BCE_HVT_OTHER_CARDS
 // other cards, becomes a High-Value Target: killing them is worth 2 points, 2 cards and one of their permanent tactical cards.
+// Those five cards are never handed out by spawn cards, nor by a pilot's first BCE_HVT_CARD_MIN_KILLS kills of a life.
 //
 // A "card" here is a slot-style key (see level.bceCardKeys in main). Weapon cards are not fixed weapons: they add the burn mod of
 // whatever weapon is equipped in that slot, so a pilot keeps their own loadout.
 
 const BCE_HVT_OTHER_CARDS = 3
 const BCE_SECONDS_PER_CARD = 90.0
+const BCE_HVT_CARD_MIN_KILLS = 3 // kills in one life before kill cards can include the cards a High-Value Target needs
 
 function main()
 {
@@ -137,8 +139,9 @@ function BCE_CardAvailable( player, key )
 	return true
 }
 
-// Every card this pilot could still be given: not already held, and one that has something to apply to
-function BCE_GetCandidates( player )
+// Every card this pilot could still be given: not already held, and one that has something to apply to.
+// The cards a High-Value Target needs are left out unless allowHvtCards.
+function BCE_GetCandidates( player, allowHvtCards )
 {
 	local held = BCE_GetCards( player )
 	local candidates = []
@@ -146,6 +149,9 @@ function BCE_GetCandidates( player )
 	foreach ( key in level.bceCardKeys )
 	{
 		if ( key in held )
+			continue
+
+		if ( !allowHvtCards && ArrayContains( level.bceHvtKeys, key ) )
 			continue
 
 		if ( BCE_CardAvailable( player, key ) )
@@ -342,12 +348,12 @@ function BCE_GiveCard( player, key )
 }
 
 // Pulls up to count random cards that fit, returns how many were given
-function BCE_PullCards( player, count )
+function BCE_PullCards( player, count, allowHvtCards )
 {
 	local given = 0
 	for ( local i = 0; i < count; i++ )
 	{
-		local candidates = BCE_GetCandidates( player )
+		local candidates = BCE_GetCandidates( player, allowHvtCards )
 		if ( candidates.len() == 0 )
 			break
 
@@ -392,6 +398,7 @@ function BCE_ClearCards( player )
 	player.s.bceCards = {}
 	Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardsCleared" )
 	player.s.bceHVT <- false
+	player.s.bceKills <- 0
 }
 
 function BCE_PlayerRespawned( player )
@@ -413,7 +420,7 @@ function BCE_SpawnCards( player )
 	foreach ( key, v in BCE_GetCards( player ) )
 		thread BCE_ApplyCard( player, key )
 
-	BCE_PullCards( player, BCE_SpawnCardCount() - BCE_GetCards( player ).len() )
+	BCE_PullCards( player, BCE_SpawnCardCount() - BCE_GetCards( player ).len(), false )
 }
 
 function BCE_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
@@ -435,6 +442,7 @@ function BCE_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		return
 
 	scorer.SetAssaultScore( scorer.GetAssaultScore() + ( victimWasTarget ? 2 : 1 ) )
+	local kills = BCE_CountKill( scorer )
 
 	if ( !IsAlive( scorer ) )
 		return
@@ -457,7 +465,17 @@ function BCE_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 			BCE_GiveCard( scorer, Random( missing ) )
 	}
 
-	BCE_PullCards( scorer, pulls )
+	BCE_PullCards( scorer, pulls, kills > BCE_HVT_CARD_MIN_KILLS )
+}
+
+// Kills this pilot has made since they last died
+function BCE_CountKill( player )
+{
+	if ( !( "bceKills" in player.s ) )
+		player.s.bceKills <- 0
+
+	player.s.bceKills++
+	return player.s.bceKills
 }
 
 main()
