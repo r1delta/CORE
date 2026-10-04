@@ -220,11 +220,53 @@ function BCE_Notify( player, text )
 	SendHudMessage( player, text, -1, 0.4, 255, 255, 255, 255, 0.5, 3.0, 1.0 )
 }
 
+// The stock burn card this card corresponds to, for its animation. Weapon cards use the card made for the equipped weapon.
+function BCE_GetCardRef( key, weapon )
+{
+	switch ( key )
+	{
+		case "stim_forever":	return "bc_stim_forever"
+		case "cloak_forever":	return "bc_cloak_forever"
+		case "sonar_forever":	return "bc_sonar_forever"
+		case "fast_movespeed":	return "bc_fast_movespeed"
+		case "pilot_warning":	return "bc_pilot_warning"
+		case "minimap":			return "bc_minimap"
+	}
+
+	if ( !IsValid( weapon ) )
+		return null
+
+	local className = weapon.GetClassname()
+	foreach ( ref in level.burnCards )
+	{
+		local data = GetBurnCardData( ref )
+		if ( "Weapon" in data && data.Weapon == className )
+			return ref
+	}
+
+	return null
+}
+
+// The same burn card animation FFA plays for the minimap scan, shown to the pilot who got the card
+function BCE_PlayCardAnimation( player, key )
+{
+	local ref = BCE_GetCardRef( key, BCE_GetSlotWeapon( player, key ) )
+	local index = ref != null ? GetBurnCardIndexByRef( ref ) : null
+
+	if ( index == null || index == -1 )
+	{
+		BCE_Notify( player, "+ " + BCE_CardName( key ) ) // no burn card exists for this weapon
+		return
+	}
+
+	Remote.CallFunction_NonReplay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), index, true )
+}
+
 function BCE_GiveCard( player, key )
 {
 	BCE_GetCards( player )[ key ] <- true
 	thread BCE_ApplyCard( player, key )
-	BCE_Notify( player, "+ " + BCE_CardName( key ) )
+	BCE_PlayCardAnimation( player, key )
 	BCE_CheckHighValueTarget( player )
 }
 
