@@ -158,7 +158,11 @@ function BCE_GetCandidates( player )
 // Amps a weapon with the card's mod. A main weapon loses every mod except its scope (an amped R-97 with a Scatterfire
 // barrel would be too strong); offhands keep what they had. Perk mods (pas_*) are put back by the game whenever a
 // weapon's mods change, so they are neither kept nor counted here.
-function BCE_AddWeaponMod( weapon, modName, keepOnlyScope )
+//
+// Mods set on the weapon in the pilot's hands are listed but do not count (orange crosshair, amped damage) until the weapon
+// is next drawn, and cards arrive in the middle of fights. So the held weapon is holstered around the change and
+// redeployed in the same frame: the new mods count at once, with no weapon switch and no replacement weapon (no ammo reset).
+function BCE_AddWeaponMod( player, weapon, modName, keepOnlyScope )
 {
 	local current = []
 	foreach ( mod in weapon.GetMods() )
@@ -187,7 +191,11 @@ function BCE_AddWeaponMod( weapon, modName, keepOnlyScope )
 	if ( same )
 		return
 
-	// The engine rejects a mod change that comes right after another one on the same weapon, so try again shortly
+	local held = player.GetActiveWeapon() == weapon
+	if ( held )
+		player.HolsterWeapon()
+
+	// The engine can reject a mod change that comes right after another one on the same weapon, so try again next frame
 	local applied = false
 	for ( local attempt = 0; attempt < 10 && !applied; attempt++ )
 	{
@@ -198,17 +206,23 @@ function BCE_AddWeaponMod( weapon, modName, keepOnlyScope )
 		}
 		catch ( e )
 		{
-			wait 0.3
+			wait 0
 		}
 	}
 
-	if ( !applied || !keepOnlyScope )
-		return
-
 	// Losing extended ammo and the like shrinks the magazine; don't leave the extra rounds in it
-	local baseClip = GetWeaponInfoFileKeyField_Global( weapon.GetClassname(), "ammo_clip_size" )
-	if ( baseClip != null && weapon.GetWeaponPrimaryClipCount() > baseClip.tointeger() )
-		weapon.SetWeaponPrimaryClipCount( baseClip.tointeger() )
+	if ( applied && keepOnlyScope )
+	{
+		local baseClip = GetWeaponInfoFileKeyField_Global( weapon.GetClassname(), "ammo_clip_size" )
+		if ( baseClip != null && weapon.GetWeaponPrimaryClipCount() > baseClip.tointeger() )
+			weapon.SetWeaponPrimaryClipCount( baseClip.tointeger() )
+	}
+
+	if ( held )
+	{
+		player.DeployWeapon()
+		weapon.SetNextAttackAllowedTime( Time() ) // the draw animation still plays, but the pilot can fire straight away
+	}
 }
 
 function BCE_ApplyCard( player, key )
@@ -235,7 +249,7 @@ function BCE_ApplyCard( player, key )
 			local weapon = BCE_GetSlotWeapon( player, key )
 			local modName = BCE_GetBurnMod( weapon, key )
 			if ( modName != null )
-				BCE_AddWeaponMod( weapon, modName, key != "grenade" && key != "tactical" )
+				BCE_AddWeaponMod( player, weapon, modName, key != "grenade" && key != "tactical" )
 			break
 
 		case "stim_forever":
