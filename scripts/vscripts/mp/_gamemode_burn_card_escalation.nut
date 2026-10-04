@@ -622,6 +622,52 @@ function BCE_CheckHighValueTarget( player )
 	// Shown to everyone like the First Strike notification (see ServerCallback_BCE_HighValueTarget in the client script)
 	foreach ( other in GetPlayerArray() )
 		Remote.CallFunction_NonReplay( other, "ServerCallback_BCE_HighValueTarget", player.GetEncodedEHandle() )
+
+	thread BCE_HighValueTargetMinimap( player )
+}
+
+// A High-Value Target is on everyone's minimap for as long as they are one. They have Map Hack, so this evens it out.
+// Whatever else works out what a pilot sees on their minimap (the free for all scan that gives everyone Map Hack for three
+// seconds every ten and takes it away again, a pilot's passives changing, a respawn) puts the HVT back to the default for that
+// pilot, so it is applied again ten times a second. When the HVT dies the minimap goes back to what each pilot's own passives say.
+function BCE_HighValueTargetMinimap( target )
+{
+	target.EndSignal( "OnDeath" )
+	target.EndSignal( "Disconnected" )
+
+	OnThreadEnd(
+		function() : ( target )
+		{
+			if ( !IsValid( target ) )
+				return
+
+			foreach ( viewer in GetPlayerArray() )
+			{
+				if ( viewer != target )
+					UpdateMinimapStatus( viewer )
+			}
+		}
+	)
+
+	for ( ;; )
+	{
+		foreach ( viewer in GetPlayerArray() )
+		{
+			if ( viewer == target )
+				continue
+
+			target.Minimap_AlwaysShow( TEAM_INVALID, viewer )
+
+			// The stock minimap code does the same: the line above does not reach the viewers in free for all
+			if ( IsFFABased() )
+			{
+				target.Minimap_AlwaysShow( TEAM_IMC, viewer )
+				target.Minimap_AlwaysShow( TEAM_MILITIA, viewer )
+			}
+		}
+
+		wait 0.1
+	}
 }
 
 function BCE_ClearCards( player )
