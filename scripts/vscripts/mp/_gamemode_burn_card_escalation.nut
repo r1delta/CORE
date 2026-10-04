@@ -4,8 +4,10 @@
 // other cards, becomes a High-Value Target: killing them is worth 2 points, 2 cards and one of their permanent tactical cards.
 // Those five cards are never handed out by spawn cards, nor by a pilot's first BCE_HVT_CARD_MIN_KILLS kills of a life.
 //
-// A "card" here is a slot-style key (see level.bceCardKeys in main). Weapon cards are not fixed weapons: they add the burn mod of
-// whatever weapon is equipped in that slot, so a pilot keeps their own loadout.
+// Cards come in two kinds. Pilot cards are slot-style keys (see level.bceCardKeys in main): weapon cards add the burn mod of
+// whatever weapon is equipped in that slot, so a pilot keeps their own loadout. Titan cards each fill one of seven Titan slots
+// (level.bceTitanSlots); they wait on the pilot and are used up by the pilot's next Titan drop.
+// The first cards of a life are handed out in a fixed order (level.bceOpeningSteps), after that at random.
 
 const BCE_HVT_OTHER_CARDS = 3
 const BCE_SECONDS_PER_CARD = 90.0
@@ -29,8 +31,25 @@ function main()
 	// The only weapon mods an amped weapon keeps: the scope the pilot had equipped
 	level.bceScopes <- { iron_sights = true, hcog = true, holosight = true, aog = true, scope_4x = true, scope_6x = true }
 
+	// The order cards are handed out in at the start of a life; after the last step they are drawn at random from everything left.
+	//   pilot: a common pilot card    titan: a Titan card    rare: a rare pilot card (see BCE_NextCardKey)
+	level.bceOpeningSteps <- [ "pilot", "titan", "pilot", "rare", "titan" ]
+
+	// The seven Titan slots and the burn cards that can fill each one
+	level.bceTitanKeys <- [ "titan_primary", "titan_tactical", "titan_ordnance", "titan_core", "titan_dash", "titan_punch", "titan_nuclear" ]
+	level.bceTitanSlots <- {
+		titan_primary = [ "bc_titan_40mm_m2", "bc_titan_arc_cannon_m2", "bc_titan_rocket_launcher_m2", "bc_titan_sniper_m2", "bc_titan_triple_threat_m2", "bc_titan_xo16_m2" ],
+		titan_tactical = [ "bc_titan_vortex_shield_m2", "bc_titan_electric_smoke_m2", "bc_titan_shield_wall_m2" ],
+		titan_ordnance = [ "bc_titan_dumbfire_missile_m2", "bc_titan_homing_rockets_m2", "bc_titan_salvo_rockets_m2", "bc_titan_shoulder_rockets_m2" ],
+		titan_core = [ "bc_core_charged" ],			// Super Charger
+		titan_dash = [ "bc_extra_dash" ],			// Turbo Engine
+		titan_punch = [ "bc_titan_melee_m2" ],		// Explosive Punch
+		titan_nuclear = [ "bc_nuclear_core" ]		// Massive Payload (amped nuclear eject)
+	}
+
 	AddCallback_PlayerOrNPCKilled( BCE_OnPlayerOrNPCKilled )
 	AddCallback_OnPlayerRespawned( BCE_PlayerRespawned )
+	AddCallback_OnChangeLoadout( BCE_OnChangeLoadout )
 }
 
 function BCE_GetCards( player )
@@ -44,6 +63,39 @@ function BCE_GetCards( player )
 function BCE_IsHighValueTarget( player )
 {
 	return "bceHVT" in player.s && player.s.bceHVT
+}
+
+function BCE_IsTitanKey( key )
+{
+	return key in level.bceTitanSlots
+}
+
+// Cards held that are not Titan cards
+function BCE_PilotCardCount( player )
+{
+	local count = 0
+	foreach ( key, v in BCE_GetCards( player ) )
+	{
+		if ( !BCE_IsTitanKey( key ) )
+			count++
+	}
+
+	return count
+}
+
+// The keys of the held cards in the order they were given (the HUD list shows them that way)
+function BCE_GetCardOrder( player )
+{
+	if ( !( "bceOrder" in player.s ) )
+		player.s.bceOrder <- []
+
+	return player.s.bceOrder
+}
+
+// How many steps of the opening order this life has used
+function BCE_GetSequenceStep( player )
+{
+	return "bceSeq" in player.s ? player.s.bceSeq : 0
 }
 
 function BCE_SpawnCardCount()
@@ -319,9 +371,8 @@ function BCE_GetCardRef( key, weapon )
 
 // The same burn card animation FFA plays for the minimap scan, shown to the pilot who got the card.
 // Returns the index of the burn card that was shown, or null when the game has no burn card for this one.
-function BCE_PlayCardAnimation( player, key )
+function BCE_PlayCardAnimation( player, key, ref )
 {
-	local ref = BCE_GetCardRef( key, BCE_GetSlotWeapon( player, key ) )
 	local index = ref != null ? GetBurnCardIndexByRef( ref ) : null
 
 	if ( index == null || index == -1 )
@@ -336,28 +387,135 @@ function BCE_PlayCardAnimation( player, key )
 
 function BCE_GiveCard( player, key )
 {
-	BCE_GetCards( player )[ key ] <- true
-	thread BCE_ApplyCard( player, key )
+	// Each slot holds one card
+	if ( key in BCE_GetCards( player ) )
+		return
+
+	// The stock burn card this card stands for: one of the slot's cards for a Titan card, the card made for the equipped
+	// weapon for a weapon card
+	local ref = null
+	if ( BCE_IsTitanKey( key ) )
+		ref = Random( level.bceTitanSlots[ key ] )
+	else
+		ref = BCE_GetCardRef( key, BCE_GetSlotWeapon( player, key ) )
+
+	BCE_GetCards( player )[ key ] <- ( ref != null ? ref : true )
+	BCE_GetCardOrder( player ).append( key )
+
+	// Titan cards wait for the next Titan drop (BCE_ApplyTitanCards)
+	if ( !BCE_IsTitanKey( key ) )
+		thread BCE_ApplyCard( player, key )
 
 	// The client keeps the list of cards shown on the HUD (see client/cl_gamemode_burn_card_escalation.nut)
-	local index = BCE_PlayCardAnimation( player, key )
+	local index = BCE_PlayCardAnimation( player, key, ref )
 	if ( index != null )
 		Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardAdded", index )
 
 	BCE_CheckHighValueTarget( player )
 }
 
-// Pulls up to count random cards that fit, returns how many were given
+// Random element of a list, or null when it is empty
+function BCE_RandomOrNull( list )
+{
+	return list.len() > 0 ? Random( list ) : null
+}
+
+function BCE_IsRareCard( key )
+{
+	local ref = BCE_GetCardRef( key, null )
+	return ref != null && GetBurnCardData( ref ).rarity == BURNCARD_RARE
+}
+
+// The keys of the list that are rare (rare = true) or not rare (rare = false) pilot cards
+function BCE_FilterRare( keys, rare )
+{
+	local out = []
+	foreach ( key in keys )
+	{
+		if ( BCE_IsRareCard( key ) == rare )
+			out.append( key )
+	}
+
+	return out
+}
+
+// Titan slots this pilot has no card for yet
+function BCE_GetTitanCandidates( player )
+{
+	local held = BCE_GetCards( player )
+	local candidates = []
+	foreach ( key in level.bceTitanKeys )
+	{
+		if ( !( key in held ) )
+			candidates.append( key )
+	}
+
+	return candidates
+}
+
+// The next card this pilot gets: the next step of the opening order while this life has one left, then any card at random.
+// A step that has nothing to give falls back to a common pilot card; only a rare step held up by allowHvtCards (the rare
+// cards are the ones a High-Value Target needs) stays put, so the next card that may be rare takes it. Null when no card is left.
+function BCE_NextCardKey( player, allowHvtCards )
+{
+	local seq = BCE_GetSequenceStep( player )
+	local pilot = BCE_GetCandidates( player, allowHvtCards )
+	local titan = BCE_GetTitanCandidates( player )
+	local common = BCE_FilterRare( pilot, false )
+	local step = seq < level.bceOpeningSteps.len() ? level.bceOpeningSteps[ seq ] : "any"
+	local key = null
+	local advance = true
+
+	if ( step == "pilot" )
+	{
+		key = BCE_RandomOrNull( common )
+	}
+	else if ( step == "titan" )
+	{
+		key = BCE_RandomOrNull( titan )
+	}
+	else if ( step == "rare" )
+	{
+		key = BCE_RandomOrNull( BCE_FilterRare( pilot, true ) )
+
+		// No rare card to give: either they are all held (the step is done) or the pilot may not have them yet (the step waits)
+		if ( key == null )
+			advance = BCE_FilterRare( BCE_GetCandidates( player, true ), true ).len() == 0
+	}
+	else
+	{
+		local all = []
+		all.extend( pilot )
+		all.extend( titan )
+		key = BCE_RandomOrNull( all )
+	}
+
+	if ( key == null )
+		key = BCE_RandomOrNull( common )
+	if ( key == null )
+		key = BCE_RandomOrNull( pilot )
+	if ( key == null )
+		key = BCE_RandomOrNull( titan )
+	if ( key == null )
+		return null
+
+	if ( advance && seq < level.bceOpeningSteps.len() )
+		player.s.bceSeq <- seq + 1
+
+	return key
+}
+
+// Pulls up to count cards, returns how many were given
 function BCE_PullCards( player, count, allowHvtCards )
 {
 	local given = 0
 	for ( local i = 0; i < count; i++ )
 	{
-		local candidates = BCE_GetCandidates( player, allowHvtCards )
-		if ( candidates.len() == 0 )
+		local key = BCE_NextCardKey( player, allowHvtCards )
+		if ( key == null )
 			break
 
-		BCE_GiveCard( player, Random( candidates ) )
+		BCE_GiveCard( player, key )
 		given++
 	}
 
@@ -376,7 +534,7 @@ function BCE_CheckHighValueTarget( player )
 			return
 	}
 
-	if ( held.len() - level.bceHvtKeys.len() < BCE_HVT_OTHER_CARDS )
+	if ( BCE_PilotCardCount( player ) - level.bceHvtKeys.len() < BCE_HVT_OTHER_CARDS )
 		return
 
 	player.s.bceHVT <- true
@@ -395,10 +553,42 @@ function BCE_ClearCards( player )
 	if ( "minimap" in held )
 		TakePassive( player, PAS_MINIMAP_ALL )
 
-	player.s.bceCards = {}
-	Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardsCleared" )
+	// Titan cards wait for the next Titan drop and survive the pilot's death
+	local titanCards = {}
+	local order = []
+	foreach ( key in BCE_GetCardOrder( player ) )
+	{
+		if ( BCE_IsTitanKey( key ) && key in held )
+		{
+			titanCards[ key ] <- held[ key ]
+			order.append( key )
+		}
+	}
+
+	player.s.bceCards = titanCards
+	player.s.bceOrder = order
+	player.s.bceSeq <- 0
+	BCE_SyncCardList( player )
 	player.s.bceHVT <- false
 	player.s.bceKills <- 0
+}
+
+// Tells the client which cards the pilot holds, in the order they were given
+function BCE_SyncCardList( player )
+{
+	Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardsCleared" )
+
+	local held = BCE_GetCards( player )
+	foreach ( key in BCE_GetCardOrder( player ) )
+	{
+		if ( !( key in held ) )
+			continue
+
+		local ref = held[ key ]
+		local index = typeof( ref ) == "string" ? GetBurnCardIndexByRef( ref ) : null
+		if ( index != null && index != -1 )
+			Remote.CallFunction_NonReplay( player, "ServerCallback_BCE_CardAdded", index )
+	}
 }
 
 function BCE_PlayerRespawned( player )
@@ -416,11 +606,14 @@ function BCE_SpawnCards( player )
 
 	wait 1.0 // after the loadout has been given
 
-	// Cards held across a respawn that was not a death are put back first
+	// Cards held across a respawn that was not a death are put back first (Titan cards wait for a Titan drop)
 	foreach ( key, v in BCE_GetCards( player ) )
-		thread BCE_ApplyCard( player, key )
+	{
+		if ( !BCE_IsTitanKey( key ) )
+			thread BCE_ApplyCard( player, key )
+	}
 
-	BCE_PullCards( player, BCE_SpawnCardCount() - BCE_GetCards( player ).len(), false )
+	BCE_PullCards( player, BCE_SpawnCardCount() - BCE_PilotCardCount( player ), false )
 }
 
 function BCE_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
@@ -476,6 +669,147 @@ function BCE_CountKill( player )
 
 	player.s.bceKills++
 	return player.s.bceKills
+}
+
+// ---- Titan cards ----
+
+// Runs whenever a pilot or a Titan gets a loadout. When a Titan does, the Titan cards the pilot is holding go on it.
+// Disembarking, ejecting and Titan executions also make a Titan from a player; there the player is still a Titan when this runs,
+// and those are not drops, so the cards keep waiting for the next drop.
+function BCE_OnChangeLoadout( player, loadoutTable, isTitan )
+{
+	if ( isTitan && !player.IsTitan() )
+		thread BCE_ApplyTitanCards( player )
+}
+
+// The Titan cards the pilot is holding, in the order they were given
+function BCE_GetTitanCardKeys( player )
+{
+	local held = BCE_GetCards( player )
+	local keys = []
+	foreach ( key in BCE_GetCardOrder( player ) )
+	{
+		if ( BCE_IsTitanKey( key ) && key in held )
+			keys.append( key )
+	}
+
+	return keys
+}
+
+function BCE_RemoveCard( player, key )
+{
+	local held = BCE_GetCards( player )
+	if ( key in held )
+		delete held[ key ]
+
+	local order = BCE_GetCardOrder( player )
+	for ( local i = order.len() - 1; i >= 0; i-- )
+	{
+		if ( order[i] == key )
+			order.remove( i )
+	}
+}
+
+// Puts the Titan cards on the pilot's Titan as it drops and uses them up; the slots are free to be earned again afterwards
+function BCE_ApplyTitanCards( player )
+{
+	player.EndSignal( "Disconnected" )
+
+	// A Titan can get its loadout more than once; one application at a time
+	if ( "bceApplyingTitan" in player.s && player.s.bceApplyingTitan )
+		return
+
+	if ( BCE_GetTitanCardKeys( player ).len() == 0 )
+		return
+
+	player.s.bceApplyingTitan <- true
+	OnThreadEnd(
+		function() : ( player )
+		{
+			if ( IsValid( player ) )
+				player.s.bceApplyingTitan <- false
+		}
+	)
+
+	// The pilot is the Titan when they spawn as one, otherwise their Titan is in the map
+	local titan = null
+	for ( local tries = 0; tries < 100; tries++ )
+	{
+		titan = player.IsTitan() ? player : GetPlayerTitanInMap( player )
+		if ( IsAlive( titan ) && IsValid( titan.GetTitanSoul() ) )
+			break
+
+		titan = null
+		wait 0.1
+	}
+
+	if ( titan == null )
+		return
+
+	local soul = titan.GetTitanSoul()
+	local held = BCE_GetCards( player )
+	local flags = []
+	local nuclear = false
+
+	foreach ( key in BCE_GetTitanCardKeys( player ) )
+	{
+		local ref = held[ key ]
+
+		switch ( key )
+		{
+			case "titan_primary":
+			case "titan_tactical":
+			case "titan_ordnance":
+				ApplyTitanWeaponBurnCard( titan, ref )
+				break
+
+			case "titan_core":
+				SetCoreCharged( soul )
+				break
+
+			case "titan_dash":
+			case "titan_punch":
+				local flag = GetBurnCardData( ref ).serverFlags
+				GiveServerFlag( player, flag )
+				flags.append( flag )
+				break
+
+			case "titan_nuclear":
+				GivePassiveLifeLong( player, PAS_NUCLEAR_CORE )
+				nuclear = true
+				break
+		}
+
+		BCE_RemoveCard( player, key )
+	}
+
+	BCE_SyncCardList( player )
+
+	if ( flags.len() > 0 || nuclear )
+		thread BCE_TakeAwayTitanCards( player, soul, flags, nuclear )
+}
+
+// The Titan's flags and passive go with the Titan
+function BCE_TakeAwayTitanCards( player, soul, flags, nuclear )
+{
+	soul.EndSignal( "OnTitanDeath" )
+	player.EndSignal( "Disconnected" )
+
+	OnThreadEnd(
+		function() : ( player, flags, nuclear )
+		{
+			if ( !IsValid( player ) )
+				return
+
+			foreach ( flag in flags )
+				TakeServerFlag( player, flag )
+
+			if ( nuclear )
+				TakePassive( player, PAS_NUCLEAR_CORE )
+		}
+	)
+
+	WaitForever()
 }
 
 main()

@@ -41,7 +41,8 @@ function BCE_Client_ListThink()
 
 function BCE_Client_UpdateList()
 {
-	if ( level.bceCardRefs.len() == 0 )
+	// With nothing held the label only needs clearing if this script filled it in
+	if ( level.bceCardRefs.len() == 0 && level.bceListText == "" )
 		return
 
 	local player = GetLocalViewPlayer()
@@ -57,6 +58,14 @@ function BCE_Client_UpdateList()
 	local text = ""
 	foreach ( ref in level.bceCardRefs )
 		text += Localize( GetBurnCardTitle( ref ) ) + "\n"
+
+	if ( level.bceCardRefs.len() == 0 )
+	{
+		level.bceListText = ""
+		label.SetText( "" )
+		label.Hide()
+		return
+	}
 
 	// Only touch the label when something changed, or when the spawn gave us a fresh one
 	if ( label == level.bceListLabel && text == level.bceListText )
