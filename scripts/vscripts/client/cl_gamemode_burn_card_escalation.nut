@@ -65,8 +65,13 @@ function BCE_Client_UpdateList()
 	level.bceListLabel = label
 	level.bceListText = text
 
+	// The label is centered on its anchor, so grow it upward only: taller by the extra height, moved up by half of it
 	local scale = Hud.GetScreenSize()[1] / 480.0
-	label.SetHeight( ( BCE_LIST_LINE_HEIGHT * level.bceCardRefs.len() * scale ).tointeger() )
+	local height = ( BCE_LIST_LINE_HEIGHT * level.bceCardRefs.len() * scale ).tointeger()
+	height = max( height, label.GetBaseHeight() )
+
+	label.SetHeight( height )
+	label.SetPos( 0, -( height - label.GetBaseHeight() ) / 2 )
 	label.SetText( text )
 	label.Show()
 }
