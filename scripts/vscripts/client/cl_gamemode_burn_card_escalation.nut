@@ -13,6 +13,7 @@ function main()
 	Globalize( ServerCallback_BCE_CardAdded )
 	Globalize( ServerCallback_BCE_TitanCardAdded )
 	Globalize( ServerCallback_BCE_CardsCleared )
+	Globalize( ServerCallback_BCE_HighValueTarget )
 
 	level.bceCardRefs <- []
 	level.bcePilotShown <- false
@@ -43,6 +44,18 @@ function ServerCallback_BCE_CardsCleared()
 {
 	level.bceCardRefs.clear()
 	level.bceTitanRefs.clear()
+}
+
+// Announces a pilot who just became a High-Value Target in the event notification the First Strike message uses (same position,
+// fade and 3 seconds on screen, white text with the name in red, or in teal when it is you; the colors are in the strings)
+function ServerCallback_BCE_HighValueTarget( eHandle )
+{
+	local target = GetEntityFromEncodedEHandle( eHandle )
+	if ( !IsValid( target ) || !target.IsPlayer() )
+		return
+
+	local text = target == GetLocalViewPlayer() ? "#BCE_HVT_FRIENDLY" : "#BCE_HVT_ENEMY"
+	SetTimedEventNotification( 3.0, text, target.GetPlayerName() )
 }
 
 // The cockpit and its HUD elements are rebuilt on every spawn, so the lists are applied from a loop

@@ -619,8 +619,9 @@ function BCE_CheckHighValueTarget( player )
 
 	player.s.bceHVT <- true
 
+	// Shown to everyone like the First Strike notification (see ServerCallback_BCE_HighValueTarget in the client script)
 	foreach ( other in GetPlayerArray() )
-		BCE_Notify( other, player.GetPlayerName() + " is a HIGH-VALUE TARGET" )
+		Remote.CallFunction_NonReplay( other, "ServerCallback_BCE_HighValueTarget", player.GetEncodedEHandle() )
 }
 
 function BCE_ClearCards( player )
