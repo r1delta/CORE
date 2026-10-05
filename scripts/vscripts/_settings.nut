@@ -352,6 +352,7 @@ if ( IsClient() )
 	GameMode_SetName( BURN_CARD_ESCALATION, "#GAMEMODE_BURN_CARD_ESCALATION" )
 	GameMode_SetGameModeAnnouncement( BURN_CARD_ESCALATION, "GameModeAnnounce_TDM" )
 	GameMode_SetDesc( BURN_CARD_ESCALATION, "#GAMEMODE_BURN_CARD_ESCALATION_HINT" )
+	GameMode_SetMatchStartDesc( BURN_CARD_ESCALATION, "#GAMEMODE_BURN_CARD_ESCALATION_MATCH_START_HINT" ) // the start of match announcement: the description without its second line
 	GameMode_SetIcon( BURN_CARD_ESCALATION, "../ui/menu/playlist/default" )
 	GameMode_AddServerScript( BURN_CARD_ESCALATION, "mp/_free_for_all" ) // the FFA rules; runs before the mode script
 	GameMode_AddServerScript( BURN_CARD_ESCALATION, "mp/_gamemode_burn_card_escalation" )
