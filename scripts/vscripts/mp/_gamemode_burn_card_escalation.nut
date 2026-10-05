@@ -14,9 +14,12 @@
 const BCE_HVT_OTHER_CARDS = 3
 const BCE_SECONDS_PER_CARD = 90.0
 const BCE_HVT_CARD_MIN_KILLS = 3 // kills in one life before kill cards can include the cards a High-Value Target needs
+const BCE_ORDNANCE_REFILL_SECONDS = 8.0 // time to get a spent ordnance charge back, the delay of the stock ordnance burn cards
 
 function main()
 {
+	RegisterSignal( "BCE_OrdnanceRegen" )
+
 	// Order only matters for display; availability decides what can be pulled
 	level.bceCardKeys <- [
 		"primary", "sidearm", "secondary", "grenade", "tactical",
@@ -309,7 +312,13 @@ function BCE_ApplyCard( player, key )
 			local weapon = BCE_GetSlotWeapon( player, key )
 			local modName = BCE_GetBurnMod( weapon, key )
 			if ( modName != null )
+			{
 				BCE_AddWeaponMod( player, weapon, modName, key != "grenade" && key != "tactical" )
+
+				// The ordnance cards are about infinite ordnance
+				if ( key == "grenade" )
+					thread BCE_OrdnanceRegen( player )
+			}
 			break
 
 		case "stim_forever":
@@ -336,6 +345,53 @@ function BCE_ApplyCard( player, key )
 		case "minimap":
 			GivePassiveLifeLong( player, PAS_MINIMAP_ALL )
 			break
+	}
+}
+
+// The stock ordnance burn cards (Bottomless Frags, Shock Rocks, Personal Alarm System, Surplus Satchels) replace the ordnance with
+// "infinite" grenades by refilling one 8 seconds after each throw, but only for the pilot's single active burn card, which this
+// mode never has. So a pilot with the Ordnance card gets the same here: every charge they spend comes back, one at a time, a
+// fixed time after the last one did. It only watches the ammo count, so it works for every kind of ordnance.
+function BCE_OrdnanceRegen( player )
+{
+	player.EndSignal( "Disconnected" )
+	player.EndSignal( "OnDeath" )
+
+	// One of these per pilot: a card that is applied again must not double the refill
+	player.Signal( "BCE_OrdnanceRegen" )
+	player.EndSignal( "BCE_OrdnanceRegen" )
+
+	local missingSince = null
+	for ( ;; )
+	{
+		wait 0.25
+
+		if ( player.IsTitan() )
+		{
+			missingSince = null
+			continue
+		}
+
+		local weapon = player.GetOffhandWeapon( 0 )
+		if ( !IsValid( weapon ) )
+			continue
+
+		local clip = weapon.GetWeaponPrimaryClipCount()
+		if ( clip >= player.GetWeaponAmmoMaxLoaded( weapon ) )
+		{
+			missingSince = null
+			continue
+		}
+
+		if ( missingSince == null )
+			missingSince = Time()
+
+		if ( Time() - missingSince >= BCE_ORDNANCE_REFILL_SECONDS )
+		{
+			weapon.SetWeaponPrimaryClipCount( clip + 1 )
+			EmitSoundOnEntityOnlyToPlayer( player, player, "BurnCard_GrenadeRefill_Refill" )
+			missingSince = Time()
+		}
 	}
 }
 
