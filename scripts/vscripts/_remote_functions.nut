@@ -390,6 +390,7 @@ if ( IsMultiplayer() )
 	Remote.RegisterFunction( "ServerCallback_BCE_TitanCardAdded" )	// Burn Card Escalation: a Titan card was given (burn card index)
 	Remote.RegisterFunction( "ServerCallback_BCE_CardsCleared" )	// Burn Card Escalation: all cards were removed
 	Remote.RegisterFunction( "ServerCallback_BCE_HighValueTarget" )	// Burn Card Escalation: a pilot became a High-Value Target (player handle)
+	Remote.RegisterFunction( "ServerCallback_BCE_HighValueTargetKilled" )	// Burn Card Escalation: a High-Value Target was killed (killer handle, victim handle)
 	Remote.RegisterFunction( "ServerCallback_UpdateTitanModeHUD" )
 	Remote.RegisterFunction( "ServerCallback_GiveMatchLossProtection" )
 

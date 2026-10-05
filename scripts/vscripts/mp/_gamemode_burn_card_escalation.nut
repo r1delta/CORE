@@ -762,6 +762,14 @@ function BCE_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		return
 
 	scorer.SetAssaultScore( scorer.GetAssaultScore() + ( victimWasTarget ? 2 : 1 ) )
+
+	// The bounty is announced to everyone, like a kill on the mark in Marked for Death (see the client script)
+	if ( victimWasTarget )
+	{
+		foreach ( other in GetPlayerArray() )
+			Remote.CallFunction_NonReplay( other, "ServerCallback_BCE_HighValueTargetKilled", scorer.GetEncodedEHandle(), victim.GetEncodedEHandle() )
+	}
+
 	local kills = BCE_CountKill( scorer )
 
 	if ( !IsAlive( scorer ) )

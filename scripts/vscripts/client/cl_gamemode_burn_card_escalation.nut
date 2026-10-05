@@ -14,6 +14,7 @@ function main()
 	Globalize( ServerCallback_BCE_TitanCardAdded )
 	Globalize( ServerCallback_BCE_CardsCleared )
 	Globalize( ServerCallback_BCE_HighValueTarget )
+	Globalize( ServerCallback_BCE_HighValueTargetKilled )
 
 	level.bceCardRefs <- []
 	level.bcePilotShown <- false
@@ -56,6 +57,26 @@ function ServerCallback_BCE_HighValueTarget( eHandle )
 
 	local text = target == GetLocalViewPlayer() ? "#BCE_HVT_FRIENDLY" : "#BCE_HVT_ENEMY"
 	SetTimedEventNotification( 3.0, text, target.GetPlayerName() )
+}
+
+// Announces who claimed the bounty on a High-Value Target, the way a kill on the mark is announced in Marked for Death: the
+// event notification over the death screen fade, three seconds, "<killer> killed <target>" with each name red, or teal when it
+// is you (the colors are in the strings)
+function ServerCallback_BCE_HighValueTargetKilled( killerHandle, victimHandle )
+{
+	local killer = GetEntityFromEncodedEHandle( killerHandle )
+	local victim = GetEntityFromEncodedEHandle( victimHandle )
+	if ( !IsValid( killer ) || !killer.IsPlayer() || !IsValid( victim ) || !victim.IsPlayer() )
+		return
+
+	local localPlayer = GetLocalViewPlayer()
+	local text = "#BCE_HVT_CLAIMED"
+	if ( killer == localPlayer )
+		text = "#BCE_HVT_CLAIMED_BY_YOU"
+	else if ( victim == localPlayer )
+		text = "#BCE_HVT_CLAIMED_ON_YOU"
+
+	SetTimedEventNotification( 3.0, text, killer.GetPlayerName(), victim.GetPlayerName(), EN_SHOW_OVER_SCREENFADE )
 }
 
 // The cockpit and its HUD elements are rebuilt on every spawn, so the lists are applied from a loop
