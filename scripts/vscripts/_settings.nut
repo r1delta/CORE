@@ -358,7 +358,7 @@ if ( IsClient() )
 	GameMode_AddServerScript( BURN_CARD_ESCALATION, "mp/_gamemode_burn_card_escalation" )
 	GameMode_AddClientScript( BURN_CARD_ESCALATION, "client/cl_gamemode_ffa" )
 	GameMode_AddClientScript( BURN_CARD_ESCALATION, "client/cl_gamemode_burn_card_escalation" )
-	GameMode_SetDefaultScoreLimits( BURN_CARD_ESCALATION, 30, 0 )
+	GameMode_SetDefaultScoreLimits( BURN_CARD_ESCALATION, 75, 0 ) // kills come much faster than in plain free for all, which uses 45
 	GameMode_SetDefaultTimeLimits( BURN_CARD_ESCALATION, 15, 0 )
 
 // Don't remove items from this list once the game is in production

@@ -1,7 +1,7 @@
 "playlists"
 {
 "version"	"stable"
-"versionNum"	"1958" // Never forget to bump this for every playlist update.
+"versionNum"	"1959" // Never forget to bump this for every playlist update.
 "at"
 {
 "vars"
@@ -3010,7 +3010,7 @@
 "SCV_timelimit"		"15"
 "TTDM_scorelimit"	"65"
 "TTDM_timelimit"	"12"
-"BCE_scorelimit"	"30"
+"BCE_scorelimit"	"75"
 "BCE_timelimit"	"15"
 "TMFD_scorelimit"	"10"
 "TMFD_timelimit"	"10"
@@ -4104,7 +4104,7 @@
 "SCV_timelimit"		"15"
 "TTDM_scorelimit"	"65"
 "TTDM_timelimit"	"12"
-"BCE_scorelimit"	"30"
+"BCE_scorelimit"	"75"
 "BCE_timelimit"	"15"
 "TMFD_scorelimit"	"10"
 "TMFD_timelimit"	"10"
