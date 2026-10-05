@@ -4031,8 +4031,10 @@ function UpdateSubText2ForRiffs( announcement )
 		switch ( level.nv.allowNPCs )
 		{
 			case eAllowNPCs.None:
-				// Free for all has no minions anyway, and Burn Card Escalation does not announce that
-				if ( GAMETYPE != BURN_CARD_ESCALATION )
+				// Free for all has no minions anyway. Burn Card Escalation says what the mode is instead of that there are no minions
+				if ( GAMETYPE == BURN_CARD_ESCALATION )
+					riffTexts.append( "#GAMEMODE_FFA" )
+				else
 					riffTexts.append( "#GAMESTATE_NO_MINIONS" )
 				break
 
