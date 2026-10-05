@@ -285,7 +285,39 @@ function BCE_AddWeaponMod( player, weapon, modName, keepOnlyScope )
 	{
 		player.DeployWeapon()
 		weapon.SetNextAttackAllowedTime( Time() ) // the draw animation still plays, but the pilot can fire straight away
+
+		// The amped DMR has a scope of its own that pulses sonar when aimed. A holster and deploy in one frame is not a holster as far
+		// as the client can tell, so it keeps the scope it had (an AOG, say) and the amped one never shows: the view zooms in with
+		// no scope at all. Drawing another weapon and coming back makes the client set the weapon up again.
+		if ( applied && weapon.GetClassname() == "mp_weapon_dmr" )
+			BCE_RedrawWeapon( player, weapon )
 	}
+}
+
+// Switches to another weapon, waits until it is really in hand and then draws the weapon again
+function BCE_RedrawWeapon( player, weapon )
+{
+	local other = null
+	foreach ( main in player.GetMainWeapons() )
+	{
+		if ( main != weapon )
+		{
+			other = main
+			break
+		}
+	}
+
+	if ( other == null )
+		return
+
+	local start = Time()
+	player.SetActiveWeapon( other.GetClassname() )
+	while ( player.GetActiveWeapon() == weapon && Time() - start < 1.0 )
+		wait 0
+
+	wait 0.1
+	if ( IsValid( weapon ) && player.GetActiveWeapon() == other )
+		player.SetActiveWeapon( weapon.GetClassname() )
 }
 
 function BCE_ApplyCard( player, key )
