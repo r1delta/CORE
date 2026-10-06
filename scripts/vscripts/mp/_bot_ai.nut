@@ -51,6 +51,12 @@ const BOT_AT_KEEP_TIME			= 6.0		// keep the anti-titan weapon out this long afte
 const BOT_AT_PILOT_SWAP_DIST	= 600.0		// an enemy pilot in sight this close: primary out, whatever titans are around
 const BOT_AT_CHARGE_MAX_HOLD	= 3.0		// charge rifle: let go after this long even if never lined up
 const BOT_AT_CHARGE_START_ANGLE	= 20.0		// ...and only start charging within this many degrees of the target
+const BOT_SMART_LOCK_ANGLE		= 30.0		// smart pistol: pull the trigger on a lock while the target is this far into the 45 degree search cone
+const BOT_SMART_EARLY_CHANCE	= 15		// smart pistol: percent of shots fired one lock short of full (the margin of error)
+const BOT_SMART_SETTLE_MIN		= 0.0		// smart pistol: extra wait after the lock is there before the press...
+const BOT_SMART_SETTLE_MAX		= 0.15		// ...up to this long
+const BOT_SMART_NO_LOCK_TIME	= 1.0		// smart pistol: on target this long with no lock building (out of range, titan): hip-fire unlocked
+const BOT_SMART_REPRESS			= 0.25		// smart pistol: gap after a press so the burst plays out and the locks reset
 const BOT_TITAN_FLEE_MIN		= 1.2		// with an anti-titan weapon, a titan too close is only run from this long...
 const BOT_TITAN_FLEE_MAX		= 2.2		// ...before turning to shoot it again
 const BOT_WEAPON_HOLD_TIME		= 4.0	// keep a weapon at least this long after switching to it
@@ -325,16 +331,33 @@ const BOT_CLIMB_CHECK_INTERVAL	= 1.0
 const BOT_CLIMB_WALL_DIST		= 260.0		// a wall this far ahead along the route...
 const BOT_CLIMB_MIN_HEIGHT		= 90.0		// ...topped by a walkable roof this high...
 const BOT_CLIMB_MAX_HEIGHT		= 170.0		// ...up to what a jump + double jump + mantle surely reaches,
-const BOT_CLIMB_WALLRUN_MAX_HEIGHT	= 320.0	// ...or up to this with a wallrun up the face first
+// With a wallrun up the face first: jump onto the wall (up to ~80), ride it up a little, jump off it
+// (~320 up/s = ~68 more; the wall gave the double jump back) and double jump at the top of that
+// (~80 more) with the automantle catching the edge. ~340 is about what that reliably reaches.
+const BOT_CLIMB_WALLRUN_MAX_HEIGHT	= 400.0	// ...or up to this with wallruns up the face (kick, double jump back onto it, again: see climbRecatch),
+const BOT_CLIMB_CHAIN_MAX_HEIGHT	= 460.0	// ...or up to this in an alley: wall to facing wall and back, each touch a new double jump
+										// (kept under BOT_CLIMB_WALLRUN_MAX_HEIGHT + 72, the height FindClimbableRoof probes from)
+const BOT_CLIMB_REACH			= 400.0		// highest roof bots plan on climbing anywhere (roof spots; = BOT_CLIMB_WALLRUN_MAX_HEIGHT)
+const BOT_CLIMB_RECATCH_MAX		= 2			// kicks off our wall short of the edge with a double jump back onto it, per climb
+const BOT_CLIMB_RECATCH_DELAY	= 0.2		// the double jump back in this long after the kick (clear of the wall, still rising)
+const BOT_CLIMB_RECATCH_TIME	= 1.0		// not back on the wall this long after the kick: on for the edge instead
+const BOT_CLIMB_KICK_REACH		= 160.0		// on the wall: kick + double jump + mantle reaches a top this far above our feet
+const BOT_CLIMB_CHAIN_GAP		= 280.0		// alley chain: the facing wall at most this far behind us...
+const BOT_CLIMB_CHAIN_WALLS		= 2			// ...and at most this many extra wall touches in one climb
+const BOT_CLIMB_EDGE_INSET		= 48.0		// in the air, steer for a point this far past the edge, onto the roof
 const BOT_CLIMB_WALLRUN_LENGTH	= 220.0		// room along the wall needed for the wallrun
 const BOT_CLIMB_WALLRUN_TIME	= 0.5		// ride the wall at most this long before kicking off towards the roof...
 const BOT_CLIMB_WALLRUN_MIN_TIME	= 0.15	// ...and at least this long (then kick once we stop rising)
+const BOT_CLIMB_DOUBLE_VZ		= 90.0		// double jump once the rise slows under this (near the top of the arc)
+const BOT_WALL_KICK_UP_TIME		= 1.2		// kicked up off a wall we didn't plan: the double jump at the top is ours this long
 const BOT_CLIMB_TIMEOUT			= 3.5
 const BOT_CLIMB_RETRY			= 8.0
 const BOT_CLIMB_PROGRESS_TIME	= 1.6		// this long after the first jump without gaining height = give up
 const BOT_CLIMB_APPROACH_TIME	= 2.2		// not jumped by this long into a climb = give up
 const BOT_CLIMB_RUNUP_MIN		= 60.0		// wallrun climb: closer to the wall than this, back off for a run-up first
-const BOT_BAD_CLIMB_RADIUS		= 300.0		// failed climbs are remembered (team-wide) around the wall spot
+const BOT_BAD_CLIMB_RADIUS		= 300.0		// failed climbs are remembered (team-wide) around the wall spot...
+const BOT_BAD_CLIMB_TIME		= 60.0		// ...for this long (roof hop takeoffs too)
+const BOT_BAD_HOP_RADIUS		= 100.0
 // Ledges: jump, double jump and mantle onto anything in reach that's in the way up, the way a
 // player does it without thinking: when stuck against it, when the route or the target we're
 // chasing is up there, and off a wall we're running along (see TryStartLedgeMantle).
@@ -354,8 +377,78 @@ const BOT_ROOF_EXTRA_CANDIDATES	= 4			// roof lovers look at this many more roam
 const BOT_ROOF_HOLD_CHANCE		= 35		// percent (times roofLove) to stop a while on a high roaming goal...
 const BOT_ROOF_HOLD_MIN			= 2.0		// ...for this long
 const BOT_ROOF_HOLD_MAX			= 5.0
-const BOT_OFFGRAPH_HEIGHT		= 150.0		// path's next node this far below us = we're up on something
+// Roof spots: walkable roofs next to the node graph (most roofs have no nodes of their own), found
+// from ground nodes by tracing for a wall with a roof behind it, a few nodes at a time.
+const BOT_ROOF_SCAN_INTERVAL	= 0.05		// one scan step this often (shared by all bots)...
+const BOT_ROOF_SCAN_NODES		= 4			// ...looking around this many nodes
+const BOT_ROOF_SCAN_MAX_ELEV	= 48.0		// only from nodes about at street level
+const BOT_ROOF_SPOT_MIN_GAP		= 260.0		// one spot per this much roof
+const BOT_ROOF_SPOT_MAX			= 400
+const BOT_ROOF_SPOT_INSET		= 150.0		// the spot lies this far behind the wall face, on the roof
+const BOT_ROOF_SPOT_CHANCE		= 0.75		// roaming: a roof spot instead of a node this often (times roofLove, 1 for high style)...
+const BOT_ROOF_SPOT_CANDIDATES	= 8			// ...out of this many looked at
+const BOT_ROOF_SPOT_FLANK_CHANCE	= 0.6	// hunting: a roof spot near the prey as the flank point this often (times roofLove)
+const BOT_ROOF_SPOT_FLANK_MIN	= 650.0		// ...this far from the prey (past BOT_VANTAGE_BREAK_DIST, or the hold ends on arrival)...
+const BOT_ROOF_SPOT_FLANK_MAX	= 1600.0	// ...up to this
+const BOT_ROOF_SPOT_HOP_MAX		= 1600.0	// already up on the roofs: the next roof spot within this...
+const BOT_ROOF_SPOT_HOP_DZ		= 220.0		// ...and this height of ours
+const BOT_ROOF_BASE_REACHED		= 110.0		// at the spot's foot (the node it was found from): climb now
+const BOT_ROOF_CLIMB_STAGE_TIME	= 14.0		// not up there this long after reaching the foot: the spot is bad (room for a climb and one retry)
+const BOT_ROOF_SPOT_BAD_TIME	= 90.0
+const BOT_ROOF_SPOT_HOLD_CHANCE	= 50		// percent (plus 40 times roofLove) to stay a while on a roof spot reached...
+const BOT_ROOF_SPOT_HOLD_MIN	= 4.0		// ...for this long
+const BOT_ROOF_SPOT_HOLD_MAX	= 10.0
+const BOT_OFFGRAPH_HEIGHT		= 110.0		// path's next node this far below us = we're up on something (low roofs too)
 const BOT_OFFGRAPH_BLOCK_TIME	= 6.0
+
+// Utility routes (pilots): the destination is chosen first, exactly as before (hunt lead / flank
+// point, objective, roaming goal); only then is the way there picked. A GROUND route (the path
+// graph) and a HIGH route (up a roof spot near us, then across the roofs off the graph) are scored
+// by time, risk, tactics, taste and what the team is already doing, and the better one is followed
+// (see GetRouteGoal). A high route that goes wrong falls back to the ground route to the SAME
+// destination. false: the old random roof-spot rolls and staging, untouched.
+const BOT_UTILITY_ROUTES		= true
+const BOT_ROUTE_RUN_SPEED		= 300.0		// rough sprint speed for the time estimates
+const BOT_ROUTE_GROUND_WIND		= 1.3		// the path graph winds this much more than a straight line...
+const BOT_ROUTE_ROOF_WIND		= 1.15		// ...the roofs a little less
+const BOT_ROUTE_CLIMB_TIME		= 3.0		// seconds a climb costs
+const BOT_ROUTE_HIGH_MIN_DIST	= 1000.0	// a climb isn't worth it for a destination closer than this
+const BOT_ROUTE_ENTRY_RADIUS	= 1200.0	// roof spots to climb looked for within this of us...
+const BOT_ROUTE_ENTRY_MAX_DZ	= 200.0		// ...with their foot about at our height...
+const BOT_ROUTE_ENTRY_MIN_GAIN	= 200.0		// ...that bring us at least this much closer to the destination...
+const BOT_ROUTE_MAX_DETOUR		= 700.0		// ...for at most this much extra (or 35% of the trip, if more)
+const BOT_ROUTE_ENTRY_MATE_COST	= 600.0		// a spot a teammate is going for costs this much detour more
+const BOT_ROUTE_RISK_CLIMB		= 0.3		// risk of a climb at full height (BOT_CLIMB_REACH)...
+const BOT_ROUTE_RISK_WALLRUN_CLIMB	= 0.15	// ...plus this when it needs a wallrun (above BOT_CLIMB_MAX_HEIGHT)...
+const BOT_ROUTE_RISK_BAD_WALL	= 0.5		// ...a wall a climb already failed at...
+const BOT_ROUTE_RISK_UNDER_FIRE	= 0.4		// ...climbing while shot at...
+const BOT_ROUTE_RISK_EXPOSED	= 0.3		// ...an enemy lead within BOT_ROUTE_EXPOSED_DIST of the foot...
+const BOT_ROUTE_EXPOSED_DIST	= 1200.0
+const BOT_ROUTE_RISK_PER_FAIL	= 0.3		// ...and each high route this life that failed at the climb (up to 3)
+const BOT_ROUTE_TACT_ABOVE_PREY	= 0.35		// the roofs put us above the prey
+const BOT_ROUTE_TACT_OPEN_DEST	= 0.15		// the destination is under open sky (reachable from the roofs)...
+const BOT_ROUTE_INDOOR_DEST_PENALTY	= 0.6	// ...or under a roof (we'd have to come back down)
+const BOT_ROUTE_OBJECTIVE_PENALTY	= 0.3	// capture points are taken on the ground
+const BOT_ROUTE_TASTE_HIGH		= 0.5		// route style taste for the high route: "high"...
+const BOT_ROUTE_TASTE_FLANK		= 0.1		// ..."flank" ("direct" 0)...
+const BOT_ROUTE_TASTE_INDOOR	= -0.8		// ..."indoor"
+const BOT_ROUTE_TASTE_ROOF_LOVE	= 1.0		// times ( roofLove - 0.3 )
+const BOT_ROUTE_TASTE_LETHALITY	= 0.5		// times ( lethality roofSpotChanceScale - 1 )
+const BOT_ROUTE_TEAM_HIGH_SHARE	= 0.4		// share of the team we'd like up high...
+const BOT_ROUTE_TEAM_WEIGHT		= 1.0		// ...and how much that pulls
+const BOT_ROUTE_SAME_PENALTY	= 0.25		// per teammate already taking that kind of route to the same place
+const BOT_ROUTE_SAME_DEST_DIST	= 1200.0	// (destinations this close count as the same place)
+const BOT_ROUTE_NOISE			= 0.4		// random spread on each score
+const BOT_ROUTE_DEST_MOVE		= 800.0		// re-plan when the destination moves more than this...
+const BOT_ROUTE_STALE_TIME		= 3.0		// ...or the route wasn't asked for this long
+const BOT_ROUTE_FOOT_SLACK		= 6.0		// extra seconds to get to the foot of the climb
+const BOT_ROUTE_CLIMB_MAX_TIME	= 10.0		// at the foot this long without getting up: back to the ground route
+const BOT_ROUTE_CLIMB_START_TIME	= 3.0	// ...or this long without a climb even starting
+const BOT_ROUTE_ROOFS_GRACE		= 1.0		// just up: not "back on the street" yet for this long
+const BOT_ROUTE_ROOF_MAX_TIME	= 40.0		// longest roof run allowed
+const BOT_ROUTE_HIGH_ARRIVE_DIST	= 500.0	// this close to the destination on the roofs: the high route is done
+const BOT_ROUTE_EDGE_SEARCH_TIME	= 2.0	// at an edge with no roof to hop to this long: drop down, ground route
+const BOT_ROUTE_FALLBACK_HOLD	= 10.0		// after a fallback, no new high route (and no casual climbs) this long
 
 // The void: maps with open edges (War Games' simulation, ledges over the sky) kill whoever falls
 // past them with a trigger. Before a pilot on the ground moves somewhere, the floor just ahead is
@@ -482,9 +575,14 @@ const BOT_EVAC_TITAN_EXIT_DIST	= 1500.0	// titans hop out this close to the evac
 // Boarding needs the head (HeadFocus, ~60 above the feet) within 120 of the ramp trigger. A ramp
 // higher than a jump + double jump reaches from the ground is boarded from a launch point instead:
 // a roof or ledge next to the ship, climbed onto first, jumped from (see UpdateEvacLaunch).
+// Real pilot physics: a jump rises 80, the double jump another fixed 80 (one per airtime, given back
+// by landing or a wallrun), so the head tops out ~160 above where it started; with the 120 boarding
+// sphere that's 280 at best, right under the ramp point. Less in practice: the jump also has to
+// carry us across to it, and the top of the jump doesn't land exactly under it.
 const BOT_EVAC_HEAD_HEIGHT		= 60.0		// head above the feet
 const BOT_EVAC_HEAD_MARGIN		= 60.0		// keep jumping while the head is no more than this above the ramp
-const BOT_EVAC_GROUND_REACH		= 260.0		// a ramp up to this high above the ground under it is boarded from the ground...
+const BOT_EVAC_HEAD_REACH		= 220.0		// a ramp up to this far above the standing head is in reach of a jump + double jump
+const BOT_EVAC_GROUND_REACH		= 280.0		// a ramp up to this high above the ground under it (= head height + the above) is boarded from the ground...
 const BOT_EVAC_GROUND_PROBE		= 2000.0	// (how far down the ground is looked for)
 const BOT_EVAC_GROUND_TRIES		= 3			// ...and after this many missed jumps from the ground, a launch point anyway
 const BOT_EVAC_GROUND_JUMP_DIST	= 250.0		// from the ground, jump this close to the ramp...
@@ -494,7 +592,7 @@ const BOT_EVAC_RUNUP_TIME		= 0.8
 const BOT_EVAC_RAMP_MOVED		= 150.0		// the ramp moved this far (ship still settling): judge it again
 const BOT_EVAC_LAUNCH_MIN_GAP	= 60.0		// launch points: this far from the ramp (flat)...
 const BOT_EVAC_LAUNCH_MAX_GAP	= 380.0		// ...up to this far...
-const BOT_EVAC_LAUNCH_MAX_RISE	= 150.0		// ...with the ramp at most this far above the head...
+const BOT_EVAC_LAUNCH_MAX_RISE	= 180.0		// ...with the ramp at most this far above the head (less than BOT_EVAC_HEAD_REACH: the gap has to be crossed too)...
 const BOT_EVAC_LAUNCH_MAX_DROP	= 250.0		// ...or at most this far below it
 const BOT_EVAC_LAUNCH_SIDE_BONUS	= 200.0	// spots on the ship's open (ramp) side score higher
 const BOT_EVAC_LAUNCH_CHECKS	= 6			// best spots checked for a clear jump line, per search
@@ -511,7 +609,106 @@ const BOT_EVAC_AIM_CONE			= 55.0		// running for the ship: only turn to shoot wh
 const BOT_EVAC_SHOOT_DIST		= 1500.0	// ...and this close
 const BOT_EVAC_GRENADE_DODGE_MIN	= 0.5	// a grenade on the evac run: hop aside this long, not the usual 1-1.5 s
 const BOT_EVAC_GRENADE_DODGE_MAX	= 0.8
+// The boarding run only starts with the ramp in sight from out in the open (an indoor bot "close"
+// to the ramp ran at a wall); until then the bot heads for an outdoor approach node next to the
+// ship, with a clear line to the ramp (see UpdateEvacApproach).
+const BOT_EVAC_APPROACH_MIN_FLAT	= 40.0		// approach nodes: this far from the ramp (flat)...
+const BOT_EVAC_APPROACH_MAX_FLAT	= 440.0		// ...up to this far (inside BOT_EVAC_BOARD_DIST, so boarding starts from there)
+const BOT_EVAC_APPROACH_CHECKS	= 8			// best nodes traced per search...
+const BOT_EVAC_APPROACH_PATHS	= 2			// ...and at most this many of them path-checked
+const BOT_EVAC_APPROACH_REACHED	= 96.0		// standing on the approach node: board from here whatever the line check says
+const BOT_EVAC_APPROACH_RETRY	= 1.0
+const BOT_EVAC_APPROACH_SIDE_BONUS	= 250.0	// approach nodes on the ship's open (ramp) side score higher (jumping in from behind hits the hull)
+const BOT_EVAC_DOUBLE_JUMP_VZ	= 50.0		// boarding: double jump once the jump has slowed to this vertical speed (near its top)
+const BOT_EVAC_WALL_KICK_DELAY	= 0.15		// boarding: on a wall this long before jumping off it towards the ramp
+const BOT_EVAC_LOS_INTERVAL		= 0.25		// ramp-in-sight check
+const BOT_EVAC_BOARD_MAX_TIME	= 8.0		// boarding from the ground this long without getting on: try another approach...
+const BOT_EVAC_BOARD_BLOCK		= 4.0		// ...no boarding run for this long meanwhile
+const BOT_EVAC_FORCE_APPROACH_TIME	= 12.0	// ...and, if it wasn't from an approach node, only from one for this long
 const BOT_TACTICAL_LOW_HEALTH	= 0.6
+
+// Paths. A failed path search is retried this soon (not every tick: that ran A* every think and
+// steered straight at the goal through walls meanwhile); a finished path no sooner than this.
+const BOT_PATH_FAIL_RETRY		= 1.0
+const BOT_PATH_END_REPATH		= 0.5
+// Pilot paths start from a nearby node we can see (the nearest one can be behind a wall).
+const BOT_START_NODE_RADIUS		= 600.0
+const BOT_START_NODE_MAX_DZ		= 200.0
+const BOT_START_NODE_CHECKS		= 6			// nearest few traced
+// No-progress watch (see UpdateProgressWatch): a pilot sampled once a second that hasn't got
+// closer to its goal and hasn't left a small area for BOT_OSC_SAMPLES seconds is trapped (hopping in
+// a corner, running at a wall); each time escalates: detour, open-space escape, farther detour.
+const BOT_OSC_SAMPLE_INTERVAL	= 1.0
+const BOT_OSC_SAMPLES			= 7
+const BOT_OSC_RADIUS			= 180.0		// every sample within this of their mean...
+const BOT_OSC_MIN_GAIN			= 150.0		// ...and less than this closer to the goal
+const BOT_OSC_NEAR_GOAL			= 400.0		// this close with a clear line to the goal: arrived (waiting, holding a spot), not trapped
+const BOT_OSC_LEVEL_RESET		= 30.0		// escalation starts over after this long without one
+const BOT_OSC_SUICIDE_LEVEL		= 6			// escalated this often: respawn (never in the epilogue)
+const BOT_DETOUR_TIME			= 10.0		// detour point (reachable node away from here): head there this long...
+const BOT_DETOUR_REACHED		= 96.0		// ...or until this close
+const BOT_DETOUR_MIN_DIST		= 350.0
+const BOT_DETOUR_MAX_DIST		= 1400.0
+const BOT_DETOUR_MAX_CELLS		= 4			// node grid cells searched around us (each way)
+const BOT_DETOUR_PATH_TRIES		= 3
+const BOT_ESCAPE_RAYS			= 12		// open-space escape: rays around us...
+const BOT_ESCAPE_RAY_LEN		= 600.0
+const BOT_ESCAPE_TIME			= 2.5		// ...run (hopping obstacles) along the most open one this long
+const BOT_FIGHT_STUCK_MAX		= 3			// pinned mid-fight this many times in a row: treat it as stuck for real
+const BOT_PILOT_BAD_NODE_TIME	= 45.0		// nodes pilots got trapped going for are avoided this long (team-wide)...
+const BOT_PILOT_BAD_NODE_RADIUS	= 160.0		// ...within this radius
+const BOT_PILOT_BAD_NODE_MAX	= 48
+
+// Rooftops (see GetRoofRunDir): up off the graph, a roof edge in the way is jumped only with a
+// landing found on the other side (another roof, not the street); roof lovers that just climbed
+// up keep running across the roofs for a while.
+const BOT_ROOF_MIN_ELEVATION	= 120.0		// a landing at least half this above the local ground counts as a roof
+const BOT_ROOF_CHECK_INTERVAL	= 0.25
+const BOT_ROOF_EDGE_AHEAD		= 96.0		// edge looked for this far ahead
+// A roof hop is a real jump (see RoofHopButtons): sprint (270) off the edge, double jump near the
+// top of the arc, air control on the way. That carries a pilot ~350-400 across between roofs of the
+// same height, measured from the edge; the distances below are from the bot, which decides up to
+// ~100 before the edge (so a landing at the far end is still in reach from the takeoff).
+const BOT_ROOF_HOP_MIN			= 140.0		// landings probed from this far...
+const BOT_ROOF_HOP_MAX			= 430.0		// ...to this far...
+const BOT_ROOF_HOP_STEP			= 58.0		// (140 + 5 steps = 430: the far end is probed too)
+const BOT_ROOF_HOP_MAX_RISE		= 90.0		// ...at most this much higher (jump + double jump top out ~160 up; the feet must clear the far lip, the mantle does the rest)...
+const BOT_ROOF_HOP_RISE_COST	= 1.0		// ...and every unit higher is a unit less across (the arc has to come down onto it sooner)
+const BOT_ROOF_HOP_MAX_DROP		= 260.0		// ...or this much lower
+const BOT_ROOF_HOP_TIMEOUT		= 2.5		// running for the edge this long without jumping: given up
+const BOT_ROOF_HOP_FLIGHT_MAX	= 3.0		// in the air this long after the jump: given up (a miss)
+const BOT_ROOF_HOP_MIN_PROGRESS	= 80.0		// a hop must get us at least this much closer to the goal
+const BOT_ROOF_HOP_MIN_AIR		= 0.3		// on the ground this soon after the jump = still taking off, not landed
+const BOT_ROOF_HOP_DOUBLE_VZ	= 40.0		// double jump once the rise has slowed to this (about the top of the arc)
+const BOT_ROOF_HOP_WALL_KICK	= 0.1		// on a wall mid-hop this long (the wallrun has caught): kick off it
+const BOT_ROOF_HOP_MAX_KICKS	= 2
+const BOT_ROOF_HOP_LANDED_DIST	= 220.0		// down this close to the landing (and not below it): made it
+const BOT_ROOF_RUN_MIN			= 8.0		// after a climb, roof lovers stay up on the roofs this long (times roofLove)
+const BOT_ROOF_RUN_MAX			= 16.0
+const BOT_ROOF_EDGE_PROBE_UP	= 64.0		// roof edges: probed down from this high (a lip lower than this doesn't hide the drop)
+const BOT_ROOF_HOP_LAUNCH_DIST	= 64.0		// the jump: with the edge this close (or right at a lip before it)...
+const BOT_ROOF_HOP_BLOCKED_TIME	= 0.6		// ...or after this long stopped at a lip
+const BOT_ROOF_EDGE_GUARD		= 64.0		// fighting up on a roof: never a step towards a drop this close
+const BOT_ROOF_LOST_HOLD		= 3.0		// up on a roof, a target lost below: hold the height this long instead of chasing
+
+// Targeting (see UpdateTarget). Scores are distances: lower wins, so these biases are below 1.
+const BOT_TARGET_STICKY_BIAS	= 0.75		// the current target, seen a moment ago (no flip-flopping between two)
+const BOT_TARGET_STICKY_TIME	= 0.6
+const BOT_TARGET_ATTACKER_BIAS	= 0.7		// whoever just shot us...
+const BOT_TARGET_ATTACKER_TIME	= 2.0
+const BOT_TARGET_LOOKING_BIAS	= 0.85		// ...a pilot looking at us...
+const BOT_TARGET_WEAK_BIAS		= 0.85		// ...or badly hurt
+const BOT_TARGET_WEAK_FRAC		= 0.4
+const BOT_TARGET_REACQUIRE_TIME	= 1.5		// back to a target dropped this recently: quicker reaction
+const BOT_TARGET_REACQUIRE_SCALE	= 0.35
+// Fighting vs travelling has some hysteresis: a fight goes on a little farther out than it starts,
+// and through a short loss of sight (no flicker between strafing and running the route).
+const BOT_ENGAGE_EXIT_SCALE		= 1.2
+const BOT_ENGAGE_LOS_GRACE		= 0.5
+// Primary dry with a pilot close: out with the sidearm instead of reloading in its face.
+const BOT_SIDEARM_SWAP_DIST		= 700.0
+const BOT_SIDEARM_HOLD_TIME		= 3.0		// kept out this long, then back to the primary (which reloads)...
+const BOT_SIDEARM_SWAP_COOLDOWN	= 8.0		// ...and not swapped again this soon (time for that reload)
 
 // Capture Point (Hardpoint Domination), see UpdateCapturePoint: each bot picks one of the points to
 // take or hold, by what it's worth to the team, how far it is and how many teammates already go there.
@@ -616,6 +813,13 @@ const BOT_TITAN_BUNCHED_DIST	= 700.0	// a friendly titan this close in a fight =
 const BOT_TITAN_REPOSITION_CHANCE	= 60	// ...and this often one of them breaks off to a new angle
 const BOT_TITAN_ELEVATED_TARGET_DIST	= 900.0	// back off this far from a pilot up on a roof to get an angle
 const BOT_MELEE_MAX_HEIGHT_DIFF	= 120.0	// never charge in for melee at something this far above or below
+// Enemies up on roofs and ledges (see GetVisibleTargetPoint, GetPilotCombatMove).
+const BOT_SIGHT_HEAD_TRACES		= 2			// per think, head checks on enemies whose center is hidden (the current target doesn't count)
+const BOT_SIGHT_HEAD_SCALE		= 1.75		// non-players: the head point is this far up the origin-to-center line
+const BOT_SIGHT_TRACE_SLACK		= 12.0		// a sight trace stopped at most this short of the point still counts as clear (see IsSightTraceClear)
+const BOT_ELEVATED_TARGET_HEIGHT	= 120.0	// on foot, a target this far above us is "up there"...
+const BOT_ELEVATED_STANDOFF_SCALE	= 1.2	// ...and is fought from at least this times its height away (flat), for an angle past the roof edge...
+const BOT_ELEVATED_STANDOFF_MAX	= 900.0		// ...up to this far
 // Titans stuck on stairs, steps and narrow passages (see TitanStuckResponse).
 const BOT_TITAN_STUCK_RESET_TIME	= 6.0	// stuck again within this escalates (step out, skip / reposition, detour)
 const BOT_TITAN_UNSTICK_TIME	= 1.0		// step out (with a dash) this long
@@ -650,17 +854,175 @@ function main()
 {
 	RegisterSignal( "BotStopThink" )
 
+	// Bot lethality levels: 0 = low, 1 = normal, 2 = high, 3 = very high.
+	// Level 1 must keep every value neutral (bots behave exactly as without the setting).
+	// pilot/titan aim keys: reaction (s), aim error (deg), turn speed (deg per think), burst (s), burst pause (s),
+	// leadMin (floor on the per-life lead roll, 0.3..1.2), triggerAngleMax (cap on the per-life trigger roll, 4..14).
+	// brain.skill points at one of the two sub-tables, picked every tick (see BotThinkTick).
 	file.skill <- [
-		// reaction (s), aim error (deg), turn speed (deg per think), burst (s), burst pause (s)
-		{ reaction = 0.9, aimError = 9.0, turnSpeed = 25.0, burst = 0.4, pause = 0.6 },
-		{ reaction = 0.6, aimError = 5.0, turnSpeed = 40.0, burst = 0.6, pause = 0.4 },
-		{ reaction = 0.35, aimError = 2.5, turnSpeed = 60.0, burst = 0.9, pause = 0.25 },
-		{ reaction = 0.2, aimError = 1.0, turnSpeed = 90.0, burst = 1.2, pause = 0.15 },
+		{
+			level = 0
+			pilot = {
+				reaction = 0.9, aimError = 9.0, turnSpeed = 25.0, burst = 0.4, pause = 0.6, leadMin = 0.0, triggerAngleMax = 14.0
+				hopIntervalScale = 1.8		// longer gaps between combat hops
+				doubleJumpChance = 20		// percent, see BOT_COMBAT_DOUBLE_JUMP_CHANCE
+				wallrunScale = 0.4			// "long" wallrun chance only
+				allowHighRoute = false		// no rooftop route style
+				roofLoveScale = 0.35
+				roofLoveAdd = 0.0
+				roofSpotChanceScale = 0.3
+				roofHoldChanceAdd = 0
+				roofHoldTimeScale = 1.0
+				centerBias = 0.6			// explore goals pulled toward the middle of the map
+				flankerWeight = 15
+				flankChanceScale = 0.5
+				grenadeCooldownScale = 1.0
+				grenadePilotChance = 55		// see BOT_ORDNANCE_PILOT_CHANCE
+				grenadeCoverChance = 70		// see BOT_ORDNANCE_COVER_CHANCE
+				grenadeLead = 0.0			// seconds of target velocity to lead a grenade by
+				airControl = 0.5			// 0..1: how hard the move input steers a jump on the way (see GetAirSteerInput)
+				airSteerError = 25.0		// degrees off the landing that steering can be
+			}
+			titan = {
+				reaction = 0.75, aimError = 7.0, turnSpeed = 32.0, burst = 0.5, pause = 0.5, leadMin = 0.0, triggerAngleMax = 14.0
+				dashCooldownScale = 1.6
+				dodgeOdds = 8
+				dodgeOddsHurt = 3
+				ordnancePilotChance = 20	// see BOT_TITAN_ORDNANCE_PILOT_CHANCE
+				ordnanceDelayScale = 2.5
+				tacticalHealth = 0.5
+				vortexCooldownScale = 1.5
+				rodeoReactionScale = 1.5
+				rangeJitter = 0.3			// fraction of the preferred range rolled off per pick
+			}
+		},
+		{
+			level = 1
+			pilot = {
+				reaction = 0.6, aimError = 5.0, turnSpeed = 40.0, burst = 0.6, pause = 0.4, leadMin = 0.0, triggerAngleMax = 14.0
+				hopIntervalScale = 1.0
+				doubleJumpChance = BOT_COMBAT_DOUBLE_JUMP_CHANCE
+				wallrunScale = 1.0
+				allowHighRoute = true
+				roofLoveScale = 1.0
+				roofLoveAdd = 0.0
+				roofSpotChanceScale = 1.0
+				roofHoldChanceAdd = 0
+				roofHoldTimeScale = 1.0
+				centerBias = 0.0
+				flankerWeight = 35
+				flankChanceScale = 1.0
+				grenadeCooldownScale = 1.0
+				grenadePilotChance = BOT_ORDNANCE_PILOT_CHANCE
+				grenadeCoverChance = BOT_ORDNANCE_COVER_CHANCE
+				grenadeLead = 0.0
+				airControl = 1.0			// 0..1: how hard the move input steers a jump on the way (see GetAirSteerInput)
+				airSteerError = 10.0		// degrees off the landing that steering can be
+			}
+			titan = {
+				reaction = 0.6, aimError = 5.0, turnSpeed = 40.0, burst = 0.6, pause = 0.4, leadMin = 0.0, triggerAngleMax = 14.0
+				dashCooldownScale = 1.0
+				dodgeOdds = 5
+				dodgeOddsHurt = 2
+				ordnancePilotChance = BOT_TITAN_ORDNANCE_PILOT_CHANCE
+				ordnanceDelayScale = 1.0
+				tacticalHealth = 0.75
+				vortexCooldownScale = 1.0
+				rodeoReactionScale = 1.0
+				rangeJitter = 0.0
+			}
+		},
+		{
+			level = 2
+			pilot = {
+				reaction = 0.35, aimError = 2.5, turnSpeed = 60.0, burst = 0.9, pause = 0.25, leadMin = 0.6, triggerAngleMax = 11.0
+				hopIntervalScale = 1.0
+				doubleJumpChance = BOT_COMBAT_DOUBLE_JUMP_CHANCE
+				wallrunScale = 1.0
+				allowHighRoute = true
+				roofLoveScale = 1.0
+				roofLoveAdd = 0.0
+				roofSpotChanceScale = 1.0
+				roofHoldChanceAdd = 0
+				roofHoldTimeScale = 1.0
+				centerBias = 0.0
+				flankerWeight = 35
+				flankChanceScale = 1.0
+				grenadeCooldownScale = 1.0
+				grenadePilotChance = BOT_ORDNANCE_PILOT_CHANCE
+				grenadeCoverChance = BOT_ORDNANCE_COVER_CHANCE
+				grenadeLead = 0.0
+				airControl = 1.0			// 0..1: how hard the move input steers a jump on the way (see GetAirSteerInput)
+				airSteerError = 5.0		// degrees off the landing that steering can be
+			}
+			// titans on high play exactly like normal
+			titan = {
+				reaction = 0.6, aimError = 5.0, turnSpeed = 40.0, burst = 0.6, pause = 0.4, leadMin = 0.0, triggerAngleMax = 14.0
+				dashCooldownScale = 1.0
+				dodgeOdds = 5
+				dodgeOddsHurt = 2
+				ordnancePilotChance = BOT_TITAN_ORDNANCE_PILOT_CHANCE
+				ordnanceDelayScale = 1.0
+				tacticalHealth = 0.75
+				vortexCooldownScale = 1.0
+				rodeoReactionScale = 1.0
+				rangeJitter = 0.0
+			}
+		},
+		{
+			level = 3
+			pilot = {
+				reaction = 0.2, aimError = 1.0, turnSpeed = 90.0, burst = 1.2, pause = 0.15, leadMin = 0.85, triggerAngleMax = 7.0
+				hopIntervalScale = 1.0
+				doubleJumpChance = BOT_COMBAT_DOUBLE_JUMP_CHANCE
+				wallrunScale = 1.0
+				allowHighRoute = true
+				roofLoveScale = 1.0
+				roofLoveAdd = 0.35			// lurk on rooftops
+				roofSpotChanceScale = 1.3
+				roofHoldChanceAdd = 30
+				roofHoldTimeScale = 1.6
+				centerBias = 0.0
+				flankerWeight = 35
+				flankChanceScale = 1.0
+				grenadeCooldownScale = 0.6
+				grenadePilotChance = 80
+				grenadeCoverChance = 90
+				grenadeLead = 0.5
+				airControl = 1.0			// 0..1: how hard the move input steers a jump on the way (see GetAirSteerInput)
+				airSteerError = 2.0		// degrees off the landing that steering can be
+			}
+			titan = {
+				reaction = 0.2, aimError = 1.0, turnSpeed = 90.0, burst = 1.2, pause = 0.15, leadMin = 0.9, triggerAngleMax = 6.0
+				dashCooldownScale = 0.6
+				dodgeOdds = 3
+				dodgeOddsHurt = 1
+				ordnancePilotChance = 75
+				ordnanceDelayScale = 0.5
+				tacticalHealth = 0.9
+				vortexCooldownScale = 0.7
+				rodeoReactionScale = 0.6
+				rangeJitter = 0.0
+			}
+		},
 	]
+	// A missing key would throw inside a think stage and silently switch that feature off: catch it here.
+	foreach ( part in [ "pilot", "titan" ] )
+	{
+		foreach ( key, val in file.skill[ 1 ][ part ] )
+		{
+			foreach ( lvl in file.skill )
+			{
+				if ( !( key in lvl[ part ] ) )
+					printt( "BotAI: lethality level", lvl.level, part, "is missing", key )
+			}
+		}
+	}
 
 	file.brains <- {}			// bot -> brain, for team coordination
 	file.nav <- null			// node cache for tactical points, built on first use (see GetNavCache)
-	file.badClimbSpots <- []	// walls bots failed to climb this map
+	file.badClimbSpots <- []	// walls bots failed to climb this map: { pos, until }
+	file.badHopSpots <- []		// roof edges a hop from failed: { pos, until }
 	file.cpInside <- {}			// capture point -> positions bots stood on while touching it (see UpdateCapturePoint)
 	file.wrGroundLogged <- false	// BOT_DEBUG_WALLRUN: IsOnGround on a wall reported once
 	file.hasPilotNav <- "NavFindPathPilot" in getroottable()
@@ -693,6 +1055,11 @@ function main()
 	file.titanHullTries <- 0
 	file.titanHullHits <- 0
 	file.evacBadLaunches <- []	// evac launch points that didn't work out (team-wide), see UpdateEvacLaunch
+	file.pilotBadNodes <- []	// nodes pilots got trapped going for: { pos, until }, see MarkPilotBadNode
+	file.roofSpots <- []		// { pos, base, dir, height, badUntil }, see RoofSpotScanStep
+	file.roofSpotCells <- {}	// grid cell -> roof spot indices
+	file.roofScanIndex <- 0
+	file.roofScanNext <- 0.0
 	// Pilot ordnance, per class: throw range, how much the arc is lifted per unit of distance (and at
 	// most), and whether it's worth dropping behind us while running away. Satchels and mines are
 	// tossed slowly, so they only reach short distances and need a much higher arc.
@@ -778,6 +1145,9 @@ function BotAI_OnPlayerDamaged( player, damageInfo )
 	local brain = file.brains[ player ]
 	brain.alertPos = attacker.GetOrigin()
 	brain.alertUntil = Time() + BOT_ALERT_TIME
+	// Whoever is shooting us is the one to shoot back at (see UpdateTarget).
+	brain.lastAttacker = attacker
+	brain.lastAttackerTime = Time()
 }
 
 function BotAI_OnPlayerRespawned( player )
@@ -914,8 +1284,10 @@ function BotThink( bot )
 	)
 
 	local angles = bot.EyeAngles()
+	local lethality = GetBotSkill()
 	local brain = {
-		skill = GetBotSkill()
+		skill = lethality.pilot		// switched to lethality.titan while in a titan (see BotThinkTick)
+		lethality = lethality
 		pitch = 0.0
 		yaw = angles.y
 		path = []
@@ -957,7 +1329,7 @@ function BotThink( bot )
 		// Personality, rolled every life so bots don't all behave (or path) the same.
 		flankChance = RandomInt( 30, 81 )
 		flankSide = 0.0	// -1 / 1 = which side of the straight line this bot is taking to its prey
-		temperament = ChooseTemperament( bot )
+		temperament = ChooseTemperament( bot, lethality )
 		routeStyle = "direct"		// set from the temperament by ApplyTemperament
 		fleeMargin = 0.25			// ...as are these: retreat rules, memory, how often to reposition
 		outnumberMargin = 2
@@ -1003,6 +1375,17 @@ function BotThink( bot )
 		climbJumpTime = 0.0		// first jump of the climb (0 = still running up to the wall)
 		climbAltAlong = null	// wallrun climb: the other side to run along, if the first one fails...
 		climbTries = 0			// ...and how many times we switched
+		climbAirTarget = null	// in the air on a climb: steer for this point past the edge (see GetClimbMoveInput)...
+		climbLookAt = null		// ...and look at the edge, so the automantle catches it
+		climbChainLeft = 0		// alley climb: kicks over to the facing wall still allowed (see UpdateClimb)
+		climbToFacing = false	// ...kicked off towards the facing wall (no double jump on the way over)
+		climbKickTime = 0.0		// last kick off a wall on a climb
+		climbLastJump = -999.0	// last jump pressed from the floor on a climb (no repeat press while it lifts off)
+		climbRecatch = false	// kicked off our wall short of the edge: double jump back onto it (see UpdateClimb)...
+		climbRecatchLeft = 0	// ...this many more times on this climb
+		climbForceWallrun = false	// next climb found: run up the wall even if a jump would do (retry at a roof spot)
+		roofClimbRetried = false	// the climb at this roof spot's foot already failed once
+		wallKickUpUntil = 0.0	// kicked up off a wall we didn't plan towards a way on above: double jump at the top until then
 		nextLedgeCheck = 0.0
 		nextWallLedgeCheck = 0.0
 		nextClimbCheck = 0.0
@@ -1130,6 +1513,11 @@ function BotThink( bot )
 		nextEvacLaunchSearch = 0.0
 		evacRunupUntil = 0.0	// backing off for a run-up until then...
 		evacRunupDir = null		// ...this way
+		evacOnWall = false		// boarding: wallrunning last tick (a new wallrun gives the double jump back)...
+		evacWallSince = 0.0		// ...since then...
+		evacWallKicked = false	// ...and already jumped off it
+		evacJumpPressed = false	// evac: a boarding jump (or wall kick) pressed this airtime
+		evacForceApproachUntil = 0.0	// evac: boarding only from an approach node until then (see BotEvacBoardTick)
 		roofLove = 0.3			// 0..1, how much this bot likes rooftops (set by ApplyTemperament)
 		patrolElevation = 0.0	// height above the local ground of the current roaming goal
 		holdRoam = false		// holding a high spot reached while roaming (no lead needed)
@@ -1159,6 +1547,9 @@ function BotThink( bot )
 		atAimingTime = -999.0	// last time the anti-titan weapon was locking / charging on a target
 		chargeStart = 0.0		// charge rifle: when the current charge started...
 		chargeClip = -1			// ...and the clip then (a drop = the shot went off)
+		smartLocksWanted = -1	// smart pistol: locks to wait for before the next press (-1 = roll again)
+		smartLockedTime = -1.0	// smart pistol: when that many locks were first there
+		smartNoLockSince = -1.0	// smart pistol: on target with no lock building since then
 		threatIsTitan = false	// the threat being run from is a titan (see FindThreatPosition)
 		titanEnemies = []		// enemy titans around a titan fight (see ScanTitanFight)
 		targetAimOffset = null	// the part of the target in sight, relative to its origin (riders: head or body over the titan)
@@ -1178,14 +1569,64 @@ function BotThink( bot )
 		cpSpotUntil = 0.0
 		cpWatch = null			// where to look while holding
 		cpNextInsideLog = 0.0
+		pathRetryAt = 0.0		// no new path search before this once the path ran out (or none was found)...
+		pathFailCount = 0		// ...searches in a row that found nothing
+		evacApproach = null		// evac: outdoor node to board from, { anchor, pos }, see GetEvacApproach...
+		evacApproachRetry = 0.0
+		evacApproachFailed = []	// ...nodes we couldn't find a path to a moment ago: { pos, until }
+		evacRampVisible = false	// ramp in sight from out in the open (see UpdateEvacApproach)...
+		nextEvacLosCheck = 0.0
+		evacBoardSince = 0.0	// ...boarding run going since (0 = not boarding)...
+		evacBoardBlockedUntil = 0.0	// ...and none until then (one didn't work out)
+		navDetour = null		// trapped: through this reachable node first (see StartNavDetour)...
+		navDetourUntil = 0.0	// ...until then
+		oscSamples = []			// no-progress watch: { pos, goalDist } once a second (see UpdateProgressWatch)...
+		oscGoal = null			// ...towards this goal
+		nextOscSample = 0.0
+		oscLevel = 0			// escalations so far (see BotEscalateTrap)...
+		oscLevelTime = -999.0	// ...the last one then
+		fightStuckCount = 0		// pinned mid-fight this many times in a row (see UpdateStuck)...
+		fightStuckTime = -999.0
+		escapeDir = null		// open-space escape: the way we last ran out (see StartOpenEscape)...
+		escapeUntil = 0.0		// ...until then (hopping obstacles on the way)
+		roofHop = null			// roof-to-roof jump under way: { dir, land, until, startTime, jumped, jumpTime, takeoff, wallSince, kicks, airInput, airInputAt } (see GetRoofRunDir)
+		roofRunUntil = 0.0		// just climbed up: stay on the roofs until then (see GetRoofRunDir)
+		roofGoal = null			// the roof spot the roaming goal is on (see ChooseRoofSpotGoal)
+		flankRoof = null		// the roof spot the flank point is on
+		airSteerErr = 0.0		// air control: this jump's steering error (degrees), rolled again now and then...
+		nextAirSteerRoll = 0.0	// ...at this time (see GetAirSteerInput)
+		roofStageSpot = null	// made it to this roof spot's foot: climbing it now...
+		roofStageUntil = 0.0	// ...until then
+		nextRoofCheck = 0.0
+		roofRunDir = null
+		routeKind = null		// utility route to the current destination: "ground" / "high" / null (none planned, see GetRouteGoal)...
+		routeStage = "none"		// ...high route stage: "foot" / "climb" / "roofs" / "done"...
+		routePurpose = null		// ..."roam" / "hunt" / "objective" it was planned for...
+		routeDest = null		// ...the destination it leads to (last tick's)...
+		routeEntry = null		// ...and the roof spot climbed to get up (null: we were up already)
+		routeStageUntil = 0.0	// this stage gives up then (back to the ground route)
+		routeClimbSince = 0.0	// at the foot of the climb since (consecutive ticks only)
+		routeRoofsSince = 0.0	// up on the roofs since
+		routeLastUsed = -999.0	// last tick GetRouteGoal ran (a gap = the route is stale)
+		routeNoHopSince = 0.0	// on the roof run: at an edge with no landing since (0 = not)
+		routeFallbackUntil = 0.0	// a high route just failed: no new one (nor casual climbs) until then
+		routeHighFails = 0		// high routes this life that failed at the climb
+		lastAttacker = null		// who last hit us, and when (see BotAI_OnPlayerDamaged)
+		lastAttackerTime = -999.0
+		droppedTarget = null	// target we last switched away from, and when (quick reaction going back to it)
+		droppedTargetTime = -999.0
+		engaged = false			// fighting last tick (see the engage hysteresis in BotThinkTick)
+		sidearmSwapTime = -999.0	// last time the dry primary was swapped for the sidearm
 		dbgInput = null			// last input sent by BotThinkTick (spawn-death diagnostic)
 	}
 
 	// Shared so teammates can see who's hunting whom and which way they're going.
 	file.brains[ bot ] <- brain
 	ApplyTemperament( brain )
+	if ( lethality.pilot.flankChanceScale != 1.0 )
+		brain.flankChance = ( brain.flankChance * lethality.pilot.flankChanceScale ).tointeger()
 
-	printt( "BotAI:", bot.GetPlayerName(), "spawned, nav nodes =", NavGetNodeCount() )
+	printt( "BotAI:", bot.GetPlayerName(), "spawned, nav nodes =", NavGetNodeCount(), "lethality =", lethality.level )
 
 	local nextDebugTime = 0.0
 	while ( true )
@@ -1202,7 +1643,7 @@ function BotThink( bot )
 
 		if ( BOT_DEBUG_HUD && Time() > nextDebugTime )
 		{
-			nextDebugTime = Time() + 2.0
+			nextDebugTime = Time() + 0.5
 			try { BotShowDebugHud( bot, brain ) }
 			catch ( e ) { BotReportError( bot, "BotShowDebugHud", e ) }
 		}
@@ -1217,6 +1658,8 @@ function BotThinkTick( bot, brain )
 
 	local origin = bot.GetOrigin()
 	local isTitan = bot.IsTitan()
+	// The brain outlives embarking / disembarking: aim numbers follow what we're in right now.
+	brain.skill = isTitan ? brain.lethality.titan : brain.lethality.pilot
 
 	// Epilogue: aboard the evac dropship there's nothing left to do.
 	if ( IsBotOnEvacDropship( bot ) )
@@ -1224,9 +1667,6 @@ function BotThinkTick( bot, brain )
 	brain.evac = null
 	try { brain.evac = GetEvacGoal( bot ) }
 	catch ( e ) { BotReportError( bot, "GetEvacGoal", e ) }
-	// A ramp too high to reach from the ground: go up somewhere next to it first.
-	try { UpdateEvacLaunch( bot, brain, isTitan ) }
-	catch ( e ) { BotReportError( bot, "UpdateEvacLaunch", e ); brain.evacLaunch = null }
 	// The moment the evac starts for us, drop everything else (see BotStartEvac).
 	local evacNow = brain.evac != null
 	if ( evacNow && !brain.evacStarted )
@@ -1235,6 +1675,28 @@ function BotThinkTick( bot, brain )
 		catch ( e ) { BotReportError( bot, "BotStartEvac", e ) }
 	}
 	brain.evacStarted = evacNow
+	// A ramp too high to reach from the ground: go up somewhere next to it first.
+	try { UpdateEvacLaunch( bot, brain, isTitan ) }
+	catch ( e ) { BotReportError( bot, "UpdateEvacLaunch", e ); brain.evacLaunch = null }
+	// Ramp not in sight from out in the open (inside a building next to it): an outdoor spot first.
+	// (After BotStartEvac, which starts the approach search over.)
+	try { UpdateEvacApproach( bot, brain, isTitan ) }
+	catch ( e ) { BotReportError( bot, "UpdateEvacApproach", e ); brain.evacApproach = null }
+
+	// The roofs next to the graph are mapped a few nodes at a time (whichever bot thinks first).
+	try { RoofSpotScanStep() }
+	catch ( e ) { BotReportError( bot, "RoofSpotScanStep", e ); file.roofScanIndex = 1000000 }
+
+	// A roof hop is only run while travelling (GetRoofRunDir / UpdateParkour): one left over from
+	// before a fight or a flee would keep wallruns and gap leaps off.
+	// Run out of time: it never got to the jump (the edge out of reach), or it's still not down long
+	// after it. Either way not this edge again for a while.
+	if ( brain.roofHop != null && Time() > brain.roofHop.until )
+	{
+		local hop = brain.roofHop
+		MarkBadHopSpot( ( hop.jumped && hop.takeoff != null ) ? hop.takeoff : bot.GetOrigin() )
+		brain.roofHop = null
+	}
 
 	// Friendly titans only by choice (see BOT_HOLD_RODEO_FRIENDLY).
 	local holdToRodeo = ( brain.rodeoFriendly && brain.rodeoTarget != null ) ? BOT_HOLD_RODEO_AUTO : BOT_HOLD_RODEO_FRIENDLY
@@ -1300,13 +1762,17 @@ function BotThinkTick( bot, brain )
 		}
 		// With a launch point, evac.board only stays set once we're standing on it (UpdateEvacLaunch
 		// points evac at the launch point, board = false, while we're still on the way there).
-		else if ( brain.evac.board && ( brain.evacLaunch != null || Length2D( brain.evac.pos - origin ) < BOT_EVAC_BOARD_DIST ) )
+		// From the ground only with the ramp in sight from out in the open (see UpdateEvacApproach),
+		// and not while a boarding run that didn't work out is blocked.
+		else if ( brain.evac.board && Time() >= brain.evacBoardBlockedUntil
+			&& ( brain.evacLaunch != null || ( brain.evacRampVisible && Length2D( brain.evac.pos - origin ) < BOT_EVAC_BOARD_DIST ) ) )
 		{
 			try { BotEvacBoardTick( bot, brain, brain.evac.pos ) }
 			catch ( e ) { BotReportError( bot, "EvacBoard", e ) }
 			return
 		}
 	}
+	brain.evacBoardSince = 0.0
 
 	// Every now and then, go for a rodeo on a nearby enemy titan instead of shooting it.
 	local rodeoTitan = null
@@ -1353,6 +1819,8 @@ function BotThinkTick( bot, brain )
 	local canShoot = hasVisibleTarget && !holdFire
 
 	local moveDir = null
+	local navGoal = null	// where we're going this tick...
+	local routeGoal = null	// ...and where the route goes for that (a detour point first), for the no-progress watch below
 	try
 	{
 		if ( brain.fleeing && ( brain.fleeDirect || brain.fleeGoal == null ) )
@@ -1360,7 +1828,14 @@ function BotThinkTick( bot, brain )
 		else if ( plan != null && plan.holdStill && !brain.fleeing )
 			moveDir = null
 		else
-			moveDir = GetPathDirection( bot, brain, ( plan != null && plan.goal != null && !brain.fleeing ) ? plan.goal : ChooseGoal( bot, brain, isTitan ), isTitan )
+		{
+			navGoal = ( plan != null && plan.goal != null && !brain.fleeing ) ? plan.goal : ChooseGoal( bot, brain, isTitan )
+			routeGoal = navGoal
+			// Trapped earlier (see BotEscalateTrap): through the detour point first.
+			if ( !isTitan )
+				routeGoal = ApplyNavDetour( bot, brain, navGoal )
+			moveDir = GetPathDirection( bot, brain, routeGoal, isTitan )
+		}
 	}
 	catch ( e )
 	{
@@ -1405,7 +1880,10 @@ function BotThinkTick( bot, brain )
 
 	// Combat: hold position and strafe inside engage range, otherwise keep moving along the path.
 	// While fleeing the bot keeps running and only shoots at what ends up in front of it.
-	local targetIsTitan = hasVisibleTarget && IsTitanEntity( brain.target )
+	// (A target that went out of sight a moment ago is still fought, see the engage hysteresis below.)
+	local recentlySeen = brain.target != null && IsValid( brain.target ) && IsAlive( brain.target )
+		&& Time() - brain.targetLastSeenTime < BOT_ENGAGE_LOS_GRACE
+	local targetIsTitan = ( hasVisibleTarget || recentlySeen ) && IsTitanEntity( brain.target )
 
 	// On foot: anti-titan weapon out against titans, primary against everything else.
 	try { UpdateWeaponChoice( bot, brain, isTitan ) }
@@ -1425,7 +1903,12 @@ function BotThinkTick( bot, brain )
 	else
 		engageDist = targetIsTitan ? BOT_PILOT_AT_ENGAGE_DIST : GetPilotEngageDist( bot )
 	// While repositioning the bot keeps moving along its route, shooting on the way.
-	local inEngageRange = hasVisibleTarget && !brain.fleeing && !disengaged && Distance( origin, brain.target.GetOrigin() ) < engageDist
+	// Already fighting: the fight goes on a bit farther out, and through a short loss of sight
+	// (shooting still needs the target in sight, see canShoot).
+	local engageLimit = brain.engaged ? engageDist * BOT_ENGAGE_EXIT_SCALE : engageDist
+	local inEngageRange = ( hasVisibleTarget || ( brain.engaged && recentlySeen ) ) && !brain.fleeing && !disengaged
+		&& Distance( origin, brain.target.GetOrigin() ) < engageLimit
+	brain.engaged = inEngageRange
 	brain.combatHold = false
 
 	if ( inEngageRange )
@@ -1463,10 +1946,28 @@ function BotThinkTick( bot, brain )
 			local pull = GetCapturePointPull( bot, brain )
 			if ( pull != null )
 				combatMove = Normalize2D( combatMove ) + pull * BOT_CP_LEASH_PULL
-			local relative = MoveDirRelativeToView( combatMove, brain.yaw )
-			local scale = brain.combatHold ? BOT_HOLD_MOVE_SCALE : 1.0
-			forward = relative.forward * scale
-			side = relative.side * scale
+			// Up on a roof: never a step off its edge mid-fight. The other way instead (and the
+			// strafe turned round), or stand if that's an edge too.
+			local edgeStop = false
+			if ( Length2D( combatMove ) > 0.1 && IsBotUpHigh( bot, brain ) && IsGapAhead( bot, combatMove, BOT_ROOF_EDGE_GUARD ) )
+			{
+				brain.strafeDir = -brain.strafeDir
+				brain.nextStrafeFlip = Time() + RandomFloat( BOT_COMBAT_STRAFE_MIN, BOT_COMBAT_STRAFE_MAX )
+				combatMove = combatMove * -1.0
+				edgeStop = IsGapAhead( bot, combatMove, BOT_ROOF_EDGE_GUARD )
+			}
+			if ( edgeStop )
+			{
+				forward = 0.0
+				side = 0.0
+			}
+			else
+			{
+				local relative = MoveDirRelativeToView( combatMove, brain.yaw )
+				local scale = brain.combatHold ? BOT_HOLD_MOVE_SCALE : 1.0
+				forward = relative.forward * scale
+				side = relative.side * scale
+			}
 		}
 		else
 		{
@@ -1514,6 +2015,14 @@ function BotThinkTick( bot, brain )
 				side = BotClamp( side + pushRelative.side * strength, -1.0, 1.0 )
 			}
 		}
+
+		// In the air on a roof hop: the air control steering from GetPathDirection as it is (its
+		// strength and its error), not a full push at the landing.
+		if ( !isTitan && brain.roofHop != null && brain.roofHop.airInputAt == Time() && brain.roofHop.airInput != null )
+		{
+			forward = brain.roofHop.airInput.forward
+			side = brain.roofHop.airInput.side
+		}
 	}
 
 	// Backing off after getting stuck twice in a row (see UpdateStuck): overrides the route.
@@ -1523,6 +2032,9 @@ function BotThinkTick( bot, brain )
 		local relative = MoveDirRelativeToView( brain.unstickDir, brain.yaw )
 		forward = relative.forward
 		side = relative.side
+		// Running out into the open (see StartOpenEscape): hop whatever is in the way.
+		if ( Time() < brain.escapeUntil && BotOnFoot( bot ) && IsObstacleAhead( bot, brain.unstickDir ) )
+			pressed = pressed | BOT_IN_JUMP
 	}
 
 	// Climbing a building on the way: overrides the route until up or given up.
@@ -1534,7 +2046,7 @@ function BotThinkTick( bot, brain )
 		climbing = brain.climbUntil > Time()
 		if ( climbing )
 		{
-			local relative = MoveDirRelativeToView( brain.climbMoveDir, brain.yaw )
+			local relative = GetClimbMoveInput( bot, brain )	// (air control towards the edge once in the air)
 			forward = relative.forward
 			side = relative.side
 		}
@@ -1544,7 +2056,12 @@ function BotThinkTick( bot, brain )
 	// ledge or across a gap. Overrides the route until we're off the wall and down again.
 	local wallrunning = false
 	local directFlee = brain.fleeing && ( brain.fleeDirect || brain.fleeGoal == null )
-	if ( !isTitan && !inEngageRange && !unsticking && !climbing && !embarking && !directFlee && moveDir != null )
+	// A roof hop is only started while travelling (RoofHopButtons doesn't run in a fight or a direct
+	// flee). One already in the air is left to finish: dropped there, the bot lost its double jump
+	// and fell short.
+	if ( brain.roofHop != null && !brain.roofHop.jumped && ( inEngageRange || directFlee ) )
+		brain.roofHop = null
+	if ( !isTitan && !inEngageRange && !unsticking && !climbing && !embarking && !directFlee && moveDir != null && brain.roofHop == null )
 	{
 		try { pressed = pressed | UpdateWallrun( bot, brain, moveDir ) }
 		catch ( e ) { BotReportError( bot, "UpdateWallrun", e ); ResetWallrunPlan( bot, brain, "error" ) }
@@ -1650,6 +2167,8 @@ function BotThinkTick( bot, brain )
 			AimAtTarget( bot, brain, brain.target )
 		else if ( suppressing )
 			AimAt( brain, bot.EyePosition(), brain.targetLastSeenPos + Vector( 0, 0, 40 ), false )
+		else if ( inEngageRange && brain.targetLastSeenPos != null )
+			AimAt( brain, bot.EyePosition(), brain.targetLastSeenPos + Vector( 0, 0, 40 ), false )	// still fighting it, out of sight for a moment
 		else if ( plan != null && plan.lookAt != null )
 			AimAt( brain, bot.EyePosition(), plan.lookAt, false )	// behind cover: keep facing the titan, ready to peek
 		else if ( !isTitan && !brain.fleeing && brain.evac == null && Time() < brain.alertUntil && brain.alertPos != null )	// (not on the evac run: a hit from a titan by the ship turned the run into a backpedal)
@@ -1658,10 +2177,14 @@ function BotThinkTick( bot, brain )
 			AimAt( brain, bot.EyePosition(), brain.holdWatch, false )
 		else if ( wallrunning && brain.wrLookDir != null )
 			AimAt( brain, origin, origin + brain.wrLookDir * 200.0, false )
+		else if ( climbing && brain.climbLookAt != null )
+			AimAt( brain, bot.EyePosition(), brain.climbLookAt, false )	// in the air: eyes on the roof edge, for the automantle
 		else if ( climbing )
 			AimAt( brain, origin, origin + brain.climbMoveDir * 200.0, false )
 		else if ( windowExit )
 			AimAt( brain, origin, origin + brain.windowExitDir * 200.0, false )
+		else if ( !isTitan && brain.roofHop != null )
+			AimAt( brain, origin, brain.roofHop.land, false )	// roof hop: facing the landing, run-up included (no turning round)
 		else if ( moveDir != null )
 			AimAt( brain, origin, origin + moveDir, false )
 	}
@@ -1777,6 +2300,8 @@ function BotThinkTick( bot, brain )
 
 	// Nobody walks, jumps or dashes off into the void (open map edges, pits with a kill trigger):
 	// pilots die there, and so do titans now (see mp_wargames.nut).
+	local preVoidForward = forward
+	local preVoidSide = side
 	{
 		try
 		{
@@ -1788,11 +2313,53 @@ function BotThinkTick( bot, brain )
 		catch ( e ) { BotReportError( bot, "AvoidVoid", e ) }
 	}
 
-	try { UpdateStuck( bot, brain, moveDir, forward, side, !inEngageRange && !unsticking && !climbing && !wallrunning && !brain.offGraph ) }
+	try { UpdateStuck( bot, brain, moveDir, forward, side, !inEngageRange && !unsticking && !climbing && !wallrunning && !brain.offGraph, inEngageRange ) }
 	catch ( e ) { BotReportError( bot, "UpdateStuck", e ) }
+
+	// Not getting any closer to where we're going over several seconds (hopping in a corner,
+	// running at the wall of a room the graph doesn't cover): detour or break out (see BotEscalateTrap).
+	if ( !isTitan )
+	{
+		try
+		{
+			if ( !inEngageRange && moveDir != null )
+				UpdateProgressWatch( bot, brain, routeGoal, navGoal )
+			else
+				brain.oscSamples = []
+		}
+		catch ( e ) { BotReportError( bot, "UpdateProgressWatch", e ); brain.oscSamples = [] }
+	}
 
 	if ( BOT_DEBUG_SPAWN_DEATHS )
 		brain.dbgInput = { forward = forward, side = side, pitch = brain.pitch, yaw = brain.yaw, buttons = buttons, pressed = pressed }
+
+	// Debug HUD: this tick's decision state, kept short (see BotShowDebugHud).
+	if ( BOT_DEBUG_HUD )
+	{
+		local flags = ""
+		if ( inEngageRange ) flags += " ENG"
+		if ( disengaged ) flags += " DIS"
+		if ( hasVisibleTarget ) flags += " SEEN"
+		if ( plan != null && plan.holdStill ) flags += " HOLD"
+		if ( brain.combatHold ) flags += " CHOLD"
+		if ( moveDir == null ) flags += " NOMOVE"
+		if ( ( preVoidForward != 0.0 || preVoidSide != 0.0 ) && forward == 0.0 && side == 0.0 ) flags += " VOID"
+		if ( brain.careful ) flags += " CAREF"
+		if ( brain.indoors ) flags += " INDR"
+		if ( brain.offGraph ) flags += " OFFG"
+		if ( climbing ) flags += " CLIMB"
+		if ( wallrunning ) flags += " WR"
+		if ( unsticking ) flags += " UNST"
+		if ( brain.holdRoam ) flags += " ROAMHOLD"
+		if ( brain.cover != null ) flags += " COVER"
+		if ( brain.routeKind != null ) flags += " R=" + brain.routeKind + "/" + brain.routeStage
+		local tdz = ( brain.target != null && IsValid( brain.target ) ) ? ( brain.target.GetOrigin().z - origin.z ).tointeger() : "-"
+		local gd = navGoal != null ? Length2D( navGoal - origin ).tointeger() + "/" + ( navGoal.z - origin.z ).tointeger() : "-"
+		local wp = brain.pathIndex < brain.path.len() ? ( brain.path[ brain.pathIndex ].z - origin.z ).tointeger() : "-"
+		brain.dbgLine <- "tdz=" + tdz + " plan=" + ( plan != null ? plan.action : "-" ) + " goal=" + gd
+			+ " p=" + brain.pathIndex + "/" + brain.path.len() + " wp=" + wp + " pf=" + brain.pathFailCount
+			+ " in=" + format( "%.1f,%.1f", preVoidForward.tofloat(), preVoidSide.tofloat() ) + "\n" + flags
+	}
 
 	try
 	{
@@ -1803,26 +2370,38 @@ function BotThinkTick( bot, brain )
 	catch ( e ) { BotReportError( bot, "BotSetInput", e ) }
 }
 
-// Debug: one bot at a time reports its native usercmd counters and real speed on the HUD.
+// Debug: the bot a human player is looking at (nearest the crosshair within 15 degrees) shows its
+// decision state on that player's HUD. Short on purpose: a HUD message much over ~200 characters is
+// dropped by the engine without a word (the first version of this showed nothing).
+// No bot in the crosshair: the nearest bot instead, so something always shows.
 function BotShowDebugHud( bot, brain )
 {
-	if ( !( "botDebugBot" in level ) || !IsValid( level.botDebugBot ) || !IsAlive( level.botDebugBot ) )
-		level.botDebugBot <- bot
-	if ( level.botDebugBot != bot )
-		return
-
 	local velocity = bot.GetVelocity()
 	local speed = sqrt( velocity.x * velocity.x + velocity.y * velocity.y )
-	local preyName = brain.prey == null ? "" : ( brain.prey.IsPlayer() ? brain.prey.GetPlayerName() : brain.prey.GetClassname() )
-	local goal = brain.fleeing ? "fleeing" : ( brain.target != null ? "target" : ( brain.prey != null ? "hunting " + preyName : ( brain.patrolGoal != null ? "exploring" : "no goal" ) ) )
-	local text = bot.GetPlayerName() + " [" + brain.temperament + " " + brain.mode + "." + brain.action + "] vel=" + speed.tointeger()
-		+ " path=" + brain.path.len() + " " + goal
-		+ "\n" + BotGetDebugInfo( bot )
-
 	foreach ( player in GetPlayerArray() )
 	{
-		if ( !player.IsBot() )
-			SendHudMessage( player, text, -1, 0.12, 255, 255, 120, 255, 0.0, 2.2, 0.0 )
+		if ( player.IsBot() )
+			continue
+		local eye = player.EyePosition()
+		local toBot = bot.GetWorldSpaceCenter() - eye
+		local dist = max( toBot.Length(), 1.0 )
+		local view = player.GetViewVector()
+		local cosAngle = ( toBot.x * view.x + toBot.y * view.y + toBot.z * view.z ) / dist
+		// Score: in the crosshair beats anything else; otherwise the nearest.
+		local score = cosAngle > 0.966 ? 10.0 + cosAngle : -dist / 100000.0
+		local key = "botDebugPick" + player.GetEntIndex()
+		if ( key in level && IsValid( level[ key ].bot ) && IsAlive( level[ key ].bot ) && level[ key ].bot != bot
+			&& Time() - level[ key ].time < 0.6 && level[ key ].score > score )
+			continue
+		level[ key ] <- { bot = bot, score = score, time = Time() }
+
+		local text = bot.GetPlayerName() + " vel=" + speed.tointeger() + " z=" + bot.GetOrigin().z.tointeger()
+			+ " " + brain.mode + "." + brain.action + ( cosAngle > 0.966 ? "" : " (nearest)" )
+		if ( "dbgLine" in brain )
+			text += "\n" + brain.dbgLine
+		if ( text.len() > 230 )
+			text = text.slice( 0, 230 )
+		SendHudMessage( player, text, -1, 0.12, 255, 255, 120, 255, 0.0, 0.7, 0.0 )
 	}
 }
 
@@ -1854,10 +2433,12 @@ function UpdateTarget( bot, brain )
 	local inTitan = bot.IsTitan()
 	local best = null
 	local bestScore = BOT_SIGHT_RANGE * 2.0	// above any biased score inside sight range
-	local bestPoint = null					// riders: the point of it that's in sight
+	local bestPoint = null					// riders, or only the head in sight: the point of it that's in sight
+	local headTraces = 0					// head checks used this think (see BOT_SIGHT_HEAD_TRACES)
 	local prevTarget = brain.target			// (see the rider override at the end)
 	local prevAcquiredTime = brain.targetAcquiredTime
 	local prevReactionTime = brain.reactionTime
+	local now = Time()
 	// On foot: whether titans are worth picking depends on having something that hurts them.
 	local atWeapon = inTitan ? null : GetBotUsableAntiTitanWeapon( bot )
 
@@ -1911,6 +2492,20 @@ function UpdateTarget( bot, brain )
 		local riding = IsRodeoing( enemy )
 		if ( riding )
 			score *= inTitan ? BOT_TITAN_RIDER_BIAS : BOT_RODEO_TARGET_BIAS
+		// Stay on the target we're on (two at about the same distance made the bot flip between
+		// them, restarting its reaction time each switch), and favor whoever is shooting at us,
+		// a pilot looking our way, or one that's nearly dead.
+		if ( enemy == brain.target && now - brain.targetLastSeenTime < BOT_TARGET_STICKY_TIME )
+			score *= BOT_TARGET_STICKY_BIAS
+		if ( enemy == brain.lastAttacker && now - brain.lastAttackerTime < BOT_TARGET_ATTACKER_TIME )
+			score *= BOT_TARGET_ATTACKER_BIAS
+		if ( enemy.IsPlayer() && !IsTitanEntity( enemy ) )
+		{
+			if ( IsLookingAt( enemy, bot ) )
+				score *= BOT_TARGET_LOOKING_BIAS
+			if ( enemy.GetHealth().tofloat() / max( enemy.GetMaxHealth(), 1 ) < BOT_TARGET_WEAK_FRAC )
+				score *= BOT_TARGET_WEAK_BIAS
+		}
 		if ( score >= bestScore )
 			continue
 		// A rider's body sits behind the titan's hull: the center trace hits the titan and the rider
@@ -1922,8 +2517,27 @@ function UpdateTarget( bot, brain )
 			if ( seenPoint == null )
 				continue
 		}
-		else if ( !CanSee( bot, eye, enemy ) )
-			continue
+		else
+		{
+			// Center hidden: the head may still show (up on a roof behind the parapet, over a low
+			// wall). Checked for the current target always, for the rest up to a few per think.
+			local tryHead = enemy == brain.target || headTraces < BOT_SIGHT_HEAD_TRACES
+			local point = GetVisibleTargetPoint( bot, eye, enemy, tryHead )
+			if ( point == null )
+			{
+				if ( tryHead && enemy != brain.target )
+					headTraces++
+				continue
+			}
+			// Only the head in sight: aim there (see AimAtTarget), the center would hit the wall.
+			local center = enemy.GetWorldSpaceCenter()
+			if ( fabs( point.z - center.z ) > 1.0 )
+			{
+				seenPoint = point
+				if ( enemy != brain.target )
+					headTraces++
+			}
+		}
 
 		best = enemy
 		bestScore = score
@@ -1934,8 +2548,15 @@ function UpdateTarget( bot, brain )
 	{
 		if ( best != brain.target )
 		{
-			brain.targetAcquiredTime = Time()
-			brain.reactionTime = RollReactionTime( bot, brain, best )
+			// Going back to a target we switched away from a moment ago: we know where it is.
+			local quick = best == brain.droppedTarget && now - brain.droppedTargetTime < BOT_TARGET_REACQUIRE_TIME
+			if ( brain.target != null )
+			{
+				brain.droppedTarget = brain.target
+				brain.droppedTargetTime = now
+			}
+			brain.targetAcquiredTime = now
+			brain.reactionTime = RollReactionTime( bot, brain, best ) * ( quick ? BOT_TARGET_REACQUIRE_SCALE : 1.0 )
 		}
 		brain.targetAimOffset = bestPoint != null ? bestPoint - best.GetOrigin() : null
 		brain.target = best
@@ -2015,7 +2636,7 @@ function GetRiderVisiblePoint( bot, eye, rider )
 	foreach ( point in [ rider.EyePosition(), rider.GetWorldSpaceCenter() ] )
 	{
 		local result = TraceLine( eye, point, bot, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
-		if ( result.hitEnt == rider || ( result.fraction >= 0.99 && ( !IsValid( titan ) || result.hitEnt != titan ) ) )
+		if ( result.hitEnt == rider || ( IsSightTraceClear( eye, point, result ) && ( !IsValid( titan ) || result.hitEnt != titan ) ) )
 			return point
 	}
 	return null
@@ -2156,8 +2777,37 @@ function GetEnemyNPCs( enemyTeam, origin, radius )
 
 function CanSee( bot, eye, enemy )
 {
-	local result = TraceLine( eye, enemy.GetWorldSpaceCenter(), bot, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
-	return result.hitEnt == enemy || result.fraction >= 0.99
+	local center = enemy.GetWorldSpaceCenter()
+	local result = TraceLine( eye, center, bot, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+	return result.hitEnt == enemy || IsSightTraceClear( eye, center, result )
+}
+
+// A sight trace that didn't hit the enemy still counts when it stopped (almost) at the point.
+// Not by fraction: "99% of the way" was 40 units short at sight range, so an enemy standing just
+// behind a wall or a rim (the Runoff canal) counted as in sight, and bots below stood shooting
+// at the wall, held in the fight, instead of moving on.
+function IsSightTraceClear( from, to, result )
+{
+	return result.fraction >= 1.0 || ( 1.0 - result.fraction ) * Distance( from, to ) <= BOT_SIGHT_TRACE_SLACK
+}
+
+// The point of enemy in sight from eye, or null: its center, else (with tryHead) its head. A pilot
+// up on a roof behind the parapet, or ducked behind a low wall, only shows its head: the center
+// trace alone called it hidden, so bots below never shot back at it.
+function GetVisibleTargetPoint( bot, eye, enemy, tryHead )
+{
+	local center = enemy.GetWorldSpaceCenter()
+	local result = TraceLine( eye, center, bot, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+	if ( result.hitEnt == enemy || IsSightTraceClear( eye, center, result ) )
+		return center
+	if ( !tryHead )
+		return null
+	local origin = enemy.GetOrigin()
+	local head = enemy.IsPlayer() ? enemy.EyePosition() : origin + ( center - origin ) * BOT_SIGHT_HEAD_SCALE
+	result = TraceLine( eye, head, bot, TRACE_MASK_SHOT, TRACE_COLLISION_GROUP_NONE )
+	if ( result.hitEnt == enemy || IsSightTraceClear( eye, head, result ) )
+		return head
+	return null
 }
 
 //---------------------------------------------------------
@@ -2371,7 +3021,8 @@ function UpdateRodeoDefense( bot, brain )
 	if ( brain.rodeoStartTime == null )
 	{
 		brain.rodeoStartTime = now
-		brain.rodeoReaction = RandomFloat( BOT_RODEO_REACTION_MIN, BOT_RODEO_REACTION_MAX ) + ( hasSmoke ? BOT_RODEO_SMOKE_GRACE : 0.0 )
+		brain.rodeoReaction = RandomFloat( BOT_RODEO_REACTION_MIN, BOT_RODEO_REACTION_MAX ) * brain.lethality.titan.rodeoReactionScale
+			+ ( hasSmoke ? BOT_RODEO_SMOKE_GRACE : 0.0 )
 		brain.nextRodeoSmokeTime = now + RandomFloat( 0.2, 0.5 )
 		printt( "BotAI:", bot.GetPlayerName(), "is being rodeoed by", rider.GetPlayerName() )
 	}
@@ -2400,7 +3051,7 @@ function UpdateRodeoDefense( bot, brain )
 	else if ( now > brain.nextDashTime )
 	{
 		BotPressButtons( bot, BOT_IN_DODGE )
-		brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX )
+		brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX ) * brain.lethality.titan.dashCooldownScale
 	}
 }
 
@@ -2786,7 +3437,22 @@ function BotStartEvac( bot, brain )
 	brain.path = []
 	brain.pathIndex = 0
 	brain.nextRepathTime = 0.0
+	brain.pathRetryAt = 0.0
 	brain.nextTacticalTime = min( brain.nextTacticalTime, Time() )
+	// Trap handling from before the evac starts over (see BotEscalateTrap), and so does boarding.
+	brain.navDetour = null
+	brain.oscSamples = []
+	brain.oscLevel = 0
+	brain.roofHop = null
+	brain.roofRunUntil = 0.0
+	if ( BOT_UTILITY_ROUTES )
+		ClearRoute( brain )		// (a high route's climb shouldn't hold the roof spot through the evac)
+	brain.evacApproach = null
+	brain.evacApproachRetry = 0.0
+	brain.evacApproachFailed = []
+	brain.evacRampVisible = false
+	brain.evacBoardSince = 0.0
+	brain.evacBoardBlockedUntil = 0.0
 }
 
 // In a titan near the evac point: get out and go the rest of the way on foot.
@@ -2841,9 +3507,7 @@ function UpdateEvacLaunch( bot, brain, isTitan )
 	if ( launch != null && ( launch.fails >= BOT_EVAC_LAUNCH_TRIES || ( !launch.reached && now > launch.until ) ) )
 	{
 		printt( "BotAI:", bot.GetPlayerName(), "dropping an evac launch point", launch.fails >= BOT_EVAC_LAUNCH_TRIES ? "(missed the ramp from it)" : "(couldn't get up there)" )
-		file.evacBadLaunches.append( launch.pos )
-		if ( file.evacBadLaunches.len() > 64 )
-			file.evacBadLaunches.remove( 0 )
+		AddBadEvacLaunch( launch.pos )
 		brain.evacLaunch = null
 		launch = null
 	}
@@ -2867,7 +3531,9 @@ function UpdateEvacLaunch( bot, brain, isTitan )
 	// up there only starts counting close by, or a far bot would drop a good spot for the whole team.
 	if ( !launch.reached && launchFlat > BOT_EVAC_LAUNCH_TIMER_DIST )
 		launch.until = now + BOT_EVAC_LAUNCH_REACH_TIME
-	if ( bot.IsOnGround() )
+	// (A real floor: IsOnGround is true on a wallrun too, and a wallrun below the launch point on the
+	// way to the ramp isn't a landing.)
+	if ( IsBotOnFloor( bot ) )
 	{
 		if ( !launch.reached && launchFlat < BOT_EVAC_LAUNCH_REACHED && fabs( launch.pos.z - origin.z ) < 48.0 )
 		{
@@ -2896,13 +3562,177 @@ function UpdateEvacLaunch( bot, brain, isTitan )
 	}
 }
 
+// Boarding from the ground only starts with the ramp in sight from out in the open: a bot inside a
+// building next to the ship used to "board" by running and jumping at the wall between. Until it's
+// in sight, brain.evac (recomputed every tick by GetEvacGoal / UpdateEvacLaunch) is pointed at an
+// outdoor node next to the ship with a clear line to the ramp (see GetEvacApproach); standing on
+// that node counts as in sight. A launch point (UpdateEvacLaunch) has its own way up.
+function UpdateEvacApproach( bot, brain, isTitan )
+{
+	if ( brain.evac == null || isTitan )
+	{
+		brain.evacApproach = null
+		brain.evacRampVisible = false
+		return
+	}
+	// On the way to a launch point, or standing on one (BotEvacBoardTick jumps from there).
+	if ( "climb" in brain.evac && brain.evac.climb )
+		return
+	if ( brain.evacLaunch != null )
+		return
+	// Ship not down yet: the evac point itself is where to wait.
+	if ( !brain.evac.board )
+	{
+		brain.evacRampVisible = false
+		return
+	}
+
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local anchor = brain.evac.pos
+	// (Not judged again during a boarding run: a few steps off the approach node the line can be
+	// cut, and that sent the bot back to the node and on again, forever. A run that doesn't get
+	// on is ended by the watchdog in BotEvacBoardTick.)
+	if ( now >= brain.nextEvacLosCheck && brain.evacBoardSince == 0.0 )
+	{
+		brain.nextEvacLosCheck = now + BOT_EVAC_LOS_INTERVAL
+		local eye = bot.EyePosition()
+		local approach = brain.evacApproach
+		local onApproach = approach != null && approach.pos != null && Distance( approach.anchor, anchor ) < BOT_EVAC_RAMP_MOVED
+			&& Length2D( approach.pos - origin ) < BOT_EVAC_APPROACH_REACHED && fabs( approach.pos.z - origin.z ) < 64.0
+		// (After a boarding run from out here went nowhere, only from an approach node for a while:
+		// the brush-only line check can't see the hull, rails or props that blocked it.)
+		brain.evacRampVisible = Length2D( anchor - origin ) < BOT_EVAC_BOARD_DIST
+			&& ( onApproach || ( now >= brain.evacForceApproachUntil && HasClearLine( bot, eye, anchor ) && HasClearLine( bot, eye, eye + Vector( 0, 0, 120 ) ) ) )
+	}
+	if ( brain.evacRampVisible && now >= brain.evacBoardBlockedUntil )
+		return
+
+	local approachPos = GetEvacApproach( bot, brain, anchor )
+	if ( approachPos == null )
+		return		// none: on to the ramp the usual way (boarding still waits for it to be in sight)
+	brain.evac = { pos = approachPos, board = false, approach = true }
+}
+
+// Outdoor node next to the ramp to board from: within BOT_EVAC_APPROACH_MAX_FLAT of it, low enough
+// under it to board from the ground, not under a roof, with a clear line from head height to the
+// ramp, and one we can find a path to. Nearest to the ramp, on its open side, first. The one found is kept for this
+// ramp (until it's marked bad, see BotEscalateTrap); the search is throttled. Position or null.
+function GetEvacApproach( bot, brain, anchor )
+{
+	local cached = brain.evacApproach
+	if ( cached != null && cached.pos != null && Distance( cached.anchor, anchor ) < BOT_EVAC_RAMP_MOVED && !IsPilotBadNode( cached.pos ) )
+		return cached.pos
+	local now = Time()
+	if ( now < brain.evacApproachRetry )
+		return null
+	brain.evacApproachRetry = now + BOT_EVAC_APPROACH_RETRY
+	brain.evacApproach = null
+
+	// Nodes we found no path to a moment ago are skipped for a while.
+	for ( local i = brain.evacApproachFailed.len() - 1; i >= 0; i-- )
+	{
+		if ( now > brain.evacApproachFailed[ i ].until )
+			brain.evacApproachFailed.remove( i )
+	}
+
+	local nav = GetNavCache()
+	local candidates = []	// { index, pos, score }
+	// Nodes on the ship's open (ramp) side score higher: a run-up from behind ends against the hull.
+	// (A bonus, not a filter: the open side can be a wall or a drop on some maps.)
+	local out = GetEvacRampOut( anchor )
+	for ( local dx = -1; dx <= 1; dx++ )
+	{
+		for ( local dy = -1; dy <= 1; dy++ )
+		{
+			local key = NavCellKey( anchor.x + dx * BOT_NAV_CELL, anchor.y + dy * BOT_NAV_CELL )
+			if ( !( key in nav.cells ) )
+				continue
+			foreach ( index in nav.cells[ key ] )
+			{
+				local pos = nav.positions[ index ]
+				local flat = Length2D( anchor - pos )
+				if ( flat < BOT_EVAC_APPROACH_MIN_FLAT || flat > BOT_EVAC_APPROACH_MAX_FLAT )
+					continue
+				// (Head-relative: what a jump + double jump from standing there can reach.)
+				local rise = anchor.z - ( pos.z + BOT_EVAC_HEAD_HEIGHT )
+				if ( rise > BOT_EVAC_HEAD_REACH )
+					continue
+				if ( IsPilotBadNode( pos ) || IsBadEvacLaunch( pos ) )
+					continue
+				local failed = false
+				foreach ( spot in brain.evacApproachFailed )
+				{
+					if ( Distance( spot.pos, pos ) < 1.0 )
+					{
+						failed = true
+						break
+					}
+				}
+				if ( failed )
+					continue
+				local score = -flat - fabs( rise ) * 0.5
+				if ( out != null )
+					score += Normalize2D( pos - anchor ).Dot( out ) * BOT_EVAC_APPROACH_SIDE_BONUS
+				candidates.append( { index = index, pos = pos, score = score } )
+			}
+		}
+	}
+
+	// Best first, only a few traced, and fewer still path-checked.
+	local start = null
+	local pathChecks = 0
+	for ( local check = 0; check < BOT_EVAC_APPROACH_CHECKS && candidates.len() > 0; check++ )
+	{
+		local bestIndex = 0
+		for ( local i = 1; i < candidates.len(); i++ )
+		{
+			if ( candidates[ i ].score > candidates[ bestIndex ].score )
+				bestIndex = i
+		}
+		local spot = candidates[ bestIndex ]
+		candidates.remove( bestIndex )
+		if ( IsNodeIndoor( nav, spot.index ) )
+			continue
+		if ( !HasClearLine( bot, spot.pos + Vector( 0, 0, BOT_EVAC_HEAD_HEIGHT ), anchor ) )
+			continue
+		if ( pathChecks >= BOT_EVAC_APPROACH_PATHS )
+			break
+		pathChecks++
+		if ( start == null )
+		{
+			start = FindVisibleStartNode( bot, bot.GetOrigin() )
+			if ( start == null )
+				start = bot.GetOrigin()
+		}
+		if ( PilotFindPath( start, spot.pos ).len() < 3 )
+		{
+			brain.evacApproachFailed.append( { pos = spot.pos, until = now + 10.0 } )
+			continue
+		}
+		brain.evacApproach = { anchor = anchor, pos = spot.pos }
+		printt( "BotAI:", bot.GetPlayerName(), "evac ramp not in sight, heading for an approach node", Distance( anchor, spot.pos ).tointeger(), "from it" )
+		return spot.pos
+	}
+	return null
+}
+
 // Is the ground under the ramp close enough below it to board from there with a jump + double jump?
+// Measured from the lower of that ground and our own feet: with the ship over a roof, the roof under
+// the ramp is close but the street we're on isn't (that read as reachable and nothing climbed).
 function IsEvacRampReachableFromGround( bot, ramp )
 {
 	local down = TraceLine( ramp, ramp - Vector( 0, 0, BOT_EVAC_GROUND_PROBE ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
 	if ( down.startSolid || down.fraction >= 1.0 )
 		return false
-	return ramp.z - down.endPos.z <= BOT_EVAC_GROUND_REACH
+	return ramp.z - min( down.endPos.z, bot.GetOrigin().z ) <= BOT_EVAC_GROUND_REACH
+}
+
+function AddBadEvacLaunch( pos )
+{
+	file.evacBadLaunches.append( pos )
+	if ( file.evacBadLaunches.len() > 64 )
+		file.evacBadLaunches.remove( 0 )
 }
 
 function IsBadEvacLaunch( pos )
@@ -2936,8 +3766,10 @@ function ScoreEvacLaunchSpot( ramp, out, pos )
 // ramp. Returns { pos, roof, fails, reached, until } or null.
 function FindEvacLaunchPoint( bot, ramp )
 {
-	local ship = "dropship" in level ? level.dropship : null
-	local out = IsValid( ship ) ? Normalize2D( ramp - ship.GetOrigin() ) : Vector( 0, 0, 0 )
+	// Spots on the ramp's open side score higher (see ScoreEvacLaunchSpot); unknown: no preference.
+	local out = GetEvacRampOut( ramp )
+	if ( out == null )
+		out = Vector( 0, 0, 0 )
 
 	local candidates = []
 	local nav = GetNavCache()
@@ -2990,10 +3822,68 @@ function FindEvacLaunchPoint( bot, ramp )
 		}
 		local spot = candidates[ bestIndex ]
 		candidates.remove( bestIndex )
+		// (Not a spot pilots got trapped going for, nor a node under a roof: the jump needs the open air.)
+		if ( IsPilotBadNode( spot.pos ) || ( !spot.roof && IsUnderRoof( spot.pos ) ) )
+			continue
 		if ( HasClearLine( bot, spot.pos + Vector( 0, 0, BOT_EVAC_HEAD_HEIGHT ), ramp ) )
 			return { pos = spot.pos, roof = spot.roof, fails = 0, reached = false, until = Time() + BOT_EVAC_LAUNCH_REACH_TIME }
 	}
 	return null
+}
+
+// Flat direction the ramp sticks out of the ship (its open side), or null.
+function GetEvacRampOut( ramp )
+{
+	local ship = "dropship" in level ? level.dropship : null
+	if ( !IsValid( ship ) )
+		return null
+	local out = Normalize2D( ramp - ship.GetOrigin() )
+	return Length2D( out ) > 0.5 ? out : null
+}
+
+// Nearest graph node within `radius` (flat) of pos and close to it in height, or null.
+function FindNodeNear( nav, pos, radius )
+{
+	local best = null
+	local bestDist = radius
+	for ( local dx = -1; dx <= 1; dx++ )
+	{
+		for ( local dy = -1; dy <= 1; dy++ )
+		{
+			local key = NavCellKey( pos.x + dx * BOT_NAV_CELL, pos.y + dy * BOT_NAV_CELL )
+			if ( !( key in nav.cells ) )
+				continue
+			foreach ( index in nav.cells[ key ] )
+			{
+				local nodePos = nav.positions[ index ]
+				if ( fabs( nodePos.z - pos.z ) > 80.0 )
+					continue
+				local dist = Length2D( nodePos - pos )
+				if ( dist < bestDist )
+				{
+					bestDist = dist
+					best = nodePos
+				}
+			}
+		}
+	}
+	return best
+}
+
+// Where boarding is measured from (EvacShipTriggerCheck: the HeadFocus attachment).
+function GetBotHeadPos( bot )
+{
+	local index = bot.LookupAttachment( "HeadFocus" )
+	if ( index > 0 )
+		return bot.GetAttachmentOrigin( index )
+	return bot.GetOrigin() + Vector( 0, 0, BOT_EVAC_HEAD_HEIGHT )
+}
+
+// On the ground and not on a wall (IsOnGround alone is also true on a wallrun). Any floor counts:
+// the dropship's, a prop's, a roof edge under part of the hull.
+function IsBotOnFloor( bot )
+{
+	return bot.IsOnGround() && !bot.IsWallRunning()
 }
 
 // Which way to back off for a run-up: straight away from the ramp, or (right under it) out the
@@ -3009,10 +3899,14 @@ function GetEvacRunupDir( origin, ramp )
 	return Vector( 1, 0, 0 )
 }
 
-// Last stretch to the ramp (from the ground or from a launch point): sprint at it, jump when close
-// (or at the launch point's edge) and double jump on the way up. Standing right under it, back off
-// first for a run-up: a standing jump goes nowhere. Landing again without boarding counts as a miss
-// (see UpdateEvacLaunch). `below` = how far the ramp is above the head.
+// Last stretch to the ramp (from the ground or from a launch point), with nothing but real pilot
+// moves: sprint at it, jump when close (or at the launch point's edge), steer the jump in the air
+// (air control, see GetAirSteerInput) and double jump near the top of the jump while the head is
+// still under the ramp point. A wallrun on the way (a building wall next to the ship) gives the
+// double jump back: kick off the wall towards the ramp for more height, then double jump again.
+// Standing right under it, back off first for a run-up: a standing jump goes nowhere. Landing on a
+// floor again without boarding counts as a miss (a wallrun doesn't), see also UpdateEvacLaunch.
+// `below` = how far the ramp is above the head (standing head height while on the floor).
 function BotEvacBoardTick( bot, brain, ramp )
 {
 	local now = Time()
@@ -3021,11 +3915,37 @@ function BotEvacBoardTick( bot, brain, ramp )
 	local flat = Length2D( toRamp )
 	local launch = brain.evacLaunch
 	local below = ramp.z - ( origin.z + BOT_EVAC_HEAD_HEIGHT )
+	// (IsOnGround is true on a wallrun too: only a real floor counts as landed.)
+	local onFloor = IsBotOnFloor( bot )
+	local onWall = bot.IsWallRunning()
+
+	// Boarding from the ground for a while without getting on (a wall or a rail in the way that the
+	// line check missed): stop for a moment and come in from another approach node.
+	if ( brain.evacBoardSince == 0.0 )
+		brain.evacBoardSince = now
+	else if ( launch == null && now - brain.evacBoardSince > BOT_EVAC_BOARD_MAX_TIME && onFloor )
+	{
+		printt( "BotAI:", bot.GetPlayerName(), "can't board the evac ship from here, trying another approach" )
+		brain.evacBoardBlockedUntil = now + BOT_EVAC_BOARD_BLOCK
+		brain.evacBoardSince = 0.0
+		if ( brain.evacApproach != null && brain.evacApproach.pos != null )
+			MarkPilotBadNode( brain.evacApproach.pos )
+		else
+			brain.evacForceApproachUntil = now + BOT_EVAC_FORCE_APPROACH_TIME	// (judged in sight from here: not again from here for a while)
+		brain.evacApproach = null
+		brain.evacApproachRetry = 0.0
+		brain.evacRampVisible = false
+		brain.evacRunupUntil = 0.0
+		brain.evacJumped = false
+		brain.nextRepathTime = 0.0
+		return
+	}
+
 	AimAt( brain, bot.EyePosition(), ramp, false )
 
 	local moveDir = toRamp
 	local pressed = 0
-	if ( bot.IsOnGround() )
+	if ( onFloor )
 	{
 		if ( brain.evacJumped )
 		{
@@ -3035,7 +3955,10 @@ function BotEvacBoardTick( bot, brain, ramp )
 				launch.fails++
 			printt( "BotAI:", bot.GetPlayerName(), "missed the evac ramp", launch != null ? "from a launch point" : "from the ground", "(" + brain.evacFails + ")" )
 		}
+		// Landing gives the double jump back.
 		brain.usedDoubleJump = false
+		brain.evacOnWall = false
+		brain.evacJumpPressed = false
 
 		if ( now < brain.evacRunupUntil && brain.evacRunupDir != null )
 		{
@@ -3057,22 +3980,66 @@ function BotEvacBoardTick( bot, brain, ramp )
 			if ( below > -BOT_EVAC_HEAD_MARGIN && ( flat < jumpDist || ( launch != null && IsGapAhead( bot, toRamp ) ) ) )
 				pressed = BOT_IN_JUMP
 		}
-	}
-	else
-	{
-		// In the air during boarding = a jump for the ramp (counted as a miss if we land again).
-		brain.evacJumped = true
-		if ( !brain.usedDoubleJump && below > -BOT_EVAC_HEAD_MARGIN && bot.GetVelocity().z < 50.0 )
+		// Sprinting run-up on the floor (the jump keeps that speed).
+		local runRelative = MoveDirRelativeToView( moveDir, brain.yaw )
+		BotSetInput( bot, runRelative.forward.tofloat(), runRelative.side.tofloat(), brain.pitch.tofloat(), brain.yaw.tofloat(), BOT_IN_SPEED )
+		if ( pressed != 0 )
 		{
-			brain.usedDoubleJump = true
-			pressed = BOT_IN_JUMP
+			BotPressButtons( bot, pressed )
+			brain.evacJumpPressed = true
 		}
+		return
 	}
 
-	local relative = MoveDirRelativeToView( moveDir, brain.yaw )
-	// Right over the ramp in the air: stop pushing, or we sail past it.
-	local scale = ( !bot.IsOnGround() && flat < 48.0 ) ? 0.0 : 1.0
-	BotSetInput( bot, ( relative.forward * scale ).tofloat(), ( relative.side * scale ).tofloat(), brain.pitch.tofloat(), brain.yaw.tofloat(), BOT_IN_SPEED )
+	// Off the floor after a boarding jump = a jump for the ramp (counted as a miss once we land on a
+	// floor again; a wallrun on the way isn't a landing). Just stepping off a curb or a step isn't.
+	if ( brain.evacJumpPressed )
+		brain.evacJumped = true
+
+	if ( onWall )
+	{
+		// Touching the wall gives the double jump back (once, as the wallrun starts).
+		if ( !brain.evacOnWall )
+		{
+			brain.evacOnWall = true
+			brain.evacWallSince = now
+			brain.evacWallKicked = false
+			brain.usedDoubleJump = false
+		}
+		// After a moment on the wall (so the wallrun has caught), jump off it with the input towards
+		// the ramp: the kick goes up and out, and the double jump is still there for the top of it.
+		// Only while the ramp isn't well below us (then letting go and falling in is enough).
+		local wallHead = GetBotHeadPos( bot )
+		if ( !brain.evacWallKicked && now - brain.evacWallSince >= BOT_EVAC_WALL_KICK_DELAY && ramp.z > wallHead.z - BOT_EVAC_HEAD_MARGIN )
+		{
+			brain.evacWallKicked = true
+			brain.evacJumpPressed = true
+			pressed = BOT_IN_JUMP
+			printt( "BotAI:", bot.GetPlayerName(), "kicking off a wall for the evac ramp,", ( ramp.z - wallHead.z ).tointeger(), "below it,",
+				Length2D( ramp - wallHead ).tointeger(), "away" )
+		}
+		local wallRelative = MoveDirRelativeToView( toRamp, brain.yaw )
+		BotSetInput( bot, wallRelative.forward.tofloat(), wallRelative.side.tofloat(), brain.pitch.tofloat(), brain.yaw.tofloat(), BOT_IN_SPEED )
+		if ( pressed != 0 )
+			BotPressButtons( bot, pressed )
+		return
+	}
+	brain.evacOnWall = false
+
+	// In the air: one double jump per airtime (given back by a wallrun), near the top of the jump
+	// (or already falling) while the head is still under the ramp point: that's where the second
+	// fixed rise adds the most height.
+	local head = GetBotHeadPos( bot )
+	// (Only on top of a real jump or kick: walking off a ledge, the first tick already has vz ~0.)
+	if ( brain.evacJumpPressed && !brain.usedDoubleJump && head.z < ramp.z && bot.GetVelocity().z < BOT_EVAC_DOUBLE_JUMP_VZ )
+	{
+		brain.usedDoubleJump = true
+		pressed = BOT_IN_JUMP
+	}
+	// Air control towards the ramp point, with this bot's skill at it (GetAirSteerInput also eases
+	// off once we're carried far enough, so we don't sail past it).
+	local steer = GetAirSteerInput( bot, brain, ramp )
+	BotSetInput( bot, steer.forward.tofloat(), steer.side.tofloat(), brain.pitch.tofloat(), brain.yaw.tofloat(), BOT_IN_SPEED )
 	if ( pressed != 0 )
 		BotPressButtons( bot, pressed )
 }
@@ -3396,6 +4363,12 @@ function ChooseGoal( bot, brain, isTitan )
 	if ( objective != null && brain.cpNear )
 		return brain.cpHolding ? null : objective
 
+	// Up on a roof and the target just dropped out of sight below: hold the height a moment (it
+	// tends to come back into view) instead of jumping down after it.
+	if ( !isTitan && brain.targetLastSeenPos != null && Time() - brain.targetLastSeenTime < BOT_ROOF_LOST_HOLD
+		&& brain.targetLastSeenPos.z < bot.GetOrigin().z - BOT_ELEVATED_TARGET_HEIGHT && IsBotUpHigh( bot, brain ) )
+		return null
+
 	if ( brain.targetLastSeenPos != null )
 	{
 		if ( !isTitan && brain.temperament == "aggressive" )
@@ -3454,7 +4427,7 @@ function ChooseGoal( bot, brain, isTitan )
 	}
 
 	if ( objective != null )
-		return objective
+		return BOT_UTILITY_ROUTES && !isTitan ? GetRouteGoal( bot, brain, objective, "objective" ) : objective
 
 	// Hunt: head for where an enemy was last reported (not where it really is), usually through
 	// a route point that fits the bot's style. Some bots roam for a bit after spawning instead.
@@ -3473,7 +4446,14 @@ function ChooseGoal( bot, brain, isTitan )
 				if ( Distance( bot.GetOrigin(), lead.pos ) > BOT_INTEL_CLEAR_DIST )
 				{
 					local flank = GetFlankPoint( bot, brain, prey, lead.pos )
-					return flank != null ? flank : lead.pos
+					// Coming at it from a roof: its foot first, then up (see GetRoofSpotStage).
+					if ( flank != null && brain.flankRoof != null )
+						return GetRoofSpotStage( bot, brain, brain.flankRoof )
+					local huntGoal = flank != null ? flank : lead.pos
+					// (Utility routes: the same destination, by the ground or across the roofs.)
+					if ( BOT_UTILITY_ROUTES )
+						return GetRouteGoal( bot, brain, huntGoal, "hunt", lead.pos )
+					return huntGoal
 				}
 				// Got there and nobody's around: the lead went cold.
 				ClearIntel( bot.GetTeam(), prey )
@@ -3487,19 +4467,39 @@ function ChooseGoal( bot, brain, isTitan )
 	local patrolReached = brain.patrolGoal != null && Distance( bot.GetOrigin(), brain.patrolGoal ) < BOT_PILOT_NODE_REACHED * 2
 	// Running across the roofs towards the goal (off the graph): roof lovers aren't pulled back
 	// down to a new goal just because the time ran out.
+	// (Nor while staying up on the roofs after a climb, see roofRunUntil.)
 	local patrolExpired = Time() > brain.patrolUntil && !( !isTitan && brain.offGraph && brain.roofLove >= 0.5 )
+		&& !( !isTitan && Time() < brain.roofRunUntil )
+		&& !( BOT_UTILITY_ROUTES && !isTitan && brain.routeKind == "high" && brain.routeStage == "climb" )	// (nor mid-climb on a high route)
 	if ( brain.patrolGoal == null || patrolExpired || patrolReached )
 	{
 		if ( brain.patrolGoal != null )
 		{
 			RememberVisited( brain, brain.patrolGoal )
+			// Made it onto a roof spot: stay up on the roofs a while (the next goal is mostly the
+			// next roof over), and usually stop to watch the streets first.
+			if ( !isTitan && patrolReached && brain.roofGoal != null )
+			{
+				brain.roofGoal = null
+				brain.roofStageSpot = null
+				brain.roofRunUntil = max( brain.roofRunUntil, Time() + RandomFloat( BOT_ROOF_RUN_MIN, BOT_ROOF_RUN_MAX ) )
+				if ( RandomInt( 100 ) < BOT_ROOF_SPOT_HOLD_CHANCE + 40 * brain.roofLove + brain.lethality.pilot.roofHoldChanceAdd )
+				{
+					brain.holdRoam = true
+					brain.holdUntil = Time() + RandomFloat( BOT_ROOF_SPOT_HOLD_MIN, BOT_ROOF_SPOT_HOLD_MAX ) * brain.lethality.pilot.roofHoldTimeScale
+					brain.nextHoldLook = 0.0
+					brain.patrolGoal = null
+					brain.patrolElevation = 0.0
+					return null
+				}
+			}
 			// Made it up to a high roaming goal: roof lovers stop there a moment and look around
 			// (see IsHoldingVantage, no lead needed for this one).
 			if ( !isTitan && patrolReached && brain.patrolElevation >= BOT_VANTAGE_MIN_ELEVATION
-				&& RandomInt( 100 ) < BOT_ROOF_HOLD_CHANCE * brain.roofLove )
+				&& RandomInt( 100 ) < BOT_ROOF_HOLD_CHANCE * brain.roofLove + brain.lethality.pilot.roofHoldChanceAdd )
 			{
 				brain.holdRoam = true
-				brain.holdUntil = Time() + RandomFloat( BOT_ROOF_HOLD_MIN, BOT_ROOF_HOLD_MAX )
+				brain.holdUntil = Time() + RandomFloat( BOT_ROOF_HOLD_MIN, BOT_ROOF_HOLD_MAX ) * brain.lethality.pilot.roofHoldTimeScale
 				brain.nextHoldLook = 0.0
 				brain.patrolGoal = null
 				brain.patrolElevation = 0.0
@@ -3522,6 +4522,12 @@ function ChooseGoal( bot, brain, isTitan )
 			brain.patrolUntil = Time() + RandomFloat( 5.0, 10.0 )
 		}
 	}
+	// A roof spot: its foot first, then up (see GetRoofSpotStage).
+	if ( !isTitan && brain.roofGoal != null && brain.patrolGoal != null )
+		return GetRoofSpotStage( bot, brain, brain.roofGoal )
+	// Utility routes: the roaming goal by the ground or across the roofs (null: holding up there).
+	if ( BOT_UTILITY_ROUTES && !isTitan && hasNav && brain.patrolGoal != null )
+		return GetRouteGoal( bot, brain, brain.patrolGoal, "roam" )
 	return brain.patrolGoal
 }
 
@@ -3741,6 +4747,7 @@ function GetFlankPoint( bot, brain, prey, preyPos, minDist = BOT_FLANK_MIN_DIST 
 	{
 		brain.flankFor = prey
 		brain.flankPoint = null
+		brain.flankRoof = null
 		brain.flankSide = 0.0
 		local dist = Distance( origin, preyPos )
 
@@ -3761,7 +4768,15 @@ function GetFlankPoint( bot, brain, prey, preyPos, minDist = BOT_FLANK_MIN_DIST 
 			else if ( brain.routeStyle == "flank" || brain.routeStyle == "direct" )
 				side = RandomInt( 2 ) == 0 ? -1.0 : 1.0
 
-			local point = ChooseRoutePoint( bot, brain, preyPos, side )
+			// Pilots, by taste: come at it from a roof overlooking it (see PickRoofSpot).
+			// (Utility routes: no roll, the route to the flank point decides on the roofs, see GetRouteGoal.)
+			local roof = null
+			if ( !BOT_UTILITY_ROUTES && !bot.IsTitan() && brain.evac == null
+				&& RandomFloat( 0.0, 1.0 ) < ( brain.routeStyle == "high" ? 1.0 : max( brain.roofLove, 0.3 ) ) * BOT_ROOF_SPOT_FLANK_CHANCE
+					* brain.lethality.pilot.roofSpotChanceScale )
+				roof = PickRoofSpot( bot, brain, "flank", preyPos )
+			local point = roof != null ? { pos = roof.pos, elevation = roof.height } : ChooseRoutePoint( bot, brain, preyPos, side )
+			brain.flankRoof = roof
 			if ( point != null )
 			{
 				brain.flankPoint = point.pos
@@ -3781,13 +4796,17 @@ function GetFlankPoint( bot, brain, prey, preyPos, minDist = BOT_FLANK_MIN_DIST 
 	local reached = brain.flankElevation >= BOT_VANTAGE_MIN_ELEVATION
 		? ( Length2D( toPoint ) < 150.0 && fabs( toPoint.z ) < 72.0 )
 		: Distance( origin, brain.flankPoint ) < BOT_FLANK_REACHED
-	if ( reached && brain.routeStyle == "high" && brain.flankElevation >= BOT_VANTAGE_MIN_ELEVATION )
+	if ( reached && ( brain.routeStyle == "high" || brain.flankRoof != null ) && brain.flankElevation >= BOT_VANTAGE_MIN_ELEVATION )
 		StartVantageHold( brain )
+	if ( reached && brain.flankRoof != null )
+		brain.roofRunUntil = max( brain.roofRunUntil, Time() + RandomFloat( BOT_ROOF_RUN_MIN, BOT_ROOF_RUN_MAX ) )
 
 	if ( reached || Time() > brain.flankUntil
 		|| Distance( origin, preyPos ) < Distance( brain.flankPoint, preyPos ) )
 	{
 		brain.flankPoint = null
+		brain.flankRoof = null
+		brain.roofStageSpot = null
 		brain.flankSide = 0.0
 		brain.flankElevation = 0.0
 		return null
@@ -4365,7 +5384,8 @@ function ChooseAction( bot, brain, p )
 			// once we are in position, too).
 			if ( p.health < 0.5 && p.underFire && now >= brain.nextCoverTime && TryStartCover( bot, brain, enemyPos ) )
 				return { mode = "survive", action = "cover" }
-			if ( !p.underFire && p.enemyDist > BOT_FLANKER_MIN_DIST
+			// (Not with the enemy looking right at us: walking off without shooting just gets us shot.)
+			if ( !p.underFire && !p.enemyLooking && p.enemyDist > BOT_FLANKER_MIN_DIST
 				&& GetFlankPoint( bot, brain, brain.target, enemyPos, BOT_FLANKER_MIN_DIST ) != null )
 				return { mode = "combat", action = "flank" }
 		}
@@ -4383,8 +5403,11 @@ function ChooseAction( bot, brain, p )
 	if ( p.enemyLost )
 	{
 		// Lost it: cautious bots take a new angle, flankers finish the way round, aggressive
-		// bots run after it (ChooseGoal sends them where it was heading).
-		if ( temperament == "cautious" && now >= brain.nextRepositionTime && StartReposition( bot, brain, brain.targetLastSeenPos ) )
+		// bots run after it (ChooseGoal sends them where it was heading). Up on a roof with it lost
+		// below, no new angle (down off the roof) for a moment: ChooseGoal holds the height.
+		local lostBelow = now - brain.targetLastSeenTime < BOT_ROOF_LOST_HOLD
+			&& brain.targetLastSeenPos.z < bot.GetOrigin().z - BOT_ELEVATED_TARGET_HEIGHT && IsBotUpHigh( bot, brain )
+		if ( temperament == "cautious" && !lostBelow && now >= brain.nextRepositionTime && StartReposition( bot, brain, brain.targetLastSeenPos ) )
 			return { mode = "survive", action = "reposition" }
 		if ( temperament == "flanker" && brain.flankPoint != null && now < brain.flankUntil )
 			return { mode = "combat", action = "flank" }
@@ -4417,7 +5440,7 @@ function ExecuteAction( bot, brain, p, d )
 			break
 
 		case "flank":
-			plan.goal = brain.flankPoint
+			plan.goal = brain.flankRoof != null ? GetRoofSpotStage( bot, brain, brain.flankRoof ) : brain.flankPoint
 			plan.disengage = true
 			plan.holdFire = true
 			break
@@ -4795,9 +5818,9 @@ function FindCoverSpot( bot, threatPos, opts = null )
 
 // Temperament for a new life, steering the team towards a mix (temperaments teammates already
 // have get rarer).
-function ChooseTemperament( bot )
+function ChooseTemperament( bot, lethality )
 {
-	local weights = { aggressive = 40, cautious = 25, flanker = 35 }
+	local weights = { aggressive = 40, cautious = 25, flanker = lethality.pilot.flankerWeight }
 	foreach ( mate in GetTeammateBrains( bot ) )
 	{
 		local temperament = mate.brain.temperament
@@ -4860,6 +5883,25 @@ function ApplyTemperament( brain )
 			brain.targetMemory = BOT_TARGET_MEMORY * 2.0
 			break
 	}
+
+	// Bot lethality: low bots stay off the rooftop routes, very high ones take to the roofs more.
+	local lethality = brain.lethality.pilot
+	if ( !lethality.allowHighRoute && brain.routeStyle == "high" )
+	{
+		// roofLove re-rolled as for the route taken instead
+		if ( brain.temperament == "cautious" )
+		{
+			brain.routeStyle = "indoor"
+			brain.roofLove = RandomFloat( 0.1, 0.3 )
+		}
+		else
+		{
+			brain.routeStyle = "direct"
+			brain.roofLove = RandomFloat( 0.3, 0.6 )
+		}
+	}
+	if ( lethality.roofLoveScale != 1.0 || lethality.roofLoveAdd != 0.0 )
+		brain.roofLove = BotClamp( brain.roofLove * lethality.roofLoveScale + lethality.roofLoveAdd, 0.0, 1.0 )
 }
 
 function NavCellKey( x, y )
@@ -4875,14 +5917,19 @@ function GetNavCache()
 		return file.nav
 
 	// minX.. maxZ: bounding box of the whole graph, for the out-of-world watchdog.
-	local nav = { positions = [], cells = {}, elevation = [], indoor = {}
-		minX = 1.0e9, minY = 1.0e9, minZ = 1.0e9, maxX = -1.0e9, maxY = -1.0e9, maxZ = -1.0e9 }
+	// cellMinZ: lowest node in each cell (the local ground, see GetLocalGroundZ).
+	// centerX / centerY: average node position, the middle of the map for low lethality roaming.
+	local nav = { positions = [], cells = {}, elevation = [], indoor = {}, cellMinZ = {}
+		minX = 1.0e9, minY = 1.0e9, minZ = 1.0e9, maxX = -1.0e9, maxY = -1.0e9, maxZ = -1.0e9
+		centerX = 0.0, centerY = 0.0 }
 	local count = NavGetNodeCount()
-	local cellMinZ = {}
+	local cellMinZ = nav.cellMinZ
 	for ( local i = 0; i < count; i++ )
 	{
 		local pos = GetNodeVector( i )
 		nav.positions.append( pos )
+		nav.centerX += pos.x
+		nav.centerY += pos.y
 		nav.minX = min( nav.minX, pos.x )
 		nav.minY = min( nav.minY, pos.y )
 		nav.minZ = min( nav.minZ, pos.z )
@@ -4901,6 +5948,11 @@ function GetNavCache()
 			nav.cells[ key ] <- [ i ]
 			cellMinZ[ key ] <- pos.z
 		}
+	}
+	if ( count > 0 )
+	{
+		nav.centerX /= count
+		nav.centerY /= count
 	}
 
 	foreach ( pos in nav.positions )
@@ -5207,7 +6259,8 @@ function IsHoldingVantage( bot, brain, hasVisibleTarget )
 		return false
 	}
 	local lead = ( brain.prey != null && IsValid( brain.prey ) ) ? GetIntel( bot.GetTeam(), brain.prey ) : null
-	local leadClose = lead != null && Distance( bot.GetOrigin(), lead.pos ) < BOT_VANTAGE_BREAK_DIST
+	// (Up on a roof, the prey coming close is the point of being up there, not a reason to leave.)
+	local leadClose = lead != null && Distance( bot.GetOrigin(), lead.pos ) < BOT_VANTAGE_BREAK_DIST && !IsBotUpHigh( bot, brain )
 	if ( Time() < brain.underFireUntil || leadClose || ( lead == null && !brain.holdRoam ) )
 	{
 		brain.holdUntil = 0.0
@@ -5233,7 +6286,10 @@ function IsHoldingVantage( bot, brain, hasVisibleTarget )
 
 // Height of a walkable roof just behind a wall in direction dir, or null. The probe comes down
 // onto the top from above, past the wall face, with clear air on our side of it.
-function FindClimbableRoof( bot, dir )
+// preferWallrun: a jump would do, but run up the wall anyway if there's room (a retry, see
+// UpdateClimb). The result's `chain` is set for a roof only an alley chain reaches (a facing wall
+// behind us to kick over to and back).
+function FindClimbableRoof( bot, dir, preferWallrun = false )
 {
 	local origin = bot.GetOrigin()
 	local chest = origin + Vector( 0, 0, 40 )
@@ -5248,7 +6304,9 @@ function FindClimbableRoof( bot, dir )
 	// Clear air straight up in front of the wall: overhanging eaves, balconies and walls that
 	// lean out over us leave no way up, however good the top looks.
 	// Checked across the pilot's width (center and both shoulders), not just one thin line.
-	local probeHeight = BOT_CLIMB_WALLRUN_MAX_HEIGHT + 72.0
+	// (From above the highest roof taken, the chain's: probing from just over a 340-400 roof, any
+	// lip or parapet on it blocked the probe.)
+	local probeHeight = BOT_CLIMB_CHAIN_MAX_HEIGHT + 72.0
 	local right = Vector( dir.y, -dir.x, 0 )
 	local column = origin + dir * max( wallDist - 24.0, 0.0 )
 	if ( !IsColumnClear( bot, column, right, probeHeight ) )
@@ -5259,7 +6317,7 @@ function FindClimbableRoof( bot, dir )
 	if ( nearTop == null )
 		return null
 	local height = nearTop.z - origin.z
-	if ( height < BOT_CLIMB_MIN_HEIGHT || height > BOT_CLIMB_WALLRUN_MAX_HEIGHT )
+	if ( height < BOT_CLIMB_MIN_HEIGHT || height > BOT_CLIMB_CHAIN_MAX_HEIGHT )
 		return null
 
 	// A real roof goes on past the edge at the same height; a lip, a ledge or the top of a
@@ -5269,14 +6327,20 @@ function FindClimbableRoof( bot, dir )
 		return null
 
 	// Low enough to jump straight up to the edge.
-	if ( height <= BOT_CLIMB_MAX_HEIGHT )
-		return { z = nearTop.z, wall = wallPoint, along = null, alt = null, face = dir }
+	if ( height <= BOT_CLIMB_MAX_HEIGHT && !preferWallrun )
+		return { z = nearTop.z, wall = wallPoint, along = null, alt = null, face = dir, chain = false }
 
 	// Higher: needs a wallrun up the face first, so there must be room to run along the wall
 	// on one side, with clear air above that stretch too. Along the face itself (its normal), not
 	// along the probe direction, which can be well off it.
 	local face = fabs( wall.surfaceNormal.z ) < 0.3 ? Normalize2D( wall.surfaceNormal ) * -1.0 : dir
 	local faceRight = Vector( face.y, -face.x, 0 )
+
+	// Past what one wall gets us up to: only in an alley, with a wall facing this one close behind
+	// us (low and high, so it's a real wall to run on, not a fence) to kick over to and back from.
+	local chain = height > BOT_CLIMB_WALLRUN_MAX_HEIGHT
+	if ( chain && !HasFacingWallBehind( bot, column, face, height ) )
+		return null
 	local runStart = chest + dir * max( wallDist - 40.0, 0.0 )
 	local sides = []
 	foreach ( side in [ faceRight, faceRight * -1.0 ] )
@@ -5293,9 +6357,31 @@ function FindClimbableRoof( bot, dir )
 		sides.append( side )
 	}
 	if ( sides.len() == 0 )
+	{
+		// (Only asked to prefer the wallrun, and a jump does reach it: jump then.)
+		if ( height <= BOT_CLIMB_MAX_HEIGHT )
+			return { z = nearTop.z, wall = wallPoint, along = null, alt = null, face = dir, chain = false }
 		return null
+	}
 	// Both sides work: the other one is the second try if the first fails (see UpdateClimb).
-	return { z = nearTop.z, wall = wallPoint, along = sides[0], alt = sides.len() > 1 ? sides[1] : null, face = face }
+	return { z = nearTop.z, wall = wallPoint, along = sides[0], alt = sides.len() > 1 ? sides[1] : null, face = face, chain = chain }
+}
+
+// A wall facing `face` (the wall we climb) behind us within BOT_CLIMB_CHAIN_GAP of the column in
+// front of it, at chest height and again up near the top: an alley wall to kick over to.
+function HasFacingWallBehind( bot, column, face, height )
+{
+	foreach ( up in [ 60.0, max( height - 120.0, 100.0 ) ] )
+	{
+		local start = column + Vector( 0, 0, up )
+		local hit = TraceLine( start, start - face * BOT_CLIMB_CHAIN_GAP, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( hit.fraction >= 1.0 || hit.startSolid || hit.fraction * BOT_CLIMB_CHAIN_GAP < 60.0 )
+			return false
+		// (Its normal points back at our wall.)
+		if ( fabs( hit.surfaceNormal.z ) > 0.3 || Dot2D( Normalize2D( hit.surfaceNormal ), face ) < 0.85 )
+			return false
+	}
+	return true
 }
 
 // Clear air from waist height up to `height` above base, across the pilot's width.
@@ -5326,11 +6412,14 @@ function FindRoofSurface( bot, above, dir, ahead, probeHeight )
 }
 
 // Walls a bot already failed to climb, shared by the whole team so nobody else tries them.
+// (For a while: a miss from a roof edge is often bad luck, and with every one marked for good the
+// edges that qualified ran out over a match.)
 function IsBadClimbSpot( pos )
 {
+	local now = Time()
 	foreach ( spot in file.badClimbSpots )
 	{
-		if ( Distance( spot, pos ) < BOT_BAD_CLIMB_RADIUS )
+		if ( now < spot.until && Distance( spot.pos, pos ) < BOT_BAD_CLIMB_RADIUS )
 			return true
 	}
 	return false
@@ -5338,9 +6427,29 @@ function IsBadClimbSpot( pos )
 
 function MarkBadClimbSpot( pos )
 {
-	file.badClimbSpots.append( pos )
+	file.badClimbSpots.append( { pos = pos, until = Time() + BOT_BAD_CLIMB_TIME } )
 	if ( file.badClimbSpots.len() > 64 )
 		file.badClimbSpots.remove( 0 )
+}
+
+// Roof edges a hop from didn't work out: their own list, closer around the takeoff (one miss on a
+// small roof used to rule the whole roof out, and the walls below it for climbing).
+function IsBadHopSpot( pos )
+{
+	local now = Time()
+	foreach ( spot in file.badHopSpots )
+	{
+		if ( now < spot.until && Distance( spot.pos, pos ) < BOT_BAD_HOP_RADIUS )
+			return true
+	}
+	return false
+}
+
+function MarkBadHopSpot( pos )
+{
+	file.badHopSpots.append( { pos = pos, until = Time() + BOT_BAD_CLIMB_TIME } )
+	if ( file.badHopSpots.len() > 64 )
+		file.badHopSpots.remove( 0 )
 }
 
 // Climbing a building, the way a player does it. Direct (low roof): sprint at the wall, jump
@@ -5371,6 +6480,8 @@ function UpdateClimb( bot, brain, moveDir, forward )
 			local wasLedge = brain.climbIsLedge
 			brain.climbIsLedge = false
 			brain.climbUntil = 0.0
+			brain.climbAirTarget = null
+			brain.climbLookAt = null
 			brain.nextRepathTime = 0.0
 			if ( wasLedge )
 			{
@@ -5383,6 +6494,9 @@ function UpdateClimb( bot, brain, moveDir, forward )
 			if ( onTop )
 			{
 				printt( "BotAI:", bot.GetPlayerName(), "climbed onto a roof", brain.climbAlong != null ? "(wallrun)" : "(jump)" )
+				// Roof lovers stay up a while: across the roofs (see GetRoofRunDir), not straight back down.
+				if ( brain.evac == null && brain.roofLove >= 0.5 )
+					brain.roofRunUntil = now + RandomFloat( BOT_ROOF_RUN_MIN, BOT_ROOF_RUN_MAX ) * brain.roofLove
 			}
 			else if ( brain.climbAlong != null && brain.climbAltAlong != null && brain.climbTries < 1 )
 			{
@@ -5394,15 +6508,32 @@ function UpdateClimb( bot, brain, moveDir, forward )
 				brain.climbStartZ = origin.z
 				brain.climbJumpTime = 0.0
 				brain.climbKicked = false
+				brain.climbRecatch = false
+				brain.climbRecatchLeft = BOT_CLIMB_RECATCH_MAX
 				brain.climbWallrunStart = 0.0
 				brain.climbUntil = now + BOT_CLIMB_TIMEOUT
 				printt( "BotAI:", bot.GetPlayerName(), "retrying the climb from the other side" )
+				return 0
+			}
+			else if ( IsClimbingToRoofSpot( bot, brain ) && !brain.roofClimbRetried )
+			{
+				// At a roof spot's foot (see GetRoofSpotStage): one more go before the spot is given
+				// up, and the wall isn't marked bad yet. A jump climb that failed comes back as a
+				// wallrun up the face (FindClimbableRoof's preferWallrun), which reaches higher.
+				brain.roofClimbRetried = true
+				brain.climbForceWallrun = brain.climbAlong == null
+				brain.nextClimbCheck = now + 0.5
+				printt( "BotAI:", bot.GetPlayerName(), "climb to a roof spot failed, trying once more", brain.climbForceWallrun ? "(wallrun)" : "" )
 				return 0
 			}
 			else
 			{
 				MarkBadClimbSpot( brain.climbWall )
 				printt( "BotAI:", bot.GetPlayerName(), "couldn't climb, marking the spot" )
+				// The retry at a roof spot's foot failed too: give the spot up now (GetRoofSpotStage),
+				// not after standing at the wall for the rest of the stage time.
+				if ( IsClimbingToRoofSpot( bot, brain ) )
+					brain.roofStageUntil = now
 				// Can't get up the outside: go in and take the stairs.
 				TryGoUpstairs( bot, brain, brain.climbWall )
 			}
@@ -5411,31 +6542,95 @@ function UpdateClimb( bot, brain, moveDir, forward )
 		}
 
 		local chest = origin + Vector( 0, 0, 40 )
+		local vel = bot.GetVelocity()
+		// (Only the airborne phases below steer for the edge and look at it; on foot and on the wall
+		// we move by climbMoveDir and look along it.)
+		brain.climbAirTarget = null
+		brain.climbLookAt = null
 
-		// Wallrun climb, on the wall (checked first: IsOnGround can be true up there too).
+		// Wallrun climb, on a wall (checked first: IsOnGround can be true up there too).
 		if ( brain.climbAlong != null && wallRunning )
 		{
 			brain.usedDoubleJump = false	// touching the wall gives the double jump back
-			if ( brain.climbWallrunStart == 0.0 )
-				brain.climbWallrunStart = now
-			// Keep running along the face, leaning into it.
-			brain.climbMoveDir = brain.climbAlong + brain.climbDir * 0.5
-			// Peak of the run (stopped rising after a moment on the wall, or ridden long enough):
-			// kick off up and towards the roof.
-			local ride = now - brain.climbWallrunStart
-			if ( ( ride > BOT_CLIMB_WALLRUN_MIN_TIME && bot.GetVelocity().z < 40.0 ) || ride > BOT_CLIMB_WALLRUN_TIME )
+			// Just kicked off: still leaving the wall, another press now would be a second wall jump.
+			if ( brain.climbKicked && now - brain.climbKickTime < 0.2 )
+				return 0
+			// Caught a wall again after a kick (the facing one in an alley, or back on ours): a new run.
+			if ( brain.climbKicked )
 			{
+				if ( brain.climbRecatch )
+					printt( "BotAI:", bot.GetPlayerName(), "climb: back on the wall,", ( brain.climbTopZ - origin.z ).tointeger(), "below the edge" )
+				// (Back on our wall, higher: real progress, time for the next kick.)
+				if ( brain.climbRecatch )
+					brain.climbUntil = max( brain.climbUntil, now + 1.5 )
+				brain.climbKicked = false
+				brain.climbRecatch = false
+				brain.climbWallrunStart = 0.0
+			}
+			// Which wall: ours (the roof's face, into climbDir) or the facing one across the alley.
+			local onFacing = FindRunWallNormal( bot, [ brain.climbDir ] ) == null && FindRunWallNormal( bot, [ brain.climbDir * -1.0 ] ) != null
+			if ( brain.climbWallrunStart == 0.0 )
+			{
+				brain.climbWallrunStart = now
+				brain.climbToFacing = false
+				// Every facing-wall touch is real progress up the alley: time for the way back over.
+				if ( onFacing )
+					brain.climbUntil = max( brain.climbUntil, now + 1.5 )
+			}
+			local ride = now - brain.climbWallrunStart
+			local peak = ( ride > BOT_CLIMB_WALLRUN_MIN_TIME && vel.z < 40.0 ) || ride > BOT_CLIMB_WALLRUN_TIME
+
+			if ( onFacing )
+			{
+				// Across the alley: run along it leaning into it, then kick straight back over to
+				// our wall, a bit higher up (the touch there gives the double jump back again).
+				brain.climbMoveDir = Normalize2D( brain.climbAlong - brain.climbDir * 0.5 )
+				if ( !peak )
+					return 0
 				brain.climbKicked = true
-				brain.climbMoveDir = Normalize2D( brain.climbAlong * 0.4 + brain.climbDir )
+				brain.climbKickTime = now
+				brain.climbMoveDir = Normalize2D( brain.climbDir + brain.climbAlong * 0.4 )
 				return BOT_IN_JUMP
 			}
-			return 0
+
+			// On our wall: keep running along the face, leaning into it.
+			brain.climbMoveDir = brain.climbAlong + brain.climbDir * 0.5
+			if ( !peak )
+				return 0
+			// Peak of the run (stopped rising after a moment on the wall, or ridden long enough).
+			// Too far below the edge for a kick and a double jump, and a wall facing ours close
+			// behind: kick over to that one first (no double jump on the way, its touch gives it back
+			// anyway), up it and back. Otherwise kick off up and towards the roof.
+			brain.climbKicked = true
+			brain.climbKickTime = now
+			local need = brain.climbTopZ - origin.z
+			if ( need > BOT_CLIMB_KICK_REACH && brain.climbChainLeft > 0 && HasFacingWallBehind( bot, origin, brain.climbDir, 160.0 ) )
+			{
+				brain.climbChainLeft--
+				brain.climbToFacing = true
+				brain.climbMoveDir = Normalize2D( brain.climbDir * -0.8 + brain.climbAlong * 0.6 )
+				printt( "BotAI:", bot.GetPlayerName(), "climb: kicking over to the facing wall,", need.tointeger(), "still to go" )
+				return BOT_IN_JUMP
+			}
+			// Still too far below the edge for a kick and a double jump to reach it: the double jump
+			// goes back in onto this same wall, higher up, instead of being spent short of the edge.
+			// The touch is a new wallrun, which gives the double jump back for the next kick.
+			brain.climbRecatch = need > BOT_CLIMB_KICK_REACH && brain.climbRecatchLeft > 0
+			if ( brain.climbRecatch )
+			{
+				brain.climbRecatchLeft--
+				printt( "BotAI:", bot.GetPlayerName(), "climb: kick + double jump back onto the wall,", need.tointeger(), "still to go" )
+			}
+			brain.climbMoveDir = Normalize2D( brain.climbAlong * 0.4 + brain.climbDir )
+			return BOT_IN_JUMP
 		}
 
 		if ( onFoot )
 		{
 			brain.usedDoubleJump = false
 			brain.climbKicked = false
+			brain.climbRecatch = false
+			brain.climbToFacing = false
 			brain.climbWallrunStart = 0.0
 			local jump = false
 			if ( brain.climbAlong != null )
@@ -5461,18 +6656,33 @@ function UpdateClimb( bot, brain, moveDir, forward )
 				jump = !HasClearLine( bot, chest, chest + brain.climbDir * 170.0 )
 			if ( !jump )
 				return 0
+			// (Pressed a moment ago and still on the ground by the next think: the press hasn't lifted
+			// us yet. Another one now would land just after takeoff as the double jump.)
+			if ( now - brain.climbLastJump < 0.3 )
+				return 0
 			if ( brain.climbJumpTime == 0.0 )
 			{
 				brain.climbJumpTime = now
 				brain.climbUntil = max( brain.climbUntil, now + BOT_CLIMB_TIMEOUT - 1.0 )
 			}
+			brain.climbLastJump = now
 			return BOT_IN_JUMP
 		}
 
-		// Direct climb: double jump near the top of the first jump.
+		// Direct climb: in the air, steer for the edge (air control, corrected on the way: see
+		// GetAirSteerInput) with the eyes on it for the automantle, and double jump near the top
+		// of the first jump while the edge is still above our feet.
 		if ( brain.climbAlong == null )
 		{
-			if ( !brain.usedDoubleJump && bot.GetVelocity().z < 120.0 )
+			SetClimbAirAim( bot, brain )
+			// Ended up on the wall instead (touched the face running): no press here, on a wall it'd
+			// be a wall jump straight away from the roof. Ride it; the automantle or the timeout ends it.
+			if ( bot.IsWallRunning() )
+				return 0
+			// (Only on top of our jump: stepping off a curb on the run in, the first tick in the air
+			// already has vz <= 0.)
+			if ( brain.climbLastJump > 0.0 && now - brain.climbLastJump > 0.2
+				&& !brain.usedDoubleJump && vel.z < 120.0 && origin.z < brain.climbTopZ )
 			{
 				brain.usedDoubleJump = true
 				return BOT_IN_JUMP
@@ -5483,11 +6693,42 @@ function UpdateClimb( bot, brain, moveDir, forward )
 		// Wallrun climb, in the air.
 		if ( brain.climbKicked )
 		{
-			// Off the wall: double jump onto the edge.
+			// Kicked over to the facing wall: fly straight at it (no steering for the edge, no double
+			// jump: the touch over there gives it back). Not on it by now: missed it, go for the edge.
+			if ( brain.climbToFacing )
+			{
+				if ( now - brain.climbKickTime < 0.6 )
+					return 0
+				brain.climbToFacing = false
+			}
+			// Kicked off with the edge still out of reach: the double jump straight back in at the
+			// wall (and along it, so the touch is a run, not a stop) as soon as the kick has carried us
+			// clear of it, looking along the face. No steering for the edge in between.
+			if ( brain.climbRecatch )
+			{
+				brain.climbMoveDir = Normalize2D( brain.climbDir + brain.climbAlong * 0.6 )
+				local lookDir = Normalize2D( brain.climbAlong + brain.climbDir * 0.5 )
+				local look = origin + lookDir * 200.0
+				brain.climbLookAt = Vector( look.x, look.y, origin.z + 120.0 )
+				if ( !brain.usedDoubleJump && now - brain.climbKickTime > BOT_CLIMB_RECATCH_DELAY )
+				{
+					brain.usedDoubleJump = true
+					return BOT_IN_JUMP
+				}
+				// Never got back onto it: on for the edge with what's left.
+				if ( now - brain.climbKickTime < BOT_CLIMB_RECATCH_TIME )
+					return 0
+				brain.climbRecatch = false
+			}
+			// Off our wall (the jump off it gave the double jump back): steer back in for the edge
+			// and double jump at the top of the kick while the edge is still above our feet, so
+			// the automantle catches it.
 			brain.climbMoveDir = brain.climbDir
-			if ( !brain.usedDoubleJump && bot.GetVelocity().z < 100.0 )
+			SetClimbAirAim( bot, brain )
+			if ( !brain.usedDoubleJump && vel.z < BOT_CLIMB_DOUBLE_VZ && origin.z < brain.climbTopZ )
 			{
 				brain.usedDoubleJump = true
+				printt( "BotAI:", bot.GetPlayerName(), "climb: wall kick + double jump for the edge,", ( brain.climbTopZ - origin.z ).tointeger(), "above" )
 				return BOT_IN_JUMP
 			}
 		}
@@ -5514,7 +6755,10 @@ function UpdateClimb( bot, brain, moveDir, forward )
 	// On the way to an evac launch point (see UpdateEvacLaunch), or repositioning to a point up
 	// high, every climb is taken, checked twice as often.
 	local evacClimb = ( brain.evac != null && "climb" in brain.evac && brain.evac.climb ) || IsRepositioningUp( bot, brain )
-	if ( now < brain.nextClimbCheck || moveDir == null || forward < 0.7 || brain.careful || !BotOnFoot( bot ) || brain.offGraph )
+		|| IsClimbingToRoofSpot( bot, brain )
+	// (Up on the roofs, more climbs only while staying up there, see roofRunUntil.)
+	if ( now < brain.nextClimbCheck || moveDir == null || forward < 0.7 || brain.careful || !BotOnFoot( bot )
+		|| ( brain.offGraph && now >= brain.roofRunUntil ) )
 		return 0
 	brain.nextClimbCheck = now + ( evacClimb ? BOT_CLIMB_CHECK_INTERVAL * 0.5 : BOT_CLIMB_CHECK_INTERVAL )
 	// On the evac run roofs are only climbed for a launch point (evac.climb), never for the view.
@@ -5531,9 +6775,11 @@ function UpdateClimb( bot, brain, moveDir, forward )
 	local dirs = [ ahead, ( ahead * 0.92 + right * 0.38 ), ( ahead * 0.92 - right * 0.38 ) ]
 	foreach ( dir in dirs )
 	{
-		local top = FindClimbableRoof( bot, dir )
+		// (A retry at a roof spot's foot after a failed jump climb runs up the wall instead.)
+		local top = FindClimbableRoof( bot, dir, brain.climbForceWallrun && IsClimbingToRoofSpot( bot, brain ) )
 		if ( top == null )
 			continue
+		brain.climbForceWallrun = false
 		// Wallrun climbs work off the wall face itself (straight into it), not the probe direction.
 		brain.climbDir = ( top.face != null && top.along != null ) ? top.face : dir
 		brain.climbAlong = top.along
@@ -5543,6 +6789,14 @@ function UpdateClimb( bot, brain, moveDir, forward )
 		// Wallrun climbs come in at an angle so we land on the wall running along it.
 		brain.climbMoveDir = top.along != null ? brain.climbDir * 0.5 + top.along * 0.87 : dir
 		brain.climbKicked = false
+		brain.climbToFacing = false
+		// Too high for one wall: kicks over to the facing wall and back are planned (an alley found
+		// by FindClimbableRoof); otherwise one is still allowed if the run ends up short of the edge.
+		brain.climbChainLeft = top.chain ? BOT_CLIMB_CHAIN_WALLS : 1
+		brain.climbRecatchLeft = BOT_CLIMB_RECATCH_MAX
+		brain.climbRecatch = false
+		if ( top.chain )
+			printt( "BotAI:", bot.GetPlayerName(), "climb: alley wall chain for a roof", ( top.z - origin.z ).tointeger(), "up" )
 		brain.climbWallrunStart = 0.0
 		brain.climbTopZ = top.z
 		brain.climbWall = top.wall
@@ -5564,6 +6818,33 @@ function UpdateClimb( bot, brain, moveDir, forward )
 	return 0
 }
 
+// In the air on a climb: steer for a point just past the edge in front of us (on the roof, so the
+// steering doesn't stop short of it) and look up at the roof over the edge. The automantle only
+// catches an edge we're facing and moving towards.
+function SetClimbAirAim( bot, brain )
+{
+	local origin = bot.GetOrigin()
+	// The face straight in front of us, wherever along it the wallrun took us.
+	local toFace = max( Dot2D( brain.climbWall - origin, brain.climbDir ), 0.0 )
+	local edge = origin + brain.climbDir * ( toFace + BOT_CLIMB_EDGE_INSET )
+	brain.climbAirTarget = Vector( edge.x, edge.y, brain.climbTopZ )
+	// (Further in and a bit above the roof: right at the lip would mean looking almost straight
+	// up from close under it.)
+	local look = origin + brain.climbDir * ( toFace + 120.0 )
+	brain.climbLookAt = Vector( look.x, look.y, brain.climbTopZ + 32.0 )
+}
+
+// This tick's move input on a climb, { forward, side } relative to brain.yaw: in the air (see
+// SetClimbAirAim) air control towards the edge, with this bot's airControl / airSteerError, so a
+// jump can be corrected on the way; otherwise straight along climbMoveDir.
+function GetClimbMoveInput( bot, brain )
+{
+	// (No brake: the edge target is past the wall, which stops us; see GetAirSteerInput.)
+	if ( brain.climbAirTarget != null && !BotOnFoot( bot ) && !bot.IsWallRunning() )
+		return GetAirSteerInput( bot, brain, brain.climbAirTarget, false )
+	return MoveDirRelativeToView( brain.climbMoveDir, brain.yaw )
+}
+
 // Is the way on above us? The next waypoint of the route, a nearby goal up high (a reposition or
 // flank point on a ledge, a roof), or the target we're chasing.
 function WantsHigherGround( bot, brain )
@@ -5574,7 +6855,7 @@ function WantsHigherGround( bot, brain )
 		return true
 	if ( brain.pathGoal != null && brain.pathGoal.z - z > BOT_LEDGE_UP_DIST && Length2D( brain.pathGoal - origin ) < BOT_LEDGE_GOAL_DIST )
 		return true
-	if ( IsRepositioningUp( bot, brain ) )
+	if ( IsRepositioningUp( bot, brain ) || IsClimbingToRoofSpot( bot, brain ) )
 		return true
 	return brain.target != null && IsValid( brain.target ) && brain.targetLastSeenPos != null
 		&& brain.targetLastSeenPos.z - z > BOT_LEDGE_UP_DIST
@@ -5669,6 +6950,8 @@ function StartLedgeClimb( bot, brain, dir, along, topZ, wallPoint )
 	brain.climbIsLedge = true
 	brain.climbJumpTime = now	// (a ledge is right there: no run-up, the progress check runs from now)
 	brain.climbAltAlong = null
+	brain.climbToFacing = false
+	brain.climbChainLeft = 0	// (a ledge is within one kick: no alley chain)
 }
 
 // Up through the building next to `near`: the best upper-floor / roof node around it (high above
@@ -5792,6 +7075,15 @@ function UpdateWindowExit( bot, brain )
 // likes rooftops.
 function WantsClimb( brain )
 {
+	// Utility routes: on the way to a high route's climb, every climb is taken; just back from a
+	// failed one, none (the route said ground).
+	if ( BOT_UTILITY_ROUTES )
+	{
+		if ( brain.routeKind == "high" && brain.routeStage == "foot" && Time() - brain.routeLastUsed <= BOT_ROUTE_STALE_TIME )
+			return true
+		if ( brain.routeKind == "ground" && Time() < brain.routeFallbackUntil )
+			return false
+	}
 	if ( brain.routeStyle == "high" )
 		return true
 	return RandomInt( 100 ) < BOT_CLIMB_CHANCE_OTHERS + brain.roofLove * BOT_CLIMB_CHANCE_ROOF_LOVE
@@ -5832,9 +7124,283 @@ function IsGapAhead( bot, dir, ahead = BOT_GAP_CHECK_AHEAD )
 	return TraceLine( start, start - Vector( 0, 0, BOT_GAP_DROP + 16.0 ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE ).fraction >= 1.0
 }
 
+// Height of the local ground around pos: the lowest graph node in the cells around it, or null
+// with no nodes around.
+function GetLocalGroundZ( pos )
+{
+	local nav = GetNavCache()
+	local ground = null
+	for ( local dx = -1; dx <= 1; dx++ )
+	{
+		for ( local dy = -1; dy <= 1; dy++ )
+		{
+			local key = NavCellKey( pos.x + dx * BOT_NAV_CELL, pos.y + dy * BOT_NAV_CELL )
+			if ( key in nav.cellMinZ && ( ground == null || nav.cellMinZ[ key ] < ground ) )
+				ground = nav.cellMinZ[ key ]
+		}
+	}
+	return ground
+}
+
+// Somewhere to land across a gap in flat direction dir: probed down at steps out to
+// BOT_ROOF_HOP_MAX, the first floor found must be a roof (well above the local ground, not the
+// street), not too high or too far for its height, with floor beyond the edge, standing room and
+// nothing in the way at jump height. { pos, dist } or null.
+function FindRoofLanding( bot, origin, dir )
+{
+	local nav = GetNavCache()
+	local top = origin.z + BOT_ROOF_HOP_MAX_RISE + 48.0
+	local bottom = origin.z - BOT_ROOF_HOP_MAX_DROP
+	for ( local d = BOT_ROOF_HOP_MIN; d <= BOT_ROOF_HOP_MAX; d += BOT_ROOF_HOP_STEP )
+	{
+		local p = origin + dir * d
+		local probe = Vector( p.x, p.y, top )
+		local down = TraceLine( probe, Vector( p.x, p.y, bottom ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( down.startSolid )
+			return null		// a wall higher than we can reach
+		if ( down.fraction >= 1.0 || down.surfaceNormal.z < 0.7 )
+			continue
+		local land = down.endPos
+		local rise = land.z - origin.z
+		// The first floor across decides: too high, or too far for how high it is (a real jump comes
+		// down onto a higher roof sooner, so it reaches less far across).
+		if ( rise > BOT_ROOF_HOP_MAX_RISE || d > BOT_ROOF_HOP_MAX - max( rise, 0.0 ) * BOT_ROOF_HOP_RISE_COST )
+			return null
+		local ground = GetLocalGroundZ( land )
+		if ( ground != null && land.z - ground < BOT_ROOF_MIN_ELEVATION * 0.5 )
+			continue	// the street (or a low ledge): no use jumping down there
+		if ( land.z < nav.minZ - BOT_VOID_MARGIN )
+			return null
+		// Floor on past the edge we'd land on, and standing room.
+		local inner = land + dir * 48.0 + Vector( 0, 0, 32 )
+		if ( TraceLine( inner, inner - Vector( 0, 0, 96 ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE ).fraction >= 1.0 )
+			continue
+		if ( !HasClearLine( bot, land + Vector( 0, 0, 8 ), land + Vector( 0, 0, 80 ) ) )
+			continue
+		// Nothing in the way at the height of the jump (the arc goes up first, then down onto it).
+		local jumpZ = max( land.z, origin.z ) + 72.0
+		if ( !HasClearLine( bot, Vector( origin.x, origin.y, jumpZ ), Vector( land.x, land.y, jumpZ ) ) )
+			return null
+		return { pos = land + dir * 32.0, dist = d }
+	}
+	return null
+}
+
+// Up off the graph, running straight at the goal across the roofs (see GetPathDirection): the
+// direction to run in. A roof edge in the way is jumped only with a landing found on the other side
+// (straight on or a bit off to the side), and a hop is only worth it if it gets us closer to the
+// goal (RoofHopButtons does the jumping). No landing: roof lovers that just climbed up (roofRunUntil)
+// run along the edge for a while; otherwise straight on (off the edge, the old way).
+function GetRoofRunDir( bot, brain, goal )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local toGoal = goal - origin
+	local hop = brain.roofHop
+	if ( hop != null )
+	{
+		if ( now > hop.until )
+		{
+			// Never got to the jump from here: not this edge again for a while.
+			if ( !hop.jumped )
+				MarkBadHopSpot( origin )
+			brain.roofHop = null
+		}
+		else
+			return hop.land - origin	// sprinting straight at the edge (no backing off for a run-up: that cost the sprint)
+	}
+
+	if ( now < brain.nextRoofCheck )
+		return brain.roofRunDir != null ? brain.roofRunDir : toGoal
+	brain.nextRoofCheck = now + BOT_ROOF_CHECK_INTERVAL
+	brain.roofRunDir = toGoal
+	local d = Normalize2D( toGoal )
+	if ( IsBadHopSpot( origin ) )
+		return toGoal
+
+	// Edges straight on and off to the side alike (an edge at an angle to the goal is jumped too).
+	local baseYaw = atan2( d.y, d.x )
+	local anyEdge = false	// (straight on: only then is running along the edge instead worth it)
+	foreach ( offset in [ 0.0, 25.0, -25.0, 50.0, -50.0 ] )
+	{
+		local yaw = baseYaw + offset * ( PI / 180.0 )
+		local dir = Vector( cos( yaw ), sin( yaw ), 0 )
+		if ( !IsRoofEdgeNear( bot, origin, dir ) )
+			continue
+		if ( offset == 0.0 )
+			anyEdge = true
+		local land = FindRoofLanding( bot, origin, dir )
+		if ( land == null )
+			continue
+		if ( Length2D( toGoal ) - Length2D( goal - land.pos ) < BOT_ROOF_HOP_MIN_PROGRESS )
+			continue
+		printt( "BotAI:", bot.GetPlayerName(), "jumping across to the next roof,", land.dist.tointeger(), "out" )
+		brain.roofHop = { dir = dir, land = land.pos, until = now + BOT_ROOF_HOP_TIMEOUT, startTime = now,
+			jumped = false, jumpTime = 0.0, takeoff = null,			// (set by TakeOffRoofHop)
+			wallSince = 0.0, kicks = 0, kickAt = -999.0,			// wallruns on the way (see RoofHopButtons)
+			airInput = null, airInputAt = -1.0 }					// air control steering this tick (see GetPathDirection)
+		if ( BOT_UTILITY_ROUTES )
+			brain.routeNoHopSince = 0.0
+		return land.pos - origin
+	}
+	if ( !anyEdge )
+	{
+		if ( BOT_UTILITY_ROUTES )
+			brain.routeNoHopSince = 0.0
+		return toGoal
+	}
+
+	// High route across the roofs (see GetRouteGoal): an edge with no roof to hop to for a while
+	// means the roofs ran out this way. Drop down (no run along the edge) and take the ground route
+	// to the same goal.
+	if ( BOT_UTILITY_ROUTES && brain.routeKind == "high" && brain.routeStage == "roofs" )
+	{
+		if ( brain.routeNoHopSince == 0.0 )
+			brain.routeNoHopSince = now
+		else if ( now - brain.routeNoHopSince > BOT_ROUTE_EDGE_SEARCH_TIME )
+		{
+			RouteFallbackToGround( bot, brain, "no roof to hop to", false )
+			brain.roofRunUntil = 0.0
+		}
+	}
+
+	// Nowhere to land: roof lovers stay up a while longer, running along the edge (our strafe side first).
+	if ( now < brain.roofRunUntil && brain.evac == null )
+	{
+		foreach ( side in [ brain.strafeDir, -brain.strafeDir ] )
+		{
+			local yaw = baseYaw + side * 0.5 * PI
+			local dir = Vector( cos( yaw ), sin( yaw ), 0 )
+			if ( !IsGapAhead( bot, dir, 160.0 ) )
+			{
+				brain.roofRunDir = dir * 200.0
+				return brain.roofRunDir
+			}
+		}
+	}
+	brain.roofRunUntil = 0.0
+	return toGoal
+}
+
+// A roof hop (see GetRoofRunDir), from UpdateParkour: the jump a player makes, nothing pushes the
+// bot. Sprinting at the edge, jump once it's close (or right at a lip in front of it, so the lip
+// doesn't stop the run, or once stopped against one). In the air the move input steers for the
+// landing (air control, see GetPathDirection), and the double jump goes in near the top of the arc
+// while the landing is still ahead or above. A wall touched on the way is a wallrun, which gives the
+// double jump back: kick off it (the steering turns the kick towards the landing) and double jump
+// again. Down on a floor again: landed, or a miss that keeps bots off this takeoff for a while.
+function RoofHopButtons( bot, brain )
+{
+	local hop = brain.roofHop
+	local now = Time()
+	local origin = bot.GetOrigin()
+	if ( BotOnFoot( bot ) )
+	{
+		if ( hop.jumped )
+		{
+			if ( now - hop.jumpTime >= BOT_ROOF_HOP_MIN_AIR )
+				EndRoofHop( bot, brain, origin )
+			return 0	// (or still taking off: the jump hasn't lifted us yet)
+		}
+		local lip = IsObstacleAhead( bot, hop.dir ) && IsRoofEdgeNear( bot, origin, hop.dir )
+		local blocked = now - hop.startTime > BOT_ROOF_HOP_BLOCKED_TIME && Length2D( bot.GetVelocity() ) < 60.0
+		if ( !lip && !blocked && !IsRoofEdgeNear( bot, origin, hop.dir, BOT_ROOF_HOP_LAUNCH_DIST ) )
+			return 0
+		TakeOffRoofHop( brain, origin, false )
+		return BOT_IN_JUMP
+	}
+
+	local wallRunning = bot.IsWallRunning()
+	if ( !hop.jumped )
+	{
+		// Off the edge before the jump (ran off it, or onto a wall beside it): the jump from here
+		// instead. In the air that's the double jump; on a wall it's a kick, the double jump stays.
+		TakeOffRoofHop( brain, origin, !wallRunning )
+		return BOT_IN_JUMP
+	}
+
+	if ( wallRunning )
+	{
+		// Touching the wall gives the double jump back. Kick off once the wallrun has caught (a
+		// press on the first touch can be lost), a couple of times at most.
+		brain.usedDoubleJump = false
+		if ( hop.wallSince == 0.0 )
+			hop.wallSince = now
+		// (Not again right after a kick: IsWallRunning lags a think or two leaving the wall, and a
+		// second press then was a second wall jump.)
+		else if ( now - hop.wallSince >= BOT_ROOF_HOP_WALL_KICK && hop.kicks < BOT_ROOF_HOP_MAX_KICKS && now - hop.kickAt > 0.5 )
+		{
+			hop.wallSince = 0.0
+			hop.kickAt = now
+			hop.kicks++
+			printt( "BotAI:", bot.GetPlayerName(), "kicked off a wall mid roof hop, double jump back" )
+			return BOT_IN_JUMP
+		}
+		return 0
+	}
+	hop.wallSince = 0.0
+
+	// Double jump near the top of the arc (the second rise replaces what's left of the first), while
+	// the landing is still ahead of us or above our feet; past it and below, falling onto it is enough.
+	if ( !brain.usedDoubleJump && bot.GetVelocity().z < BOT_ROOF_HOP_DOUBLE_VZ && now - hop.jumpTime > 0.15 )
+	{
+		local toLand = hop.land - origin
+		if ( Dot2D( toLand, hop.dir ) > 32.0 || toLand.z > -16.0 )
+		{
+			brain.usedDoubleJump = true
+			return BOT_IN_JUMP
+		}
+	}
+	return 0
+}
+
+// The jump off the edge (RoofHopButtons, or AvoidVoid at the edge of a pit): the hop is in the air
+// from now on, the double jump still to come unless this press is it (`doubleUsed`).
+function TakeOffRoofHop( brain, origin, doubleUsed )
+{
+	local hop = brain.roofHop
+	hop.jumped = true
+	hop.jumpTime = Time()
+	hop.takeoff = origin
+	hop.until = hop.jumpTime + BOT_ROOF_HOP_FLIGHT_MAX
+	brain.usedDoubleJump = doubleUsed
+	brain.planGapDouble = false		// (the ordinary gap leap's double jump isn't ours)
+}
+
+// Down on a floor after the hop: made it if that's the landing's roof, near where we aimed; a miss
+// (the street, short of the far lip) keeps bots off this takeoff for a while.
+function EndRoofHop( bot, brain, origin )
+{
+	local hop = brain.roofHop
+	brain.roofHop = null
+	brain.nextRepathTime = 0.0
+	brain.usedDoubleJump = false
+	if ( origin.z > hop.land.z - 48.0 && Length2D( hop.land - origin ) < BOT_ROOF_HOP_LANDED_DIST )
+		return
+	printt( "BotAI:", bot.GetPlayerName(), "missed the roof hop" )
+	MarkBadHopSpot( hop.takeoff )
+}
+
+// A roof edge (a drop of more than BOT_GAP_DROP) in flat direction dir, looked for at a few
+// distances out to `reach` and probed from BOT_ROOF_EDGE_PROBE_UP so a low lip along the edge
+// doesn't hide it (IsGapAhead's probe started inside the lip and never saw the drop).
+function IsRoofEdgeNear( bot, origin, dir, reach = 146.0 )	// (default: a bit past BOT_ROOF_EDGE_AHEAD)
+{
+	foreach ( frac in [ 0.33, 0.66, 1.0 ] )
+	{
+		local start = origin + dir * ( reach * frac ) + Vector( 0, 0, BOT_ROOF_EDGE_PROBE_UP )
+		local down = TraceLine( start, start - Vector( 0, 0, BOT_GAP_DROP + BOT_ROOF_EDGE_PROBE_UP ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( down.startSolid )
+			return false	// a wall that way, not an edge
+		if ( down.fraction >= 1.0 )
+			return true
+	}
+	return false
+}
+
 function StartVantageHold( brain )
 {
-	brain.holdUntil = Time() + RandomFloat( BOT_VANTAGE_HOLD_MIN, BOT_VANTAGE_HOLD_MAX )
+	brain.holdUntil = Time() + RandomFloat( BOT_VANTAGE_HOLD_MIN, BOT_VANTAGE_HOLD_MAX ) * brain.lethality.pilot.roofHoldTimeScale
 	brain.holdRoam = false		// a lead-based hold: ends when the lead does
 	brain.nextHoldLook = 0.0
 	printt( "BotAI: holding a high point" )
@@ -5854,14 +7420,36 @@ function GetRandomRoamPoint( bot )
 // goal's height in brain.patrolElevation (see the roof hold in ChooseGoal).
 function ChooseExploreGoal( bot, brain )
 {
+	// Pilots: often a roof (no nodes up there, see PickRoofSpot), by taste; up on the roofs
+	// already, mostly the next roof over.
+	// (Utility routes: no roll, the route to the goal decides on the roofs, see GetRouteGoal.)
+	brain.roofGoal = null
+	if ( !BOT_UTILITY_ROUTES && !bot.IsTitan() && brain.evac == null && file.roofSpots.len() > 0 )
+	{
+		local chance = brain.routeStyle == "high" ? 1.0 : max( brain.roofLove, 0.35 )
+		if ( IsBotUpHigh( bot, brain ) )
+			chance = max( chance, 0.8 )
+		if ( RandomFloat( 0.0, 1.0 ) < chance * BOT_ROOF_SPOT_CHANCE * brain.lethality.pilot.roofSpotChanceScale )
+		{
+			local spot = PickRoofSpot( bot, brain, "roam" )
+			if ( spot != null )
+			{
+				brain.roofGoal = spot
+				brain.patrolElevation = spot.height
+				return spot.pos
+			}
+		}
+	}
+
 	local nav = GetNavCache()
 	local nodeCount = nav.positions.len()
 	local origin = bot.GetOrigin()
 	local mates = GetTeammateBrains( bot )
 	local best = null
-	local bestScore = -1.0
+	local bestScore = -1.0e9	// scores only go negative with a center bias (low lethality)
 	local bestElevation = 0.0
 	local heightWeight = brain.routeStyle == "high" ? 1.0 : brain.roofLove
+	local centerBias = bot.IsTitan() ? 0.0 : brain.lethality.pilot.centerBias
 	local candidates = BOT_EXPLORE_CANDIDATES + ( brain.roofLove >= 0.5 ? BOT_ROOF_EXTRA_CANDIDATES : 0 )
 	for ( local i = 0; i < candidates; i++ )
 	{
@@ -5884,6 +7472,9 @@ function ChooseExploreGoal( bot, brain )
 			score += BOT_WR_REACH_BONUS * brain.wallLove * WallrunStyleFactor( brain )
 		if ( brain.routeStyle == "indoor" && i < 3 && IsNodeIndoor( nav, index ) )
 			score += BOT_INDOOR_ROUTE_BONUS
+		// Low lethality: stay around the middle of the map.
+		if ( centerBias > 0.0 )
+			score -= min( Distance2D( pos, Vector( nav.centerX, nav.centerY, pos.z ) ), BOT_EXPLORE_FAR_DIST ) * centerBias
 		score += RandomFloat( 0.0, 800.0 )
 
 		if ( score > bestScore )
@@ -5895,6 +7486,622 @@ function ChooseExploreGoal( bot, brain )
 	}
 	brain.patrolElevation = bestElevation
 	return best
+}
+
+//---------------------------------------------------------
+// Roof spots
+//---------------------------------------------------------
+// Most roofs have no nodes of their own, so no roaming or flank goal ever lands on one. Here the
+// roofs next to the graph are found from street-level nodes: a wall close by with a walkable roof
+// behind it, low enough to climb (see FindClimbableRoof), with open sky above. Each spot keeps the
+// node it was found from (its foot): a bot goes there first, then climbs straight at the roof.
+function RoofSpotScanStep()
+{
+	local now = Time()
+	if ( now < file.roofScanNext )
+		return
+	file.roofScanNext = now + BOT_ROOF_SCAN_INTERVAL
+	if ( NavGetNodeCount() == 0 )
+		return
+	local nav = GetNavCache()
+	local count = nav.positions.len()
+	if ( file.roofScanIndex >= count || file.roofSpots.len() >= BOT_ROOF_SPOT_MAX )
+		return
+	local scanned = 0
+	while ( scanned < BOT_ROOF_SCAN_NODES && file.roofScanIndex < count )
+	{
+		local index = file.roofScanIndex
+		file.roofScanIndex++
+		if ( nav.elevation[ index ] > BOT_ROOF_SCAN_MAX_ELEV )
+			continue
+		scanned++
+		ScanRoofsAroundNode( nav.positions[ index ], index )
+	}
+	if ( file.roofScanIndex >= count )
+		printt( "BotAI: roof scan done,", file.roofSpots.len(), "roof spots" )
+}
+
+function ScanRoofsAroundNode( base, index )
+{
+	// (Only roofs a real climb gets up to: a wallrun up the face, a kick and a double jump. The
+	// alley chain isn't counted: whether there's a facing wall depends on where we climb from.)
+	local probeHeight = BOT_CLIMB_REACH + 72.0
+	local chest = base + Vector( 0, 0, 40 )
+	local above = base + Vector( 0, 0, probeHeight )
+	// A ceiling over the node (indoors): nothing to climb from here.
+	if ( TraceLine( chest, above, null, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE ).fraction < 1.0 )
+		return
+	// Four directions, turned a little from node to node so walls at any angle get found.
+	local yaw0 = ( index % 4 ) * ( PI / 8.0 )
+	for ( local k = 0; k < 4; k++ )
+	{
+		local yaw = yaw0 + k * ( PI * 0.5 )
+		local dir = Vector( cos( yaw ), sin( yaw ), 0 )
+		local wall = TraceLine( chest, chest + dir * BOT_CLIMB_WALL_DIST, null, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
+		if ( wall.fraction >= 1.0 || wall.startSolid || fabs( wall.surfaceNormal.z ) > 0.3 )
+			continue
+		local wallDist = BOT_CLIMB_WALL_DIST * wall.fraction
+		local nearTop = FindRoofSurface( null, above, dir, wallDist + 56.0, probeHeight )
+		if ( nearTop == null )
+			continue
+		local height = nearTop.z - base.z
+		if ( height < BOT_CLIMB_MIN_HEIGHT || height > BOT_CLIMB_REACH )
+			continue
+		// A real roof that goes on at the same height, out in the open (not a balcony or a ledge).
+		local farTop = FindRoofSurface( null, above, dir, wallDist + BOT_ROOF_SPOT_INSET, probeHeight )
+		if ( farTop == null || fabs( farTop.z - nearTop.z ) > 32.0 || IsUnderRoof( farTop ) )
+			continue
+		if ( IsRoofSpotNear( farTop, BOT_ROOF_SPOT_MIN_GAP ) )
+			continue
+		AddRoofSpot( { pos = farTop, base = base, dir = dir, height = height, badUntil = 0.0 } )
+		if ( file.roofSpots.len() >= BOT_ROOF_SPOT_MAX )
+			return
+	}
+}
+
+function AddRoofSpot( spot )
+{
+	local key = NavCellKey( spot.pos.x, spot.pos.y )
+	if ( !( key in file.roofSpotCells ) )
+		file.roofSpotCells[ key ] <- []
+	file.roofSpotCells[ key ].append( file.roofSpots.len() )
+	file.roofSpots.append( spot )
+}
+
+// Roof spots within radius (2D) of pos, from the grid cells around it.
+function GetRoofSpotsNear( pos, radius )
+{
+	local result = []
+	local cells = floor( radius / BOT_NAV_CELL ).tointeger() + 1
+	for ( local dx = -cells; dx <= cells; dx++ )
+	{
+		for ( local dy = -cells; dy <= cells; dy++ )
+		{
+			local key = NavCellKey( pos.x + dx * BOT_NAV_CELL, pos.y + dy * BOT_NAV_CELL )
+			if ( !( key in file.roofSpotCells ) )
+				continue
+			foreach ( i in file.roofSpotCells[ key ] )
+			{
+				if ( Distance2D( pos, file.roofSpots[ i ].pos ) < radius )
+					result.append( file.roofSpots[ i ] )
+			}
+		}
+	}
+	return result
+}
+
+function IsRoofSpotNear( pos, radius )
+{
+	foreach ( spot in GetRoofSpotsNear( pos, radius ) )
+	{
+		if ( fabs( spot.pos.z - pos.z ) < 96.0 )
+			return true
+	}
+	return false
+}
+
+// Up on the roofs (or anything well above the local street level) right now.
+// (A roof run left over after dropping back to the street is over: it kept counting the bot as up
+// high down there for the rest of it.)
+function IsBotUpHigh( bot, brain )
+{
+	if ( brain.offGraph )
+		return true
+	local origin = bot.GetOrigin()
+	local ground = GetLocalGroundZ( origin )
+	if ( Time() < brain.roofRunUntil )
+	{
+		if ( ground == null || origin.z - ground > 48.0 || !BotOnFoot( bot ) )
+			return true
+		brain.roofRunUntil = 0.0
+	}
+	return ground != null && origin.z - ground > BOT_VANTAGE_MIN_ELEVATION
+}
+
+// A roof spot to go for. "roam": far ones we haven't been to (already up there: the next roof
+// over, for a roof-to-roof run); "flank": one overlooking the prey, nearer to it than we are.
+// Spots a teammate is already going for score much lower.
+function PickRoofSpot( bot, brain, mode, preyPos = null )
+{
+	if ( file.roofSpots.len() == 0 )
+		return null
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local up = mode == "roam" && IsBotUpHigh( bot, brain )
+	local candidates = null
+	if ( mode == "flank" )
+		candidates = GetRoofSpotsNear( preyPos, BOT_ROOF_SPOT_FLANK_MAX )
+	else if ( up )
+		candidates = GetRoofSpotsNear( origin, BOT_ROOF_SPOT_HOP_MAX )
+	else
+	{
+		candidates = []
+		for ( local i = 0; i < BOT_ROOF_SPOT_CANDIDATES; i++ )
+			candidates.append( file.roofSpots[ RandomInt( file.roofSpots.len() ) ] )
+	}
+
+	local mates = GetTeammateBrains( bot )
+	local preyDist = preyPos != null ? Distance( origin, preyPos ) : 0.0
+	local best = null
+	local bestScore = -1.0e9
+	foreach ( spot in candidates )
+	{
+		if ( now < spot.badUntil )
+			continue
+		local dist = Distance( origin, spot.pos )
+		if ( dist < 300.0 )
+			continue
+		local score = 0.0
+		if ( mode == "flank" )
+		{
+			local toPrey = Distance( spot.pos, preyPos )
+			if ( toPrey < BOT_ROOF_SPOT_FLANK_MIN || toPrey >= preyDist )
+				continue
+			score = -dist - toPrey * 0.5
+		}
+		else
+		{
+			if ( up && fabs( spot.pos.z - origin.z ) > BOT_ROOF_SPOT_HOP_DZ )
+				continue
+			score = min( dist, BOT_EXPLORE_FAR_DIST )
+			if ( WasVisited( brain, spot.pos ) )
+				score *= 0.2
+		}
+		foreach ( mate in mates )
+		{
+			if ( mate.brain.roofGoal == spot || mate.brain.flankRoof == spot )
+				score -= 1500.0
+		}
+		score += RandomFloat( 0.0, 600.0 )
+		if ( score > bestScore )
+		{
+			best = spot
+			bestScore = score
+		}
+	}
+	return best
+}
+
+// Where to head for a roof spot right now: its foot first (the node it was found from, right
+// under the climb), then straight at the roof, which makes UpdateClimb take the climb (see
+// IsClimbingToRoofSpot). Already up on the roofs: straight there, across them.
+function GetRoofSpotStage( bot, brain, spot )
+{
+	local origin = bot.GetOrigin()
+	local now = Time()
+	if ( origin.z > spot.pos.z - 48.0 || IsBotUpHigh( bot, brain ) )
+		return spot.pos
+
+	if ( brain.roofStageSpot == spot )
+	{
+		if ( now < brain.roofStageUntil )
+			return spot.pos
+		// Climbing didn't get us up there: nobody tries this one for a while.
+		printt( "BotAI:", bot.GetPlayerName(), "couldn't get up to a roof spot, giving it up" )
+		spot.badUntil = now + BOT_ROOF_SPOT_BAD_TIME
+		brain.roofStageSpot = null
+		// (A high route's climb: back to the ground route to the same goal, see GetRouteGoal.)
+		if ( BOT_UTILITY_ROUTES && brain.routeEntry == spot )
+			RouteFallbackToGround( bot, brain, "couldn't get up", true )
+		DropRoofSpot( brain, spot )
+		return spot.base
+	}
+
+	local toBase = spot.base - origin
+	if ( Length2D( toBase ) < BOT_ROOF_BASE_REACHED && fabs( toBase.z ) < 72.0 )
+	{
+		brain.roofStageSpot = spot
+		// (A high route's climb gets less time: the ground route is there to fall back on.)
+		brain.roofStageUntil = now + ( BOT_UTILITY_ROUTES && brain.routeEntry == spot ? BOT_ROUTE_CLIMB_MAX_TIME : BOT_ROOF_CLIMB_STAGE_TIME )
+		// A failed climb here gets one retry (see UpdateClimb), the wallrun way if a jump didn't do it.
+		brain.roofClimbRetried = false
+		brain.climbForceWallrun = false
+		brain.nextClimbCheck = 0.0
+		brain.nextLedgeCheck = 0.0
+		return spot.pos
+	}
+	return spot.base
+}
+
+function DropRoofSpot( brain, spot )
+{
+	if ( brain.roofGoal == spot )
+	{
+		brain.roofGoal = null
+		brain.patrolGoal = null
+	}
+	if ( brain.flankRoof == spot )
+	{
+		brain.flankRoof = null
+		brain.flankPoint = null
+	}
+}
+
+// At a roof spot's foot and on the way up to it: every climb is taken (see UpdateClimb).
+function IsClimbingToRoofSpot( bot, brain )
+{
+	if ( brain.evac != null || brain.roofStageSpot == null || Time() >= brain.roofStageUntil )
+		return false
+	return brain.roofStageSpot.pos.z - bot.GetOrigin().z > 48.0
+}
+
+//---------------------------------------------------------
+// Utility routes (see BOT_UTILITY_ROUTES)
+//---------------------------------------------------------
+// The destination is already chosen (ChooseGoal); this picks how to get there. GROUND: the path
+// graph, the goal is dest itself. HIGH: to the foot of a roof spot near us (spot.base), up it
+// (spot.pos, UpdateClimb takes the climb, see IsClimbingToRoofSpot), then straight at dest across
+// the roofs off the graph (GetPathDirection -> GetRoofRunDir). Whatever goes wrong on the high route
+// falls back to the ground route to the same dest. Never changes the destination itself: returns
+// dest, spot.base, spot.pos, or null (a roaming bot stopping to watch from the roofs it got to).
+function GetRouteGoal( bot, brain, dest, purpose, preyPos = null )
+{
+	if ( dest == null || bot.IsTitan() || brain.evac != null || NavGetNodeCount() == 0 )
+		return dest
+	local now = Time()
+	local gap = now - brain.routeLastUsed
+	brain.routeLastUsed = now
+	// Not asked for a while (fighting, fleeing...): whatever was planned is out of date.
+	// (ClearRoute also lets go of the roof spot we were climbing to.)
+	if ( gap > BOT_ROUTE_STALE_TIME )
+		ClearRoute( brain )
+	else if ( gap > 0.5 && brain.routeStage == "climb" )
+		brain.routeClimbSince = now		// (the no-climb check only counts ticks in a row at the foot)
+	local moved = brain.routeDest == null || Distance2D( dest, brain.routeDest ) > BOT_ROUTE_DEST_MOVE
+	// Never re-planned halfway up or out on the roofs: the route there keeps going to the new dest.
+	local midway = brain.routeKind == "high" && ( brain.routeStage == "climb" || brain.routeStage == "roofs" )
+	if ( brain.routeKind == null || ( ( moved || purpose != brain.routePurpose ) && !midway ) )
+		PlanRoute( bot, brain, dest, purpose, preyPos )
+	brain.routeDest = dest
+	if ( brain.routeKind != "high" )
+		return dest
+	return GetHighRouteGoal( bot, brain, dest, purpose, preyPos )
+}
+
+function ClearRoute( brain )
+{
+	if ( brain.routeEntry != null && brain.roofStageSpot == brain.routeEntry )
+		brain.roofStageSpot = null
+	brain.routeKind = null
+	brain.routeStage = "none"
+	brain.routePurpose = null
+	brain.routeDest = null
+	brain.routeEntry = null
+	brain.routeNoHopSince = 0.0
+}
+
+// Scores the ground route and (if there is one) the high route to dest, and takes the better.
+// Traces only happen here (IsBotUpHigh), i.e. on a re-plan, not every tick.
+function PlanRoute( bot, brain, dest, purpose, preyPos )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	ClearRoute( brain )
+	brain.routeKind = "ground"
+	brain.routePurpose = purpose
+	brain.routeDest = dest
+	local dist = Distance2D( origin, dest )
+	// (Indoor bots stay on ground routes: IsBotUpHigh would count an upper floor as up high.)
+	local up = !brain.indoors && IsBotUpHigh( bot, brain )
+	local entry = null
+	if ( !up && dist >= BOT_ROUTE_HIGH_MIN_DIST && now >= brain.routeFallbackUntil )
+		entry = PickRouteEntry( bot, brain, dest )
+	// No high route to weigh: already up but nearly there, or no roof spot to climb on the way.
+	if ( !( ( up && dist > BOT_ROUTE_HIGH_ARRIVE_DIST ) || entry != null ) )
+		return
+	local team = CountTeamRoutes( bot, brain, dest, purpose == "hunt" ? brain.prey : null )
+	local groundTime = max( dist * BOT_ROUTE_GROUND_WIND / BOT_ROUTE_RUN_SPEED, 1.0 )
+	local ground = ScoreGroundRoute( team )
+	local high = ScoreHighRoute( bot, brain, dest, purpose, preyPos, entry, team, groundTime )
+	printt( "BotAI:", bot.GetPlayerName(), purpose, "route: ground", ground, "high", high, up ? "(already up)" : "" )
+	if ( high <= ground )
+		return	// (ties go to the ground)
+	brain.routeKind = "high"
+	brain.routeEntry = entry
+	if ( entry == null )
+		StartRouteRoofs( bot, brain, dest )
+	else
+	{
+		brain.routeStage = "foot"
+		// Twice the estimated walk to the foot, plus some slack.
+		brain.routeStageUntil = now + Distance2D( origin, entry.base ) * BOT_ROUTE_GROUND_WIND / BOT_ROUTE_RUN_SPEED * 2.0 + BOT_ROUTE_FOOT_SLACK
+	}
+}
+
+// The roof spot to climb for a high route to dest: its foot close to us and about at our height,
+// the roof bringing us well closer to dest, for the least detour (teammates' spots cost more).
+function PickRouteEntry( bot, brain, dest )
+{
+	if ( file.roofSpots.len() == 0 )
+		return null
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local direct = Distance2D( origin, dest )
+	local maxDetour = max( BOT_ROUTE_MAX_DETOUR, direct * 0.35 )
+	local mates = GetTeammateBrains( bot )
+	local best = null
+	local bestCost = 0.0
+	foreach ( spot in GetRoofSpotsNear( origin, BOT_ROUTE_ENTRY_RADIUS ) )
+	{
+		if ( now < spot.badUntil || fabs( spot.base.z - origin.z ) > BOT_ROUTE_ENTRY_MAX_DZ )
+			continue
+		local toDest = Distance2D( spot.pos, dest )
+		if ( toDest > direct - BOT_ROUTE_ENTRY_MIN_GAIN )
+			continue
+		local detour = Distance2D( origin, spot.base ) + toDest - direct
+		if ( detour > maxDetour )
+			continue
+		local cost = detour + RandomFloat( 0.0, 250.0 )
+		foreach ( mate in mates )
+		{
+			local mb = mate.brain
+			if ( mb.routeEntry == spot || mb.roofGoal == spot || mb.flankRoof == spot )
+				cost += BOT_ROUTE_ENTRY_MATE_COST
+		}
+		if ( best == null || cost < bestCost )
+		{
+			best = spot
+			bestCost = cost
+		}
+	}
+	return best
+}
+
+// Teammate pilots with a live route: how many, how many of them high, and how many going to the
+// same place (or after the same prey) by each kind of route.
+function CountTeamRoutes( bot, brain, dest, prey )
+{
+	local now = Time()
+	local team = { total = 0, high = 0, sameHigh = 0, sameGround = 0 }
+	foreach ( mate in GetTeammateBrains( bot ) )
+	{
+		local mb = mate.brain
+		if ( mate.bot.IsTitan() || mb.routeKind == null || now - mb.routeLastUsed > BOT_ROUTE_STALE_TIME )
+			continue
+		local isHigh = mb.routeKind == "high"
+		team.total++
+		if ( isHigh )
+			team.high++
+		local same = ( prey != null && mb.prey == prey )
+			|| ( mb.routeDest != null && Distance2D( mb.routeDest, dest ) < BOT_ROUTE_SAME_DEST_DIST )
+		if ( same )
+		{
+			if ( isHigh )
+				team.sameHigh++
+			else
+				team.sameGround++
+		}
+	}
+	return team
+}
+
+// The ground route is the yardstick: its time ratio is 1 by definition.
+function ScoreGroundRoute( team )
+{
+	return -1.0 - BOT_ROUTE_SAME_PENALTY * team.sameGround + RandomFloat( 0.0, BOT_ROUTE_NOISE )
+}
+
+// The high route: time against the ground route's, minus the risk of the climb, plus what being up
+// there is worth here, the bot's taste for it, and how much the team wants someone up high.
+// entry == null: we're up on the roofs already (no climb).
+function ScoreHighRoute( bot, brain, dest, purpose, preyPos, entry, team, groundTime )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local up = entry == null
+	local highTime = 0.0
+	local risk = 0.0
+	if ( up )
+		highTime = Distance2D( origin, dest ) * BOT_ROUTE_ROOF_WIND / BOT_ROUTE_RUN_SPEED
+	else
+	{
+		highTime = ( Distance2D( origin, entry.base ) * BOT_ROUTE_GROUND_WIND + Distance2D( entry.pos, dest ) * BOT_ROUTE_ROOF_WIND )
+			/ BOT_ROUTE_RUN_SPEED + BOT_ROUTE_CLIMB_TIME
+		risk += BOT_ROUTE_RISK_CLIMB * entry.height / BOT_CLIMB_REACH
+		if ( entry.height > BOT_CLIMB_MAX_HEIGHT )
+			risk += BOT_ROUTE_RISK_WALLRUN_CLIMB
+		if ( IsBadClimbSpot( entry.base + entry.dir * 120.0 ) )
+			risk += BOT_ROUTE_RISK_BAD_WALL
+		if ( now < brain.underFireUntil )
+			risk += BOT_ROUTE_RISK_UNDER_FIRE
+		// An enemy known to be near the foot would catch us on the wall. (The team's leads read
+		// straight from file.intel: GetTeamIntel would also roll the radar ping.)
+		local myTeam = bot.GetTeam()
+		if ( myTeam in file.intel )
+		{
+			foreach ( enemy, lead in file.intel[ myTeam ] )
+			{
+				if ( now - lead.time < BOT_INTEL_MEMORY && Distance2D( lead.pos, entry.base ) < BOT_ROUTE_EXPOSED_DIST )
+				{
+					risk += BOT_ROUTE_RISK_EXPOSED
+					break
+				}
+			}
+		}
+	}
+	risk += BOT_ROUTE_RISK_PER_FAIL * min( brain.routeHighFails, 3 )
+
+	local roofZ = up ? origin.z : entry.pos.z
+	local tactical = 0.0
+	if ( preyPos != null && preyPos.z < roofZ - 64.0 )
+		tactical += BOT_ROUTE_TACT_ABOVE_PREY
+	if ( IsUnderRoof( dest ) )
+		tactical -= BOT_ROUTE_INDOOR_DEST_PENALTY
+	else
+		tactical += BOT_ROUTE_TACT_OPEN_DEST
+	if ( purpose == "objective" )
+		tactical -= BOT_ROUTE_OBJECTIVE_PENALTY
+
+	local taste = 0.0
+	if ( brain.routeStyle == "high" )
+		taste = BOT_ROUTE_TASTE_HIGH
+	else if ( brain.routeStyle == "flank" )
+		taste = BOT_ROUTE_TASTE_FLANK
+	else if ( brain.routeStyle == "indoor" )
+		taste = BOT_ROUTE_TASTE_INDOOR
+	taste += ( brain.roofLove - 0.3 ) * BOT_ROUTE_TASTE_ROOF_LOVE
+	taste += ( brain.lethality.pilot.roofSpotChanceScale - 1.0 ) * BOT_ROUTE_TASTE_LETHALITY
+
+	local teamTerm = -BOT_ROUTE_SAME_PENALTY * team.sameHigh
+	if ( team.total > 0 )
+		teamTerm += ( BOT_ROUTE_TEAM_HIGH_SHARE - team.high.tofloat() / team.total ) * BOT_ROUTE_TEAM_WEIGHT
+
+	return -highTime / groundTime - risk + tactical + taste + teamTerm + RandomFloat( 0.0, BOT_ROUTE_NOISE )
+}
+
+// The high route, this tick: where to head, and the stage changes (see GetRouteGoal). None of the
+// timeouts cut a climb or a roof hop short: they wait for climbUntil / roofHop to be over.
+function GetHighRouteGoal( bot, brain, dest, purpose, preyPos )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	local spot = brain.routeEntry
+	if ( brain.routeStage == "foot" || brain.routeStage == "climb" )
+	{
+		// Up there (the climb worked, or some other way up did): across the roofs now.
+		if ( spot != null && !brain.indoors && ( IsBotUpHigh( bot, brain )
+			|| ( BotOnFoot( bot ) && brain.climbUntil == 0.0 && origin.z > spot.pos.z - 48.0 ) ) )
+		{
+			StartRouteRoofs( bot, brain, dest )
+			return dest
+		}
+		if ( spot == null || ( now > brain.routeStageUntil && brain.climbUntil == 0.0 ) )
+		{
+			RouteFallbackToGround( bot, brain, "too slow getting to the climb", false )
+			return dest
+		}
+		if ( brain.routeStage == "foot" && brain.pathFailCount >= 2 )
+		{
+			RouteFallbackToGround( bot, brain, "no path to the climb", false )
+			return dest
+		}
+		// A climb under way at the foot: the stage waits for it to end (a jump climb, its wallrun retry
+		// and the other side of the wall can take longer than BOT_ROUTE_CLIMB_MAX_TIME together).
+		if ( brain.roofStageSpot == spot && brain.climbUntil > 0.0 )
+		{
+			brain.roofStageUntil = max( brain.roofStageUntil, now + 1.5 )
+			brain.routeStageUntil = max( brain.routeStageUntil, brain.roofStageUntil + 1.0 )
+		}
+		local stage = GetRoofSpotStage( bot, brain, spot )
+		if ( brain.routeKind != "high" )
+			return dest		// (GetRoofSpotStage gave the spot up: ground route)
+		if ( brain.roofStageSpot == spot )
+		{
+			// At the foot: climbing now.
+			if ( brain.routeStage != "climb" )
+			{
+				brain.routeStage = "climb"
+				brain.routeClimbSince = now
+				brain.routeStageUntil = now + BOT_ROUTE_CLIMB_MAX_TIME + 1.0
+			}
+			else if ( now - brain.routeClimbSince > BOT_ROUTE_CLIMB_START_TIME && brain.climbUntil == 0.0
+				&& brain.climbStart < brain.routeClimbSince )
+			{
+				// Standing at the foot and no climb even started: nothing to climb from here.
+				spot.badUntil = now + BOT_ROOF_SPOT_BAD_TIME
+				RouteFallbackToGround( bot, brain, "no climb at the foot", true )
+				return dest
+			}
+		}
+		return stage
+	}
+	if ( brain.routeStage == "roofs" )
+	{
+		if ( now - brain.routeRoofsSince > BOT_ROUTE_ROOFS_GRACE && BotOnFoot( bot ) && brain.roofHop == null
+			&& brain.climbUntil == 0.0 && !IsBotUpHigh( bot, brain ) )
+		{
+			RouteFallbackToGround( bot, brain, "back down on the street", false )
+			return dest
+		}
+		if ( Distance2D( origin, dest ) < BOT_ROUTE_HIGH_ARRIVE_DIST )
+			return FinishHighRoute( bot, brain, dest, purpose, preyPos )
+		if ( now > brain.routeStageUntil && brain.roofHop == null )
+		{
+			RouteFallbackToGround( bot, brain, "roof run took too long", false )
+			return dest
+		}
+	}
+	return dest
+}
+
+// Up on the roofs on a high route: run straight at dest across them (GetRoofRunDir hops the gaps).
+function StartRouteRoofs( bot, brain, dest )
+{
+	local now = Time()
+	local leg = Distance2D( bot.GetOrigin(), dest ) * BOT_ROUTE_ROOF_WIND / BOT_ROUTE_RUN_SPEED
+	if ( brain.routeEntry != null && brain.roofStageSpot == brain.routeEntry )
+		brain.roofStageSpot = null
+	brain.routeStage = "roofs"
+	brain.routeRoofsSince = now
+	brain.routeStageUntil = now + min( leg * 2.0 + 6.0, BOT_ROUTE_ROOF_MAX_TIME )
+	brain.routeNoHopSince = 0.0
+	// (Stay up there for the run: no dropping off the first edge, see GetRoofRunDir / IsBotUpHigh.)
+	brain.roofRunUntil = max( brain.roofRunUntil, now + min( leg * 1.5 + 3.0, BOT_ROOF_RUN_MAX ) )
+	brain.nextRepathTime = 0.0
+	printt( "BotAI:", bot.GetPlayerName(), "up on the roofs, running across to the goal" )
+}
+
+// Made it across the roofs to dest. Roaming: usually stop to watch the streets (null = hold, the
+// only time a route returns no goal). Hunting from above the prey: hold the height. Otherwise the
+// roof run is over and dest is reached the ordinary way.
+function FinishHighRoute( bot, brain, dest, purpose, preyPos )
+{
+	local now = Time()
+	brain.routeStage = "done"
+	if ( purpose == "roam" && RandomInt( 100 ) < BOT_ROOF_SPOT_HOLD_CHANCE + 40 * brain.roofLove + brain.lethality.pilot.roofHoldChanceAdd )
+	{
+		RememberVisited( brain, dest )
+		brain.holdRoam = true
+		brain.holdUntil = now + RandomFloat( BOT_ROOF_SPOT_HOLD_MIN, BOT_ROOF_SPOT_HOLD_MAX ) * brain.lethality.pilot.roofHoldTimeScale
+		brain.nextHoldLook = 0.0
+		brain.patrolGoal = null
+		brain.patrolElevation = 0.0
+		return null
+	}
+	if ( purpose == "hunt" && preyPos != null && preyPos.z < bot.GetOrigin().z - BOT_ELEVATED_TARGET_HEIGHT * 0.5 )
+		StartVantageHold( brain )
+	else
+		brain.roofRunUntil = 0.0
+	return dest		// (hunt / objective never get null)
+}
+
+// The high route went wrong: the ground route to the same destination (routeDest is kept, so this
+// isn't re-planned straight away), and no new high route or casual climb for a while.
+function RouteFallbackToGround( bot, brain, why, climbFailed )
+{
+	if ( brain.routeKind != "high" )
+		return
+	printt( "BotAI:", bot.GetPlayerName(), "high route off (" + why + "), ground route to the same goal" )
+	if ( brain.routeEntry != null && brain.roofStageSpot == brain.routeEntry )
+		brain.roofStageSpot = null
+	brain.routeKind = "ground"
+	brain.routeStage = "none"
+	brain.routeEntry = null
+	brain.routeNoHopSince = 0.0
+	brain.routeFallbackUntil = Time() + BOT_ROUTE_FALLBACK_HOLD
+	if ( climbFailed )
+		brain.routeHighFails++
+	brain.nextRepathTime = 0.0
 }
 
 function ChooseHuntGoal( bot )
@@ -5941,10 +8148,18 @@ function GetPathDirection( bot, brain, goal, isTitan )
 		return null
 
 	local origin = bot.GetOrigin()
+	// At a roof spot's foot, climbing it: straight at the roof over the wall, no path (a path to a
+	// roof the graph doesn't cover led into the building under it, round the corner, or into a
+	// detour, and the climb, which looks for the wall along the way we're going, never saw it).
+	if ( !isTitan && IsClimbingToRoofSpot( bot, brain ) && Distance2D( goal, brain.roofStageSpot.pos ) < 1.0 )
+	{
+		brain.offGraph = false
+		return goal - origin
+	}
 	local needsRepath = brain.pathGoal == null
 		|| Distance( goal, brain.pathGoal ) > BOT_GOAL_REPATH_DIST
 		|| Time() > brain.nextRepathTime
-		|| brain.pathIndex >= brain.path.len()
+		|| ( brain.pathIndex >= brain.path.len() && Time() >= brain.pathRetryAt )	// (throttled: see BOT_PATH_FAIL_RETRY)
 	// Mid-wallrun the timed repath would restart the path (and turn the view) halfway along the
 	// wall: it waits until we're down again (ResetWallrunPlan repaths then), unless the goal moved.
 	if ( needsRepath && ( brain.wrPhase == "run" || brain.wrPhase == "air" || brain.wrPhase == "kick" )
@@ -5952,7 +8167,17 @@ function GetPathDirection( bot, brain, goal, isTitan )
 		needsRepath = false
 
 	if ( needsRepath )
+	{
 		BuildPath( bot, brain, goal, isTitan )
+		// No route from here a few times running (a room the graph doesn't reach into): go round
+		// through a reachable node first.
+		if ( !isTitan && brain.path.len() == 0 && brain.pathFailCount >= 2 && brain.navDetour == null
+			&& Length2D( goal - origin ) > 300.0 )
+		{
+			brain.pathFailCount = 0		// (tried again after two more failed searches)
+			StartNavDetour( bot, brain, goal, BOT_DETOUR_MIN_DIST, BOT_DETOUR_MAX_DIST )
+		}
+	}
 
 	local reached = isTitan ? BOT_TITAN_NODE_REACHED : ( brain.careful ? BOT_CAREFUL_NODE_REACHED : BOT_PILOT_NODE_REACHED )
 	// Backtracking to a waypoint: walk all the way onto it before moving on.
@@ -5987,7 +8212,20 @@ function GetPathDirection( bot, brain, goal, isTitan )
 	// far below. Run straight at the goal across the roofs instead; edges are leapt by the
 	// parkour code, and getting stuck up there hands control back to the path for a while.
 	brain.offGraph = false
-	if ( !isTitan && brain.path.len() > 0 && Time() > brain.offGraphBlockedUntil && BotOnFoot( bot ) )
+	// In the air on a roof-to-roof jump: keep steering for the landing (the path is down below), with
+	// this bot's air control: how hard, and how far off, it steers (GetAirSteerInput). BotThinkTick
+	// uses that input as it is, so a weak air control really is weak.
+	if ( !isTitan && brain.roofHop != null && brain.roofHop.jumped && !BotOnFoot( bot ) )
+	{
+		brain.offGraph = true
+		local hop = brain.roofHop
+		hop.airInput = GetAirSteerInput( bot, brain, hop.land )
+		hop.airInputAt = Time()
+		return hop.land - origin
+	}
+	// (Not indoors: an upper floor without nodes is left by the stairs the path takes, not by
+	// running straight at the goal into the wall.)
+	if ( !isTitan && brain.path.len() > 0 && Time() > brain.offGraphBlockedUntil && BotOnFoot( bot ) && !brain.indoors )
 	{
 		local next = brain.path[ brain.pathIndex < brain.path.len() ? brain.pathIndex : brain.path.len() - 1 ]
 		if ( origin.z - next.z > BOT_OFFGRAPH_HEIGHT && Length2D( next - origin ) < 900.0 )
@@ -5998,11 +8236,15 @@ function GetPathDirection( bot, brain, goal, isTitan )
 			if ( Length2D( toGoal ) >= 1.0 && !IsVoidAt( bot, origin + Normalize2D( toGoal ) * BOT_VOID_AHEAD ) )
 			{
 				brain.offGraph = true
-				return toGoal
+				// Roof edges on the way: jumped only with a landing on the other side (see GetRoofRunDir).
+				return GetRoofRunDir( bot, brain, goal )
 			}
 			brain.offGraphBlockedUntil = Time() + BOT_OFFGRAPH_BLOCK_TIME
 		}
 	}
+	// Back on the graph: a roof hop that hadn't jumped yet is off.
+	if ( brain.roofHop != null && !brain.roofHop.jumped )
+		brain.roofHop = null
 
 	local waypoint = brain.pathIndex < brain.path.len() ? brain.path[ brain.pathIndex ] : goal
 	local dir = waypoint - origin
@@ -6017,12 +8259,17 @@ function BuildPath( bot, brain, goal, isTitan )
 	local flat = null
 	if ( isTitan )
 		flat = BuildTitanPath( origin, goal )
-	// Pilots: skip NPC traverse links a pilot can't follow (wall climbs, very long jumps), which
-	// otherwise send bots jumping at buildings forever. Needs a DLL with NavFindPathPilot.
-	else if ( file.hasPilotNav )
-		flat = NavFindPathPilot( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, BOT_HULL_PILOT, BOT_PILOT_MAX_RISE, BOT_PILOT_MAX_GAP )
 	else
-		flat = NavFindPath( origin.x, origin.y, origin.z, goal.x, goal.y, goal.z, BOT_HULL_PILOT )
+	{
+		// Pilots start from a nearby node in sight: the search starts at the node nearest to the
+		// start point, which can be one behind a wall (the route then goes through it).
+		local start = FindVisibleStartNode( bot, origin )
+		if ( start == null )
+			start = origin
+		// Pilots: skip NPC traverse links a pilot can't follow (wall climbs, very long jumps), which
+		// otherwise send bots jumping at buildings forever. Needs a DLL with NavFindPathPilot.
+		flat = PilotFindPath( start, goal )
+	}
 
 	brain.path = []
 	for ( local i = 0; i + 2 < flat.len(); i += 3 )
@@ -6031,6 +8278,68 @@ function BuildPath( bot, brain, goal, isTitan )
 	brain.pathIndex = 0
 	brain.pathGoal = goal
 	brain.nextRepathTime = Time() + BOT_REPATH_INTERVAL
+	// Nothing found: try again in a moment, not every tick.
+	if ( brain.path.len() == 0 )
+	{
+		brain.pathRetryAt = Time() + BOT_PATH_FAIL_RETRY
+		brain.pathFailCount++
+	}
+	else
+	{
+		brain.pathRetryAt = Time() + BOT_PATH_END_REPATH
+		brain.pathFailCount = 0
+	}
+}
+
+// One pilot path query, flat [x, y, z, ...] (empty = no path), limited to the traverse links a
+// pilot can follow when the DLL can.
+function PilotFindPath( start, goal )
+{
+	if ( file.hasPilotNav )
+		return NavFindPathPilot( start.x, start.y, start.z, goal.x, goal.y, goal.z, BOT_HULL_PILOT, BOT_PILOT_MAX_RISE, BOT_PILOT_MAX_GAP )
+	return NavFindPath( start.x, start.y, start.z, goal.x, goal.y, goal.z, BOT_HULL_PILOT )
+}
+
+// The nearest few graph nodes around origin (close in height too) are traced from waist height,
+// nearest first: the first one in sight, or null.
+function FindVisibleStartNode( bot, origin )
+{
+	local nav = GetNavCache()
+	if ( nav.positions.len() == 0 )
+		return null
+	local list = []		// { pos, dist }
+	for ( local dx = -1; dx <= 1; dx++ )
+	{
+		for ( local dy = -1; dy <= 1; dy++ )
+		{
+			local key = NavCellKey( origin.x + dx * BOT_NAV_CELL, origin.y + dy * BOT_NAV_CELL )
+			if ( !( key in nav.cells ) )
+				continue
+			foreach ( index in nav.cells[ key ] )
+			{
+				local pos = nav.positions[ index ]
+				local dist = Distance2D( origin, pos )
+				if ( dist < BOT_START_NODE_RADIUS && fabs( pos.z - origin.z ) < BOT_START_NODE_MAX_DZ )
+					list.append( { pos = pos, dist = dist } )
+			}
+		}
+	}
+
+	local waist = Vector( 0, 0, 36 )
+	for ( local check = 0; check < BOT_START_NODE_CHECKS && list.len() > 0; check++ )
+	{
+		local bestIndex = 0
+		for ( local i = 1; i < list.len(); i++ )
+		{
+			if ( list[ i ].dist < list[ bestIndex ].dist )
+				bestIndex = i
+		}
+		local node = list[ bestIndex ]
+		list.remove( bestIndex )
+		if ( HasClearLine( bot, origin + waist, node.pos + waist ) )
+			return node.pos
+	}
+	return null
 }
 
 // Titan route, flat [x, y, z, ...]: on the titan-sized hull first (where the map's graph has
@@ -6096,15 +8405,17 @@ function UpdateCarefulMode( bot, brain )
 		}
 	}
 
+	// (Not while climbing to a roof spot: the steering goes straight at the wall then, not along the
+	// path, and careful mode would turn the climb off.)
 	local doorAhead = brain.waypointIndoor && index < brain.path.len()
-		&& Distance( bot.GetOrigin(), brain.path[ index ] ) < BOT_DOOR_APPROACH_DIST
+		&& Distance( bot.GetOrigin(), brain.path[ index ] ) < BOT_DOOR_APPROACH_DIST && !IsClimbingToRoofSpot( bot, brain )
 	brain.careful = now < brain.carefulUntil || brain.indoors || doorAhead
 }
 
 // Stuck is either standing still (blocked) or bouncing around without getting any closer to
 // the next waypoint (hopping at a wall beside a door). Each repeat within a few seconds
 // escalates: hop and re-path, then back off at an angle, then drop the waypoint and the goal.
-function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
+function UpdateStuck( bot, brain, moveDir, forward, side, travelling, fighting = false )
 {
 	local now = Time()
 	local origin = bot.GetOrigin()
@@ -6179,15 +8490,25 @@ function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
 
 	// Pinned in a corner mid-fight (the combat movement keeps pushing into it): circle the
 	// other way for a while and hop, instead of re-pathing a route we aren't following.
-	if ( !travelling && brain.target != null && Time() - brain.targetLastSeenTime < 0.5 )
+	// Only while really fighting (not just travelling off the graph with an enemy in sight), and only
+	// a few times in a row: still pinned after that, it's handled as being stuck (below).
+	if ( !travelling && fighting && brain.target != null && Time() - brain.targetLastSeenTime < 0.5 )
 	{
-		brain.strafeDir = -brain.strafeDir
-		brain.nextStrafeFlip = now + RandomFloat( 1.5, 3.0 )
-		brain.underFireUntil = now + 1.0	// leave the ranged "hold" so the bot actually moves
-		BotPressButtons( bot, BOT_IN_JUMP )
-		brain.lastProgressPos = origin
-		brain.lastProgressTime = now
-		return
+		if ( now - brain.fightStuckTime > 6.0 )
+			brain.fightStuckCount = 0
+		brain.fightStuckCount++
+		brain.fightStuckTime = now
+		if ( brain.fightStuckCount <= BOT_FIGHT_STUCK_MAX )
+		{
+			brain.strafeDir = -brain.strafeDir
+			brain.nextStrafeFlip = now + RandomFloat( 1.5, 3.0 )
+			brain.underFireUntil = now + 1.0	// leave the ranged "hold" so the bot actually moves
+			BotPressButtons( bot, BOT_IN_JUMP )
+			brain.lastProgressPos = origin
+			brain.lastProgressTime = now
+			return
+		}
+		brain.fightStuckCount = 0
 	}
 
 	// Up against a ledge, a crate, a wall top in reach: get up it (jump, double jump, mantle) the
@@ -6255,7 +8576,8 @@ function UpdateStuck( bot, brain, moveDir, forward, side, travelling )
 		brain.trapTime = now
 		// Never in the epilogue: there's no respawn then, the bot would just be dead (and out of the evac).
 		local epilogue = GetGameState() == eGameState.Epilogue
-		if ( brain.trapCount >= 3 && IsAlive( bot ) && !bot.IsTitan() && !epilogue )
+		// (Nor mid-fight: pinned while fighting falls through to here now, see above.)
+		if ( brain.trapCount >= 3 && IsAlive( bot ) && !bot.IsTitan() && !epilogue && !fighting )
 		{
 			printt( "BotAI:", bot.GetPlayerName(), "trapped at", origin, "- killing it so it respawns" )
 			brain.trapCount = 0
@@ -6300,8 +8622,12 @@ function StartTrapEscape( bot, brain )
 			}
 		}
 	}
+	// No node in sight (a room the graph doesn't reach into): out the most open way instead.
 	if ( best == null )
+	{
+		StartOpenEscape( bot, brain, brain.pathGoal )
 		return
+	}
 
 	local dir = Normalize2D( best - origin )
 	printt( "BotAI:", bot.GetPlayerName(), "trapped, breaking out towards", best )
@@ -6314,6 +8640,318 @@ function StartTrapEscape( bot, brain )
 	brain.unstickDir = dir
 	brain.unstickUntil = Time() + BOT_TRAP_ESCAPE_TIME
 	BotPressButtons( bot, BOT_IN_JUMP )
+}
+
+// No-progress watch, pilots travelling: once a second, where we are and how far from the goal
+// the route is taking us to (routeGoal, a detour point first). BOT_OSC_SAMPLES seconds that all
+// stayed in a small area without getting any closer = trapped, whatever the stuck checks say (each
+// hop moves us far enough to reset them): escalate (see BotEscalateTrap). goal = where we're
+// really going, for the detour.
+function UpdateProgressWatch( bot, brain, routeGoal, goal )
+{
+	local now = Time()
+	if ( routeGoal == null )
+	{
+		brain.oscSamples = []
+		return
+	}
+	if ( brain.oscLevel > 0 && now - brain.oscLevelTime > BOT_OSC_LEVEL_RESET )
+		brain.oscLevel = 0
+	// A new goal starts the watch over.
+	if ( brain.oscGoal == null || Distance( routeGoal, brain.oscGoal ) > BOT_GOAL_REPATH_DIST )
+	{
+		brain.oscGoal = routeGoal
+		brain.oscSamples = []
+		brain.nextOscSample = now
+	}
+	if ( now < brain.nextOscSample )
+		return
+	brain.nextOscSample = now + BOT_OSC_SAMPLE_INTERVAL
+
+	local origin = bot.GetOrigin()
+	local goalDist = Distance( origin, routeGoal )
+	brain.oscSamples.append( { pos = origin, goalDist = goalDist } )
+	if ( brain.oscSamples.len() > BOT_OSC_SAMPLES )
+		brain.oscSamples.remove( 0 )
+	local count = brain.oscSamples.len()
+	if ( count < BOT_OSC_SAMPLES )
+		return
+	// There already, or getting closer.
+	if ( goalDist < BOT_PILOT_NODE_REACHED * 2.0 )
+		return
+	if ( brain.oscSamples[ 0 ].goalDist - goalDist > BOT_OSC_MIN_GAIN )
+		return
+	local mean = Vector( 0, 0, 0 )
+	foreach ( sample in brain.oscSamples )
+		mean = mean + sample.pos
+	mean = mean * ( 1.0 / count )
+	foreach ( sample in brain.oscSamples )
+	{
+		if ( Distance( sample.pos, mean ) > BOT_OSC_RADIUS )
+			return
+	}
+	// Waiting at the evac point for the ship to come down (bots spread around it): not trapped.
+	if ( brain.evac != null && !brain.evac.board && !( "climb" in brain.evac ) && !( "approach" in brain.evac ) && goalDist < BOT_OSC_NEAR_GOAL * 1.5 )
+		return
+	// Close with the goal in plain sight: arrived and moving about it (spots around a capture point,
+	// teammates pushing us aside), not trapped.
+	local waist = Vector( 0, 0, 36 )
+	if ( goalDist < BOT_OSC_NEAR_GOAL && HasClearLine( bot, origin + waist, routeGoal + waist ) )
+		return
+
+	brain.oscSamples = []
+	BotEscalateTrap( bot, brain, goal != null ? goal : routeGoal )
+}
+
+// Trapped (see UpdateProgressWatch): the spot we were going for, the climb, the roof hop and the
+// evac approach / launch point are dropped, and each time in a row something stronger is tried: a
+// detour through a reachable node, running out the most open way, a farther detour. Still trapped
+// after BOT_OSC_SUICIDE_LEVEL of those: respawn (never in the epilogue, there's no respawn then).
+function BotEscalateTrap( bot, brain, goal )
+{
+	local now = Time()
+	local origin = bot.GetOrigin()
+	brain.oscLevel++
+	brain.oscLevelTime = now
+	printt( "BotAI:", bot.GetPlayerName(), "no progress for", BOT_OSC_SAMPLES, "s at", origin, "- escalation", brain.oscLevel )
+
+	if ( brain.pathIndex < brain.path.len() )
+		MarkPilotBadNode( brain.path[ brain.pathIndex ] )
+	if ( brain.navDetour != null )
+	{
+		MarkPilotBadNode( brain.navDetour )
+		brain.navDetour = null
+	}
+	if ( brain.climbUntil > 0.0 && brain.climbWall != null )
+		MarkBadClimbSpot( brain.climbWall )
+	brain.climbUntil = 0.0
+	brain.climbIsLedge = false
+	brain.roofHop = null
+	if ( brain.evacApproach != null && brain.evacApproach.pos != null )
+		MarkPilotBadNode( brain.evacApproach.pos )
+	brain.evacApproach = null
+	brain.evacApproachRetry = 0.0
+	if ( brain.evacLaunch != null && !brain.evacLaunch.reached )
+		brain.evacLaunch.until = 0.0	// dropped by UpdateEvacLaunch next tick
+	brain.offGraphBlockedUntil = now + BOT_OFFGRAPH_BLOCK_TIME
+	brain.nextRepathTime = 0.0
+	brain.pathRetryAt = 0.0
+	if ( brain.evac == null )
+	{
+		brain.patrolGoal = null
+		brain.prey = null
+		brain.flankPoint = null
+	}
+
+	switch ( ( brain.oscLevel - 1 ) % 3 )
+	{
+		case 0:
+			if ( !StartNavDetour( bot, brain, goal, BOT_DETOUR_MIN_DIST, BOT_DETOUR_MAX_DIST ) )
+				StartOpenEscape( bot, brain, goal )
+			break
+		case 1:
+			if ( !StartOpenEscape( bot, brain, goal ) )
+				StartTrapEscape( bot, brain )
+			break
+		case 2:
+			if ( !StartNavDetour( bot, brain, goal, BOT_DETOUR_MAX_DIST, BOT_DETOUR_MAX_DIST * 2.0 ) )
+				StartOpenEscape( bot, brain, goal )
+			break
+	}
+
+	if ( brain.oscLevel >= BOT_OSC_SUICIDE_LEVEL && GetGameState() != eGameState.Epilogue && IsAlive( bot ) && !bot.IsTitan() )
+	{
+		printt( "BotAI:", bot.GetPlayerName(), "trapped at", origin, "- killing it so it respawns" )
+		brain.oscLevel = 0
+		bot.TakeDamage( bot.GetMaxHealth() + 1000, null, null, { forceKill = true, damageSourceId = eDamageSourceId.suicide } )
+	}
+}
+
+// The detour point (see StartNavDetour) instead of goal, until it's reached or its time is up.
+function ApplyNavDetour( bot, brain, goal )
+{
+	if ( brain.navDetour == null )
+		return goal
+	local toDetour = brain.navDetour - bot.GetOrigin()
+	if ( Time() > brain.navDetourUntil || ( Length2D( toDetour ) < BOT_DETOUR_REACHED && fabs( toDetour.z ) < 96.0 ) )
+	{
+		brain.navDetour = null
+		brain.nextRepathTime = 0.0
+		return goal
+	}
+	return brain.navDetour
+}
+
+// Detour: a graph node between minDist and maxDist from us that we can find a path to (roughly
+// towards goal, outdoor ones first, a bit of chance so two tries don't pick the same). The route
+// goes through it first for a while (see ApplyNavDetour). True if one was found.
+function StartNavDetour( bot, brain, goal, minDist, maxDist )
+{
+	local nav = GetNavCache()
+	if ( nav.positions.len() == 0 )
+		return false
+	local origin = bot.GetOrigin()
+	local ringCells = ( maxDist / BOT_NAV_CELL ).tointeger() + 1
+	if ( ringCells > BOT_DETOUR_MAX_CELLS )
+		ringCells = BOT_DETOUR_MAX_CELLS
+	local midDist = ( minDist + maxDist ) * 0.5
+	local goalDist = goal != null ? Distance( origin, goal ) : 0.0
+
+	local candidates = []	// { index, pos, score }
+	for ( local dx = -ringCells; dx <= ringCells; dx++ )
+	{
+		for ( local dy = -ringCells; dy <= ringCells; dy++ )
+		{
+			local key = NavCellKey( origin.x + dx * BOT_NAV_CELL, origin.y + dy * BOT_NAV_CELL )
+			if ( !( key in nav.cells ) )
+				continue
+			foreach ( index in nav.cells[ key ] )
+			{
+				local pos = nav.positions[ index ]
+				local dist = Distance2D( origin, pos )
+				if ( dist < minDist || dist > maxDist )
+					continue
+				local progress = goal != null ? goalDist - Distance( pos, goal ) : 0.0
+				candidates.append( { index = index, pos = pos, score = progress * 0.6 - fabs( dist - midDist ) * 0.3 + RandomFloat( 0.0, 300.0 ) } )
+			}
+		}
+	}
+
+	// The best few (bad nodes skipped), outdoor ones moved up, then path-checked in that order.
+	local best = []
+	while ( best.len() < 6 && candidates.len() > 0 )
+	{
+		local bestIndex = 0
+		for ( local i = 1; i < candidates.len(); i++ )
+		{
+			if ( candidates[ i ].score > candidates[ bestIndex ].score )
+				bestIndex = i
+		}
+		local spot = candidates[ bestIndex ]
+		candidates.remove( bestIndex )
+		if ( IsPilotBadNode( spot.pos ) )
+			continue
+		if ( !IsNodeIndoor( nav, spot.index ) )
+			spot.score += 400.0
+		best.append( spot )
+	}
+
+	local start = FindVisibleStartNode( bot, origin )
+	if ( start == null )
+		start = origin
+	for ( local t = 0; t < BOT_DETOUR_PATH_TRIES && best.len() > 0; t++ )
+	{
+		local bestIndex = 0
+		for ( local i = 1; i < best.len(); i++ )
+		{
+			if ( best[ i ].score > best[ bestIndex ].score )
+				bestIndex = i
+		}
+		local spot = best[ bestIndex ]
+		best.remove( bestIndex )
+		// (Two nodes at least: a path that's just the node we're on goes nowhere.)
+		if ( PilotFindPath( start, spot.pos ).len() >= 6 )
+		{
+			printt( "BotAI:", bot.GetPlayerName(), "taking a detour through", spot.pos )
+			brain.navDetour = spot.pos
+			brain.navDetourUntil = Time() + BOT_DETOUR_TIME
+			brain.nextRepathTime = 0.0
+			return true
+		}
+	}
+	return false
+}
+
+// Out the most open way: rays all around at chest height, the longest free ones scoring higher
+// (more so towards goal, and in the open, less so the way we ran out last time); the best few
+// checked for room for the body. Runs that way for BOT_ESCAPE_TIME, hopping what's in the way
+// (see the unsticking in BotThinkTick). True if a way was found.
+function StartOpenEscape( bot, brain, goal )
+{
+	local origin = bot.GetOrigin()
+	local chest = origin + Vector( 0, 0, 40 )
+	local toGoal = goal != null ? Normalize2D( goal - origin ) : Vector( 0, 0, 0 )
+
+	local rays = []		// { dir, free, score }
+	for ( local i = 0; i < BOT_ESCAPE_RAYS; i++ )
+	{
+		local yaw = 2.0 * PI * i / BOT_ESCAPE_RAYS
+		local dir = Vector( cos( yaw ), sin( yaw ), 0 )
+		local free = BOT_ESCAPE_RAY_LEN * TraceLine( chest, chest + dir * BOT_ESCAPE_RAY_LEN, bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE ).fraction
+		if ( free < 96.0 )
+			continue
+		local score = free + Dot2D( dir, toGoal ) * 200.0 + RandomFloat( 0.0, 60.0 )
+		if ( brain.escapeDir != null && Dot2D( dir, brain.escapeDir ) > 0.9 )
+			score -= 300.0
+		rays.append( { dir = dir, free = free, score = score } )
+	}
+
+	local best = null
+	local lift = origin + Vector( 0, 0, BOT_WINDOW_JUMP_LIFT )
+	for ( local check = 0; check < 3 && rays.len() > 0; check++ )
+	{
+		local bestIndex = 0
+		for ( local i = 1; i < rays.len(); i++ )
+		{
+			if ( rays[ i ].score > rays[ bestIndex ].score )
+				bestIndex = i
+		}
+		local ray = rays[ bestIndex ]
+		rays.remove( bestIndex )
+		local body = TraceHull( lift, lift + ray.dir * min( ray.free, 160.0 ), bot.GetPlayerMins(), bot.GetPlayerMaxs(), bot, TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_PLAYER )
+		if ( body.startSolid || body.fraction < 0.95 )
+			continue
+		if ( !IsUnderRoof( chest + ray.dir * ray.free * 0.8 ) )
+			ray.score += 250.0
+		if ( best == null || ray.score > best.score )
+			best = ray
+	}
+	if ( best == null )
+		return false
+
+	printt( "BotAI:", bot.GetPlayerName(), "trapped, running out into the open" )
+	brain.escapeDir = best.dir
+	brain.unstickDir = best.dir
+	brain.unstickUntil = Time() + BOT_ESCAPE_TIME
+	brain.escapeUntil = brain.unstickUntil
+	brain.climbUntil = 0.0
+	return true
+}
+
+// Nodes pilots got trapped going for (shared by all pilots for BOT_PILOT_BAD_NODE_TIME): skipped
+// as detour points, evac approach and launch points. Expired ones are dropped here.
+function IsPilotBadNode( pos )
+{
+	local now = Time()
+	for ( local i = file.pilotBadNodes.len() - 1; i >= 0; i-- )
+	{
+		local spot = file.pilotBadNodes[ i ]
+		if ( now > spot.until )
+		{
+			file.pilotBadNodes.remove( i )
+			continue
+		}
+		if ( Distance( spot.pos, pos ) < BOT_PILOT_BAD_NODE_RADIUS )
+			return true
+	}
+	return false
+}
+
+function MarkPilotBadNode( pos )
+{
+	local until = Time() + BOT_PILOT_BAD_NODE_TIME
+	foreach ( spot in file.pilotBadNodes )
+	{
+		// Same spot again: just remember it longer.
+		if ( Distance( spot.pos, pos ) < BOT_PILOT_BAD_NODE_RADIUS )
+		{
+			spot.until = until
+			return
+		}
+	}
+	file.pilotBadNodes.append( { pos = pos, until = until } )
+	if ( file.pilotBadNodes.len() > BOT_PILOT_BAD_NODE_MAX )
+		file.pilotBadNodes.remove( 0 )
 }
 
 // A titan stuck on stairs, steps or in a narrow passage. blockedDir is the way it was trying to
@@ -6481,6 +9119,49 @@ function MarkTitanBadSpot( pos )
 //---------------------------------------------------------
 // Movement helpers
 //---------------------------------------------------------
+// Air control: in the air the move input still steers a jump (air acceleration along the input),
+// the way a player corrects a jump on the way. Input towards `target` (flat) with the lethality's
+// airControl strength, off by up to airSteerError degrees (rolled again every half second). Already
+// carried far enough to come down over the target before it: pull back a little instead, so we
+// don't sail past (not with `allowBrake` false: on a climb the target is past a wall that stops us
+// anyway, and pulling back there turned the double jump away from the building). Over it: hands
+// off. Returns { forward, side } relative to brain.yaw.
+function GetAirSteerInput( bot, brain, target, allowBrake = true )
+{
+	local skill = brain.lethality.pilot
+	local origin = bot.GetOrigin()
+	local toTarget = Vector( target.x - origin.x, target.y - origin.y, 0 )
+	local dist = Length2D( toTarget )
+	if ( dist < 24.0 || skill.airControl <= 0.0 )
+		return { forward = 0.0, side = 0.0 }
+	local now = Time()
+	if ( now >= brain.nextAirSteerRoll )
+	{
+		brain.nextAirSteerRoll = now + 0.5
+		brain.airSteerErr = RandomFloat( -skill.airSteerError, skill.airSteerError )
+	}
+	local dir = toTarget * ( 1.0 / dist )
+	local yaw = atan2( dir.y, dir.x ) + brain.airSteerErr * ( PI / 180.0 )
+	local steer = Vector( cos( yaw ), sin( yaw ), 0 )
+	local scale = skill.airControl
+	// Time left until we're back down at the target's height (none: it's above the arc, push on).
+	local vel = bot.GetVelocity()
+	local g = 750.0		// sv_gravity
+	local disc = vel.z * vel.z - 2.0 * g * ( target.z - origin.z )
+	if ( allowBrake && disc > 0.0 )
+	{
+		local t = ( vel.z + sqrt( disc ) ) / g
+		local along = vel.x * dir.x + vel.y * dir.y
+		if ( t > 0.0 && along * t > dist + 32.0 )
+		{
+			steer = steer * -1.0
+			scale *= 0.5
+		}
+	}
+	local relative = MoveDirRelativeToView( steer, brain.yaw )
+	return { forward = relative.forward * scale, side = relative.side * scale }
+}
+
 function MoveDirRelativeToView( moveDir, viewYaw )
 {
 	local moveYaw = atan2( moveDir.y, moveDir.x ) * ( 180.0 / PI )
@@ -6500,9 +9181,14 @@ function IsVoidAt( bot, pos )
 	local down = TraceLine( start, start - Vector( 0, 0, BOT_VOID_PROBE ), bot, TRACE_MASK_SOLID_BRUSHONLY, TRACE_COLLISION_GROUP_NONE )
 	if ( down.startSolid )
 		return false	// probe started inside a wall: that's a wall ahead, not a pit
-	if ( down.fraction >= 1.0 )
-		return true
-	return down.endPos.z < nav.minZ - BOT_VOID_MARGIN
+	if ( down.fraction < 1.0 && down.endPos.z >= nav.minZ - BOT_VOID_MARGIN )
+		return false
+	// No floor to the brush-only probe: some floors aren't brushes (the Runoff canal bed and its
+	// grated doorways), and the probe went straight through them. What a player stands on decides.
+	local solid = TraceLine( start, start - Vector( 0, 0, BOT_VOID_PROBE ), bot, TRACE_MASK_PLAYERSOLID, TRACE_COLLISION_GROUP_NONE )
+	if ( solid.startSolid )
+		return false
+	return solid.fraction >= 1.0 || solid.endPos.z < nav.minZ - BOT_VOID_MARGIN
 }
 
 // Last check before a pilot on the ground moves: never step or jump into the void. The path's
@@ -6536,10 +9222,33 @@ function AvoidVoid( bot, brain, forward, side, pressed )
 		}
 		return result
 	}
+	// Same for a roof hop over a pit (GetRoofRunDir checked the landing): running at it, the edge of
+	// the pit is the takeoff (if RoofHopButtons hasn't jumped already). Landed on the other side (the
+	// hop is over), the void checks apply again.
+	if ( brain.roofHop != null )
+	{
+		// (Jumped this tick, or a moment ago: the bot still looks to be on the ground at the edge.)
+		// (Back on its feet after the hop, with nothing to end it yet: the void checks again.)
+		if ( brain.roofHop.jumped && ( !BotOnFoot( bot ) || Time() - brain.roofHop.jumpTime < BOT_ROOF_HOP_MIN_AIR ) )
+			return result
+		if ( Dot2D( dir, brain.roofHop.dir ) > 0.8 )
+		{
+			if ( IsVoidAt( bot, origin + dir * 48.0 ) )
+			{
+				TakeOffRoofHop( brain, origin, false )
+				result.pressed = pressed | BOT_IN_JUMP
+			}
+			return result
+		}
+	}
 	// A titan is wider and a dash carries it much further: look further ahead.
 	local isTitan = bot.IsTitan()
 	local ahead = isTitan ? BOT_VOID_AHEAD_TITAN : BOT_VOID_AHEAD
 	if ( !IsVoidAt( bot, origin + dir * ahead ) )
+		return result
+	// The floor we're standing on reads as void too: the probe can't see this kind of floor, so it
+	// says nothing about the floor ahead either. (Stopped dead here, bots stood in the Runoff canal.)
+	if ( IsVoidAt( bot, origin ) )
 		return result
 
 	// Whatever sent us this way (running across "roofs", a window, a leap, a wallrun, a dash) is off for a while.
@@ -6719,7 +9428,8 @@ function PlanWallrun( bot, brain, moveDir )
 		reason = "up"
 	else if ( IsGapAhead( bot, d, BOT_WR_GAP_AHEAD ) )
 		reason = "gap"
-	else if ( flat > BOT_WALLRUN_MIN_DIST && RandomFloat( 0.0, 1.0 ) < ( brain.patrolElevation >= BOT_VANTAGE_MIN_ELEVATION ? 1.0 : brain.wallLove * WallrunStyleFactor( brain ) ) )
+	else if ( flat > BOT_WALLRUN_MIN_DIST && RandomFloat( 0.0, 1.0 ) < ( brain.patrolElevation >= BOT_VANTAGE_MIN_ELEVATION ? 1.0 : brain.wallLove * WallrunStyleFactor( brain ) )
+		* brain.lethality.pilot.wallrunScale )
 		reason = "long"
 	else
 		return false
@@ -7159,6 +9869,11 @@ function UpdateParkour( bot, brain, moveDir, forward )
 
 	local travelling = moveDir != null && forward > 0.3
 
+	// A roof-to-roof jump with a landing found (see GetRoofRunDir) has its own jumping, a wall touched
+	// on the way included (kicked off towards the landing, not left whenever the route says).
+	if ( brain.roofHop != null )
+		return RoofHopButtons( bot, brain )
+
 	// First: IsOnGround can be true on a wall too, so the wall is checked before the ground.
 	// On a wall we didn't plan (planned ones are run by UpdateWallrun, and parkour is off then):
 	// kick off once the route leaves the wall (waypoint close or above us), or right away near a
@@ -7166,8 +9881,44 @@ function UpdateParkour( bot, brain, moveDir, forward )
 	if ( wallRunning )
 	{
 		brain.usedDoubleJump = false
-		if ( travelling && ( brain.careful || moveDir.z > 48.0 || Length2D( moveDir ) < 150.0 ) )
+		if ( !travelling )
+			return 0
+		// Just kicked off this wall: still leaving it (another press now would be a second wall jump).
+		if ( brain.wallKickUpUntil - now > BOT_WALL_KICK_UP_TIME - 0.2 )
+			return 0
+		// The way on is above us (the next waypoint up there, or a goal / target up high): ride the
+		// wall up to the top of the run, then kick off up towards it (the move input steers the
+		// kick that way) and keep the double jump the wall gave back for the top of the kick (below),
+		// so the pair takes us up there instead of just dropping off the wall.
+		if ( !brain.careful && ( moveDir.z > 48.0 || WantsHigherGround( bot, brain ) ) )
+		{
+			local ride = now - brain.wallrunStartTime
+			if ( ride < 0.6 && !( ride > 0.15 && bot.GetVelocity().z < 40.0 ) )
+				return 0
+			brain.wallKickUpUntil = now + BOT_WALL_KICK_UP_TIME
 			return BOT_IN_JUMP
+		}
+		if ( brain.careful || Length2D( moveDir ) < 150.0 )
+			return BOT_IN_JUMP
+		return 0
+	}
+
+	// Kicked up off a wall towards a way on above (see above): the double jump goes at the top of
+	// the kick while the way on is still above, not right away on the way up (the one further
+	// down would spend it there, where it adds next to nothing).
+	// (Not travelling any more, a fight or a stop: the rest of parkour isn't held off for it.)
+	if ( BotOnFoot( bot ) || !travelling )
+		brain.wallKickUpUntil = 0.0
+	else if ( brain.wallKickUpUntil > now )
+	{
+		if ( !brain.usedDoubleJump && bot.GetVelocity().z < BOT_CLIMB_DOUBLE_VZ && travelling
+			&& ( moveDir.z > 24.0 || WantsHigherGround( bot, brain ) ) )
+		{
+			brain.usedDoubleJump = true
+			brain.wallKickUpUntil = 0.0
+			printt( "BotAI:", bot.GetPlayerName(), "wall kick + double jump up to the way on" )
+			return BOT_IN_JUMP
+		}
 		return 0
 	}
 
@@ -7177,11 +9928,17 @@ function UpdateParkour( bot, brain, moveDir, forward )
 		brain.planGapDouble = false
 
 		// Running at a roof edge or a ledge over a drop: leap it (and double jump across) instead
-		// of stepping off, so bots cross from one building to the next.
+		// of stepping off, so bots cross from one building to the next. Never a leap that ends in
+		// the void (open map edges), whatever is just past the edge.
 		if ( travelling && forward > 0.6 && !brain.careful && Length2D( bot.GetVelocity() ) > 200.0 && IsGapAhead( bot, moveDir ) )
 		{
-			brain.planGapDouble = true
-			return BOT_IN_JUMP
+			local leapDir = Normalize2D( moveDir )
+			local origin = bot.GetOrigin()
+			if ( !IsVoidAt( bot, origin + leapDir * 260.0 ) && !IsVoidAt( bot, origin + leapDir * 420.0 ) )
+			{
+				brain.planGapDouble = true
+				return BOT_IN_JUMP
+			}
 		}
 
 		if ( travelling )
@@ -7235,6 +9992,42 @@ function GetPilotCombatMove( bot, brain, targetIsTitan )
 	local vsInfantry = !targetIsTitan && !brain.target.IsPlayer()
 	local preferred = targetIsTitan ? BOT_AT_PREFERRED_DIST : ( vsInfantry ? BOT_PILOT_RANGE_MIN : GetPilotPreferredDist( bot, brain ) )
 	local closeIn = dist > preferred
+
+	// Up on a roof over a target below: keep the height, side-stepping along the roof, never closing
+	// in (that walked us off the edge, down to its level). The caller keeps us off the edge.
+	if ( toTarget.z < -BOT_ELEVATED_TARGET_HEIGHT && !bot.IsWallRunning() && IsBotUpHigh( bot, brain ) )
+	{
+		brain.combatHold = true
+		brain.combatWallSeen = false
+		if ( Time() > brain.nextStrafeFlip )
+		{
+			brain.strafeDir = -brain.strafeDir
+			brain.nextStrafeFlip = Time() + RandomFloat( BOT_COMBAT_STRAFE_MIN, BOT_COMBAT_STRAFE_MAX )
+		}
+		return Vector( -dir.y, dir.x, 0 ) * brain.strafeDir
+	}
+
+	// Up on a roof or a high ledge: from right underneath, the roof edge hides it, and circling or
+	// running along the building's wall (below) only kept us there, out of sight. Back off, side-
+	// stepping, until there's an angle up past the edge (the titans' version: GetTitanCombatMove).
+	local above = toTarget.z
+	if ( !targetIsTitan && above > BOT_ELEVATED_TARGET_HEIGHT && !bot.IsWallRunning() )
+	{
+		local standoff = min( above * BOT_ELEVATED_STANDOFF_SCALE, BOT_ELEVATED_STANDOFF_MAX )
+		if ( dist < standoff - BOT_COMBAT_RANGE_SLACK * 0.5 )
+		{
+			if ( Time() > brain.nextStrafeFlip )
+			{
+				brain.strafeDir = -brain.strafeDir
+				brain.nextStrafeFlip = Time() + RandomFloat( BOT_COMBAT_STRAFE_MIN, BOT_COMBAT_STRAFE_MAX )
+			}
+			brain.combatWallSeen = false
+			return Vector( -dir.y, dir.x, 0 ) * brain.strafeDir * 0.5 - dir
+		}
+		// Far enough out: don't close back in under it either.
+		preferred = max( preferred, standoff )
+		closeIn = dist > preferred
+	}
 
 	// At range and not being hit: plant and shoot. Side-step slowly and only drift towards the
 	// preferred range; no walls, no hops (the caller scales this down to a walk).
@@ -7321,6 +10114,10 @@ function UpdateTitanPreferredDist( bot, brain )
 			band.max = band.min
 	}
 	brain.titanPreferredDist = RandomFloat( band.min, band.max )
+	// Low lethality: sloppier about staying inside the weapon's band.
+	local jitter = brain.lethality.titan.rangeJitter
+	if ( jitter > 0.0 )
+		brain.titanPreferredDist *= RandomFloat( 1.0 - jitter, 1.0 + jitter )
 	return brain.titanPreferredDist
 }
 
@@ -7513,8 +10310,8 @@ function UpdateCombatJumps( bot, brain )
 			return BOT_IN_JUMP
 		if ( now > brain.nextCombatHop )
 		{
-			brain.nextCombatHop = now + RandomFloat( BOT_COMBAT_HOP_MIN, BOT_COMBAT_HOP_MAX )
-			brain.planDoubleJump = RandomInt( 100 ) < BOT_COMBAT_DOUBLE_JUMP_CHANCE
+			brain.nextCombatHop = now + RandomFloat( BOT_COMBAT_HOP_MIN, BOT_COMBAT_HOP_MAX ) * brain.lethality.pilot.hopIntervalScale
+			brain.planDoubleJump = RandomInt( 100 ) < brain.lethality.pilot.doubleJumpChance
 			return BOT_IN_JUMP
 		}
 		return 0
@@ -7598,6 +10395,17 @@ function AimAt( brain, from, to, addError )
 	brain.pitch = BotClamp( brain.pitch + BotClamp( desiredPitch - brain.pitch, -turn, turn ), -89.0, 89.0 )
 }
 
+// How far the view is off the direction `angles` (from VectorToAngles), in degrees, pitch included.
+// The yaw alone overstated it for a target steeply above (up there, a few degrees of yaw are a hair
+// on screen, so the trigger stayed off) and ignored a view still level with the wall under it.
+function GetAimAngleOff( brain, angles )
+{
+	local pitch = NormalizeYaw( angles.x )
+	local yawOff = fabs( NormalizeYaw( angles.y - brain.yaw ) ) * cos( pitch * PI / 180.0 )
+	local pitchOff = fabs( pitch - brain.pitch )
+	return max( yawOff, pitchOff )
+}
+
 function UpdateFiring( bot, brain, canShoot )
 {
 	if ( !canShoot || Time() - brain.targetAcquiredTime < brain.reactionTime )
@@ -7617,14 +10425,17 @@ function UpdateFiring( bot, brain, canShoot )
 	// still swinging onto the target, patient ones wait; everyone is pickier at long range.
 	local inTitan = bot.IsTitan()
 	local targetDist = Distance( bot.GetOrigin(), brain.target.GetOrigin() )
-	local triggerAngle = inTitan ? min( brain.triggerAngle, BOT_TITAN_TRIGGER_ANGLE ) : brain.triggerAngle
+	local triggerAngle = min( brain.triggerAngle, brain.skill.triggerAngleMax )	// lethality cap (14 = none)
+	if ( inTitan )
+		triggerAngle = min( triggerAngle, BOT_TITAN_TRIGGER_ANGLE )
 	local maxAngle = BotClamp( triggerAngle * 800.0 / max( targetDist, 1.0 ), 2.0, triggerAngle )
-	// (A rider: the part of it AimAtTarget aims at, seen over the hull; its center is in the titan.)
+	// (A rider: the part of it AimAtTarget aims at, seen over the hull; its center is in the titan.
+	// Same for a pilot whose head only shows over a roof's parapet, see UpdateTarget.)
 	local aimPoint = brain.target.GetWorldSpaceCenter()
-	if ( brain.targetAimOffset != null && IsRodeoing( brain.target ) )
+	if ( brain.targetAimOffset != null )
 		aimPoint = brain.target.GetOrigin() + brain.targetAimOffset
 	local toTarget = VectorToAngles( aimPoint - bot.EyePosition() )
-	local angleOff = fabs( NormalizeYaw( toTarget.y - brain.yaw ) )
+	local angleOff = GetAimAngleOff( brain, toTarget )
 	local onTarget = angleOff <= maxAngle
 
 	local now = Time()
@@ -7661,6 +10472,9 @@ function UpdateFiring( bot, brain, canShoot )
 	// the titan, even before the crosshair is on it (keeps a peek out from cover going).
 	if ( fireMode == "lock" && IsSmartAmmoLocking( weapon ) )
 		brain.atAimingTime = now
+
+	if ( fireMode == "smart" )
+		return UpdateSmartPistolFiring( brain, weapon, angleOff, onTarget, now )
 
 	if ( !onTarget )
 	{
@@ -7722,6 +10536,95 @@ function UpdateFiring( bot, brain, canShoot )
 		return brain.triggerPulse ? BOT_IN_ATTACK : 0
 	}
 	return BOT_IN_ATTACK
+}
+
+// Smart pistol: keep the target in the search cone until the locks are on, then tap once (the
+// press fires one guided bullet per lock and clears them). Now and then a shot goes one lock
+// short, the margin of error. A target it can't lock (out of range, a titan) gets hip-fired
+// unlocked after a while on target.
+function UpdateSmartPistolFiring( brain, weapon, angleOff, onTarget, now )
+{
+	if ( brain.firing )
+	{
+		brain.firing = false
+		brain.nextFireToggle = now + BOT_SMART_REPRESS
+		brain.smartLocksWanted = -1
+		brain.smartLockedTime = -1.0
+		brain.smartNoLockSince = -1.0
+		return 0
+	}
+
+	if ( now < brain.nextFireToggle || angleOff > BOT_SMART_LOCK_ANGLE )
+	{
+		brain.smartLockedTime = -1.0
+		brain.smartNoLockSince = -1.0
+		return 0
+	}
+
+	local maxLocks = GetSmartAmmoMaxLocks( weapon, brain.target )
+	if ( brain.smartLocksWanted < 0 )
+	{
+		brain.smartLocksWanted = maxLocks
+		if ( maxLocks > 1 && RandomInt( 100 ) < BOT_SMART_EARLY_CHANCE )
+			brain.smartLocksWanted = maxLocks - 1
+	}
+
+	local fraction = GetSmartAmmoTargetFraction( weapon, brain.target )
+	local press = false
+	if ( floor( fraction + 0.001 ) >= min( brain.smartLocksWanted, maxLocks ) )
+	{
+		if ( brain.smartLockedTime < 0 )
+			brain.smartLockedTime = now + RandomFloat( BOT_SMART_SETTLE_MIN, BOT_SMART_SETTLE_MAX )
+		press = now >= brain.smartLockedTime
+	}
+	else
+	{
+		brain.smartLockedTime = -1.0
+		if ( fraction > 0.01 || !onTarget )
+		{
+			brain.smartNoLockSince = -1.0
+		}
+		else
+		{
+			if ( brain.smartNoLockSince < 0 )
+				brain.smartNoLockSince = now
+			press = now - brain.smartNoLockSince >= BOT_SMART_NO_LOCK_TIME
+		}
+	}
+
+	if ( !press )
+		return 0
+	brain.firing = true
+	return BOT_IN_ATTACK
+}
+
+// Lock progress of a smart ammo weapon on one target: whole numbers are full locks.
+function GetSmartAmmoTargetFraction( weapon, target )
+{
+	if ( !weapon.SmartAmmo_IsEnabled() )
+		return 0.0
+	foreach ( entry in weapon.SmartAmmo_GetTargets() )
+	{
+		if ( entry.entity == target )
+			return entry.fraction
+	}
+	return 0.0
+}
+
+// Locks the smart pistol takes on a target (weapon file: players 3, spectres 2, soldiers 1; mods change it).
+function GetSmartAmmoMaxLocks( weapon, target )
+{
+	local locks = null
+	try { locks = SmartAmmo_GetTargetMaxLocks( weapon, target ) }
+	catch ( e ) {}
+	if ( locks != null && locks >= 1 )
+		return locks.tointeger()
+
+	if ( target.IsPlayer() )
+		return 3
+	if ( target.GetClassname() == "npc_spectre" )
+		return 2
+	return 1
 }
 
 // How long before the first shot at a new target: the skill's reaction with human spread,
@@ -7794,12 +10697,17 @@ function AimAtTarget( bot, brain, target )
 		if ( IsValid( titan ) )
 			targetVel = titan.GetVelocity()
 	}
+	// Only its head in sight (up on a roof behind the parapet, see UpdateTarget): at the head.
+	else if ( brain.targetAimOffset != null )
+		point = target.GetOrigin() + brain.targetAimOffset
 	// Pilots: a bit above the center, towards the chest.
 	else if ( target.IsPlayer() && !target.IsTitan() )
 		point = point + ( target.EyePosition() - point ) * 0.3
 	// Lead moving targets: by the think delay, plus the projectile's flight time for slow
 	// projectiles. Some bots lead well, others trail behind; in a titan everyone leads properly.
-	local leadSkill = ( inTitan && !smallTarget ) ? max( brain.leadSkill, BOT_TITAN_MIN_LEAD_SKILL ) : brain.leadSkill
+	local leadSkill = max( brain.leadSkill, brain.skill.leadMin )	// lethality floor (0 = none)
+	if ( inTitan && !smallTarget )
+		leadSkill = max( leadSkill, BOT_TITAN_MIN_LEAD_SKILL )
 	local leadTime = BOT_AIM_LEAD_TIME
 	local speed = BotGetProjectileSpeed( bot.GetActiveWeapon() )
 	if ( speed > 0.0 )
@@ -7999,6 +10907,10 @@ function GetPilotPreferredDist( bot, brain )
 // threshold: some reload after every few shots, others only ever run dry.
 function UpdateReload( bot, brain, inFight )
 {
+	// Mid weapon switch (the sidearm swap, see UpdateWeaponChoice): the weapon still in hand isn't
+	// the one we want, so reloading it would only hold the switch up.
+	if ( Time() - brain.weaponSwitchTime < BOT_WEAPON_DEPLOY_TIME )
+		return 0
 	local weapon = bot.GetActiveWeapon()
 	if ( !IsValid( weapon ) )
 		return 0
@@ -8083,7 +10995,30 @@ function UpdateWeaponChoice( bot, brain, isTitan )
 	brain.usingAntiTitan = IsValid( active ) && IsAntiTitanWeapon( active )
 	CheckWeaponSwitch( bot, brain, active )
 
-	if ( Time() < brain.nextWeaponSwitchTime )
+	// Primary dry with a pilot (or grunt) close and in sight: the sidearm is quicker than a reload.
+	// Held a few seconds, then the usual choice below brings the primary back to be reloaded (and
+	// no swap again until that has had time).
+	local now = Time()
+	local target = brain.target
+	if ( brain.evac == null && IsValid( active ) && !brain.usingAntiTitan && active.GetWeaponPrimaryClipCount() == 0
+		&& now - brain.sidearmSwapTime > BOT_SIDEARM_SWAP_COOLDOWN && now - brain.weaponSwitchTime > BOT_WEAPON_DEPLOY_TIME
+		&& target != null && IsValid( target ) && !IsTitanEntity( target ) && now - brain.targetLastSeenTime < 0.3
+		&& Distance( bot.GetOrigin(), target.GetOrigin() ) < BOT_SIDEARM_SWAP_DIST )
+	{
+		local sidearm = GetPilotSideArmWeapon( bot )
+		if ( sidearm != null && sidearm != active && sidearm.GetWeaponPrimaryClipCount() > 0 )
+		{
+			bot.SetActiveWeapon( sidearm.GetWeaponClassName() )
+			brain.weaponWanted = sidearm
+			brain.weaponSwitchTime = now
+			brain.weaponCheckDone = false
+			brain.sidearmSwapTime = now
+			brain.nextWeaponSwitchTime = now + BOT_SIDEARM_HOLD_TIME
+			return
+		}
+	}
+
+	if ( now < brain.nextWeaponSwitchTime )
 		return
 
 	local weapon = WantsAntiTitanWeapon( bot, brain ) ? GetBotUsableAntiTitanWeapon( bot ) : null
@@ -8181,6 +11116,8 @@ function GetWeaponFireMode( weapon )
 	}
 	if ( weaponClass == "mp_weapon_defender" )
 		return "charge"
+	if ( weaponClass == "mp_weapon_smart_pistol" )
+		return "smart"
 	return null
 }
 
@@ -8246,7 +11183,7 @@ function UpdateAbilities( bot, brain, isTitan, hasVisibleTarget )
 			// (see UpdateTitanVortex).
 			local tactical = bot.GetOffhandWeapon( 1 )
 			local isVortex = IsValid( tactical ) && tactical.GetWeaponClassName() == "mp_titanweapon_vortex_shield"
-			useTactical = !isVortex && hasVisibleTarget && healthFrac < 0.75
+			useTactical = !isVortex && hasVisibleTarget && healthFrac < brain.lethality.titan.tacticalHealth
 		}
 		else
 		{
@@ -8324,7 +11261,7 @@ function UpdateAbilities( bot, brain, isTitan, hasVisibleTarget )
 	else
 		AimLob( bot, brain, throwAt, profile )
 	pressed = pressed | BOT_IN_OFFHAND_ORDNANCE
-	brain.nextOrdnanceTime = now + RandomFloat( BOT_ORDNANCE_COOLDOWN_MIN, BOT_ORDNANCE_COOLDOWN_MAX )
+	brain.nextOrdnanceTime = now + RandomFloat( BOT_ORDNANCE_COOLDOWN_MIN, BOT_ORDNANCE_COOLDOWN_MAX ) * brain.lethality.pilot.grenadeCooldownScale
 	return pressed
 }
 
@@ -8368,7 +11305,7 @@ function GetPilotGrenadeSpot( bot, brain, hasVisibleTarget, healthFrac, profile,
 		if ( isTitan )
 			use = true
 		else if ( target.IsPlayer() )
-			use = healthFrac < 0.7 || RandomInt( 100 ) < BOT_ORDNANCE_PILOT_CHANCE
+			use = healthFrac < 0.7 || RandomInt( 100 ) < brain.lethality.pilot.grenadePilotChance
 		else
 		{
 			local chance = BOT_ORDNANCE_NPC_CHANCE
@@ -8381,6 +11318,17 @@ function GetPilotGrenadeSpot( bot, brain, hasVisibleTarget, healthFrac, profile,
 			return null
 		if ( !isTitan && ordnanceClass == "mp_weapon_proximity_mine" )
 			return origin + ( targetPos - origin ) * 0.7
+		// Very high lethality: throw where the target is going (range checked on where it is).
+		local grenadeLead = brain.lethality.pilot.grenadeLead
+		if ( grenadeLead > 0.0 )
+		{
+			local vel = target.GetVelocity()
+			local lead = Vector( vel.x, vel.y, 0 ) * grenadeLead
+			local leadLen = Length2D( lead )
+			if ( leadLen > 300.0 )
+				lead = lead * ( 300.0 / leadLen )
+			targetPos = targetPos + lead
+		}
 		return targetPos
 	}
 
@@ -8393,7 +11341,7 @@ function GetPilotGrenadeSpot( bot, brain, hasVisibleTarget, healthFrac, profile,
 	local dist = Distance( origin, brain.targetLastSeenPos )
 	if ( dist < profile.minDist || dist > profile.maxDist )
 		return null
-	return RandomInt( 100 ) < BOT_ORDNANCE_COVER_CHANCE ? brain.targetLastSeenPos : null
+	return RandomInt( 100 ) < brain.lethality.pilot.grenadeCoverChance ? brain.targetLastSeenPos : null
 }
 
 //---------------------------------------------------------
@@ -8449,7 +11397,7 @@ function IsWorthTitanOrdnance( brain, target )
 		local now = Time()
 		if ( now < brain.ordnancePilotSkipUntil )
 			return false
-		if ( RandomInt( 100 ) < BOT_TITAN_ORDNANCE_PILOT_CHANCE )
+		if ( RandomInt( 100 ) < brain.lethality.titan.ordnancePilotChance )
 			return true
 		brain.ordnancePilotSkipUntil = now + BOT_TITAN_ORDNANCE_PILOT_SKIP
 		return false
@@ -8481,7 +11429,7 @@ function UpdateTitanVortex( bot, brain, hasVisibleTarget )
 			|| ( !hasVisibleTarget && held > BOT_VORTEX_MIN_HOLD ) )
 		{
 			brain.vortexHoldUntil = 0.0
-			brain.nextVortexTime = now + RandomFloat( BOT_VORTEX_COOLDOWN_MIN, BOT_VORTEX_COOLDOWN_MAX )
+			brain.nextVortexTime = now + RandomFloat( BOT_VORTEX_COOLDOWN_MIN, BOT_VORTEX_COOLDOWN_MAX ) * brain.lethality.titan.vortexCooldownScale
 			return 0
 		}
 		return BOT_IN_OFFHAND_TACTICAL
@@ -8528,7 +11476,7 @@ function UpdateTitanOrdnance( bot, brain, hasVisibleTarget )
 			return BOT_IN_OFFHAND_ORDNANCE
 		brain.ordnanceHoldUntil = 0.0
 		brain.ordnanceVerifyAt = now + BOT_TITAN_ORDNANCE_VERIFY
-		brain.nextOrdnanceTime = now + BOT_TITAN_ORDNANCE_AFTER
+		brain.nextOrdnanceTime = now + BOT_TITAN_ORDNANCE_AFTER * brain.lethality.titan.ordnanceDelayScale
 		return 0
 	}
 
@@ -8551,7 +11499,7 @@ function UpdateTitanOrdnance( bot, brain, hasVisibleTarget )
 		brain.ordnanceLockWaitSince = 0.0
 	if ( now < brain.nextOrdnanceTime || !hasVisibleTarget || brain.fleeingNuke || !IsValid( weapon ) || brain.vortexHoldUntil > 0.0 )
 		return 0
-	brain.nextOrdnanceTime = now + BOT_TITAN_ORDNANCE_CHECK
+	brain.nextOrdnanceTime = now + BOT_TITAN_ORDNANCE_CHECK * brain.lethality.titan.ordnanceDelayScale
 
 	local target = brain.target
 	if ( IsInBubbleShield( target ) || !IsTitanOrdnanceReady( weapon ) )
@@ -8696,7 +11644,7 @@ function UpdateTitanDash( bot, brain, hasVisibleTarget, inEngageRange, forward, 
 		brain.unstickDash = false
 		if ( now < brain.unstickUntil )
 		{
-			brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX )
+			brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX ) * brain.lethality.titan.dashCooldownScale
 			return BOT_IN_DODGE
 		}
 	}
@@ -8708,12 +11656,14 @@ function UpdateTitanDash( bot, brain, hasVisibleTarget, inEngageRange, forward, 
 	// (the dash goes the way we're moving, so move away from it this tick and dash).
 	if ( IsRodeoThreatBehind( bot, brain ) )
 	{
-		brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX )
+		brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX ) * brain.lethality.titan.dashCooldownScale
 		return BOT_IN_DODGE
 	}
 
 	local hurt = bot.GetHealth() < bot.GetMaxHealth() * 0.5
-	local dodgeInFight = inEngageRange && fabs( side ) > 0.5 && RandomInt( hurt ? 2 : 5 ) == 0
+	local t = brain.lethality.titan
+	local odds = hurt ? t.dodgeOddsHurt : t.dodgeOdds	// 1 in this many
+	local dodgeInFight = inEngageRange && fabs( side ) > 0.5 && ( odds <= 1 || RandomInt( odds ) == 0 )
 	local breakAway = brain.fleeing && now - brain.fleeStartTime < 0.5
 	// Target in sight but still far: dash straight at it to start the brawl sooner.
 	local dashIn = hasVisibleTarget && !brain.fleeing && forward > 0.7
@@ -8722,7 +11672,7 @@ function UpdateTitanDash( bot, brain, hasVisibleTarget, inEngageRange, forward, 
 	if ( !dodgeInFight && !breakAway && !dashIn )
 		return 0
 
-	brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX )
+	brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX ) * t.dashCooldownScale
 	return BOT_IN_DODGE
 }
 
