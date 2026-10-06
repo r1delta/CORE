@@ -1295,10 +1295,17 @@ function PlayerWatchesKillReplay( player, attacker, attackerViewIndex, timeSince
 		player.s.timeBeforeKill = timeSinceAttackerSpawned
 
 	// Seen through a bot's eyes the replay has no muzzle flash or tracers (first-person weapon effects
-	// are predicted by the shooter's client, and a bot has none), so a bot's kill replays through the
-	// victim's eyes, where the bot's gunfire shows like any other player's.
+	// are predicted by the shooter's client, and a bot has none). The engine only uses the third-person
+	// replay camera (as for grunts, spectres and auto-titans) when the view entity is not a player, so a
+	// bot's kill replays through its non-player proxy. Without one, fall back to the victim's eyes.
 	if ( IsValid( attacker ) && attacker.IsPlayer() && attacker.IsBot() )
-		attackerViewIndex = player.GetIndexForEntity()
+	{
+		local proxy = GetBotReplayProxy( attacker )
+		if ( proxy )
+			attackerViewIndex = proxy.GetIndexForEntity()
+		else
+			attackerViewIndex = player.GetIndexForEntity()
+	}
 
 	player.SetViewIndex( attackerViewIndex )
 	local replayDelay = player.s.timeBeforeKill + ( Time() - timeOfDeath )
@@ -1326,6 +1333,54 @@ function PlayerWatchesKillReplay( player, attacker, attackerViewIndex, timeSince
 	{
 		wait timeAfterKill
 	}
+}
+
+const BOT_REPLAY_PROXY_RIGHT_OFFSET = 60
+const BOT_REPLAY_PROXY_FORWARD_OFFSET = 25
+
+// Invisible non-player entity that rides along with a bot pilot so its kill replays use the
+// third-person NPC camera. Kept for the bot's whole connection so the replay history always has it.
+function EnsureBotReplayProxy( bot )
+{
+	if ( GetBotReplayProxy( bot ) )
+		return
+
+	// Offset to the bot's right so the replay camera frames the bot on the left of the screen, and
+	// forward because the camera trails the proxy at a fixed distance, which brings it closer to the bot.
+	local yaw = bot.GetAngles().y * PI / 180.0
+	local right = Vector( sin( yaw ), -cos( yaw ), 0 )
+	local forward = Vector( cos( yaw ), sin( yaw ), 0 )
+	local offset = right * BOT_REPLAY_PROXY_RIGHT_OFFSET + forward * BOT_REPLAY_PROXY_FORWARD_OFFSET + Vector( 0, 0, 48 )
+	local proxy = CreateScriptMover( null, bot.GetOrigin() + offset, Vector( 0, bot.GetAngles().y, 0 ) )
+	proxy.Hide()
+	proxy.SetParent( bot )
+	bot.s.replayProxy <- proxy
+
+	thread DestroyBotReplayProxyOnDisconnect( bot, proxy )
+}
+
+function GetBotReplayProxy( bot )
+{
+	if ( !( "replayProxy" in bot.s ) || !IsValid( bot.s.replayProxy ) )
+		return null
+
+	return bot.s.replayProxy
+}
+
+function DestroyBotReplayProxyOnDisconnect( bot, proxy )
+{
+	proxy.EndSignal( "OnDestroy" )
+	bot.EndSignal( "OnDestroy" )
+
+	OnThreadEnd(
+		function () : ( proxy )
+		{
+			if ( IsValid( proxy ) )
+				proxy.Destroy()
+		}
+	)
+
+	bot.WaitSignal( "Disconnected" )
 }
 
 function ClientCommand_SelectRespawn( player, index = null )
@@ -2696,6 +2751,9 @@ function CodeCallback_OnPlayerRespawned( player )
 	}
 
 	NPCTitanInitModeOnPlayerRespawn( player )
+
+	if ( player.IsBot() )
+		EnsureBotReplayProxy( player )
 
 	if ( "spectreSquad" in player.s )
 		SpectreSquadFollowPlayer( player, player.s.spectreSquad )
