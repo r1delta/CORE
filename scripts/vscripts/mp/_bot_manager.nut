@@ -282,9 +282,9 @@ function PickRandom( array )
 
 function GenerateBotName()
 {
-	local name = RandomInt( 2 ) == 0 ? GenerateGamertag() : GenerateCallsign()
+	local name = GenerateAnyBotName()
 	for ( local attempt = 0; attempt < 10 && !BotNameAvailable( name ); attempt++ )
-		name = RandomInt( 2 ) == 0 ? GenerateGamertag() : GenerateCallsign()
+		name = GenerateAnyBotName()
 
 	if ( !BotNameAvailable( name ) )
 		name = name + RandomInt( 1000 )
@@ -292,6 +292,18 @@ function GenerateBotName()
 	if ( name.len() > BOT_NAME_MAX_LEN )
 		name = name.slice( 0, BOT_NAME_MAX_LEN )
 	return name
+}
+
+function GenerateAnyBotName()
+{
+	switch ( RandomInt( 3 ) )
+	{
+		case 0:
+			return GenerateGamertag()
+		case 1:
+			return GenerateCallsign()
+	}
+	return GenerateMemeName()
 }
 
 function BotNameAvailable( name )
@@ -355,6 +367,81 @@ function GenerateCallsign()
 			return PickRandom( codenames ) + "-" + ( RandomInt( 9 ) + 1 )
 	}
 	return PickRandom( codenames ) + " " + PickRandom( surnames )
+}
+
+// Internet meme style: Lt. Larper, Mogger-67, Aura_maxxing, SigmaClanker, xRizzlerx
+function GenerateMemeName()
+{
+	local ranks = [ "Pvt.", "Cpl.", "Sgt.", "Lt.", "Capt.", "Maj.", "Col.", "Cmdr.", "Gen." ]
+	// Nouns that read as a person: work after a rank, before a number, alone
+	local people = [ "Larper", "Mogger", "Rizzler", "Yapper", "Glazer", "Clanker", "Sigma", "Unc", "NPC", "Delulu",
+		"Crashout", "Skibidi", "Mewer", "Jester", "Fanum", "Goober", "Aura Farmer", "Chill Guy", "Ohio Boss",
+		"Tung Tung", "Sahur", "Tralalero", "Brainrot", "Ratio", "Copium", "Doomscroll", "Lowtaper", "Huzz" ]
+	// Things you can max: Aura_maxxing, Rizzmaxxer
+	local maxxables = [ "Aura", "Rizz", "Looks", "Sigma", "Yap", "Mog", "Cope", "Grind", "Jester", "Sleep",
+		"Bounce", "Gun", "Wallrun", "Titan", "Ejection" ]
+	local tails = [ "67", "6-7", "41", "69", "420", "999", "1000", "NoCap", "Fr", "Ong", "Cooked", "Bussin", "Ohio",
+		"Mid", "W", "L", "GOAT", "Era", "Core", "Mode" ]
+	local leads = [ "Lowkey", "Highkey", "Certified", "Literally", "Unironically", "Sigma", "Ohio", "Skibidi",
+		"Mid", "Cooked", "Chopped", "Delulu", "Locked In", "Based", "Feral", "Cracked", "Goofy" ]
+
+	local name
+	switch ( RandomInt( 7 ) )
+	{
+		case 6:		// John Titanfall
+		{
+			local john = PickRandom( [ "Titanfall", "Titanfall", "Titanfall", "Pilot", "Wallrun", "Smart Pistol", "Kraber",
+				"IMC", "Militia", "Ogre", "Atlas", "Stryder", "Grunt", "Spectre", "Marvin", "Dropship", "Evac",
+				"Pork", "Skibidi", "Ohio", "Sigma", "Clanker", "Fortnite", "Respawn" ] )
+			return RandomInt( 4 ) == 0 ? "John " + john + " " + PickRandom( [ "2", "Jr.", "III", "67" ] ) : "John " + john
+		}
+		case 0:		// Lt. Larper
+			name = PickRandom( ranks ) + " " + PickRandom( people )
+			break
+		case 1:		// Mogger-67
+			name = PickRandom( people ) + "-" + PickRandom( [ "67", "67", "41", "69", "420", "1000" ] )
+			break
+		case 2:		// Aura_maxxing, RizzMaxxer
+		{
+			local base = PickRandom( maxxables )
+			local suffix = PickRandom( [ "_maxxing", "maxxing", "Maxxing", "Maxxer", "_maxxer", "maxx" ] )
+			name = base + suffix
+			break
+		}
+		case 3:		// CertifiedYapper, Locked In Clanker
+			name = PickRandom( leads ) + ( RandomInt( 2 ) == 0 ? " " : "" ) + PickRandom( people )
+			break
+		case 4:		// Rizzler_NoCap, SigmaOhio
+			name = PickRandom( people ) + ( RandomInt( 2 ) == 0 ? "_" : "" ) + PickRandom( tails )
+			break
+		default:	// xRizzlerx, iAmTheMogger
+		{
+			local person = PickRandom( people )
+			local wrap = RandomInt( 3 )
+			if ( wrap == 0 )
+				name = "x" + person + "x"
+			else if ( wrap == 1 )
+				name = "TheReal" + person
+			else
+				name = "Not" + person
+			break
+		}
+	}
+
+	// Spaces only make sense in the rank/lead styles; tags lose them like real handles
+	if ( name.find( "." ) == null && RandomInt( 2 ) == 0 )
+		name = StripSpaces( name )
+	if ( RandomInt( 6 ) == 0 )
+		name = name.tolower()
+	return name
+}
+
+function StripSpaces( text )
+{
+	local result = ""
+	foreach ( part in split( text, " " ) )
+		result = result + part
+	return result
 }
 
 //---------------------------------------------------------
