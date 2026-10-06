@@ -350,6 +350,10 @@ const BOT_CLIMB_WALLRUN_TIME	= 0.5		// ride the wall at most this long before ki
 const BOT_CLIMB_WALLRUN_MIN_TIME	= 0.15	// ...and at least this long (then kick once we stop rising)
 const BOT_CLIMB_DOUBLE_VZ		= 90.0		// double jump once the rise slows under this (near the top of the arc)
 const BOT_WALL_KICK_UP_TIME		= 1.2		// kicked up off a wall we didn't plan: the double jump at the top is ours this long
+const BOT_WALLHANG_TIME			= 0.4		// hanging on a wall (wall hang) this long while travelling: jump off it...
+const BOT_WALLHANG_FIGHT_TIME	= 1.5		// ...this long in a fight (a firing spot for a moment)...
+const BOT_WALLHANG_DROP_AFTER	= 1.5		// ...and still hanging this long after that: duck to let go
+const BOT_WALLHANG_JUMP_EVERY	= 0.35
 const BOT_CLIMB_TIMEOUT			= 3.5
 const BOT_CLIMB_RETRY			= 8.0
 const BOT_CLIMB_PROGRESS_TIME	= 1.6		// this long after the first jump without gaining height = give up
@@ -766,8 +770,11 @@ const BOT_MELEE_BLOCK_MIN		= 5.0	// ...for this long, fighting with the gun inst
 const BOT_MELEE_BLOCK_MAX		= 8.0
 const BOT_MELEE_TITAN_CLEARANCE	= 220.0	// on foot: no kick with an enemy titan this close (the kick cone would land on it)
 const BOT_RUSH_TITAN_CLEARANCE	= 400.0	// ...and no rushing in at a pilot when we or it are this close to one
-const BOT_TITAN_DASH_COOLDOWN_MIN	= 3.0
-const BOT_TITAN_DASH_COOLDOWN_MAX	= 6.0
+const BOT_TITAN_DASH_COOLDOWN_MIN	= 1.6
+const BOT_TITAN_DASH_COOLDOWN_MAX	= 3.2
+const BOT_TITAN_DASH_TRAVEL_CHANCE	= 35	// % per try: dash on the way somewhere (no fight), road clear ahead
+const BOT_TITAN_DASH_TRAVEL_RETRY	= 1.5	// a failed travel roll waits this long before the next one
+const BOT_TITAN_DASH_CLEAR_DIST		= 450.0	// room needed ahead for a travel dash
 
 // Rodeo interception: an enemy pilot closing in on a titan bot (or already right next to it)
 // becomes its target over anything else, the titan turns on it faster than usual and punches it
@@ -1386,6 +1393,8 @@ function BotThink( bot )
 		climbForceWallrun = false	// next climb found: run up the wall even if a jump would do (retry at a roof spot)
 		roofClimbRetried = false	// the climb at this roof spot's foot already failed once
 		wallKickUpUntil = 0.0	// kicked up off a wall we didn't plan towards a way on above: double jump at the top until then
+		wallHangStart = 0.0		// hanging on a wall since then (0 = not hanging), see UpdateWallHang
+		wallHangNextJump = 0.0
 		nextLedgeCheck = 0.0
 		nextWallLedgeCheck = 0.0
 		nextClimbCheck = 0.0
@@ -2328,6 +2337,20 @@ function BotThinkTick( bot, brain )
 				brain.oscSamples = []
 		}
 		catch ( e ) { BotReportError( bot, "UpdateProgressWatch", e ); brain.oscSamples = [] }
+	}
+
+	// Hanging on a wall: let go of it (see UpdateWallHang), over everything else.
+	if ( !isTitan )
+	{
+		try
+		{
+			local hang = UpdateWallHang( bot, brain, inEngageRange, forward, side )
+			forward = hang.forward
+			side = hang.side
+			pressed = pressed | hang.pressed
+			buttons = buttons | hang.buttons
+		}
+		catch ( e ) { BotReportError( bot, "UpdateWallHang", e ); brain.wallHangStart = 0.0 }
 	}
 
 	if ( BOT_DEBUG_SPAWN_DEATHS )
@@ -8412,6 +8435,65 @@ function UpdateCarefulMode( bot, brain )
 	brain.careful = now < brain.carefulUntil || brain.indoors || doorAhead
 }
 
+// A jump straight at a wall can leave a pilot hanging on it (wall hang, the stairwells on Nest), and
+// none of the rest lets go: it hung there until the trap check killed it. After a moment (longer in
+// a fight, it's a firing spot) jump off it, away from the wall and on the way we were going; still
+// hanging after that, duck to drop. Returns the move input and the buttons to use.
+function UpdateWallHang( bot, brain, inEngageRange, forward, side )
+{
+	local result = { forward = forward, side = side, pressed = 0, buttons = 0 }
+	if ( !bot.IsWallHanging() )
+	{
+		brain.wallHangStart = 0.0
+		return result
+	}
+	local now = Time()
+	if ( brain.wallHangStart == 0.0 )
+	{
+		brain.wallHangStart = now
+		brain.wallHangNextJump = 0.0
+	}
+	local hang = now - brain.wallHangStart
+	local hold = inEngageRange ? BOT_WALLHANG_FIGHT_TIME : BOT_WALLHANG_TIME
+	if ( hang < hold )
+		return result
+	if ( hang > hold + BOT_WALLHANG_DROP_AFTER )
+	{
+		result.buttons = BOT_IN_DUCK
+		return result
+	}
+
+	// Away from the wall, keeping the part of where we were going that runs along it.
+	local yawRad = brain.yaw * ( PI / 180.0 )
+	local fwd = Vector( cos( yawRad ), sin( yawRad ), 0 )
+	local dirs = [ fwd ]
+	for ( local i = 0; i < 8; i++ )
+	{
+		local a = i * ( PI / 4.0 )
+		dirs.append( Vector( cos( a ), sin( a ), 0 ) )
+	}
+	local normal = FindRunWallNormal( bot, dirs )
+	if ( normal != null )
+	{
+		local right = Vector( fwd.y, -fwd.x, 0 )
+		local want = fwd * forward + right * side
+		local along = want - normal * Dot2D( want, normal )
+		local away = Normalize2D( normal + along * 0.7 )
+		if ( !IsVoidAt( bot, bot.GetOrigin() + away * 200.0 ) )
+		{
+			local relative = MoveDirRelativeToView( away, brain.yaw )
+			result.forward = relative.forward
+			result.side = relative.side
+		}
+	}
+	if ( now >= brain.wallHangNextJump )
+	{
+		brain.wallHangNextJump = now + BOT_WALLHANG_JUMP_EVERY
+		result.pressed = BOT_IN_JUMP
+	}
+	return result
+}
+
 // Stuck is either standing still (blocked) or bouncing around without getting any closer to
 // the next waypoint (hopping at a wall beside a door). Each repeat within a few seconds
 // escalates: hop and re-path, then back off at an angle, then drop the waypoint and the goal.
@@ -11663,13 +11745,30 @@ function UpdateTitanDash( bot, brain, hasVisibleTarget, inEngageRange, forward, 
 	local hurt = bot.GetHealth() < bot.GetMaxHealth() * 0.5
 	local t = brain.lethality.titan
 	local odds = hurt ? t.dodgeOddsHurt : t.dodgeOdds	// 1 in this many
-	local dodgeInFight = inEngageRange && fabs( side ) > 0.5 && ( odds <= 1 || RandomInt( odds ) == 0 )
+	// In a fight: dodge sideways while strafing, and any way we're moving while taking hits.
+	local underFire = now < brain.underFireUntil
+	local strafing = fabs( side ) > 0.3
+	local moving = fabs( side ) > 0.2 || fabs( forward ) > 0.2
+	local dodgeInFight = inEngageRange && ( strafing || ( underFire && moving ) ) && ( odds <= 1 || RandomInt( odds ) == 0 )
 	local breakAway = brain.fleeing && now - brain.fleeStartTime < 0.5
 	// Target in sight but still far: dash straight at it to start the brawl sooner.
 	local dashIn = hasVisibleTarget && !brain.fleeing && forward > 0.7
 		&& Distance( bot.GetOrigin(), brain.target.GetOrigin() ) > brain.titanPreferredDist + BOT_TITAN_DASH_IN_DIST
-		&& RandomInt( 2 ) == 0
-	if ( !dodgeInFight && !breakAway && !dashIn )
+	// On the way somewhere with the road clear ahead: dash now and then to get there sooner.
+	local travelDash = false
+	if ( !inEngageRange && !hasVisibleTarget && !brain.fleeing && forward > 0.9 && fabs( side ) < 0.3 && bot.IsOnGround() )
+	{
+		local dir = InputToWorldDir( brain.yaw, forward, side )
+		local chest = bot.GetOrigin() + Vector( 0, 0, 100 )
+		if ( dir != null && HasClearLine( bot, chest, chest + dir * BOT_TITAN_DASH_CLEAR_DIST ) )
+		{
+			if ( RandomInt( 100 ) < BOT_TITAN_DASH_TRAVEL_CHANCE )
+				travelDash = true
+			else
+				brain.nextDashTime = now + BOT_TITAN_DASH_TRAVEL_RETRY
+		}
+	}
+	if ( !dodgeInFight && !breakAway && !dashIn && !travelDash )
 		return 0
 
 	brain.nextDashTime = now + RandomFloat( BOT_TITAN_DASH_COOLDOWN_MIN, BOT_TITAN_DASH_COOLDOWN_MAX ) * t.dashCooldownScale
