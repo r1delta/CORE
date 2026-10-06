@@ -52,6 +52,43 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 - Satchels are detonated when an enemy comes close to one (the bot itself clear of it).
 - Pilots don't kick titans (player or auto-titan), riders, or anything with an enemy titan right next to it, and
   don't rush in for a kick near enemy titans.
+- Route choice (utility AI, `BOT_UTILITY_ROUTES`): the destination is picked first, then a ground route and a high
+  route (climb a roof near the way, run the roofs, come down near the destination) are scored on time, risk
+  (climb height, walls a climb failed at, under fire, enemies near the foot, earlier failures), tactics (above the
+  prey, open-sky vs indoor destination, capture points on the ground), the bot's taste (route style, `roofLove`,
+  lethality) and how the team is spread; the best one wins. A high route that fails at any stage falls back to the
+  ground route to the same place. Setting the switch to false restores the old roof rolls.
+- Roof spots: roofs without nav nodes (Angel City and the like) are mapped a few nodes at a time from street-level
+  nodes; bots go to the foot of the wall, climb, and may hold the roof a while. Used for roaming, flanking and the
+  high routes.
+- Real movement only (no velocity pushes): air control (`airControl` / `airSteerError` per lethality) steers jumps
+  towards their target; a wallrun resets the double jump, so climbs kick off the wall and double jump back onto it
+  (up to twice) before going for the edge, and alleys are climbed wall to facing wall. Climbs reach 400u (460u in
+  alleys).
+- Roof hops: on the roofs bots run for the edge and jump (double jump at the top of the arc, wall kick mid-hop) to a
+  landing probed ahead; missed takeoff spots are remembered for a while.
+- Fighting on roofs: no step towards a drop, a target lost below is waited for from above instead of chased; from
+  the ground, targets up high are fought from far enough back to see past the roof edge.
+- Sight: an enemy whose center is hidden is checked at the head too (targets on roofs, behind low walls); traces
+  stopped just short of the point count as clear.
+- Targeting: the current target is kept over a new one (no flip-flopping), whoever just shot the bot, a pilot
+  looking at it or a badly hurt enemy is preferred, and a target dropped a moment ago is picked up faster.
+  Engage/disengage hysteresis.
+- Sidearm swap when the primary runs dry close to an enemy, back to the primary (which reloads) a moment later.
+- Unstuck: a bot that keeps circling in the same spot without getting closer escalates: a detour to a reachable node
+  away from there, then an open-space escape along the most open direction, and finally a respawn (never in the
+  epilogue). Nodes pilots got trapped going for are avoided by the team for a while; failed path searches are
+  throttled; the start node is one in sight.
+- Void check fixed for floors that aren't brushes (Runoff's canal bed and grated doorways): the brush-only probe
+  saw no floor there and every move was cancelled, freezing the bots.
+- Debug HUD (`BOT_DEBUG_HUD`, off by default): movement flags, route and stage of the bot under the crosshair.
+
+### Lethality
+- Each lethality level is a pilot profile and a titan profile, and changes behaviour, not only aim:
+  - **Low**: pilots miss more, jump less and roam the middle of the map; titans are dumber.
+  - **Normal**: unchanged.
+  - **High**: better pilot aim; titans as on normal.
+  - **Very high**: more grenades, led at the target; pilots hold rooftops; lethal titans.
 
 ### Aim and weapons
 - More human aim: randomised error, reaction time, target leading with velocity, burst and pause patterns.
@@ -61,8 +98,12 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 - Semi-automatic weapons are fired with trigger pulses instead of a held button.
 - Reload when the clip is low and out of a fight.
 - Melee actually connects (anim-event callback called manually, miss lockout).
-- A kill by a bot replays through the victim's eyes instead of the bot's: in the bot's first-person view its
-  muzzle flash and tracers never showed (they are predicted by the shooter's client, which a bot doesn't have).
+- A kill by a bot replays in third person, like a kill by a grunt or an auto-titan: the engine only uses the
+  third-person replay camera when the view entity isn't a player, so each bot carries a hidden mover
+  (`_base_gametype.nut`) the replay looks through (the victim's eyes if it is missing). In the bot's first-person
+  view its muzzle flash and tracers never showed (they are predicted by the shooter's client, which a bot doesn't have).
+- Smart pistol: bots wait for the locks before firing (3 on pilots, 2 on spectres, 1 on grunts), 15% of shots go
+  one lock short, and hip-fire unlocked after 1 s on a target with no lock building (`BOT_SMART_*`).
 - Anti-titan weapons used much more: titans in sight are the target with a loaded anti-titan weapon (unless a
   pilot is close), the weapon stays out between peeks, titan-crossfire cover peeks with it (pre-aimed at the
   titan), pilots only step back briefly from a titan that is too close, and pilots without one rodeo more often.
@@ -89,6 +130,9 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 - Once the evac starts, nothing diverts the bot: earlier retreats, cover, repositioning, rodeo and rides are
   dropped, titans aren't targeted, the sprint is kept (only targets ahead are shot), tactical abilities are used.
 - Fixed a script error after the ship left (the "evac" action was kept with no evac goal).
+- Boarding needs the ramp in sight; otherwise the bot goes to an approach node on the ship's open side first.
+  The boarding is a real run-up, jump and double jump timed under the ramp (wall kick towards it if a wall
+  catches), with an 8 s watchdog that switches to another approach. Ramp reach is measured from the bot's feet.
 
 ### Titans
 - More aggressive titan bots: spread out, attack each other, no clumping or pacing back and forth.
@@ -130,6 +174,8 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   only scratched a titan, so titans kept fighting down there).
 
 ### Bot manager
+- Bot names: a third style made of internet memes besides gamertags and military callsigns, e.g. `Lt. Larper`,
+  `Mogger-67`, `Aura_maxxing`, `CertifiedYapper`, `xRizzlerx`, `John Titanfall`.
 - Managed bots spawn together with humans at game start (they wait before Prematch instead of spawning on connect).
 - Private match settings have a "Pilot Bots" section: how many bots (0-10, default 10, spread over the teams,
   while there are free slots) and their lethality (low / normal / high / very high, the bot skill levels). Set there, they
@@ -148,7 +194,7 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   Known issues); may be removed once the root cause is fixed.
 
 ### Known issues
-- Intermittent disconnect/crash (engine entity-state decode) when a dead human spectating a bot respawns. Root cause not confirmed, i'm investigating da cause :D
+- Intermittent disconnect/crash (engine entity-state decode) when a dead human spectating a bot respawns.
   Cause narrowed down: `CL_CopyExistingEntity` deltas an entity whose stored packed state in the old frame is -1 and reads `buffer + 0xFFFFFFFF` (engine+0x1D6F60).
   The native hook now refuses that case with a Host_Error naming the entity instead of crashing.
 - Untested in game: whether held offhand buttons from bots (titan ordnance lock-on, vortex shield) behave like a
