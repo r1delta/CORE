@@ -81,6 +81,9 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   throttled; the start node is one in sight.
 - Void check fixed for floors that aren't brushes (Runoff's canal bed and grated doorways): the brush-only probe
   saw no floor there and every move was cancelled, freezing the bots.
+- Wall hangs: a pilot that jumps straight at a wall can end up hanging on it, which nothing handled, so it hung
+  there until the trapped check killed it (Nest's stairwells). It now jumps off away from the wall, on the way it
+  was going, after 0.4 s (1.5 s in a fight), and ducks to drop if it's still hanging.
 - Debug HUD (`BOT_DEBUG_HUD`, off by default): movement flags, route and stage of the bot under the crosshair.
 
 ### Lethality
@@ -155,6 +158,11 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   a team with fewer titans calls them in right away, a team two or more ahead holds its calls (up to 60 s), so
   the side that got its titans out first no longer stomps the other one.
 - Titan bots don't walk or dash into the void either.
+- Titan dash fixed: bots pressed sprint (`0x20000`) for it, which never dashes; the dash is its own button
+  (`+dodge`, `0x20000000`, from server.dll's movement code). This also fixes the dash away from a rider.
+- Titans dash much more often: shorter cooldown (1.6-3.2 s, scaled by lethality), dodges on lighter strafes and
+  any way they move while taking hits, always dashing in at a far target, and now and then while travelling with
+  the road clear ahead (`BOT_TITAN_DASH_*`).
 
 ### Game modes
 - Bots play Capture Point too (besides Attrition / TDM).
@@ -172,6 +180,7 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
 ### Maps
 - War Games: titans that fall into the simulation's death pits die like pilots (the pit triggers' damage per hit
   only scratched a titan, so titans kept fighting down there).
+- Nest: pilots no longer hang on the stairwell walls until they're killed (see wall hangs under Pilot AI).
 
 ### Bot manager
 - Bot names: a third style made of internet memes besides gamertags and military callsigns, e.g. `Lt. Larper`,
@@ -183,6 +192,8 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   convars from tier0.dll. One slot is always kept free for a human.
 - Bots are removed immediately when a human joins and there's no room (always with `delta_bot_fill_target`),
   alive or dead. Only managed bots are ever kicked; humans are never removed.
+- Several humans joining at once take one bot each and keep the teams even: the kick runs later through the
+  command buffer, so the team counts used to pick each bot were stale and every bot came off the same team.
 - Fixed bots dying ~1 s after every respawn on War Games: the simulation dissolve on death (and the dissolve from arc cannon, titan embark/crush and similar dissolve deaths on any map) is no longer applied to bots, since it outlived their quick respawn and killed the new life.
 
 ### Native (`r1delta-src`)
