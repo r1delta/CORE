@@ -1048,7 +1048,8 @@ function PostDeathThread( player, damageInfo )
 	}
 
 
-	if( player.IsBot() && GetConVarBool( "bot_kick_on_death" ) )
+	// Bots managed by _bot_manager stay in the match and respawn like players.
+	if( player.IsBot() && GetConVarBool( "bot_kick_on_death" ) && !IsManagedBot( player ) )
 	{
 		wait 5.0
 		// 봇은 죽으면 kick
@@ -1293,6 +1294,19 @@ function PlayerWatchesKillReplay( player, attacker, attackerViewIndex, timeSince
 	if ( player.s.timeBeforeKill > timeSinceAttackerSpawned )
 		player.s.timeBeforeKill = timeSinceAttackerSpawned
 
+	// Seen through a bot's eyes the replay has no muzzle flash or tracers (first-person weapon effects
+	// are predicted by the shooter's client, and a bot has none). The engine only uses the third-person
+	// replay camera (as for grunts, spectres and auto-titans) when the view entity is not a player, so a
+	// bot's kill replays through its non-player proxy. Without one, fall back to the victim's eyes.
+	if ( IsValid( attacker ) && attacker.IsPlayer() && attacker.IsBot() )
+	{
+		local proxy = GetBotReplayProxy( attacker )
+		if ( proxy )
+			attackerViewIndex = proxy.GetIndexForEntity()
+		else
+			attackerViewIndex = player.GetIndexForEntity()
+	}
+
 	player.SetViewIndex( attackerViewIndex )
 	local replayDelay = player.s.timeBeforeKill + ( Time() - timeOfDeath )
 	if ( replayDelay < 0 )
@@ -1319,6 +1333,54 @@ function PlayerWatchesKillReplay( player, attacker, attackerViewIndex, timeSince
 	{
 		wait timeAfterKill
 	}
+}
+
+const BOT_REPLAY_PROXY_RIGHT_OFFSET = 60
+const BOT_REPLAY_PROXY_FORWARD_OFFSET = 25
+
+// Invisible non-player entity that rides along with a bot pilot so its kill replays use the
+// third-person NPC camera. Kept for the bot's whole connection so the replay history always has it.
+function EnsureBotReplayProxy( bot )
+{
+	if ( GetBotReplayProxy( bot ) )
+		return
+
+	// Offset to the bot's right so the replay camera frames the bot on the left of the screen, and
+	// forward because the camera trails the proxy at a fixed distance, which brings it closer to the bot.
+	local yaw = bot.GetAngles().y * PI / 180.0
+	local right = Vector( sin( yaw ), -cos( yaw ), 0 )
+	local forward = Vector( cos( yaw ), sin( yaw ), 0 )
+	local offset = right * BOT_REPLAY_PROXY_RIGHT_OFFSET + forward * BOT_REPLAY_PROXY_FORWARD_OFFSET + Vector( 0, 0, 48 )
+	local proxy = CreateScriptMover( null, bot.GetOrigin() + offset, Vector( 0, bot.GetAngles().y, 0 ) )
+	proxy.Hide()
+	proxy.SetParent( bot )
+	bot.s.replayProxy <- proxy
+
+	thread DestroyBotReplayProxyOnDisconnect( bot, proxy )
+}
+
+function GetBotReplayProxy( bot )
+{
+	if ( !( "replayProxy" in bot.s ) || !IsValid( bot.s.replayProxy ) )
+		return null
+
+	return bot.s.replayProxy
+}
+
+function DestroyBotReplayProxyOnDisconnect( bot, proxy )
+{
+	proxy.EndSignal( "OnDestroy" )
+	bot.EndSignal( "OnDestroy" )
+
+	OnThreadEnd(
+		function () : ( proxy )
+		{
+			if ( IsValid( proxy ) )
+				proxy.Destroy()
+		}
+	)
+
+	bot.WaitSignal( "Disconnected" )
 }
 
 function ClientCommand_SelectRespawn( player, index = null )
@@ -2201,6 +2263,23 @@ function RespawnTitanPilot( player, rematchOrigin = null, retryToken = null, spa
 		// stop recording spawn data
 		StoreSpawnData( spawnPoint, spawnDataIndex )
 	}
+	else if ( IsManagedBot( player ) )
+	{
+		// Without a spawn point RespawnPlayer falls back to the map's default spawn, which is the
+		// same for both teams. Give pilot bots their team's spawn like humans get.
+		// A bot's first spawn (including bots added mid-match) is at its team's base; later
+		// respawns use the normal dynamic spawns, like humans.
+		if ( ShouldStartSpawn( player ) || !player.s.respawnCount )
+			spawnPoint = FindStartSpawnPoint( player, false )
+		if ( !spawnPoint )
+			spawnPoint = FindSpawnPoint( player, false )
+
+		if ( !spawnPoint )
+		{
+			QueueRespawnAfterNoSafeSpawnpoint( player, rematchOrigin, null, request )
+			return false
+		}
+	}
 
 	if ( retryToken != null && !PlayerCanContinueSpawnRetry( player, retryToken, request ) )
 		return false
@@ -2528,7 +2607,8 @@ function TitanPlayerHotDropsIntoLevel( player, rematchOrigin = null, token = nul
 	// save post drop spawn data
 	PostDropSpawnData( player, spawnDataIndex )
 
-	if ( player.IsBot() )
+	// Debug bots get moved next to the first player; managed bots keep the spawn they were given.
+	if ( player.IsBot() && !IsManagedBot( player ) )
 	{
 		local botCaller = GetPlayerArray()[0]
 		local spot = GetTitanReplacementPoint(botCaller)
@@ -2671,6 +2751,9 @@ function CodeCallback_OnPlayerRespawned( player )
 	}
 
 	NPCTitanInitModeOnPlayerRespawn( player )
+
+	if ( player.IsBot() )
+		EnsureBotReplayProxy( player )
 
 	if ( "spectreSquad" in player.s )
 		SpectreSquadFollowPlayer( player, player.s.spectreSquad )
@@ -3321,6 +3404,8 @@ function CodeCallback_OnClientConnectionCompleted( player )
 	{
 		SetBotTitanLoadout( player )
 		SetBotPilotLoadout( player )
+		if ( IsManagedBot( player ) )
+			BotRandomizeLoadouts( player )
 	}
 
 	UpdateMinimapStatus( player )
@@ -3383,16 +3468,24 @@ function CodeCallback_OnClientConnectionCompleted( player )
 			// below here is NOT BOT ONLY, but only randomly. Should fix to be consistent for bots.
 			MinimapPlayerConnected( player )
 
+			// Before Prematch, wait like humans do; GameStartSpawnPlayers spawns everyone together.
+			if ( GetGameState() < eGameState.Prematch )
+				return
+
 			DecideRespawnPlayer( player )
 
-			local botCaller = GetPlayerArray()[0]
-			local spot = GetTitanReplacementPoint(botCaller)
-			local origin = spot.origin
-			local dir =  botCaller.GetOrigin() - origin
-			local angles = dir.GetAngles()//Vector(0,0,0)
+			// Debug bots get moved next to the first player; managed bots keep their team spawn.
+			if ( !IsManagedBot( player ) && IsAlive( player ) )
+			{
+				local botCaller = GetPlayerArray()[0]
+				local spot = GetTitanReplacementPoint(botCaller)
+				local origin = spot.origin
+				local dir =  botCaller.GetOrigin() - origin
+				local angles = dir.GetAngles()//Vector(0,0,0)
 
-			player.SetOrigin( origin )
-			player.SetAngles( angles )
+				player.SetOrigin( origin )
+				player.SetAngles( angles )
+			}
 			return
 		}
 

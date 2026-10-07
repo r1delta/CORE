@@ -117,7 +117,7 @@ resource/ui/menus/match_settings.menu
 			pin_to_sibling_corner	2
 			xpos					0 [!$GAMECONSOLE]
 			xpos					10 [$GAMECONSOLE]
-			navUp					BtnAILethality
+			navUp					BtnBotLethality
 			navDown					BtnTimeLimit
 			conCommand				"pm_score_limit"
 			minValue				0
@@ -590,7 +590,7 @@ resource/ui/menus/match_settings.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			navUp					BtnAIType
-			navDown					BtnScoreLimit
+			navDown					BtnBotCount
 			tabPosition				1
 			labelText				"#PM_AI_LETHALITY"
 			ConVar					"pm_ai_lethality"
@@ -602,7 +602,80 @@ resource/ui/menus/match_settings.menu
 			}
 		}
 
-		
+		// Pilot bots: a second column, to the right of the AI section (the first one is full; higher up
+		// it would cover the long setting descriptions).
+		ImgBotSubheaderBackground
+		{
+			ControlName				ImagePanel
+			InheritProperties		SubheaderBackground
+			pin_to_sibling			ImgAISubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					45
+		}
+		LblBotSubheaderText
+		{
+			ControlName				Label
+			InheritProperties		SubheaderText
+			pin_to_sibling			ImgBotSubheaderBackground
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			xpos					-10
+			labelText				"#PM_HEADER_PILOT_BOTS"
+		}
+
+		BtnBotCount
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			ImgBotSubheaderBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos					10
+			navUp					BtnAILethality
+			navDown					BtnBotLethality
+			tabPosition				1
+			labelText				"#PM_BOT_COUNT"
+			ConVar					"pm_bot_count"
+			list
+			{
+				"0"		0
+				"1"		1
+				"2"		2
+				"3"		3
+				"4"		4
+				"5"		5
+				"6"		6
+				"7"		7
+				"8"		8
+				"9"		9
+				"10"	10
+			}
+		}
+
+		BtnBotLethality
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			style					DialogListButton
+			pin_to_sibling			BtnBotCount
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnBotCount
+			navDown					BtnScoreLimit
+			tabPosition				1
+			labelText				"#PM_BOT_LETHALITY"
+			ConVar					"pm_bot_lethality"
+			list
+			{
+				"#SETTING_LOW"			1
+				"#SETTING_NORMAL"		0
+				"#SETTING_HIGH"			2
+				"#SETTING_VERY_HIGH"	3
+			}
+		}
+
 
 
 

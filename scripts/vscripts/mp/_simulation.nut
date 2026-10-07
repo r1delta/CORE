@@ -37,6 +37,14 @@ function ShouldDoDissolveDeath( guy, damageInfo )
 	if ( !guy.IsPlayer() )
 		return true
 
+	// Bots respawn ~1.1 s after dying (PostDeathThread: wait 0.1 + wait 1.0, no kill replay), but the
+	// dissolve stays on the player entity and kills it when it finishes (~2 s after it started): the
+	// bot that just respawned dies ("committed suicide with world", damage source -1), that death
+	// dissolves it again, and so on forever. Humans watch the kill replay first, so their dissolve is
+	// over long before they respawn.
+	if ( guy.IsBot() )
+		return false
+
 	// can't dissolve players when they're not playing the game, otherwise when the game starts again they're invisible
 	local gs = GetGameState()
 	if ( gs != eGameState.Playing && gs != eGameState.SuddenDeath && gs != eGameState.Epilogue )

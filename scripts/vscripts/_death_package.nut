@@ -410,7 +410,8 @@ function HandleDeathPackage( entity, damageInfo )
 	}
 	else
 	{
-		if ( dpFlags & DF_DISSOLVE && ( !(entity.GetClassname() in disallowDissolveList ) ) )
+		// Not on bots: they respawn before the dissolve ends, and the dissolve kills the respawned bot.
+		if ( dpFlags & DF_DISSOLVE && ( !(entity.GetClassname() in disallowDissolveList ) ) && !( entity.IsPlayer() && entity.IsBot() ) )
 		{
 			local gibModel = GetGibModel( entity )
 			if ( dpFlags & DF_GIB && gibModel )

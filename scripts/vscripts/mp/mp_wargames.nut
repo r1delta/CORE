@@ -140,6 +140,66 @@ function EntitiesDidLoad()
 
 	if ( EvacEnabled() )
 		Wargames_EvacSetup()
+
+	thread Wargames_TitanPitThink()
+}
+
+// The pits of the simulation kill pilots on the spot (map trigger_hurt), but a trigger's damage per
+// hit barely scratches a titan, so titans that fell in kept fighting down there. A titan touching
+// one of those death triggers dies the way a pilot would.
+const WARGAMES_PIT_LETHAL_DAMAGE	= 100	// a trigger_hurt doing at least this per hit (or a fall / splat one) is a death pit
+const WARGAMES_PIT_CHECK_INTERVAL	= 0.25
+
+function Wargames_TitanPitThink()
+{
+	local pits = []
+	foreach ( trigger in GetEntArrayByClass_Expensive( "trigger_hurt" ) )
+	{
+		local damage = 0.0
+		local source = ""
+		try
+		{
+			if ( trigger.HasKey( "damage" ) )
+				damage = trigger.GetValueForKey( "damage" ).tofloat()
+			if ( trigger.HasKey( "damageSourceName" ) )
+				source = trigger.GetValueForKey( "damageSourceName" )
+		}
+		catch ( e ) {}
+		local lethal = damage >= WARGAMES_PIT_LETHAL_DAMAGE || source == "fall" || source == "splat"
+		printt( "Wargames: trigger_hurt", trigger.GetName(), "at", trigger.GetOrigin(), "damage", damage, "source", source, lethal ? "-> titan death pit" : "" )
+		if ( lethal )
+			pits.append( trigger )
+	}
+	if ( pits.len() == 0 )
+		return
+
+	for ( ;; )
+	{
+		wait WARGAMES_PIT_CHECK_INTERVAL
+
+		local titans = []
+		foreach ( team in [ TEAM_IMC, TEAM_MILITIA ] )
+			titans.extend( GetNPCArrayEx( "npc_titan", team, Vector( 0, 0, 0 ), -1 ) )
+		foreach ( player in GetPlayerArray() )
+		{
+			if ( IsAlive( player ) && player.IsTitan() )
+				titans.append( player )
+		}
+
+		foreach ( titan in titans )
+		{
+			if ( !IsAlive( titan ) )
+				continue
+			foreach ( pit in pits )
+			{
+				if ( !IsValid( pit ) || !pit.IsTouching( titan ) )
+					continue
+				printt( "Wargames: titan", titan.IsPlayer() ? titan.GetPlayerName() : titan.GetClassname(), "fell into a pit at", titan.GetOrigin() )
+				titan.TakeDamage( titan.GetMaxHealth() + 10000, pit, pit, { forceKill = true, damageSourceId = eDamageSourceId.fall } )
+				break
+			}
+		}
+	}
 }
 
 

@@ -2383,6 +2383,16 @@ pmSettingsMap["pm_ai_lethality"] <- [
 	2,
 ]
 
+// Pilot bots: index -> bot skill level (see GetBotSkill in _bot_ai); index 0 (the default) is normal.
+pmSettingsMap["pm_bot_lethality"] <- [
+	1, // default: normal
+	0, // low
+	2, // high
+	3, // very high
+]
+const PM_BOT_COUNT_MAX = 10
+const PM_BOT_COUNT_DEFAULT = 10	// private matches without the setting applied
+
 pmSettingsMap["pm_burn_cards"] <- [
 	0,
 	1,
@@ -2412,6 +2422,8 @@ playlistVarMap["pm_ai_type"] 		<- "riff_allow_npcs"
 playlistVarMap["pm_ai_lethality"] 	<- "riff_ai_lethality"
 playlistVarMap["pm_burn_cards"] 	<- "burn_cards_set"
 playlistVarMap["riff_floorislava"] 	<- "riff_floorislava"
+playlistVarMap["pm_bot_count"] 		<- "bot_count"
+playlistVarMap["pm_bot_lethality"] 	<- "bot_lethality"
 /*
 playlistVarMap["pilot_health"] 			<- "pm_pilot_health"
 playlistVarMap["riff_ammo_limit"] 		<- "pm_pilot_ammo"

@@ -46,6 +46,8 @@ function main()
 	file.aiTypeButton <- null
 	file.aiLethalityButton <- null
 	file.floorIsLavaButton <- null
+	file.botCountButton <- null
+	file.botLethalityButton <- null
 
 	file.gameModeLabel <- null
 
@@ -299,6 +301,8 @@ function InitMatchSettingsMenu( menu )
 	file.aiTypeButton = menu.GetChild( "BtnAIType" )
 	file.aiLethalityButton = menu.GetChild( "BtnAILethality" )
 	file.floorIsLavaButton = menu.GetChild( "BtnLava" )
+	file.botCountButton = menu.GetChild( "BtnBotCount" )
+	file.botLethalityButton = menu.GetChild( "BtnBotLethality" )
 
 	file.gameModeLabel = menu.GetChild( "LblSubheader1Text" )
 
@@ -317,6 +321,8 @@ function InitMatchSettingsMenu( menu )
 	AddDescFocusHandler( file.aiLethalityButton, "#PM_DESC_AI_LETHALITY" )
 	AddDescFocusHandler( file.floorIsLavaButton, "#PM_DESC_LAVA" )
 	AddDescFocusHandler( file.burnCardSetButton, "#PM_DESC_BURN_CARDS" )
+	AddDescFocusHandler( file.botCountButton, "#PM_DESC_BOT_COUNT" )
+	AddDescFocusHandler( file.botLethalityButton, "#PM_DESC_BOT_LETHALITY" )
 
 	uiGlobal.matchSettingsChanged <- false
 }
@@ -347,6 +353,8 @@ function OnOpenMatchSettingsMenu()
 	UpdateMappedConVarFromPlaylist( "pm_ai_type" )
 	UpdateMappedConVarFromPlaylist( "pm_ai_lethality" )
 	UpdateMappedConVarFromPlaylist( "pm_burn_cards" )
+
+	UpdateBotConVarsFromPlaylist()
 
 	thread UpdateMatchSettingsSliderValues( menu )
 
@@ -486,6 +494,31 @@ function UpdateMappedConVarFromPlaylist( conVarName, useBase = false  )
 
 	ClientCommand( conVarName + " " + pmSetting )
 	file.pmVarValues[conVarName] <- pmSetting.tofloat()
+}
+
+
+// Pilot bots: the count is stored as is, the lethality as its pmSettingsMap index (the playlist
+// holds the bot skill level; normal when not set).
+function UpdateBotConVarsFromPlaylist( useBase = false )
+{
+	local count = useBase ? GetCurrentPlaylistVarOrUseValueOriginal( "bot_count", "" + PM_BOT_COUNT_DEFAULT ) : GetCurrentPlaylistVarOrUseValue( "bot_count", "" + PM_BOT_COUNT_DEFAULT )
+	count = clamp( count.tointeger(), 0, PM_BOT_COUNT_MAX )
+	ClientCommand( "pm_bot_count " + count )
+	file.pmVarValues["pm_bot_count"] <- count.tofloat()
+
+	local skill = useBase ? GetCurrentPlaylistVarOrUseValueOriginal( "bot_lethality", "1" ) : GetCurrentPlaylistVarOrUseValue( "bot_lethality", "1" )
+	skill = skill.tointeger()
+	local pmSetting = 0
+	foreach ( index, value in pmSettingsMap["pm_bot_lethality"] )
+	{
+		if ( value == skill )
+		{
+			pmSetting = index
+			break
+		}
+	}
+	ClientCommand( "pm_bot_lethality " + pmSetting )
+	file.pmVarValues["pm_bot_lethality"] <- pmSetting.tofloat()
 }
 
 
@@ -641,6 +674,10 @@ function NavigateBackApplyMatchSettingsDialog()
 		uiGlobal.matchSettingsChanged = true
 	else if ( ConVarValueChanged( "pm_burn_cards" ) )
 		uiGlobal.matchSettingsChanged = true
+	else if ( ConVarValueChanged( "pm_bot_count" ) )
+		uiGlobal.matchSettingsChanged = true
+	else if ( ConVarValueChanged( "pm_bot_lethality" ) )
+		uiGlobal.matchSettingsChanged = true
 
 	if ( !uiGlobal.matchSettingsChanged )
 		return false
@@ -715,6 +752,8 @@ function ApplyMatchSettings( button )
 	UpdatePlaylistFromConVar( "pm_ai_lethality" )
 	UpdatePlaylistFromConVar( "pm_burn_cards" )
 	UpdatePlaylistFromConVar( "riff_floorislava")
+	UpdatePlaylistFromConVar( "pm_bot_count" )
+	UpdatePlaylistFromConVar( "pm_bot_lethality" )
 
 	uiGlobal.matchSettingsChanged = false
 }
@@ -736,6 +775,7 @@ function ResetMatchSettingsToDefaultDialog( button )
 	UpdateMappedConVarFromPlaylist( "pm_ai_type", true )
 	UpdateMappedConVarFromPlaylist( "pm_ai_lethality", true )
 	UpdateMappedConVarFromPlaylist( "pm_burn_cards", true )
+	UpdateBotConVarsFromPlaylist( true )
 
 	ClientCommand( "ResetMatchSettingsToDefault" )
 }

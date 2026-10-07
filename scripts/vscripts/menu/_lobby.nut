@@ -2077,6 +2077,19 @@ function ClientCommand_UpdatePrivateMatchSetting( player, ... )
 			local value = pmVarVal.tointeger()
 			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value )
 			break
+
+		// Pilot bots (see GetDesiredBotCount in _bot_manager and GetBotSkill in _bot_ai)
+		case "pm_bot_count":
+			local value = clamp( pmVarVal.tointeger(), 0, PM_BOT_COUNT_MAX )
+			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + value )
+			break
+
+		case "pm_bot_lethality":
+			local index = pmVarVal.tointeger()
+			if ( index < 0 || index >= pmSettingsMap[pmVarName].len() )
+				return true
+			SetPlaylistVarOverride( playlistVarMap[pmVarName], "" + pmSettingsMap[pmVarName][index] )
+			break
 	}
 
 	SetPlaylistVarOverride( "private_match", "1" )
