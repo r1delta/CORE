@@ -754,8 +754,10 @@ const BOT_IN_SPEED				= 0x20000
 // Slot 0 is ordnance (grenades / titan rockets), slot 1 the tactical ability.
 const BOT_IN_OFFHAND_ORDNANCE	= 0x800000
 const BOT_IN_OFFHAND_TACTICAL	= 0x1000000
-// Titan dash is the sprint button (+speed) tapped with a move direction.
-const BOT_IN_DODGE				= 0x20000
+// Titan dash: its own button (+dodge, bit 29), tapped with a move direction. Not sprint: in a titan
+// the dash keys are bound to +dodge on the client (cl_player.nut SetAbilityBinding), and server.dll's
+// jump/dodge movement code starts a dash on a fresh press of 0x20000000 (IN_SPEED does nothing there).
+const BOT_IN_DODGE				= 0x20000000
 
 // Melee goes through the same script callback code calls on +melee (CodeCallback_OnMeleePressed).
 const BOT_PILOT_MELEE_RANGE		= 90.0	// kick range is 75, more with momentum
@@ -11710,7 +11712,7 @@ function AimLob( bot, brain, spot, profile = null )
 	AimTowards( brain, angles.y, BotClamp( NormalizeYaw( angles.x ) - lift, -89.0, 89.0 ) )
 }
 
-// Titan dash: a tap of sprint while moving. It goes the way the titan is already moving, so
+// Titan dash: a tap of dodge while moving. It goes the way the titan is already moving, so
 // sideways while strafing in a fight and along the escape route when running away.
 function UpdateTitanDash( bot, brain, hasVisibleTarget, inEngageRange, forward, side )
 {

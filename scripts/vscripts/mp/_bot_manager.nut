@@ -183,10 +183,18 @@ function BotReconcileThread()
 			bots.remove( i )
 	}
 
+	// The kick goes through the command buffer, so the team counts don't drop until later: keep our
+	// own, or two humans joining at once (one per team) would both take a bot off the same team.
+	local teamCounts = {}
+	teamCounts[ TEAM_IMC ] <- GetTeamPlayerCount( TEAM_IMC )
+	teamCounts[ TEAM_MILITIA ] <- GetTeamPlayerCount( TEAM_MILITIA )
 	while ( bots.len() > desiredBots )
 	{
-		local bot = ChooseBotToRemove( bots )
+		local bot = ChooseBotToRemove( bots, teamCounts )
 		ArrayRemove( bots, bot )
+		local team = bot.GetTeam()
+		if ( team in teamCounts )
+			teamCounts[ team ]--
 		RemoveManagedBot( bot )
 	}
 
@@ -211,10 +219,11 @@ function GetTeamNeedingPlayer()
 
 // Remove from the larger team so the human who just joined keeps teams even.
 // Within that team prefer a dead bot, then a pilot, and leave titan bots for last.
-function ChooseBotToRemove( bots )
+// teamCounts: players per team, minus the bots already being kicked this pass.
+function ChooseBotToRemove( bots, teamCounts )
 {
-	local imcCount = GetTeamPlayerCount( TEAM_IMC )
-	local militiaCount = GetTeamPlayerCount( TEAM_MILITIA )
+	local imcCount = teamCounts[ TEAM_IMC ]
+	local militiaCount = teamCounts[ TEAM_MILITIA ]
 	local preferredTeam = imcCount >= militiaCount ? TEAM_IMC : TEAM_MILITIA
 
 	local best = null
