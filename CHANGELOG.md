@@ -201,12 +201,10 @@ and the native bot support in `r1delta-src` (`server/ai/bot_control.*`, `shared/
   `NavFindPath` keeps its previous behaviour.
 - Script falls back to `NavFindPath` when `NavFindPathPilot` is not available.
 - New convars `pm_bot_count` / `pm_bot_lethality` for the private match settings menu (pilot bots).
-- `CL_CopyExistingEntity` refuses an entity with no stored packed state (Host_Error instead of a crash, see
-  Known issues); may be removed once the root cause is fixed.
+- `CL_CopyExistingEntity` refuses an entity with no stored packed state (Host_Error naming the entity instead of
+  reading `buffer + 0xFFFFFFFF` and crashing). Kept as a safety net: the client crash it was added for (a dead
+  human spectating a bot, then respawning) is fixed.
 
 ### Known issues
-- Intermittent disconnect/crash (engine entity-state decode) when a dead human spectating a bot respawns.
-  Cause narrowed down: `CL_CopyExistingEntity` deltas an entity whose stored packed state in the old frame is -1 and reads `buffer + 0xFFFFFFFF` (engine+0x1D6F60).
-  The native hook now refuses that case with a Host_Error naming the entity instead of crashing.
 - Untested in game: whether held offhand buttons from bots (titan ordnance lock-on, vortex shield) behave like a
   held key; whether titan hull 4 is a usable titan path hull on every map (it falls back to the human hull).
