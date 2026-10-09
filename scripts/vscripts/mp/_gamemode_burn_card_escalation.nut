@@ -328,12 +328,6 @@ function BCE_ApplyCard( player, key )
 	while ( IsValid( player.isSpawning ) )
 		wait 0.1
 
-	if ( player.IsTitan() )
-	{
-		player.WaitSignal( "OnLeftTitan" )
-		wait 0.5
-	}
-
 	switch ( key )
 	{
 		case "primary":
@@ -341,6 +335,14 @@ function BCE_ApplyCard( player, key )
 		case "secondary":
 		case "grenade":
 		case "tactical":
+			// Only the weapon cards need the pilot's own weapons, so only they wait for the pilot to leave their Titan.
+			// A pilot who spawns as a Titan would otherwise wait out every card and never get an effect from any of them.
+			if ( player.IsTitan() )
+			{
+				player.WaitSignal( "OnLeftTitan" )
+				wait 0.5
+			}
+
 			local weapon = BCE_GetSlotWeapon( player, key )
 			local modName = BCE_GetBurnMod( weapon, key )
 			if ( modName != null )
@@ -553,17 +555,21 @@ function BCE_FindTitanWeaponRef( key, className )
 // the weapons in the loadout, the nuclear card needs the Nuclear Eject kit, and the core, dash and punch cards fit every Titan.
 function BCE_GetTitanSlotRef( player, key )
 {
+	// The Titan loadout table is only made once the player's class has been set up as a Titan
+	if ( player.playerClassData == null || !( "titan" in player.playerClassData ) )
+		return null
+
 	local loadout = player.playerClassData[ "titan" ]
 
 	switch ( key )
 	{
 		case "titan_primary":
-			return BCE_FindTitanWeaponRef( key, loadout.primaryWeapon )
+			return BCE_FindTitanWeaponRef( key, "primaryWeapon" in loadout ? loadout.primaryWeapon : null )
 
 		case "titan_ordnance":
 		case "titan_tactical":
 			local slot = key == "titan_ordnance" ? 0 : 1
-			local offhands = loadout.offhandWeapons
+			local offhands = "offhandWeapons" in loadout ? loadout.offhandWeapons : null
 			if ( !offhands || !( slot in offhands ) || !( "weapon" in offhands[ slot ] ) )
 				return null
 
@@ -571,9 +577,9 @@ function BCE_GetTitanSlotRef( player, key )
 
 		case "titan_nuclear":
 			local kits = 0
-			if ( loadout.passive1 )
+			if ( "passive1" in loadout && loadout.passive1 )
 				kits = kits | loadout.passive1
-			if ( loadout.passive2 )
+			if ( "passive2" in loadout && loadout.passive2 )
 				kits = kits | loadout.passive2
 
 			if ( ( kits & PAS_BUILD_UP_NUCLEAR_CORE ) == 0 )
@@ -901,7 +907,9 @@ function BCE_CountKill( player )
 // and those are not drops, so the cards keep waiting for the next drop.
 function BCE_OnChangeLoadout( player, loadoutTable, isTitan )
 {
-	if ( isTitan && !player.IsTitan() )
+	// Every Titan loadout is a drop as far as the cards are concerned. A pilot who spawns as a Titan is already the
+	// Titan when this fires, so only asking for a loadout change and not for the player to become a Titan afterwards.
+	if ( isTitan )
 		thread BCE_ApplyTitanCards( player )
 }
 
@@ -959,7 +967,7 @@ function BCE_ApplyTitanCards( player )
 	for ( local tries = 0; tries < 100; tries++ )
 	{
 		titan = player.IsTitan() ? player : GetPlayerTitanInMap( player )
-		if ( IsAlive( titan ) && IsValid( titan.GetTitanSoul() ) )
+		if ( titan != null && IsAlive( titan ) && IsValid( titan.GetTitanSoul() ) )
 			break
 
 		titan = null
@@ -995,8 +1003,11 @@ function BCE_ApplyTitanCards( player )
 			case "titan_dash":
 			case "titan_punch":
 				local flag = GetBurnCardData( ref ).serverFlags
-				GiveServerFlag( player, flag )
-				flags.append( flag )
+				if ( flag != null )
+				{
+					GiveServerFlag( player, flag )
+					flags.append( flag )
+				}
 				break
 
 			case "titan_nuclear":
