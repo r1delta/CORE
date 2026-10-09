@@ -907,9 +907,7 @@ function BCE_CountKill( player )
 // and those are not drops, so the cards keep waiting for the next drop.
 function BCE_OnChangeLoadout( player, loadoutTable, isTitan )
 {
-	// Every Titan loadout is a drop as far as the cards are concerned. A pilot who spawns as a Titan is already the
-	// Titan when this fires, so only asking for a loadout change and not for the player to become a Titan afterwards.
-	if ( isTitan )
+	if ( isTitan && !player.IsTitan() )
 		thread BCE_ApplyTitanCards( player )
 }
 
@@ -962,12 +960,15 @@ function BCE_ApplyTitanCards( player )
 		}
 	)
 
-	// The pilot is the Titan when they spawn as one, otherwise their Titan is in the map
+	// The pilot is the Titan when they spawn as one, otherwise their Titan is in the map. A spawn as a Titan first drops a
+	// Titan for the player to be put into, and PilotBecomesTitan throws that one away once the player has taken its weapons,
+	// so the map Titan is not taken while the player is still spawning. Applying to it loses the cards and script errors
+	// halfway through the weapon cards, which replace the Titan's weapons across a wait of their own.
 	local titan = null
 	for ( local tries = 0; tries < 100; tries++ )
 	{
 		titan = player.IsTitan() ? player : GetPlayerTitanInMap( player )
-		if ( titan != null && IsAlive( titan ) && IsValid( titan.GetTitanSoul() ) )
+		if ( titan != null && IsAlive( titan ) && IsValid( titan.GetTitanSoul() ) && !IsValid( player.isSpawning ) )
 			break
 
 		titan = null
