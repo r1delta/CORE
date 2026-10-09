@@ -17,7 +17,7 @@ function main()
 	file.modeVariantConfig[ "ModeVariantMFDMenu" ] <- [ "mfd", "mfdp", "tmfd", "tmfdp" ]
 	file.modeVariantConfig[ "ModeVariantLTSMenu" ] <- [ "lts", "wlts" ]
 	file.modeVariantConfig[ "ModeVariantPilotMenu" ] <- [ "tdm", "ps" ]
-	file.modeVariantConfig[ "ModeVariantFFAMenu" ] <- [ "ffa", "gg" ]
+	file.modeVariantConfig[ "ModeVariantFFAMenu" ] <- [ "ffa", "gg", "bce" ]
 
 	file.modeVariantButtons <- {}
 	file.activeVariantMenu <- null

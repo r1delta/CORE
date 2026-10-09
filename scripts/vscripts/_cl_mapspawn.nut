@@ -261,11 +261,10 @@ function Cl_MapspawnMain()
 	{
 		IncludeFile( "_loader" )
 		IncludeFile( "client/cl_burncards" )
-		if ( IsLobby() )
-		{
-			IncludeFile( "client/cl_burncards_lobby" )
-		}
-		else
+		// The Burn Card menu can be open while the UI and the client disagree about whether this is the lobby, so the
+		// client functions it calls by name are always loaded rather than only on the lobby level
+		IncludeFile( "client/cl_burncards_lobby" )
+		if ( !IsLobby() )
 		{
 		    IncludeFile( "client/cl_respawnselect" )
 			IncludeFile( "_damage_history" )

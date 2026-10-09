@@ -160,11 +160,9 @@ function ReloadScripts()
 	IncludeFile( "_ranked_shared" )
 	IncludeFile( "_ranked_gems" )
 
-	if ( IsLobby() )
-	{
-		IncludeFile( "client/cl_burncards_lobby" )
-	}
-	else
+	IncludeFile( "client/cl_burncards_lobby" )
+
+	if ( !IsLobby() )
 	{
 		if ( level.rankedPlayEnabled )
 		{

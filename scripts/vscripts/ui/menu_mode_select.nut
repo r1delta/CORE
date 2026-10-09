@@ -83,7 +83,7 @@ function GetDisplayModes()
 		"mfd+mfdp+tmfd+tmfdp",
 		"lts+wlts",
 		"tdm+ps",
-		"ffa+gg",
+		"ffa+gg+bce",
 	]
 }
 
@@ -103,7 +103,7 @@ function GetVariantMenuForEntry( entry )
 		case "tdm+ps":
 			return "ModeVariantPilotMenu"
 
-		case "ffa+gg":
+		case "ffa+gg+bce":
 			return "ModeVariantFFAMenu"
 	}
 

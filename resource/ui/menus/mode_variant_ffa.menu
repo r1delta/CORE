@@ -35,7 +35,7 @@ resource/ui/menus/mode_variant_ffa.menu
 			scriptID				0
 			xpos					30
 			ypos					86
-			navUp					BtnMode2
+			navUp					BtnMode3
 			navDown					BtnMode2
 			labelText				""
 		}
@@ -49,6 +49,19 @@ resource/ui/menus/mode_variant_ffa.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			navUp					BtnMode1
+			navDown					BtnMode3
+			labelText				""
+		}
+		BtnMode3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname 				ModeVariantButton
+			scriptID				2
+			pin_to_sibling			BtnMode2
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnMode2
 			navDown					BtnMode1
 			labelText				""
 		}
