@@ -73,24 +73,9 @@ function GetVoteOptionsArray()
 	if ( !IsConnected() )
 		return optionsArray
 
-	local playlist = GetCurrentPlaylistName()
-
 	switch ( uiGlobal.selectedVote )
 	{
 		case eVoteType.kickPlayer:
-			break
-
-		case eVoteType.mapChange:
-		case eVoteType.nextMap:
-			optionsArray = GetPlaylistUniqueMaps( playlist )
-
-			if ( playlist != CAPTURE_POINT && playlist != COOPERATIVE && playlist != CAMPAIGN )
-			{
-				optionsArray.append( "mp_mia" )
-				optionsArray.append( "mp_nest2" )
-				optionsArray.append( "mp_box" )
-				optionsArray.append( "mp_npe" )
-			}
 			break
 
 		case eVoteType.nextMode:
@@ -112,14 +97,6 @@ function GetVoteOptionText( optionsArray, buttonID )
 	local text = ""
 	switch ( uiGlobal.selectedVote )
 	{
-		case eVoteType.mapChange:
-		case eVoteType.nextMap:
-			if ( GetCurrentPlaylistName() == CAMPAIGN )
-				text = GetCampaignMapDisplayName( optionsArray[buttonID] )
-			else 
-				text = GetMapDisplayName( optionsArray[buttonID] )
-			break
-		
 		case eVoteType.nextMode:
 			text = GetGameModeDisplayName( optionsArray[buttonID] )
 			break
@@ -179,50 +156,16 @@ function MapButton_Focused( button )
 	local optionDesc
 	local optionImage = "../dev/empty"
 
-	switch( uiGlobal.selectedVote )
-	{
-		case eVoteType.mapChange:
-		case eVoteType.nextMap:
-			if ( GetCurrentPlaylistName() == CAMPAIGN )
-			{
-				optionName = GetCampaignMapDisplayName( option )
-				optionDesc = "#" + option + "_CAMPAIGN_MENU_DESC"
-			}
-			else
-			{
-				optionName = GetMapDisplayName( option )
-				optionDesc = GetMapDisplayDesc( option )
-			}
+	// Map votes go through the maps menu (OpenMapVoteMenu); only game mode votes are left here
+	optionName = GetGameModeDisplayName( option )
+	optionDesc = GetGameModeDisplayDesc( option )
+	optionImage = GetGameModeDisplayImage( option )
 
-			if ( option == "mp_mia" || option == "mp_nest2" || option == "mp_box" || option == "mp_npe" )
-				optionImage = "../loadscreens/" + option + "_widescreen"
-			else
-				optionImage = "../ui/menu/lobby/lobby_image_" + option
-			break
-		
-		case eVoteType.nextMode:
-			optionName = GetGameModeDisplayName( option )
-			optionDesc = GetGameModeDisplayDesc( option )
-			optionImage = GetGameModeDisplayImage( option )
-			break
-	}
+	nextMapImage.SetImage( "../dev/empty" )
 
-	if ( uiGlobal.selectedVote == eVoteType.mapChange || uiGlobal.selectedVote == eVoteType.nextMap )
-	{
-		nextMapImage.SetImage( optionImage )
-	
-
-		nextModeImage.Hide()
-		nextModeImageBackground.Hide()
-	}
-	else
-	{
-		nextMapImage.SetImage( "../dev/empty" )
-
-		nextModeImage.Show()
-		nextModeImage.SetImage( optionImage )
-		nextModeImageBackground.Show()
-	}
+	nextModeImage.Show()
+	nextModeImage.SetImage( optionImage )
+	nextModeImageBackground.Show()
 
 	nextMapName.SetText( optionName )
 	nextMapDesc.SetText( optionDesc )
