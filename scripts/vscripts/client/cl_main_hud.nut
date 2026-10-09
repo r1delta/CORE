@@ -4026,16 +4026,17 @@ function UpdateSubText2ForRiffs( announcement )
 		}
 	}
 
-	if ( level.nv.allowNPCs != eAllowNPCs.Default )
+	if ( ModeAnnouncesFreeForAll() )
+	{
+		// These modes say what they are where a free for all with no minions says that there are none
+		riffTexts.append( "#GAMEMODE_FFA" )
+	}
+	else if ( level.nv.allowNPCs != eAllowNPCs.Default )
 	{
 		switch ( level.nv.allowNPCs )
 		{
 			case eAllowNPCs.None:
-				// Free for all has no minions anyway. Burn Card Escalation says what the mode is instead of that there are no minions
-				if ( GAMETYPE == BURN_CARD_ESCALATION )
-					riffTexts.append( "#GAMEMODE_FFA" )
-				else
-					riffTexts.append( "#GAMESTATE_NO_MINIONS" )
+				riffTexts.append( "#GAMESTATE_NO_MINIONS" )
 				break
 
 			case eAllowNPCs.GruntOnly:
@@ -4093,6 +4094,22 @@ function UpdateSubText2ForRiffs( announcement )
 	}
 
 	return riffTexts.len()
+}
+
+// Burn Card Escalation, Gun Game, Titan Free For All and Turbo Titan Free For All. The mode names are used rather than their constants
+// so that this also works in a build that does not have all of the modes.
+function ModeAnnouncesFreeForAll()
+{
+	switch ( GAMETYPE )
+	{
+		case "bce":
+		case "gg":
+		case "tffa":
+		case "tffa_turbo":
+			return true
+	}
+
+	return false
 }
 
 function ClientCodeCallback_ControllerModeChanged( controllerModeEnabled )
