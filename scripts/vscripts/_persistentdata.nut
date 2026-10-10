@@ -14,6 +14,32 @@ if ( !IsUI() )
 {
 	function InitPersistentData( player )
 	{
+		thread InitPersistentDataWhenReady( player )
+	}
+
+	// After a changelevel reconnect the client's persistent payload arrives
+	// over the connection a moment after the connect callback runs. Treating
+	// that empty read as "new player" resets the player's real loadouts and
+	// retries the connection, so wait for the payload first. A player whose
+	// data never arrives falls through to the new-player defaults as before.
+	function InitPersistentDataWhenReady( player )
+	{
+		player.EndSignal( "Disconnected" )
+
+		local deadline = Time() + 5.0
+		while ( Time() < deadline )
+		{
+			if ( player.GetPersistentVar( "previouslyInitialized" )
+				|| player.GetPersistentVar( "initializedVersion" ) )
+				break
+			wait 0.1
+		}
+
+		InitPersistentDataNow( player )
+	}
+
+	function InitPersistentDataNow( player )
+	{
 		InitBurnCardPersistence( player )
 
 		if ( !player.GetPersistentVar( "previouslyInitialized" ) )
