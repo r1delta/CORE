@@ -461,23 +461,17 @@ function BCE_GetCardRef( key, weapon )
 	return null
 }
 
-// The same burn card animation FFA plays for the minimap scan, shown to the pilot who got the card.
-// Returns the index of the burn card that was shown, or null when the game has no burn card for this one.
-function BCE_PlayCardAnimation( player, key, ref )
+// The stock burn card this card shows as: its index, or null when the game has no burn card for it.
+function BCE_CardIndex( ref )
 {
-	local index = ref != null ? GetBurnCardIndexByRef( ref ) : null
-
-	if ( index == null || index == -1 )
-	{
-		BCE_Notify( player, "+ " + BCE_CardName( key ) ) // no burn card exists for this weapon
+	if ( ref == null )
 		return null
-	}
 
-	Remote.CallFunction_NonReplay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), index, true )
-	return index
+	local index = GetBurnCardIndexByRef( ref )
+	return index == -1 ? null : index
 }
 
-function BCE_GiveCard( player, key )
+function BCE_GiveCard( player, key, showAnim = true )
 {
 	// Each slot holds one card
 	if ( key in BCE_GetCards( player ) )
@@ -503,7 +497,19 @@ function BCE_GiveCard( player, key )
 		thread BCE_ApplyCard( player, key )
 
 	// The client keeps the lists of cards shown on the HUD (see client/cl_gamemode_burn_card_escalation.nut)
-	local index = BCE_PlayCardAnimation( player, key, ref )
+	local index = BCE_CardIndex( ref )
+
+	// The same burn card animation FFA plays for the minimap scan, shown to the pilot who got the card.
+	// The batch of cards given on spawn is granted quietly: playing it per card stacks the stock
+	// EXTRA CARD display up on every respawn. The HUD lists still update below.
+	if ( showAnim )
+	{
+		if ( index != null )
+			Remote.CallFunction_NonReplay( player, "ServerCallback_PlayerUsesBurnCard", player.GetEncodedEHandle(), index, true )
+		else
+			BCE_Notify( player, "+ " + BCE_CardName( key ) ) // no burn card exists for this weapon
+	}
+
 	if ( index != null )
 		Remote.CallFunction_NonReplay( player, BCE_IsTitanKey( key ) ? "ServerCallback_BCE_TitanCardAdded" : "ServerCallback_BCE_CardAdded", index )
 
@@ -680,7 +686,7 @@ function BCE_NextCardKey( player, allowHvtCards )
 }
 
 // Pulls up to count cards, returns how many were given
-function BCE_PullCards( player, count, allowHvtCards )
+function BCE_PullCards( player, count, allowHvtCards, showAnim = true )
 {
 	local given = 0
 	for ( local i = 0; i < count; i++ )
@@ -689,7 +695,7 @@ function BCE_PullCards( player, count, allowHvtCards )
 		if ( key == null )
 			break
 
-		BCE_GiveCard( player, key )
+		BCE_GiveCard( player, key, showAnim )
 		given++
 	}
 
@@ -834,7 +840,7 @@ function BCE_SpawnCards( player )
 			thread BCE_ApplyCard( player, key )
 	}
 
-	BCE_PullCards( player, BCE_SpawnCardCount() - BCE_PilotCardCount( player ), false )
+	BCE_PullCards( player, BCE_SpawnCardCount() - BCE_PilotCardCount( player ), false, false ) // quietly, see BCE_GiveCard
 }
 
 function BCE_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
