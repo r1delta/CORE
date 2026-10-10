@@ -126,7 +126,10 @@ function GiveWeaponsFromStoredArray( array, ent, GiveFuncName )
 			if ( GiveFuncName == "GiveWeapon" )
 			{
 				printt( "[Weapon name]", weaponTable.name )
-				weapon.SetWeaponPrimaryClipCount( weaponTable.clipCount )
+				// Burn mods can raise the stored clip above the base weapon's
+				// capacity; clamp the restore instead of handing the weapon
+				// system an over-capacity clip.
+				weapon.SetWeaponPrimaryClipCount( min( weaponTable.clipCount, ent.GetWeaponAmmoMaxLoaded( weapon ) ) )
 			}
 			break
 		}

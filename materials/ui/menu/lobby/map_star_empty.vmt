@@ -1,0 +1,8 @@
+Basic
+{
+	"$basetexture" "ui/menu/lobby/map_star_empty"
+	$translucent		1
+	$vertexcolor		1
+	$vertexalpha		1
+	$ignorez			1
+}

@@ -99,6 +99,11 @@ function FFA_MinimapScanAndRemoveDropships()
 	KillAllEntitiesOfType( "info_spawnpoint_dropship_start" )
 	// FFA removes these entities, so the classic intro must not retain their handles.
 	level.dropship_start_spawns.clear()
+	// ...or spawn players into them: the default dropship intro setup already ran and latched
+	// these spawn points (it wants exactly two per team), so without cancelling it the prematch
+	// spawn code indexes the now empty list and errors out ("the index '0' does not exist").
+	// Same fix as ClearDropshipSpawnPlayerList in _classic_mp.
+	level.canStillSpawnIntoIntro <- false
 
 	for ( ;; )
 	{

@@ -949,6 +949,8 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
     local cardData = GetBurnCardData(cardRef);
     local weaponToTake = null
     local weaponData = GetBurnCardWeapon(cardRef)
+    if ( !IsValid( titan ) )
+        return
     local weapons = titan.GetMainWeapons()
 
     if ( !( cardData.ctFlags & CT_TITAN_WPN ) )
@@ -963,7 +965,10 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
         }
 
         if(cardData.ctFlags & CT_TITAN_WPN) {
-            Assert( IsValid( titan ) )
+            // The titan can be destroyed during the waits below; every entity
+            // call after a wait must re-check or it throws on a dead instance.
+            if ( !IsValid( titan ) )
+                return
             if(!weaponData) {
                 return;
             }
@@ -973,18 +978,26 @@ function ApplyTitanWeaponBurnCard( titan, cardRef )
                 case "TITAN_PRIMARY":
                     titan.TakeWeapon(weaponToTake.GetClassname())
                     wait 0.5;
+                    if ( !IsValid( titan ) )
+                        return
                     titan.GiveWeapon(weaponData.weapon, weaponData.mods)
                     wait 0.1;
+                    if ( !IsValid( titan ) )
+                        return
                     titan.SetActiveWeapon(weaponData.weapon)
                     break;
                 case "TITAN_OFFHAND0":
                     titan.TakeOffhandWeapon(0)
                     wait 0.1;
+                    if ( !IsValid( titan ) )
+                        return
                     titan.GiveOffhandWeapon(weaponData.weapon, 0, weaponData.mods)
                     break;
                 case "TITAN_OFFHAND1":
                     titan.TakeOffhandWeapon(1);
                     wait 0.1;
+                    if ( !IsValid( titan ) )
+                        return
                     titan.GiveOffhandWeapon(weaponData.weapon, 1, weaponData.mods)
                     break;
                 default:
