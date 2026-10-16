@@ -1,0 +1,28 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+
+	"$surfaceprop" "flesh"
+	"$basetexture" "models\humans\titan_pilots\battle_rifle_mcor_male_pilot\pilot_mcor_m_fringe_brp_a_urb_col"
+	"$bumpmap" "models\humans\titan_pilots\battle_rifle_mcor_male_pilot\pilot_mcor_m_fringe_brp_a_urb_nml"
+	"$alphatest" "1"
+	
+	"$rimlight" "1"
+	"$rimlighttint" "[1 1 1]"
+	"$rimlightintensity" "0.005"
+	
+//	$matchColor		"[2 5 20]"
+//	$mismatchColor	"[20 5 2]"
+//	
+//	Proxies
+//	{
+//		EntitySonarColor
+//		{
+//			sameTeamColorVar	$matchColor
+//			otherTeamColorVar	$mismatchColor
+//
+//			resultvar	$rimlighttint
+//		}	
+//	}
+}
