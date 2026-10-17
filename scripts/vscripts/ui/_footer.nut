@@ -76,6 +76,16 @@ function OnFooterButton_Activate( button )
 
 function UpdateFooterButtons( menuName = null )
 {
+	// Settle the UI visibility channel before drawing anything: the level-load handler runs
+	// before the lobby type has moved, so a host who leaves a match is still type 1 at that
+	// moment and the personal lobby only appears afterwards. Enforcing it here means the
+	// state is checked once it has actually settled, including the return-to-front-end route.
+	if ( !level.ui.isDedicatedServer && GetConVarBool( "delta_ui_server_public" )
+		&& ( GetConVarInt( "sv_lobbyType" ) == 0 || IsTrainingLevel() ) )
+	{
+		ClientCommand( "delta_ui_server_public 0" )
+	}
+
 	local footerData = {}
 	footerData.gamepad <- []
 	footerData.pc <- []
@@ -585,9 +595,12 @@ function ToggleHideServer( button )
 	if ( level.ui.isDedicatedServer )
 		return
 
-	local uiPublic = GetConVarBool( "delta_ui_server_public" )
-	ClientCommand( "delta_ui_server_public " + ( uiPublic ? 0 : 1 ) )
-	if ( uiPublic )
+	// Act on the state the footer acted on, not on one channel alone: the label offers Hide
+	// whenever either channel publishes, so a single click has to end in a hidden server even
+	// when the visibility came from hide_server 0.
+	local isPublic = GetConVarInt( "hide_server" ) == 0 || GetConVarBool( "delta_ui_server_public" )
+	ClientCommand( "delta_ui_server_public " + ( isPublic ? 0 : 1 ) )
+	if ( isPublic )
 	{
 		// Hiding has to clear the operator channel as well: the reader publishes while
 		// hide_server is 0, so without this the toggle would be a no-op for a host who made
