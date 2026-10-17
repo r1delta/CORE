@@ -401,6 +401,7 @@ enum eModSourceId
 	burn_mod_charge_cannon
 	hydraulic_launcher
 	burn_mod_throwing_knife
+	plasma_rifle
 }
 
 //Attachments intentionally left off. This prevents them from displaying in kill cards.
@@ -471,3 +472,4 @@ modNameStrings[ eModSourceId.burn_mod_thunderbolt ] 		<- "#BC_TITAN_MINIGUN_M2"
 modNameStrings[ eModSourceId.burn_mod_charge_cannon] 		<- "#BC_TITAN_CHARGE_CANNON_M2"
 modNameStrings[ eModSourceId.hydraulic_launcher ] 			<- "#MOD_HYDRAULIC_LAUNCHER_NAME"
 modNameStrings[ eModSourceId.burn_mod_throwing_knife] 		<- "#BC_THROWING_KNIFE_M2"
+modNameStrings[ eModSourceId.plasma_rifle ] 				<- "#MOD_PLASMA_RIFLE_NAME"

@@ -272,6 +272,7 @@ function InitPersistence()
 	    burn_mod_thunderbolt = 28
 	    burn_mod_charge_cannon = 29
 	    hydraulic_launcher = 30
+	    plasma_rifle = 31
     }
 
     AddPersistenceEnum("titanMod", titanMod)
@@ -629,6 +630,7 @@ function InitPersistence()
 		mp_weapon_sniper_scope_12x = 125
 		mp_weapon_dmr_scope_10x = 126,
 		mp_weapon_dmr_scope_12x = 127
+		mp_titanweapon_shotgun_plasma_rifle = 128
     }
 
     AddPersistenceEnum("modsCombined", modsCombined)
