@@ -283,11 +283,11 @@ WeaponData
             "damage_near_value_titanarmor"                  "300"
             "damage_far_value_titanarmor"                   "300"
 
-            "explosion_damage"                              "50"
+            "explosion_damage"                              "75"
             "explosion_damage_heavy_armor"                  "300"
 
-            "explosion_inner_radius"                        "16"
-            "explosionradius"                               "32"
+            "explosion_inner_radius"                        "48"
+            "explosionradius"                               "96"
             "impulse_force"                                 "1000"
         }
 
