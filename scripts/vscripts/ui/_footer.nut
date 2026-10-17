@@ -587,6 +587,13 @@ function ToggleHideServer( button )
 
 	local uiPublic = GetConVarBool( "delta_ui_server_public" )
 	ClientCommand( "delta_ui_server_public " + ( uiPublic ? 0 : 1 ) )
+	if ( uiPublic )
+	{
+		// Hiding has to clear the operator channel as well: the reader publishes while
+		// hide_server is 0, so without this the toggle would be a no-op for a host who made
+		// themselves public with a cfg, the console, or the admin config.
+		ClientCommand( "hide_server 1" )
+	}
 
 	UpdateFooterButtons()
 
