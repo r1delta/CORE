@@ -149,7 +149,6 @@ function main()
 	uiGlobal.starsPanelVisible <- false
 	uiGlobal.ui_ChallengeProgress <- {}
 	uiGlobal.doTraining <- false
-	uiGlobal.setServerPublicNextPrivateLobby <- false
 	uiGlobal.selectedVote <- -1
 
 	RegisterSignal( "LevelShutdown" )
@@ -596,10 +595,15 @@ function UICodeCallback_LevelLoadingFinished( error )
 	if ( !IsLobby() )
 		InitRankGracePeriodEndTime()
 
-	if( uiGlobal.setServerPublicNextPrivateLobby )
+	// A UI-chosen public server is revoked once the host is back in the front-end lobby
+	// ("PLAY TITANFALL", the lobby screen that is not a match or private match lobby) or in
+	// training. The operator's hide_server value is a different channel and is never touched
+	// here, so a cfg or console "hide_server 0" stays public through every state.
+	if ( !level.ui.isDedicatedServer && GetConVarBool( "delta_ui_server_public" ) )
 	{
-		uiGlobal.setServerPublicNextPrivateLobby <- false
-		ClientCommand( "hide_server 0" )
+		local frontEndLobby = IsLobby() && uiGlobal.activeMenu != GetMenu( "LobbyMenu" )
+		if ( frontEndLobby || uiGlobal.doTraining )
+			ClientCommand( "delta_ui_server_public 0" )
 	}
 
 	uiGlobal.loadingLevel = null

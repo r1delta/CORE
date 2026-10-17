@@ -691,12 +691,8 @@ function TryChangeLobbyType()
 	while ( uiGlobal.activeMenu != GetMenu( "LobbyMenu" ) )
 		wait 0.1
 
-	if( GetConVarInt("hide_server") == 0 )
-	{
-		ClientCommand( "hide_server 1" )
-		uiGlobal.setServerPublicNextPrivateLobby <- true
-	}
-
+	// Visibility is not script's business any more: the client already defaults to hidden, and
+	// the toggle owns the UI channel in _footer.nut.
 	ClientCommand( "RequestServerChangeToLobbyType0" )
 	ClientCommand( "TryKickPlayersForPersonalLobby" )
 }

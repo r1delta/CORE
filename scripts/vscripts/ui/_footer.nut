@@ -232,7 +232,7 @@ function UpdateFooterButtons( menuName = null )
 				footerData.gamepad.append( { label = "#XBOX_SWITCH_TEAMS" } )
 				footerData.pc.append( { label = "#SWITCH_TEAMS", func = PCSwitchTeamsButton_Activate } )
 
-				if ( GetConVarBool( "hide_server" ) && AmIPartyLeader() )
+				if ( ( GetConVarInt( "hide_server" ) == 0 || GetConVarBool( "delta_ui_server_public" ) ) && AmIPartyLeader() )
 					footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
 				else if ( AmIPartyLeader() )
 					footerData.pc.append( { label = "#SHOW_SERVER", func = ToggleHideServer } )
@@ -579,13 +579,14 @@ function UpdateFooters( footerData )
 
 function ToggleHideServer( button )
 {
-	local value = GetConVarBool( "hide_server" )
-	value = !value
+	// Only a host running the client UI can change visibility, and only its own channel: the
+	// operator's hide_server value (console, cfg, VGUI dedicated admin config) is not ours to
+	// change, and a dedicated server's visibility is never touched from script at all.
+	if ( level.ui.isDedicatedServer )
+		return
 
-	if ( value )
-	    ClientCommand( "hide_server 1" )
-	else
-		ClientCommand( "hide_server 0" )
+	local uiPublic = GetConVarBool( "delta_ui_server_public" )
+	ClientCommand( "delta_ui_server_public " + ( uiPublic ? 0 : 1 ) )
 
 	UpdateFooterButtons()
 

@@ -725,12 +725,6 @@ function TryChangeLobbyType()
 {
 	WaitSignal( uiGlobal.signalDummy, "LevelFinishedLoading" )
 
-	if( GetConVarInt("hide_server") == 0 )
-	{
-		ClientCommand( "hide_server 1" )
-		uiGlobal.setServerPublicNextPrivateLobby <- true
-	}
-
 	ClientCommand( "RequestServerChangeToLobbyType0" )
 	ClientCommand( "TryKickPlayersForPersonalLobby" )
 }
