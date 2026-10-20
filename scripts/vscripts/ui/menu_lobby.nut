@@ -1715,6 +1715,8 @@ function UpdateLobbyType()
 	local lastType
 	local partySize
 	local lastPartySize
+	local hideServer
+	local lastHideServer = GetConVarInt( "hide_server" )
 	local debugArray = [ "SOLO", "PARTY_LEADER", "PARTY_MEMBER", "MATCH", "PRIVATE_MATCH" ] // Must match enum
 
 	WaitFrameOrUntilLevelLoaded()
@@ -1723,6 +1725,15 @@ function UpdateLobbyType()
 	{
 		lobbyType = GetLobbyTypeScript()
 		partySize = GetPartyMembers().len()
+
+		// hide_server also changes from the console and when the game shuts down, so redraw the
+		// visibility footer whenever it moves, not only when the button is clicked.
+		hideServer = GetConVarInt( "hide_server" )
+		if ( hideServer != lastHideServer )
+		{
+			lastHideServer = hideServer
+			UpdateFooterButtons()
+		}
 
 		if ( IsConnected() && ((lobbyType != lastType) || (partySize != lastPartySize))  )
 		{

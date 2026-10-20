@@ -76,16 +76,6 @@ function OnFooterButton_Activate( button )
 
 function UpdateFooterButtons( menuName = null )
 {
-	// Settle the UI visibility channel before drawing anything: the level-load handler runs
-	// before the lobby type has moved, so a host who leaves a match is still type 1 at that
-	// moment and the personal lobby only appears afterwards. Enforcing it here means the
-	// state is checked once it has actually settled, including the return-to-front-end route.
-	if ( !level.ui.isDedicatedServer && GetConVarBool( "delta_ui_server_public" )
-		&& ( GetConVarInt( "sv_lobbyType" ) == 0 || IsTrainingLevel() ) )
-	{
-		ClientCommand( "delta_ui_server_public 0" )
-	}
-
 	local footerData = {}
 	footerData.gamepad <- []
 	footerData.pc <- []
@@ -242,10 +232,15 @@ function UpdateFooterButtons( menuName = null )
 				footerData.gamepad.append( { label = "#XBOX_SWITCH_TEAMS" } )
 				footerData.pc.append( { label = "#SWITCH_TEAMS", func = PCSwitchTeamsButton_Activate } )
 
-				if ( ( GetConVarInt( "hide_server" ) == 0 || GetConVarBool( "delta_ui_server_public" ) ) && AmIPartyLeader() )
-					footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
-				else if ( AmIPartyLeader() )
-					footerData.pc.append( { label = "#SHOW_SERVER", func = ToggleHideServer } )
+				// The labels read as the current state ("Visibility: Public" / "Visibility: Hidden"),
+				// and clicking flips it. A dedicated server's visibility is its operator's.
+				if ( !level.ui.isDedicatedServer && AmIPartyLeader() )
+				{
+					if ( GetConVarInt( "hide_server" ) == 0 )
+						footerData.pc.append( { label = "#SHOW_SERVER", func = ToggleHideServer } )
+					else
+						footerData.pc.append( { label = "#HIDE_SERVER", func = ToggleHideServer } )
+				}
 			}
 			else if ( GetConVarInt( "sv_lobbyType" ) == 0 )
 			{
@@ -589,26 +584,15 @@ function UpdateFooters( footerData )
 
 function ToggleHideServer( button )
 {
-	// Only a host running the client UI can change visibility, and only its own channel: the
-	// operator's hide_server value (console, cfg, VGUI dedicated admin config) is not ours to
-	// change, and a dedicated server's visibility is never touched from script at all.
+	// Only the host of a listen server can change visibility; a dedicated server's is never
+	// touched from script.
 	if ( level.ui.isDedicatedServer )
 		return
 
-	// Act on the state the footer acted on, not on one channel alone: the label offers Hide
-	// whenever either channel publishes, so a single click has to end in a hidden server even
-	// when the visibility came from hide_server 0.
-	local isPublic = GetConVarInt( "hide_server" ) == 0 || GetConVarBool( "delta_ui_server_public" )
-	ClientCommand( "delta_ui_server_public " + ( isPublic ? 0 : 1 ) )
-	if ( isPublic )
-	{
-		// Hiding has to clear the operator channel as well: the reader publishes while
-		// hide_server is 0, so without this the toggle would be a no-op for a host who made
-		// themselves public with a cfg, the console, or the admin config.
-		ClientCommand( "hide_server 1" )
-	}
-
-	UpdateFooterButtons()
+	// The UI VM has no SetConVar, so this goes through the host's own console like typing
+	// hide_server there would. On a listen server that is the same convar the server reads.
+	// The command runs after this frame, so redraw once it has rather than right away.
+	ClientCommand( "hide_server " + ( GetConVarInt( "hide_server" ) == 0 ? 1 : 0 ) )
 
 	thread DelayedTryUpdateFooterButtonsWhy()
 }

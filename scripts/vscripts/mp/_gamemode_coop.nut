@@ -81,6 +81,14 @@ function COOP_PlayerConnecting( player )
 function Coop_TryReturnToLobby()
 {
 	printt( "Coop: Returning to lobby" )
+	// A co-op game started from a private match goes back to the private match lobby the way
+	// every other private match mode does. ChangeMap would leave the server on the coop
+	// playlist, turning the owner's private match into an unattended co-op server.
+	if ( IsPrivateMatch() )
+	{
+		GameRules_EndMatch()
+		return
+	}
 	GameRules_ChangeMap( "mp_lobby", COOPERATIVE )
 }
 Globalize( Coop_TryReturnToLobby )

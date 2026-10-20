@@ -595,19 +595,6 @@ function UICodeCallback_LevelLoadingFinished( error )
 	if ( !IsLobby() )
 		InitRankGracePeriodEndTime()
 
-	// A UI-chosen public server is revoked once the host is back in the front-end lobby or on the
-	// training level. sv_lobbyType is the content's own state signal: 0 is the plain lobby (the
-	// "PLAY TITANFALL" screen), 1 is a match lobby. The private_match playlist guard keeps the
-	// private match entry, which passes through lobby type 0 while it reconfigures, from being
-	// mistaken for the front-end. The operator's hide_server value is a different channel and is
-	// never touched here, so a cfg or console "hide_server 0" stays public through every state.
-	if ( !level.ui.isDedicatedServer && GetConVarBool( "delta_ui_server_public" ) )
-	{
-		local frontEndLobby = GetConVarInt( "sv_lobbyType" ) == 0 && GetCurrentPlaylistName() != "private_match"
-		if ( frontEndLobby || IsTrainingLevel() )
-			ClientCommand( "delta_ui_server_public 0" )
-	}
-
 	uiGlobal.loadingLevel = null
 	Signal( uiGlobal.signalDummy, "LevelFinishedLoading" )
 	if ( IsConnected() )
