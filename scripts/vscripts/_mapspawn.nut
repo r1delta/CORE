@@ -7,7 +7,9 @@
 	IncludeScript( "_utility_shared" )
 	IncludeScript( "_utility_shared_all" )
 	IncludeScript( "_utility" )
+	IncludeScript( "_r1d_script_sync" )
 	IncludeScript( "_remote_functions" )
+	R1DScriptSync_Publish()
 	LoadDiamond()
 
     if ( false )

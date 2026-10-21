@@ -47,7 +47,9 @@ function Cl_MapspawnMain()
 	if (IsLobby()) {
 		IncludeScript( "mp/mp_lobby_dialog.nut" )
 	}
+	IncludeScript( "_r1d_script_sync" )
 	IncludeScript( "_remote_functions" )
+	R1DScriptSync_Publish()
 
     if ( !IsLobby() )
     {

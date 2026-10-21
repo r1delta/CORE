@@ -178,9 +178,18 @@ server.dll,text,0x5A6FC0,0F 83 6A 6E BB FF,E9 6B 6E BB FF 90
 ; this happens because server randomly decides gamedir is "r1_dlc1"
 engine.dll,text,11639F,0F 84 8C,E9 8D 00
 engine.dll,text,1163A4,00,90
-; remove server/client CRC on sound scripts (doesn't exist on dedi)
-; again, clientside patch, server fix is probably needed
+; Retail's own sound-script CRC check is replaced by R1Delta's: it fires at
+; signon with a fixed sentence and cannot name what differs. R1Delta's client
+; sends its alias-table fingerprint and name-bucket hashes with its signon
+; userinfo; the server answers a mismatching client with its alias names for
+; the differing buckets, and the client disconnects naming both sides
+; (shared/soundscript_parity.cpp, server convar delta_soundtable_check).
 engine.dll,text,7698C,75,EB
+; CClientSound::sub_18000C420 only accepts a queued svc_Sounds alias index when
+; `count >= index` (jge), so one-past-the-end is read from the zeroed slot whose
+; name is NULL and the native compare faults. Require count > index unsigned:
+; drops one-past-end and negative/sign-extended indices instead of crashing.
+engine.dll,text,0xC47B,7D,77
 ; fix saverestore
 engine.dll,text,0x141100,74,EB
 server.dll,text,0x144B50,32 C0,B0 01
