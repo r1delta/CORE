@@ -4,6 +4,7 @@ function main()
     IncludeScript( "_burncards_shared" );
     IncludeFile( "menu/_burncards_lobby" );
     AddCallback_OnPlayerRespawned( BCPlayerRespawned )
+    AddCallback_OnPlayerRespawned( ForcedTurboEngineRespawned )
     AddCallback_OnPlayerKilled( BCOnPlayerKilled )
     Globalize( ChangeOnDeckBurnCardToActive )
     Globalize( BCSpiderSense )
@@ -14,6 +15,19 @@ function main()
     AddCallback_OnClientConnected( BCOnClientConnected )
 
 	AddSpawnCallback( "npc_grenade_frag", BCGrenadeCreatedCallback )
+}
+
+// Playlist var "force_turbo_engine" gives every player the Turbo Engine burn card effect (the extra Titan dash
+// charge, server flag SFLAG_BC_DASH_CAPACITY) for the whole match, without needing the card.
+function ForceTurboEngineEnabled()
+{
+    return !IsLobby() && GetCurrentPlaylistVarInt( "force_turbo_engine", 0 ) != 0
+}
+
+function ForcedTurboEngineRespawned( player )
+{
+    if ( ForceTurboEngineEnabled() )
+        GiveServerFlag( player, SFLAG_BC_DASH_CAPACITY )
 }
 
 function BCOnClientConnected( player )

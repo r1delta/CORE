@@ -972,7 +972,10 @@ function IsTitanOnlyMode()
 	switch ( GetConVarString( "mp_gamemode" ) )
 	{
 		case TITAN_BRAWL:
+		case TURBO_TITAN_BRAWL:
+		case TURBO_TITAN_FFA:
 		case TITAN_BRAWL_AUTO:
+		case TITAN_FFA:
 		case TITAN_MFD:
 		case TITAN_MFD_PRO:
 			return true
@@ -982,6 +985,26 @@ function IsTitanOnlyMode()
 			return false
 			break
 	}
+}
+
+function IsTurboTitanMode()
+{
+	if ( !IsServer() && !IsConnected() )
+		return false
+
+	local mode = GetConVarString( "mp_gamemode" )
+	return mode == TURBO_TITAN_BRAWL || mode == TURBO_TITAN_FFA
+}
+
+// Time it takes a Titan's Core to build, in seconds. The turbo modes build it in half the time.
+function GetTitanCoreBuildTime()
+{
+	local buildTime = GetCurrentPlaylistVarInt( "titan_core_build_time", TITAN_CORE_BUILD_TIME )
+
+	if ( IsTurboTitanMode() )
+		buildTime = ( buildTime * TURBO_CORE_BUILD_TIME_SCALE ).tointeger()
+
+	return buildTime
 }
 
 function IsMultiGamemodePlaylist( playlist = null )

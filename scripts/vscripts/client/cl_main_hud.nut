@@ -1222,7 +1222,7 @@ function TitanBuildBarThink( cockpit, player )
 		}
 		else
 		{
-			totalTime = GetCurrentPlaylistVarInt( "titan_core_build_time", TITAN_CORE_BUILD_TIME )
+			totalTime = GetTitanCoreBuildTime()
 			remainingTime = soul.GetNextCoreChargeAvailable() - Time()
 
 			buildingIcon = GetCoreBuildingIcon( player )
