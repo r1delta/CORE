@@ -79,7 +79,7 @@ function GetDisplayModes()
 		"ctf+ctt",
 		"coop",
 		"scv",
-		"ttdm",
+		"ttdm+tffa+ttdm_turbo+tffa_turbo",
 		"mfd+mfdp+tmfd+tmfdp",
 		"lts+wlts",
 		"tdm+ps",
@@ -105,6 +105,9 @@ function GetVariantMenuForEntry( entry )
 
 		case "ffa+gg+bce":
 			return "ModeVariantFFAMenu"
+
+		case "ttdm+tffa+ttdm_turbo+tffa_turbo":
+			return "ModeVariantTitanBrawlMenu"
 	}
 
 	return null

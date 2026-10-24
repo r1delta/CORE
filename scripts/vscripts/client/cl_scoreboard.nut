@@ -1212,6 +1212,9 @@ function AddColumnsForGameMode( scoreboard )
 			break
 
 		case TITAN_BRAWL:
+		case TURBO_TITAN_BRAWL:
+		case TURBO_TITAN_FFA:
+		case TITAN_FFA:
 			AddColumnLabel( scoreboard, "assists", SCOREBOARD_MATERIAL_ASSISTS, "#SCOREBOARD_ASSISTS", 0, false, UpdateAssists )
 			AddColumnLabel( scoreboard, "deaths", SCOREBOARD_MATERIAL_DEATHS, "#SCOREBOARD_DEATHS", 0, true, UpdateDeaths )
 			AddColumnLabel( scoreboard, "titanKills", SCOREBOARD_MATERIAL_TITAN_KILLS, "#SCOREBOARD_TITAN_KILLS", 0, true, UpdateTitanKills )
