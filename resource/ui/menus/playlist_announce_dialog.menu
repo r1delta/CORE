@@ -1,0 +1,142 @@
+resource/ui/menus/playlist_announce_dialog.menu
+{
+	PlaylistAnnounceDialog
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		tabPosition				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+
+		DialogBackground
+		{
+			ControlName				ImagePanel
+			xpos					c-427
+			ypos					c-240
+			wide					854
+			tall					480
+			image 					"../ui/menu/common/pop_up_menu_back"
+			visible					1
+			scaleImage				1
+		}
+
+		DialogImage
+		{
+			ControlName				ImagePanel
+			xpos					c-247
+			ypos					c-188
+			wide					494 //854
+			tall					377 //480
+			image 					"../ui/menu/playlist/playlist_announcement"
+			visible					1
+			scaleImage				1
+		}
+
+		DialogFrame
+		{
+			ControlName				Label
+			xpos					c-222
+			ypos					c-162
+			wide					444
+			tall					324
+			labelText				""
+			visible					1
+		}
+
+		Header1
+		{
+			ControlName				Label
+			xpos					-76
+			ypos					-1
+			zpos					3
+			auto_wide_tocontents	1
+			tall					30
+			visible					1
+			labelText				""
+			font					PlaylistAnnouncementDialogHeader1Font
+			textAlignment			west
+			fgcolor_override		"211 165 165 255"
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+		}
+
+		Header2
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-4
+			zpos 					100
+			auto_wide_tocontents	1
+			tall					34
+			visible					1
+			labelText				""
+			font					PlaylistAnnouncementDialogHeader2Font
+			textAlignment			west
+			fgcolor_override		"240 240 240 255"
+			pin_to_sibling			Header1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		Description
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-32
+			zpos 					100
+			wide					420 //310
+			tall					34
+			visible					1
+			labelText				""
+			font					DialogDetailsFont
+			//textAlignment			center
+			//centerwrap				1
+			wrap					1
+			fgcolor_override		"255 171 171 255"
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	6
+			pin_to_sibling_corner	6
+		}
+
+		BtnConfirm_Continue
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			xpos 					0
+			ypos 					-5
+			classname				ContinueButtonClass
+			labelText				"#CLOSE"
+			tabPosition 			0
+			activeInputExclusivePaint	keyboard
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	6
+			pin_to_sibling_corner	6
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		GamepadFooterButton0
+		{
+			ControlName				Label
+			InheritProperties		GamepadFooterButton
+			xpos					-10
+			ypos					-6
+			scriptID				0
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	3
+			labelText				"#B_BUTTON_CLOSE"
+		}
+	}
+}

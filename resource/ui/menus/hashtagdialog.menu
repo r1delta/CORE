@@ -1,0 +1,172 @@
+resource/ui/menus/hashtagdialog.menu
+{
+	HashtagDialog
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		tabPosition				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+
+		ImgDialog
+		{
+			ControlName				ImagePanel
+			xpos					c-427
+			ypos					c-240
+			wide					854 //f0
+			tall					480 //f0
+			image 					"../ui/menu/common/pop_up_menu_back"
+			visible					1
+			scaleImage				1
+		}
+
+		DialogFrame
+		{
+			ControlName				Label
+			xpos					c-173
+			ypos					c-119
+			wide					346
+			tall					238
+			labelText				""
+			visible					1
+		}
+
+		LblMessage
+		{
+			ControlName				Label
+			xpos					c-170
+			ypos					c-113
+			zpos					3 // Needed or clicking on the background can hide this
+			wide					340
+			tall					54
+			visible					1
+			labelText				""
+			font					DialogMessageFont
+			textAlignment			center
+			wrap					1
+			centerwrap				1
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+		}
+
+		LblDetails
+		{
+			ControlName				Label
+			xpos					0
+			ypos					2
+			wide					290
+			tall					54
+			visible					1
+			labelText				"DEFAULT MESSAGE"
+			font					DialogDetailsFont
+			textAlignment			north
+			wrap					1
+			centerwrap				1
+			allcaps					0
+			fgcolor_override		"190 94 94 255"
+
+			pin_to_sibling			LblMessage
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		HashtagEditBox
+		{
+			ControlName				TextEntry
+			pin_to_sibling			LblDetails
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+			ypos					26
+			navUp					Button0
+			navDown					Button0
+			wide					250
+			tall					18
+			tabPosition				1
+			visible					1
+			enabled					1
+			textHidden				0
+			editable				1
+			maxchars				20 // -1
+			NumericInputOnly		0
+			textAlignment			"east"
+			syncedConVar			"match_myHashtag"
+			font 					HashtagFont
+			keyboardTitle			"#HASHTAG_KEYBOARD_TITLE"
+			keyboardDescription		"#HASHTAG_KEYBOARD_DESC"
+			allowRightClickMenu		0
+			allowSpecialCharacters	0
+			unicode					0
+			selectOnFocus 			1
+			charWhiteList			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789"
+			//charBlackList			""
+		}
+		HashtagSymbol
+		{
+			ControlName				Label
+			pin_to_sibling			HashtagEditBox
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	0
+			tall 					18
+			wide					18
+			visible					1
+			labelText				"#"
+			textAlignment			"east"
+			use_proportional_insets	1
+			textinsetx 				2
+			font					HashtagFont
+		}
+
+		Button0
+		{
+			ControlName				BaseModHybridButton
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	6
+			pin_to_sibling_corner	6
+			ypos					-12
+			InheritProperties		DialogButton
+			classname				ChoiceDialogButtonClass
+			scriptID				0
+			ypos					0
+			navUp					HashtagEditBox
+			navDown					HashtagEditBox
+			labelText				""
+			activeInputExclusivePaint	keyboard
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		GamepadFooterButton0
+		{
+			ControlName				Label
+			InheritProperties		GamepadFooterButton
+			scriptID				0
+			pin_to_sibling			GamepadFooterButton1
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	2
+			xpos					10
+			labelText				"#A_BUTTON_SELECT"
+		}
+		GamepadFooterButton1
+		{
+			ControlName				Label
+			InheritProperties		GamepadFooterButton
+			scriptID				1
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	3
+			xpos 					-13
+			ypos 					-13
+			labelText				"#B_BUTTON_CANCEL"
+		}
+	}
+}

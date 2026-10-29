@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/common/r1d_red_menu_arrow_up_off"
+	$translucent		1
+	$vertexalpha		1
+}

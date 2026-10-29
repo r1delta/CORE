@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/challenges/r1d_red_challenge_menu_back"
+	$translucent		1
+	$vertexalpha		1
+}

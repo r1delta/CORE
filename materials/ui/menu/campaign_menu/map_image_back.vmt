@@ -1,6 +1,6 @@
 Basic
 {
-	$basetexture		"ui/menu/campaign_menu/map_image_back"
+	$basetexture		"ui/menu/campaign_menu/r1d_red_map_image_back"
 	$translucent		1
 	$vertexcolor		1
 	$vertexalpha		1

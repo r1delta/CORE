@@ -1,0 +1,8 @@
+Basic
+{
+	$basetexture		"ui/menu/edit_loadout/r1d_red_icon_weapon_back_hover"
+	$translucent		1
+	$vertexcolor		1
+	$vertexalpha		1
+	$ignorez		1
+}

@@ -1,0 +1,631 @@
+resource/ui/menus/viewstats_misc.menu
+{
+	ViewStats_Misc_Menu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#STATS_MISC"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+			zpos					500
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		StatsBackground
+		{
+			ControlName					ImagePanel
+			xpos 						c-300
+			ypos						c-157
+			zpos						99
+			wide						600
+			tall						340
+			image						"../ui/menu/personal_stats/ps_main_back_4"
+			visible						1
+			scaleImage					1
+		}
+
+		PilotImage
+		{
+			ControlName					ImagePanel
+			xpos 						-10
+			ypos						-10
+			zpos						100
+			wide						191
+			tall						450
+			image						"../ui/menu/loadouts/pilot_character_female_battle_rifle_militia"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatsBackground
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		5
+		}
+
+		TitanImage
+		{
+			ControlName					ImagePanel
+			xpos 						-255
+			ypos						0
+			zpos						100
+			wide						332
+			tall						390
+			image						"../ui/menu/loadouts/titan_chassis_atlas_mcor"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatsBackground
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		7
+		}
+
+
+
+
+
+
+
+		StatBackground0
+		{
+			ControlName					ImagePanel
+			xpos 						-12
+			ypos						-46
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatsBackground
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		0
+		}
+
+		StatBackground1
+		{
+			ControlName					ImagePanel
+			xpos 						0
+			ypos						-7
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground0
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		StatBackground2
+		{
+			ControlName					ImagePanel
+			xpos 						0
+			ypos						-7
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground1
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		StatBackground3
+		{
+			ControlName					ImagePanel
+			xpos 						0
+			ypos						-7
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground2
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		StatBackground4
+		{
+			ControlName					ImagePanel
+			xpos 						220
+			ypos						0
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground0
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		1
+		}
+
+		StatBackground5
+		{
+			ControlName					ImagePanel
+			xpos 						0
+			ypos						-7
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground4
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		StatBackground6
+		{
+			ControlName					ImagePanel
+			xpos 						0
+			ypos						-7
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground5
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		StatBackground7
+		{
+			ControlName					ImagePanel
+			xpos 						0
+			ypos						-7
+			zpos						200
+			wide						140
+			tall						70
+			image						"../ui/menu/personal_stats/ps_game_stats_back_2"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground6
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+
+
+
+
+
+
+
+
+
+
+		GamesStatValue0
+		{
+			ControlName					Label
+			classname					"GamesStatValue0"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 0"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground0
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName0
+		{
+			ControlName					Label
+			classname					"GamesStatName0"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_TITANS_CALLED_IN"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue0
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue1
+		{
+			ControlName					Label
+			classname					"GamesStatValue1"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 1"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground1
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName1
+		{
+			ControlName					Label
+			classname					"GamesStatName1"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_SPECTRES_HACKED"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue1
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue2
+		{
+			ControlName					Label
+			classname					"GamesStatValue2"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 2"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground2
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName2
+		{
+			ControlName					Label
+			classname					"GamesStatName2"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_BURNCARDS_ACTIVATED"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue2
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue3
+		{
+			ControlName					Label
+			classname					"GamesStatValue3"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 3"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground3
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName3
+		{
+			ControlName					Label
+			classname					"GamesStatName3"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_NUMBER_OF_EJECTS"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue3
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue4
+		{
+			ControlName					Label
+			classname					"GamesStatValue4"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 4"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground4
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName4
+		{
+			ControlName					Label
+			classname					"GamesStatName4"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_EVAC_ATTEMPTS"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue4
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue5
+		{
+			ControlName					Label
+			classname					"GamesStatValue5"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 5"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground5
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName5
+		{
+			ControlName					Label
+			classname					"GamesStatName5"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_SUCCESSFUL_EVACS"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue5
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue6
+		{
+			ControlName					Label
+			classname					"GamesStatValue6"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 6"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground6
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName6
+		{
+			ControlName					Label
+			classname					"GamesStatName6"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_FLAGS_CAPTURED"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue6
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue7
+		{
+			ControlName					Label
+			classname					"GamesStatValue7"
+			xpos						0
+			ypos						-15
+			zpos						226
+			wide						130
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 7"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground7
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName7
+		{
+			ControlName					Label
+			classname					"GamesStatName7"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						130
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"#STATS_HEADER_FLAGS_RETURNED"
+			allcaps						1
+			centerWrap					1
+			auto_tall_tocontents		1
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue7
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

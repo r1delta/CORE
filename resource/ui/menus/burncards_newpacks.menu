@@ -1,0 +1,391 @@
+resource/ui/menus/burncards_newpacks.menu
+{
+	BurnCards_NewPacks
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#BC_EDIT_BURN_CARDS"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		ImgBar1
+		{
+			ControlName				ImagePanel
+			xpos					54
+			ypos					80
+			wide					474
+			tall					21
+			image 					"../vgui/burncards/burncard_menu_title"
+			scaleImage				1
+		}
+
+		ImgBar2
+		{
+			ControlName				ImagePanel
+			xpos					54
+			ypos					202
+			wide					474
+			tall					21
+			image 					"../vgui/burncards/burncard_menu_title"
+			scaleImage				1
+		}
+
+
+		MenuTitle1
+		{
+			ControlName				Label
+			InheritProperties		MenuDetail
+			labelText				"Your active burn cards"
+			xpos					-42 // 96
+
+			wide					540
+			tall					46
+			textAlignment			west
+
+			pin_to_sibling			ImgBar1
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+		}
+
+		MenuTitle2
+		{
+			ControlName				Label
+			InheritProperties		MenuDetail
+			labelText				"Choose up to three"
+			xpos					-42 // 96
+
+			wide					540
+			tall					46
+			textAlignment			west
+
+			pin_to_sibling			ImgBar2
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+
+
+		NewBurnCardBackground
+		{
+			ControlName				ImagePanel
+			xpos					0
+			ypos					0
+			zpos					50
+
+			wide					1080
+			tall					720
+			image 					hud/white
+			scaleImage				1
+			drawcolor				"0 0 0 230"
+			//drawcolor				"255 133 133 55"
+
+			//pin_to_sibling		Frame
+			//pin_corner_to_sibling	8
+			//pin_to_sibling_corner	8
+		}
+
+
+
+//1280 x 720
+//
+//1920 x 1080
+//
+//1920	106
+//1280	70
+//
+//
+		NewBurnCardDialog
+		{
+			ControlName				ImagePanel
+			xpos					c-400
+			ypos					c-168
+			zpos					52
+
+			wide					550
+			tall					360 // 236
+			image 					"../ui/menu/common/pop_up_menu_big_back"
+			scaleImage				1
+
+			//pin_to_sibling		Frame
+			//pin_corner_to_sibling	8
+			//pin_to_sibling_corner	8
+		}
+
+
+
+		NewBurnCardTitle
+		{
+			ControlName				Label
+			//classname				DialogMessageClass
+			xpos					0
+			ypos					-70
+			zpos					53 // Needed or clicking on the background can hide this
+			wide					300
+			tall					20
+			labelText				"You have earned New burn cards"
+			font					DialogMessageFont
+			textAlignment			center
+			wrap					1
+			centerwrap				1
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+
+			pin_to_sibling			NewBurnCardDialog
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+		NewBurnCardSubTitle
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-100
+			zpos					53 // Needed or clicking on the background can hide this
+			wide					300
+			tall					20
+			labelText				"Open one pack"
+			font					DialogMessageFontMedium
+			textAlignment			center
+			wrap					1
+			centerwrap				1
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+
+			pin_to_sibling			NewBurnCardDialog
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+//		BurnCardEnvelope
+//		{
+//			ControlName				ImagePanel
+//			wide					100
+//			tall					60
+//			image 					"../vgui/burncards/burncard_envelope"
+//		}
+//
+//		BurnCardEnvelopeSmall
+//		{
+//			ControlName				ImagePanel
+//			wide					20
+//			tall					12
+//			image 					"../vgui/burncards/burncard_envelope"
+//		}
+
+		BtnBurnCardNewPack_1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		BurnCardPackButton
+			style					BurnCardPackButtonStyle
+			classname				BurnCardNewPackClass
+			scriptID				0
+			navLeft					BtnBurnCardNewPack_3
+			navRight				BtnBurnCardNewPack_2
+			labelText				"0"
+			tabPosition				1
+
+			xpos					-120
+			ypos					-100
+			zpos					150
+
+			pin_to_sibling			NewBurnCardTitle
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+		BtnBurnCardNewPack_2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		BurnCardPackButton
+			style					BurnCardPackButtonStyle
+			classname				BurnCardNewPackClass
+			scriptID				1
+			navRight				BtnBurnCardNewPack_3
+			navLeft					BtnBurnCardNewPack_1
+			labelText				"0"
+			tabPosition				2
+
+			xpos					0
+			ypos					-100
+			zpos					150
+
+			pin_to_sibling			NewBurnCardTitle
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+		BtnBurnCardNewPack_3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		BurnCardPackButton
+			style					BurnCardPackButtonStyle
+			classname				BurnCardNewPackClass
+			scriptID				2
+			navRight				BtnBurnCardNewPack_1
+			navLeft					BtnBurnCardNewPack_2
+			labelText				"0"
+			tabPosition				3
+
+			xpos					120
+			ypos					-100
+			zpos					150
+
+			pin_to_sibling			NewBurnCardTitle
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+		BurnCard_NewPackPanel_1
+		{
+			ControlName				ImagePanel
+			xpos				0
+			ypos				0
+			zpos				150
+
+			wide					100
+			tall					60
+
+			image 					"../vgui/burncards/burncard_envelope"
+			visible					1
+			scaleImage				1
+
+			classname				BurnCardNewPackPanelClass
+			scriptID				0
+
+			pin_to_sibling				BtnBurnCardNewPack_1
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		BurnCard_NewPackPanel_2
+		{
+			ControlName				ImagePanel
+			xpos				0
+			ypos				0
+			zpos				150
+
+			wide					100
+			tall					60
+
+			image 					"../vgui/burncards/burncard_envelope"
+			visible					1
+			scaleImage				1
+
+			classname				BurnCardNewPackPanelClass
+			scriptID				1
+
+			pin_to_sibling				BtnBurnCardNewPack_2
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+
+
+		BurnCard_NewPackPanel_3
+		{
+			ControlName				ImagePanel
+			xpos				0
+			ypos				0
+			zpos				150
+
+			wide					100
+			tall					60
+
+			image 					"../vgui/burncards/burncard_envelope"
+			visible					1
+			scaleImage				1
+
+			classname				BurnCardNewPackPanelClass
+			scriptID				2
+
+			pin_to_sibling				BtnBurnCardNewPack_3
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+
+		ImgSelectConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterImage
+			xpos					55
+			ypos					r55
+			zpos					100
+			labelText				"A"
+		}
+		LblSelectConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterText
+			pin_to_sibling			ImgSelectConsole
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+			zpos					100
+			labelText				"#SELECT"
+		}
+		ImgBackConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterImage
+			pin_to_sibling			LblSelectConsole
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+			zpos					100
+			labelText				"B"
+		}
+		LblBackConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterText
+			pin_to_sibling			ImgBackConsole
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+			zpos					100
+			labelText				"#BACK"
+		}
+
+		BtnBackPC
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		OldPCFooterButton
+			pin_to_sibling			ImgSelectConsole
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			zpos					100
+			labelText				"#BACK"
+		}
+	}
+}

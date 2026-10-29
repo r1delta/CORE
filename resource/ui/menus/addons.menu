@@ -80,7 +80,7 @@ resource/ui/menus/addons.menu
 			labelText				""
 			font					NextMapFont
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		AddonDesc
@@ -100,7 +100,7 @@ resource/ui/menus/addons.menu
 			textalignment			north-west
 			font					NextGameModeFont
 			allcaps					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		StarsLabel
@@ -116,7 +116,7 @@ resource/ui/menus/addons.menu
 			labelText				""
 			font					WinStreakHeaderFont
 			allcaps					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			pin_to_sibling			AddonImage
 			pin_corner_to_sibling	5
 			pin_to_sibling_corner	5
@@ -135,7 +135,7 @@ resource/ui/menus/addons.menu
 			labelText				""
 			font					WinStreakHeaderFont
 			allcaps					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			pin_to_sibling			AddonImage
 			pin_corner_to_sibling	5
 			pin_to_sibling_corner	5

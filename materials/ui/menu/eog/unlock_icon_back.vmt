@@ -1,0 +1,7 @@
+Basic
+{
+	$basetexture		"ui/menu/eog/r1d_red_unlock_icon_back"
+	$translucent		1
+	$vertexalpha		1
+	$additive			0
+}

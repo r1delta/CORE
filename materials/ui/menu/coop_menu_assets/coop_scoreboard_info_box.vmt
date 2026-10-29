@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/coop_menu_assets/r1d_red_coop_scoreboard_info_box"
+	$translucent		1
+
+}

@@ -1,0 +1,8 @@
+Basic
+{
+	$basetexture		"ui/menu/common/r1d_red_menu_bottom_bar"
+	$translucent		1
+	$vertexcolor		1
+	$vertexalpha		1
+	$ignorez			1
+}

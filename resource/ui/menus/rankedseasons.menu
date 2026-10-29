@@ -1,0 +1,806 @@
+resource/ui/menus/rankedseasons.menu
+{
+	RankedSeasonsMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#RANKED_PLAY_SEASONS_BUTTON"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		Background
+		{
+			ControlName					ImagePanel
+			xpos						c-375
+			ypos						c-162
+			zpos						100
+			wide						749
+			tall						346
+			visible						1
+			image 						"../ui/menu/rank_menus/ranked_FE_seasons_back"
+			visible						1
+			scaleImage					1
+		}
+
+		ButtonsNestedPanel
+		{
+			ControlName					CNestedPanel
+			classname					"ButtonsNestedPanel"
+			xpos						-10
+			ypos						0
+			zpos						101
+			wide						290
+			tall						340
+			visible						1
+			controlSettingsFile			"resource/UI/menus/rankseasonbuttons.res"
+			tabposition					1
+			pin_to_sibling				Background
+			pin_corner_to_sibling		7
+			pin_to_sibling_corner		7
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		SeasonHeader
+		{
+			ControlName				Label
+			xpos					-34
+			ypos					-12
+			zpos					101
+			textAlignment			center
+			wide 					406
+			tall					26
+			visible					1
+			font					RankedMenuDivisionsHeader
+			labelText				"[SEASON]"
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			Background
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+		}
+
+		RankIcon
+		{
+			ControlName				ImagePanel
+			xpos					-284
+			ypos					-54
+			zpos 					101
+			wide					110
+			tall					55
+			image					"../ui/menu/rank_icons/tier_1_5"
+			visible					1
+			scaleImage				1
+			pin_to_sibling			Background
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+		}
+
+		Division
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-2
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					22
+			visible					1
+			font					RankedMenu20
+			labelText				"[DIVISION NAME]"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			RankIcon
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		Tier
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-6
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					16
+			visible					1
+			font					RankedMenuMediumThin
+			labelText				"[TIER NAME]"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			Division
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		SeasonStartHeader
+		{
+			ControlName				Label
+			xpos					-32
+			ypos					-58
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					16
+			visible					1
+			font					RankedMenuMedium
+			labelText				"#RANKED_SEASON_START_HEADER"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			Background
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+		}
+
+		SeasonStart
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-5
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					22
+			visible					1
+			font					RankedMenu20
+			labelText				"[SEASON START]"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			SeasonStartHeader
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		SeasonEndHeader
+		{
+			ControlName				Label
+			xpos					0
+			ypos					6
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					16
+			visible					1
+			font					RankedMenuMedium
+			labelText				"#RANKED_SEASON_END_HEADER"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			SeasonStart
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		SeasonEnd
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-5
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					22
+			visible					1
+			font					RankedMenu20
+			labelText				"[SEASON END]"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			SeasonEndHeader
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		GamesPlayedHeader
+		{
+			ControlName				Label
+			xpos					0
+			ypos					123
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					22
+			visible					1
+			font					RankedMenuMediumThin
+			labelText				"#RANKED_GAMES_PLAYED_HEADER"
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			SeasonHeader
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		GamesPlayed
+		{
+			ControlName				Label
+			xpos					0
+			ypos					0
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					58
+			visible					1
+			font					RankedMenu25
+			labelText				"120"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			GamesPlayedHeader
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BestRankHeader
+		{
+			ControlName				Label
+			xpos					0
+			ypos					123
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					22
+			visible					1
+			font					RankedMenuMediumThin
+			labelText				"#RANKED_BEST_RANK_HEADER"
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			SeasonHeader
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	3
+		}
+
+		BestRank
+		{
+			ControlName				Label
+			xpos					0
+			ypos					0
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					58
+			visible					1
+			font					RankedMenu25
+			labelText				"Bronze V"
+			allcaps					1
+			fgcolor_override		"50 50 50 255"
+			pin_to_sibling			BestRankHeader
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		GraphHeader
+		{
+			ControlName				Label
+			xpos					-18
+			ypos					68
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					388
+			tall					22
+			visible					1
+			font					RankedMenuMediumThin
+			labelText				"#RANKED_RANK_GRAPH_HEADER"
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			GamesPlayedHeader
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		GraphIconTop
+		{
+			ControlName				ImagePanel
+			xpos					3
+			ypos					2
+			zpos					102
+			wide					24
+			tall					12
+			image					"../ui/menu/rank_icons/tier_5_5"
+			visible					1
+			scaleImage				1
+			pin_to_sibling			GraphHeader
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	2
+		}
+
+		GraphIconBottom
+		{
+			ControlName				ImagePanel
+			xpos					3
+			ypos					58
+			zpos					102
+			wide					24
+			tall					12
+			image					"../ui/menu/rank_icons/tier_1_1"
+			visible					1
+			scaleImage				1
+			pin_to_sibling			GraphHeader
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		BtnScrollUpPC
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonUp
+			xpos						-140
+			ypos						-6
+			zpos						900
+			activeInputExclusivePaint	keyboard
+
+			pin_to_sibling				ButtonsNestedPanel
+			pin_corner_to_sibling		6
+			pin_to_sibling_corner		0
+		}
+
+		BtnScrollDownPC
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonDown
+			xpos						-140
+			ypos						-21
+			zpos						900
+			activeInputExclusivePaint	keyboard
+
+			pin_to_sibling				ButtonsNestedPanel
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Graph0 Dots and Lines
+		GraphDot0
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+			xpos						c-49
+			ypos						c+166
+		}
+
+		GraphDot1
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+			xpos						c+337
+			ypos						c+112
+		}
+
+		GraphDot2
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot3
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot4
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot5
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot6
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot7
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot8
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot9
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot10
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot11
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot12
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot13
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot14
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot15
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot16
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot17
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot18
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot19
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot20
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot21
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot22
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot23
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot24
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot25
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot26
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot27
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot28
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+		GraphDot29
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphDot
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		GraphLine0
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine1
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine2
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine3
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine4
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine5
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine6
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine7
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine8
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine9
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine10
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine11
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine12
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine13
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine14
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine15
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine16
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine17
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine18
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine19
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine20
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine21
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine22
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine23
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine24
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine25
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine26
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine27
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine28
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+		GraphLine29
+		{
+			ControlName					ImagePanel
+			InheritProperties 			RankedSeasonHistoryGraphLine
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+			zpos 					200
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+			zpos 					200
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			zpos	 				800
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+
+	}
+}

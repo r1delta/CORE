@@ -21,7 +21,7 @@ Resource/UI/LoadingProgress.res
 		auto_tall_tocontents	1
 		labelText				""
 		font					LoadScreenMapNameFont
-		fgcolor_override 		"207 248 249 255"
+		fgcolor_override 		"249 148 148 255"
 		allcaps					1
 		visible					0
 	}
@@ -37,7 +37,7 @@ Resource/UI/LoadingProgress.res
 		auto_tall_tocontents	1
 		labelText				"<Game Mode>"
 		font					LoadScreenGameModeFont
-		fgcolor_override 		"175 231 235 255"
+		fgcolor_override 		"235 91 91 255"
 		allcaps					1
 		visible					0
 	}
@@ -71,7 +71,7 @@ Resource/UI/LoadingProgress.res
 		textalign				"north-west"
 		font					LoadScreenMapDesc
 		wrap 					1
-		fgcolor_override 		"207 248 249 255"
+		fgcolor_override 		"249 148 148 255"
 		visible					0
 	}
 
@@ -133,7 +133,7 @@ Resource/UI/LoadingProgress.res
         auto_wide_tocontents    1
         auto_tall_tocontents	1
 		labelText				""
-        fgcolor_override 		"207 248 249 255"
+        fgcolor_override 		"249 148 148 255"
 		visible					1
     }
 }

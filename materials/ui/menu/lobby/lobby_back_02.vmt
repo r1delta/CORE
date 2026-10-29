@@ -1,6 +1,6 @@
 Basic
 {
-	$basetexture		"ui/menu/lobby/lobby_back_02"
+	$basetexture		"ui/menu/lobby/r1d_red_lobby_back_02"
 	$translucent		1
 	$vertexcolor		1
 	$vertexalpha		1
