@@ -65,3 +65,7 @@ function SmartWeaponFireSound( weapon, target )
 
 InitForAllClients()
 
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

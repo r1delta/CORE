@@ -90,3 +90,8 @@ function OnWeaponOwnerChanged( changeParams )
 	if ( "preventCatchAnimation" in self.s )
 		delete self.s.preventCatchAnimation
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

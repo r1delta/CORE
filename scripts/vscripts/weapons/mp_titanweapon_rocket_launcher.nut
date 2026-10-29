@@ -59,6 +59,8 @@ function OnClientAnimEvent( name )
 		else
 			self.PlayWeaponEffect( "wpn_muzzleflash_xo_rocket_FP", "wpn_muzzleflash_xo_rocket", "muzzle_flash" )
 	}
+
+	GlobalClientEventHandler( name )
 }
 
 function WeaponRegenAmmoPrototype( weapon )

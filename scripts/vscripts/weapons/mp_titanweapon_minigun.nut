@@ -103,3 +103,8 @@ function OnWeaponOwnerChanged( changeParams )
 			UpdateViewmodelAmmo()
 	}
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

@@ -139,3 +139,8 @@ function DissolveKnife( self )
 		//EmitSoundAtPosition( self.GetOrigin(), "Object_Dissolve" )
 	}
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

@@ -179,6 +179,8 @@ function OnClientAnimEvent( name ) //총구에서 발사되도록 수정 KWANYON
 		handle = StartParticleEffectOnEntity( self, GetParticleSystemIndex( fpEffect ), FX_PATTACH_POINT_FOLLOW, self.LookupAttachment( "muzzle_flash" ) )
 	}
 
+	GlobalClientEventHandler( name )
+
 	//Assert( handle )
 	// This Assert isn't valid because Effect might have been culled
 	// Assert( EffectDoesExist( handle ), "vortex shield OnClientAnimEvent: Couldn't find viewmodel effect handle for vortex muzzle flash effect on client " + GetLocalViewPlayer() )

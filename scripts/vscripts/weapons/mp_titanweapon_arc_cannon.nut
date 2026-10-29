@@ -106,6 +106,11 @@ function OnWeaponStartZoomOut()
 	HandleWeaponSoundZoomOut( self, "Weapon_Titan_ArcCannon.ADS_Out" )
 }
 
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}
+
 /*
 function OnWeaponPrimaryAttackVMActivityToUse()
 {

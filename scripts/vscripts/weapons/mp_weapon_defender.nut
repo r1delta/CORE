@@ -340,3 +340,8 @@ function ClientDestroyCallback_Defender_Stop( entity )
 {
 	Defender_Stop( entity )
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

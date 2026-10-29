@@ -229,3 +229,8 @@ function GetTitanSniperChargeLevel( weapon )
 	local charges = weapon.GetWeaponChargeLevel()
 	return (1 + charges)
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

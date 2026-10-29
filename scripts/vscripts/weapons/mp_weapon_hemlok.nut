@@ -20,3 +20,8 @@ function OnWeaponStartZoomOut()
 {
 	HandleWeaponSoundZoomOut( self, "Weapon_hemlok.ADS_Out" )
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

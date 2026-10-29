@@ -55,3 +55,8 @@ function OnWeaponStartZoomOut()
 function OnWeaponActivate( activateParams )
 {
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

@@ -518,3 +518,8 @@ function SmartWeaponFireSound( weapon, target )
 		weapon.EmitWeaponSound( "Weapon_Archer.Fire" )
 	}
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

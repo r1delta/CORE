@@ -769,6 +769,19 @@ function AddCallback_OnPlayerAutoBalanced( callbackFunc )
 	level.onPlayerAutoBalancedCallbacks.append( callbackInfo )
 }
 
+function AddCallback_OnWeaponClientEvent( callbackFunc )
+{
+	Assert( "onWeaponClientEventCallbacks" in level )
+	Assert( type( this ) == "table", "AddCallback_OnWeaponClientEvent can only be added on a table. " + type( this ) )
+	AssertParameters( callbackFunc, 2, "weapon, eventName" )
+
+	local callbackInfo = {}
+	callbackInfo.func <- callbackFunc
+	callbackInfo.scope <- this
+
+	level.onWeaponClientEventCallbacks.append( callbackInfo )
+}
+
 function PlayerProgressionAllowed( player = null )
 {
 	if ( IsPrivateMatch() )

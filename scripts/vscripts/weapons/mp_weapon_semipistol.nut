@@ -20,3 +20,8 @@ function OnWeaponStartZoomOut()
 {
 	HandleWeaponSoundZoomOut( self, "Weapon_P2011.ADS_Out" )
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

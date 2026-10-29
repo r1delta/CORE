@@ -317,6 +317,8 @@ function OnClientAnimEvent( name )
 		local colorVec = GetVortexSphereCurrentColor( self )
 		EffectSetControlPointVector( handle, 1, colorVec )
 	}
+
+	GlobalClientEventHandler( name )
 }
 
 function CooldownBarFracFunc()

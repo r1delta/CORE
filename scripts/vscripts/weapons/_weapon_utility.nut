@@ -68,6 +68,11 @@ function GlobalClientEventHandler( name )
 
 	if ( name == "ammo_full" )
 		UpdateViewmodelAmmo( true )
+
+	foreach ( callbackInfo in level.onWeaponClientEventCallbacks )
+	{
+		callbackInfo.func.acall( [callbackInfo.scope, self, name] )
+	}
 }
 
 function UpdateViewmodelAmmo( forceFull = false )

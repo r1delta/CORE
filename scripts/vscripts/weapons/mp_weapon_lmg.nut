@@ -63,3 +63,8 @@ function OnWeaponDeactivate( deactivateParams )
 {
 	self.ClearLoopingWeaponSound()
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

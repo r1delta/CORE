@@ -20,3 +20,8 @@ function OnWeaponStartZoomOut()
 {
 	HandleWeaponSoundZoomOut( self, "Weapon.r1SMG.ADS" )
 }
+
+function OnClientAnimEvent( name )
+{
+	GlobalClientEventHandler( name )
+}

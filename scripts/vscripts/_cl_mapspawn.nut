@@ -117,6 +117,7 @@ function Cl_MapspawnMain()
 	level.onLocalClientPlayerSpawnedCallbacks <- []
 	level.onLocalViewPlayerSpawnedCallbacks <- []
 	level.onPlayerAutoBalancedCallbacks <- []
+	level.onWeaponClientEventCallbacks <- []
 
 	buttonPressedCallbacks <- {}
 	buttonReleaseCallbacks <- {}

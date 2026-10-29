@@ -127,6 +127,7 @@ function OnClientAnimEvent( name )
 			self.PlayWeaponEffect( "wpn_shelleject_titan_shot_fp", "wpn_shelleject_pistol", "shell" )
 	}
 
+	GlobalClientEventHandler( name )
 }
 
 function OnWeaponStartZoomIn()
