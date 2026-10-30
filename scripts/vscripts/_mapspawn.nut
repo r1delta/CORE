@@ -7,6 +7,8 @@
 	IncludeScript( "_utility_shared" )
 	IncludeScript( "_utility_shared_all" )
 	IncludeScript( "_utility" )
+	IncludeScript( "_autobhop" )
+	IncludeScript( "movement/pilot" )
 	IncludeScript( "_r1d_script_sync" )
 	IncludeScript( "_remote_functions" )
 	R1DScriptSync_Publish()
@@ -437,3 +439,11 @@
 
 	if( !IsDedicated() )
 	    thread TryWaitForListenHostToFinishConnecting()
+
+	// sv_autobunnyhopping: the think owns registration retries and per-player opt-in.
+	if ( IsMultiplayer() && !IsLobby() )
+	{
+		AutoBhop_Register()
+		PilotMovement_Register()
+		thread AutoBhop_ServerThink()
+	}

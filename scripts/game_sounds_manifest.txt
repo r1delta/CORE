@@ -185,5 +185,6 @@ game_sounds_manifest
 // R1Delta
 // DO NOT move this file up! Its intentionally placed down here so it can override sounds in the files above, if needed
 
+	"precache_file"		"scripts/r1_delta_slide_sounds.txt"
 	"precache_file"		"scripts/r1_delta_sounds.txt"
 }

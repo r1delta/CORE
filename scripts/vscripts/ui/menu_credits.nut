@@ -883,6 +883,8 @@ function InitPeople()
 	AddNameOnly( "deltateam", "Allusive" )
 	AddNameOnly( "deltateam", "nephacks" )
 	AddNameOnly( "deltateam", "Koutsie" )
+	AddNameOnly( "deltateam", "Akabenko" )
+	AddNameOnly( "deltateam", "dmitryalexander" )
 
 //============================
 //	EXECUTIVE

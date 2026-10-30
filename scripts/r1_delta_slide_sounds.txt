@@ -1,0 +1,85 @@
+// Imported authored first-person slide waves; MP script owns loop lifetime.
+// The *_LP source is looped by alias flags as specified by the authored event.
+
+"R1D_Slide_Start_Concrete" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Concrete_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Concrete_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Concrete_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Concrete_2ch_v1_04.wav" } }
+"R1D_Slide_Start_Dirt" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Dirt_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Dirt_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Dirt_2ch_v1_03.wav" } }
+"R1D_Slide_Start_Grass" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Grass_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Grass_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Grass_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Grass_2ch_v1_04.wav" } }
+"R1D_Slide_Start_Mud" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Mud_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Mud_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Mud_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Mud_2ch_v1_04.wav" } }
+"R1D_Slide_Start_Sand" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Sand_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Sand_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Sand_2ch_v1_03.wav" } }
+"R1D_Slide_Start_SolidMetal" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_SolidMetal_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_SolidMetal_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_SolidMetal_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_SolidMetal_2ch_v1_04.wav" } }
+"R1D_Slide_Start_Water" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Water_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Water_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Water_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Water_2ch_v1_04.wav" } }
+"R1D_Slide_Start_Water_Gear" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideStart_Water_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideStart_Water_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideStart_Water_2ch_v1_03.wav" } }
+"R1D_Slide_Start_XoShield_Gear"
+{
+	"volume" "1"
+	"rndwave"
+	{
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_01.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_02.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_03.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_04.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_05.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_06.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_07.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_08.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_09.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_10.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_11.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_12.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_13.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_14.wav"
+		"wave" "r1delta/movement/slide/Mvmt_Wraith_Gear_Jingle_Sprint_1ch_v1_15.wav"
+	}
+}
+"R1D_Slide_Start_Wood" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Wood_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Wood_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Wood_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Player_Mvmt_SlideStart_Wood_2ch_v1_04.wav" } }
+
+"R1D_Slide_Loop_Concrete" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Concrete_2ch_v1_01_LP.wav" }
+"R1D_Slide_Loop_Dirt" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Dirt_2ch_v1_01_LP.wav" }
+"R1D_Slide_Loop_Grass" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Grass_2ch_v1_01_LP.wav" }
+"R1D_Slide_Loop_Mud" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Mud_2ch_v1_01_LP.wav" }
+"R1D_Slide_Loop_Sand" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Sand_2ch_v1_01_LP.wav" }
+"R1D_Slide_Loop_SolidMetal" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Metal_2ch_v1_01_LP.wav" }
+"R1D_Slide_Loop_Water" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Water_2ch_v1_01_LP.wav" }
+"R1D_Slide_Loop_Wood" { "flags" "loop" "volume" "1" "wave" "r1delta/movement/slide/Player_Mvmt_SlideLoop_Wood_2ch_v1_01_LP.wav" }
+
+"R1D_Slide_End_Concrete" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Concrete_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Concrete_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Concrete_2ch_v1_03.wav" } }
+"R1D_Slide_End_Dirt" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Dirt_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Dirt_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Dirt_2ch_v1_03.wav" } }
+"R1D_Slide_End_Grass" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Grass_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Grass_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Grass_2ch_v1_03.wav" } }
+"R1D_Slide_End_Mud" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Mud_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Mud_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Mud_2ch_v1_03.wav" } }
+"R1D_Slide_End_Sand" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Sand_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Sand_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Sand_2ch_v1_03.wav" } }
+"R1D_Slide_End_SolidMetal" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_SolidMetal_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_SolidMetal_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_SolidMetal_2ch_v1_03.wav" } }
+"R1D_Slide_End_Water" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Water_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Water_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Water_2ch_v1_03.wav" } }
+"R1D_Slide_End_Wood" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Wood_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Wood_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEnd_Wood_2ch_v1_03.wav" } }
+
+"R1D_Slide_Bump" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_Slide_Bump_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_Slide_Bump_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_Slide_Bump_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_Slide_Bump_2ch_v1_04.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_Slide_Bump_2ch_v1_05.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_Slide_Bump_2ch_v1_06.wav" } }
+"R1D_Slide_End_Gear" { "volume" "1" "rndwave" { "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEndClothGear_2ch_v1_01.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEndClothGear_2ch_v1_02.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEndClothGear_2ch_v1_03.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEndClothGear_2ch_v1_04.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEndClothGear_2ch_v1_05.wav" "wave" "r1delta/movement/slide/Pilot_Med_Mvmt_SlideEndClothGear_2ch_v1_06.wav" } }
+
+// Authored 3P slide gear one-shots; source graphs use this family for both
+// start and stop. Keep server dispatch world-only and exclude the owner.
+"R1D_Slide_3P_Gear"
+{
+	"volume"	"1"
+	"rndwave"
+	{
+		"flags"	"spatialized"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_01.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_02.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_03.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_04.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_05.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_06.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_07.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_08.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_09.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_10.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_11.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_12.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_13.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_14.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_15.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_16.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_17.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_18.wav"
+		"wave"	"r1delta/movement/slide/Mvmt_Bangalore_3P_Gear_Grenades_1ch_v4_19.wav"
+	}
+}

@@ -15,6 +15,16 @@ function Cl_MapspawnMain()
 	IncludeScript( "_utility_shared_all" )
 	IncludeScript( "_utility_client" )
 
+	// sv_autobunnyhopping: both peers must register the identical program.
+	IncludeScript( "_autobhop" )
+	if ( !IsLobby() && !AutoBhop_Register() )
+		thread AutoBhop_ClientRegisterThink()
+	if ( !IsLobby() )
+	{
+		IncludeScript( "movement/pilot" )
+		PilotMovement_Register()
+	}
+
 	if ( developer() > 0 && !IsLobby() )
 	{
 		modelViewerModels <- []
