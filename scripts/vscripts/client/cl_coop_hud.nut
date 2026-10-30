@@ -793,7 +793,7 @@ function CallbackUpdatePlayerOverHeadIcon( player, oldLifeState, newLifeState )
 				else
 				{
 					local iconTable = GetPlayerWorldIcon( player )
-					if ( iconTable.group != null )
+					if ( iconTable != null && iconTable.group != null )
 						iconTable.group.Hide()
 				}
 
@@ -804,7 +804,7 @@ function CallbackUpdatePlayerOverHeadIcon( player, oldLifeState, newLifeState )
 			case LIFE_DISCARDBODY:
 			default:
 				local iconTable = GetPlayerWorldIcon( player )
-				if ( iconTable.group != null )
+				if ( iconTable != null && iconTable.group != null )
 					iconTable.group.Hide()
 				break
 		}
@@ -827,7 +827,7 @@ function IsCoopPlayerRodeoing( player )
 function ShowPlayerWorldIcon( player )
 {
 	local iconTable = GetPlayerWorldIcon( player )
-	if ( iconTable.frame == null )
+	if ( iconTable == null || iconTable.frame == null )
 		return
 
 	if ( IsValid( player ) )
@@ -840,10 +840,24 @@ function ShowPlayerWorldIcon( player )
 		iconTable.group.Hide()
 }
 
+// The HUD only has four character slots (CoopHeroCharGroup_0 - 3, scoreboard_coop_p1 - p4, coop_char_frame_p1 - p4).
+// Players past the fourth share the slots of the first four in turn (entity index 5 -> slot 0 ...), so every lookup
+// below that uses a slot has to tolerate a slot that is not available for that player.
+// Returns the world icon table of a player, or null when this player has none: players whose entity index is past 4
+// get no overhead icon (their slot belongs to one of the first four), and a slot that is the local player's own
+// cockpit icon is never reused for somebody else.
 function GetPlayerWorldIcon( player )
 {
+	if ( player.GetEntIndex() > COOP_MAX_PLAYER_COUNT )
+		return null
+
 	local index = GetPlayerIconIndex( player )
 	Assert( index in level.indexedFaceIcons )
+
+	local localPlayer = GetLocalClientPlayer()
+	if ( IsValid( localPlayer ) && player != localPlayer && index == GetPlayerIconIndex( localPlayer ) )
+		return null
+
 	return level.indexedFaceIcons[ index ]
 }
 
@@ -852,53 +866,16 @@ function GetPlayerIconIndex( player )
 	local index = player.GetEntIndex() - 1
 	Assert( index >= 0 )
 
-	if ( index > 3 )
-		return divindex_icon_anticrash( index + 1 )
-
-	return index
+	return divindex_icon_anticrash( index + 1 )
 }
+Globalize( GetPlayerIconIndex )
 
-function divindex_icon_anticrash( index )// a dumb way to do it but eh.
+// maps a player entity index (1 - R1D_SCRIPT_MAX_COOP_PLAYERS) to one of the four HUD slots (0 - 3)
+function divindex_icon_anticrash( index )
 {
-	local divindex = 0
+	Assert( index > 0 )
 
-	switch ( index )
-	{
-		case 5:
-		case 9:
-		case 13:
-		case 17:
-			divindex = 0
-			break
-		
-		case 6:
-		case 10:
-		case 14:
-		case 18:
-			divindex = 1
-			break
-		
-		case 7:
-		case 11:
-		case 15:
-		case 19:
-			divindex = 2
-			break
-		
-		case 8:
-		case 12:
-		case 16:
-		case 20:
-			divindex = 3
-			break
-		
-		default:
-			divindex = 0
-			printl( "Is over 20 players really needed for FD?" )
-			break
-	}
-
-	return divindex
+	return ( index - 1 ) % COOP_MAX_PLAYER_COUNT
 }
 Globalize( divindex_icon_anticrash )
 

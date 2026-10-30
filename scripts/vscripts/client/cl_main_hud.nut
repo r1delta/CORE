@@ -3076,8 +3076,10 @@ function UpdatePlayerStatusForTeam( team, teamStatusElem, burnCardStatusElem, ti
 	local teamResultTable = CountPlayerStatusTypes( teamPlayers )
 
 	local index
+	// the HUD has a fixed number of status elements (8): with more players on the team the surplus is not shown
+	local maxElems = min( teamStatusElem.len(), burnCardStatusElem.len() )
 	local lowerBound = 0
-	local upperBound =  teamResultTable.titanWithBurnCard
+	local upperBound = min( teamResultTable.titanWithBurnCard, maxElems )
 
 	/*for( index = lowerBound; index < upperBound; ++index  )
 	{
@@ -3093,7 +3095,7 @@ function UpdatePlayerStatusForTeam( team, teamStatusElem, burnCardStatusElem, ti
 	}
 
 	lowerBound = upperBound
-	upperBound += teamResultTable.titan
+	upperBound = min( upperBound + teamResultTable.titan, maxElems )
 
 	for( index = lowerBound; index < upperBound; ++index  )
 	{
@@ -3103,7 +3105,7 @@ function UpdatePlayerStatusForTeam( team, teamStatusElem, burnCardStatusElem, ti
 	}
 
 	lowerBound = upperBound
-	upperBound += teamResultTable.pilotWithBurnCard
+	upperBound = min( upperBound + teamResultTable.pilotWithBurnCard, maxElems )
 
 	for( index = lowerBound; index < upperBound; ++index  )
 	{
@@ -3113,7 +3115,7 @@ function UpdatePlayerStatusForTeam( team, teamStatusElem, burnCardStatusElem, ti
 	}
 
 	lowerBound = upperBound
-	upperBound += teamResultTable.pilot
+	upperBound = min( upperBound + teamResultTable.pilot, maxElems )
 
 	for( index = lowerBound; index < upperBound; ++index  )
 	{
@@ -3123,7 +3125,7 @@ function UpdatePlayerStatusForTeam( team, teamStatusElem, burnCardStatusElem, ti
 	}
 
 	lowerBound = upperBound
-	upperBound += teamResultTable.dead
+	upperBound = min( upperBound + teamResultTable.dead, maxElems )
 
 	for( index = lowerBound; index < upperBound; ++index  )
 	{
@@ -3132,7 +3134,7 @@ function UpdatePlayerStatusForTeam( team, teamStatusElem, burnCardStatusElem, ti
 		burnCardStatusElem[ index ].Hide()
 	}
 
-	for( index = upperBound; index < 8; ++index  ) //Assume we'll never have more than 8 players!
+	for( index = upperBound; index < maxElems; ++index  )
 	{
 		teamStatusElem[ index ].Hide()
 		burnCardStatusElem[ index ].Hide()

@@ -1,6 +1,7 @@
 const MAX_SCORE_COLUMNS = 7
 const SCOREBOARD_PLAYER_HEIGHT = 20
 const SCOREBOARD_PLAYER_HEIGHT_9V9 = 18
+const SCOREBOARD_MAX_ROWS = 9 // rows 0 - 8 per team exist in resource/ui/hudscoreboard.res
 const SCOREBOARD_PLAYER_SEPARATOR_HEIGHT = 1
 const SCOREBOARD_MATERIAL_GEN1 = "../ui/menu/generation_icons/generation_0"
 const SCOREBOARD_MATERIAL_GEN2 = "../ui/menu/generation_icons/generation_1"
@@ -244,7 +245,8 @@ function InitScoreboard_Think()
 	else
 		mapName = GetMapDisplayName( GetMapName() )
 
-	local numTeamPlayers = GetNumTeamPlayers()
+	// hudscoreboard.res defines rows 0 - 8 per team: more players than that cannot be listed
+	local numTeamPlayers = min( GetNumTeamPlayers(), SCOREBOARD_MAX_ROWS )
 
 	file.numScoreColums <- 0
 	file.header_default_color <- [155, 178, 194]
@@ -444,7 +446,7 @@ function ShowScoreboard()
 	local screenSize = Hud.GetScreenSize()
 	local resMultiplier = screenSize[1] / 480.0
 
-	local numTeamPlayers = GetNumTeamPlayers()
+	local numTeamPlayers = min( GetNumTeamPlayers(), SCOREBOARD_MAX_ROWS )
 	local playerHeightUnits = numTeamPlayers > 8 ? SCOREBOARD_PLAYER_HEIGHT_9V9 : SCOREBOARD_PLAYER_HEIGHT
 	local playerSeperatorHeight = (SCOREBOARD_PLAYER_SEPARATOR_HEIGHT * resMultiplier).tointeger()
 	local playerHeight = (playerHeightUnits * resMultiplier).tointeger()
@@ -681,6 +683,10 @@ function ShowScoreboard()
 
 			foreach ( player in playersForDisplay )
 			{
+				// more players than scoreboard rows (9): the rest is not listed
+				if ( index >= file.playerElems[team].len() )
+					break
+
 				elemTable = file.playerElems[team][index]
 
 				if ( index % 2 == 0 )
@@ -722,11 +728,11 @@ function ShowScoreboard()
 				if ( GAMETYPE == COOPERATIVE )
 				{
 					local playerIndex = player.GetEntIndex()
-					Assert( playerIndex > 0 && playerIndex <= COOP_MAX_PLAYER_COUNT )
+					Assert( playerIndex > 0 && playerIndex <= R1D_SCRIPT_MAX_COOP_PLAYERS )
 
-					if ( playerIndex > 4 )
-						playerIndex = divindex_icon_anticrash( divindex_icon_anticrash )
-	
+					// only four player number materials exist (p1 - p4); players past the fourth reuse them in turn
+					playerIndex = GetPlayerIconIndex( player ) + 1
+
 					elemTable.playerNumber.SetImage( "hud/coop/scoreboard_coop_p" + playerIndex )
 					elemTable.playerNumber.Show()
 				}

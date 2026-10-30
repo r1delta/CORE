@@ -105,6 +105,8 @@ function main() {
 	Globalize(TD_SpawnEmpTitan)
 
 	Globalize(IsTowerDefenseValid)
+	Globalize(UpdateNumbersForNextWave)
+	Globalize(GetAICountFromSpawnInfo)
 
 	AddCallback_OnClientConnected(CoopTD_ClientConnected)
 	AddCallback_OnClientDisconnected(CoopTD_ClientDisconnected)
@@ -153,6 +155,10 @@ function main() {
 	{
 		Minimap_PrecacheMaterial( "vgui/HUD/coop/minimap_coop_p" + i )
 	}
+
+	// more than four players: larger waves and amped player weapons (original code, optional file)
+	if ( IsServer() && ScriptExists( "mp/r2fd_players.nut" ) )
+		IncludeFile( "mp/r2fd_players" )
 }
 
 function EntitiesDidLoad() {
@@ -527,10 +533,11 @@ function CoopTD_CheckPlayerTitanAvailable(player) {
 
 \************************************************************************************************/
 function InitTeamPlayerScoring() {
-	//Index goes from 1 - 4 instead of 0 - 3 because player.GetEntIndex() returns 1 - 4.
-	local maxPlayers = GetCurrentPlaylistVarInt("max_players", 4)
-
-	for (local i = 1; i <= maxPlayers; i++) {
+	//Index goes from 1 - N instead of 0 - (N-1) because player.GetEntIndex() returns 1 - N.
+	//The table must cover every possible player entity index, not the playlist's "max players" (4): a coop server
+	//can hold more players than that, and indexing this table by GetEntIndex() raised "the index 'N' does not exist"
+	//on disconnect and when a wave was completed for every player with entity index > 4.
+	for (local i = 1; i <= R1D_SCRIPT_MAX_COOP_PLAYERS; i++) {
 		level.playerTeamScoreWaveStart[i] <- 0
 	}
 }
@@ -541,7 +548,7 @@ function CoopTD_ClientConnected(player) {
 }
 
 function CoopTD_ClientDisconnected(player) {
-	level.playerTeamScoreWaveStart[player.GetEntIndex()] = 0
+	level.playerTeamScoreWaveStart[player.GetEntIndex()] <- 0
 	delaythread(0.1) TowerDefenseDifficultyRamp() //the delaythread is necessary because if we check this frame - nothing has changed in terms of player count
 }
 

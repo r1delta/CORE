@@ -775,6 +775,10 @@ function BurnCardPlayerRespawned_Threaded( player )
     {
         waitthread BCLoadoutGrace_Think( player )
 
+        // the player can disconnect (or be kicked) while the loadout grace period runs
+        if ( !IsValid( player ) )
+            return
+
         cardIndex = GetPlayerBurnCardActiveSlotID( player )
         cardRef = GetActiveBurnCard( player )
     }

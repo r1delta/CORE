@@ -2621,4 +2621,4 @@ enum eUIEvent
 }
 
 // Just for script stuff
-const R1D_SCRIPT_MAX_COOP_PLAYERS = 20
+const R1D_SCRIPT_MAX_COOP_PLAYERS = 32
