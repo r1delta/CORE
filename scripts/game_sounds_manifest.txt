@@ -187,4 +187,5 @@ game_sounds_manifest
 
 	"precache_file"		"scripts/r1_delta_slide_sounds.txt"
 	"precache_file"		"scripts/r1_delta_sounds.txt"
+	"precache_file"		"scripts/r2port_sounds.txt"
 }
