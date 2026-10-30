@@ -265,6 +265,12 @@ function InitScoreboard_Think()
 		file.background.SetHeight( level.screenSize[1] * 0.875 )
 		file.background.SetY( -18 )
 	}
+	else if ( GAMETYPE == COOPERATIVE && numTeamPlayers > 4 )
+	{
+		// 5 or 6 rows: the wave block (see InitCoopScoreboard) hangs under the last row and needs the height the 7+ row board has
+		file.background.SetHeight( level.screenSize[1] * 0.875 )
+		file.background.SetY( -18 )
+	}
 
 	file.header <- {}
 	file.header.background <- HudElement( "ScoreboardHeaderBackground", scoreboard )
@@ -301,7 +307,7 @@ function InitScoreboard_Think()
 	file.nameEndColumn <- null
 
 	if ( GAMETYPE == COOPERATIVE )
-		InitCoopScoreboard( scoreboard )
+		InitCoopScoreboard( scoreboard, numTeamPlayers )
 
 	AddColumnsForGameMode( scoreboard )
 
@@ -1254,7 +1260,10 @@ function AddColumnsForGameMode( scoreboard )
 	}
 }
 
-function InitCoopScoreboard( scoreboard )
+// The wave block (wave number/name, remaining enemies, enemy type boxes) is pinned under a player row in hudscoreboard.res: under row 3 (the 4th)
+// for the 4 rows of vanilla Frontier Defense, which is on top of the player rows as soon as the board has more. The res has one copy of the block
+// per row 4 - 8 ("..._R<n>", pinned under row n): the copy under the last listed row is used, the others stay hidden.
+function InitCoopScoreboard( scoreboard, numRows )
 {
 	file.CoopWaveNumber				<- null
 	file.CoopWaveName				<- null
@@ -1267,9 +1276,22 @@ function InitCoopScoreboard( scoreboard )
 	file.CoopStars[1]				<- null
 	file.CoopStars[2]				<- null
 
-	file.CoopWaveNumber				= HudElement( "ScoreboardTD_WaveNumber", scoreboard )
-	file.CoopWaveName				= HudElement( "ScoreboardTD_WaveName", scoreboard )
-	file.CoopWaveRemainingEnemies	= HudElement( "ScoreboardTD_RemainingEnemies", scoreboard )
+	// hudscoreboard.res has rows 0 - 8 (and wave block copies for the last row 4 - 8)
+	local waveSuffix = numRows > 4 ? "_R" + ( min( numRows, 9 ) - 1 ) : ""
+
+	if ( waveSuffix != "" )
+	{
+		// the block under row 3 is not used: keep its elements hidden
+		HudElement( "ScoreboardTD_WaveNumber", scoreboard ).Hide()
+		HudElement( "ScoreboardTD_WaveName", scoreboard ).Hide()
+		HudElement( "ScoreboardTD_RemainingEnemies", scoreboard ).Hide()
+		for ( local i = 0; i < 10; i++ )
+			HudElement( "ScoreboardTD_WaveEnemyType_" + i, scoreboard ).Hide()
+	}
+
+	file.CoopWaveNumber				= HudElement( "ScoreboardTD_WaveNumber" + waveSuffix, scoreboard )
+	file.CoopWaveName				= HudElement( "ScoreboardTD_WaveName" + waveSuffix, scoreboard )
+	file.CoopWaveRemainingEnemies	= HudElement( "ScoreboardTD_RemainingEnemies" + waveSuffix, scoreboard )
 	file.CoopWaveContinuesRemaining	= HudElement( "ScoreboardTD_ContinuesRemaining_Title", scoreboard )
 	file.CoopWaveContinuesCount		= HudElement( "ScoreboardTD_ContinuesRemaining_Count", scoreboard )
 	file.CoopStars[0]				= HudElement( "ScoreboardTD_Star_0", scoreboard )
@@ -1285,14 +1307,14 @@ function InitCoopScoreboard( scoreboard )
 	file.CoopStars[1].Show()
 	file.CoopStars[2].Show()
 
-	InitWaveEnemyTypes( scoreboard )
+	InitWaveEnemyTypes( scoreboard, waveSuffix )
 }
 
-function InitWaveEnemyTypes( scoreboard )
+function InitWaveEnemyTypes( scoreboard, waveSuffix )
 {
 	for ( local i = 0; i < 10; i++ )
 	{
-		local elem = HudElement( "ScoreboardTD_WaveEnemyType_" + i, scoreboard )
+		local elem = HudElement( "ScoreboardTD_WaveEnemyType_" + i + waveSuffix, scoreboard )
 		elem.s.bg <- elem.GetChild( "WaveEnemyType_info_box" )
 		elem.s.count <- elem.GetChild( "WaveEnemyType_Count" )
 		elem.s.image <- elem.GetChild( "WaveEnemyType_Image" )

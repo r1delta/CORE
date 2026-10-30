@@ -3574,6 +3574,957 @@
 		pin_to_sibling_corner		1
 	}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// COOP WAVE INFO for boards with more than 4 rows (Frontier Defense with 5 to 9 listed players)
+// The block above is pinned under row 3 (the 4th row): right for the 4 rows of vanilla Frontier Defense, on top of the player rows with more.
+// The sets below are copies of it ("_R<n>"): the same elements and offsets, but WaveNumber is pinned under row n instead, so the block sits as
+// far under the last row as the original sits under row 3. cl_scoreboard.nut (InitCoopScoreboard) uses the set of row (rows - 1), hides the others.
+
+	ScoreboardTD_WaveNumber_R4
+	{
+		ControlName				Label
+		xpos 					-6
+		ypos					7
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NUMBER"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+		bgcolor_override 		"255 127 127 127"
+
+		pin_to_sibling			ScoreboardTeammateBackground4
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveName_R4
+	{
+		ControlName				Label
+		xpos 					4
+		ypos					0
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NAME"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R4
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+
+	ScoreboardTD_RemainingEnemies_R4
+	{
+		ControlName				Label
+		ypos					4
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					HudFontSmallPlain
+		labelText				"#COOP_REMAINING_ENEMIES"
+		allcaps					1
+		fgcolor_override	 	"255 255 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R4
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveEnemyType_0_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_RemainingEnemies_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_1_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_2_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_1_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_3_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_2_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_4_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_3_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_5_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_6_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_5_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_7_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_6_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_8_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_7_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_9_R4
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_8_R4
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveNumber_R5
+	{
+		ControlName				Label
+		xpos 					-6
+		ypos					7
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NUMBER"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+		bgcolor_override 		"255 127 127 127"
+
+		pin_to_sibling			ScoreboardTeammateBackground5
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveName_R5
+	{
+		ControlName				Label
+		xpos 					4
+		ypos					0
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NAME"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R5
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+
+	ScoreboardTD_RemainingEnemies_R5
+	{
+		ControlName				Label
+		ypos					4
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					HudFontSmallPlain
+		labelText				"#COOP_REMAINING_ENEMIES"
+		allcaps					1
+		fgcolor_override	 	"255 255 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R5
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveEnemyType_0_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_RemainingEnemies_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_1_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_2_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_1_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_3_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_2_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_4_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_3_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_5_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_6_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_5_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_7_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_6_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_8_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_7_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_9_R5
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_8_R5
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveNumber_R6
+	{
+		ControlName				Label
+		xpos 					-6
+		ypos					7
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NUMBER"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+		bgcolor_override 		"255 127 127 127"
+
+		pin_to_sibling			ScoreboardTeammateBackground6
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveName_R6
+	{
+		ControlName				Label
+		xpos 					4
+		ypos					0
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NAME"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R6
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+
+	ScoreboardTD_RemainingEnemies_R6
+	{
+		ControlName				Label
+		ypos					4
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					HudFontSmallPlain
+		labelText				"#COOP_REMAINING_ENEMIES"
+		allcaps					1
+		fgcolor_override	 	"255 255 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R6
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveEnemyType_0_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_RemainingEnemies_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_1_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_2_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_1_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_3_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_2_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_4_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_3_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_5_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_6_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_5_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_7_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_6_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_8_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_7_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_9_R6
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_8_R6
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveNumber_R7
+	{
+		ControlName				Label
+		xpos 					-6
+		ypos					7
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NUMBER"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+		bgcolor_override 		"255 127 127 127"
+
+		pin_to_sibling			ScoreboardTeammateBackground7
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveName_R7
+	{
+		ControlName				Label
+		xpos 					4
+		ypos					0
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NAME"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R7
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+
+	ScoreboardTD_RemainingEnemies_R7
+	{
+		ControlName				Label
+		ypos					4
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					HudFontSmallPlain
+		labelText				"#COOP_REMAINING_ENEMIES"
+		allcaps					1
+		fgcolor_override	 	"255 255 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R7
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveEnemyType_0_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_RemainingEnemies_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_1_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_2_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_1_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_3_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_2_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_4_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_3_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_5_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_6_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_5_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_7_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_6_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_8_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_7_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_9_R7
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_8_R7
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveNumber_R8
+	{
+		ControlName				Label
+		xpos 					-6
+		ypos					7
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NUMBER"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+		bgcolor_override 		"255 127 127 127"
+
+		pin_to_sibling			ScoreboardTeammateBackground8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveName_R8
+	{
+		ControlName				Label
+		xpos 					4
+		ypos					0
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					ScoreboardFont
+		labelText				"WAVE NAME"
+		allcaps					1
+		fgcolor_override	 	"204 234 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	1
+	}
+
+	ScoreboardTD_RemainingEnemies_R8
+	{
+		ControlName				Label
+		ypos					4
+		zpos					1012
+		visible					0
+		auto_wide_tocontents	1
+		auto_tall_tocontents	1
+		font					HudFontSmallPlain
+		labelText				"#COOP_REMAINING_ENEMIES"
+		allcaps					1
+		fgcolor_override	 	"255 255 255 255"
+
+		pin_to_sibling			ScoreboardTD_WaveNumber_R8
+		pin_corner_to_sibling	0
+		pin_to_sibling_corner	2
+	}
+
+	ScoreboardTD_WaveEnemyType_0_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_RemainingEnemies_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_1_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_2_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_1_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_3_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_2_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_4_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_3_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_5_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		ypos						5
+		xpos						0
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_0_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		2
+	}
+
+	ScoreboardTD_WaveEnemyType_6_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_5_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_7_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_6_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_8_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_7_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
+	ScoreboardTD_WaveEnemyType_9_R8
+	{
+		ControlName					CNestedPanel
+		visible						0
+		InheritProperties 			ScoreboardTD_WaveEnemy
+
+		xpos						6
+
+		pin_to_sibling				ScoreboardTD_WaveEnemyType_8_R8
+		pin_corner_to_sibling		0
+		pin_to_sibling_corner		1
+	}
+
 	ScoreboardTD_Star_0
 	{
 		ControlName			ImagePanel
