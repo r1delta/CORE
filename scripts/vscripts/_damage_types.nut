@@ -138,11 +138,11 @@ enum eDamageSourceId
 	// development
 	weapon_cubemap
 
-	mp_weapon_mega1
-	mp_weapon_mega2
-	mp_weapon_mega3
-	mp_weapon_mega4
-	mp_weapon_mega5
+	mp_weapon_sr_valkyrie
+	mp_weapon_twinb_shotgun
+	mp_titanweapon_minigun
+	mp_titanweapon_charge_cannon
+	mp_weapon_throwing_knife
 	mp_weapon_mega6
 	mp_weapon_mega7
 	mp_weapon_mega8
@@ -313,11 +313,11 @@ else
 	damageSourceStrings[ eDamageSourceId.stuck ]		 				<- "#DEATH_GENERIC_KILLED"
 }
 
-damageSourceStrings[ eDamageSourceId.mp_weapon_mega1 ] 					<- "#WPN_VALKYRIE"
-damageSourceStrings[ eDamageSourceId.mp_weapon_mega2 ] 					<- "#WPN_TWINB_SHOTGUN"
-damageSourceStrings[ eDamageSourceId.mp_weapon_mega3 ] 					<- "#WPN_TITAN_MINIGUN"
-damageSourceStrings[ eDamageSourceId.mp_weapon_mega4 ] 					<- "#WPN_TITAN_CHARGE_CANNON"
-damageSourceStrings[ eDamageSourceId.mp_weapon_mega5 ] 					<- "#WPN_THROWING_KNIFE"
+damageSourceStrings[ eDamageSourceId.mp_weapon_sr_valkyrie ] 					<- "#WPN_VALKYRIE"
+damageSourceStrings[ eDamageSourceId.mp_weapon_twinb_shotgun ] 					<- "#WPN_TWINB_SHOTGUN"
+damageSourceStrings[ eDamageSourceId.mp_titanweapon_minigun ] 					<- "#WPN_TITAN_MINIGUN"
+damageSourceStrings[ eDamageSourceId.mp_titanweapon_charge_cannon ] 					<- "#WPN_TITAN_CHARGE_CANNON"
+damageSourceStrings[ eDamageSourceId.mp_weapon_throwing_knife ] 					<- "#WPN_THROWING_KNIFE"
 
 //When adding new mods, they need to be added below and to persistent_player_data_version_N.pdef in r1/cfg/server.
 //Then when updating that file, save a new one and increment N.

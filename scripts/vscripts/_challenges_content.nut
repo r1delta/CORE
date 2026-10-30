@@ -1579,7 +1579,7 @@ function CreateChallenges()
 	//		Valkyrie
 	//------------------
 
-	local weaponRef = "mp_weapon_mega1"
+	local weaponRef = "mp_weapon_sr_valkyrie"
 	SetChallengeCategory( eChallengeCategory.WEAPON_VALKYRIE, "#WPN_VALKYRIE", "", weaponRef )
 
 	AddChallenge( "ch_valkyrie_kills", "#CHALLENGE_WEAPON_KILLS", "#CHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
@@ -1626,7 +1626,7 @@ function CreateChallenges()
 	// 	   Twin-B
 	//------------------
 
-	local weaponRef = "mp_weapon_mega2"
+	local weaponRef = "mp_weapon_twinb_shotgun"
 	SetChallengeCategory( eChallengeCategory.WEAPON_TWINB, "#WPN_TWINB_SHOTGUN", "", weaponRef )
 
 	AddChallenge( "ch_twinb_kills", "#CHALLENGE_WEAPON_KILLS", "#CHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
@@ -3072,7 +3072,7 @@ function CreateChallenges()
 	//		Valkyrie
 	//------------------
 
-	local weaponRef = "mp_weapon_mega1"
+	local weaponRef = "mp_weapon_sr_valkyrie"
 
 	AddChallenge( "ch_daily_valkyrie_kills", "#DAILYCHALLENGE_WEAPON_KILLS", "#DAILYCHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
 		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )
@@ -3099,7 +3099,7 @@ function CreateChallenges()
 	// 	   Twin-B
 	//------------------
 
-	local weaponRef = "mp_weapon_mega2"
+	local weaponRef = "mp_weapon_twinb_shotgun"
 
 	AddChallenge( "ch_daily_twinb_kills", "#DAILYCHALLENGE_WEAPON_KILLS", "#DAILYCHALLENGE_WEAPON_KILLS_DESC", ICON_WEAPON_KILLS, weaponRef )
 		SetChallengeStat( "weapon_kill_stats", "total", weaponRef )

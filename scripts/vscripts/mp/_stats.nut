@@ -653,7 +653,7 @@ function HandleKillStats( victim, attacker, damageInfo ) {
             {
                 case eDamageSourceId.mp_weapon_sniper:
                 case eDamageSourceId.mp_weapon_dmr:
-                case eDamageSourceId.mp_weapon_mega1:
+                case eDamageSourceId.mp_weapon_sr_valkyrie:
                     Stats_IncrementStat( attacker, "kills_stats", "coopChallenge_Sniper_Kills", 1.0 )
             }
         }

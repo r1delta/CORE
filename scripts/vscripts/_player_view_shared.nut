@@ -37,7 +37,7 @@ function CalcTitanViewPunch( player, damageInfo )
 
 		case eDamageSourceId.mp_titanweapon_xo16:
 		case eDamageSourceId.mp_titanweapon_shotgun:
-		case eDamageSourceId.mp_weapon_mega3:
+		case eDamageSourceId.mp_titanweapon_minigun:
 			punchAmount *= 1.1
 			break
 
@@ -54,7 +54,7 @@ function CalcTitanViewPunch( player, damageInfo )
 			break
 
 		case eDamageSourceId.mp_titanweapon_sniper:
-		case eDamageSourceId.mp_weapon_mega4:
+		case eDamageSourceId.mp_titanweapon_charge_cannon:
 			punchAmount *= 2.8
 			break
 

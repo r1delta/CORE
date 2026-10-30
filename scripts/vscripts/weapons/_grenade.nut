@@ -95,7 +95,7 @@ function main()
 		AddDamageCallbackSourceID( eDamageSourceId.mp_titanweapon_rocket_launcher, TitanRocketLauncher_DamagedPlayerOrNPC )
 		AddDamageCallbackSourceID( eDamageSourceId.mp_weapon_smr, SMR_DamagedPlayerOrNPC )
 		AddDamageCallbackSourceID( eDamageSourceId.mp_titanability_smoke, ElectricSmoke_DamagedPlayerOrNPC )
-		AddDamageCallbackSourceID( eDamageSourceId.mp_weapon_mega4, Defender_DamagedPlayerOrNPC )
+		AddDamageCallbackSourceID( eDamageSourceId.mp_titanweapon_charge_cannon, Defender_DamagedPlayerOrNPC )
 
 		AddDeathCallback( "npc_grenade_frag", ServerDeathCallback_GrenadeDeath )
 	}

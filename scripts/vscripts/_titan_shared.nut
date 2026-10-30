@@ -1668,7 +1668,7 @@ function TitanStagger( titan, damageInfo )
 		case eDamageSourceId.mp_titanweapon_dumbfire_rockets:
 		case eDamageSourceId.mp_titanweapon_salvo_rockets:
 		case eDamageSourceId.mp_titanweapon_shotgun:
-		case eDamageSourceId.mp_weapon_mega4:
+		case eDamageSourceId.mp_titanweapon_charge_cannon:
 //		case eDamageSourceId.rodeo_caber:
 			titan.SetStaggering()
 			titan.s.lastStaggerTime = Time()

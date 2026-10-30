@@ -79,7 +79,7 @@ function GunGame_OnPlayerOrNPCKilled( victim, attacker, damageInfo )
 		if ( victimScore > 2 )
 			victim.SetAssaultScore( victimScore - 2 )
 	}
-	else if ( damageSourceID == eDamageSourceId.mp_weapon_mega5 ) // Throwing knife
+	else if ( damageSourceID == eDamageSourceId.mp_weapon_throwing_knife ) // Throwing knife
 	{
 		attacker.SetAssaultScore( scoreLimit )
 		return

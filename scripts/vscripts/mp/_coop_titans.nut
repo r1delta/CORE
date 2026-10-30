@@ -226,7 +226,7 @@ function GiveTitanTacticalAbility( titan, tacAbility )
 
 		case TAC_ABILITY_RAILGUN:
 			if ( !IsValid( tac ) )
-				titan.GiveOffhandWeapon( "mp_weapon_mega4", TAC_ABILITY_RAILGUN )
+				titan.GiveOffhandWeapon( "mp_titanweapon_charge_cannon", TAC_ABILITY_RAILGUN )
 			titan.SetTacticalAbility( titan.GetOffhandWeapon( TAC_ABILITY_RAILGUN ), TTA_SMOKE )
 			break
 

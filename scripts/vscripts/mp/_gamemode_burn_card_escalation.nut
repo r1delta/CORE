@@ -169,8 +169,8 @@ function BCE_GetBurnMod( weapon, key )
 		switch ( className )
 		{
 			case "mp_weapon_grenade_emp":	modName = "burn_mod_emp_grenade"; break
-			case "mp_weapon_mega1":			modName = "burn_mod_valkyrie"; break
-			case "mp_weapon_mega2":			modName = "burn_mod_twinb"; break
+			case "mp_weapon_sr_valkyrie":			modName = "burn_mod_valkyrie"; break
+			case "mp_weapon_twinb_shotgun":			modName = "burn_mod_twinb"; break
 			default:						modName = "burn_mod_" + className.slice( 10 ); break
 		}
 	}

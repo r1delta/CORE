@@ -1056,7 +1056,7 @@ function ShieldModifyDamage( titan, damageInfo )
 		if ( damageSourceIdentifier == eDamageSourceId.mp_titanweapon_triple_threat )
 			damage *= 1.5
 
-		if ( damageSourceIdentifier == eDamageSourceId.mp_weapon_mega3 )
+		if ( damageSourceIdentifier == eDamageSourceId.mp_titanweapon_minigun )
 			damage *= 1.5
 	}
 

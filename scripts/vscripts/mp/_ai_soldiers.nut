@@ -1851,7 +1851,7 @@ function GiveMinionWeapon( npc, weapon )
 	switch ( weapon )
 	{
 		case "mp_weapon_shotgun":
-		case "mp_weapon_mega2":
+		case "mp_weapon_twinb_shotgun":
 		case "mp_weapon_autopistol":
 		case "mp_weapon_semipistol":
 		case "mp_weapon_smart_pistol":
@@ -1861,7 +1861,7 @@ function GiveMinionWeapon( npc, weapon )
 
 		case "mp_weapon_dmr":
 		case "mp_weapon_sniper":
-		case "mp_weapon_mega1":
+		case "mp_weapon_sr_valkyrie":
 			sightMod = "scope_6x"
 			break
 	}
@@ -1879,7 +1879,7 @@ function ApplyIronsights( npc, weapon )
 	switch ( weapon )
 	{
 		case "mp_weapon_shotgun":
-		case "mp_weapon_mega2":
+		case "mp_weapon_twinb_shotgun":
 		case "mp_weapon_autopistol":
 		case "mp_weapon_semipistol":
 		case "mp_weapon_smart_pistol":
@@ -1888,7 +1888,7 @@ function ApplyIronsights( npc, weapon )
 
 		case "mp_weapon_dmr":
 		case "mp_weapon_sniper":
-		case "mp_weapon_mega1":
+		case "mp_weapon_sr_valkyrie":
 			sightMod = "scope_6x"
 			break
 	}

@@ -2798,7 +2798,7 @@ function ClientCodeCallback_OnSelectedWeaponChanged( selectedWeapon )
 			DisplayChargeAmmoBar( selectedWeapon, player, GetArcCannonChargeFraction( selectedWeapon ), 0, cockpit )
 			break
 		case "mp_weapon_defender":
-		case "mp_weapon_mega4": //display charge cannon gauge by kwanyongjung 161026
+		case "mp_titanweapon_charge_cannon": //display charge cannon gauge by kwanyongjung 161026
 			DisplayChargeAmmoBar( selectedWeapon, player, 1, 0, cockpit )
 			break
 
@@ -2813,7 +2813,7 @@ function ClientCodeCallback_OnSelectedWeaponChanged( selectedWeapon )
 				HideChargeAmmoBar( selectedWeapon, player )
 			break
 
-		case "mp_weapon_mega3":
+		case "mp_titanweapon_minigun":
 			DisplayChargeAmmoBar( selectedWeapon, player, 1, 0, cockpit )
 //			HideWeaponAmmoUI( cockpit )
 			break
