@@ -160,10 +160,10 @@ function InitPersistence()
 	    mp_ability_sonar = 38
 
 	    mp_titanweapon_shotgun = 39
-	    mp_weapon_mega1 = 40 // Valkyrie
-	    mp_weapon_mega2 = 41 // Twin-B
-	    mp_weapon_mega3 = 42 // Thunderbolt (minigun)
-	    mp_weapon_mega4 = 43 // Charge Cannon
+	    mp_weapon_sr_valkyrie = 40 // Valkyrie
+	    mp_weapon_twinb_shotgun = 41 // Twin-B
+	    mp_titanweapon_minigun = 42 // Thunderbolt (minigun)
+	    mp_titanweapon_charge_cannon = 43 // Charge Cannon
 	    mp_titanweapon_shoulder_turret = 44
     }
 
@@ -610,20 +610,20 @@ function InitPersistence()
 		mp_weapon_rocket_launcher_guided_missile = 109,
 		mp_weapon_mgl_long_fuse = 110,
 
-		mp_weapon_mega1_aog = 111,
-		mp_weapon_mega1_scope_4x = 112,
-		mp_weapon_mega1_scope_6x = 113,
-		mp_weapon_mega1_extended_ammo = 114,
-		mp_weapon_mega1_silencer = 115,
-		mp_weapon_mega1_stabilizer = 116,
-		mp_weapon_mega1_burn_mod_valkyrie = 117,
+		mp_weapon_sr_valkyrie_aog = 111,
+		mp_weapon_sr_valkyrie_scope_4x = 112,
+		mp_weapon_sr_valkyrie_scope_6x = 113,
+		mp_weapon_sr_valkyrie_extended_ammo = 114,
+		mp_weapon_sr_valkyrie_silencer = 115,
+		mp_weapon_sr_valkyrie_stabilizer = 116,
+		mp_weapon_sr_valkyrie_burn_mod_valkyrie = 117,
 
-		mp_weapon_mega2_spread_increase_sg = 118,
-		mp_weapon_mega2_silencer = 119,
-		mp_weapon_mega2_burn_mod_twinb = 120,
+		mp_weapon_twinb_shotgun_spread_increase_sg = 118,
+		mp_weapon_twinb_shotgun_silencer = 119,
+		mp_weapon_twinb_shotgun_burn_mod_twinb = 120,
 
-		mp_weapon_mega3_burn_mod_thunderbolt = 121,
-		mp_weapon_mega4_burn_mod_charge_cannon = 122,
+		mp_titanweapon_minigun_burn_mod_thunderbolt = 121,
+		mp_titanweapon_charge_cannon_burn_mod_charge_cannon = 122,
 
 		mp_titanweapon_triple_threat_hydraulic_launcher = 123
 		mp_weapon_sniper_scope_10x = 124,
