@@ -1,0 +1,16 @@
+// Weapons that R1Delta registers at startup on top of the classes built into
+// the R1 client and server. The engine has no native class for these, so each
+// "file" entry below makes the native module add a weapon class of that name
+// on both client and server. The definition of each weapon is read from
+// scripts/weapons/<name>.txt and its scripts from scripts/vscripts/weapons/.
+//
+// Entries are weapon class names, not paths: no folder, no extension.
+// Do not list weapons the engine already registers.
+weaponscripts
+{
+	"file"	"mp_weapon_sr_valkyrie"
+	"file"	"mp_weapon_twinb_shotgun"
+	"file"	"mp_titanweapon_minigun"
+	"file"	"mp_titanweapon_charge_cannon"
+	"file"	"mp_weapon_throwing_knife"
+}
