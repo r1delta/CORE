@@ -65,7 +65,7 @@ function PilotMovement_BodyThink()
 
 			if ( session == 0 )
 				sliding = false
-		Movement_SetSlideActivity( player, session, sliding )
+		if ( GetConVarInt( "delta_pilot_slide_body" ) != 0 ) Movement_SetSlideActivity( player, session, sliding )
 			state.players[ player ] <- { session = session, sliding = sliding }
 		}
 

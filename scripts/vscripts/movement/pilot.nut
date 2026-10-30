@@ -57,7 +57,7 @@ function PilotMovement_GrapplePressed( ... ) { ::PilotMovementGrappleHeld = true
 function PilotMovement_GrappleReleased( ... ) { ::PilotMovementGrappleHeld = false }
 function PilotMovement_Input()
 {
-	Move_InputSetButtons( ::PilotMovementGrappleHeld ? 1 : 0 )
+	Move_InputSetButtons( ( ::PilotMovementGrappleHeld && GetConVarInt( "delta_pilot_grapple_enabled" ) != 0 ) ? 1 : 0 )
 }
 
 function PilotMovement_Event( command, event, x, y, z )

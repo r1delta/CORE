@@ -36,8 +36,23 @@ function PilotMovement_ServerThink()
 		level.pilotMovementServerCallbacks <- true
 	}
 
+	// Playtest default (r2-combo / R1Delta 3.0): opt every pilot into pilot.slide_grapple on converted R2 maps while
+	// delta_pilot_movement_auto_r2 is 1 (default) and on stock R1 maps while delta_pilot_movement_auto_r1 is 1 (default 0).
+	// Map changes, respawns and joiners are covered by the per-frame loop below. One program owns a player: a player that
+	// already runs another program (autobhop, a mod) is left alone.
+	local autoCvar = Movement_IsR2PortMap( GetMapName() ) ? "delta_pilot_movement_auto_r2" : "delta_pilot_movement_auto_r1"
+	local autoDefault = Movement_IsR2PortMap( GetMapName() )
+
 	while ( state.running )
 	{
+		if ( ConVarExists( autoCvar ) ? GetConVarInt( autoCvar ) != 0 : autoDefault )
+		{
+			foreach ( player in GetPlayerArray() )
+			{
+				if ( IsValid( player ) && player.IsPlayer() && !Movement_IsEnabled( player, "" ) )
+					Movement_Enable( player, ::PilotMovementProgramName )
+			}
+		}
 		state.visit = !state.visit
 		foreach ( player in GetPlayerArray() )
 		{
@@ -88,7 +103,7 @@ function PilotMovement_ServerThink()
 			player.nv.pilotMovementSlide = sliding
 			player.nv.pilotMovementLongJump = Movement_GetPlayerStateInt( player, ::PilotMovementProgramName, 1 ) != 0
 			player.nv.pilotMovementSurface = Movement_GetPlayerStateInt( player, ::PilotMovementProgramName, 15 )
-			Movement_SetSlideActivity( player, session, sliding )
+			if ( GetConVarInt( "delta_pilot_slide_body" ) != 0 ) Movement_SetSlideActivity( player, session, sliding )
 			PilotSlideAudio_ServerUpdate( player, session, sliding )
 			PilotMovement_ServerPresent( record )
 		}
