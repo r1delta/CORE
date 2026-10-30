@@ -22,6 +22,7 @@ function main()
 	file.nextMapModeCombo.modeName <- null
 
 	file.nextLaunchCommandValid <- 0
+	file.dlcReselectGaveUp <- null
 
 	Globalize( CodeCallback_OnPrecache )
 	Globalize( CodeCallback_OnClientConnectionStarted )
@@ -575,6 +576,7 @@ function MatchmakingServerLobbyLogic()
 
     for ( ;; )
     {
+        ReselectNextMapIfDLCUnavailable()
         local report_timeRemaining = -1
 
         if ( ReadyToStart() )
@@ -686,6 +688,7 @@ function MatchmakingServerLobbyLogic()
     }
 
     NoteLobbyState( 0, "" )
+    ReselectNextMapIfDLCUnavailable()
     GameRules_ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
 }
 
@@ -1062,6 +1065,7 @@ function LocalServerLobbyLogic()
 
 	for ( ;; )
 	{
+		ReselectNextMapIfDLCUnavailable()
 		if ( ReadyToStart() )
 		{
 			if ( file.nextMapModeCombo.index == null )
@@ -1114,7 +1118,10 @@ function LocalServerLobbyLogic()
 	}
 
 	if ( GetCurrentPlaylistVarInt( "local_autostart", 1 ) )
+	{
+		ReselectNextMapIfDLCUnavailable()
 		GameRules_ChangeMap( file.nextMapModeCombo.mapName, file.nextMapModeCombo.modeName )
+	}
 }
 
 function PrintServerGameHistory()
@@ -1173,6 +1180,15 @@ function GetNextComboInOrder()
 	}
 
 	mapIndex %= count
+
+	// Skip maps whose DLC group not every player owns
+	for ( local tries = 0; tries < count; tries++ )
+	{
+		if ( ServerHasDLCMapGroupEnabled( GetDLCMapGroupForMap( GetCurrentPlaylistMapByIndex( mapIndex ) ) ) )
+			break
+
+		mapIndex = (mapIndex + 1) % count
+	}
 
 	local map = GetCurrentPlaylistMapByIndex( mapIndex )
 	local mode = GetCurrentPlaylistGamemodeByIndex( mapIndex )
@@ -1311,9 +1327,10 @@ function Lobby_PickNextMapModeCombo( allowedMaps = null )
 	}
 	*/
 
-	if ( GetNextVotedMap() != GetMapName() )
+	local votedMap = GetNextVotedMap()
+	if ( votedMap != GetMapName() && ServerHasDLCMapGroupEnabled( GetDLCMapGroupForMap( votedMap ) ) )
 	{
-		nextCombo.mapName = GetNextVotedMap()
+		nextCombo.mapName = votedMap
 		nextCombo.score = 10000
 		ServerCommand( "delta_vote_next_map \"\"" )
 	}
@@ -1370,6 +1387,49 @@ function ClearNextMap()
 	level.ui.nextMapModeComboIndex = file.nextMapModeCombo.index
 	printt( "ClearNextMap(), level.ui.nextMapModeComboIndex =", level.ui.nextMapModeComboIndex )
 	printt( "Next map cleared" )
+}
+
+// A player joined (or the host's override changed) and the selected map belongs to a DLC group that not
+// every player owns any more. Pick another map from what the lobby can play. Only the selection changes:
+// level.ui.gameStartTime is not touched, so a running countdown keeps its time.
+function ReselectNextMapIfDLCUnavailable()
+{
+	if ( file.nextMapModeCombo.index == null || file.nextMapModeCombo.mapName == null )
+		return
+
+	local mapName = file.nextMapModeCombo.mapName
+	local dlcGroup = GetDLCMapGroupForMap( mapName )
+	if ( dlcGroup == 0 || ServerHasDLCMapGroupEnabled( dlcGroup ) )
+	{
+		file.dlcReselectGaveUp = null
+		return
+	}
+
+	if ( file.dlcReselectGaveUp == mapName )
+		return
+
+	printt( "Next map " + mapName + " needs DLC " + dlcGroup + " which not every player owns, selecting another map" )
+
+	// Nothing playable without the group in this playlist: keep the selection. The map change kicks whoever lacks it.
+	local nextCombo = null
+	if ( DLCFilterCombos( GetPlaylistCombos( GetCurrentPlaylistName() ) ).len() > 0 )
+	{
+		if ( GetCinematicMode() || GetCurrentPlaylistVarInt( "play_in_order", 0 ) )
+			nextCombo = GetNextComboInOrder()
+		else
+			nextCombo = Lobby_PickNextMapModeCombo()
+	}
+
+	if ( nextCombo == null || !ServerHasDLCMapGroupEnabled( GetDLCMapGroupForMap( nextCombo.mapName ) ) )
+	{
+		printt( "No map is available to every player, keeping " + mapName )
+		file.dlcReselectGaveUp = mapName
+		return
+	}
+
+	file.nextMapModeCombo = nextCombo
+	level.ui.nextMapModeComboIndex = file.nextMapModeCombo.index
+	printt( "Next map: " + file.nextMapModeCombo.mapName )
 }
 
 function PlayCampaignLobbyScene( player )

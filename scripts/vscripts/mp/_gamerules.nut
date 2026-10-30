@@ -54,6 +54,11 @@ function GameRules_PickRandomMap()
 	if ( combos.len() == 0 )
 		return
 
+	// A map whose DLC group not every player owns would kick them at the map change
+	local availableCombos = DLCFilterCombos( combos )
+	if ( availableCombos.len() > 0 )
+		combos = availableCombos
+
 	local combo = combos[ RandomInt( 0, combos.len() - 1 ) ]
 	if ( IsMultiGamemodePlaylist( playlistName ) )
 	{
