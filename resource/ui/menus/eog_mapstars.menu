@@ -1,0 +1,698 @@
+resource/ui/menus/eog_mapstars.menu
+{
+	EOG_MapStars
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		EOGCommon
+		{
+			ControlName				CNestedPanel
+			classname				"eog_common_panel"
+			xpos					0
+			ypos					0
+			zpos					3 // Needed or clicking on the background can hide this
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/UI/menus/eog_common.res"
+		}
+
+		MapImage
+		{
+			ControlName				ImagePanel
+			classname				MapImage
+			xpos 					c-185
+			ypos					c+40
+			zpos 					100
+			wide					370 //493
+			tall					140 //186
+			visible					1
+			scaleImage				1
+			image					""
+		}
+
+		MapImageFrame
+		{
+			ControlName				ImagePanel
+			wide					370 //493
+			tall					140 //186
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_image_frame"
+			zpos					101
+			pin_to_sibling			MapImage
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+		}
+
+		MapName
+		{
+			ControlName				Label
+			classname 				MapName
+			xpos					-11
+			ypos					-9
+			zpos					102
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			font					NextMapFont
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			MapImage
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+		}
+
+		GameModeName
+		{
+			ControlName				Label
+			classname 				GameModeName
+			ypos					-5
+			zpos					102
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			use_proportional_insets	1
+			textinsetx 				1
+			font					NextGameModeFont
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			MapName
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	3
+		}
+
+		Description
+		{
+			ControlName				Label
+			xpos					c-340
+			ypos					c-100
+			zpos					200
+			wide 					680
+			auto_tall_tocontents	1
+			centerWrap 				1
+			visible					1
+			labelText				"#MAP_STARS_DESCRIPTION"
+			use_proportional_insets	1
+			textinsetx 				1
+			font					MapStarsHeaderFont
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+		}
+
+		Star0
+		{
+			ControlName				ImagePanel
+			classname 				Star0
+			xpos 					c-106
+			ypos					c-70
+			zpos 					200
+			wide					64
+			tall					64
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+		}
+
+		ScoreReq0
+		{
+			ControlName				Label
+			classname 				ScoreReq0
+			xpos					-5
+			ypos					0
+			zpos					200
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				"[SCORE REQ]"
+			use_proportional_insets	1
+			textinsetx 				1
+			font					NextGameModeFont
+			allcaps					1
+			fgcolor_override		"230 161 23 255"
+			pin_to_sibling			Star0
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		ScoreTypeIcon0
+		{
+			ControlName				ImagePanel
+			xpos 					0
+			ypos 					0
+			zpos					102
+			wide 					20
+			tall					20
+			visible					1
+			scaleImage				1
+			image 					"../ui/menu/scoreboard/sb_icon_pilot_kills"
+			pin_to_sibling			ScoreReq0
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+		}
+
+		Star1
+		{
+			ControlName				ImagePanel
+			classname 				Star1
+			xpos 					c-32
+			ypos					c-70
+			zpos 					200
+			wide					64
+			tall					64
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+		}
+
+		ScoreReq1
+		{
+			ControlName				Label
+			classname 				ScoreReq1
+			xpos					-5
+			ypos					0
+			zpos					200
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				"[SCORE REQ]"
+			use_proportional_insets	1
+			textinsetx 				1
+			font					NextGameModeFont
+			allcaps					1
+			fgcolor_override		"230 161 23 255"
+			pin_to_sibling			Star1
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		ScoreTypeIcon1
+		{
+			ControlName				ImagePanel
+			xpos 					0
+			ypos 					0
+			zpos					102
+			wide 					20
+			tall					20
+			visible					1
+			scaleImage				1
+			image 					"../ui/menu/scoreboard/sb_icon_pilot_kills"
+			pin_to_sibling			ScoreReq1
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+		}
+
+		Star2
+		{
+			ControlName				ImagePanel
+			classname 				Star2
+			xpos 					c+42
+			ypos					c-70
+			zpos 					200
+			wide					64
+			tall					64
+			visible					1
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_empty"
+		}
+
+		ScoreReq2
+		{
+			ControlName				Label
+			classname 				ScoreReq2
+			xpos					-5
+			ypos					0
+			zpos					200
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				"[SCORE REQ]"
+			use_proportional_insets	1
+			textinsetx 				1
+			font					NextGameModeFont
+			allcaps					1
+			fgcolor_override		"230 161 23 255"
+			pin_to_sibling			Star2
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		ScoreTypeIcon2
+		{
+			ControlName				ImagePanel
+			xpos 					0
+			ypos 					0
+			zpos					102
+			wide 					20
+			tall					20
+			visible					1
+			scaleImage				1
+			image 					"../ui/menu/scoreboard/sb_icon_pilot_kills"
+			pin_to_sibling			ScoreReq2
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+		}
+
+		YourScore
+		{
+			ControlName				Label
+			classname 				YourScore
+			xpos					0
+			ypos					6
+			zpos					200
+			wide 					200
+			auto_tall_tocontents	1
+			centerWrap 				1
+			visible					1
+			labelText				"[YOUR SCORE]"
+			use_proportional_insets	1
+			textinsetx 				1
+			font					NextGameModeFont
+			allcaps					1
+			fgcolor_override		"230 161 23 255"
+			pin_to_sibling			ScoreReq1
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		StarFull
+		{
+			ControlName				ImagePanel
+			classname 				StarFull
+			xpos 					0
+			ypos					0
+			zpos 					299
+			wide					64
+			tall					64
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_full"
+		}
+
+		SmallStar0
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+
+		SmallStar1
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small1"
+		}
+		SmallStar2
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small2"
+		}
+		SmallStar3
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar4
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar5
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar6
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar7
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar8
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar9
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar10
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar11
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar12
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar13
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar14
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar15
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar16
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar17
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar18
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar19
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar20
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar21
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar22
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar23
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar24
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar25
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar26
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar27
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar28
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+		SmallStar29
+		{
+			ControlName				ImagePanel
+			classname 				SmallStar
+			xpos 					0
+			ypos					0
+			zpos 					300
+			wide					16
+			tall					16
+			visible					0
+			scaleImage				1
+			image					"../ui/menu/lobby/map_star_small0"
+		}
+	}
+}

@@ -1,0 +1,455 @@
+resource/ui/menus/campaign.menu
+{
+	CampaignMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		//ImgGuide
+		//{
+		//	ControlName				ImagePanel
+		//	xpos					0
+		//	ypos					0
+		//	wide					f0
+		//	tall					f0
+		//	image 					"../ui/guide"
+		//	visible					1
+		//	scaleImage				1
+		//	drawColor				"255 255 255 127"
+		//}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#PLAY_CAMPAIGN"
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		AutoAssignButton
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		LargeButton
+			xpos					30
+			ypos					86
+			navUp					MapButton6
+			navDown					MapButton0
+			navRight				ListFriendlies
+			tabPosition				1
+			labelText				"AUTO-ASSIGN"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		CampaignInfoBackground
+		{
+			ControlName 			ImagePanel
+			xpos					c+120
+			ypos					136
+			wide					246
+			tall					103
+			visible					1
+			image 					"../ui/menu/lobby/lobby_back_02"
+			scaleImage				1
+		}
+		FocusDescription
+		{
+			ControlName				Label
+			pin_to_sibling			CampaignInfoBackground
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+			ypos					-38
+			wide					228
+			tall					60
+			textAlignment			"north-west"
+			font					PlaylistDescriptionFont
+			labelText				""
+			wrap					1
+			fgcolor_override		"255 133 133 255"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		MapButtonsBackground
+		{
+			ControlName				ImagePanel
+			pin_to_sibling			CampaignInfoBackground
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	0
+			xpos 					2
+			wide					492
+			tall					288
+			visible					1
+			scaleImage				1
+			image 					"../ui/menu/campaign_menu/map_image_back"
+		}
+
+		MapButton0
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				0
+			pin_to_sibling			MapButtonsBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos 					-5
+			ypos 					-8
+			navUp	 				AutoAssignButton
+			navDown					MapButton3
+			navRight 				MapButton1
+			labelText				""
+		}
+		MapButton1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				1
+			pin_to_sibling			MapButton0
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					4
+			navUp	 				AutoAssignButton
+			navDown					MapButton4
+			navLeft 				MapButton0
+			navRight 				MapButton2
+			labelText				""
+		}
+		MapButton2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				2
+			pin_to_sibling			MapButton1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					4
+			navUp	 				AutoAssignButton
+			navDown					MapButton5
+			navLeft 				MapButton1
+			navRight				ListFriendlies
+			labelText				""
+		}
+
+		MapButton3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				3
+			pin_to_sibling			MapButton0
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					4
+			navUp					MapButton0
+			navDown					MapButton6
+			navRight 				MapButton4
+			labelText				""
+		}
+		MapButton4
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				4
+			pin_to_sibling			MapButton3
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					4
+			navUp					MapButton1
+			navDown					MapButton7
+			navLeft 				MapButton3
+			navRight 				MapButton5
+			labelText				""
+		}
+		MapButton5
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				5
+			pin_to_sibling			MapButton4
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					4
+			navUp					MapButton2
+			navDown					MapButton8
+			navLeft 				MapButton4
+			navRight				ListFriendlies
+			labelText				""
+		}
+
+		MapButton6
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				6
+			pin_to_sibling			MapButton3
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					4
+			navUp					MapButton3
+			navDown					AutoAssignButton
+			navRight 				MapButton7
+			labelText				""
+		}
+		MapButton7
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				7
+			pin_to_sibling			MapButton6
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					4
+			navUp					MapButton4
+			navDown					AutoAssignButton
+			navLeft					MapButton6
+			navRight 				MapButton8
+			labelText				""
+		}
+		MapButton8
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		MapButton
+			classname				MapButtonClass
+			scriptID				8
+			pin_to_sibling			MapButton7
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			xpos					4
+			navUp					MapButton5
+			navDown					AutoAssignButton
+			navLeft					MapButton7
+			navRight				ListFriendlies
+			labelText				""
+		}
+
+		CheatButton0
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton0
+			scriptID				0
+			labelText				"(X) Cheat"
+		}
+		CheatButton1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton1
+			scriptID				1
+			labelText				"(X) Cheat"
+		}
+		CheatButton2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton2
+			scriptID				2
+			labelText				"(X) Cheat"
+		}
+		CheatButton3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton3
+			scriptID				3
+			labelText				"(X) Cheat"
+		}
+		CheatButton4
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton4
+			scriptID				4
+			labelText				"(X) Cheat"
+		}
+		CheatButton5
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton5
+			scriptID				5
+			labelText				"(X) Cheat"
+		}
+		CheatButton6
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton6
+			scriptID				6
+			labelText				"(X) Cheat"
+		}
+		CheatButton7
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton7
+			scriptID				7
+			labelText				"(X) Cheat"
+		}
+		CheatButton8
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton8
+			scriptID				8
+			labelText				"(X) Cheat"
+		}
+		CheatButton9
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			MapButton8
+			scriptID				9
+			ypos					24
+			wide					300
+			labelText				"(Click Left Stick) Cheat All"
+		}
+		CheatButtonIMC
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			CampaignFriendlyTeamBackground
+			pin_to_sibling_corner	0
+			pin_corner_to_sibling	2
+			scriptID				"imc"
+			ypos					5
+			xpos					0
+			wide					130
+			colorOverride			"128 128 128 128"
+			labelText				"(LB) Cheat: IMC"
+		}
+		CheatButtonMIL
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CampaignCheatButton
+			pin_to_sibling			CampaignFriendlyTeamBackground
+			pin_to_sibling_corner	0
+			pin_corner_to_sibling	2
+			scriptID				"militia"
+			ypos					5
+			xpos					-130
+			wide					130
+			labelText				"(RB) Cheat: Militia"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		CampaignFriendlyTeamBackground
+		{
+			ControlName				CNestedPanel
+			xpos					c+120
+			ypos					r219
+			wide					246
+			tall					163
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/friendly_team_background.res"
+		}
+		MyTeamLogo
+		{
+			ControlName				ImagePanel
+			pin_to_sibling			CampaignFriendlyTeamBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-5
+			ypos					-7
+			wide					28
+			tall					28
+			visible					0
+			scaleImage				1
+		}
+		MyTeamName
+		{
+			ControlName				Label
+			pin_to_sibling			MyTeamLogo
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+			xpos					3
+			auto_wide_tocontents 	1
+			auto_tall_tocontents 	1
+			visible 				0
+			labelText				""
+			font 					TeamNameFont
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+		}
+
+		ListFriendlies
+		{
+			ControlName				CPlayerList
+			InheritProperties 		LobbyPlayerList
+			pin_to_sibling			CampaignFriendlyTeamBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-4
+			ypos					-36
+			navUp					AutoAssignButton
+			navDown					AutoAssignButton
+			navLeft					AutoAssignButton
+			teamRelationshipFilter	friendly
+			arrowsVisible			0
+			listEntrySettings
+			{
+				InheritProperties		LobbyFriendlyButton
+			}
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

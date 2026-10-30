@@ -1,0 +1,270 @@
+resource/ui/menus/confirmdialog.menu
+{
+	ConfirmDialog
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		tabPosition				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+
+		ImgDialog
+		{
+			ControlName				ImagePanel
+			xpos					c-427
+			ypos					c-240
+			wide					854 //f0
+			tall					480 //f0
+			image 					"../ui/menu/common/pop_up_menu_back"
+			visible					1
+			scaleImage				1
+		}
+
+		DialogFrame
+		{
+			ControlName				Label
+			xpos					c-173
+			ypos					c-119
+			wide					346
+			tall					238
+			labelText				""
+			visible					1
+		}
+
+		LblMessage
+		{
+			ControlName				Label
+			classname				DialogMessageClass
+			xpos					c-170
+			ypos					c-113
+			zpos					3 // Needed or clicking on the background can hide this
+			wide					340
+			tall					54
+			visible					1
+			labelText				"DEFAULT MESSAGE"
+			font					DialogMessageFont
+			textAlignment			center
+			wrap					1
+			centerwrap				1
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+		}
+
+		LblDetails
+		{
+			ControlName				Label
+			xpos					0
+			ypos					2
+			wide					290
+			tall					54
+			visible					1
+			labelText				""
+			font					DialogDetailsFont
+			textAlignment			north
+			wrap					1
+			centerwrap				1
+			allcaps					0
+			fgcolor_override		"255 171 171 255"
+
+			pin_to_sibling			LblMessage
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		LblErrorCode
+		{
+			ControlName				Label
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	2
+			pin_to_sibling_corner	2
+			xpos 					-13
+			ypos 					-13
+			zpos					3 // Needed or clicking on the background can hide this
+			auto_wide_tocontents 	1
+			auto_tall_tocontents 	1
+			visible					1
+			labelText				""
+			font					DialogDetailsFont
+			fgcolor_override		"64 30 30 255"
+		}
+
+		BtnCancel
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				CancelButtonClass
+			pin_to_sibling			LblDetails
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+			ypos					15
+			navUp					BtnConfirmQuitGame
+			navDown					BtnConfirmLeaveTraining
+			tabPosition				1
+			labelText				"#CANCEL"
+		}
+
+		BtnConfirmLeaveTraining
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				ConfirmButtonClass
+			pin_to_sibling			BtnCancel
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnCancel
+			navDown					BtnConfirmRegen0
+			labelText				"#MENU_SKIP_TRAINING_BUTTONTEXT"
+		}
+
+		BtnConfirmRegen0
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				ConfirmButtonClass
+			pin_to_sibling			BtnCancel
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnConfirmLeaveTraining
+			navDown					BtnConfirmRegen1
+			labelText				"#GENERATION_RESPAWN_CONFIRM_BUTTON_1"
+		}
+
+		BtnConfirmRegen1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				ConfirmButtonClass
+			pin_to_sibling			BtnCancel
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnConfirmRegen0
+			navDown					BtnConfirmRegen2
+			labelText				"#GENERATION_RESPAWN_CONFIRM_BUTTON_2"
+		}
+
+		BtnConfirmRegen2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				ConfirmButtonClass
+			pin_to_sibling			BtnCancel
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnConfirmRegen1
+			navDown					BtnConfirmQuitGame
+			labelText				"#GENERATION_RESPAWN_CONFIRM_BUTTON_3"
+		}
+
+		BtnConfirmQuitGame
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				ConfirmButtonClass
+			pin_to_sibling			BtnCancel
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnConfirmRegen2
+			navDown					BtnCancel
+			labelText				"#QUIT"
+			command					"concmd quit"
+		}
+
+		// -- invert or no? --
+		BtnConfirmNo
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				CancelButtonClass
+			pin_to_sibling			LblDetails
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+			ypos					15
+			navUp					BtnConfirmInvertLook
+			navDown					BtnConfirmInvertLook
+			tabPosition				1
+			labelText				"#NO"
+			command					"concmd noButtonClicked"
+		}
+
+		BtnConfirmInvertLook
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				ConfirmButtonClass
+			pin_to_sibling			BtnConfirmNo
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnConfirmNo
+			navDown					BtnConfirmNo
+			labelText				"#YES"
+			command					"concmd lookInverted"
+		}
+
+		// -- like these settings or no? --
+		BtnConfirmInvert_Yes
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				ConfirmButtonClass
+			pin_to_sibling			LblDetails
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+			ypos					15
+			navUp					BtnConfirmInvert_No
+			navDown					BtnConfirmInvert_No
+			tabPosition				1
+			labelText				"#MENU_KEEP_SETTINGS"
+			command					"concmd confirmInvertSettings"
+		}
+
+		BtnConfirmInvert_No
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			classname				CancelButtonClass
+			pin_to_sibling			BtnConfirmInvert_Yes
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					BtnConfirmInvert_Yes
+			navDown					BtnConfirmInvert_Yes
+			labelText				"#MENU_REVERSE_SETTINGS"
+			command					"concmd noButtonClicked"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		GamepadFooterButton0
+		{
+			ControlName				Label
+			InheritProperties		GamepadFooterButton
+			scriptID				0
+			pin_to_sibling			GamepadFooterButton1
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	2
+			xpos					10
+			labelText				"#A_BUTTON_SELECT"
+		}
+		GamepadFooterButton1
+		{
+			ControlName				Label
+			InheritProperties		GamepadFooterButton
+			scriptID				1
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	3
+			xpos 					-13
+			ypos 					-13
+			labelText				"#B_BUTTON_CANCEL"
+		}
+	}
+}

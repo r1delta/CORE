@@ -1,0 +1,388 @@
+resource/ui/menus/titanosselect.menu
+{
+	TitanOSSelectMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					60
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+		clip					0
+
+		Background
+		{
+			ControlName				Label
+			ypos 					-500
+			wide					f0
+			tall					1000
+			labelText 				""
+			visible					1
+			bgcolor_override		"0 0 0 240"
+			paintbackground			1
+		}
+
+		MenuPanel
+		{
+			ControlName				ImagePanel
+			xpos					35
+			ypos 					25
+			wide					636
+			tall					300
+			image 					"../ui/menu/edit_loadout/edit_ability"
+			visible					1
+			scaleImage				1
+		}
+
+		TitanOS1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				0
+			xpos					30
+			ypos					32
+			navUp					TitanOS12
+			navDown					TitanOS2
+			tabPosition				1
+		}
+		TitanOS2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				1
+			pin_to_sibling			TitanOS1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS1
+			navDown					TitanOS3
+		}
+		TitanOS3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				2
+			pin_to_sibling			TitanOS2
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS2
+			navDown					TitanOS4
+		}
+		TitanOS4
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				3
+			pin_to_sibling			TitanOS3
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS3
+			navDown					TitanOS5
+		}
+		TitanOS5
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				4
+			pin_to_sibling			TitanOS4
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS4
+			navDown					TitanOS6
+		}
+
+		TitanOS6
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				5
+			pin_to_sibling			TitanOS5
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS5
+			navDown					TitanOS7
+		}
+
+		TitanOS7
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				6
+			pin_to_sibling			TitanOS6
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS6
+			navDown					TitanOS8
+		}
+
+		TitanOS8
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				7
+			pin_to_sibling			TitanOS7
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS7
+			navDown					TitanOS9
+		}
+
+		TitanOS9
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				8
+			pin_to_sibling			TitanOS8
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS8
+			navDown					TitanOS10
+		}
+
+		TitanOS10
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				9
+			pin_to_sibling			TitanOS9
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS9
+			navDown					TitanOS11
+		}
+
+		TitanOS11
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				10
+			pin_to_sibling			TitanOS10
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS10
+			navDown					TitanOS12
+		}
+
+		TitanOS12
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SubmenuButton
+			classname				TitanOSSelectClass
+			scriptID				11
+			pin_to_sibling			TitanOS11
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					TitanOS11
+			navDown					TitanOS1
+		}
+
+		//------------------
+		//   TitanOS/GEAR
+		//------------------
+
+		ImgTitanOSBackground
+		{
+			ControlName				ImagePanel
+			xpos 					0
+			ypos 					0
+			zpos					6
+			wide 					158
+			tall					96
+			image 					"../ui/menu/edit_loadout/icon_ability_back"
+			visible					1
+			scaleImage				1
+			pin_to_sibling			MenuPanel
+			pin_corner_to_sibling	8
+			pin_to_sibling_corner	8
+		}
+		ImgTitanOSBackgroundHover
+		{
+			ControlName				ImagePanel
+			xpos 					0
+			ypos 					0
+			zpos					5
+			wide 					158
+			tall					96
+			image 					"../ui/menu/edit_loadout/icon_ability_back_hover"
+			visible					1
+			scaleImage				1
+			pin_to_sibling			MenuPanel
+			pin_corner_to_sibling	8
+			pin_to_sibling_corner	8
+		}
+		LblTitanOSHeader
+		{
+			ControlName				Label
+			InheritProperties		SubitemSelectItemTitle
+			classname 				TitanOSTypeClass
+			xpos					0
+			ypos 					-1
+			wide 					160
+			labelText				""
+			textAlignment			center
+			pin_to_sibling			ImgTitanOSBackground
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+		LblTitanOSName
+		{
+			ControlName				Label
+			InheritProperties		SubitemSelectItemName
+			classname				TitanOSNameClass
+			xpos					0
+			ypos 					-1
+			labelText				"NAME"
+			textAlignment 			center
+			pin_to_sibling			ImgTitanOSBackground
+			pin_corner_to_sibling	6
+			pin_to_sibling_corner	6
+		}
+		ImgTitanOSIcon
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanOSSelectIcon
+			classname				TitanOSIconClass
+			xpos 					0
+			ypos 					0
+			zpos 					8
+			pin_to_sibling			ImgTitanOSBackground
+			pin_corner_to_sibling	8
+			pin_to_sibling_corner	8
+		}
+		LblTitanOSLocked
+		{
+			ControlName				Label
+			classname				"LblTitanOSLocked ItemLockedClass"
+			xpos					0
+			ypos 					0
+			zpos 					9
+			wide					140
+			auto_tall_tocontents 	1
+			visible					0
+			font					LoadoutItemLocked
+			allcaps					1
+			textAlignment			center
+			centerwrap 				1
+			labelText				"UNLOCK INFO"
+			fgcolor_override		"153 61 61 255"
+			bgcolor_override		"51 20 20 240"
+			paintbackground			1
+
+			pin_to_sibling			ImgTitanOSIcon
+			pin_corner_to_sibling	8
+			pin_to_sibling_corner	8
+		}
+
+		//------------------
+		// 	  INFO PANEL
+		//------------------
+
+		InfoPanelBackground
+		{
+			ControlName				Label
+			xpos 					-10
+			ypos 					0
+			zpos					7
+			wide 					208
+			tall 					146
+			labelText				""
+			bgcolor_override		"0 0 0 255"
+			paintbackground			1
+
+			pin_to_sibling			MenuPanel
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		LblInfoPanelItemType
+		{
+			ControlName				Label
+			classname 				TitanOSTypeClass
+			xpos					-4
+			ypos 					0
+			wide 					204
+			tall 					16
+			zpos					8
+			visible					1
+			font					EditLoadoutInfoItemType
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			labelText				"ITEM TYPE"
+			textAlignment			west
+
+			pin_to_sibling			InfoPanelBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+		}
+		LblInfoPanelItemName
+		{
+			ControlName				Label
+			classname 				TitanOSNameClass
+			xpos					0
+			ypos 					-4
+			wide 					204
+			tall 					16
+			zpos					8
+			visible					1
+			font					EditLoadoutInfoItemName
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+			labelText				"ITEM NAME"
+			textAlignment			west
+
+			pin_to_sibling			LblInfoPanelItemType
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		LblInfoPanelItemDesc
+		{
+			ControlName				Label
+			classname 				TitanOSDescClass
+			xpos					0
+			ypos 					0
+			wide 					200
+			tall 					112
+			zpos					8
+			visible					1
+			font					EditLoadoutInfoItemDesc
+			allcaps					0
+			wrap 					1
+			fgcolor_override		"190 94 94 255"
+			labelText				"ITEM DESCRIPTION"
+			textAlignment			north-west
+
+			pin_to_sibling			LblInfoPanelItemName
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r185
+			zpos					20
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

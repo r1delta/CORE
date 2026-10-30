@@ -1,0 +1,1137 @@
+resource/ui/menus/viewstats_overview.menu
+{
+	ViewStats_Overview_Menu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#STATS_OVERVIEW"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		OverviewBackground
+		{
+			ControlName					ImagePanel
+			xpos						c-372
+			ypos						c-158
+			zpos						100
+			wide						745
+			tall						341
+			visible						1
+			image 						"../ui/menu/personal_stats/ps_main_back_1"
+			visible						1
+			scaleImage					1
+		}
+
+		CenterAreaBackground
+		{
+			ControlName					ImagePanel
+			xpos						c-372
+			ypos						200
+			zpos						101
+			wide						540
+			tall						150
+			visible						1
+			image 						"../ui/menu/personal_stats/ps_main_back_2"
+			visible						1
+			scaleImage					1
+		}
+
+		UnlockBarsAreaBackground
+		{
+			ControlName					ImagePanel
+			xpos						c+166
+			ypos						c-155
+			zpos						102
+			wide						197
+			tall						338
+			visible						1
+			image 						"../ui/menu/personal_stats/ps_main_back_3"
+			visible						1
+			scaleImage					1
+		}
+
+		WeaponBackground0
+		{
+			ControlName					ImagePanel
+			xpos						-12
+			ypos						-10
+			zpos						103
+			wide						170
+			tall						100
+			visible						1
+			image 						"../ui/menu/personal_stats/ps_weapon_stat_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				OverviewBackground
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		0
+		}
+
+		WeaponBackground1
+		{
+			ControlName					ImagePanel
+			xpos						0
+			ypos						0
+			zpos						103
+			wide						170
+			tall						100
+			visible						1
+			image 						"../ui/menu/personal_stats/ps_weapon_stat_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				WeaponBackground0
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		1
+		}
+
+		WeaponBackground2
+		{
+			ControlName					ImagePanel
+			xpos						0
+			ypos						0
+			zpos						103
+			wide						170
+			tall						100
+			visible						1
+			image 						"../ui/menu/personal_stats/ps_weapon_stat_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				WeaponBackground1
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		1
+		}
+
+		StatBackground0
+		{
+			ControlName					ImagePanel
+			xpos						-20
+			ypos						-10
+			zpos						225
+			wide						105
+			tall						57
+			image 						"../ui/menu/personal_stats/ps_game_stats_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				OverviewBackground
+			pin_corner_to_sibling		2
+			pin_to_sibling_corner		2
+		}
+
+		StatBackground1
+		{
+			ControlName					ImagePanel
+			xpos						-6
+			ypos						0
+			zpos						225
+			wide						105
+			tall						57
+			image 						"../ui/menu/personal_stats/ps_game_stats_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground0
+			pin_corner_to_sibling		2
+			pin_to_sibling_corner		3
+		}
+
+		StatBackground2
+		{
+			ControlName					ImagePanel
+			xpos						-6
+			ypos						0
+			zpos						225
+			wide						105
+			tall						57
+			image 						"../ui/menu/personal_stats/ps_game_stats_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground1
+			pin_corner_to_sibling		2
+			pin_to_sibling_corner		3
+		}
+
+		StatBackground3
+		{
+			ControlName					ImagePanel
+			xpos						-6
+			ypos						0
+			zpos						225
+			wide						105
+			tall						57
+			image 						"../ui/menu/personal_stats/ps_game_stats_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground2
+			pin_corner_to_sibling		2
+			pin_to_sibling_corner		3
+		}
+
+		StatBackground4
+		{
+			ControlName					ImagePanel
+			xpos						-6
+			ypos						0
+			zpos						225
+			wide						105
+			tall						57
+			image 						"../ui/menu/personal_stats/ps_game_stats_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				StatBackground3
+			pin_corner_to_sibling		2
+			pin_to_sibling_corner		3
+		}
+
+		TitanUnlockBackground0
+		{
+			ControlName					ImagePanel
+			xpos						-20
+			ypos						-10
+			zpos						225
+			wide						80
+			tall						80
+			image 						"../ui/menu/personal_stats/ps_titan_icon_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				OverviewBackground
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		7
+		}
+
+		TitanUnlockImage0
+		{
+			ControlName					ImagePanel
+			classname					"TitanUnlockImage0"
+			xpos						0
+			ypos						0
+			zpos						226
+			wide						80
+			tall						80
+			image 						"../ui/menu/personal_stats/ps_titan_icon_locked"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				TitanUnlockBackground0
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		TitanUnlockBackground1
+		{
+			ControlName					ImagePanel
+			xpos						-6
+			ypos						0
+			zpos						225
+			wide						80
+			tall						80
+			image 						"../ui/menu/personal_stats/ps_titan_icon_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				TitanUnlockBackground0
+			pin_corner_to_sibling		7
+			pin_to_sibling_corner		5
+		}
+
+		TitanUnlockImage1
+		{
+			ControlName					ImagePanel
+			classname					"TitanUnlockImage1"
+			xpos						0
+			ypos						0
+			zpos						226
+			wide						80
+			tall						80
+			image 						"../ui/menu/personal_stats/ps_titan_icon_locked"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				TitanUnlockBackground1
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		TitanUnlockBackground2
+		{
+			ControlName					ImagePanel
+			xpos						-6
+			ypos						0
+			zpos						225
+			wide						80
+			tall						80
+			image 						"../ui/menu/personal_stats/ps_titan_icon_back"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				TitanUnlockBackground1
+			pin_corner_to_sibling		7
+			pin_to_sibling_corner		5
+		}
+
+		TitanUnlockImage2
+		{
+			ControlName					ImagePanel
+			classname					"TitanUnlockImage2"
+			xpos						0
+			ypos						0
+			zpos						226
+			wide						80
+			tall						80
+			image 						"../ui/menu/personal_stats/ps_titan_icon_locked"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				TitanUnlockBackground2
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+
+
+
+		CompletionBar0
+		{
+			ControlName				CNestedPanel
+			classname				"CompletionBar0"
+			xpos					-10
+			ypos					-20
+			zpos					200
+			wide					180
+			tall					40
+			visible					1
+			controlSettingsFile		"resource/UI/menus/stats_progress_bar.res"
+
+			pin_to_sibling			UnlockBarsAreaBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+		}
+
+		CompletionBar1
+		{
+			ControlName				CNestedPanel
+			classname				"CompletionBar1"
+			xpos					0
+			ypos					0
+			zpos					200
+			wide					180
+			tall					43
+			visible					1
+			controlSettingsFile		"resource/UI/menus/stats_progress_bar.res"
+
+			pin_to_sibling			CompletionBar0
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		CompletionBar2
+		{
+			ControlName				CNestedPanel
+			classname				"CompletionBar2"
+			xpos					0
+			ypos					0
+			zpos					200
+			wide					180
+			tall					43
+			visible					1
+			controlSettingsFile		"resource/UI/menus/stats_progress_bar.res"
+
+			pin_to_sibling			CompletionBar1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		CompletionBar3
+		{
+			ControlName				CNestedPanel
+			classname				"CompletionBar3"
+			xpos					0
+			ypos					0
+			zpos					200
+			wide					180
+			tall					43
+			visible					1
+			controlSettingsFile		"resource/UI/menus/stats_progress_bar.res"
+
+			pin_to_sibling			CompletionBar2
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		CompletionBar4
+		{
+			ControlName				CNestedPanel
+			classname				"CompletionBar4"
+			xpos					0
+			ypos					0
+			zpos					200
+			wide					180
+			tall					43
+			visible					1
+			controlSettingsFile		"resource/UI/menus/stats_progress_bar.res"
+
+			pin_to_sibling			CompletionBar3
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		CompletionBar5
+		{
+			ControlName				CNestedPanel
+			classname				"CompletionBar5"
+			xpos					0
+			ypos					0
+			zpos					200
+			wide					180
+			tall					43
+			visible					1
+			controlSettingsFile		"resource/UI/menus/stats_progress_bar.res"
+
+			pin_to_sibling			CompletionBar4
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+
+		WeaponHeader0
+		{
+			ControlName					Label
+			xpos						-8
+			ypos						-1
+			zpos						200
+			wide						155
+			tall						20
+			visible						1
+			font						StatsSectionHeader
+			labelText					"#STATS_HEADER_MOST_KILLS"
+			allcaps						1
+			wrap						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponBackground0
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		0
+		}
+
+		WeaponName0
+		{
+			ControlName					Label
+			classname					"WeaponName0"
+			xpos						0
+			ypos						-4
+			zpos						200
+			wide						155
+			tall						10
+			visible						1
+			font						StatsProgressBarTitleSmall
+			labelText					"Weapon Name 0"
+			allcaps						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponHeader0
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		WeaponDesc0
+		{
+			ControlName					Label
+			classname					"WeaponDesc0"
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						155
+			tall						10
+			visible						1
+			font						StatsProgressBarTitleSmall
+			labelText					"Weapon Stat 0"
+			allcaps						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponName0
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		WeaponImage0
+		{
+			ControlName					ImagePanel
+			classname					"WeaponImage0"
+			xpos						0
+			ypos						-41
+			zpos						225
+			wide						149
+			tall						50
+			image 						"../ui/menu/items/weapon_rspn101"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				WeaponBackground0
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		WeaponImageTextOverlay0
+		{
+			ControlName					Label
+			classname					"WeaponImageTextOverlay0"
+			xpos						0
+			ypos						0
+			zpos						226
+			wide						140
+			tall						10
+			visible						1
+			font						StatsOverviewWeaponOverlay
+			labelText					"#STATS_DATA_EMPTY"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponImage0
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		WeaponHeader1
+		{
+			ControlName					Label
+			xpos						-8
+			ypos						-1
+			zpos						200
+			wide						155
+			tall						20
+			visible						1
+			font						StatsSectionHeader
+			labelText					"#STATS_HEADER_MOST_USED"
+			allcaps						1
+			wrap						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponBackground1
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		0
+		}
+
+		WeaponName1
+		{
+			ControlName					Label
+			classname					"WeaponName1"
+			xpos						0
+			ypos						-4
+			zpos						200
+			wide						155
+			tall						10
+			visible						1
+			font						StatsProgressBarTitleSmall
+			labelText					"Weapon Name 1"
+			allcaps						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponHeader1
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		WeaponDesc1
+		{
+			ControlName					Label
+			classname					"WeaponDesc1"
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						155
+			tall						10
+			visible						1
+			font						StatsProgressBarTitleSmall
+			labelText					"Weapon Stat 1"
+			allcaps						0
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponName1
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		WeaponImage1
+		{
+			ControlName					ImagePanel
+			classname					"WeaponImage1"
+			xpos						0
+			ypos						-41
+			zpos						225
+			wide						149
+			tall						50
+			image 						"../ui/menu/items/weapon_rspn101"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				WeaponBackground1
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		WeaponImageTextOverlay1
+		{
+			ControlName					Label
+			classname					"WeaponImageTextOverlay1"
+			xpos						0
+			ypos						0
+			zpos						226
+			wide						140
+			tall						10
+			visible						1
+			font						StatsOverviewWeaponOverlay
+			labelText					"#STATS_DATA_EMPTY"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponImage1
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		WeaponHeader2
+		{
+			ControlName					Label
+			xpos						-8
+			ypos						-1
+			zpos						200
+			wide						155
+			tall						20
+			visible						1
+			font						StatsSectionHeader
+			labelText					"#STATS_HEADER_MOST_EFFICIENT"
+			allcaps						1
+			wrap						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponBackground2
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		0
+		}
+
+		WeaponName2
+		{
+			ControlName					Label
+			classname					"WeaponName2"
+			xpos						0
+			ypos						-4
+			zpos						200
+			wide						155
+			tall						10
+			visible						1
+			font						StatsProgressBarTitleSmall
+			labelText					"Weapon Name 2"
+			allcaps						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponHeader2
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		WeaponDesc2
+		{
+			ControlName					Label
+			classname					"WeaponDesc2"
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						155
+			tall						10
+			visible						1
+			font						StatsProgressBarTitleSmall
+			labelText					"Weapon Stat 2"
+			allcaps						1
+			textAlignment				west
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponName2
+			pin_corner_to_sibling		0
+			pin_to_sibling_corner		2
+		}
+
+		WeaponImage2
+		{
+			ControlName					ImagePanel
+			classname					"WeaponImage2"
+			xpos						0
+			ypos						-41
+			zpos						225
+			wide						149
+			tall						50
+			image 						"../ui/menu/items/weapon_rspn101"
+			visible						1
+			scaleImage					1
+
+			pin_to_sibling				WeaponBackground2
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		WeaponImageTextOverlay2
+		{
+			ControlName					Label
+			classname					"WeaponImageTextOverlay2"
+			xpos						0
+			ypos						0
+			zpos						226
+			wide						140
+			tall						10
+			visible						1
+			font						StatsOverviewWeaponOverlay
+			labelText					"#STATS_DATA_EMPTY"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				WeaponImage2
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		GamesStatValue0
+		{
+			ControlName					Label
+			classname					"GamesStatValue0"
+			xpos						0
+			ypos						-12
+			zpos						226
+			wide						105
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 0"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground0
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName0
+		{
+			ControlName					Label
+			classname					"GamesStatName0"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						105
+			tall						12
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"Stat Name 0"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue0
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue1
+		{
+			ControlName					Label
+			classname					"GamesStatValue1"
+			xpos						0
+			ypos						-12
+			zpos						226
+			wide						105
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 1"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground1
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName1
+		{
+			ControlName					Label
+			classname					"GamesStatName1"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						105
+			tall						12
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"Stat Name 1"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue1
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue2
+		{
+			ControlName					Label
+			classname					"GamesStatValue2"
+			xpos						0
+			ypos						-12
+			zpos						226
+			wide						105
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 2"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground2
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName2
+		{
+			ControlName					Label
+			classname					"GamesStatName2"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						105
+			tall						12
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"Stat Name 2"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue2
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue3
+		{
+			ControlName					Label
+			classname					"GamesStatValue3"
+			xpos						0
+			ypos						-12
+			zpos						226
+			wide						105
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 3"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground3
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName3
+		{
+			ControlName					Label
+			classname					"GamesStatName3"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						105
+			tall						12
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"Stat Name 3"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue3
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		GamesStatValue4
+		{
+			ControlName					Label
+			classname					"GamesStatValue4"
+			xpos						0
+			ypos						-12
+			zpos						226
+			wide						105
+			tall						26
+			visible						1
+			font						StatsSectionHeaderLarge
+			labelText					"Stat Value 4"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				StatBackground4
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		GamesStatName4
+		{
+			ControlName					Label
+			classname					"GamesStatName4"
+			xpos						0
+			ypos						-4
+			zpos						227
+			wide						105
+			tall						12
+			visible						1
+			font						StatsSectionHeaderSmall
+			labelText					"Stat Name 4"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"111 85 85 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				GamesStatValue4
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		ModesPieChart
+		{
+			ControlName					CNestedPanel
+			classname					"ModesPieChart"
+			xpos						0
+			ypos						0
+			zpos						300
+			wide						300
+			tall						140
+			visible						1
+			controlSettingsFile			"resource/UI/menus/stats_pie_chart.res"
+
+			pin_to_sibling				TitanUnlockBackground2
+			pin_corner_to_sibling		7
+			pin_to_sibling_corner		5
+		}
+
+
+
+
+
+
+
+		TitanUnlocksCount
+		{
+			ControlName					Label
+			classname					"TitanUnlocksCount"
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						220
+			tall						10
+			visible						1
+			font						StatsListFont
+			labelText					"#STATS_CHASSIS_UNLOCK_COUNT"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				TitanUnlockBackground1
+			pin_corner_to_sibling		6
+			pin_to_sibling_corner		4
+		}
+
+		TitanUnlocksHeader
+		{
+			ControlName					Label
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						220
+			tall						16
+			visible						1
+			font						StatsSectionHeader
+			labelText					"#STATS_HEADER_TITAN_UNLOCKS"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				TitanUnlocksCount
+			pin_corner_to_sibling		6
+			pin_to_sibling_corner		4
+		}
+
+		TitanUnlockName0
+		{
+			ControlName					Label
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						80
+			tall						10
+			visible						1
+			font						StatsListFont
+			labelText					"#STATS_CHASSIS_NAME_STRYDER"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				TitanUnlockBackground0
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		TitanUnlockName1
+		{
+			ControlName					Label
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						80
+			tall						10
+			visible						1
+			font						StatsListFont
+			labelText					"#STATS_CHASSIS_NAME_ATLAS"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				TitanUnlockBackground1
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		TitanUnlockName2
+		{
+			ControlName					Label
+			xpos						0
+			ypos						0
+			zpos						200
+			wide						80
+			tall						10
+			visible						1
+			font						StatsListFont
+			labelText					"#STATS_CHASSIS_NAME_OGRE"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"51 39 39 255"
+			//bgcolor_override 			"0 255 0 100"
+
+			pin_to_sibling				TitanUnlockBackground2
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

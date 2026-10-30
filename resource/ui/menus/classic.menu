@@ -1,0 +1,326 @@
+resource/ui/menus/classic.menu
+{
+	ClassicMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#MENUHEADER_MULTIPLAYER"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		//ImgGuide
+		//{
+		//	ControlName				ImagePanel
+		//	xpos					0
+		//	ypos					0
+		//	wide					f0
+		//	tall					f0
+		//	image 					"../ui/guide"
+		//	visible					1
+		//	scaleImage				1
+		//	drawColor				"255 255 255 127"
+		//}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		PlaylistList
+		{
+			ControlName				CPlaylistList
+			classname 				PlaylistListClass
+			xpos					30
+			ypos					78
+			wide					300
+			tall					260
+			navRight				ListFriendlies
+			tabPosition				1
+			bgcolor_override		"0 0 0 0"
+			paintborder				0
+			panelBorder				-1
+			NoWrap					0
+			arrowsVisible			0
+			listEntrySettings
+			{
+				InheritProperties		DefaultButton
+				classname				TestClass
+			}
+		}
+
+		PlayercountBackground
+		{
+			ControlName 			ImagePanel
+			pin_to_sibling			PlaylistList
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	3
+			xpos					0
+			ypos 					3
+			wide					290
+			tall 					82
+			wide					300
+			visible					1
+			image 					"../ui/menu/lobby/lobby_back_01"
+			scaleImage				1
+		}
+
+		PlaylistPlayercountMonthlyText
+		{
+			ControlName				Label
+			classname				PlaylistPlayercountMonthlyText
+			pin_to_sibling			PlayercountBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos 					-10
+			ypos 					-8
+			tall 					16
+			wide					265
+			visible					1
+			labelText				"Unique Players This Month: aa"
+			use_proportional_insets	1
+			wrap					1
+			fgcolor_override		"255 255 255 255"
+			font					PlaylistDescriptionFont
+		}
+		PlaylistPlayercountTotalText
+		{
+			ControlName				Label
+			classname				PlaylistPlayercountTotalText
+			pin_to_sibling			PlaylistPlayercountMonthlyText
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos 					0
+			ypos 					0
+			tall 					16
+			wide					265
+			visible					1
+			labelText				"All Players Worldwide: zz"
+			use_proportional_insets	1
+			wrap					1
+			fgcolor_override		"255 255 255 255"
+			font					PlaylistDescriptionFont
+		}
+		PlaylistPlayercountWorldwideText
+		{
+			ControlName				Label
+			classname				PlaylistPlayercountWorldwideText
+			pin_to_sibling			PlaylistPlayercountTotalText
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos 					0
+			ypos 					9
+			tall 					16
+			wide					265
+			visible					1
+			labelText				""
+			use_proportional_insets	1
+			wrap					1
+			fgcolor_override		"255 255 255 255"
+			font					PlaylistDescriptionFont
+		}
+		PlaylistPlayercountRegionText
+		{
+			ControlName				Label
+			classname				PlaylistPlayercountRegionText
+			pin_to_sibling			PlaylistPlayercountWorldwideText
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos 					0
+			ypos 					0
+			tall 					16
+			wide					265
+			visible					1
+			labelText				""
+			use_proportional_insets	1
+			wrap					1
+			fgcolor_override		"255 255 255 255"
+			font					PlaylistDescriptionFont
+		}
+
+
+
+		PlaylistPlayercountDebugText
+		{
+			ControlName				Label
+			classname				PlaylistPlayercountDebugText
+			pin_to_sibling			PlaylistPlayercountWorldwideText
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			xpos 					0
+			ypos 					24
+			tall 					16
+			wide					265
+			visible					1
+			labelText				""
+			use_proportional_insets	1
+			wrap					1
+			fgcolor_override		"255 0 0 255"
+			font					PlaylistDescriptionFont
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		PlaylistInfoBackground1
+		{
+			ControlName 			ImagePanel
+			xpos					r285
+			ypos					74
+			wide					246
+			tall					82
+			visible					1
+			image 					"../ui/menu/lobby/lobby_back_01"
+			scaleImage				1
+		}
+		PlaylistImage
+		{
+			ControlName				ImagePanel
+			classname 				PlaylistImageClass
+			pin_to_sibling			PlaylistInfoBackground1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			ypos					-10
+			xpos					-4
+			wide					64
+			tall					64
+			visible					1
+			scaleImage				1
+			//drawColor				"255 255 255 127"
+		}
+
+		PlaylistInfoBackground2
+		{
+			ControlName 			ImagePanel
+			pin_to_sibling			PlaylistInfoBackground1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			ypos					2
+			wide					246
+			tall					103
+			visible					1
+			image 					"../ui/menu/lobby/lobby_back_02"
+			scaleImage				1
+		}
+		PlaylistName
+		{
+			ControlName				Label
+			classname 				PlaylistNameClass
+			pin_to_sibling			PlaylistImage
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	1
+			wide					174
+			tall					64
+			font					PlaylistHeaderFont
+			labelText				""
+			use_proportional_insets	1
+			allcaps 				1
+			centerwrap				1
+			fgcolor_override		"255 133 133 255"
+		}
+		PlaylistDescription
+		{
+			ControlName				Label
+			classname 				PlaylistDescriptionClass
+			pin_to_sibling			PlaylistInfoBackground1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-8
+			ypos					-93
+			wide					228
+			tall					90
+			textAlignment			"north-west"
+			font					PlaylistDescriptionFont
+			labelText				""
+			wrap					1
+			fgcolor_override		"255 133 133 255"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ClassicFriendlyTeamBackground
+		{
+			ControlName				CNestedPanel
+			xpos					r285
+			ypos					r219
+			wide					246
+			tall					163
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/friendly_team_background.res"
+		}
+
+		ListFriendlies
+		{
+			ControlName				CPlayerList
+			InheritProperties 		LobbyPlayerList
+			pin_to_sibling			ClassicFriendlyTeamBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-4
+			ypos					-40
+			navLeft					PlaylistList
+			teamRelationshipFilter	friendly
+			arrowsVisible			0
+			listEntrySettings
+			{
+				InheritProperties		LobbyFriendlyButton
+			}
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

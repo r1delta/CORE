@@ -118,7 +118,7 @@ resource/ui/menus/blackmarket_main.menu
 			font					StatsWeaponPageMedium
 			textinsetx				6
 			allcaps					0
-			fgcolor_override 		"204 234 255 255"
+			fgcolor_override 		"255 133 133 255"
 			textAlignment			west
 
 			visible					1
@@ -188,7 +188,7 @@ resource/ui/menus/blackmarket_main.menu
 			font					StatsWeaponPageMedium
 			textinsetx				6
 			allcaps					0
-			fgcolor_override 		"204 234 255 255"
+			fgcolor_override 		"255 133 133 255"
 			textAlignment			west
 
 			visible					1

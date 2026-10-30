@@ -283,7 +283,7 @@ resource/ui/menus/map_select.menu
 			textAlignment			center
 			font					PlaylistDescriptionFont
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		PageUpGlyph
@@ -394,7 +394,7 @@ resource/ui/menus/map_select.menu
 			textAlignment			west
 			font					NextMapFont
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		NextMapNameMed
@@ -409,7 +409,7 @@ resource/ui/menus/map_select.menu
 			textAlignment			west
 			font					PlaylistDescriptionFont
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		NextMapNameSmall
@@ -424,7 +424,7 @@ resource/ui/menus/map_select.menu
 			textAlignment			west
 			font					MenuFontTiny
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		NextMapPack
@@ -439,7 +439,7 @@ resource/ui/menus/map_select.menu
 			textAlignment			west
 			font					MenuFontTiny
 			allcaps					1
-			fgcolor_override		"138 170 200 255"
+			fgcolor_override		"200 51 51 255"
 		}
 
 		NextMapDesc
@@ -455,7 +455,7 @@ resource/ui/menus/map_select.menu
 			textAlignment			north-west
 			font					PlaylistDescriptionFont
 			allcaps					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		StarsLabel
@@ -470,7 +470,7 @@ resource/ui/menus/map_select.menu
 			labelText				"#MAP_STARS_HEADER_KEYBOARD"
 			font					WinStreakHeaderFont
 			allcaps					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 		}
 
 		MapStar0

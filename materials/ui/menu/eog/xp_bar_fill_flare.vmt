@@ -1,0 +1,7 @@
+Basic
+{
+	$basetexture		"ui/menu/eog/r1d_red_xp_bar_fill_flare"
+	$translucent		1
+	$vertexalpha		1
+	$additive		0
+}

@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/eog/r1d_red_xp_breakdown_button_hover"
+	$translucent		1
+	$vertexalpha		1
+}

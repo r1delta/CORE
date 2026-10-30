@@ -1,0 +1,8 @@
+Basic
+{
+	$basetexture		"ui/menu/common/r1d_red_button_locked_tooltip"
+	$translucent		1
+	$vertexcolor		1
+	$vertexalpha		1
+	$ignorez			1
+}

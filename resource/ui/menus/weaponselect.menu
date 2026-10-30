@@ -352,7 +352,7 @@ resource/ui/menus/weaponselect.menu
 			textAlignment			west
 			textinsetx				2
 			font					MenuTitleMedFont
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			bgcolor_override		"0 0 0 160"
 			//auto_wide_tocontents	1
 
@@ -374,7 +374,7 @@ resource/ui/menus/weaponselect.menu
 			textAlignment			south-west
 			font					MenuTitleSmallFont
 			textinsetx				2
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			bgcolor_override		"0 0 0 160"
 			//auto_wide_tocontents	1
 
@@ -846,7 +846,7 @@ resource/ui/menus/weaponselect.menu
 			auto_tall_tocontents 	1
 			labelText				"240"
 			font					LoadoutItemStatFont
-			fgcolor_override		"121 197 255 255"
+			fgcolor_override		"255 255 255 255"
 		}
 		ClipSizeMod
 		{
@@ -861,7 +861,7 @@ resource/ui/menus/weaponselect.menu
 			auto_tall_tocontents 	1
 			labelText				"MOD CLIP SIZE"
 			font					LoadoutItemStatSmallFont
-			fgcolor_override		"121 197 255 255"
+			fgcolor_override		"255 255 255 255"
 		}
 
 
@@ -896,7 +896,7 @@ resource/ui/menus/weaponselect.menu
 			visible					1
 			font					EditLoadoutInfoItemType
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			labelText				"ITEM TYPE"
 			textAlignment			west
 
@@ -916,7 +916,7 @@ resource/ui/menus/weaponselect.menu
 			visible					1
 			font					EditLoadoutInfoItemName
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			labelText				"ITEM NAME"
 			textAlignment			west
 
@@ -937,7 +937,7 @@ resource/ui/menus/weaponselect.menu
 			font					EditLoadoutInfoItemDesc
 			allcaps					0
 			wrap 					1
-			fgcolor_override		"150 180 190 255"
+			fgcolor_override		"190 94 94 255"
 			labelText				"ITEM DESCRIPTION"
 			textAlignment			north-west
 

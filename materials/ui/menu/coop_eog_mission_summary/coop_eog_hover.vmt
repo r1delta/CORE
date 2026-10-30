@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/coop_eog_mission_summary/r1d_red_coop_eog_hover"
+	$translucent		1
+
+}

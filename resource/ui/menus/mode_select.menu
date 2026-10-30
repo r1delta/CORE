@@ -92,7 +92,7 @@ resource/ui/menus/mode_select.menu
 			labelText				"Foo"
 			font					NextMapFont
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			zpos					6
 		}
 
@@ -112,7 +112,7 @@ resource/ui/menus/mode_select.menu
 			textalignment			north-west
 			font					PlaylistDescriptionFont
 			allcaps					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			zpos					6
 		}
 

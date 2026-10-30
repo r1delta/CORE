@@ -117,7 +117,7 @@ resource/ui/menus/votetarget.menu
 			labelText				""
 			font					NextMapFont
 			allcaps					1
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			zpos					1
 		}
 
@@ -137,7 +137,7 @@ resource/ui/menus/votetarget.menu
 			textalignment			north-west
 			font					NextGameModeFont
 			allcaps					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 			zpos					1
 		}
 

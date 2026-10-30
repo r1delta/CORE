@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/rank_menus/r1d_red_ranked_fe_seasons_back"
+	$translucent		1
+
+}

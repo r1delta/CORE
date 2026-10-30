@@ -1,0 +1,8 @@
+Basic
+{
+	$basetexture		"ui/menu/lobby/r1d_red_map_stars_details_highlight"
+	$translucent		1
+	$vertexcolor		1
+	$vertexalpha		1
+	$ignorez			1
+}

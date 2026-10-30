@@ -1,0 +1,315 @@
+resource/ui/menus/burncards_filters.menu
+{
+	BurnCards_Filters
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#BC_EDIT_BURN_CARDS"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		ImgBar1
+		{
+			ControlName				ImagePanel
+			xpos					54
+			ypos					80
+			wide					474
+			tall					21
+			image 					"../vgui/burncards/burncard_menu_title"
+			visible					1
+			scaleImage				1
+		}
+
+		ImgBar2
+		{
+			ControlName				ImagePanel
+			xpos					54
+			ypos					202
+			wide					474
+			tall					21
+			image 					"../vgui/burncards/burncard_menu_title"
+			visible					1
+			scaleImage				1
+		}
+
+
+		MenuTitle1
+		{
+			ControlName				Label
+			InheritProperties		MenuDetail
+			labelText				"Your active burn cards"
+			xpos					-42 // 96
+
+			wide					540
+			tall					46
+			textAlignment			west
+
+			pin_to_sibling			ImgBar1
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+		}
+
+		MenuTitle2
+		{
+			ControlName				Label
+			InheritProperties		MenuDetail
+			labelText				"Choose up to three"
+			xpos					-42 // 96
+
+			wide					540
+			tall					46
+			textAlignment			west
+
+			pin_to_sibling			ImgBar2
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+		FilterDialog
+		{
+			ControlName				ImagePanel
+			xpos					c-250
+			ypos					c-150
+			zpos					52
+
+			wide					380
+			tall					320
+			image 					"../ui/menu/common/pop_up_menu_big_back"
+			scaleImage				1
+		}
+
+		FilterTitle
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-65
+			zpos					53 // Needed or clicking on the background can hide this
+			wide					300
+			tall					20
+			labelText				"Burn Card Filters"
+			font					DialogMessageFont
+			textAlignment			center
+			wrap					1
+			centerwrap				1
+			allcaps					1
+			fgcolor_override		"255 133 133 255"
+
+			pin_to_sibling			FilterDialog
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+
+		BtnBurnCardFilter_1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BurnCardFilterClass
+			navUp					BtnBurnCardFilter_7
+			navDown					BtnBurnCardFilter_2
+			labelText				"Weapons"
+			tabposition				1
+
+			xpos					0
+			ypos					20
+			zpos					150
+
+			pin_to_sibling			FilterTitle
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BtnBurnCardFilter_2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BurnCardFilterClass
+			navDown					BtnBurnCardFilter_1
+			navUp					BtnBurnCardFilter_3
+			labelText				"Speed"
+
+			xpos					0
+			ypos					0
+			zpos					150
+
+			pin_to_sibling			BtnBurnCardFilter_1
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BtnBurnCardFilter_3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BurnCardFilterClass
+			navDown					BtnBurnCardFilter_2
+			navUp					BtnBurnCardFilter_4
+			labelText				"Stealth"
+
+			xpos					0
+			ypos					0
+			zpos					150
+
+			pin_to_sibling			BtnBurnCardFilter_2
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BtnBurnCardFilter_4
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BurnCardFilterClass
+			navDown					BtnBurnCardFilter_3
+			navUp					BtnBurnCardFilter_5
+			labelText				"Intel"
+
+
+			xpos					0
+			ypos					0
+			zpos					150
+
+			pin_to_sibling			BtnBurnCardFilter_3
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BtnBurnCardFilter_5
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BurnCardFilterClass
+			navDown					BtnBurnCardFilter_4
+			navUp					BtnBurnCardFilter_6
+			labelText				"Rewards"
+
+			xpos					0
+			ypos					0
+			zpos					150
+
+			pin_to_sibling			BtnBurnCardFilter_4
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BtnBurnCardFilter_6
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BurnCardFilterClass
+			navDown					BtnBurnCardFilter_5
+			navUp					BtnBurnCardFilter_7
+			labelText				"Non Player Characters"
+
+			xpos					0
+			ypos					0
+			zpos					150
+
+			pin_to_sibling			BtnBurnCardFilter_5
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BtnBurnCardFilter_7
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BurnCardFilterClass
+			navDown					BtnBurnCardFilter_6
+			navUp					BtnBurnCardFilter_1
+			labelText				"Exotic"
+
+			xpos					0
+			ypos					0
+			zpos					150
+
+			pin_to_sibling			BtnBurnCardFilter_6
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+
+		ImgSelectConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterImage
+			xpos					55
+			zpos					100
+			ypos					r55
+			labelText				"A"
+		}
+		LblSelectConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterText
+			pin_to_sibling			ImgSelectConsole
+			zpos					100
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+			labelText				"#SELECT"
+		}
+		ImgBackConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterImage
+			pin_to_sibling			LblSelectConsole
+			zpos					100
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+			labelText				"B"
+		}
+		LblBackConsole
+		{
+			ControlName				Label
+			InheritProperties		OldGamepadFooterText
+			pin_to_sibling			ImgBackConsole
+			zpos					100
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	5
+			labelText				"#BACK"
+		}
+
+		BtnBackPC
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		OldPCFooterButton
+			pin_to_sibling			ImgSelectConsole
+			zpos					100
+			pin_corner_to_sibling	7
+			pin_to_sibling_corner	7
+			labelText				"#BACK"
+		}
+	}
+}

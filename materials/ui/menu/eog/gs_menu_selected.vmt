@@ -1,0 +1,7 @@
+Basic
+{
+	$basetexture		"ui/menu/eog/r1d_red_gs_menu_selected"
+	$translucent		1
+	$vertexalpha		1
+	$additive		0
+}

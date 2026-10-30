@@ -221,7 +221,7 @@ resource/ui/menus/main.menu
 			font					MOTDTitleFont
 			allcaps					1
 			visible					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 
 			zpos					1
 		}
@@ -243,7 +243,7 @@ resource/ui/menus/main.menu
 			textinsety				0
 			allcaps					0
 			visible					0
-			fgcolor_override		"204 234 255 255"
+			fgcolor_override		"255 133 133 255"
 
 			zpos					1
 		}
@@ -271,7 +271,7 @@ resource/ui/menus/main.menu
 			labelText				""
 			font					MOTDFont
 			visible					0
-			fgcolor_override 		"120 120 140 255"
+			fgcolor_override 		"140 92 92 255"
 		}
 
 		VersionDisplay2
@@ -284,7 +284,7 @@ resource/ui/menus/main.menu
 			labelText				""
 			font					MOTDFont
 			visible					0
-			fgcolor_override 		"120 120 140 255"
+			fgcolor_override 		"140 92 92 255"
 		}
 
 		R1DeltaIcon

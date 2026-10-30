@@ -1,0 +1,183 @@
+resource/ui/menus/image_walk_through.menu
+{
+	ImageWalkThroughMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+		clip					0
+
+		Background
+		{
+			ControlName				Label
+			ypos 					-500
+			wide					f0
+			tall					1000
+			labelText 				""
+			visible					1
+			bgcolor_override		"0 0 0 240"
+		}
+
+		ImageWalkThroughFrame
+		{
+			ControlName 			ImagePanel
+			xpos					0
+			ypos					0
+			zpos					1
+
+			wide					400
+			tall					250
+			visible					1
+			image 					"../ui/menu/lobby/lobby_playlist_back_01"
+			scaleImage				1
+
+			pin_to_sibling			Background
+			pin_corner_to_sibling	8
+			pin_to_sibling_corner	8
+		}
+
+		ImageWalkThrough_Title
+		{
+			ControlName				Label
+			//classname 				RankedPlayDetails
+			wide					386
+			zpos					150
+			xpos					-10
+			ypos					-10
+
+			auto_tall_tocontents 	1
+			wrap					1
+			visible 				1
+			font 					MenuTitleMedFont
+			allcaps					0
+			fgcolor_override		"255 255 255 255"
+			textAlignment			north-west
+			labelText 				"xxx"
+
+			pin_to_sibling			ImageWalkThroughFrame
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+		}
+
+		ImageWalkThrough_Page
+		{
+			ControlName				Label
+			xpos					-10
+			ypos					-10
+			zpos					150
+
+			wide					80
+			tall					80
+			visible 				1
+			font 					DefaultLarge
+			fgcolor_override		"204 106 106 255"
+			allcaps					0
+			textAlignment			north-east
+			labelText 				"xxx"
+
+			pin_to_sibling			ImageWalkThroughFrame
+			pin_corner_to_sibling	1
+			pin_to_sibling_corner	1
+		}
+
+		ImageWalkThrough_Label
+		{
+			ControlName				Label
+			zpos					150
+			ypos					4
+
+			wide					386
+			auto_tall_tocontents 	1
+			wrap					1
+			visible 				1
+			font 					DefaultLarge
+			fgcolor_override		"204 106 106 255"
+			allcaps					0
+			textAlignment			north-west
+			labelText 				"Some text details go here"
+
+
+			pin_to_sibling			ImageWalkThrough_Title
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+
+//		ImageWalkThrough_Details2
+//		{
+//			ControlName				Label
+//			zpos					150
+//			ypos					4
+//
+//			wide					386
+//			auto_tall_tocontents 	1
+//			wrap					1
+//			visible 				1
+//			font 					DefaultLarge
+//			fgcolor_override		"204 106 106 255"
+//			allcaps					0
+//			textAlignment			north-west
+//			labelText 				"Some more text details go here"
+//
+//			pin_to_sibling			ImageWalkThrough_Details1
+//			pin_corner_to_sibling	4
+//			pin_to_sibling_corner	6
+//		}
+
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			wide					f0
+			ypos					-10
+			tall					16
+			zpos					5
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+
+			pin_to_sibling			ImageWalkThroughFrame
+			pin_corner_to_sibling	2
+			pin_to_sibling_corner	2
+		}
+
+		ImageWalkThrough_Image
+		{
+			ControlName				ImagePanel
+			zpos					150
+			ypos					-36
+
+			wide					320
+			tall					120
+			visible 				1
+			scaleImage				1
+
+			pin_to_sibling			ImageWalkThroughFrame
+			pin_corner_to_sibling	6
+			pin_to_sibling_corner	6
+		}
+
+
+//		FooterButtons
+//		{
+//			ControlName				CNestedPanel
+//			xpos					0
+//			ypos					r312
+//			zpos					20
+//			wide					f0
+//			tall					16
+//			visible					1
+//			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+//		}
+	}
+}

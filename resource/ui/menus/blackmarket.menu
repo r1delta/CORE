@@ -1,0 +1,788 @@
+resource/ui/menus/BlackMarketMenu.menu
+{
+	BlackMarketMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		visible					1
+		enabled					1
+		pinCorner				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+	    MenuCommon
+	    {
+		    ControlName				CNestedPanel
+		    xpos					0
+		    ypos					0
+			wide					f0
+			tall					f0
+		    visible					1
+		    controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+	    }
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		Title
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#SHOP_TITLE_BURN_CARD_PACKS"
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+			zpos					3
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+			zpos					3
+		}
+
+		BurnCardStashPanel
+		{
+			ControlName				CNestedPanel
+			xpos					r+300
+			ypos					42
+			wide					100
+			tall					25
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/burncard_stash.res"
+		}
+
+		PlayerCoinsPanel
+		{
+			ControlName				CNestedPanel
+			xpos					r+190
+			ypos					43
+			wide					200
+			tall					50
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/player_coins.res"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		BurnCardPackButtonsPanel
+		{
+			ControlName					CNestedPanel
+			classname					"BurnCardPackButtonsPanel"
+			xpos 						c-375
+			ypos						c-150
+			wide 						750
+			tall 						300
+			visible						1
+			controlSettingsFile			"resource/UI/menus/burncardpackbuttons.res"
+			tabposition					1
+			enabled						0
+		}
+
+		BtnScrollUpPC
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonUp
+			xpos						-60
+			ypos						0
+			zpos						200
+			activeInputExclusivePaint	keyboard
+
+			pin_to_sibling				WeaponButtonsNestedPanel
+			pin_corner_to_sibling		6
+			pin_to_sibling_corner		0
+		}
+
+		BtnScrollDownPC
+		{
+			ControlName					BaseModHybridButton
+			InheritProperties			MenuArrowButtonDown
+			xpos						-60
+			ypos						-17
+			zpos						200
+			activeInputExclusivePaint	keyboard
+
+			pin_to_sibling				WeaponButtonsNestedPanel
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		2
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		ItemMenuPanel
+		{
+			ControlName					CNestedPanel
+			classname					"ItemMenuPanel"
+			xpos 						c-340
+			ypos						c-157
+			zpos						5
+			wide						250
+			tall						280
+			visible						1
+		}
+
+		ItemMenuBackground
+		{
+			ControlName					ImagePanel
+			xpos 						-5
+			ypos						0
+			zpos						4
+			wide						250
+			tall						337
+			image						"../ui/menu/personal_stats/ps_main_back_5"
+			visible						1
+			scaleImage					1
+			alpha 						215
+
+			pin_to_sibling			ItemMenuPanel
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+		}
+
+		ItemCostIcon
+		{
+			ControlName			ImagePanel
+			xpos				100
+			ypos				-5
+			zpos				5
+			wide				24
+			tall				24
+			visible				1
+			image				"../vgui/black_market/coin"
+			scaleImage			1
+			drawColor			"255 133 133 255"
+
+			pin_to_sibling			ItemMenuPanel
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+		ItemName
+		{
+			ControlName					Label
+			xpos						0
+			ypos						-220
+			zpos						5
+			wide						225
+			tall 						25
+			//auto_tall_tocontents		1
+			visible						1
+			font						EditLoadoutInfoItemName
+			labelText					"Item Name"
+			allcaps						1
+			//wrap 						1
+			//centerwrap					1
+			textAlignment				center
+			//fgcolor_override 			"255 84 0 255"  // orange
+			//fgcolor_override 			"255 133 133 255"  // light blue
+
+			pin_to_sibling				ItemMenuPanel
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		4
+		}
+
+		HorizBarTop
+		{
+			ControlName			ImagePanel
+			ypos				-25
+			zpos				5
+			wide				180
+			tall				1
+			visible				1
+			image				"../vgui/black_market/blackMarket_line"
+			scaleImage			1
+			pin_to_sibling			ItemName
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		HorizBarBottom
+		{
+			ControlName			ImagePanel
+			ypos				0
+			zpos				5
+			wide				180
+			tall				1
+			visible				1
+			image				"../vgui/black_market/blackMarket_line"
+			scaleImage			1
+			pin_to_sibling			ItemName
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		ItemDesc
+		{
+			ControlName					Label
+			xpos						5
+			ypos						5
+			zpos						5
+			wide						225
+			tall 						70
+			//auto_tall_tocontents		1
+			visible						1
+			font						StatsWeaponPageMedium
+			labelText					"Item Description"
+			allcaps						0
+			wrap 						1
+			centerwrap					1
+			textAlignment				north
+			fgcolor_override 			"255 133 133 255"
+
+			pin_to_sibling				HorizBarBottom
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		ItemDescRare
+		{
+			ControlName					Label
+			//ypos						-20
+			zpos						5
+			wide						225
+			auto_tall_tocontents		1
+			visible						1
+			font						StatsWeaponPageMedium
+			labelText					"May contain one or more rare cards!"
+			allcaps						0
+			wrap 						1
+			centerwrap					1
+			textAlignment				north
+			fgcolor_override 			"210 170 0 255"
+
+			pin_to_sibling				ItemDesc
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+		BurnCardElems
+		{
+			ControlName			CNestedPanel
+			xpos				c
+			ypos				80
+
+			zpos				6
+
+			wide				227
+			tall				316
+
+			visible				0
+
+			controlSettingsFile	"scripts/screens/vgui_burn_card.res"
+
+			scaleImage			1
+			drawColor			"255 255 255 255"
+		}
+
+		ItemImageLarge
+		{
+			ControlName			ImagePanel
+			xpos				c
+			ypos				80
+			zpos				995
+			visible				1
+			wide				225
+			tall				313
+			scaleImage			1
+			image				"../vgui/black_market/cardpack_standard"
+		}
+
+		DecalBackgroundLarge
+		{
+			ControlName				ImagePanel
+			wide					175
+			tall					175
+			image 					"../ui/menu/titanDecal_menu/decalSlot_default"
+			visible					0
+			scaleImage				1
+			alpha					235
+
+			pin_to_sibling			ItemImageLarge
+			pin_corner_to_sibling	8
+			pin_to_sibling_corner	8
+		}
+
+		RewardName
+		{
+			ControlName					Label
+			xpos						c-125
+			ypos						c+140
+			zpos						999
+			wide						250
+			tall						18
+			visible						1
+			font						StatsWeaponPageLarge
+			labelText					"Reward Name"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"255 133 133 255"
+		}
+
+		RewardRareLabel
+		{
+			ControlName					Label
+			xpos						c-50
+			ypos						c+110
+			zpos						999
+			wide						100
+			tall						18
+			visible						1
+			labelText					"#SHOP_RARE"
+			allcaps						1
+			textAlignment				center
+			fgcolor_override 			"210 170 0 255"
+		}
+
+		LockedItemBack
+		{
+			ControlName					ImagePanel
+			xpos 						0
+			ypos						-5
+			zpos						997
+			wide						150
+			tall						75
+			image						"../ui/menu/personal_stats/ps_main_back_5"
+			visible						1
+			scaleImage					1
+			alpha						215
+
+			pin_to_sibling				ItemImageLarge
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		LockIcon
+		{
+			ControlName				ImagePanel
+			wide					35
+			tall					35
+			xpos					0
+			ypos					-17
+			zpos 					999
+			image					"../ui/menu/common/locked_icon"
+			visible					1
+			scaleImage				1
+
+			pin_to_sibling				LockedItemBack
+			pin_corner_to_sibling		8
+			pin_to_sibling_corner		8
+		}
+
+		ErrorHint
+		{
+			ControlName					Label
+			zpos						999
+			wide						130
+			tall 						35
+			visible						1
+			font						StatsWeaponPageMedium
+			allcaps						0
+			wrap 						1
+			centerwrap					1
+			textAlignment				north
+			fgcolor_override 			"255 0 0 255"
+
+			labelText					"Not enough Credits."
+
+			pin_to_sibling				LockIcon
+			pin_corner_to_sibling		4
+			pin_to_sibling_corner		6
+		}
+
+
+//		Flare
+//		{
+//			ControlName				ImagePanel
+//			classname				Flare
+//			//xpos					100
+//			//ypos					140
+//			zpos					994
+//			wide					f0
+//			tall					f0
+//			visible					1
+//			enabled					0
+//			scaleImage				1
+//			image					"hud/score_splash_flare"
+//
+//			pin_to_sibling			ItemImageLarge
+//			pin_corner_to_sibling	8
+//			pin_to_sibling_corner	8
+//		}
+
+		WhiteBackground
+		{
+			ControlName				ImagePanel
+			classname				WhiteBackground
+			xpos					0
+			ypos					0
+			zpos					993
+			wide					%100
+			tall					%100
+			visible					0
+			scaleImage				1
+			image					HUD/white
+			enabled					0
+			drawColor				"255 255 255 0"
+		}
+
+//mackey
+//		ItemBurnCardPreview
+//		{
+//			ControlName			CNestedPanel
+//			xpos				-3
+//			ypos				-20
+//			zpos				999
+//
+//			visible				1
+//
+//			wide				110
+//			tall				110
+//			controlSettingsFile	"scripts/screens/vgui_burn_card_mid.res"
+//
+//			scaleImage			1
+//			drawColor			"255 255 255 255"
+//
+//			pin_to_sibling				BurnCardPackButtonsPanel
+//			pin_corner_to_sibling		8
+//			pin_to_sibling_corner		8
+//		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		BtnItem0
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				0
+			xpos					15
+			ypos					-30
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem8
+			navDown					BtnItem1
+			tabPosition				1
+			labelText				"Item Name"
+
+			pin_to_sibling			ItemMenuPanel
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+		}
+		BtnItem1
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				1
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem0
+			navDown					BtnItem2
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem0
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		BtnItem2
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				2
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem1
+			navDown					BtnItem3
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem1
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		BtnItem3
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				3
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem2
+			navDown					BtnItem4
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem2
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		BtnItem4
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				4
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem3
+			navDown					BtnItem5
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem3
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		BtnItem5
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				5
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem4
+			navDown					BtnItem6
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem4
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		BtnItem6
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				6
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem5
+			navDown					BtnItem7
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem5
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		BtnItem7
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				7
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem6
+			navDown					BtnItem8
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem6
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		BtnItem8
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DefaultButton
+			classname				BtnItemClass
+			scriptID				8
+			zpos					999
+			wide					255
+			textAlignment			west
+			navUp					BtnItem7
+			navDown					BtnItem0
+			labelText				"Item Name"
+
+			pin_to_sibling			BtnItem7
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+		}
+		PriceItem0
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				0
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem0
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem1
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				1
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem1
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem2
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				2
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem2
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem3
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				3
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem3
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem4
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				4
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem4
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem5
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				5
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem5
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem6
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				6
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem6
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem7
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				7
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem7
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+		PriceItem8
+		{
+			ControlName				Label
+			font					DefaultButtonFont
+			classname				PriceItemClass
+			scriptID				8
+			zpos					5
+			wide					85
+			textAlignment			east
+			labelText				"999999"
+
+			pin_to_sibling			BtnItem8
+			pin_corner_to_sibling	5
+			pin_to_sibling_corner	5
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			zpos					3
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

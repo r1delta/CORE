@@ -1,0 +1,6 @@
+Basic
+{
+	$basetexture		"ui/menu/personal_stats/r1d_red_ps_game_stats_back_2"
+	$translucent		1
+	$vertexalpha		1
+}

@@ -1,0 +1,285 @@
+resource/ui/menus/ranked_season_end_dialog.menu
+{
+	RankedSeasonEndDialog
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		tabPosition				0
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+		modal					1
+
+		ImgDialog
+		{
+			ControlName				ImagePanel
+			xpos					c-427
+			ypos					c-400
+			wide					854
+			tall					800 //480
+			image 					"../ui/menu/common/pop_up_menu_back"
+			visible					1
+			scaleImage				1
+		}
+
+		DialogFrame
+		{
+			ControlName				Label
+			xpos					c-173
+			ypos					c-190
+			wide					346
+			tall					400
+			labelText				""
+			visible					1
+		}
+
+		LblMessage
+		{
+			ControlName				Label
+			classname				DialogMessageClass
+			xpos					0
+			ypos					-8
+			zpos					3
+			wide					340
+			tall					30
+			visible					1
+			labelText				"DEFAULT MESSAGE"
+			font					DialogMessageFont
+			textAlignment			center
+			wrap					1
+			centerwrap				1
+			allcaps					0
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+		}
+
+		LblDetails
+		{
+			ControlName				Label
+			xpos					0
+			ypos					0
+			zpos 					100
+			wide					310
+			tall					34
+			visible					1
+			labelText				"#SEASON_END_DIALOG_MESSAGE_PART1"
+			font					DialogDetailsSmallFont
+			textAlignment			center
+			centerwrap				1
+			allcaps					0
+			fgcolor_override		"255 171 171 255"
+			pin_to_sibling			LblMessage
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		RankIcon
+		{
+			ControlName				ImagePanel
+			xpos					0
+			ypos					8
+			zpos					101
+			wide					110
+			tall					55
+			image					"../ui/menu/rank_icons/tier_5_5"
+			visible					1
+			scaleImage				1
+			pin_to_sibling			LblDetails
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		Division
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-6
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					30
+			visible					1
+			font					RankedMenuLarge
+			labelText				"[DIVISION NAME]"
+			allcaps					1
+			fgcolor_override		"245 245 245 255"
+			pin_to_sibling			RankIcon
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		Tier
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-6
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					500
+			tall					16
+			visible					1
+			font					RankedMenuMediumThin
+			labelText				"[TIER NAME]"
+			allcaps					1
+			fgcolor_override		"245 245 245 255"
+			pin_to_sibling			Division
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		HorizBarMid
+		{
+			ControlName			ImagePanel
+			ypos				15
+			zpos				5
+			wide				275
+			tall				2
+			visible				1
+			image				"../vgui/black_market/blackMarket_line"
+			scaleImage			1
+			pin_to_sibling			Tier
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		LblSeasonHeader
+		{
+			ControlName				Label
+			classname				SeasonLabelClass
+			xpos					0
+			ypos					20
+			zpos					3
+			wide					340
+			tall					30
+			visible					1
+			labelText				"#RANKED_CURRENT_SEASON_NUMBER"
+			font					DialogMessageFont
+			textAlignment			center
+			wrap					1
+			centerwrap				1
+			allcaps					0
+			fgcolor_override		"255 133 133 255"
+			pin_to_sibling			Tier
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		LblSeasonDetails
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-5
+			zpos 					100
+			wide					310
+			tall					34
+			visible					1
+			labelText				"#SEASON_END_DIALOG_MESSAGE_PART2"
+			font					DialogDetailsSmallFont
+			textAlignment			center
+			centerwrap				1
+			allcaps					0
+			fgcolor_override		"255 171 171 255"
+			pin_to_sibling			LblSeasonHeader
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		PlacementRankIcon
+		{
+			ControlName				ImagePanel
+			xpos					0
+			ypos					8
+			zpos					101
+			wide					110
+			tall					55
+			image					"../ui/menu/rank_icons/tier_1_1"
+			visible					1
+			scaleImage				1
+			pin_to_sibling			LblSeasonDetails
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		PlacementDivision
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-6
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					200
+			tall					30
+			visible					1
+			font					RankedMenuLarge
+			labelText				"[DIVISION NAME]"
+			allcaps					1
+			fgcolor_override		"245 245 245 255"
+			pin_to_sibling			PlacementRankIcon
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		PlacementTier
+		{
+			ControlName				Label
+			xpos					0
+			ypos					-6
+			zpos					101
+			textAlignment			center
+			centerWrap	 			1
+			wide 					500
+			tall					16
+			visible					1
+			font					RankedMenuMediumThin
+			labelText				"[TIER NAME]"
+			allcaps					1
+			fgcolor_override		"245 245 245 255"
+			pin_to_sibling			PlacementDivision
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+		}
+
+		BtnConfirm_Continue
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		DialogButton
+			xpos 					0
+			ypos 					-25
+			classname				ContinueButtonClass
+			labelText				"#CLOSE"
+			tabPosition 			0
+			activeInputExclusivePaint	keyboard
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	6
+			pin_to_sibling_corner	6
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		GamepadFooterButton0
+		{
+			ControlName				Label
+			InheritProperties		GamepadFooterButton
+			xpos					-10
+			ypos					-25
+			scriptID				0
+			pin_to_sibling			DialogFrame
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	3
+			labelText				"#B_BUTTON_CLOSE"
+		}
+	}
+}

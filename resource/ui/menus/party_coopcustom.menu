@@ -1,0 +1,271 @@
+resource/ui/menus/party_coop.menu
+{
+	CoopPartyCustomMenu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 0"
+		outoffocus_bgcolor_override	"0 0 0 0"
+
+		BackgroundOverlay
+		{
+			ControlName				Label
+			InheritProperties		BackgroundDarken
+		}
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				"#COOP_CREATEAMATCH"
+		}
+
+		MenuCommon
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/menu_common.res"
+		}
+
+		//ImgGuide
+		//{
+		//	ControlName				ImagePanel
+		//	xpos					0
+		//	ypos					0
+		//	wide					f0
+		//	tall					f0
+		//	image 					"../ui/guide"
+		//	visible					1
+		//	scaleImage				1
+		//	drawColor				"255 255 255 127"
+		//}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		ImgTitanfallLogoSmall
+		{
+			ControlName				ImagePanel
+			InheritProperties		TitanfallLogoSmall
+		}
+
+		ImgBottomBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuBottomBar
+		}
+
+		CoopCustomChooseMapButton
+		{
+			ControlName				BaseModHybridButton
+			classname 				CoopCustomMapSelectClass
+			InheritProperties		CompactButton
+			xpos					30
+			ypos					85
+			zpos 					900
+			navDown					CoopCustomIsOpenToPublicButton
+			navRight				ListFriendlies
+			tabPosition				1
+			labelText				"#COOP_SELECTMAP"
+		}
+
+		CoopCustomIsOpenToPublicButton
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		CompactButton
+			ypos					-1
+			zpos 					900
+			pin_to_sibling			CoopCustomChooseMapButton
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					CoopCustomChooseMapButton
+			navDown					CoopCustomLaunchButton
+			navRight				ListFriendlies
+			tabPosition				1
+			labelText				"#COOP_OPENTOPUBLIC"
+		}
+
+		CoopCustomLaunchButton
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		LargeButton
+			ypos					10
+			zpos 					900
+			pin_to_sibling			CoopCustomIsOpenToPublicButton
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					CoopCustomIsOpenToPublicButton
+			navRight				ListFriendlies
+			tabPosition				1
+			labelText				"#COOP_LAUNCH"
+		}
+
+		CoopCustomMapLabel
+		{
+			ControlName				Label
+			xpos					160
+			ypos					86
+			zpos 					900
+			wide					100
+			//auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			font					MapStarsGamemodesFont
+			allcaps					0
+			fgcolor_override		"255 255 255 255"
+			textAlignment			east
+		}
+
+		CoopCustomIsOpenToPublicLabel
+		{
+			ControlName				Label
+			xpos					160
+			ypos					103
+			zpos 					900
+			wide					100
+			//auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					1
+			labelText				""
+			font					MapStarsGamemodesFont
+			allcaps					0
+			fgcolor_override		"255 133 133 255"
+			textAlignment			east
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		ClassicFriendlyTeamBackground
+		{
+			ControlName				CNestedPanel
+			xpos					r285
+			ypos					r219
+			wide					246
+			tall					163
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/friendly_team_background.res"
+		}
+
+		ListFriendlies
+		{
+			ControlName				CPlayerList
+			InheritProperties 		LobbyPlayerList
+			pin_to_sibling			ClassicFriendlyTeamBackground
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	0
+			xpos					-4
+			ypos					-40
+			navLeft					CoopCustomChooseMapButton
+			teamRelationshipFilter	friendly
+			arrowsVisible			0
+			listEntrySettings
+			{
+				InheritProperties		LobbyFriendlyButton
+			}
+		}
+		LobbyTextChat [$WINDOWS]
+		{
+			ControlName				CBaseHudChat
+			pin_to_sibling			ClassicFriendlyTeamBackground
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	2
+			xpos					2
+			zpos 					10
+			wide					280 [$WIDESCREEN_16_9]
+			wide					199 [!$WIDESCREEN_16_9]
+			tall					163
+			visible 				1
+			enabled					1
+			messageModeAlwaysOn		1
+			bgcolor_override 		"0 0 0 0"
+
+			chatBorderThickness		5
+			chatHistoryBgColor		"30 16 16 120"
+			chatEntryBgColor		"30 16 16 120"
+			chatEntryBgColorFocused	"30 16 16 120"
+		}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		CoopCustomLowpopBackground
+		{
+			ControlName				ImagePanel
+			scaleImage				1
+			ypos					4
+			ypos					0
+			zpos 					900
+			image 					"../ui/menu/lobby/lobby_back_02"
+			pin_to_sibling			ClassicFriendlyTeamBackground
+			pin_corner_to_sibling	3
+			pin_to_sibling_corner	1
+			wide					246
+			tall					125
+			visible					0
+		}
+
+		CoopCustomLowpopWarningTitle
+		{
+			ControlName				Label
+			ypos					-20
+			zpos 					900
+			pin_to_sibling			CoopCustomLowpopBackground
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	4
+			wide					200
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					0
+			labelText				"#COOP_CUSTOM_LOWPOP_WARNING_TITLE"
+			font					MenuTitleFont
+			allcaps					0
+			fgcolor_override		"255 133 133 255"
+		}
+
+		CoopCustomLowpopWarningText
+		{
+			ControlName				Label
+			ypos					5
+			zpos 					900
+			pin_to_sibling			CoopCustomLowpopWarningTitle
+			pin_corner_to_sibling	4
+			pin_to_sibling_corner	6
+			wide					200
+			auto_wide_tocontents 	1
+			auto_tall_tocontents	1
+			visible					0
+			labelText				"#COOP_CUSTOM_LOWPOP_WARNING_TEXT"
+			font					MapStarsGamemodesFont
+			allcaps					0
+			fgcolor_override		"255 255 255 255"
+			centerwrap				1
+		}
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					r53
+			wide					f0
+			tall					16
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/footer_buttons.res"
+		}
+	}
+}

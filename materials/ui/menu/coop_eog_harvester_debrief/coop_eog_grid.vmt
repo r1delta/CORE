@@ -1,0 +1,5 @@
+Basic
+{
+	$basetexture		"ui/menu/coop_eog_harvester_debrief/r1d_red_coop_eog_grid"
+	$translucent		1
+}
