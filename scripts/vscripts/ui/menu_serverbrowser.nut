@@ -213,12 +213,20 @@ function ShouldHideEmpty()
     return false
 }
 
+function StripVersionPrefix(version)
+{
+    // Master versions and GetMinimumR1DVersion() are release tags such as "v3.0.0"; the "v" must not be part of the major number.
+    if ( version.len() > 0 && ( version[0] == 'v' || version[0] == 'V' ) )
+        return version.slice( 1 )
+    return version
+}
+
 function CompareSemver(versionA, versionB)
 {
     if(GetR1DVersion() == "dev")
         return 1
-    local partsA = split( versionA, "." )
-    local partsB = split( versionB, "." )
+    local partsA = split( StripVersionPrefix( versionA ), "." )
+    local partsB = split( StripVersionPrefix( versionB ), "." )
 
     for (local i = 0; i < max(partsA.len(), partsB.len()); i++)
     {
