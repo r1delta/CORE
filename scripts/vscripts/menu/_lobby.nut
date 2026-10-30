@@ -1778,6 +1778,13 @@ function ClientCommand_SetCustomMap( player, ... )
 	if ( !(mapName in getconsttable().ePrivateMatchMaps) )
 		return true
 
+	// A converted Titanfall 2 map needs the group on the server (every player owns it, or dlc5_override) and a mode it exists in
+	if ( IsTitanfall2Map( mapName ) && ( !ServerHasDLCMapGroupEnabled( R2_MAP_DLC_GROUP ) || !MapSupportsMode( mapName, GetModeNameForEnum( level.ui.privatematch_mode ) ) ) )
+	{
+		printt( player.GetPlayerName(), "tried to set the unavailable map:", mapName )
+		return true
+	}
+
 	printt( player.GetPlayerName(), "set custom map to:", mapName )
 	level.ui.privatematch_map = getconsttable().ePrivateMatchMaps[mapName]
 
@@ -1812,6 +1819,9 @@ function ClientCommand_PrivateMatchSetMode( player, ... )
 
 	printt( player.GetPlayerName(), "set private_match mode to:", modeName )
 	level.ui.privatematch_mode = getconsttable().ePrivateMatchModes[modeName]
+
+	// The converted Titanfall 2 maps only exist in some modes
+	UpdatePrivateMatchMapIfUnavailable()
 	UpdatePrivateMatchReadyStatus( true )
 
 	return true
@@ -2267,8 +2277,10 @@ function UpdatePrivateMatchMapIfUnavailable()
 	if ( mapName )
 	{
 		local dlcGroup = GetDLCMapGroupForMap( mapName )
+		local modeName = GetModeNameForEnum( level.ui.privatematch_mode )
 
-		if ( !ServerHasDLCMapGroupEnabled( dlcGroup ) )
+		// A converted Titanfall 2 map is also unavailable in a mode Titanfall 2 does not have it in
+		if ( !ServerHasDLCMapGroupEnabled( dlcGroup ) || ( modeName != null && !MapSupportsMode( mapName, modeName ) ) )
 		{
 			level.ui.privatematch_map = getconsttable().ePrivateMatchMaps["mp_fracture"]
 			UpdatePrivateMatchReadyStatus( true )

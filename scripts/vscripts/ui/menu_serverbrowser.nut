@@ -416,9 +416,9 @@ function OnServerButtonFocused(button)
         menu.GetChild("StarsLabel").SetText( "#LOBBY" )
 		menu.GetChild("NextMapImage").SetImage(GetDefaultLobbyBackground())
     }
-    else if (server.map_name == "mp_mia" || server.map_name == "mp_nest2" || server.map_name == "mp_box" || server.map_name == "mp_npe") {
+    else if (server.map_name == "mp_mia" || server.map_name == "mp_nest2" || server.map_name == "mp_box" || server.map_name == "mp_npe" || IsTitanfall2Map(server.map_name)) {
         menu.GetChild("StarsLabel").SetText( "#" + server.map_name )
-        menu.GetChild("NextMapImage").SetImage("../loadscreens/" + server.map_name + "_widescreen")
+        menu.GetChild("NextMapImage").SetImage(GetMapImage(server.map_name))
     }
      else {
         menu.GetChild("StarsLabel").SetText( "#" + server.map_name  )

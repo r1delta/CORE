@@ -898,8 +898,8 @@ function SetMapInfo( mapName )
 	SmartGlass_SetGameStateProperty( SMARTGLASS_PROP_NEXTLEVEL, mapName )
 
 	local mapImage
-	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe" )
-		mapImage = "../loadscreens/" + mapName + "_widescreen"
+	if ( mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe" || IsTitanfall2Map( mapName ) )
+		mapImage = GetMapImage( mapName )
 	else
 		mapImage = "../ui/menu/lobby/lobby_image_" + mapName
 

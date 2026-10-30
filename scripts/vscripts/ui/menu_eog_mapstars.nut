@@ -94,8 +94,8 @@ function InitMenu()
 
 	// Map Image
 	local mapImage
-	if ( eogStarsMap == "mp_mia" || eogStarsMap == "mp_nest2" || eogStarsMap == "mp_box" || eogStarsMap == "mp_npe" )
-		mapImage = "../loadscreens/" + eogStarsMap + "_widescreen"
+	if ( eogStarsMap == "mp_mia" || eogStarsMap == "mp_nest2" || eogStarsMap == "mp_box" || eogStarsMap == "mp_npe" || IsTitanfall2Map( eogStarsMap ) )
+		mapImage = GetMapImage( eogStarsMap )
 	else
 		mapImage = "../ui/menu/lobby/lobby_image_" + eogStarsMap
 

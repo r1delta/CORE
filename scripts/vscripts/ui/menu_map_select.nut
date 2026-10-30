@@ -25,6 +25,7 @@ function main()
 	RegisterSignal( "OnCloseMapsMenu" )
 }
 
+
 function InitMapsMenu()
 {
 	file.menu <- GetMenu( "MapsMenu" )
@@ -244,7 +245,7 @@ function GetMapListDisplayName( mapName )
 
 function GetMapListImage( mapName )
 {
-	return "../loadscreens/" + mapName + "_widescreen"
+	return GetMapImage( mapName )
 }
 
 // Fills every tile from the window of file.mapsArray starting at file.scrollRow
@@ -320,7 +321,7 @@ function UpdateMapButtonTooltip( button )
 
 	if ( button.s.dlcGroup > 0 )
 	{
-		if ( !IsDLCMapGroupEnabledForLocalPlayer( button.s.dlcGroup ) )
+		if ( !LocalPlayerOwnsDLCMapGroup( button.s.dlcGroup ) )
 			HandleLockedCustomMenuItem( menu, button, ["#DLC_REQUIRED"] )
 		else if ( !ServerHasDLCMapGroupEnabled( button.s.dlcGroup ) )
 			HandleLockedCustomMenuItem( menu, button, ["#NOT_OWNED_BY_ALL_PLAYERS"] )
@@ -384,7 +385,7 @@ function MapButton_Activate( button )
 {
 	if ( button.IsLocked() )
 	{
-		if ( !IsMapVoteMode() && !IsDLCMapGroupEnabledForLocalPlayer( button.s.dlcGroup ) )
+		if ( !IsMapVoteMode() && !LocalPlayerOwnsDLCMapGroup( button.s.dlcGroup ) )
 			ShowDLCStore()
 
 		return
@@ -441,7 +442,7 @@ function MonitorDLCAvailability()
 {
 	EndSignal( uiGlobal.signalDummy, "OnCloseMapsMenu" )
 
-	local available = [ null, null, null ]
+	local available = [ null, null, null, null, null ]
 	local lastAvailable = clone available
 	local doUpdate
 
@@ -449,9 +450,9 @@ function MonitorDLCAvailability()
 	{
 		doUpdate = false
 
-		for ( local i = 0; i < 3; i++ )
+		for ( local i = 0; i < available.len(); i++ )
 		{
-			available[i] = ServerHasDLCMapGroupEnabled( i + 1 ) // 1-3
+			available[i] = ServerHasDLCMapGroupEnabled( i + 1 ) // 1-5
 
 			if ( available[i] != lastAvailable[i] )
 			{
@@ -510,11 +511,23 @@ function GetPrivateMatchMaps()
 	if ( modeName == "campaign_carousel" )
 		return GetCampaignMaps()
 
-	local mapsArray = []
-	mapsArray.resize( getconsttable().ePrivateMatchMaps.len() )
+	local allMaps = []
+	allMaps.resize( getconsttable().ePrivateMatchMaps.len() )
 
 	foreach ( mapName, mapID in getconsttable().ePrivateMatchMaps )
-		mapsArray[mapID] = mapName
+		allMaps[mapID] = mapName
+
+	// The converted Titanfall 2 maps are only listed for a player who owns the Titanfall 2 group (dlc5_enabled) and only in
+	// the modes Titanfall 2 has them in
+	local ownsTitanfall2 = LocalPlayerOwnsDLCMapGroup( R2_MAP_DLC_GROUP )
+	local mapsArray = []
+	foreach ( mapName in allMaps )
+	{
+		if ( IsTitanfall2Map( mapName ) && ( !ownsTitanfall2 || !MapSupportsMode( mapName, modeName ) ) )
+			continue
+
+		mapsArray.append( mapName )
+	}
 
 	if ( modeName != VARIETY_PACK && modeName != "all_mini" )
 		return mapsArray
@@ -612,8 +625,9 @@ function OnMapGridNavDown(...)
 		ScrollMapGrid( 1 )
 }
 
-// Where a map comes from, if it is not a plain multiplayer map: the map packs, the Titanfall Online maps, the maps that
-// only exist in R1Delta, and the maps the Titanfall Campaign is played on. Returns a localization token, or null.
+// Where a map comes from, if it is not a plain multiplayer map: the map packs, the Titanfall Online maps, the converted
+// Titanfall 2 maps, the maps that only exist in R1Delta, and the maps the Titanfall Campaign is played on. Returns a
+// localization token, or null.
 function GetMapPackToken( mapName )
 {
 	switch ( GetDLCMapGroupForMap( mapName ) )
@@ -624,6 +638,8 @@ function GetMapPackToken( mapName )
 			return "#MAP_PACK_2"
 		case 3:
 			return "#MAP_PACK_3"
+		case R2_MAP_DLC_GROUP:
+			return "#MAP_PACK_R2"
 	}
 
 	switch ( mapName )
@@ -716,6 +732,18 @@ function GetMapVoteOptions()
 	local playlist = GetCurrentPlaylistName()
 	local mapsArray = GetPlaylistUniqueMaps( playlist )
 
+	// The converted Titanfall 2 maps are listed by the playlists, but only a player and a server that own the Titanfall 2
+	// group can use them, and only in the modes Titanfall 2 has them in.
+	local usableMaps = []
+	foreach ( mapName in mapsArray )
+	{
+		if ( IsTitanfall2Map( mapName ) && !CanVoteForTitanfall2Map( mapName, playlist ) )
+			continue
+
+		usableMaps.append( mapName )
+	}
+	mapsArray = usableMaps
+
 	if ( playlist != CAPTURE_POINT && playlist != COOPERATIVE && playlist != CAMPAIGN )
 	{
 		mapsArray.append( "mp_mia" )
@@ -725,6 +753,14 @@ function GetMapVoteOptions()
 	}
 
 	return mapsArray
+}
+
+function CanVoteForTitanfall2Map( mapName, playlist )
+{
+	if ( !LocalPlayerOwnsDLCMapGroup( R2_MAP_DLC_GROUP ) || !ServerHasDLCMapGroupEnabled( R2_MAP_DLC_GROUP ) )
+		return false
+
+	return MapSupportsMode( mapName, playlist )
 }
 
 // Shows the wheel or the shoulder button glyphs (next to PREVIOUS PAGE / NEXT PAGE) for the active input device

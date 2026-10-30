@@ -321,6 +321,76 @@ function GetMapDisplayDesc( mapname )
 		return "#" + mapname + "_CLASSIC_DESC"
 }
 
+// The converted Titanfall 2 maps are DLC group 5. dlc5_enabled is recomputed from the installed Titanfall 2 files.
+const R2_MAP_DLC_GROUP = 5
+
+function IsTitanfall2Map( mapName )
+{
+	return GetDLCMapGroupForMap( mapName ) == R2_MAP_DLC_GROUP
+}
+
+// The stock script natives (IsDLCMapGroupEnabledForLocalPlayer) only know the groups 1 to 3 and answer false for the
+// Titanfall Online and Titanfall 2 groups, so those are read from the per-group userinfo convar instead. UI only.
+function LocalPlayerOwnsDLCMapGroup( group )
+{
+	if ( group < 1 )
+		return true
+	if ( group <= 3 )
+		return IsDLCMapGroupEnabledForLocalPlayer( group )
+	return GetConVarInt( "dlc" + group + "_enabled" ) == 1
+}
+
+// The ePrivateMatchModes a converted Titanfall 2 map can be played in, from the private match list of Titanfall 2:
+// the Live Fire maps only have the small map modes (Hardpoint, CTF, Pilot Skirmish, Marked For Death), the two Coliseum
+// maps are 1v1 arenas, every other map has the full set. Co-op (Frontier Defense) exists on the maps with a
+// towerdefense script.
+function GetTitanfall2MapModes( mapName )
+{
+	switch ( mapName )
+	{
+		case "mp_coliseum":
+		case "mp_coliseum_column":
+			return [ "tdm", "ttdm", "ffa" ]
+
+		case "mp_lf_stacks":
+		case "mp_lf_traffic":
+			return [ "cp", "ps", "mfd", "mfdp" ]
+
+		case "mp_lf_deck":
+		case "mp_lf_meadow":
+		case "mp_lf_township":
+		case "mp_lf_uma":
+			return [ "cp", "ps", "mfd", "mfdp", "coop" ]
+	}
+
+	return [ "at", "cp", "lts", "tdm", "mfd", "mfdp", "ps", "ttdm", "ffa", "coop" ]
+}
+
+// false for a Titanfall 2 map that does not have the given ePrivateMatchModes name; true for every other map
+function MapSupportsMode( mapName, modeName )
+{
+	if ( !IsTitanfall2Map( mapName ) )
+		return true
+
+	return ArrayContains( GetTitanfall2MapModes( mapName ), modeName )
+}
+
+// The picture of a map for the map picker, the lobby, the server browser and the end of game card: the loading screen of the map. The
+// converted Titanfall 2 maps use the UI image "r2/loadscreens/<map>" (the loading screen, served by the game from the Titanfall 2 install:
+// materials/vgui/r2/loadscreens; "../loadscreens/<map>_widescreen" is not served for them), a player without it gets the default lobby background (UI only).
+function GetMapImage( mapName )
+{
+	if ( IsTitanfall2Map( mapName ) )
+	{
+		if ( IsUI() && !LocalPlayerOwnsDLCMapGroup( R2_MAP_DLC_GROUP ) )
+			return GetDefaultLobbyBackground()
+
+		return "r2/loadscreens/" + mapName
+	}
+
+	return "../loadscreens/" + mapName + "_widescreen"
+}
+
 function ArrayContains( array, testVal )
 {
 	Assert( type( array ) == "array" )

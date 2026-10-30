@@ -1625,7 +1625,28 @@ enum ePrivateMatchMaps
 	mp_box,
 	mp_nest2,
 	mp_mia,
-	mp_npe
+	mp_npe,
+	// The 20 converted Titanfall 2 maps (DLC group 5). Only appended: the numbers are sent to clients as a UI var.
+	mp_black_water_canal,
+	mp_coliseum,
+	mp_coliseum_column,
+	mp_colony02,
+	mp_complex3,
+	mp_crashsite3,
+	mp_drydock,
+	mp_eden,
+	mp_forwardbase_kodai,
+	mp_glitch,
+	mp_grave,
+	mp_homestead,
+	mp_lf_deck,
+	mp_lf_meadow,
+	mp_lf_stacks,
+	mp_lf_township,
+	mp_lf_traffic,
+	mp_lf_uma,
+	mp_relic02,
+	mp_thaw
 }
 
 enum ePrivateMatchModes
