@@ -20,11 +20,56 @@ function main()
 	GM_AddEndRoundFunc( EndRoundMain )
 }
 
-function EntitiesDidLoad()
+function R2Port_EntitiesDidLoad()
 {
 	if ( EvacEnabled() )
 		EvacSetup()
+
+	local camOrigin = Vector( 0, -64, -1000 )
+	local charaOrigin = Vector( 0, 0, -1000 )
+	local camAngles = Vector( 0, 90, 0 )
+	local charaAngles = Vector( 0, -90, 0 )
+
+	// This one still has the VDU room, but theres missing textures
+	if ( GetMapName() == "mp_relic02" )
+	{
+		camOrigin = Vector( 2112, -8492, -464 )
+        charaOrigin = Vector( 2112, -8556, -528 )
+		camAngles.y = -90
+		charaAngles.y = 90
+	}
+	else
+	{
+		// TODO: make black cube prop to cover them
+		// None of these other maps have the VDU room, so placing them on 000 exposes them to the skybox
+		// Better than no dialogue for now though
+		//local cube = CreatePropDynamic( "models/something.mdl", Vector( charaOrigin ), null, 6 )
+	}
+
+	// VDU support
+	local vduCamera = CreateEntity( "info_target" )
+	vduCamera.SetName( "vdu_camera_ref" )
+	vduCamera.SetOrigin( camOrigin )
+	vduCamera.SetAngles( camAngles )
+	vduCamera.kv.spawnflags = 2
+	DispatchSpawn( vduCamera )
+
+	local vduCharacter = CreateEntity( "info_target" )
+	vduCharacter.SetName( "vdu_character_ref" )
+	vduCharacter.SetOrigin( charaOrigin )
+	vduCharacter.SetAngles( charaAngles )
+	vduCharacter.kv.spawnflags = 2
+	DispatchSpawn( vduCharacter )
 }
+Globalize( R2Port_EntitiesDidLoad )
+
+// Doesnt work when placed here
+// Who fucking knows what thats about
+//function EntitiesDidLoad()
+//{
+//	if ( EvacEnabled() )
+//		EvacSetup()
+//}
 
 function EvacSetup()
 {

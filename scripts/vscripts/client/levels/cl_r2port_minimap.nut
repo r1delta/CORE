@@ -60,5 +60,10 @@ function main()
 	local y = posY - halfWidth * heightRatio
 
 	SetFullscreenMinimapParameters( zoom, x, y, 180 )
-	printt( "R2Port fullscreen map", mapName, "zoom", zoom, "x", x, "y", y )
+
+	local isLiveFireMap = mapName.slice( 2, 6 ) == "_lf_"
+	if ( GAMETYPE == COOPERATIVE && !isLiveFireMap )
+		SetCustomMinimapZoom( 2 )
+
+	printt( "R2Port fullscreen map", mapName, "zoom", zoom, "x", x, "y", y, "isLiveFireMap", isLiveFireMap )
 }
