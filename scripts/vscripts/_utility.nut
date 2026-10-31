@@ -6179,3 +6179,7 @@ function ScriptBrushExit( trigger, entity, caller, value )
 {
 	printt( "entity", entity, "exited script brush", trigger.GetName() )
 }
+
+// Shortcuts for the console
+gent <- GetEnt
+genta <- GetEntArrayByClass_Expensive
