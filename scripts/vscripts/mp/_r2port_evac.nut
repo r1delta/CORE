@@ -18,6 +18,8 @@ function main()
 		return
 
 	GM_AddEndRoundFunc( EndRoundMain )
+
+	PrecacheModel( "models/dev/vdu_cube.mdl" )
 }
 
 function R2Port_EntitiesDidLoad()
@@ -43,7 +45,7 @@ function R2Port_EntitiesDidLoad()
 		// TODO: make black cube prop to cover them
 		// None of these other maps have the VDU room, so placing them on 000 exposes them to the skybox
 		// Better than no dialogue for now though
-		//local cube = CreatePropDynamic( "models/something.mdl", Vector( charaOrigin ), null, 6 )
+		local cube = CreatePropDynamic( "models/dev/vdu_cube.mdl", charaOrigin + Vector( 0, 0, 64 ), null, 6 )
 	}
 
 	// VDU support

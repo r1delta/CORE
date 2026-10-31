@@ -333,7 +333,8 @@ function TrySpawnOreOnNode( nodeIndex, oreType, oreModels )
 		return false
 
 	local maxDist = ORE_DISTANCE_SQUARED_FROM_DUMP_SPOT
-	if ( GetMapName() == "mp_npe" || GetMapName() == "mp_box" )
+	local mapName = GetMapName()
+	if ( mapName == "mp_npe" || mapName == "mp_box" || StringContains( mapName, "_lf_" ) )
 		maxDist *= 0.5
 
 	if ( NodeNearOreDumpSpot( nodePos, maxDist ) )

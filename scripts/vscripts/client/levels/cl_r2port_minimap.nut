@@ -61,7 +61,7 @@ function main()
 
 	SetFullscreenMinimapParameters( zoom, x, y, 180 )
 
-	local isLiveFireMap = mapName.slice( 2, 6 ) == "_lf_"
+	local isLiveFireMap = StringContains( mapName, "_lf_" )
 	if ( GAMETYPE == COOPERATIVE && !isLiveFireMap )
 		SetCustomMinimapZoom( 2 )
 
