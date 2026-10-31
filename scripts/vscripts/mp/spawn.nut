@@ -140,6 +140,7 @@ function GameModeRemove( spawnpoint )
 		// these modes use the "gamemode_tdm" spawn points
 		case TEAM_DEATHMATCH:
 		case PILOT_SKIRMISH:
+		case LIVE_FIRE:
 		case ATTRITION:
 		case ELIMINATION:
 		case TITAN_TAG:

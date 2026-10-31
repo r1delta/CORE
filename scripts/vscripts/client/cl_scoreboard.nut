@@ -1218,6 +1218,7 @@ function AddColumnsForGameMode( scoreboard )
 			break
 
 		case PILOT_SKIRMISH:
+		case LIVE_FIRE:
 			AddColumnLabel( scoreboard, "assists", SCOREBOARD_MATERIAL_ASSISTS, "#SCOREBOARD_ASSISTS", 0, false, UpdateAssists )
 			AddColumnLabel( scoreboard, "deaths", SCOREBOARD_MATERIAL_DEATHS, "#SCOREBOARD_DEATHS", 0, true, UpdateDeaths )
 			AddColumnLabel( scoreboard, "pilotKills", SCOREBOARD_MATERIAL_PILOT_KILLS, "#SCOREBOARD_PILOT_KILLS", 0, true, UpdateKills )

@@ -38,6 +38,7 @@ const OUT_OF_BOUNDS_DECAY_DELAY = 1
 
 const TEAM_DEATHMATCH = "tdm"
 const PILOT_SKIRMISH = "ps"
+const LIVE_FIRE = "lf"
 const CAPTURE_POINT = "cp"
 const ELIMINATION = "elim"
 const ATDM = "atdm"
@@ -1674,7 +1675,8 @@ enum ePrivateMatchModes
 	bce,
 	tffa,
 	ttdm_turbo,
-	tffa_turbo
+	tffa_turbo,
+	lf
 }
 
 
@@ -2243,6 +2245,16 @@ pmSettingsMap["pm_score_limit"]["lts"] <- [
 	9,
 ]
 pmSettingsMap["pm_score_limit"]["wlts"] <- [
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+]
+pmSettingsMap["pm_score_limit"]["lf"] <- [
 	2,
 	3,
 	4,

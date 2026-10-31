@@ -2433,6 +2433,7 @@ function ScoreboardCompareFuncForGamemode( gamemode )
 	{
 		case TEAM_DEATHMATCH:
 		case PILOT_SKIRMISH:
+		case LIVE_FIRE:
 			return CompareKills
 		case CAPTURE_POINT:
 			return CompareCP

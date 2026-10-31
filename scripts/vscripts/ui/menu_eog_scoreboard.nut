@@ -269,7 +269,7 @@ function ShowScoreboard()
 		scoreboardValueNames.append( { var = "score_kills", highlight = false } )
 		scoreboardValueNames.append( { var = "score_assault", highlight = true } )
 	}
-	else if ( storedModeString == PILOT_SKIRMISH )
+	else if ( storedModeString == PILOT_SKIRMISH || storedModeString == LIVE_FIRE )
 	{
 		// added RIGHT to LEFT
 		ShowScoreboardColumn( 6, "assists" )

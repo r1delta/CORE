@@ -354,16 +354,16 @@ function GetTitanfall2MapModes( mapName )
 
 		case "mp_lf_stacks":
 		case "mp_lf_traffic":
-			return [ "cp", "ps", "mfd", "mfdp" ]
+			return [ "cp", "ps", "lf", "mfd", "mfdp" ]
 
 		case "mp_lf_deck":
 		case "mp_lf_meadow":
 		case "mp_lf_township":
 		case "mp_lf_uma":
-			return [ "cp", "ps", "mfd", "mfdp", "coop" ]
+			return [ "cp", "ps", "lf", "mfd", "mfdp", "coop" ]
 	}
 
-	return [ "at", "cp", "lts", "tdm", "mfd", "mfdp", "ps", "ttdm", "ffa", "coop" ]
+	return [ "at", "cp", "lts", "tdm", "mfd", "mfdp", "ps", "lf", "ttdm", "ffa", "coop" ]
 }
 
 // false for a Titanfall 2 map that does not have the given ePrivateMatchModes name; true for every other map
