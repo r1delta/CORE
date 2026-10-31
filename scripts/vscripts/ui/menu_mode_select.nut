@@ -82,7 +82,7 @@ function GetDisplayModes()
 		"ttdm+tffa+ttdm_turbo+tffa_turbo",
 		"mfd+mfdp+tmfd+tmfdp",
 		"lts+wlts",
-		"tdm+ps",
+		"tdm+ps+lf",
 		"ffa+gg+bce",
 	]
 }
@@ -100,7 +100,7 @@ function GetVariantMenuForEntry( entry )
 		case "lts+wlts":
 			return "ModeVariantLTSMenu"
 
-		case "tdm+ps":
+		case "tdm+ps+lf":
 			return "ModeVariantPilotMenu"
 
 		case "ffa+gg+bce":
@@ -384,10 +384,10 @@ function UpdateGametypeConVarsFromPlaylist( useBase = false )
 	local playlistScoreLimitName
 	local playlistTimeLimitName
 
-	if ( file.modeSettingsName == "lts" )
+	if ( file.modeSettingsName == "lts" || file.modeSettingsName == "lf" )
 	{
-		playlistScoreLimitName = "lts_roundscorelimit"
-		playlistTimeLimitName = "lts_roundtimelimit"
+		playlistScoreLimitName = file.modeSettingsName + "_roundscorelimit"
+		playlistTimeLimitName = file.modeSettingsName + "_roundtimelimit"
 	}
 	else
 	{
@@ -596,7 +596,7 @@ function SetTitanRebuildTimeText( textElem, titanBuildTime )
 
 function SetScoreLimitText( textElem, scoreLimit )
 {
-	if ( file.modeSettingsName == "lts" )
+	if ( file.modeSettingsName == "lts" || file.modeSettingsName == "lf" )
 		textElem.SetText( "#N_ROUND_WINS", scoreLimit )
 	else
 		textElem.SetText( "#N_POINTS", scoreLimit )

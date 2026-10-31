@@ -2063,14 +2063,14 @@ function ClientCommand_UpdatePrivateMatchSetting( player, ... )
 	switch ( pmVarName )
 	{
 		case "pm_score_limit":
-			if ( modeName == "lts" )
+			if ( modeName == "lts" || modeName == "lf" )
 				SetPlaylistVarOverride( modeName + "_roundscorelimit", "" + pmSettingsMap["pm_score_limit"][modeName][pmVarVal.tointeger()] )
 			else
 				SetPlaylistVarOverride( modeName + "_scorelimit", "" + pmSettingsMap["pm_score_limit"][modeName][pmVarVal.tointeger()] )
 			break
 
 		case "pm_time_limit":
-			if ( modeName == "lts" )
+			if ( modeName == "lts" || modeName == "lf" )
 				SetPlaylistVarOverride( modeName + "_roundtimelimit", "" + pmVarVal.tointeger() )
 			else
 				SetPlaylistVarOverride( modeName + "_timelimit", "" + pmVarVal.tointeger() )

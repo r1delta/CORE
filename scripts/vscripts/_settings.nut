@@ -223,6 +223,17 @@ if ( IsClient() )
 	GameMode_SetDefaultScoreLimits( PILOT_SKIRMISH, 100, 0 )
 	GameMode_SetDefaultTimeLimits( PILOT_SKIRMISH, 15, 0 )
 
+	// Live Fire: round-based Pilot Skirmish, one life per round
+	GameMode_Create( LIVE_FIRE )
+	GameMode_SetName( LIVE_FIRE, "Live Fire" )
+	GameMode_SetGameModeAnnouncement( LIVE_FIRE, "GameModeAnnounce_PS" )
+	GameMode_SetDesc( LIVE_FIRE, "Eliminate the enemy Pilots\nOne life per round. No Titans." )
+	GameMode_SetMatchStartDesc( LIVE_FIRE, "Eliminate the enemy Pilots" )
+	GameMode_SetIcon( LIVE_FIRE, "../ui/menu/playlist/tdm" )
+	GameMode_AddServerScript( LIVE_FIRE, "mp/_gamemode_lf" )
+	GameMode_SetDefaultScoreLimits( LIVE_FIRE, 0, 3 )
+	GameMode_SetDefaultTimeLimits( LIVE_FIRE, 0, 4 )
+
 	GameMode_Create( CAPTURE_THE_FLAG )
 	GameMode_SetName( CAPTURE_THE_FLAG, "#GAMEMODE_CAPTURE_THE_FLAG" )
 	GameMode_SetGameModeAnnouncement( CAPTURE_THE_FLAG, "GameModeAnnounce_CTF" )
@@ -441,6 +452,7 @@ enum eGameModes
 gameModesStringToIdMap <- {}
 gameModesStringToIdMap[ TEAM_DEATHMATCH ] 					<- eGameModes.TEAM_DEATHMATCH_ID
 gameModesStringToIdMap[ PILOT_SKIRMISH ] 					<- eGameModes.PILOT_SKIRMISH_ID
+gameModesStringToIdMap[ LIVE_FIRE ] 						<- eGameModes.PILOT_SKIRMISH_ID		// stats and telemetry count it as Pilot Skirmish
 gameModesStringToIdMap[ CAPTURE_POINT ] 					<- eGameModes.CAPTURE_POINT_ID
 gameModesStringToIdMap[ ELIMINATION ] 						<- eGameModes.ELIMINATION_ID
 gameModesStringToIdMap[ ATDM ] 								<- eGameModes.ATDM_ID

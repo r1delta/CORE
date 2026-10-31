@@ -318,7 +318,7 @@ function OnPilotLoadoutButton_Activate( button )
 	}
 
 	local gamemode = GetConVarString( "mp_gamemode" )
-	if ( gamemode == PILOT_SKIRMISH || gamemode == GUN_GAME ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
+	if ( gamemode == PILOT_SKIRMISH || gamemode == LIVE_FIRE || gamemode == GUN_GAME ) //JFS. For R2 maybe try checking against Riff settings to see if Titans are disabled or not.
 		SetLoadoutSelectionFinished()
 
 	if ( !uiGlobal.loadoutSelectionFinished )
