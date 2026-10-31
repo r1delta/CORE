@@ -42,9 +42,8 @@ function R2Port_EntitiesDidLoad()
 	}
 	else
 	{
-		// TODO: make black cube prop to cover them
-		// None of these other maps have the VDU room, so placing them on 000 exposes them to the skybox
-		// Better than no dialogue for now though
+		// Cover the VDU positions with a black cube
+		// None of these other maps have the VDU room, so placing them on 000 normally exposes them to the skybox
 		local cube = CreatePropDynamic( "models/dev/vdu_cube.mdl", charaOrigin + Vector( 0, 0, 64 ), null, 6 )
 	}
 
