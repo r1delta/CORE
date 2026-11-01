@@ -320,6 +320,8 @@ function main()
 
 ////////////////////////// End autogeneration
 
-	AddLoadoutCrate( level.nv.attackingTeam, Vector( -722.355, -81.6862, 408.031 ), Vector( 0, -90, 0 ) )
-	AddLoadoutCrate( level.nv.attackingTeam, Vector( 814.403, 379.481, 408.031 ), Vector( 0, -180, 0 ) )
+	AddLoadoutCrate( level.nv.attackingTeam, Vector( -722.355, -105, 408.031 ), Vector( 0, 90, 0 ) )
+	AddLoadoutCrate( level.nv.attackingTeam, Vector( 796, 379.481, 408.031 ), Vector( 0, 0, 0 ) )
+
+	SetCustomPlayerDropshipSpawn( TEAM_MILITIA, Vector( 271.354, 194.811, 546.584 ), Vector( -1.23994, -95.7034, 0 ) )
 }

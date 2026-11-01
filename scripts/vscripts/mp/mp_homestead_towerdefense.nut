@@ -425,4 +425,6 @@ function main()
 
 	AddLoadoutCrate( level.nv.attackingTeam, Vector( -2379.1, -1430.61, 13.0313 ), Vector( 0, -120.004, 0 ) )
 	AddLoadoutCrate( level.nv.attackingTeam, Vector( -1090.29, -4340.06, -51.4004 ), Vector( 5.26834, 156.276, 0 ) )
+
+	SetCustomPlayerDropshipSpawn( TEAM_MILITIA, Vector( -1167.3, -3731.35, -138.76 ), Vector( -3.57288, 27.3592, 0 ) )
 }
