@@ -358,4 +358,9 @@ function main()
 	] )
 
 	R2FD_Setup( def )
+
+////////////////////////// End autogeneration
+
+	AddLoadoutCrate( level.nv.attackingTeam, Vector( -3011.49, 1051.8, 1040.03 ), Vector( 0, -90, 0 ), false )
+	AddLoadoutCrate( level.nv.attackingTeam, Vector( -1153.88, 2355.03, 993.732 ), Vector( 0, 180, 0 ) )
 }
