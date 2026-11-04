@@ -19,7 +19,6 @@ function main()
 	// "getpos" is already taken but doesnt work
 	AddClientCommandCallback( "getposs", ClientCommand_GetPos )
 	AddClientCommandCallback( "getmypos", ClientCommand_GetPos )
-	AddClientCommandCallback( "getplayerpos", ClientCommand_GetPos )
 	AddClientCommandCallback( "getscriptpos", ClientCommand_GetScriptPos )
 	AddClientCommandCallback( "setpos", ClientCommand_SetPos )
 	AddClientCommandCallback( "setang", ClientCommand_SetAng )
