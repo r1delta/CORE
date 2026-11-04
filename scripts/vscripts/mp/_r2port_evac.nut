@@ -29,16 +29,14 @@ function R2Port_EntitiesDidLoad()
 
 	local camOrigin = Vector( 0, -64, -1000 )
 	local charaOrigin = Vector( 0, 0, -1000 )
-	local camAngles = Vector( 0, 90, 0 )
-	local charaAngles = Vector( 0, -90, 0 )
+	local camAngles = Vector( 0, -90, 0 )
+	local charaAngles = Vector( 0, 90, 0 )
 
 	// This one still has the VDU room, but theres missing textures
 	if ( GetMapName() == "mp_relic02" )
 	{
 		camOrigin = Vector( 2112, -8492, -464 )
         charaOrigin = Vector( 2112, -8556, -528 )
-		camAngles.y = -90
-		charaAngles.y = 90
 	}
 	else
 	{
