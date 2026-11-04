@@ -19,6 +19,8 @@ glc <- GetLocalClientPlayer
 glcp <- GetLocalClientPlayer
 glv <- GetLocalViewPlayer
 glvp <- GetLocalViewPlayer
+genta <- GetClientEntArrayBySignifier
+gcea <- GetClientEntArrayBySignifier
 
 /***************************************************
 Code constants already registered for script
