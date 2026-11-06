@@ -23,6 +23,7 @@ function main()
     file.serversMap <- null
     file.serversGamemode <- null
     file.serverList <- []
+    file.serverListRequest <- 0
     file.scrollOffset <- 0
     // uiGlobal.serversArrayFiltered <- []
     file.searchBox <- null
@@ -124,28 +125,26 @@ function ClearPreviewPane()
     // menu.GetChild( "VersionLabel" ).SetText( "" )
 }
 
+// PollServerList returns null until the request DispatchServerListReq just started has answered
+// (the master server's list, or an empty list when it could not be reached), so this waits for that
+// answer and then redraws. A newer refresh supersedes this one.
 function Threaded_GetServerList()
 {
-	local retries = 0
+    file.serverListRequest++
+    local request = file.serverListRequest
 
-    file.serverList = []
-
-	while(file.serverList.len() <= 0 && retries < 15) {
-
-		local list = PollServerList()
-
-		if(list == null)
-		{
-			wait 0.1
-			continue
-		}
-
-		file.serverList <- list
-		retries += 1
+    local list = PollServerList()
+    while ( list == null )
+    {
         wait 0.1
-	}
+        if ( request != file.serverListRequest )
+            return
+        list = PollServerList()
+    }
 
-	uiGlobal.serverList <- file.serverList
+    file.serverList = list
+    uiGlobal.serverList <- list
+    FilterAndUpdateList()
 }
 
 
