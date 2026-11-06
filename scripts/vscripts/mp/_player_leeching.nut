@@ -11,6 +11,7 @@ function main()
 	Globalize( EnablePlayerLeeching )
 	Globalize( DisablePlayerLeeching )
 	Globalize( PlayerCanLeech )
+	Globalize( PlayerCanLeechTarget ) // called by DoLeechAndUpdateSpectreUsability, an anim event callback: its "this" is the anim event table, not this file
 	Globalize( InitLeeching )
 	Globalize( LeechSurroundingSpectres )
 	Globalize( CodeCallback_LeechStart )

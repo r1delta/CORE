@@ -954,11 +954,9 @@ function SetupHardpointTerminal( hardpoint )
 
 	local terminal = CreatePropDynamic( model, origin, angles, 6 )
 
-	if ( !nearTarget )
-	{
-		Assert( hardpoint.HasKey( "nearTarget" ), "The info_hardpoint must target at least 4 assault_assaultpoints with it's nearTarget key/value." )
+	// the converted Titanfall 2 hardpoints have no nearTarget key: their terminal nodes come from the assault points alone
+	if ( !nearTarget && hardpoint.HasKey( "nearTarget" ) )
 		nearTarget = hardpoint.kv.nearTarget
-	}
 
 	terminal.s.captureDialogue <- { [TEAM_IMC] = false, [TEAM_MILITIA] = false }
 	terminal.s.deathTimestamp <- 0
@@ -972,18 +970,19 @@ function SetupHardpointTerminal( hardpoint )
 	local terminalOrigin = terminal.GetOrigin()
 
 	local nodeArray = []
-	nodeArray = GetEntArrayByNameWildCard_Expensive( nearTarget )
+	if ( nearTarget )
+		nodeArray = GetEntArrayByNameWildCard_Expensive( nearTarget )
 
 	if ( nodeArray.len() < 4 )
 	{
-		// if we don't have enough
+		// if we don't have enough, top up with the closest assault points; never pad with null nodes
 		local array = clone hardpoint.s.assaultPoints
 		array = ArrayClosest( array, terminalOrigin )
 		nodeArray.extend( array )
-		nodeArray.resize( 4 )
+		if ( nodeArray.len() > 4 )
+			nodeArray.resize( 4 )
 	}
 
-	Assert( nodeArray.len() >= 4, "couldn't find 4 assault_assaultpoint for the hardpoint terminal at " + terminal.GetOrigin() )
 	terminal.s.nodeArray <- nodeArray
 
 	terminal.SetTeam( hardpoint.GetTeam() )

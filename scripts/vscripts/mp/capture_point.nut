@@ -894,6 +894,14 @@ function SetupCapturePointNPCs( hardpointArray )
 	if ( GetGameState() <= eGameState.Prematch && waitTime > 0 )
 		wait waitTime
 
+	// The converted Titanfall 2 maps tag their drop pod spawns out of Hardpoint (R2 Hardpoint has no AI squads),
+	// so a map can have no drop pod spawn for this mode at all: there is nowhere to drop a squad.
+	if ( !SpawnPoints_GetDropPod().len() )
+	{
+		printt( "Hardpoint: no drop pod spawnpoints for this mode on " + GetMapName() + ", running without AI squads" )
+		return
+	}
+
 	thread CapturePointSpawnNPCsThink()	//default CP spawn logic
 }
 Globalize( SetupCapturePointNPCs )
