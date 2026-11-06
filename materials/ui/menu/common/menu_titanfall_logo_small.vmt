@@ -1,8 +1,0 @@
-Basic
-{
-	$basetexture		"ui/menu/common/r1d_red_menu_titanfall_logo_small"
-	$translucent		1
-	$vertexcolor		1
-	$vertexalpha		1
-	$ignorez			1
-}
