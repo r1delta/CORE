@@ -13,6 +13,7 @@ function main()
     Globalize( HideServerDescription )
     Globalize( OnSearchBoxLooseFocus )
     Globalize( DeregisterMouseWheelCallbacks )
+    Globalize( GetDirectConnectCommand )
 
     // File-level variables
     file.menu <- null
