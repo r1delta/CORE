@@ -523,7 +523,8 @@ function GetPrivateMatchMaps()
 	if ( IsMapVoteMode() )
 		return GetMapVoteOptions()
 
-	local modeName = GetModeNameForEnum( level.ui.privatematch_mode )
+	// Outside a private match the picker is the Frontier Defense "create a match" list
+	local modeName = IsPrivateMatch() ? GetModeNameForEnum( level.ui.privatematch_mode ) : COOPERATIVE
 	if ( modeName == "campaign_carousel" )
 		return GetCampaignMaps()
 
@@ -533,13 +534,14 @@ function GetPrivateMatchMaps()
 	foreach ( mapName, mapID in getconsttable().ePrivateMatchMaps )
 		allMaps[mapID] = mapName
 
-	// The converted Titanfall 2 maps are listed in the modes Titanfall 2 has them in. A player without a usable Titanfall 2 install still
-	// sees them, locked, with the reason in the tooltip (UpdateMapButtonTooltip): hiding them left people with Titanfall 2 installed no way
-	// to tell why the maps were missing.
+	// Every map is listed only in the modes it exists in (Frontier Defense has no M.I.A., Nest, Box or Certification; the converted
+	// Titanfall 2 maps only in the modes Titanfall 2 has them in). A player without a usable Titanfall 2 install still sees those maps,
+	// locked, with the reason in the tooltip (UpdateMapButtonTooltip): hiding them left people with Titanfall 2 installed no way to tell
+	// why the maps were missing.
 	local mapsArray = []
 	foreach ( mapName in allMaps )
 	{
-		if ( IsTitanfall2Map( mapName ) && !MapSupportsMode( mapName, modeName ) )
+		if ( !MapSupportsMode( mapName, modeName ) )
 			continue
 
 		mapsArray.append( mapName )
