@@ -305,7 +305,8 @@ function UpdateDLCMapButtons()
 			continue
 		}
 
-		if ( ServerHasDLCMapGroupEnabled( button.s.dlcGroup ) )
+		// Titanfall 2 maps are unusable for a player without a usable install even when the server (override, or a host that has one) allows them
+		if ( ServerHasDLCMapGroupEnabled( button.s.dlcGroup ) && ( button.s.dlcGroup != R2_MAP_DLC_GROUP || LocalPlayerOwnsDLCMapGroup( R2_MAP_DLC_GROUP ) ) )
 			button.SetLocked( false )
 		else
 			button.SetLocked( true )
@@ -322,7 +323,18 @@ function UpdateMapButtonTooltip( button )
 	if ( button.s.dlcGroup > 0 )
 	{
 		if ( !LocalPlayerOwnsDLCMapGroup( button.s.dlcGroup ) )
-			HandleLockedCustomMenuItem( menu, button, ["#DLC_REQUIRED"] )
+		{
+			if ( button.s.dlcGroup == R2_MAP_DLC_GROUP )
+			{
+				// The game says why it has no usable Titanfall 2 install (not found, a server file set, unreadable packs)
+				local reason = GetConVarString( "r1delta_titanfall2_status" )
+				if ( reason == "" )
+					reason = "#R2_INSTALL_REQUIRED_HINT"
+				HandleLockedCustomMenuItem( menu, button, ["#R2_INSTALL_REQUIRED", reason] )
+			}
+			else
+				HandleLockedCustomMenuItem( menu, button, ["#DLC_REQUIRED"] )
+		}
 		else if ( !ServerHasDLCMapGroupEnabled( button.s.dlcGroup ) )
 			HandleLockedCustomMenuItem( menu, button, ["#NOT_OWNED_BY_ALL_PLAYERS"] )
 		else
@@ -385,7 +397,8 @@ function MapButton_Activate( button )
 {
 	if ( button.IsLocked() )
 	{
-		if ( !IsMapVoteMode() && !LocalPlayerOwnsDLCMapGroup( button.s.dlcGroup ) )
+		// The tooltip already says what a Titanfall 2 map needs; the Titanfall DLC store has nothing to sell for it
+		if ( !IsMapVoteMode() && button.s.dlcGroup != R2_MAP_DLC_GROUP && !LocalPlayerOwnsDLCMapGroup( button.s.dlcGroup ) )
 			ShowDLCStore()
 
 		return
@@ -409,6 +422,9 @@ function OnRandomMapButton_Activate( button )
 
 		local dlcGroup = GetDLCMapGroupForMap( mapName )
 		if ( dlcGroup > 0 && !ServerHasDLCMapGroupEnabled( dlcGroup ) )
+			continue
+
+		if ( dlcGroup == R2_MAP_DLC_GROUP && !LocalPlayerOwnsDLCMapGroup( R2_MAP_DLC_GROUP ) )
 			continue
 
 		if ( mapName != currentMap )
@@ -517,13 +533,13 @@ function GetPrivateMatchMaps()
 	foreach ( mapName, mapID in getconsttable().ePrivateMatchMaps )
 		allMaps[mapID] = mapName
 
-	// The converted Titanfall 2 maps are only listed for a player who owns the Titanfall 2 group (dlc5_enabled) and only in
-	// the modes Titanfall 2 has them in
-	local ownsTitanfall2 = LocalPlayerOwnsDLCMapGroup( R2_MAP_DLC_GROUP )
+	// The converted Titanfall 2 maps are listed in the modes Titanfall 2 has them in. A player without a usable Titanfall 2 install still
+	// sees them, locked, with the reason in the tooltip (UpdateMapButtonTooltip): hiding them left people with Titanfall 2 installed no way
+	// to tell why the maps were missing.
 	local mapsArray = []
 	foreach ( mapName in allMaps )
 	{
-		if ( IsTitanfall2Map( mapName ) && ( !ownsTitanfall2 || !MapSupportsMode( mapName, modeName ) ) )
+		if ( IsTitanfall2Map( mapName ) && !MapSupportsMode( mapName, modeName ) )
 			continue
 
 		mapsArray.append( mapName )
