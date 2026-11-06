@@ -17,24 +17,21 @@ if ( !IsUI() )
 		thread InitPersistentDataWhenReady( player )
 	}
 
-	// After a changelevel reconnect the client's persistent payload arrives
-	// over the connection a moment after the connect callback runs. Treating
-	// that empty read as "new player" resets the player's real loadouts and
-	// retries the connection, so wait for the payload first. A player whose
-	// data never arrives falls through to the new-player defaults as before.
+	// Until the client's persistent data has arrived on this connection every
+	// read is a default, and deciding "new player" from those would overwrite
+	// real progression (the server keeps such writes to itself, see
+	// IsPersistentDataReady). Wait for the data instead of guessing: a client
+	// without any data is ready as soon as its connect-time userinfo arrives.
 	function InitPersistentDataWhenReady( player )
 	{
 		player.EndSignal( "Disconnected" )
 
-		local deadline = Time() + 5.0
-		while ( Time() < deadline )
-		{
-			if ( player.GetPersistentVar( "previouslyInitialized" )
-				|| player.GetPersistentVar( "initializedVersion" ) )
-				break
+		while ( !IsPersistentDataReady( player ) )
 			wait 0.1
-		}
 
+		// XP and generation were networked at connect from whatever was there.
+		player.XPChanged()
+		player.GenChanged()
 		InitPersistentDataNow( player )
 	}
 
