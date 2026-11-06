@@ -1,10 +1,353 @@
-Patch
+UnlitTwoTexture
 {
-	"Include"				"materials/models/weapons/attachments/hcog_reticle_front.vmt"
+	"$nocull" "1"
+	"$nodecal" "1"
+//	"$additive" "1"
+	"$no_fullbright" 1
+	"$model" "1"
+	"$nofog" "1"
+	"$allowoverbright" "1"
+	"$translucent" "1"
 
-	"Insert"
+	"$basetexture" "models\weapons\attachments\hcog_reticle_rear_col"
+	"$Texture2" "dev\noise_post"
+	"$color" "[1 1 1]"
+	"$color2" "[1 1 1]"
+
+	"$t2offset" 0
+	"$t2scale" 3
+	"$t2rot" 0
+	"$scroll" "[0 1]"
+
+/////////////////////////////////////////////////////////
+
+	"$valuezero"	"0"
+
+	"$colorblind_color"		"[1 1 1]"
+
+	"$clroffsetzero"	"[5 3 1]"			//Base colour
+
+	$Translatescale "2.0"		//main scalar
+	$TranslatescaleX "2.0"		//x scalar
+	$TranslatescaleY "2.0"		//y scalar
+	$holoScale "[1.0 1.0]"		// Base scaling var [inverted!]
+	$holoOffset "[0.0 0.0]"		// Base Offset var
+
+	$holoOffsetX ".0"			//dummy for print
+	$holoOffsetY ".0"			//dummy for print
+	$holoOffsetX_temp ".0"		//dummy for print
+	$holoOffsetY_temp ".0"		//dummy for print
+
+	$holoOffset2 "[0.0 0.0]"	//Final Offset var (new/old blend)
+	$holoOffsetNew "[0.0 0.0]"	//Offset of the R1Delta reticle fix
+	$holoOffsetOld "[0.0 0.0]"	//Offset of vanilla Titanfall (delta_old_reticles 1)
+	$holoScaleNew "[1.2 1.2]"	//Scale of the R1Delta reticle fix
+	$scaleOld "1.0"	//Scale of vanilla Titanfall
+	$scaleBlend "1.0"
+	$valueone "1"
+	$oldmode "0"	//delta_old_reticles
+	$newmode "1"
+	$newX "0"
+	$newY "0"
+	$oldX "0"
+	$oldY "0"
+	$sNew "0"
+	$newXm "0"
+	$newYm "0"
+	$oldXm "0"
+	$oldYm "0"
+	$sNewm "0"
+	$sOldm "0"
+
+	$holoOffset_temp 	"[0.0 0.0]"		// dummy Offset var
+	$holoOffset2_temp 	"[0.0 0.0]"		// dummy Offset var
+	$offset_disable		"0"				//offset killswitch
+
+	"$scale_temp"	"1.2" 		//"1.2" //dummy for cvar scaling =$holoscale
+	"$scale_post"	"1.0" //.0		//temp var for cvar scaling
+	"$scale_result"	".0"		//temp var because we can't
+
+	"Proxies"
 	{
-		"$basetexture" 		"models/weapons/attachments/hcog_reticle_rear_col"
-		"$clroffsetzero" 	"[5 3 1]"
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_ColorBlindRed"
+			resultVar $colorblind_color
+		}
+
+		//	if ( srcVar1 > srcVar2 )
+		//		resultVar = greaterVar
+		//	else
+		//		resultVar = LessEqualVar
+		LessOrEqual
+		{
+			lessEqualVar	$clroffsetzero
+			greaterVar		$colorblind_color
+			srcVar1			$colorblind_color
+			srcVar2			$valuezero
+			resultVar		$color2
+		}
+
+		//Horizontal movement speed
+		"UniformNoise"
+		{
+			"minVal" 0.5
+			"maxVal" 1
+			"resultVar" "$scroll[0]"
+		}
+
+		//Vertical movement speed
+		"UniformNoise"
+		{
+			"minVal" 0.5
+			"maxVal" 1
+			"resultVar" "$scroll[1]"
+		}
+
+		//Move the 2nd texture using horiz and vert speed
+		"TextureTransform"
+		{
+			"translateVar" "$scroll"
+			"scaleVar" "$t2scale"
+			"rotateVar" "$t2rot"
+			"resultvar" "$texture2transform"
+		}
+
+		//chevron flicker
+		"UniformNoise"
+		{
+			"minVal" 0.8 //0.0
+			"maxVal" 1.00
+			"resultVar" "$color" //alpha
+		}
+
+		"HoloSight"
+		{
+			resultVar $alpha
+		}
+
+//OFFSET/SCALE
+
+		// Function that controls $holoOffset scalar
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_FOVReticleOffset"
+			resultVar $translatescale
+		}
+
+
+//Convar Based Scale manipulation
+//
+		//Holo Scalar X
+		Multiply
+		{
+			srcVar1		$scale_temp
+			srcVar2		$scale_post
+			resultVar	"$holoScaleNew[0]"
+		}
+		//Holo Scalar Y
+		Multiply
+		{
+			srcVar1		$scale_temp
+			srcVar2		$scale_post
+			resultVar	"$holoScaleNew[1]"
+		}
+
+		//EntityScript
+		//{
+		//	scriptFuncName	"VMTCallback_HoloSightOffset_RSPN101_Front"
+		//	resultVar $holoOffset
+		//}
+
+		"HoloSightOffset"
+		{
+			attachmentName		"HCOG_REAR"
+			horizontalScalar	".46651707648"	//".4212" 
+			verticalScalar		"-.46651707648"	//"-.4212" 
+			resultVar			$holoOffset
+		}
+
+//Convar Based position manipulation
+//
+		
+		// Print $holooffset value for later use
+		Clamp	//X axis
+		{
+			srcVar1		$valuezero
+			min			"$holoOffset[0]"
+			max			"$holoOffset[0]"
+			resultVar	$holoOffsetX
+		}
+		
+		Clamp	//Y axis
+		{
+			srcVar1		$valuezero
+			min			"$holoOffset[1]"
+			max			"$holoOffset[1]"
+			resultVar	$holoOffsetY
+		}
+		//Additional multiplication for scale+offset integration
+		Equals
+		{
+			srcVar1			$holoOffsetX
+			resultVar		$holoOffsetX_temp
+		}
+		Equals 
+		{
+			srcVar1			$holoOffsetY
+			resultVar		$holoOffsetY_temp
+		}
+		multiply	//scale+offset X axis
+		{
+			srcVar1		$holoOffsetX_temp
+			srcVar2		$scale_post
+			resultVar	$holoOffsetX
+		}
+		multiply	//scale+offset Y axis
+		{
+			srcVar1		$holoOffsetY_temp
+			srcVar2		$scale_post
+			resultVar	$holoOffsetY
+		}
+		// additional offset scalar set by convar
+		multiply	//X axis
+		{
+			srcVar1		$holoOffsetX
+			srcVar2		"$translatescale"
+			resultVar	"$holoOffsetNew[0]"
+		}
+		multiply	//Y axis
+		{
+			srcVar1		$holoOffsetY
+			srcVar2		"$translatescale"
+			resultVar	"$holoOffsetNew[1]"
+		}
+
+		// delta_old_reticles: blend between the R1Delta reticle fix and the vanilla Titanfall offset and scale
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_OldReticles"
+			resultVar $oldmode
+		}
+		Subtract
+		{
+			srcVar1		$valueone
+			srcVar2		$oldmode
+			resultVar	$newmode
+		}
+		"HoloSightOffset"
+		{
+			attachmentName		"HCOG_REAR"
+			horizontalScalar	"0.5"
+			verticalScalar		"-0.65"
+			resultVar			$holoOffsetOld
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetNew[0]"
+			max			"$holoOffsetNew[0]"
+			resultVar	$newX
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetNew[1]"
+			max			"$holoOffsetNew[1]"
+			resultVar	$newY
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetOld[0]"
+			max			"$holoOffsetOld[0]"
+			resultVar	$oldX
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetOld[1]"
+			max			"$holoOffsetOld[1]"
+			resultVar	$oldY
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoScaleNew[0]"
+			max			"$holoScaleNew[0]"
+			resultVar	$sNew
+		}
+		Multiply
+		{
+			srcVar1		$newX
+			srcVar2		$newmode
+			resultVar	$newXm
+		}
+		Multiply
+		{
+			srcVar1		$newY
+			srcVar2		$newmode
+			resultVar	$newYm
+		}
+		Multiply
+		{
+			srcVar1		$oldX
+			srcVar2		$oldmode
+			resultVar	$oldXm
+		}
+		Multiply
+		{
+			srcVar1		$oldY
+			srcVar2		$oldmode
+			resultVar	$oldYm
+		}
+		Add
+		{
+			srcVar1		$newXm
+			srcVar2		$oldXm
+			resultVar	"$holoOffset2[0]"
+		}
+		Add
+		{
+			srcVar1		$newYm
+			srcVar2		$oldYm
+			resultVar	"$holoOffset2[1]"
+		}
+		Multiply
+		{
+			srcVar1		$sNew
+			srcVar2		$newmode
+			resultVar	$sNewm
+		}
+		Multiply
+		{
+			srcVar1		$scaleOld
+			srcVar2		$oldmode
+			resultVar	$sOldm
+		}
+		Add
+		{
+			srcVar1		$sNewm
+			srcVar2		$sOldm
+			resultVar	$scaleBlend
+		}
+		Equals
+		{
+			srcVar1		$scaleBlend
+			resultVar	"$holoScale[0]"
+		}
+		Equals
+		{
+			srcVar1		$scaleBlend
+			resultVar	"$holoScale[1]"
+		}
+
+		// Final transform
+		"TextureTransform"
+		{
+			"scaleVar"		"$holoScale"
+			"translateVar"	"$holoOffset2"
+			"resultvar"		"$basetexturetransform"
+		}
 	}
 }
