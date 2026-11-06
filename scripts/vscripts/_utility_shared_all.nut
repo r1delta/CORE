@@ -776,11 +776,10 @@ function GetStarBestScores( mapName, modeName, player = null )
 		Assert( player.IsPlayer() )
 	}
 
-	if ( !PersistenceEnumValueIsValid( "maps", mapName ) )
-		return 0
-
-	if ( !PersistenceEnumValueIsValid( "gameModesWithStars", modeName ) )
-		return 0
+	// Maps and modes outside the persistence enums (converted Titanfall 2 maps, modes without stars) store no scores.
+	// Callers read .now/.previous, so this must be a table like the stored case, not a bare integer.
+	if ( !PersistenceEnumValueIsValid( "maps", mapName ) || !PersistenceEnumValueIsValid( "gameModesWithStars", modeName ) )
+		return { now = 0, previous = 0 }
 
 	local scores = {}
 

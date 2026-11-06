@@ -154,10 +154,14 @@ function Sniper_MoveToNewLocation( sniper )
 	sniper.EndSignal( "OnDeath" )
 	sniper.EndSignal( "OnDestroy" )
 
-	delaythread( 2 ) SniperCloak( sniper )
-
 	//go searching for nodes that are up somewhere
 	local sniperNode = GetRandomSniperNodeWithin( sniper, 3000 )
+
+	// more snipers than sniper nodes: every node on the map is taken, so stay where we are and try again at the next relocation
+	if ( sniperNode == null )
+		return
+
+	delaythread( 2 ) SniperCloak( sniper )
 
 	Sniper_FreeSniperNode( sniper )//free his current node
 	Sniper_TakeSniperNode( sniper, sniperNode )
@@ -281,10 +285,8 @@ function GetRandomSniperNodeWithin( sniper, maxDist )
 	//if we get here it's because there are no free nodes within the maxDist
 	local locations = SniperNodeClosest( level.TowerDefense_SniperNodes, origin )
 
-	local goalNode = FindFreeSniperNode( locations )
-	Assert ( goalNode != null )
-
-	return goalNode
+	// null when every node on the map is taken
+	return FindFreeSniperNode( locations )
 }
 
 function FindFreeSniperNode( locations )

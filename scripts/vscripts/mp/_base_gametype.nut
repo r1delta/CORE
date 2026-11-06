@@ -3211,7 +3211,12 @@ function SetPlayerToDefaultViewPoint( player )
 	//if( level.isTestmap )		// 테스트 맵일 경우에도 체크하지 않는다.
 	//	return
 
-	Assert( viewPoint )
+	// a map can have no info_intermission usable for this mode/team: leave the connecting player where the engine put them
+	if ( !viewPoint )
+	{
+		printt( "No info_intermission for " + GAMETYPE + " team " + player.GetTeam() + " on " + GetMapName() + ", not setting a default view point" )
+		return
+	}
 
 	player.SetOrigin( viewPoint.GetOrigin() )
 	local viewTarget = GetEnt( viewPoint.kv.target )
