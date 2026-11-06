@@ -186,9 +186,12 @@ function GetTitanReplacementPoint( player, forDebugging = false )
 
 	if ( !node )
 	{
-		// This won't ever happen on a map with any reasonably placed path nodes.
+		// Maps without drop nodes (the converted Titanfall 2 ones have no hot drop analysis) fall back to a replacement spawnpoint,
+		// and a map with neither has no drop point at all: the caller has to deal with null.
 		local spawner = FindSpawnpoint_ForReplacementTitan( player.GetOrigin() )
-		Assert( spawner )
+		if ( !spawner )
+			return null
+
 		return { origin = spawner.GetOrigin(), angles = null }
 	}
 
@@ -372,7 +375,8 @@ function EdgeTraceDropPoint( dropPoint )
 
 function FindSpawnpoint_ForReplacementTitan( origin )
 {
-	Assert( file.replacementSpawnpoints.len() )
+	if ( !file.replacementSpawnpoints.len() )
+		return null
 
 	local spawnpoints = file.replacementSpawnpoints
 	local selectedSpawnpoint = spawnpoints[0]

@@ -366,9 +366,19 @@ function GetTitanfall2MapModes( mapName )
 	return [ "at", "cp", "lts", "tdm", "mfd", "mfdp", "ps", "lf", "ttdm", "ffa", "coop" ]
 }
 
-// false for a Titanfall 2 map that does not have the given ePrivateMatchModes name; true for every other map
+// M.I.A., Nest, Box and Certification are not in the Hardpoint, Frontier Defense or campaign playlists: Frontier Defense in
+// particular has no setup for M.I.A. (16 minute start, error models) or Certification.
+function IsSpecialMap( mapName )
+{
+	return mapName == "mp_mia" || mapName == "mp_nest2" || mapName == "mp_box" || mapName == "mp_npe"
+}
+
+// false for a map that does not have the given ePrivateMatchModes name (Titanfall 2 maps and special maps); true for every other map
 function MapSupportsMode( mapName, modeName )
 {
+	if ( IsSpecialMap( mapName ) )
+		return modeName != CAPTURE_POINT && modeName != COOPERATIVE && modeName != CAMPAIGN
+
 	if ( !IsTitanfall2Map( mapName ) )
 		return true
 

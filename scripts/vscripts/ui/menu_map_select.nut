@@ -507,7 +507,8 @@ function GetPrivateMatchMaps()
 	if ( IsMapVoteMode() )
 		return GetMapVoteOptions()
 
-	local modeName = GetModeNameForEnum( level.ui.privatematch_mode )
+	// Outside a private match the picker is the Frontier Defense "create a match" list
+	local modeName = IsPrivateMatch() ? GetModeNameForEnum( level.ui.privatematch_mode ) : COOPERATIVE
 	if ( modeName == "campaign_carousel" )
 		return GetCampaignMaps()
 
@@ -517,13 +518,16 @@ function GetPrivateMatchMaps()
 	foreach ( mapName, mapID in getconsttable().ePrivateMatchMaps )
 		allMaps[mapID] = mapName
 
-	// The converted Titanfall 2 maps are only listed for a player who owns the Titanfall 2 group (dlc5_enabled) and only in
-	// the modes Titanfall 2 has them in
+	// The converted Titanfall 2 maps are only listed for a player who owns the Titanfall 2 group (dlc5_enabled), and no map is
+	// listed in a mode it does not exist in (Frontier Defense has no M.I.A., Nest, Box or Certification; Titanfall 2 has its own modes)
 	local ownsTitanfall2 = LocalPlayerOwnsDLCMapGroup( R2_MAP_DLC_GROUP )
 	local mapsArray = []
 	foreach ( mapName in allMaps )
 	{
-		if ( IsTitanfall2Map( mapName ) && ( !ownsTitanfall2 || !MapSupportsMode( mapName, modeName ) ) )
+		if ( IsTitanfall2Map( mapName ) && !ownsTitanfall2 )
+			continue
+
+		if ( !MapSupportsMode( mapName, modeName ) )
 			continue
 
 		mapsArray.append( mapName )

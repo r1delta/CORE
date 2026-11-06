@@ -49,14 +49,9 @@ function TryAssignOffhand( player, targetEnt, offhands, index, unlockType )
 function PlayerIsFemale( player )
 {
 	local playerClassDataTable = GetPlayerClassDataTable( player, level.pilotClass )
-	local tokens = split( playerClassDataTable.playerSetFile, "_" )
 
-	if( "female" in tokens )
-	{
-		return true
-	}
-
-	return false
+	// "in" tests the indices of an array, not its values
+	return ArrayContains( split( playerClassDataTable.playerSetFile, "_" ), "female" )
 }
 
 function GetTeamMinions( team )
