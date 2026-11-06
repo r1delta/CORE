@@ -545,6 +545,12 @@ const FOV_110 = 1.55
 const FOV_115 = 1.6
 const FOV_120 = 1.7
 
+// 1 while delta_old_reticles is set: the reticle materials blend to the vanilla Titanfall offset and scale
+function VMTCallback_OldReticles( ent )
+{
+	return GetConVarInt( "delta_old_reticles" ) ? 1.0 : 0.0
+}
+
 function VMTCallback_FOVReticleOffset( ent )
 {
 	local fov = GetConVarFloat( "cl_fovScale" )

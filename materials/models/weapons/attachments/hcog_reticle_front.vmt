@@ -38,7 +38,26 @@ UnlitTwoTexture
 	$holoOffsetX_temp ".0"		//dummy for print
 	$holoOffsetY_temp ".0"		//dummy for print
 
-	$holoOffset2 "[0.0 0.0]"	//Final Offset var
+	$holoOffset2 "[0.0 0.0]"	//Final Offset var (new/old blend)
+	$holoOffsetNew "[0.0 0.0]"	//Offset of the R1Delta reticle fix
+	$holoOffsetOld "[0.0 0.0]"	//Offset of vanilla Titanfall (delta_old_reticles 1)
+	$holoScaleNew "[1.2 1.2]"	//Scale of the R1Delta reticle fix
+	$scaleOld "1.0"	//Scale of vanilla Titanfall
+	$scaleBlend "1.0"
+	$valueone "1"
+	$oldmode "0"	//delta_old_reticles
+	$newmode "1"
+	$newX "0"
+	$newY "0"
+	$oldX "0"
+	$oldY "0"
+	$sNew "0"
+	$newXm "0"
+	$newYm "0"
+	$oldXm "0"
+	$oldYm "0"
+	$sNewm "0"
+	$sOldm "0"
 
 	$holoOffset_temp 	"[0.0 0.0]"		// dummy Offset var
 	$holoOffset2_temp 	"[0.0 0.0]"		// dummy Offset var
@@ -124,14 +143,14 @@ UnlitTwoTexture
 		{
 			srcVar1		$scale_temp
 			srcVar2		$scale_post
-			resultVar	"$holoScale[0]"
+			resultVar	"$holoScaleNew[0]"
 		}
 		//Holo Scalar Y
 		Multiply
 		{
 			srcVar1		$scale_temp
 			srcVar2		$scale_post
-			resultVar	"$holoScale[1]"
+			resultVar	"$holoScaleNew[1]"
 		}
 
 		//EntityScript
@@ -195,13 +214,132 @@ UnlitTwoTexture
 		{
 			srcVar1		$holoOffsetX
 			srcVar2		"$translatescale"
-			resultVar	"$holoOffset2[0]"
+			resultVar	"$holoOffsetNew[0]"
 		}
 		multiply	//Y axis
 		{
 			srcVar1		$holoOffsetY
 			srcVar2		"$translatescale"
+			resultVar	"$holoOffsetNew[1]"
+		}
+
+		// delta_old_reticles: blend between the R1Delta reticle fix and the vanilla Titanfall offset and scale
+		EntityScript
+		{
+			scriptFuncName	"VMTCallback_OldReticles"
+			resultVar $oldmode
+		}
+		Subtract
+		{
+			srcVar1		$valueone
+			srcVar2		$oldmode
+			resultVar	$newmode
+		}
+		"HoloSightOffset"
+		{
+			attachmentName		"HCOG_REAR"
+			horizontalScalar	"0.55"
+			verticalScalar		"-0.72"
+			resultVar			$holoOffsetOld
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetNew[0]"
+			max			"$holoOffsetNew[0]"
+			resultVar	$newX
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetNew[1]"
+			max			"$holoOffsetNew[1]"
+			resultVar	$newY
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetOld[0]"
+			max			"$holoOffsetOld[0]"
+			resultVar	$oldX
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoOffsetOld[1]"
+			max			"$holoOffsetOld[1]"
+			resultVar	$oldY
+		}
+		Clamp
+		{
+			srcVar1		$valuezero
+			min			"$holoScaleNew[0]"
+			max			"$holoScaleNew[0]"
+			resultVar	$sNew
+		}
+		Multiply
+		{
+			srcVar1		$newX
+			srcVar2		$newmode
+			resultVar	$newXm
+		}
+		Multiply
+		{
+			srcVar1		$newY
+			srcVar2		$newmode
+			resultVar	$newYm
+		}
+		Multiply
+		{
+			srcVar1		$oldX
+			srcVar2		$oldmode
+			resultVar	$oldXm
+		}
+		Multiply
+		{
+			srcVar1		$oldY
+			srcVar2		$oldmode
+			resultVar	$oldYm
+		}
+		Add
+		{
+			srcVar1		$newXm
+			srcVar2		$oldXm
+			resultVar	"$holoOffset2[0]"
+		}
+		Add
+		{
+			srcVar1		$newYm
+			srcVar2		$oldYm
 			resultVar	"$holoOffset2[1]"
+		}
+		Multiply
+		{
+			srcVar1		$sNew
+			srcVar2		$newmode
+			resultVar	$sNewm
+		}
+		Multiply
+		{
+			srcVar1		$scaleOld
+			srcVar2		$oldmode
+			resultVar	$sOldm
+		}
+		Add
+		{
+			srcVar1		$sNewm
+			srcVar2		$sOldm
+			resultVar	$scaleBlend
+		}
+		Equals
+		{
+			srcVar1		$scaleBlend
+			resultVar	"$holoScale[0]"
+		}
+		Equals
+		{
+			srcVar1		$scaleBlend
+			resultVar	"$holoScale[1]"
 		}
 
 		// Final transform

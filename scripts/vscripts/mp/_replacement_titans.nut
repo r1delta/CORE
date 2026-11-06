@@ -581,8 +581,13 @@ function ClientCommand_ReplacementTitan( player )
 	}
 
 	local spawnPoint = GetTitanReplacementPoint( player, false )
-	local origin = spawnPoint.origin
-	Assert( origin )
+	if ( !spawnPoint )
+	{
+		// Nothing was spent: the Titan stays ready and the player is told why it did not come
+		printt( "ClientCommand_ReplacementTitan", player, player.entindex(), "failed", "no Titan drop point on this map" )
+		SendHudMessage( player, "No room to call in a Titan here", -1, 0.4, 255, 255, 255, 255, 0.5, 3.0, 0.5 )
+		return true
+	}
 
 	// TitanBuild Progress Reset
 	TitanDeployed( player )
