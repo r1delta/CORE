@@ -115,7 +115,7 @@ resource/ui/menus/hudsettings_r1d.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			xpos					10
-			navUp					SwchWatermark
+			navUp					SwchCustomInsignias
 			navDown					SwchLegacyProgressbar
 			tabPosition				1
 			labelText				"#MENU_DAMAGE_NUMBERS"
@@ -177,9 +177,29 @@ resource/ui/menus/hudsettings_r1d.menu
 			pin_corner_to_sibling	0
 			pin_to_sibling_corner	2
 			navUp					SwchScriptNotification
-			navDown					SwchDamageNumbers
+			navDown					SwchCustomInsignias
 			labelText				"#MENU_DELTA_WATERMARK"
 			ConVar					"delta_watermark"
+			list
+			{
+				"#SETTING_OFF"				0
+				"#SETTING_ON"				1
+			}
+		}
+
+		SwchCustomInsignias
+		{
+			ControlName				BaseModHybridButton
+			InheritProperties		SwitchButton
+			classname				CustomInsigniasClass
+			style					DialogListButton
+			pin_to_sibling			SwchWatermark
+			pin_corner_to_sibling	0
+			pin_to_sibling_corner	2
+			navUp					SwchWatermark
+			navDown					SwchDamageNumbers
+			labelText				"#MENU_CUSTOM_INSIGNIAS"
+			ConVar					"delta_titan_insignias_show"
 			list
 			{
 				"#SETTING_OFF"				0

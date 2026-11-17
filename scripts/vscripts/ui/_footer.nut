@@ -280,12 +280,19 @@ function UpdateFooterButtons( menuName = null )
 		case "TitanSelectMenu":
 		case "AbilitySelectMenu":
 		case "PassiveSelectMenu":
-		case "DecalSelectMenu":
 		case "TitanOSSelectMenu":
 
 			footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
 
 			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
+			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
+			break
+
+		case "DecalSelectMenu":
+			footerData.gamepad.append( { label = "#A_BUTTON_SELECT" } )
+			footerData.gamepad.append( { label = "#GAMEPAD_TITAN_INSIGNIA_FOLDER" } )
+			footerData.gamepad.append( { label = "#B_BUTTON_BACK" } )
+			footerData.pc.append( { label = "#TITAN_INSIGNIA_FOLDER", func = OpenTitanInsigniaFolderButton_Activate } )
 			footerData.pc.append( { label = "#BACK", func = PCBackButton_Activate } )
 			break
 
