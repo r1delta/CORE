@@ -66,6 +66,7 @@ function UpdateDecalButtons( buttons, items, currentItem, focusSelected )
 				focusSelected = true
 
 			button.s.ref <- null
+			button.s.custom <- null
 			button.SetNew( false )
 			button.SetEnabled( false )
 			button.SetLocked( false )
@@ -92,20 +93,29 @@ function UpdateDecalButtons( buttons, items, currentItem, focusSelected )
 			button.SetEnabled( true )
 			button.Show()
 
-			local isLocked = IsItemLocked( item.ref )
+			// R1Delta: a custom insignia item is { ref = null, custom = { file, image, error } } (GetTitanInsigniaFiles)
+			local custom = "custom" in item ? item.custom : null
+			local isLocked = custom ? custom.error != "" : IsItemLocked( item.ref )
 			button.SetLocked( isLocked )
 
 			button.s.ref <- item.ref
-
-			local decalImage = GetItemImage( item.ref )
+			button.s.custom <- custom
 
 			local buttonImage = button.GetChild( "DecalNormal" )
-			buttonImage.SetImage( decalImage )
+			if ( custom == null || custom.image != "" )
+			{
+				buttonImage.SetImage( custom ? custom.image : GetItemImage( item.ref ) )
+				buttonImage.Show()
+			}
+			else
+			{
+				buttonImage.Hide()
+			}
 			buttonImage.SetAlpha( isLocked ? 100 : 255 )
 
-			button.SetNew( HasAnyNewItem( button.s.ref ) )
+			button.SetNew( custom == null && HasAnyNewItem( item.ref ) )
 
-			if ( item.ref == currentItem )
+			if ( ( custom ? custom.file : item.ref ) == currentItem )
 			{
 				button.SetSelected( true )
 				if ( focusSelected )
@@ -370,22 +380,43 @@ function OnOpenDecalSelectMenu()
 			unlockedDecals.append( decal )
 	}
 	local sortedDecals = []
+	// R1Delta: images from r1/insignias come first; the menu has a fixed number of buttons
+	local stockCount = unlockedDecals.len() + lockedDecals.len()
+	local customInsignias = GetTitanInsigniaFiles()
+	foreach ( index, insignia in customInsignias )
+	{
+		if ( index + stockCount >= buttons.len() )
+		{
+			printt( "R1Delta: the insignia menu shows " + index + " of the " + customInsignias.len() + " images in r1/insignias" )
+			break
+		}
+		sortedDecals.append( { ref = null, custom = insignia } )
+	}
 	sortedDecals.extend( unlockedDecals )
 	sortedDecals.extend( lockedDecals )
 
 	//chad - temp for testing ( makes decals not resort based on unlock )
 	//sortedDecals = unsortedDecals
 
-	UpdateDecalButtons( buttons, sortedDecals, currentDecal, true )
+	// A selected custom insignia replaces the loadout's on every Titan
+	local customInsignia = GetTitanInsignia()
+	UpdateDecalButtons( buttons, sortedDecals, customInsignia.file != "" ? customInsignia.file : currentDecal, true )
 
 	RegisterButtonPressedCallback( MOUSE_WHEEL_UP, OnDecalButtonsScrollUp )
 	RegisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnDecalButtonsScrollDown )
+	RegisterButtonPressedCallback( BUTTON_X, OpenTitanInsigniaFolderButton_Activate )
+}
+
+function OpenTitanInsigniaFolderButton_Activate( ... )
+{
+	OpenTitanInsigniaFolder()
 }
 
 function OnCloseDecalSelectMenu()
 {
 	DeregisterButtonPressedCallback( MOUSE_WHEEL_UP, OnDecalButtonsScrollUp )
 	DeregisterButtonPressedCallback( MOUSE_WHEEL_DOWN, OnDecalButtonsScrollDown )
+	DeregisterButtonPressedCallback( BUTTON_X, OpenTitanInsigniaFolderButton_Activate )
 }
 
 function OnPageItemButton_Activate( button )
@@ -1239,8 +1270,20 @@ function OnDecalSelectButton_Activate( button )
 
 	Assert( uiGlobal.itemTypeBeingEdited != null )
 	Assert( uiGlobal.loadoutTypeBeingEdited == "titan" )
+
+	// R1Delta: a custom insignia is drawn on every Titan; picking a stock insignia turns it off
+	if ( "custom" in button.s && button.s.custom != null )
+	{
+		local error = SetTitanInsignia( button.s.custom.file )
+		if ( error != "" )
+			printt( "R1Delta: cannot use " + button.s.custom.file + " as the Titan insignia: " + error )
+		CloseSubmenu()
+		return
+	}
+
 	Assert( "ref" in button.s )
 	Assert( button.s.ref != null )
+	SetTitanInsignia( "" )
 
 	local buttonID = button.GetScriptID().tointeger()
 	local decalRef = button.s.ref
@@ -1259,13 +1302,10 @@ function OnDecalSelectButton_Activate( button )
 function OnDecalSelectButton_Focused( button )
 {
 	Assert( uiGlobal.itemTypeBeingEdited != null )
-	Assert( "ref" in button.s )
-	Assert( button.s.ref != null )
 	Assert( numDecalRowsOffScreen != null )
 
 	local menu = GetMenu( "DecalSelectMenu" )
 	local buttonID = button.GetScriptID().tointeger()
-	local decalRef = button.s.ref
 
 	// Update window scrolling if we highlight a decal not in view
 	local row = buttonID / DECAL_MENU_DECALS_PER_ROW
@@ -1278,6 +1318,16 @@ function OnDecalSelectButton_Focused( button )
 	if ( uiGlobal.decalScrollState > maxScrollState )
 		uiGlobal.decalScrollState = maxScrollState
 	DecalButtonsScrollUpdate()
+
+	if ( "custom" in button.s && button.s.custom != null )
+	{
+		ShowCustomInsigniaInfo( menu, button.s.custom )
+		return
+	}
+
+	Assert( "ref" in button.s )
+	Assert( button.s.ref != null )
+	local decalRef = button.s.ref
 
 	local elements = GetElementsByClassname( menu, "DecalNameClass" )
 	foreach ( element in elements )
@@ -1334,6 +1384,42 @@ function OnDecalSelectButton_Focused( button )
 		lockLabel.Hide()
 	else
 		lockLabel.Show()
+}
+
+// R1Delta: the info panel for an image from r1/insignias ({ file, image, error }, GetTitanInsigniaFiles)
+function ShowCustomInsigniaInfo( menu, insignia )
+{
+	// Through a format token, so a file name starting with # is not read as a localization key
+	foreach ( element in GetElementsByClassname( menu, "DecalNameClass" ) )
+		element.SetText( "#TITAN_INSIGNIA_FILE_NAME", insignia.file )
+
+	// Only an image that cannot be used gets a description: the reason
+	foreach ( element in GetElementsByClassname( menu, "DecalDescClass" ) )
+	{
+		if ( insignia.error == "" )
+			element.SetText( "" )
+		else
+			element.SetText( "#TITAN_INSIGNIA_CUSTOM_UNUSABLE", insignia.error )
+	}
+
+	foreach ( element in GetElementsByClassname( menu, "DecalIconClass" ) )
+	{
+		if ( insignia.image != "" )
+		{
+			element.SetImage( insignia.image )
+			element.Show()
+		}
+		else
+		{
+			element.Hide()
+		}
+	}
+
+	foreach ( className in [ "DecalReqHeaderClass", "DecalReqClass", "DecalProgressClass", "LblDLCRequired" ] )
+	{
+		foreach ( element in GetElementsByClassname( menu, className ) )
+			element.Hide()
+	}
 }
 
 function OnDecalSelectButton_LostFocus( button )

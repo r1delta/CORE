@@ -1,0 +1,22 @@
+// v1.01
+//This file is auto-generated from reVaMpT. Edit at your own risk.
+"VertexLitGeneric"
+{
+	"$decal" "1"
+	"$decalscale" ".25"
+
+	"$surfaceprop" "metal"
+	"$basetexture" "models\titans\custom_decals\decal_pack_01\hand_custom_decal_col"
+	"$translucent" "1"
+	//Start of freehand input from reVaMpT//
+
+	
+	
+
+	"Proxies"
+	{
+		"R1DeltaTitanInsignia"
+		{
+		}
+	}
+}

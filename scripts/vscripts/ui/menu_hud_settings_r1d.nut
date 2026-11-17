@@ -10,6 +10,7 @@ function InitHudSettingsR1DMenu( menu )
 	SetupButton( menu.GetChild( "SwchLegacyProgressbar" ), "#OPTIONS_MENU_OLD_PROGRESS_DESC" )
 	SetupButton( menu.GetChild( "SwchScriptNotification" ), "#OPTIONS_MENU_ERROR_NOTIFICATION_DESC" )
 	SetupButton( menu.GetChild( "SwchWatermark" ), "#OPTIONS_MENU_DELTA_WATERMARK_DESC" )
+	SetupButton( menu.GetChild( "SwchCustomInsignias" ), "#OPTIONS_MENU_CUSTOM_INSIGNIAS_DESC" )
 
 	AddEventHandlerToButtonClass( menu, "PCFooterButtonClass", UIE_GET_FOCUS, PCFooterButtonClass_Focused )
 }

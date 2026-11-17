@@ -139,8 +139,20 @@ function UpdateTitanLoadoutElems( menu, loadout, button = null )
 	foreach ( element in menu.classElements[TITAN_ORDNANCE_IMAGE] )
 		SetImageFromItemImage( element, loadout.ordnance )
 
+	// R1Delta: a selected custom insignia replaces the loadout's on every Titan
+	local customInsignia = GetTitanInsignia()
 	foreach ( element in menu.classElements[TITAN_DECAL_IMAGE] )
-		SetImageFromItemImage( element, loadout.decal )
+	{
+		if ( customInsignia.image != "" )
+		{
+			element.SetImage( customInsignia.image )
+			element.Show()
+		}
+		else
+		{
+			SetImageFromItemImage( element, loadout.decal )
+		}
+	}
 
 
 	foreach ( element in menu.classElements[TITAN_CHASSIS_NAME] )
